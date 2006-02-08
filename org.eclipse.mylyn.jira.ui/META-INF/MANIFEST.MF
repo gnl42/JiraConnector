@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mylar Jira Plug-in
+Bundle-SymbolicName: org.eclipse.mylar.jira; singleton:=true
+Bundle-Version: 0.4.9
+Bundle-Activator: org.eclipse.mylar.internal.jira.MylarJiraPlugin
+Bundle-Vendor: Eclipse.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.mylar.tasklist,
+ org.eclipse.mylar.core
+Eclipse-AutoStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
