@@ -39,7 +39,7 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 	 */
 	public static MylarJiraPlugin getDefault() {
 		return plugin;
-	}
+	}  
 
 	/**
 	 * Returns an image descriptor for the image file at the given
