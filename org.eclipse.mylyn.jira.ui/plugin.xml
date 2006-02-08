@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="org.eclipse.mylar.bugzilla.repository"
+         id="org.eclipse.mylar.jira.repository"
          name="JIRA Repository"
          point="org.eclipse.mylar.tasklist.repositories">
 
