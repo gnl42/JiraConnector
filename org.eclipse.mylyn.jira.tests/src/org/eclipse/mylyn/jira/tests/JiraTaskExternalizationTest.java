@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2006 University Of British Columbia and others.
+ * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     University Of British Columbia - initial API and implementation
+ *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylar.jira.tests;
@@ -149,9 +149,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 		JiraTask jTask = (JiraTask) savedHit.getCorrespondingTask();
 
-		assertTrue(jTask.getDescription().equals(ISSUE_SUMMARY));
-		assertTrue(jTask.getHandleIdentifier().equals(
-				jiraHit.getRepositoryUrl()));
+		assertEquals(ISSUE_SUMMARY, jTask.getDescription());
+		assertEquals(jTask.getHandleIdentifier(), jiraHit.getRepositoryUrl());
 
 		AbstractRepositoryClient client = MylarTaskListPlugin
 				.getRepositoryManager().getRepositoryClient(

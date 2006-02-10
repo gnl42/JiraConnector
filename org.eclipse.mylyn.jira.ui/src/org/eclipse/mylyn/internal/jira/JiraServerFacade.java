@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2006 University Of British Columbia and others.
+ * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     University Of British Columbia - initial API and implementation
+ *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylar.internal.jira;
@@ -43,6 +43,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	public JiraServerFacade() {
 		MylarTaskListPlugin.getRepositoryManager().addListener(this);
+
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		if (repository == null) {
 			throw new RuntimeException("Missing JIRA repository.");
 		}
-  
+
 		if (jiraServer == null) {
 			jiraServer = initJiraServer(repository);
 		}
@@ -73,9 +74,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 */
 	private JiraServer initJiraServer(TaskRepository repository) {
 		try {
-			jiraServer = new CachedRpcJiraServer(SERVER_NAME, repository.getUrl().toExternalForm(), false, repository
-					.getUserName(), repository.getPassword());
-
+			jiraServer = serverManager.createServer(SERVER_NAME, repository.getUrl().toExternalForm(), false, repository.getUserName(), repository.getPassword());
 			serverManager.removeServer(jiraServer);
 			serverManager.addServer(jiraServer);
 
@@ -135,6 +134,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	/** Returns true if all of the serverURL, user name, and password are valid */
 	public boolean validateServerAndCredentials(String serverUrl, String user, String password) {
 		try {
+			// TODO: use test method on ServerManager
 			jiraServer = new CachedRpcJiraServer("ConnectionTest", serverUrl, false, user, password);
 			jiraServer.login();
 			jiraServer.logout();
@@ -158,7 +158,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 					+ "Please check your Jira username and password in the Task Repositories View", true);
 		} else if (e instanceof RuntimeException) {
 			MylarStatusHandler.fail(e, "No Jira repository found.\n\n"
-							+ "Please verify that a vaild Jira repository exists in the Task Repositories View", true);
+					+ "Please verify that a vaild Jira repository exists in the Task Repositories View", true);
 		}
 	}
 }

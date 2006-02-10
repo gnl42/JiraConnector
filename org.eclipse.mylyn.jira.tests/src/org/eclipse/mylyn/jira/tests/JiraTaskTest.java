@@ -11,24 +11,20 @@
 
 package org.eclipse.mylar.jira.tests;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
+
+import org.eclipse.mylar.internal.jira.JiraTask;
+import org.tigris.jira.core.model.Priority;
 
 /**
- * @author Wesley Coelho (initial integration patch)
+ * @author Mik Kersten
  */
-public class AllJiraTests {
+public class JiraTaskTest extends TestCase {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for mylar.jira.tests");
-
-		// $JUnit-BEGIN$
-		suite.addTestSuite(JiraTaskTest.class);
-		suite.addTestSuite(JiraServerFacadeTest.class);
-		suite.addTestSuite(JiraTaskExternalizationTest.class);
-		suite.addTestSuite(JiraFilterTest.class);
-		suite.addTestSuite(JiraTaskArchiveTest.class);
-		// $JUnit-END$
-		return suite;
+	public void testPriorityMapping() {
+		Priority priority = new Priority();
+		priority.setId("1");
+		assertEquals("P1", JiraTask.PriorityLevel.fromPriority(priority).toString());
 	}
+	
 }

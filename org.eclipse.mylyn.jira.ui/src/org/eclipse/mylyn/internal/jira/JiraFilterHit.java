@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2006 University Of British Columbia and others.
+ * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     University Of British Columbia - initial API and implementation
+ *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylar.internal.jira;
@@ -63,7 +63,12 @@ public class JiraFilterHit implements IQueryHit {
 
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
 		if (task == null) {
-			task = new JiraTask(getRepositoryUrl(), issue.getSummary(), true);
+			String summary = issue.getSummary();
+			task = new JiraTask(getRepositoryUrl(), summary, true);
+			if (issue != null && issue.getPriority() != null) {
+				String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
+				task.setPriority(translatedPriority);
+			} 
 			AbstractRepositoryClient client = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
 					MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 			if (client != null) {
