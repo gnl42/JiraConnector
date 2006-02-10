@@ -55,7 +55,7 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		if (urlsInitialized && refresh) {
 			refreshHits();
 		}
-		super.setDescription(filter.getDescription());
+		super.setDescription(filter.getName());
 	}
 
 	/**
@@ -170,11 +170,10 @@ public class JiraFilter extends AbstractRepositoryQuery {
 	}
 
 	public String getDescription() {
-		if (filter.getDescription() != null) {
-			return filter.getDescription();
+		if (filter.getName() != null) {
+			return filter.getName();
 		} else {
-			MylarStatusHandler.log("Filter had no description", this);
-			return "";
+			return super.getDescription();
 		}
 	}
 
