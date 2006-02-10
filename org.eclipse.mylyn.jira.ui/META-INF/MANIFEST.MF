@@ -9,8 +9,9 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.mylar.tasklist,
- org.eclipse.mylar.core
+ org.eclipse.mylar.core,
+ org.tigris.jira.core
 Eclipse-AutoStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.mylar.internal.jira,
- org.eclipse.mylar.internal.jira.ui
+ org.eclipse.mylar.internal.jira.ui.wizards

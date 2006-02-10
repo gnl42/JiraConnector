@@ -4,5 +4,9 @@ Bundle-Name: Mylar Jira Tests Plug-in
 Bundle-SymbolicName: org.eclipse.mylar.jira.tests
 Bundle-Version: 0.0.0
 Bundle-Localization: plugin
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ org.eclipse.core.runtime,
+ org.tigris.jira.core,
+ org.eclipse.mylar.tasklist,
+ org.eclipse.mylar.jira
 Export-Package: org.eclipse.mylar.jira.tests
