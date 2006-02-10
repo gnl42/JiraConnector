@@ -14,7 +14,7 @@ package org.eclipse.mylar.internal.jira;
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryTask;
-import org.eclipse.mylar.internal.tasklist.IQueryHit;
+import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.internal.tasklist.TaskRepository;
 import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
@@ -28,15 +28,13 @@ import org.tigris.jira.core.model.Issue;
  * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
  */
-public class JiraFilterHit implements IQueryHit {
+public class JiraFilterHit extends AbstractQueryHit {
 
 	private Issue issue = null;
 
 	private AbstractRepositoryTask task = null;
 
-	private String repositoryUrl = "N/A";
-
-	public JiraFilterHit(Issue issue) {
+	public JiraFilterHit(Issue issue) {	
 		this.issue = issue;
 		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getDefaultRepository(
 				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
@@ -48,27 +46,15 @@ public class JiraFilterHit implements IQueryHit {
 		}
 		task = getOrCreateCorrespondingTask();
 	}
-
-	public String getRepositoryUrl() {
-		return repositoryUrl;
-	}
-
+	
 	public Issue getIssue() {
 		return issue;
-	}
-
-	public void setRepositoryUrl(String repositoryUrl) {
-		this.repositoryUrl = repositoryUrl;
 	}
 
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
 		if (task == null) {
 			String summary = issue.getSummary();
 			task = new JiraTask(getRepositoryUrl(), summary, true);
-			if (issue != null && issue.getPriority() != null) {
-				String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
-				task.setPriority(translatedPriority);
-			} 
 			AbstractRepositoryClient client = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
 					MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 			if (client != null) {
@@ -77,6 +63,11 @@ public class JiraFilterHit implements IQueryHit {
 				MylarStatusHandler.log("No Jira Client for Jira Task", this);
 			}
 		}
+		if (issue != null) {
+			String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
+			task.setPriority(translatedPriority);
+			System.err.println(">>> priority: " + task.hashCode() + ": " + task.getPriority());
+		} 
 		return task;
 	}
 
@@ -112,7 +103,8 @@ public class JiraFilterHit implements IQueryHit {
 		return false;
 	}
 
-	public String getPriority() {
+	public String getPriority() {  
+		System.err.println(">>> priority: " + task.hashCode() + ": " + task.getPriority());
 		return task.getPriority();
 	}
 
@@ -122,7 +114,6 @@ public class JiraFilterHit implements IQueryHit {
 
 	public void setDescription(String description) {
 		task.setDescription(description);
-		issue.setDescription(description);
 	}
 
 	public String getHandleIdentifier() {
@@ -152,7 +143,4 @@ public class JiraFilterHit implements IQueryHit {
 		return issue.getDescription();
 	}
 
-	public String getStringForSortingDescription() {
-		return issue.getKey();
-	}
 }

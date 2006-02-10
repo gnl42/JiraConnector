@@ -127,7 +127,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			jiraServer = null;
 			jiraServer = getJiraServer();
 		} catch (Exception e) {
-			MylarStatusHandler.fail(e, "Failed to connect to server after repository settings change", false);
+			MylarStatusHandler.fail(e, "Failed to connect to server after repository settings change", true);
 		}
 	}
 

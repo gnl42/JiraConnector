@@ -15,7 +15,7 @@ import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.internal.tasklist.DelegatingTaskExternalizer;
-import org.eclipse.mylar.internal.tasklist.IQueryHit;
+import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.ITask;
 import org.eclipse.mylar.internal.tasklist.ITaskCategory;
 import org.eclipse.mylar.internal.tasklist.ITaskListExternalizer;
@@ -179,7 +179,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		node.setAttribute(FILTER_NAME, filter.getName());
 		node.setAttribute(FILTER_DESCRIPTION, filter.getDescription());
 
-		for (IQueryHit hit : query.getHits()) {
+		for (AbstractQueryHit hit : query.getHits()) {
 			try {
 				Element element = null;
 				for (ITaskListExternalizer externalizer : super.getDelegateExternalizers()) {
@@ -231,7 +231,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return node.getNodeName().equals(getQueryHitTagName());
 	}
 
-	public Element createQueryHitElement(IQueryHit queryHit, Document doc, Element parent) {
+	public Element createQueryHitElement(AbstractQueryHit queryHit, Document doc, Element parent) {
 		Element node = doc.createElement(getQueryHitTagName());
 
 		JiraFilterHit hit = (JiraFilterHit) queryHit;

@@ -76,8 +76,4 @@ public class JiraTask extends AbstractRepositoryTask {
 		return TaskListImages.getImage(TaskListImages.TASK_WEB);
 	}
 
-	/** Priorities are not yet implemented */
-	public String getPriority() {
-		return "";
-	}
 }
