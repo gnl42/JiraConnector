@@ -145,20 +145,22 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	}
 
 	/**
-	 * Returns true if the Exception was handled
+	 * TODO: refactor
 	 */
 	public static void handleConnectionException(Exception e) {
-
 		if (e instanceof ServiceUnavailableException) {
 			MylarStatusHandler.fail(e, "Jira Connection Failure.\n\n"
-					+ "Please check your network connection and Jira server settings in the Task Repositories View.",
+					+ "Please check your network connection and Jira server settings in the Task Repositories view.",
 					true);
 		} else if (e instanceof AuthenticationException) {
 			MylarStatusHandler.fail(e, "Jira Authentication Failed.\n\n"
-					+ "Please check your Jira username and password in the Task Repositories View", true);
+					+ "Please check your Jira username and password in the Task Repositories view", true);
 		} else if (e instanceof RuntimeException) {
 			MylarStatusHandler.fail(e, "No Jira repository found.\n\n"
-					+ "Please verify that a vaild Jira repository exists in the Task Repositories View", true);
+					+ "Please verify that a vaild Jira repository exists in the Task Repositories view", true);
+		} else {
+			MylarStatusHandler.fail(e, "Could not connect to Jira repository.\n\n"
+					+ "Please check your credentials in the Task Repositories view", true);
 		}
 	}
 }

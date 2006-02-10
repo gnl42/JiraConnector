@@ -63,10 +63,9 @@ public class JiraFilterHit extends AbstractQueryHit {
 				MylarStatusHandler.log("No Jira Client for Jira Task", this);
 			}
 		}
-		if (issue != null) {
+		if (issue != null && issue.getPriority() != null) {
 			String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
 			task.setPriority(translatedPriority);
-			System.err.println(">>> priority: " + task.hashCode() + ": " + task.getPriority());
 		} 
 		return task;
 	}
@@ -83,8 +82,11 @@ public class JiraFilterHit extends AbstractQueryHit {
 	}
 
 	public boolean isCompleted() {
-		return false; // issue.getStatus().isClosed() ||
-						// issue.getStatus().isResolved();
+		if (issue != null && issue.getStatus() != null) {
+			return issue.getStatus().isClosed() || issue.getStatus().isResolved();
+		} else {
+			return false;
+		}
 	}
 
 	public Image getIcon() {
@@ -103,8 +105,7 @@ public class JiraFilterHit extends AbstractQueryHit {
 		return false;
 	}
 
-	public String getPriority() {  
-		System.err.println(">>> priority: " + task.hashCode() + ": " + task.getPriority());
+	public String getPriority() { 
 		return task.getPriority();
 	}
 
