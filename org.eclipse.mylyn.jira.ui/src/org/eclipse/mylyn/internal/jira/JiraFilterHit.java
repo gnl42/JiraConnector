@@ -93,13 +93,13 @@ public class JiraFilterHit extends AbstractQueryHit {
 		return TaskListImages.getImage(TaskListImages.TASK_WEB);
 	}
 
-	public Image getStatusIcon() {
-		if (task != null) {
-			return task.getStatusIcon();
-		} else {
-			return TaskListImages.getImage(TaskListImages.TASK_INACTIVE);
-		}
-	}
+//	public Image getStatusIcon() {
+//		if (task != null) {
+//			return task.getStatusIcon();
+//		} else {
+//			return TaskListImages.getImage(TaskListImages.TASK_INACTIVE);
+//		}
+//	}
 
 	public boolean isDragAndDropEnabled() {
 		return false;
@@ -129,9 +129,9 @@ public class JiraFilterHit extends AbstractQueryHit {
 		return false;
 	}
 
-	public boolean isActivatable() {
-		return true;
-	}
+//	public boolean isActivatable() {
+//		return true;
+//	}
 
 	public Font getFont() {
 		if (task != null) {

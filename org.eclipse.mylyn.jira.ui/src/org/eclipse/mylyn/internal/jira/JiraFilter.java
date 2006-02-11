@@ -156,9 +156,9 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		return TaskListImages.getImage(TaskListImages.QUERY);
 	}
 
-	public Image getStatusIcon() {
-		return null;
-	}
+//	public Image getStatusIcon() {
+//		return null;
+//	}
 
 	public boolean isDragAndDropEnabled() {
 		return false;
@@ -185,9 +185,9 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		return false;
 	}
 
-	public boolean isActivatable() {
-		return false;
-	}
+//	public boolean isActivatable() {
+//		return false;
+//	}
 
 	public Font getFont() {
 		for (ITaskListElement currHit : getHits()) {
