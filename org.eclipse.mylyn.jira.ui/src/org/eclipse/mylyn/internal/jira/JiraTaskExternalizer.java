@@ -244,11 +244,11 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		node.setAttribute(ISSUE_KEY, issue.getKey());
 		node.setAttribute(ISSUE_SUMMARY, issue.getSummary());
 
-		if (queryHit.isCompleted()) {
-			node.setAttribute(COMPLETE, TRUE);
-		} else {
-			node.setAttribute(COMPLETE, FALSE);
-		}
+//		if (queryHit.isCompleted()) {
+//			node.setAttribute(COMPLETE, TRUE);
+//		} else {
+//			node.setAttribute(COMPLETE, FALSE);
+//		}
 		parent.appendChild(node);
 		return null;
 	}
