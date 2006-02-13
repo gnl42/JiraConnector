@@ -17,7 +17,7 @@ import org.eclipse.mylar.internal.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.internal.tasklist.DelegatingTaskExternalizer;
 import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.ITask;
-import org.eclipse.mylar.internal.tasklist.ITaskCategory;
+import org.eclipse.mylar.internal.tasklist.ITaskContainer;
 import org.eclipse.mylar.internal.tasklist.ITaskListExternalizer;
 import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.internal.tasklist.TaskCategory;
@@ -127,7 +127,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			throw new TaskExternalizationException("Failed to restore all tasks");
 	}
 
-	public boolean canCreateElementFor(ITaskCategory cat) {
+	public boolean canCreateElementFor(ITaskContainer cat) {
 		return false;
 	}
 
@@ -197,7 +197,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public ITask readTask(Node node, TaskList tlist, ITaskCategory category, ITask parent)
+	public ITask readTask(Node node, TaskList tlist, ITaskContainer category, ITask parent)
 			throws TaskExternalizationException {
 
 		Element element = (Element) node;

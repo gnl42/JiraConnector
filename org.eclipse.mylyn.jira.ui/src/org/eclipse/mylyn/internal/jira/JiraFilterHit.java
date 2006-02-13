@@ -12,13 +12,12 @@
 package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
+import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryTask;
-import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.internal.tasklist.TaskRepository;
 import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.tigris.jira.core.model.Issue;
 
@@ -133,12 +132,12 @@ public class JiraFilterHit extends AbstractQueryHit {
 //		return true;
 //	}
 
-	public Font getFont() {
-		if (task != null) {
-			return task.getFont();
-		}
-		return null;
-	}
+//	public Font getFont() {
+//		if (task != null) {
+//			return task.getFont();
+//		}
+//		return null;
+//	}
 
 	public String getToolTipText() {
 		return issue.getDescription();
