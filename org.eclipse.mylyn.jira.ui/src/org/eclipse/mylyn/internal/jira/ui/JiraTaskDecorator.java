@@ -26,7 +26,7 @@ public class JiraTaskDecorator implements ILightweightLabelDecorator {
 
 	public void decorate(Object element, IDecoration decoration) {
 		if (element instanceof JiraFilter) {
-			decoration.addOverlay(JiraImages.OVERLAY_JIRA, IDecoration.TOP_LEFT);
+			decoration.addOverlay(JiraImages.OVERLAY_JIRA, IDecoration.TOP_RIGHT);
 		} else if (element instanceof JiraFilterHit) {
 			JiraFilterHit hit = (JiraFilterHit)element;
 			if (hit.getCorrespondingTask() != null) {
