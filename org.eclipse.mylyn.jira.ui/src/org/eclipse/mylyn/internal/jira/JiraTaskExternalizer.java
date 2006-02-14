@@ -47,15 +47,15 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String JIRA = "Jira";
 
-	private static final String TAG_JIRA_CATEGORY = "JiraQuery" + TAG_CATEGORY;
+	private static final String TAG_JIRA_CATEGORY = "JiraQuery" + KEY_CATEGORY;
 
-	private static final String TAG_JIRA_QUERY_HIT = JIRA + TAG_QUERY_HIT;
+	private static final String TAG_JIRA_QUERY_HIT = JIRA + KEY_QUERY_HIT;
 
-	private static final String TAG_JIRA_QUERY = JIRA + TAG_QUERY;
+	private static final String TAG_JIRA_QUERY = JIRA + KEY_QUERY;
 
 	private static final String TAG_TASK = "JiraIssue";
 
-	private static final String JIRA_TASK_REGISTRY = "JiraTaskRegistry" + TAG_CATEGORY;
+	private static final String JIRA_TASK_REGISTRY = "JiraTaskRegistry" + KEY_CATEGORY;
 
 	private static final String FILTER_NAME = "FilterName";
 
@@ -170,10 +170,10 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		Element node = doc.createElement(queryTagName);
 
 		NamedFilter filter = ((JiraFilter) query).getNamedFilter();
-		node.setAttribute(NAME, query.getDescription());
-		node.setAttribute(MAX_HITS, query.getMaxHits() + "");
-		node.setAttribute(QUERY_STRING, query.getQueryUrl());
-		node.setAttribute(REPOSITORY_URL, query.getRepositoryUrl());
+		node.setAttribute(KEY_NAME, query.getDescription());
+		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
+		node.setAttribute(KEY_QUERY_STRING, query.getQueryUrl());
+		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl());
 
 		node.setAttribute(FILTER_ID, filter.getId());
 		node.setAttribute(FILTER_NAME, filter.getName());
@@ -203,13 +203,13 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		Element element = (Element) node;
 		String handle;
 		String label;
-		if (element.hasAttribute(HANDLE)) {
-			handle = element.getAttribute(HANDLE);
+		if (element.hasAttribute(KEY_HANDLE)) {
+			handle = element.getAttribute(KEY_HANDLE);
 		} else {
 			throw new TaskExternalizationException("Handle not stored for bug report");
 		}
-		if (element.hasAttribute(LABEL)) {
-			label = element.getAttribute(LABEL);
+		if (element.hasAttribute(KEY_LABEL)) {
+			label = element.getAttribute(KEY_LABEL);
 		} else {
 			throw new TaskExternalizationException("Description not stored for bug report");
 		}
@@ -237,8 +237,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		JiraFilterHit hit = (JiraFilterHit) queryHit;
 		Issue issue = hit.getIssue();
 
-		node.setAttribute(HANDLE, queryHit.getHandleIdentifier());
-		node.setAttribute(PRIORITY, queryHit.getPriority());
+		node.setAttribute(KEY_HANDLE, queryHit.getHandleIdentifier());
+		node.setAttribute(KEY_PRIORITY, queryHit.getPriority());
 
 		node.setAttribute(ISSUE_ID, issue.getId());
 		node.setAttribute(ISSUE_KEY, issue.getKey());
@@ -259,8 +259,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		Issue issue = new Issue();
 
 		String handle;
-		if (element.hasAttribute(HANDLE)) {
-			handle = element.getAttribute(HANDLE);
+		if (element.hasAttribute(KEY_HANDLE)) {
+			handle = element.getAttribute(KEY_HANDLE);
 
 		} else {
 			throw new TaskExternalizationException("Handle not stored for bug report");

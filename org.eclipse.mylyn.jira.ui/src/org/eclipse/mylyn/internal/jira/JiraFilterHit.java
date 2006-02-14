@@ -17,8 +17,6 @@ import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryTask;
 import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.internal.tasklist.TaskRepository;
-import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
-import org.eclipse.swt.graphics.Image;
 import org.tigris.jira.core.model.Issue;
 
 /**
@@ -65,6 +63,7 @@ public class JiraFilterHit extends AbstractQueryHit {
 		if (issue != null && issue.getPriority() != null) {
 			String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
 			task.setPriority(translatedPriority);
+			task.setKind(issue.getType().getName());
 		} 
 		return task;
 	}
@@ -87,18 +86,6 @@ public class JiraFilterHit extends AbstractQueryHit {
 			return false;
 		}
 	}
-
-	public Image getIcon() {
-		return TaskListImages.getImage(TaskListImages.TASK_WEB);
-	}
-
-//	public Image getStatusIcon() {
-//		if (task != null) {
-//			return task.getStatusIcon();
-//		} else {
-//			return TaskListImages.getImage(TaskListImages.TASK_INACTIVE);
-//		}
-//	}
 
 	public boolean isDragAndDropEnabled() {
 		return false;
@@ -126,21 +113,6 @@ public class JiraFilterHit extends AbstractQueryHit {
 
 	public boolean isLocal() {
 		return false;
-	}
-
-//	public boolean isActivatable() {
-//		return true;
-//	}
-
-//	public Font getFont() {
-//		if (task != null) {
-//			return task.getFont();
-//		}
-//		return null;
-//	}
-
-	public String getToolTipText() {
-		return issue.getDescription();
 	}
 
 }

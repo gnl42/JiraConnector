@@ -23,5 +23,20 @@
       </taskHandler>
    </extension>
    
+   <extension point="org.eclipse.ui.decorators">
+      <decorator
+            lightweight="true"
+            label="JIRA Task Decorator"
+            class="org.eclipse.mylar.internal.jira.ui.JiraTaskDecorator"
+            state="true"
+            id="org.eclipse.mylar.jira.ui.decorator.task">
+         <description>
+			Mylar degree of interest decorator
+		 </description>
+         <enablement>
+            <objectClass name="org.eclipse.mylar.internal.tasklist.ITaskListElement"/>
+         </enablement>
+      </decorator>
+   </extension>
 
 </plugin>

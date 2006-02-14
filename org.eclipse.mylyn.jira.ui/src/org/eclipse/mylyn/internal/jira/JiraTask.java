@@ -64,6 +64,28 @@ public class JiraTask extends AbstractRepositoryTask {
 		}
 	}
 	
+	public enum Kind {
+		BUG, NEW_FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE;
+		
+		@Override
+		public String toString() {
+			switch (this) {
+			case BUG:
+				return "Bug";
+			case NEW_FEATURE:
+				return "New Feature";
+			case TASK:
+				return "Task";
+			case IMPROVEMENT:
+				return "Improvement";
+			case CUSTOM_ISSUE:
+				return "Custom Issue";
+			default:
+				return "";
+			}
+		}
+	}
+	
 	/**
 	 * The handle is also the task's Jira url
 	 */

@@ -8,6 +8,8 @@ Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.ui.views,
+ org.eclipse.jface.text,
  org.eclipse.mylar.tasklist,
  org.eclipse.mylar.core,
  org.tigris.jira.core
