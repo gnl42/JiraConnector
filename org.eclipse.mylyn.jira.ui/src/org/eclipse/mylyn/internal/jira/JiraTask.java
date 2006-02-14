@@ -65,14 +65,14 @@ public class JiraTask extends AbstractRepositoryTask {
 	}
 	
 	public enum Kind {
-		BUG, NEW_FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE;
+		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE;
 		
 		@Override
 		public String toString() {
 			switch (this) {
 			case BUG:
 				return "Bug";
-			case NEW_FEATURE:
+			case FEATURE:
 				return "New Feature";
 			case TASK:
 				return "Task";

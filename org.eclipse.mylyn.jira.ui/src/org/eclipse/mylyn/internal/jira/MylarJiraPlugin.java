@@ -16,8 +16,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The main plugin class for the Jira integration plugin
- * 
  * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
  */
@@ -43,15 +41,12 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-
 	}
 
 	public void stop(BundleContext context) throws Exception {
-
-		JiraServerFacade.getDefault().logOut();
-
 		super.stop(context);
 		plugin = null;
+		JiraServerFacade.getDefault().logOut();
 	}
 
 	public static MylarJiraPlugin getDefault() {

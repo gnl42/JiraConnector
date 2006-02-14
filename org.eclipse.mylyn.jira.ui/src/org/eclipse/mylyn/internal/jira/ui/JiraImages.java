@@ -32,8 +32,16 @@ public class JiraImages {
 
 	private static final URL baseURL = MylarJiraPlugin.getDefault().getBundle().getEntry("/icons/");
 
+	public static final ImageDescriptor OVERLAY_JIRA = create(T_VIEW, "overlay-jira.gif");
+	
 	public static final ImageDescriptor OVERLAY_BUG = create(T_VIEW, "overlay-bug.gif");
 
+	public static final ImageDescriptor OVERLAY_FEATURE = create(T_VIEW, "overlay-feature.gif");
+	
+	public static final ImageDescriptor OVERLAY_IMPROVEMENT = create(T_VIEW, "overlay-improvement.gif");
+	
+	public static final ImageDescriptor OVERLAY_TASK = create(T_VIEW, "overlay-task.gif");
+		
 	private static ImageDescriptor create(String prefix, String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));

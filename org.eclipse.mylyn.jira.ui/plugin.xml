@@ -25,17 +25,15 @@
    
    <extension point="org.eclipse.ui.decorators">
       <decorator
-            lightweight="true"
-            label="JIRA Task Decorator"
             class="org.eclipse.mylar.internal.jira.ui.JiraTaskDecorator"
-            state="true"
-            id="org.eclipse.mylar.jira.ui.decorator.task">
+            id="org.eclipse.mylar.jira.ui.decorator.task"
+            label="Mylar JIRA Task Decorator"
+            lightweight="true"
+            objectClass="java.lang.Object"
+            state="true">
          <description>
-			Mylar degree of interest decorator
+			Mylar JIRA Task Decorator
 		 </description>
-         <enablement>
-            <objectClass name="org.eclipse.mylar.internal.tasklist.ITaskListElement"/>
-         </enablement>
       </decorator>
    </extension>
 

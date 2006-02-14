@@ -14,8 +14,10 @@ package org.eclipse.mylar.internal.jira.ui;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
+import org.eclipse.mylar.internal.jira.JiraFilter;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraTask;
+import org.eclipse.mylar.internal.tasklist.ITask;
 
 /**
  * @author Mik Kersten
@@ -23,15 +25,24 @@ import org.eclipse.mylar.internal.jira.JiraTask;
 public class JiraTaskDecorator implements ILightweightLabelDecorator {
 
 	public void decorate(Object element, IDecoration decoration) {
-		if (element instanceof JiraFilterHit) {
+		if (element instanceof JiraFilter) {
+			decoration.addOverlay(JiraImages.OVERLAY_JIRA, IDecoration.TOP_LEFT);
+		} else if (element instanceof JiraFilterHit) {
 			JiraFilterHit hit = (JiraFilterHit)element;
 			if (hit.getCorrespondingTask() != null) {
-				if (JiraTask.Kind.BUG.toString().equals(hit.getOrCreateCorrespondingTask().getKind())) {
-//					decoration.addOverlay(JiraImages.OVERLAY_BUG, IDecoration.BOTTOM_RIGHT);
-					System.err.println(">>> decorated: " + hit.getDescription());
+				ITask task = hit.getCorrespondingTask();
+//				decoration.addOverlay(JiraImages.OVERLAY_JIRA, IDecoration.TOP_LEFT);
+				  
+				if (JiraTask.Kind.BUG.toString().equals(task.getKind())) {
+					decoration.addOverlay(JiraImages.OVERLAY_BUG, IDecoration.BOTTOM_RIGHT);
+				} else if (JiraTask.Kind.FEATURE.toString().equals(task.getKind())) {
+					decoration.addOverlay(JiraImages.OVERLAY_FEATURE, IDecoration.BOTTOM_RIGHT);
+				} else if (JiraTask.Kind.IMPROVEMENT.toString().equals(task.getKind())) {
+					decoration.addOverlay(JiraImages.OVERLAY_IMPROVEMENT, IDecoration.BOTTOM_RIGHT);
+				} else if (JiraTask.Kind.TASK.toString().equals(task.getKind())) {
+					decoration.addOverlay(JiraImages.OVERLAY_TASK, IDecoration.BOTTOM_RIGHT);
 				}
 			}
-			decoration.addPrefix("xxxx: ");
 		}
 	}
 
@@ -50,5 +61,4 @@ public class JiraTaskDecorator implements ILightweightLabelDecorator {
 	public void removeListener(ILabelProviderListener listener) {
 		// ignore
 	}
-
 }
