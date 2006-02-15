@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mylar Jira Plug-in
 Bundle-SymbolicName: org.eclipse.mylar.jira; singleton:=true
-Bundle-Version: 0.4.8.v20060215-0800
+Bundle-Version: 0.4.8.v20060215-0930
 Bundle-Activator: org.eclipse.mylar.internal.jira.MylarJiraPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
