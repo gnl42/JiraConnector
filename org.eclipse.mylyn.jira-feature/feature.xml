@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.mylar.jira_feature"
-      label="Mylar Jira Connector"
-      version="0.4.8.v20060214-2000"
+      label="Mylar Connector: Atlassian JIRA (Experimental)"
+      version="0.4.8.v20060215-0730"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
    <description>
-      JIRA client integrated with Eclipse and Mylar, can be used
-standalone.
+      NOTE: downloads JIRA core plug-ins from http://jira-dashboard.tigris.org/update
+
+JIRA client integrated with Eclipse and Mylar, can be used standalone.
    </description>
 
    <license url="http://www.example.com/license">
@@ -214,35 +215,33 @@ litigation.
          id="org.eclipse.mylar.jira"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060214-2000"
+         version="0.4.8.v20060215-0730"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylar.core"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060214-2000"
+         version="0.4.8.v20060215-0730"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylar.tasklist"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060214-2000"
+         version="0.4.8.v20060215-0730"
          unpack="false"/>
 
    <plugin
          id="org.tigris.jira.core"
          download-size="0"
          install-size="0"
-         version="0.7.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.tigris.jira.core.soap"
          download-size="0"
          install-size="0"
-         version="0.7.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>
