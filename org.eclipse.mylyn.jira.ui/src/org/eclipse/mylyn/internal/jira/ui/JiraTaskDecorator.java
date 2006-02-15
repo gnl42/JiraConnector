@@ -24,15 +24,10 @@ import org.eclipse.mylar.internal.tasklist.ITask;
 public class JiraTaskDecorator implements ILightweightLabelDecorator {
 
 	public void decorate(Object element, IDecoration decoration) {
-//		if (element instanceof JiraFilter) {
-//			decoration.addOverlay(JiraImages.OVERLAY_JIRA, IDecoration.TOP_RIGHT);
-//		} else 
 		if (element instanceof JiraFilterHit) {
 			JiraFilterHit hit = (JiraFilterHit)element;
 			if (hit.getCorrespondingTask() != null) {
 				ITask task = hit.getCorrespondingTask();
-//				decoration.addOverlay(JiraImages.OVERLAY_JIRA, IDecoration.TOP_LEFT);
-				  
 				if (JiraTask.Kind.BUG.toString().equals(task.getKind())) {
 					decoration.addOverlay(JiraImages.OVERLAY_BUG, IDecoration.BOTTOM_RIGHT);
 				} else if (JiraTask.Kind.FEATURE.toString().equals(task.getKind())) {
