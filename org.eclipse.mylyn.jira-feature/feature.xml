@@ -2,18 +2,19 @@
 <feature
       id="org.eclipse.mylar.jira_feature"
       label="Mylar Connector: Atlassian JIRA (Experimental)"
-      version="0.4.8.v20060215-0730"
+      version="0.4.8.v20060215-0800"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
    <description>
-      NOTE: downloads JIRA core plug-ins from http://jira-dashboard.tigris.org/update
-
+      NOTE: downloads the org.tigrisjira.core feature from http://jira-dashboard.tigris.org/update
 JIRA client integrated with Eclipse and Mylar, can be used standalone.
    </description>
 
-   <license url="http://www.example.com/license">
-      Eclipse Public License - v 1.0
+   <license>
+      NOTE: downloads the org.tigrisjira.core feature from http://jira-dashboard.tigris.org/update (also distributed under this license)
+
+Eclipse Public License - v 1.0
 THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS
 ECLIPSE PUBLIC LICENSE (&quot;AGREEMENT&quot;). ANY USE, REPRODUCTION OR
 DISTRIBUTION OF THE PROGRAM CONSTITUTES RECIPIENT&apos;S ACCEPTANCE
@@ -211,37 +212,36 @@ Each party waives its rights to a jury trial in any resulting
 litigation.
    </license>
 
+   <includes
+         id="org.tigris.jira.core"
+         version="0.0.0"
+         search-location="self"/>
+
    <plugin
          id="org.eclipse.mylar.jira"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060215-0730"
+         version="0.4.8.v20060215-0800"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylar.core"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060215-0730"
+         version="0.4.8.v20060215-0800"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylar.tasklist"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060215-0730"
+         version="0.4.8.v20060215-0800"
          unpack="false"/>
 
    <plugin
-         id="org.tigris.jira.core"
+         id="org.eclipse.mylar"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.tigris.jira.core.soap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
+         version="0.4.8.v20060215-0800"/>
 
 </feature>
