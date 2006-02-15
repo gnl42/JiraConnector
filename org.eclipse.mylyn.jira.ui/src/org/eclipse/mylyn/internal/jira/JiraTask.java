@@ -98,4 +98,9 @@ public class JiraTask extends AbstractRepositoryTask {
 		return TaskListImages.getImage(TaskListImages.TASK_WEB);
 	}
 
+	@Override
+	public boolean isPersistentInWorkspace() {
+		return false;
+	}
+
 }

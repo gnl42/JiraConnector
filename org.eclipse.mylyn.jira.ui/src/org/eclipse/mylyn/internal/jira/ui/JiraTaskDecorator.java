@@ -14,7 +14,6 @@ package org.eclipse.mylar.internal.jira.ui;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
-import org.eclipse.mylar.internal.jira.JiraFilter;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.tasklist.ITask;
@@ -25,9 +24,10 @@ import org.eclipse.mylar.internal.tasklist.ITask;
 public class JiraTaskDecorator implements ILightweightLabelDecorator {
 
 	public void decorate(Object element, IDecoration decoration) {
-		if (element instanceof JiraFilter) {
-			decoration.addOverlay(JiraImages.OVERLAY_JIRA, IDecoration.TOP_RIGHT);
-		} else if (element instanceof JiraFilterHit) {
+//		if (element instanceof JiraFilter) {
+//			decoration.addOverlay(JiraImages.OVERLAY_JIRA, IDecoration.TOP_RIGHT);
+//		} else 
+		if (element instanceof JiraFilterHit) {
 			JiraFilterHit hit = (JiraFilterHit)element;
 			if (hit.getCorrespondingTask() != null) {
 				ITask task = hit.getCorrespondingTask();
