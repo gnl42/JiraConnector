@@ -72,9 +72,9 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		} else {
 			setQueryUrl(repository.getUrl() + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getId());
 			urlsInitialized = true;
+			setRepositoryUrl(getQueryUrl());
+			setHandleIdentifier(getQueryUrl());
 		}
-		setRepositoryUrl(getQueryUrl());
-		setHandleIdentifier(getQueryUrl());
 	}
 
 	public NamedFilter getNamedFilter() {
