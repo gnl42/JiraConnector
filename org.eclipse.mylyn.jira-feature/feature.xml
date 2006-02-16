@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.mylar.jira_feature"
-      label="Mylar Connector: JIRA (includes feature from jira-dashboard.tigris.org)"
-      version="0.4.8.v20060215-1300"
+      label="Mylar Connector: JIRA (downloads feature from jira-dashboard.tigris.org)"
+      version="0.4.8.v20060215-1930"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
@@ -214,35 +214,24 @@ litigation.
 
    <includes
          id="org.tigris.jira.core"
-         version="0.0.0"
-         search-location="self"/>
+         version="0.0.0"/>
+
+   <requires>
+      <import feature="org.eclipse.mylar_feature" version="0.4.8.v20060215-1930"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.mylar.tasklist"/>
+      <import plugin="org.eclipse.mylar.core"/>
+      <import plugin="org.tigris.jira.core"/>
+   </requires>
 
    <plugin
          id="org.eclipse.mylar.jira"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060215-1300"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylar.core"
-         download-size="0"
-         install-size="0"
-         version="0.4.8.v20060215-1300"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylar.tasklist"
-         download-size="0"
-         install-size="0"
-         version="0.4.8.v20060215-1300"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylar"
-         download-size="0"
-         install-size="0"
-         version="0.4.8.v20060215-1300"
+         version="0.4.8.v20060215-1930"
          unpack="false"/>
 
 </feature>
