@@ -56,6 +56,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 	private TaskListManager manager = MylarTaskListPlugin.getTaskListManager();
 
 	private TaskRepository jiraRepo = null;
+	
+	private TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -72,7 +74,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
-		client.clearArchive();
+		taskList.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
 		super.tearDown();
@@ -156,7 +158,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
-		assertNotNull(client.getTaskFromArchive(savedHit.getHandleIdentifier()));
+		assertNotNull(taskList.getTaskFromArchive(savedHit.getHandleIdentifier()));
 
 	}
 }

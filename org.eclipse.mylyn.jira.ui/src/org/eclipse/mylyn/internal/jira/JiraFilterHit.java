@@ -55,7 +55,7 @@ public class JiraFilterHit extends AbstractQueryHit {
 			AbstractRepositoryClient client = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
 					MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 			if (client != null) {
-				client.addTaskToArchive(task);
+				MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
 			} else {
 				MylarStatusHandler.log("No Jira Client for Jira Task", this);
 			}

@@ -54,7 +54,8 @@ public class JiraFilterTest extends TestCase {
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
-		client.clearArchive();
+		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
+//		client.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
 		jiraFacade.logOut();

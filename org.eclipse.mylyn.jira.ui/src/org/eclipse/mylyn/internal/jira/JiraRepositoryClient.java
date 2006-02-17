@@ -61,7 +61,7 @@ public class JiraRepositoryClient extends AbstractRepositoryClient {
 	public ITask createTaskFromExistingId(TaskRepository repository, String id) {
 		JiraTask newTask = new JiraTask(repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + id, NEW_TASK_DESC,
 				true);
-		addTaskToArchive(newTask);
+		MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(newTask);
 		retrieveTaskDescription(newTask);
 		return newTask;
 	}

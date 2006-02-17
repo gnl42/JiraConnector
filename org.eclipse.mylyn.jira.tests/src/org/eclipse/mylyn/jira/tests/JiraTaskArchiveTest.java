@@ -22,6 +22,7 @@ import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
 import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
+import org.eclipse.mylar.internal.tasklist.TaskList;
 import org.eclipse.mylar.internal.tasklist.TaskRepository;
 import org.tigris.jira.core.model.NamedFilter;
 
@@ -43,6 +44,8 @@ public class JiraTaskArchiveTest extends TestCase {
 	private JiraServerFacade jiraFacade = null;
 
 	private TaskRepository jiraRepo = null;
+	
+	private TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -59,7 +62,7 @@ public class JiraTaskArchiveTest extends TestCase {
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
-		client.clearArchive();
+		taskList.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
 		jiraFacade.logOut();
@@ -75,11 +78,11 @@ public class JiraTaskArchiveTest extends TestCase {
 		JiraTask task1 = new JiraTask(HANDLE1, LABEL, true);
 		JiraTask task2 = new JiraTask(HANDLE1, LABEL, true);
 
-		client.addTaskToArchive(task1);
-		client.addTaskToArchive(task2);
+		taskList.addTaskToArchive(task1);
+		taskList.addTaskToArchive(task2);
 
-		assertTrue(client.getArchiveTasks().size() == 1);
-		assertEquals(client.getTaskFromArchive(HANDLE1), task1);
+		assertTrue(taskList.getArchiveTasks().size() == 1);
+		assertEquals(taskList.getTaskFromArchive(HANDLE1), task1);
 	}
 
 	public void testJiraTaskRegistryIntegration() {
@@ -87,9 +90,9 @@ public class JiraTaskArchiveTest extends TestCase {
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
-		client.clearArchive();
+		taskList.clearArchive();
 
-		assertTrue(client.getArchiveTasks().size() == 0);
+		assertTrue(taskList.getArchiveTasks().size() == 0);
 
 		NamedFilter[] namedFilters = jiraFacade.getJiraServer()
 				.getNamedFilters();
@@ -107,6 +110,6 @@ public class JiraTaskArchiveTest extends TestCase {
 		assertTrue(filter.getHits().size() > 0);
 		JiraFilterHit jHit = (JiraFilterHit) filter.getHits().get(0);
 
-		assertNotNull(client.getTaskFromArchive(jHit.getHandleIdentifier()));
+		assertNotNull(taskList.getTaskFromArchive(jHit.getHandleIdentifier()));
 	}
 }

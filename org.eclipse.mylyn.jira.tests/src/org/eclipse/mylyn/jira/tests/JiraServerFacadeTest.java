@@ -55,7 +55,8 @@ public class JiraServerFacadeTest extends TestCase {
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
-		client.clearArchive();
+//		client.clearArchive();
+		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
 		jiraFacade.logOut();

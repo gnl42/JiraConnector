@@ -12,15 +12,14 @@
 package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
+import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.internal.tasklist.DelegatingTaskExternalizer;
-import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.ITask;
 import org.eclipse.mylar.internal.tasklist.ITaskContainer;
 import org.eclipse.mylar.internal.tasklist.ITaskListExternalizer;
 import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.internal.tasklist.TaskCategory;
 import org.eclipse.mylar.internal.tasklist.TaskExternalizationException;
 import org.eclipse.mylar.internal.tasklist.TaskList;
 import org.tigris.jira.core.model.Issue;
@@ -63,28 +62,28 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String FILTER_DESCRIPTION = "FilterDesc";
 
-	private static final String JIRA_ARCHIVE_LABEL = "Archived Jira Reports "
-			+ DelegatingTaskExternalizer.LABEL_AUTOMATIC;
+//	private static final String JIRA_ARCHIVE_LABEL = "Archived Jira Reports "
+//			+ DelegatingTaskExternalizer.LABEL_AUTOMATIC;
 
-	private AbstractRepositoryClient repositoryClient;
+//	private AbstractRepositoryClient repositoryClient;
 
 	public JiraTaskExternalizer() {
-		repositoryClient = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+//		repositoryClient = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
+//				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 	}
 
-	@Override
-	public void createRegistry(Document doc, Node parent) {
-		Element node = doc.createElement(JIRA_TASK_REGISTRY);
-		for (ITask task : repositoryClient.getArchiveTasks()) {
-			try {
-				createTaskElement(task, doc, node);
-			} catch (Exception e) {
-				MylarStatusHandler.log(e, e.getMessage());
-			}
-		}
-		parent.appendChild(node);
-	}
+//	@Override
+//	public void createRegistry(Document doc, Node parent) {
+//		Element node = doc.createElement(JIRA_TASK_REGISTRY);
+//		for (ITask task : repositoryClient.getArchiveTasks()) {
+//			try {
+//				createTaskElement(task, doc, node);
+//			} catch (Exception e) {
+//				MylarStatusHandler.log(e, e.getMessage());
+//			}
+//		}
+//		parent.appendChild(node);
+//	}
 
 	@Override
 	public boolean canReadCategory(Node node) {
@@ -107,16 +106,17 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	public void readRegistry(Node node, TaskList taskList) throws TaskExternalizationException {
 		boolean hasCaughtException = false;
 		NodeList list = node.getChildNodes();
-		TaskCategory category = new TaskCategory(JIRA_ARCHIVE_LABEL);
-		category.setIsArchive(true);
-		taskList.internalAddCategory(category);
-		repositoryClient.setArchiveCategory(category);
+//		TaskCategory category = new TaskCategory(JIRA_ARCHIVE_LABEL);
+//		category.setIsArchive(true);
+//		taskList.internalAddCategory(category);
+//		repositoryClient.setArchiveCategory(category);
 		for (int i = 0; i < list.getLength(); i++) {
 			try {
 				Node child = list.item(i);
 				ITask task = readTask(child, taskList, null, null);
 				if (task instanceof JiraTask) {
-					repositoryClient.addTaskToArchive(task);
+//					repositoryClient.addTaskToArchive(task);
+					taskList.addTaskToArchive(task);
 				}
 			} catch (TaskExternalizationException e) {
 				hasCaughtException = true;
@@ -219,7 +219,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		AbstractRepositoryClient client = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
 				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		if (client != null) {
-			client.addTaskToArchive(task);
+			MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
+//			client.addTaskToArchive(task);
 		} else {
 			MylarStatusHandler.log("No Jira Client for Jira Task", this);
 		}
