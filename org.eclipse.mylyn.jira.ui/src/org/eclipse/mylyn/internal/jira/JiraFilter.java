@@ -103,7 +103,7 @@ public class JiraFilter extends AbstractRepositoryQuery {
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
 									if (TaskListView.getDefault() != null)
-										TaskListView.getDefault().getViewer().refresh();
+										TaskListView.getDefault().refreshAndFocus();
 								}
 							});
 						}

@@ -146,7 +146,7 @@ public class JiraRepositoryClient extends AbstractRepositoryClient {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							if (TaskListView.getDefault() != null)
-								TaskListView.getDefault().getViewer().refresh();
+								TaskListView.getDefault().refreshAndFocus();
 						}
 					});
 				}
