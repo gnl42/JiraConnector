@@ -62,32 +62,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String FILTER_DESCRIPTION = "FilterDesc";
 
-//	private static final String JIRA_ARCHIVE_LABEL = "Archived Jira Reports "
-//			+ DelegatingTaskExternalizer.LABEL_AUTOMATIC;
-
-//	private AbstractRepositoryClient repositoryClient;
-
-	public JiraTaskExternalizer() {
-//		repositoryClient = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
-//				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-	}
-
-//	@Override
-//	public void createRegistry(Document doc, Node parent) {
-//		Element node = doc.createElement(JIRA_TASK_REGISTRY);
-//		for (ITask task : repositoryClient.getArchiveTasks()) {
-//			try {
-//				createTaskElement(task, doc, node);
-//			} catch (Exception e) {
-//				MylarStatusHandler.log(e, e.getMessage());
-//			}
-//		}
-//		parent.appendChild(node);
-//	}
-
 	@Override
 	public boolean canReadCategory(Node node) {
-		return node.getNodeName().equals(getCategoryTagName()) || node.getNodeName().equals(JIRA_TASK_REGISTRY);
+		return node.getNodeName().equals(getCategoryTagName());// || node.getNodeName().equals(JIRA_TASK_REGISTRY);
 	}
 
 	@Override
@@ -106,16 +83,11 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	public void readRegistry(Node node, TaskList taskList) throws TaskExternalizationException {
 		boolean hasCaughtException = false;
 		NodeList list = node.getChildNodes();
-//		TaskCategory category = new TaskCategory(JIRA_ARCHIVE_LABEL);
-//		category.setIsArchive(true);
-//		taskList.internalAddCategory(category);
-//		repositoryClient.setArchiveCategory(category);
 		for (int i = 0; i < list.getLength(); i++) {
 			try {
 				Node child = list.item(i);
 				ITask task = readTask(child, taskList, null, null);
 				if (task instanceof JiraTask) {
-//					repositoryClient.addTaskToArchive(task);
 					taskList.addTaskToArchive(task);
 				}
 			} catch (TaskExternalizationException e) {
