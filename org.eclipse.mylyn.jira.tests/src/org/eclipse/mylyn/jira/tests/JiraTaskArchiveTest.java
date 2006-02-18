@@ -108,7 +108,7 @@ public class JiraTaskArchiveTest extends TestCase {
 		}
 
 		assertTrue(filter.getHits().size() > 0);
-		JiraFilterHit jHit = (JiraFilterHit) filter.getHits().get(0);
+		JiraFilterHit jHit = (JiraFilterHit) filter.getHits().iterator().next();
 
 		assertNotNull(taskList.getTaskFromArchive(jHit.getHandleIdentifier()));
 	}

@@ -54,7 +54,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String TAG_TASK = "JiraIssue";
 
-	private static final String JIRA_TASK_REGISTRY = "JiraTaskRegistry" + KEY_CATEGORY;
+//	private static final String JIRA_TASK_REGISTRY = "JiraTaskRegistry" + KEY_CATEGORY;
 
 	private static final String FILTER_NAME = "FilterName";
 
@@ -62,18 +62,18 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String FILTER_DESCRIPTION = "FilterDesc";
 
-	@Override
-	public boolean canReadCategory(Node node) {
-		return node.getNodeName().equals(getCategoryTagName());// || node.getNodeName().equals(JIRA_TASK_REGISTRY);
-	}
+//	@Override
+//	public boolean canReadCategory(Node node) {
+//		return node.getNodeName().equals(getCategoryTagName());// || node.getNodeName().equals(JIRA_TASK_REGISTRY);
+//	}
 
-	@Override
-	public void readCategory(Node node, TaskList taskList) throws TaskExternalizationException {
-		Element element = (Element) node;
-		if (element.getNodeName().equals(JIRA_TASK_REGISTRY)) {
-			readRegistry(node, taskList);
-		}
-	}
+//	@Override
+//	public void readCategory(Node node, TaskList taskList) throws TaskExternalizationException {
+//		Element element = (Element) node;
+//		if (element.getNodeName().equals(JIRA_TASK_REGISTRY)) {
+//			readRegistry(node, taskList);
+//		}
+//	}
 
 	public boolean canReadQuery(Node node) {
 		return node.getNodeName().equals(TAG_JIRA_QUERY);
@@ -169,7 +169,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public ITask readTask(Node node, TaskList tlist, ITaskContainer category, ITask parent)
+	public ITask readTask(Node node, TaskList taskList, ITaskContainer category, ITask parent)
 			throws TaskExternalizationException {
 
 		Element element = (Element) node;
@@ -186,16 +186,17 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			throw new TaskExternalizationException("Description not stored for bug report");
 		}
 		JiraTask task = new JiraTask(handle, label, false);
-		readTaskInfo(task, tlist, element, category, parent);
+		readTaskInfo(task, taskList, element, parent);
 
-		AbstractRepositoryClient client = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-		if (client != null) {
-			MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
+		taskList.addTaskToArchive(task);
+//		AbstractRepositoryClient client = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
+//				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+//		if (client != null) {
+//			MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
 //			client.addTaskToArchive(task);
-		} else {
-			MylarStatusHandler.log("No Jira Client for Jira Task", this);
-		}
+//		} else {
+//			MylarStatusHandler.log("No Jira Client for Jira Task", this);
+//		}
 
 		return task;
 	}

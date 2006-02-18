@@ -147,7 +147,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 		assertTrue(savedFilter.getHits().size() > 0);
 
-		JiraFilterHit savedHit = (JiraFilterHit) savedFilter.getHits().get(0);
+		JiraFilterHit savedHit = (JiraFilterHit) savedFilter.getHits().iterator().next();
 
 		JiraTask jTask = (JiraTask) savedHit.getCorrespondingTask();
 

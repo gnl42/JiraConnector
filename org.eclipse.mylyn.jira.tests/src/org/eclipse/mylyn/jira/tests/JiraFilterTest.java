@@ -76,7 +76,7 @@ public class JiraFilterTest extends TestCase {
 			}
 		}
 		assertTrue(jFilter.getHits().size() > 0);
-		JiraFilterHit jHit = (JiraFilterHit) jFilter.getHits().get(0);
+		JiraFilterHit jHit = (JiraFilterHit) jFilter.getHits().iterator().next();
 		assertTrue(jHit.getDescription().length() > 0);
 	}
 }
