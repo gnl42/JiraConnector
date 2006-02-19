@@ -13,13 +13,11 @@ package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
-import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.internal.tasklist.DelegatingTaskExternalizer;
 import org.eclipse.mylar.internal.tasklist.ITask;
 import org.eclipse.mylar.internal.tasklist.ITaskContainer;
 import org.eclipse.mylar.internal.tasklist.ITaskListExternalizer;
-import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.internal.tasklist.TaskExternalizationException;
 import org.eclipse.mylar.internal.tasklist.TaskList;
 import org.tigris.jira.core.model.Issue;
@@ -61,9 +59,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return node.getNodeName().equals(KEY_JIRA_QUERY);
 	}
 
-	public boolean canCreateElementFor(ITaskContainer cat) {
-		return false;
-	}
+//	public boolean canCreateElementFor(ITaskContainer cat) {
+//		return false;
+//	}
 
 	public boolean canCreateElementFor(AbstractRepositoryQuery category) {
 		return category instanceof JiraFilter;
@@ -73,7 +71,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return task instanceof JiraTask;
 	}
 
-	public AbstractRepositoryQuery readQuery(Node node, TaskList tlist) throws TaskExternalizationException {
+	public AbstractRepositoryQuery readQuery(Node node, TaskList taskList) throws TaskExternalizationException {
 		boolean hasCaughtException = false;
 		Element element = (Element) node;
 
@@ -87,7 +85,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		for (int i = 0; i < list.getLength(); i++) {
 			Node child = list.item(i);
 			try {
-				readQueryHit(child, tlist, query);
+				readQueryHit(child, taskList, query);
 			} catch (TaskExternalizationException e) {
 				hasCaughtException = true;
 			}
@@ -180,7 +178,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return null;
 	}
 
-	public void readQueryHit(Node node, TaskList tlist, AbstractRepositoryQuery query)
+	public void readQueryHit(Node node, TaskList taskList, AbstractRepositoryQuery query)
 			throws TaskExternalizationException {
 		Element element = (Element) node;
 		Issue issue = new Issue();
@@ -211,6 +209,11 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		JiraFilterHit hit = new JiraFilterHit(issue);
 		hit.setHandleIdentifier(handle);
 		query.addHit(hit);
+		
+		ITask correspondingTask = taskList.getTaskForHandle(hit.getHandleIdentifier(), true);
+		if (correspondingTask instanceof JiraTask) {
+			hit.setCorrespondingTask((JiraTask)correspondingTask);
+		}
 	}
 
 	public String getQueryTagNameForElement(AbstractRepositoryQuery query) {
@@ -235,7 +238,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return KEY_JIRA_QUERY_HIT;
 	}
 
-	public AbstractRepositoryClient getRepositoryClient() {
-		return MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-	}
+//	public AbstractRepositoryClient getRepositoryClient() {
+//		return MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+//	}
 }
