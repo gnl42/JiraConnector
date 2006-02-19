@@ -30,73 +30,35 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Reads and writes Jira task, query, and registry information to/from XML form.
- * This code was adapted from the BugzillaTaskExternalizer
- * 
- * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
+ * @author Wesley Coelho (filter prototyping)
  */
 public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
-	private static final String ISSUE_SUMMARY = "IssueSummary";
+	private static final String KEY_ISSUE_SUMMARY = "IssueSummary";
 
-	private static final String ISSUE_KEY = "IssueKey";
+	private static final String KEY_ISSUE_KEY = "IssueKey";
 
-	private static final String ISSUE_ID = "IssueId";
+	private static final String KEY_ISSUE_ID = "IssueId";
 
-	private static final String JIRA = "Jira";
+	private static final String KEY_JIRA = "Jira";
 
-	private static final String TAG_JIRA_CATEGORY = "JiraQuery" + KEY_CATEGORY;
+	private static final String KEY_JIRA_CATEGORY = "JiraQuery" + KEY_CATEGORY;
 
-	private static final String TAG_JIRA_QUERY_HIT = JIRA + KEY_QUERY_HIT;
+	private static final String KEY_JIRA_QUERY_HIT = KEY_JIRA + KEY_QUERY_HIT;
 
-	private static final String TAG_JIRA_QUERY = JIRA + KEY_QUERY;
+	private static final String KEY_JIRA_QUERY = KEY_JIRA + KEY_QUERY;
 
-	private static final String TAG_TASK = "JiraIssue";
+	private static final String KEY_TASK = "JiraIssue";
 
-//	private static final String JIRA_TASK_REGISTRY = "JiraTaskRegistry" + KEY_CATEGORY;
+	private static final String KEY_FILTER_NAME = "FilterName";
 
-	private static final String FILTER_NAME = "FilterName";
+	private static final String KEY_FILTER_ID = "FilterID";
 
-	private static final String FILTER_ID = "FilterID";
-
-	private static final String FILTER_DESCRIPTION = "FilterDesc";
-
-//	@Override
-//	public boolean canReadCategory(Node node) {
-//		return node.getNodeName().equals(getCategoryTagName());// || node.getNodeName().equals(JIRA_TASK_REGISTRY);
-//	}
-
-//	@Override
-//	public void readCategory(Node node, TaskList taskList) throws TaskExternalizationException {
-//		Element element = (Element) node;
-//		if (element.getNodeName().equals(JIRA_TASK_REGISTRY)) {
-//			readRegistry(node, taskList);
-//		}
-//	}
+	private static final String KEY_FILTER_DESCRIPTION = "FilterDesc";
 
 	public boolean canReadQuery(Node node) {
-		return node.getNodeName().equals(TAG_JIRA_QUERY);
-	}
-
-	// TODO: Better understand archiving
-	public void readRegistry(Node node, TaskList taskList) throws TaskExternalizationException {
-		boolean hasCaughtException = false;
-		NodeList list = node.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			try {
-				Node child = list.item(i);
-				ITask task = readTask(child, taskList, null, null);
-				if (task instanceof JiraTask) {
-					taskList.addTaskToArchive(task);
-				}
-			} catch (TaskExternalizationException e) {
-				hasCaughtException = true;
-			}
-		}
-
-		if (hasCaughtException)
-			throw new TaskExternalizationException("Failed to restore all tasks");
+		return node.getNodeName().equals(KEY_JIRA_QUERY);
 	}
 
 	public boolean canCreateElementFor(ITaskContainer cat) {
@@ -111,30 +73,30 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return task instanceof JiraTask;
 	}
 
-	public void readQuery(Node node, TaskList tlist) throws TaskExternalizationException {
+	public AbstractRepositoryQuery readQuery(Node node, TaskList tlist) throws TaskExternalizationException {
 		boolean hasCaughtException = false;
 		Element element = (Element) node;
 
 		NamedFilter namedFilter = new NamedFilter();
-		namedFilter.setId(element.getAttribute(FILTER_ID));
-		namedFilter.setName(element.getAttribute(FILTER_NAME));
-		namedFilter.setDescription(element.getAttribute(FILTER_DESCRIPTION));
+		namedFilter.setId(element.getAttribute(KEY_FILTER_ID));
+		namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
+//		namedFilter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
-		AbstractRepositoryQuery cat = new JiraFilter(namedFilter, false);
-
-		tlist.internalAddQuery(cat);
-
+		AbstractRepositoryQuery query = new JiraFilter(namedFilter, false);
 		NodeList list = node.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
 			Node child = list.item(i);
 			try {
-				readQueryHit(child, tlist, cat);
+				readQueryHit(child, tlist, query);
 			} catch (TaskExternalizationException e) {
 				hasCaughtException = true;
 			}
 		}
-		if (hasCaughtException)
-			throw new TaskExternalizationException("Failed to load all tasks");
+		if (hasCaughtException) {
+			throw new TaskExternalizationException("Failed to load all hits");
+		} else {
+			return query;
+		}
 	}
 
 	public Element createQueryElement(AbstractRepositoryQuery query, Document doc, Element parent) {
@@ -147,9 +109,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		node.setAttribute(KEY_QUERY_STRING, query.getQueryUrl());
 		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl());
 
-		node.setAttribute(FILTER_ID, filter.getId());
-		node.setAttribute(FILTER_NAME, filter.getName());
-		node.setAttribute(FILTER_DESCRIPTION, filter.getDescription());
+		node.setAttribute(KEY_FILTER_ID, filter.getId());
+		node.setAttribute(KEY_FILTER_NAME, filter.getName());
+		node.setAttribute(KEY_FILTER_DESCRIPTION, filter.getDescription());
 
 		for (AbstractQueryHit hit : query.getHits()) {
 			try {
@@ -189,15 +151,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		readTaskInfo(task, taskList, element, parent);
 
 		taskList.addTaskToArchive(task);
-//		AbstractRepositoryClient client = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
-//				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-//		if (client != null) {
-//			MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
-//			client.addTaskToArchive(task);
-//		} else {
-//			MylarStatusHandler.log("No Jira Client for Jira Task", this);
-//		}
-
 		return task;
 	}
 
@@ -214,9 +167,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		node.setAttribute(KEY_HANDLE, queryHit.getHandleIdentifier());
 		node.setAttribute(KEY_PRIORITY, queryHit.getPriority());
 
-		node.setAttribute(ISSUE_ID, issue.getId());
-		node.setAttribute(ISSUE_KEY, issue.getKey());
-		node.setAttribute(ISSUE_SUMMARY, issue.getSummary());
+		node.setAttribute(KEY_ISSUE_ID, issue.getId());
+		node.setAttribute(KEY_ISSUE_KEY, issue.getKey());
+		node.setAttribute(KEY_ISSUE_SUMMARY, issue.getSummary());
 
 //		if (queryHit.isCompleted()) {
 //			node.setAttribute(COMPLETE, TRUE);
@@ -239,18 +192,18 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		} else {
 			throw new TaskExternalizationException("Handle not stored for bug report");
 		}
-		if (element.hasAttribute(ISSUE_SUMMARY)) {
-			issue.setSummary(element.getAttribute(ISSUE_SUMMARY));
+		if (element.hasAttribute(KEY_ISSUE_SUMMARY)) {
+			issue.setSummary(element.getAttribute(KEY_ISSUE_SUMMARY));
 		} else {
 			throw new TaskExternalizationException("Summary not stored for bug report");
 		}
-		if (element.hasAttribute(ISSUE_KEY)) {
-			issue.setKey(element.getAttribute(ISSUE_KEY));
+		if (element.hasAttribute(KEY_ISSUE_KEY)) {
+			issue.setKey(element.getAttribute(KEY_ISSUE_KEY));
 		} else {
 			throw new TaskExternalizationException("Key not stored for bug report");
 		}
-		if (element.hasAttribute(ISSUE_ID)) {
-			issue.setId(element.getAttribute(ISSUE_ID));
+		if (element.hasAttribute(KEY_ISSUE_ID)) {
+			issue.setId(element.getAttribute(KEY_ISSUE_ID));
 		} else {
 			throw new TaskExternalizationException("Id not stored for bug report");
 		}
@@ -262,24 +215,24 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	public String getQueryTagNameForElement(AbstractRepositoryQuery query) {
 		if (query instanceof JiraFilter) {
-			return TAG_JIRA_QUERY;
+			return KEY_JIRA_QUERY;
 		}
 		return "";
 	}
 
 	@Override
 	public String getCategoryTagName() {
-		return TAG_JIRA_CATEGORY;
+		return KEY_JIRA_CATEGORY;
 	}
 
 	@Override
 	public String getTaskTagName() {
-		return TAG_TASK;
+		return KEY_TASK;
 	}
 
 	@Override
 	public String getQueryHitTagName() {
-		return TAG_JIRA_QUERY_HIT;
+		return KEY_JIRA_QUERY_HIT;
 	}
 
 	public AbstractRepositoryClient getRepositoryClient() {
