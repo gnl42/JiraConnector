@@ -19,9 +19,9 @@ import org.eclipse.mylar.internal.jira.JiraFilter;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
-import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
-import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.internal.tasklist.TaskRepository;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryClient;
+import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
+import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.tigris.jira.core.model.NamedFilter;
 
 /**

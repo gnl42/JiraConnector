@@ -30,7 +30,7 @@
             id="org.eclipse.mylar.jira.ui.decorator.task"
             label="Mylar JIRA Task Decorator"
             lightweight="true"
-            objectClass="org.eclipse.mylar.internal.tasklist.ITaskListElement"
+            objectClass="org.eclipse.mylar.provisional.tasklist.ITaskListElement"
             state="true">
          <description>
 			Mylar JIRA Task Decorator

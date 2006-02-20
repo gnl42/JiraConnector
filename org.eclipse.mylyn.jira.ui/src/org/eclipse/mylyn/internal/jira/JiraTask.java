@@ -11,8 +11,8 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import org.eclipse.mylar.internal.tasklist.AbstractRepositoryTask;
 import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
 import org.eclipse.swt.graphics.Image;
 import org.tigris.jira.core.model.Priority;
 

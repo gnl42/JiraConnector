@@ -11,10 +11,10 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
-import org.eclipse.mylar.internal.tasklist.AbstractRepositoryTask;
-import org.eclipse.mylar.internal.tasklist.ITask;
-import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
+import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
+import org.eclipse.mylar.provisional.tasklist.ITask;
+import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.tigris.jira.core.model.Issue;
 
 /**

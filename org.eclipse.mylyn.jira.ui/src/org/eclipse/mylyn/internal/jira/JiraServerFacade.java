@@ -12,9 +12,9 @@
 package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
-import org.eclipse.mylar.internal.tasklist.ITaskRepositoryListener;
-import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.internal.tasklist.TaskRepository;
+import org.eclipse.mylar.provisional.tasklist.ITaskRepositoryListener;
+import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
+import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.tigris.jira.core.JiraCorePlugin;
 import org.tigris.jira.core.ServerManager;
 import org.tigris.jira.core.service.CachedRpcJiraServer;

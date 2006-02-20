@@ -12,15 +12,15 @@
 package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
-import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
-import org.eclipse.mylar.internal.tasklist.AbstractRepositoryQuery;
-import org.eclipse.mylar.internal.tasklist.AbstractRepositoryTask;
-import org.eclipse.mylar.internal.tasklist.DelegatingTaskExternalizer;
-import org.eclipse.mylar.internal.tasklist.ITask;
-import org.eclipse.mylar.internal.tasklist.ITaskListExternalizer;
-import org.eclipse.mylar.internal.tasklist.TaskCategory;
 import org.eclipse.mylar.internal.tasklist.TaskExternalizationException;
-import org.eclipse.mylar.internal.tasklist.TaskList;
+import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
+import org.eclipse.mylar.provisional.tasklist.DelegatingTaskExternalizer;
+import org.eclipse.mylar.provisional.tasklist.ITask;
+import org.eclipse.mylar.provisional.tasklist.ITaskListExternalizer;
+import org.eclipse.mylar.provisional.tasklist.TaskCategory;
+import org.eclipse.mylar.provisional.tasklist.TaskList;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
 import org.w3c.dom.Document;
