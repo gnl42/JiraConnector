@@ -15,10 +15,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -26,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
  * password.
  * 
  * @author Wesley Coelho (initial integration patch)
+ * @author Mik Kersten
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
@@ -33,34 +30,16 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private static final String DESCRIPTION = "Example: http://developer.atlassian.com/jira";
 
-	private Button validateServerButton = null;
-
 	public JiraRepositorySettingsPage() {
 		super(TITLE, DESCRIPTION);
 	}
 
 	/** Create a button to validate the specified repository settings */
 	protected void createAdditionalControls(Composite parent) {
-		validateServerButton = new Button(parent, SWT.PUSH);
-		validateServerButton.setText("Validate Settings");
-		validateServerButton.addMouseListener(new MouseListener() {
-
-			public void mouseDoubleClick(MouseEvent e) {
-				// ignore
-			}
-
-			public void mouseDown(MouseEvent e) {
-				// ignore
-			}
-
-			public void mouseUp(MouseEvent e) {
-				validateServer();
-			}
-
-		});
+		// ignore
 	}
 
-	private void validateServer() {
+	protected void validateSettings() {
 		if (JiraServerFacade.getDefault().validateServerAndCredentials(super.serverUrlEditor.getStringValue(),
 				getUserName(), getPassword())) {
 			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG,
