@@ -59,10 +59,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return node.getNodeName().equals(KEY_JIRA_QUERY);
 	}
 
-//	public boolean canCreateElementFor(ITaskContainer cat) {
-//		return false;
-//	}
-
 	public boolean canCreateElementFor(AbstractRepositoryQuery category) {
 		return category instanceof JiraFilter;
 	}
