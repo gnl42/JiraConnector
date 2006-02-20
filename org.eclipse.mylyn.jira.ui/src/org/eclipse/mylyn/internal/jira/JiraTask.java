@@ -11,9 +11,7 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
-import org.eclipse.swt.graphics.Image;
 import org.tigris.jira.core.model.Priority;
 
 /**
@@ -91,10 +89,6 @@ public class JiraTask extends AbstractRepositoryTask {
 	 */
 	public JiraTask(String handle, String label, boolean newTask) {
 		super(handle, label, newTask);
-	}
-
-	public Image getIcon() {
-		return TaskListImages.getImage(TaskListImages.TASK_WEB);
 	}
 
 	@Override

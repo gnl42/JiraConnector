@@ -29,35 +29,43 @@ public class JiraFilterHit extends AbstractQueryHit {
 
 	private AbstractRepositoryTask task = null;
 
-	public JiraFilterHit(Issue issue, String repositoryUrl, int id) {	
+	public JiraFilterHit(Issue issue, String repositoryUrl, int id) {
 		super(repositoryUrl, issue.getSummary(), id);
 		this.issue = issue;
 		task = getOrCreateCorrespondingTask();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
 	}
-	
+
 	public Issue getIssue() {
 		return issue;
 	}
 
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
 		if (task == null) {
-			ITask archiveTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTaskFromArchive(getHandleIdentifier());
+			ITask archiveTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTaskFromArchive(
+					getHandleIdentifier());
 			if (archiveTask instanceof JiraTask) {
-				task = (JiraTask)archiveTask;
-			} else {  
-				String summary = issue.getSummary();
-				String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
-				task = new JiraTask(getHandleIdentifier(), summary, true);
-				task.setUrl(url);	
+				task = (JiraTask) archiveTask;
+			} else {
+				task = new JiraTask(getHandleIdentifier(), issue.getSummary(), true);
 				MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
 			}
-		} 
-		if (issue != null && issue.getPriority() != null) {
-			String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
-			task.setPriority(translatedPriority);
-			task.setKind(issue.getType().getName());
-		} 
+		}
+		if (issue != null) {
+			String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
+			task.setUrl(url);
+			if (issue.getResolution() != null) {
+				task.setCompleted(true);
+			} else {
+				task.setCompleted(false);
+			}
+			
+			if (issue.getPriority() != null) {
+				String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
+				task.setPriority(translatedPriority);
+				task.setKind(issue.getType().getName());
+			}
+		}
 		return task;
 	}
 
@@ -84,7 +92,7 @@ public class JiraFilterHit extends AbstractQueryHit {
 		return false;
 	}
 
-	public String getPriority() { 
+	public String getPriority() {
 		return task.getPriority();
 	}
 
@@ -96,9 +104,9 @@ public class JiraFilterHit extends AbstractQueryHit {
 		task.setDescription(description);
 	}
 
-//	public String getHandleIdentifier() {
-//		return handl;
-//	}
+	// public String getHandleIdentifier() {
+	// return handl;
+	// }
 
 	public void setHandleIdentifier(String id) {
 		task.setHandleIdentifier(id);
