@@ -11,12 +11,10 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
-import org.eclipse.mylar.internal.tasklist.AbstractRepositoryClient;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryTask;
+import org.eclipse.mylar.internal.tasklist.ITask;
 import org.eclipse.mylar.internal.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.internal.tasklist.TaskRepository;
 import org.tigris.jira.core.model.Issue;
 
 /**
@@ -31,17 +29,21 @@ public class JiraFilterHit extends AbstractQueryHit {
 
 	private AbstractRepositoryTask task = null;
 
-	public JiraFilterHit(Issue issue) {	
+	public JiraFilterHit(Issue issue, String repositoryUrl) {	
+//		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getDefaultRepository(
+//				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+		super(repositoryUrl, issue.getSummary(), issue.getKey());
 		this.issue = issue;
-		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getDefaultRepository(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-		if (repository != null) {
-			setRepositoryUrl(repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey());
-		} else {
-			MylarStatusHandler.fail(new RuntimeException("JiraFilterHit couldn't get repository"),
-					"Couldn't get repository for Jira Hit", false);
-		}
+
+		
+//		if (repository != null) {
+//			setRepositoryUrl(repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey());
+//		} else {
+//			MylarStatusHandler.fail(new RuntimeException("JiraFilterHit couldn't get repository"),
+//					"Couldn't get repository for Jira Hit", false);
+//		}
 		task = getOrCreateCorrespondingTask();
+		MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
 	}
 	
 	public Issue getIssue() {
@@ -50,16 +52,15 @@ public class JiraFilterHit extends AbstractQueryHit {
 
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
 		if (task == null) {
-			String summary = issue.getSummary();
-			task = new JiraTask(getRepositoryUrl(), summary, true);
-			AbstractRepositoryClient client = MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(
-					MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-			if (client != null) {
+			ITask archiveTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTaskFromArchive(getHandleIdentifier());
+			if (archiveTask instanceof JiraTask) {
+				task = (JiraTask)archiveTask;
+			} else {  
+				String summary = issue.getSummary();
+				task = new JiraTask(getHandleIdentifier(), summary, true);
 				MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
-			} else {
-				MylarStatusHandler.log("No Jira Client for Jira Task", this);
 			}
-		}
+		} 
 		if (issue != null && issue.getPriority() != null) {
 			String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
 			task.setPriority(translatedPriority);
@@ -103,9 +104,9 @@ public class JiraFilterHit extends AbstractQueryHit {
 		task.setDescription(description);
 	}
 
-	public String getHandleIdentifier() {
-		return getRepositoryUrl();
-	}
+//	public String getHandleIdentifier() {
+//		return handl;
+//	}
 
 	public void setHandleIdentifier(String id) {
 		task.setHandleIdentifier(id);

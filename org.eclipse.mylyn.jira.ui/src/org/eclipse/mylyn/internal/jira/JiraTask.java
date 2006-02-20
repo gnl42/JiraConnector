@@ -63,10 +63,10 @@ public class JiraTask extends AbstractRepositoryTask {
 			return null;
 		}
 	}
-	
+
 	public enum Kind {
 		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE;
-		
+
 		@Override
 		public String toString() {
 			switch (this) {
@@ -85,7 +85,7 @@ public class JiraTask extends AbstractRepositoryTask {
 			}
 		}
 	}
-	
+
 	/**
 	 * The handle is also the task's Jira url
 	 */

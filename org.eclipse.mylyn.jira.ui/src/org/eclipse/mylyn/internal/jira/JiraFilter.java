@@ -72,8 +72,8 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		} else {
 			setQueryUrl(repository.getUrl() + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getId());
 			urlsInitialized = true;
-			setRepositoryUrl(getQueryUrl());
-			setHandleIdentifier(getQueryUrl());
+			setRepositoryUrl(repository.getUrl().toExternalForm());
+			// setHandleIdentifier(getQueryUrl());
 		}
 	}
 
@@ -91,11 +91,8 @@ public class JiraFilter extends AbstractRepositoryQuery {
 
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
-
 				clearHits();
-
 				try {
-
 					JiraServerFacade.getDefault().getJiraServer().executeNamedFilter(filter, new IssueCollector() {
 
 						public void done() {
@@ -113,9 +110,8 @@ public class JiraFilter extends AbstractRepositoryQuery {
 						}
 
 						public void collectIssue(Issue issue) {
-							JiraFilterHit hit = new JiraFilterHit(issue);
+							JiraFilterHit hit = new JiraFilterHit(issue, JiraFilter.this.getRepositoryUrl());
 							addHit(hit);
-
 						}
 
 						public void start() {
@@ -145,20 +141,9 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		return super.getQueryUrl();
 	}
 
-	public String getRepositoryUrl() {
-		if (!urlsInitialized) {
-			initUrls();
-		}
-		return super.getRepositoryUrl();
-	}
-
 	public Image getIcon() {
 		return TaskListImages.getImage(TaskListImages.QUERY);
 	}
-
-//	public Image getStatusIcon() {
-//		return null;
-//	}
 
 	public boolean isDragAndDropEnabled() {
 		return false;
@@ -184,10 +169,6 @@ public class JiraFilter extends AbstractRepositoryQuery {
 	public boolean isLocal() {
 		return false;
 	}
-
-//	public boolean isActivatable() {
-//		return false;
-//	}
 
 	public Font getFont() {
 		for (ITaskListElement currHit : getHits()) {

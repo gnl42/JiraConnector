@@ -101,7 +101,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		node.setAttribute(KEY_NAME, query.getDescription());
 		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
 		node.setAttribute(KEY_QUERY_STRING, query.getQueryUrl());
-		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl());
+		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl()); 
 
 		node.setAttribute(KEY_FILTER_ID, filter.getId());
 		node.setAttribute(KEY_FILTER_NAME, filter.getName());
@@ -202,7 +202,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			throw new TaskExternalizationException("Id not stored for bug report");
 		}
 
-		JiraFilterHit hit = new JiraFilterHit(issue);
+		JiraFilterHit hit = new JiraFilterHit(issue, query.getRepositoryUrl());
 		hit.setHandleIdentifier(handle);
 		query.addHit(hit);
 		
