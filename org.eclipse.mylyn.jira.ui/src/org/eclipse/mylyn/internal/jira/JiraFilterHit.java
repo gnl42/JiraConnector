@@ -52,20 +52,20 @@ public class JiraFilterHit extends AbstractQueryHit {
 			}
 		}
 		if (issue != null) {
-			String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
-			task.setUrl(url);
+			if (issue.getKey() != null) {
+				String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
+				task.setUrl(url);
+			} 
 			if (issue.getResolution() != null) {
 				task.setCompleted(true);
-			} else {
-				task.setCompleted(false);
-			}
+			} 
 			
 			if (issue.getPriority() != null) {
 				String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
 				task.setPriority(translatedPriority);
 				task.setKind(issue.getType().getName());
 			}
-		}
+		} 
 		return task;
 	}
 

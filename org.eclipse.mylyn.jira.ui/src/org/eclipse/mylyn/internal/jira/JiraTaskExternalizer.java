@@ -132,7 +132,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	
 	public Element createTaskElement(ITask task, Document doc, Element parent) {
 		Element node = super.createTaskElement(task, doc, parent);
-		return node;
+		return node; 
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		} else {
 			throw new TaskExternalizationException("Description not stored for bug report");
 		}
-		JiraTask task = new JiraTask(handle, label, false);
+		JiraTask task = new JiraTask(handle, label, false);  
 		readTaskInfo(task, taskList, element, parent, category);
 
 		taskList.addTaskToArchive(task);
@@ -241,7 +241,4 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return KEY_JIRA_QUERY_HIT;
 	}
 
-//	public AbstractRepositoryClient getRepositoryClient() {
-//		return MylarTaskListPlugin.getRepositoryManager().getRepositoryClient(MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-//	}
 }
