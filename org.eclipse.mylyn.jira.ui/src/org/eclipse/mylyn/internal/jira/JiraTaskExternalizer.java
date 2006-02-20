@@ -16,8 +16,8 @@ import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.internal.tasklist.DelegatingTaskExternalizer;
 import org.eclipse.mylar.internal.tasklist.ITask;
-import org.eclipse.mylar.internal.tasklist.ITaskContainer;
 import org.eclipse.mylar.internal.tasklist.ITaskListExternalizer;
+import org.eclipse.mylar.internal.tasklist.TaskCategory;
 import org.eclipse.mylar.internal.tasklist.TaskExternalizationException;
 import org.eclipse.mylar.internal.tasklist.TaskList;
 import org.tigris.jira.core.model.Issue;
@@ -129,7 +129,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public ITask readTask(Node node, TaskList taskList, ITaskContainer category, ITask parent)
+	public ITask readTask(Node node, TaskList taskList, TaskCategory category, ITask parent)
 			throws TaskExternalizationException {
 
 		Element element = (Element) node;
@@ -146,7 +146,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			throw new TaskExternalizationException("Description not stored for bug report");
 		}
 		JiraTask task = new JiraTask(handle, label, false);
-		readTaskInfo(task, taskList, element, parent);
+		readTaskInfo(task, taskList, element, parent, category);
 
 		taskList.addTaskToArchive(task);
 		return task;
