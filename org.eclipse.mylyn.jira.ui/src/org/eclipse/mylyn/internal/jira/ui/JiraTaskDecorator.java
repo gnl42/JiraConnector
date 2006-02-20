@@ -16,7 +16,6 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraTask;
-import org.eclipse.mylar.internal.tasklist.ITask;
 
 /**
  * @author Mik Kersten
@@ -25,18 +24,21 @@ public class JiraTaskDecorator implements ILightweightLabelDecorator {
 
 	public void decorate(Object element, IDecoration decoration) {
 		if (element instanceof JiraFilterHit) {
-			JiraFilterHit hit = (JiraFilterHit)element;
+			JiraFilterHit hit = (JiraFilterHit) element;
 			if (hit.getCorrespondingTask() != null) {
-				ITask task = hit.getCorrespondingTask();
-				if (JiraTask.Kind.BUG.toString().equals(task.getKind())) {
-					decoration.addOverlay(JiraImages.OVERLAY_BUG, IDecoration.BOTTOM_RIGHT);
-				} else if (JiraTask.Kind.FEATURE.toString().equals(task.getKind())) {
-					decoration.addOverlay(JiraImages.OVERLAY_FEATURE, IDecoration.BOTTOM_RIGHT);
-				} else if (JiraTask.Kind.IMPROVEMENT.toString().equals(task.getKind())) {
-					decoration.addOverlay(JiraImages.OVERLAY_IMPROVEMENT, IDecoration.BOTTOM_RIGHT);
-				} else if (JiraTask.Kind.TASK.toString().equals(task.getKind())) {
-					decoration.addOverlay(JiraImages.OVERLAY_TASK, IDecoration.BOTTOM_RIGHT);
-				}
+				decorate(hit.getCorrespondingTask(), decoration);
+			}
+		}
+		if (element instanceof JiraTask) {
+			JiraTask task = (JiraTask) element;
+			if (JiraTask.Kind.BUG.toString().equals(task.getKind())) {
+				decoration.addOverlay(JiraImages.OVERLAY_BUG, IDecoration.BOTTOM_RIGHT);
+			} else if (JiraTask.Kind.FEATURE.toString().equals(task.getKind())) {
+				decoration.addOverlay(JiraImages.OVERLAY_FEATURE, IDecoration.BOTTOM_RIGHT);
+			} else if (JiraTask.Kind.IMPROVEMENT.toString().equals(task.getKind())) {
+				decoration.addOverlay(JiraImages.OVERLAY_IMPROVEMENT, IDecoration.BOTTOM_RIGHT);
+			} else if (JiraTask.Kind.TASK.toString().equals(task.getKind())) {
+				decoration.addOverlay(JiraImages.OVERLAY_TASK, IDecoration.BOTTOM_RIGHT);
 			}
 		}
 	}
