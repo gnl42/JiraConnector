@@ -38,15 +38,15 @@ public class JiraServerFacadeTest extends TestCase {
 
 	private JiraServerFacade jiraFacade = null;
 
-	private TaskRepository jiraRepo = null;
+	private TaskRepository repository = null;
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		URL repoURL = new URL(SERVER_URL);
-		jiraRepo = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
+		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
 				repoURL);
-		jiraRepo.setAuthenticationCredentials(USER, PASSWORD);
-		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepo);
+		repository.setAuthenticationCredentials(USER, PASSWORD);
+		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
@@ -58,27 +58,27 @@ public class JiraServerFacadeTest extends TestCase {
 //		client.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
-		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
-		jiraFacade.logOut();
+		MylarTaskListPlugin.getRepositoryManager().removeRepository(repository);
+		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
 
 	public void testLogin() {
 		// This connects and logs into the default Jira repository
-		jiraFacade.getJiraServer();
+		jiraFacade.getJiraServer(repository);
 
 		// Tests connection using the currently specified credentials
 		jiraFacade.validateServerAndCredentials(SERVER_URL, USER, PASSWORD);
 	}
 
 	public void testFilterDownload() {
-		JiraServer jiraServer = jiraFacade.getJiraServer();
+		JiraServer jiraServer = jiraFacade.getJiraServer(repository);
 		NamedFilter[] filters = jiraServer.getNamedFilters();
 		assertTrue(filters.length > 0);
 	}
 
 	public void testFilterResults() {
-		JiraServer jiraServer = jiraFacade.getJiraServer();
+		JiraServer jiraServer = jiraFacade.getJiraServer(repository);
 		NamedFilter[] filters = jiraServer.getNamedFilters();
 		assertTrue(filters.length > 0);
 
@@ -106,13 +106,13 @@ public class JiraServerFacadeTest extends TestCase {
 	}
 
 	public void testServerInfoChange() {
-		jiraRepo.setAuthenticationCredentials("Bogus User", "Bogus Password");
+		repository.setAuthenticationCredentials("Bogus User", "Bogus Password");
 		jiraFacade.repositorySetUpdated();
 
 		boolean failedOnBogusUser = false;
 
 		try {
-			jiraFacade.getJiraServer().getNamedFilters();
+			jiraFacade.getJiraServer(repository).getNamedFilters();
 		} catch (Exception e) {
 			failedOnBogusUser = true;
 		}
@@ -120,9 +120,9 @@ public class JiraServerFacadeTest extends TestCase {
 		assertTrue(failedOnBogusUser);
 
 		// Check that it works after putting the right password in
-		jiraRepo.setAuthenticationCredentials(USER, PASSWORD);
+		repository.setAuthenticationCredentials(USER, PASSWORD);
 		jiraFacade.repositorySetUpdated();
-		jiraFacade.getJiraServer().getNamedFilters();
+		jiraFacade.getJiraServer(repository).getNamedFilters();
 	}
 
 }

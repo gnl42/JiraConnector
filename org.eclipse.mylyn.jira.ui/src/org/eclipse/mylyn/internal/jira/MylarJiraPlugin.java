@@ -46,7 +46,7 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		plugin = null;
-		JiraServerFacade.getDefault().logOut();
+		JiraServerFacade.getDefault().logOutFromAll();
 	}
 
 	public static MylarJiraPlugin getDefault() {

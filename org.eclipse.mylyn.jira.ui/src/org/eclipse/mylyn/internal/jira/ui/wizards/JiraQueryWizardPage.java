@@ -52,9 +52,12 @@ public class JiraQueryWizardPage extends WizardPage {
 	private NamedFilter[] filters = null;
 
 	private Combo filterCombo = null;
+	
+	private TaskRepository repository;
 
 	public JiraQueryWizardPage(TaskRepository repository) {
 		super(TITLE);
+		this.repository = repository;
 		setTitle(TITLE);
 		setDescription(DESCRIPTION);
 		setPageComplete(false);
@@ -91,7 +94,7 @@ public class JiraQueryWizardPage extends WizardPage {
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
 				try {
-					JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer();
+					JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 					filters = jiraServer.getNamedFilters();
 
 					monitor.worked(1);

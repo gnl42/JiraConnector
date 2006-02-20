@@ -43,17 +43,17 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	private JiraServerFacade jiraFacade = null;
 
-	private TaskRepository jiraRepo = null;
+	private TaskRepository jiraRepository = null;
 	
 	private TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		URL repoURL = new URL(SERVER_URL);
-		jiraRepo = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
+		jiraRepository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
 				repoURL);
-		jiraRepo.setAuthenticationCredentials(USER, PASSWORD);
-		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepo);
+		jiraRepository.setAuthenticationCredentials(USER, PASSWORD);
+		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
@@ -64,8 +64,8 @@ public class JiraTaskArchiveTest extends TestCase {
 		assertNotNull(client);
 		taskList.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
-		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
-		jiraFacade.logOut();
+		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepository);
+		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
 
@@ -94,7 +94,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 		assertTrue(taskList.getArchiveTasks().size() == 0);
 
-		NamedFilter[] namedFilters = jiraFacade.getJiraServer()
+		NamedFilter[] namedFilters = jiraFacade.getJiraServer(jiraRepository)
 				.getNamedFilters();
 		JiraFilter filter = new JiraFilter(namedFilters[0], true);
 		MylarTaskListPlugin.getTaskListManager().addQuery(filter);

@@ -84,6 +84,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testJiraTaskSave() {
 
 		JiraTask jiraTask = new JiraTask(TEST_TASK, TEST_LABEL, true);
+		String testUrl = "http://foo";
+		jiraTask.setUrl(testUrl);
 		manager.moveToRoot(jiraTask);
 
 		manager.saveTaskList();
@@ -102,7 +104,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 					&& currTask.getHandleIdentifier().equals(TEST_TASK)) {
 				taskFound = true;
 				// Check that the URL of the Jira task is it's handle
-				assertTrue(currTask.getUrl().equals(TEST_TASK));
+				assertEquals(testUrl, currTask.getUrl());
 				break;
 			}
 		}

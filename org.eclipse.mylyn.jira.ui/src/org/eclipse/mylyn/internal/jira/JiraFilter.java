@@ -93,7 +93,8 @@ public class JiraFilter extends AbstractRepositoryQuery {
 			protected IStatus run(final IProgressMonitor monitor) {
 				clearHits();
 				try {
-					JiraServerFacade.getDefault().getJiraServer().executeNamedFilter(filter, new IssueCollector() {
+					TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
+					JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(filter, new IssueCollector() {
 
 						public void done() {
 							isRefreshing = false;

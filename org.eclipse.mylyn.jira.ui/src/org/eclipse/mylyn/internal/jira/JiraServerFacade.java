@@ -35,61 +35,72 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	private ServerManager serverManager = null;
 
-	private JiraServer jiraServer = null;
+//	private JiraServer jiraServer = null;
 
-	private final static String SERVER_NAME = "Mylar Jira Server";
+//	private final static String SERVER_NAME = "Mylar Jira Server";
 
 	private static JiraServerFacade instance = null;
 
 	public JiraServerFacade() {
 		MylarTaskListPlugin.getRepositoryManager().addListener(this);
-
-	}
-
-	/**
-	 * Returns a reference to a Jira server, logged-in and ready to handle
-	 * requests. Throws a NoJiraRepositoryException if no repository was found
-	 * during initialization. Throws a ServiceUnavailableException if can't
-	 * connect to the jira server. Throws an AuthenticationException if the
-	 * user's credentials were rejected.
-	 */
-	public JiraServer getJiraServer() {
 		serverManager = JiraCorePlugin.getDefault().getServerManager();
-		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getDefaultRepository(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-		if (repository == null) {
-			throw new RuntimeException("Missing JIRA repository.");
-		}
-
-		if (jiraServer == null) {
-			jiraServer = initJiraServer(repository);
-		}
-
-		return jiraServer;
 	}
 
 	/**
-	 * Initializes the jiraServer object and logs in so that requests can be
-	 * made on it.
+	 * Lazily creates server.
 	 */
-	private JiraServer initJiraServer(TaskRepository repository) {
+	public JiraServer getJiraServer(TaskRepository repository) {
+//		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getDefaultRepository(
+//				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+//		if (repository == null) {
+//			throw new RuntimeException("Missing JIRA repository.");
+//		}
+		
 		try {
-			jiraServer = serverManager.createServer(SERVER_NAME, repository.getUrl().toExternalForm(), false, repository.getUserName(), repository.getPassword());
-			serverManager.removeServer(jiraServer);
-			serverManager.addServer(jiraServer);
-
-			jiraServer.login();
+			String serverName = repository.getUrl().toExternalForm();
+			JiraServer server = serverManager.getServer(serverName);
+			if (server == null) {
+				server = serverManager.createServer(serverName, repository.getUrl().toExternalForm(), false, repository.getUserName(), repository.getPassword());
+			}
+//				serverManager.removeServer(jiraServer);
+//			serverManager.addServer(jiraServer);
+			server.login();
+			return server;
 		} catch (ServiceUnavailableException sue) {
-			jiraServer = null;
+//			jiraServer = null;
 			throw sue;
 		} catch (RuntimeException e) {
-			jiraServer = null;
+//			jiraServer = null;
 			MylarStatusHandler.log("Error connecting to Jira Server", this);
 			throw e;
 		}
 
-		return jiraServer;
+//		if (jiraServer == null) {
+//			jiraServer = initJiraServer(repository);
+//		}
 	}
+
+//	/**
+//	 * Initializes the jiraServer object and logs in so that requests can be
+//	 * made on it.
+//	 */
+//	private JiraServer initJiraServer(TaskRepository repository) {
+//		try {
+//			jiraServer = serverManager.createServer(SERVER_NAME, repository.getUrl().toExternalForm(), false, repository.getUserName(), repository.getPassword());
+//			serverManager.removeServer(jiraServer);
+//			serverManager.addServer(jiraServer);
+//
+//			jiraServer.login();
+//		} catch (ServiceUnavailableException sue) {
+//			jiraServer = null;
+//			throw sue;
+//		} catch (RuntimeException e) {
+//			jiraServer = null;
+//			MylarStatusHandler.log("Error connecting to Jira Server", this);
+//			throw e;
+//		}
+//		return jiraServer;
+//	}
 
 	public static JiraServerFacade getDefault() {
 		if (instance == null) {
@@ -98,17 +109,17 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		return instance;
 	}
 
-	/**
-	 * Logs out of the current jira server in use. A new jira server is created
-	 * the next time one is requested.
-	 */
-	public void logOut() {
+	public void logOutFromAll() {
 		try {
-			if (jiraServer != null) {
-				jiraServer.logout();
-				serverManager.removeServer(jiraServer);
-				jiraServer = null;
+			JiraServer[] allServers = serverManager.getAllServers();
+			for (int i = 0; i < allServers.length; i++) {
+				allServers[i].logout();
 			}
+//			if (jiraServer != null) {
+//				jiraServer.logout();
+//				serverManager.removeServer(jiraServer);
+//				jiraServer = null;
+//			}
 		} catch (Exception e) {
 			MylarStatusHandler.log(e, "Error logging out of Jira Server");
 		}
@@ -119,23 +130,22 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * server with the updated server information.
 	 */
 	public void repositorySetUpdated() {
-
-		try {
-			if (jiraServer != null) {
-				jiraServer.logout();
-			}
-			jiraServer = null;
-			jiraServer = getJiraServer();
-		} catch (Exception e) {
-			MylarStatusHandler.fail(e, "Failed to connect to server after repository settings change", true);
-		}
+//		try {
+//			if (jiraServer != null) {
+//				jiraServer.logout();
+//			}
+//			jiraServer = null;
+//			jiraServer = getJiraServer();
+//		} catch (Exception e) {
+//			MylarStatusHandler.fail(e, "Failed to connect to server after repository settings change", true);
+//		}
 	}
 
 	/** Returns true if all of the serverURL, user name, and password are valid */
 	public boolean validateServerAndCredentials(String serverUrl, String user, String password) {
 		try {
 			// TODO: use test method on ServerManager
-			jiraServer = new CachedRpcJiraServer("ConnectionTest", serverUrl, false, user, password);
+			CachedRpcJiraServer jiraServer = new CachedRpcJiraServer("ConnectionTest", serverUrl, false, user, password);
 			jiraServer.login();
 			jiraServer.logout();
 		} catch (Exception e) {

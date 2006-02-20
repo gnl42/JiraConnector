@@ -58,12 +58,12 @@ public class JiraFilterTest extends TestCase {
 //		client.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
-		jiraFacade.logOut();
+		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
 
 	public void testJiraFilterRefresh() {
-		NamedFilter[] filters = jiraFacade.getJiraServer().getNamedFilters();
+		NamedFilter[] filters = jiraFacade.getJiraServer(jiraRepo).getNamedFilters();
 		assertTrue(filters.length > 0);
 		JiraFilter jFilter = new JiraFilter(filters[0], false);
 		assertTrue(jFilter.getHits().size() == 0);
