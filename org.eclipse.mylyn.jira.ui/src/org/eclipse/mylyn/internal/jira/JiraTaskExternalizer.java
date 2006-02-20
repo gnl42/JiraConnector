@@ -14,6 +14,7 @@ package org.eclipse.mylar.internal.jira;
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.internal.tasklist.AbstractRepositoryQuery;
+import org.eclipse.mylar.internal.tasklist.AbstractRepositoryTask;
 import org.eclipse.mylar.internal.tasklist.DelegatingTaskExternalizer;
 import org.eclipse.mylar.internal.tasklist.ITask;
 import org.eclipse.mylar.internal.tasklist.ITaskListExternalizer;
@@ -35,9 +36,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String KEY_ISSUE_SUMMARY = "IssueSummary";
 
-	private static final String KEY_ISSUE_KEY = "IssueKey";
-
-	private static final String KEY_ISSUE_ID = "IssueId";
+//	private static final String KEY_ISSUE_KEY = "IssueKey";
+//
+//	private static final String KEY_ISSUE_ID = "IssueId";
 
 	private static final String KEY_JIRA = "Jira";
 
@@ -47,7 +48,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String KEY_JIRA_QUERY = KEY_JIRA + KEY_QUERY;
 
-	private static final String KEY_TASK = "JiraIssue";
+	private static final String KEY_JIRA_ISSUE = "JiraIssue";
 
 	private static final String KEY_FILTER_NAME = "FilterName";
 
@@ -123,6 +124,16 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		parent.appendChild(node);
 		return node;
 	}
+		
+	@Override
+	public String getTaskTagName() {
+		return KEY_JIRA_ISSUE;
+	}
+	
+	public Element createTaskElement(ITask task, Document doc, Element parent) {
+		Element node = super.createTaskElement(task, doc, parent);
+		return node;
+	}
 
 	@Override
 	public ITask readTask(Node node, TaskList taskList, TaskCategory category, ITask parent)
@@ -161,8 +172,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		node.setAttribute(KEY_HANDLE, queryHit.getHandleIdentifier());
 		node.setAttribute(KEY_PRIORITY, queryHit.getPriority());
 
-		node.setAttribute(KEY_ISSUE_ID, issue.getId());
-		node.setAttribute(KEY_ISSUE_KEY, issue.getKey());
+//		node.setAttribute(KEY_ISSUE_ID, issue.getId());
+//		node.setAttribute(KEY_ISSUE_KEY, issue.getKey());
 		node.setAttribute(KEY_ISSUE_SUMMARY, issue.getSummary());
 
 //		if (queryHit.isCompleted()) {
@@ -191,18 +202,19 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		} else {
 			throw new TaskExternalizationException("Summary not stored for bug report");
 		}
-		if (element.hasAttribute(KEY_ISSUE_KEY)) {
-			issue.setKey(element.getAttribute(KEY_ISSUE_KEY));
-		} else {
-			throw new TaskExternalizationException("Key not stored for bug report");
-		}
-		if (element.hasAttribute(KEY_ISSUE_ID)) {
-			issue.setId(element.getAttribute(KEY_ISSUE_ID));
-		} else {
-			throw new TaskExternalizationException("Id not stored for bug report");
-		}
+//		if (element.hasAttribute(KEY_ISSUE_KEY)) {
+//			issue.setKey(element.getAttribute(KEY_ISSUE_KEY));
+//		} else {
+//			throw new TaskExternalizationException("Key not stored for bug report");
+//		}
+//		if (element.hasAttribute(KEY_ISSUE_ID)) {
+//			issue.setId(element.getAttribute(KEY_ISSUE_ID));
+//		} else {
+//			throw new TaskExternalizationException("Id not stored for bug report");
+//		}
 
-		JiraFilterHit hit = new JiraFilterHit(issue, query.getRepositoryUrl());
+		int issueId = new Integer(AbstractRepositoryTask.getTaskIdAsInt(handle));
+		JiraFilterHit hit = new JiraFilterHit(issue, query.getRepositoryUrl(), issueId);
 		hit.setHandleIdentifier(handle);
 		query.addHit(hit);
 		
@@ -222,11 +234,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	@Override
 	public String getCategoryTagName() {
 		return KEY_JIRA_CATEGORY;
-	}
-
-	@Override
-	public String getTaskTagName() {
-		return KEY_TASK;
 	}
 
 	@Override

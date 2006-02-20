@@ -110,7 +110,8 @@ public class JiraFilter extends AbstractRepositoryQuery {
 						}
 
 						public void collectIssue(Issue issue) {
-							JiraFilterHit hit = new JiraFilterHit(issue, JiraFilter.this.getRepositoryUrl());
+							int issueId = new Integer(issue.getId());
+							JiraFilterHit hit = new JiraFilterHit(issue, JiraFilter.this.getRepositoryUrl(), issueId);
 							addHit(hit);
 						}
 

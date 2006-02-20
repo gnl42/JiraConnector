@@ -29,19 +29,9 @@ public class JiraFilterHit extends AbstractQueryHit {
 
 	private AbstractRepositoryTask task = null;
 
-	public JiraFilterHit(Issue issue, String repositoryUrl) {	
-//		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getDefaultRepository(
-//				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-		super(repositoryUrl, issue.getSummary(), issue.getKey());
+	public JiraFilterHit(Issue issue, String repositoryUrl, int id) {	
+		super(repositoryUrl, issue.getSummary(), id);
 		this.issue = issue;
-
-		
-//		if (repository != null) {
-//			setRepositoryUrl(repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey());
-//		} else {
-//			MylarStatusHandler.fail(new RuntimeException("JiraFilterHit couldn't get repository"),
-//					"Couldn't get repository for Jira Hit", false);
-//		}
 		task = getOrCreateCorrespondingTask();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
 	}
@@ -57,7 +47,9 @@ public class JiraFilterHit extends AbstractQueryHit {
 				task = (JiraTask)archiveTask;
 			} else {  
 				String summary = issue.getSummary();
+				String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
 				task = new JiraTask(getHandleIdentifier(), summary, true);
+				task.setUrl(url);	
 				MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
 			}
 		} 

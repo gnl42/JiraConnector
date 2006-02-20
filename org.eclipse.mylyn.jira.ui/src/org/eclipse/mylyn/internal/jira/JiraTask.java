@@ -91,7 +91,6 @@ public class JiraTask extends AbstractRepositoryTask {
 	 */
 	public JiraTask(String handle, String label, boolean newTask) {
 		super(handle, label, newTask);
-		setUrl(handle);
 	}
 
 	public Image getIcon() {
