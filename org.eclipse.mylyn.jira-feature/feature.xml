@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.mylar.jira_feature"
       label="Mylar Connector: JIRA (downloads feature from jira-dashboard.tigris.org)"
-      version="0.4.8.v20060221-1415"
+      version="0.4.8.v20060221-1530"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
@@ -212,10 +212,6 @@ Each party waives its rights to a jury trial in any resulting
 litigation.
    </license>
 
-   <includes
-         id="org.tigris.jira.core"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -223,16 +219,17 @@ litigation.
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.mylar.tasklist"/>
       <import plugin="org.eclipse.mylar.core"/>
-      <import plugin="org.tigris.jira.core"/>
+      <import plugin="org.tigris.jira.core.soap" version="0.7.0" match="compatible"/>
+      <import feature="org.tigris.jira.core" version="0.7.0" match="compatible"/>
       <import feature="org.eclipse.mylar_feature" version="0.4.8.v20060215-1930"/>
-      <import plugin="org.tigris.jira.core.soap"/>
+      <import feature="org.tigris.jira.core" version="0.7.0" match="compatible"/>
    </requires>
 
    <plugin
          id="org.eclipse.mylar.jira"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060221-1415"
+         version="0.4.8.v20060221-1530"
          unpack="false"/>
 
 </feature>
