@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.mylar.jira_feature"
-      label="Mylar Connector: JIRA (downloads feature from jira-dashboard.tigris.org)"
+      label="Mylar Connector: JIRA (Experimental)"
       version="0.4.8.v20060221-1530"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
