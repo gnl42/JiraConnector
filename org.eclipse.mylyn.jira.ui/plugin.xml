@@ -13,16 +13,12 @@
             id="org.eclipse.mylar.jira.tasklist.repositories"
             name="JIRA Repository Client"
             type="jira"/>
+            
+            
+      <externalizer 
+            class="org.eclipse.mylar.internal.jira.JiraTaskExternalizer"
+            id="org.eclipse.mylar.jira.tasklist.externalizer"/>
    </extension>  
-
-
-   <extension point="org.eclipse.mylar.tasklist.providers">
-      <taskHandler
-            externalizerClass="org.eclipse.mylar.internal.jira.JiraTaskExternalizer"
-            id="org.eclipse.mylar.jira.ui.tasklist"
-            >
-      </taskHandler>
-   </extension>
    
    <extension point="org.eclipse.ui.decorators">
       <decorator
