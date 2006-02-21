@@ -7,8 +7,8 @@
       plugin="org.eclipse.mylar">
 
    <description>
-      NOTE: depends on the org.tigris.jira.core feature from http://jira-dashboard.tigris.org/update
-JIRA client integrated with Eclipse and Mylar, can be used standalone.
+      JIRA client integrated with Eclipse and Mylar, can be used standalone.
+NOTE: depends on the org.tigris.jira.core feature from http://jira-dashboard.tigris.org/update
    </description>
 
    <license>
