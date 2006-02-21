@@ -36,10 +36,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String KEY_ISSUE_SUMMARY = "IssueSummary";
 
-//	private static final String KEY_ISSUE_KEY = "IssueKey";
-//
-//	private static final String KEY_ISSUE_ID = "IssueId";
-
 	private static final String KEY_JIRA = "Jira";
 
 	private static final String KEY_JIRA_CATEGORY = "JiraQuery" + KEY_CATEGORY;

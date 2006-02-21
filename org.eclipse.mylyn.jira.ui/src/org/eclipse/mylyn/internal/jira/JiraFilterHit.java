@@ -19,9 +19,9 @@ import org.tigris.jira.core.model.Issue;
 
 /**
  * Represents an issue returned as the result of a Jira Filter (Query)
- * 
- * @author Wesley Coelho (initial integration patch)
+
  * @author Mik Kersten
+ * @author Wesley Coelho (initial integration patch)
  */
 public class JiraFilterHit extends AbstractQueryHit {
 
@@ -86,15 +86,6 @@ public class JiraFilterHit extends AbstractQueryHit {
 
 	public boolean isCompleted() {
 		return task.isCompleted();
-//		if (issue != null && issue.getStatus() != null) {
-//			return issue.getStatus().isClosed() || issue.getStatus().isResolved();
-//		} else {
-//			return false;
-//		}
-	}
-
-	public boolean isDragAndDropEnabled() {
-		return false;
 	}
 
 	public String getPriority() {

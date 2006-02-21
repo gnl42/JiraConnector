@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.Composite;
  * Wizard page used to specify a Jira repository address, username, and
  * password.
  * 
- * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
+ * @author Wesley Coelho (initial integration patch)
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 

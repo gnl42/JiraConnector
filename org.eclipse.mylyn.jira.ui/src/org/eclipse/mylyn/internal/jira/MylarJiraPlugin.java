@@ -16,8 +16,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
+ * @author Wesley Coelho (initial integration patch)
  */
 public class MylarJiraPlugin extends AbstractUIPlugin {
 

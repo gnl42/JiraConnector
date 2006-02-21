@@ -21,6 +21,7 @@ import org.tigris.jira.core.model.NamedFilter;
  * Wizard that allows the user to select one of their named Jira filters on the
  * server
  * 
+ * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  */
 public class NewJiraQueryWizard extends Wizard {
@@ -50,9 +51,6 @@ public class NewJiraQueryWizard extends Wizard {
 			MylarTaskListPlugin.getTaskListManager().addQuery(filter);
 			filter.refreshHits();
 		}
-		// if (TaskListView.getDefault() != null) {
-		// TaskListView.getDefault().getViewer().refresh();
-		// }
 
 		return true;
 	}

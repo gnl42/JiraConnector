@@ -33,6 +33,7 @@ import org.tigris.jira.core.service.JiraServer;
  * Wizard page that allows the user to select a named Jira filter they have
  * defined on the server.
  * 
+ * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  */
 public class JiraQueryWizardPage extends WizardPage {

@@ -15,15 +15,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
 import org.eclipse.mylar.internal.tasklist.ui.views.TaskListView;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
-import org.eclipse.mylar.provisional.tasklist.ITask;
-import org.eclipse.mylar.provisional.tasklist.ITaskListElement;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
@@ -32,8 +27,8 @@ import org.tigris.jira.core.model.filter.IssueCollector;
 /**
  * A JiraFilter represents a query for issues from a Jira repository.
  * 
- * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
+ * @author Wesley Coelho (initial integration patch)
  */
 public class JiraFilter extends AbstractRepositoryQuery {
 
@@ -42,8 +37,6 @@ public class JiraFilter extends AbstractRepositoryQuery {
 	private static final int MAX_HITS = 75;
 
 	protected NamedFilter filter = null;
-
-//	private boolean urlsInitialized = false;
 
 	private boolean isRefreshing = false;
 
@@ -61,8 +54,7 @@ public class JiraFilter extends AbstractRepositoryQuery {
 	}
 
 	/**
-	 * Downloads Jira filter results from the server and loads them into the
-	 * hits list.
+	 * TODO: refactor into common refresh mechanism.
 	 */
 	public void refreshHits() {
 		isRefreshing = true;
@@ -73,7 +65,6 @@ public class JiraFilter extends AbstractRepositoryQuery {
 				clearHits();
 				try {
 					TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
-					System.err.println(">>> " + repositoryUrl);
 					JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(filter, new IssueCollector() {
 
 						public void done() {
@@ -117,21 +108,9 @@ public class JiraFilter extends AbstractRepositoryQuery {
 	}
 
 	public String getQueryUrl() {
-//		if (!urlsInitialized) {
-//			initUrls();
-//		}
 		return super.getQueryUrl();
 	}
 
-	public Image getIcon() {
-		return TaskListImages.getImage(TaskListImages.QUERY);
-	}
-
-	public boolean isDragAndDropEnabled() {
-		return false;
-	}
-
-	/** Priorities are not yet implemented */
 	public String getPriority() {
 		return "";
 	}
@@ -150,27 +129,6 @@ public class JiraFilter extends AbstractRepositoryQuery {
 
 	public boolean isLocal() {
 		return false;
-	}
-
-	public Font getFont() {
-		for (ITaskListElement currHit : getHits()) {
-			if (currHit instanceof JiraFilterHit) {
-				JiraFilterHit hit = (JiraFilterHit) currHit;
-				ITask task = hit.getCorrespondingTask();
-				if (task != null && task.isActive()) {
-					return TaskListImages.BOLD;
-				}
-			}
-		}
-		return null;
-	}
-
-	public String getToolTipText() {
-		return filter.getDescription();
-	}
-
-	public String getStringForSortingDescription() {
-		return filter.getDescription();
 	}
 
 	/** True if the filter is currently downloading hits */

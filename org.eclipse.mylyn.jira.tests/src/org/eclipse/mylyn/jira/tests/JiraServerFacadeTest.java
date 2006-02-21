@@ -43,8 +43,7 @@ public class JiraServerFacadeTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		URL repoURL = new URL(SERVER_URL);
-		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
-				repoURL);
+		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repoURL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
 		jiraFacade = JiraServerFacade.getDefault();
@@ -107,7 +106,7 @@ public class JiraServerFacadeTest extends TestCase {
 
 	public void testServerInfoChange() {
 		repository.setAuthenticationCredentials("Bogus User", "Bogus Password");
-		jiraFacade.repositorySetUpdated();
+		jiraFacade.repositorySetUpdated(); 
 
 		boolean failedOnBogusUser = false;
 

@@ -28,8 +28,8 @@ import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
  * Mylar implementation details. It initializes a jiraServer object and serves
  * as the central location to get a reference to it.
  * 
- * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
+ * @author Wesley Coelho (initial integration patch)
  */
 public class JiraServerFacade implements ITaskRepositoryListener {
 
@@ -63,27 +63,6 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 
-//	/**
-//	 * Initializes the jiraServer object and logs in so that requests can be
-//	 * made on it.
-//	 */
-//	private JiraServer initJiraServer(TaskRepository repository) {
-//		try {
-//			jiraServer = serverManager.createServer(SERVER_NAME, repository.getUrl().toExternalForm(), false, repository.getUserName(), repository.getPassword());
-//			serverManager.removeServer(jiraServer);
-//			serverManager.addServer(jiraServer);
-//
-//			jiraServer.login();
-//		} catch (ServiceUnavailableException sue) {
-//			jiraServer = null;
-//			throw sue;
-//		} catch (RuntimeException e) {
-//			jiraServer = null;
-//			MylarStatusHandler.log("Error connecting to Jira Server", this);
-//			throw e;
-//		}
-//		return jiraServer;
-//	}
 
 	public static JiraServerFacade getDefault() {
 		if (instance == null) {
@@ -91,6 +70,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 		return instance;
 	}
+	
 
 	public void logOutFromAll() {
 		try {
@@ -98,30 +78,18 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			for (int i = 0; i < allServers.length; i++) {
 				allServers[i].logout();
 			}
-//			if (jiraServer != null) {
-//				jiraServer.logout();
-//				serverManager.removeServer(jiraServer);
-//				jiraServer = null;
-//			}
 		} catch (Exception e) {
 			MylarStatusHandler.log(e, "Error logging out of Jira Server");
 		}
 	}
 
-	/**
-	 * Notifies of changes to the set of Task Repositories. Creates a new jira
-	 * server with the updated server information.
-	 */
+
 	public void repositorySetUpdated() {
-//		try {
-//			if (jiraServer != null) {
-//				jiraServer.logout();
-//			}
-//			jiraServer = null;
-//			jiraServer = getJiraServer();
-//		} catch (Exception e) {
-//			MylarStatusHandler.fail(e, "Failed to connect to server after repository settings change", true);
-//		}
+		JiraServer[] servers = serverManager.getAllServers();
+		for (JiraServer server : servers) {
+			server.logout();
+			serverManager.removeServer(server);
+		} 
 	}
 
 	/** Returns true if all of the serverURL, user name, and password are valid */

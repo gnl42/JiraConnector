@@ -15,8 +15,8 @@ import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
 import org.tigris.jira.core.model.Priority;
 
 /**
- * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
+ * @author Wesley Coelho (initial integration patch)
  */
 public class JiraTask extends AbstractRepositoryTask {
 

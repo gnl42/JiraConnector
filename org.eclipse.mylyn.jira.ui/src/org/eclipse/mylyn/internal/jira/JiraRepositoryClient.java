@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.Display;
  * This plugin is a task repository client for Jira. A single kind of repository
  * client may have multiple repositories of that kind.
  * 
- * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
+ * @author Wesley Coelho (initial integration patch)
  */
 public class JiraRepositoryClient extends AbstractRepositoryClient {
 
@@ -169,6 +169,5 @@ public class JiraRepositoryClient extends AbstractRepositoryClient {
 
 	public void requestRefresh(AbstractRepositoryTask task) {
 		// Task refresh not implemented.
-
 	}
 }
