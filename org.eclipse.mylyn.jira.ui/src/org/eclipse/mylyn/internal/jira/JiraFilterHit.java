@@ -42,12 +42,13 @@ public class JiraFilterHit extends AbstractQueryHit {
 
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
 		if (task == null) {
+			String description = issue.getKey() + ": " + issue.getSummary();
 			ITask archiveTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTaskFromArchive(
 					getHandleIdentifier());
 			if (archiveTask instanceof JiraTask) {
 				task = (JiraTask) archiveTask;
-			} else {
-				task = new JiraTask(getHandleIdentifier(), issue.getSummary(), true);
+			} else { 
+				task = new JiraTask(getHandleIdentifier(), description, true);
 				MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(task);
 			}
 		}
@@ -55,6 +56,9 @@ public class JiraFilterHit extends AbstractQueryHit {
 			if (issue.getKey() != null) {
 				String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
 				task.setUrl(url);
+				if (issue.getDescription() != null) {
+					task.setDescription(issue.getKey() + ": " + issue.getSummary());
+				}
 			} 
 			if (issue.getResolution() != null) {
 				task.setCompleted(true);
@@ -97,16 +101,12 @@ public class JiraFilterHit extends AbstractQueryHit {
 	}
 
 	public String getDescription() {
-		return issue.getSummary();
+		return task.getDescription();
 	}
 
 	public void setDescription(String description) {
 		task.setDescription(description);
 	}
-
-	// public String getHandleIdentifier() {
-	// return handl;
-	// }
 
 	public void setHandleIdentifier(String id) {
 		task.setHandleIdentifier(id);
