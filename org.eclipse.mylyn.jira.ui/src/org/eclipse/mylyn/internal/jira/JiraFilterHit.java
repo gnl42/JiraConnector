@@ -60,7 +60,7 @@ public class JiraFilterHit extends AbstractQueryHit {
 					task.setDescription(issue.getKey() + ": " + issue.getSummary());
 				}
 			} 
-			if (issue.getResolution() != null) {
+			if (issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved())) {
 				task.setCompleted(true);
 			} 
 			
@@ -85,11 +85,12 @@ public class JiraFilterHit extends AbstractQueryHit {
 	}
 
 	public boolean isCompleted() {
-		if (issue != null && issue.getStatus() != null) {
-			return issue.getStatus().isClosed() || issue.getStatus().isResolved();
-		} else {
-			return false;
-		}
+		return task.isCompleted();
+//		if (issue != null && issue.getStatus() != null) {
+//			return issue.getStatus().isClosed() || issue.getStatus().isResolved();
+//		} else {
+//			return false;
+//		}
 	}
 
 	public boolean isDragAndDropEnabled() {
