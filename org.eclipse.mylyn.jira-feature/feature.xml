@@ -7,14 +7,12 @@
       plugin="org.eclipse.mylar">
 
    <description>
-      NOTE: downloads the org.tigris.jira.core feature from http://jira-dashboard.tigris.org/update
+      NOTE: depends on the org.tigris.jira.core feature from http://jira-dashboard.tigris.org/update
 JIRA client integrated with Eclipse and Mylar, can be used standalone.
    </description>
 
    <license>
-      NOTE: downloads the org.tigris.jira.core feature from http://jira-dashboard.tigris.org/update (also distributed under this license)
-
-Eclipse Public License - v 1.0
+      Eclipse Public License - v 1.0
 THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS
 ECLIPSE PUBLIC LICENSE (&quot;AGREEMENT&quot;). ANY USE, REPRODUCTION OR
 DISTRIBUTION OF THE PROGRAM CONSTITUTES RECIPIENT&apos;S ACCEPTANCE
