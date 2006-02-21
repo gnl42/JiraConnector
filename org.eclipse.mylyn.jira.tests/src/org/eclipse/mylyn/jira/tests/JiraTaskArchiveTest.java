@@ -96,7 +96,8 @@ public class JiraTaskArchiveTest extends TestCase {
 
 		NamedFilter[] namedFilters = jiraFacade.getJiraServer(jiraRepository)
 				.getNamedFilters();
-		JiraFilter filter = new JiraFilter(namedFilters[0], true);
+		JiraFilter filter = new JiraFilter(jiraRepository.getUrl().toExternalForm(), namedFilters[0]);
+		filter.refreshHits();
 		MylarTaskListPlugin.getTaskListManager().addQuery(filter);
 
 		while (filter.isRefreshing()) {

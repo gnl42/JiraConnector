@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
 import org.eclipse.mylar.internal.tasklist.ui.views.TaskListView;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
@@ -44,37 +43,17 @@ public class JiraFilter extends AbstractRepositoryQuery {
 
 	protected NamedFilter filter = null;
 
-	private boolean urlsInitialized = false;
+//	private boolean urlsInitialized = false;
 
 	private boolean isRefreshing = false;
 
-	public JiraFilter(NamedFilter filter, boolean refresh) {
+	public JiraFilter(String repositoryUrl, NamedFilter filter) {
 		setMaxHits(MAX_HITS);
 		this.filter = filter;
-		initUrls();
-		if (urlsInitialized && refresh) {
-			refreshHits();
-		}
-		super.setDescription(filter.getName());
-	}
+		super.repositoryUrl = repositoryUrl;
+		setQueryUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getId());
 
-	/**
-	 * Initializes the url fields for the filter. When initialized, the filter's
-	 * url is the repositoryUrl and the handle.
-	 */
-	private void initUrls() {
-		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getDefaultRepository(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-		if (repository == null) {
-			MylarStatusHandler.log("No default repository found for filter", this);
-			setQueryUrl("Missing Repository " + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getId());
-			urlsInitialized = false;
-		} else {
-			setQueryUrl(repository.getUrl() + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getId());
-			urlsInitialized = true;
-			setRepositoryUrl(repository.getUrl().toExternalForm());
-			// setHandleIdentifier(getQueryUrl());
-		}
+		super.setDescription(filter.getName());
 	}
 
 	public NamedFilter getNamedFilter() {
@@ -94,6 +73,7 @@ public class JiraFilter extends AbstractRepositoryQuery {
 				clearHits();
 				try {
 					TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
+					System.err.println(">>> " + repositoryUrl);
 					JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(filter, new IssueCollector() {
 
 						public void done() {
@@ -137,9 +117,9 @@ public class JiraFilter extends AbstractRepositoryQuery {
 	}
 
 	public String getQueryUrl() {
-		if (!urlsInitialized) {
-			initUrls();
-		}
+//		if (!urlsInitialized) {
+//			initUrls();
+//		}
 		return super.getQueryUrl();
 	}
 

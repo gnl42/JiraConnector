@@ -37,15 +37,15 @@ public class JiraFilterTest extends TestCase {
 
 	private JiraServerFacade jiraFacade = null;
 
-	private TaskRepository jiraRepo = null;
+	private TaskRepository repository = null;
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		URL repoURL = new URL(SERVER_URL);
-		jiraRepo = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
+		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
 				repoURL);
-		jiraRepo.setAuthenticationCredentials(USER, PASSWORD);
-		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepo);
+		repository.setAuthenticationCredentials(USER, PASSWORD);
+		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
@@ -57,15 +57,15 @@ public class JiraFilterTest extends TestCase {
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
 //		client.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
-		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
+		MylarTaskListPlugin.getRepositoryManager().removeRepository(repository);
 		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
 
 	public void testJiraFilterRefresh() {
-		NamedFilter[] filters = jiraFacade.getJiraServer(jiraRepo).getNamedFilters();
+		NamedFilter[] filters = jiraFacade.getJiraServer(repository).getNamedFilters();
 		assertTrue(filters.length > 0);
-		JiraFilter jFilter = new JiraFilter(filters[0], false);
+		JiraFilter jFilter = new JiraFilter(repository.getUrl().toExternalForm(), filters[0]);
 		assertTrue(jFilter.getHits().size() == 0);
 		jFilter.refreshHits();
 		while (jFilter.isRefreshing()) {

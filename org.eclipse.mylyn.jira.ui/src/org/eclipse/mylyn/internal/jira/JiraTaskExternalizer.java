@@ -77,7 +77,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
 //		namedFilter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
-		AbstractRepositoryQuery query = new JiraFilter(namedFilter, false);
+		AbstractRepositoryQuery query = new JiraFilter(element.getAttribute(KEY_REPOSITORY_URL), namedFilter);
+		
 		NodeList list = node.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
 			Node child = list.item(i);
@@ -102,7 +103,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		node.setAttribute(KEY_NAME, query.getDescription());
 		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
 		node.setAttribute(KEY_QUERY_STRING, query.getQueryUrl());
-		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl()); 
+		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl());
 
 		node.setAttribute(KEY_FILTER_ID, filter.getId());
 		node.setAttribute(KEY_FILTER_NAME, filter.getName());

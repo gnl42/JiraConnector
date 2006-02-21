@@ -35,10 +35,6 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	private ServerManager serverManager = null;
 
-//	private JiraServer jiraServer = null;
-
-//	private final static String SERVER_NAME = "Mylar Jira Server";
-
 	private static JiraServerFacade instance = null;
 
 	public JiraServerFacade() {
@@ -49,35 +45,22 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	/**
 	 * Lazily creates server.
 	 */
-	public JiraServer getJiraServer(TaskRepository repository) {
-//		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getDefaultRepository(
-//				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
-//		if (repository == null) {
-//			throw new RuntimeException("Missing JIRA repository.");
-//		}
-		
+	public JiraServer getJiraServer(TaskRepository repository) {	
 		try {
-			String serverName = repository.getUrl().toExternalForm();
-			JiraServer server = serverManager.getServer(serverName);
+			String serverHostname = repository.getUrl().getHost();
+			JiraServer server = serverManager.getServer(serverHostname);
 			if (server == null) {
-				server = serverManager.createServer(serverName, repository.getUrl().toExternalForm(), false, repository.getUserName(), repository.getPassword());
+				server = serverManager.createServer(serverHostname, repository.getUrl().toExternalForm(), false, repository.getUserName(), repository.getPassword());
+				serverManager.addServer(server);
 			}
-//				serverManager.removeServer(jiraServer);
-//			serverManager.addServer(jiraServer);
 			server.login();
 			return server;
 		} catch (ServiceUnavailableException sue) {
-//			jiraServer = null;
 			throw sue;
 		} catch (RuntimeException e) {
-//			jiraServer = null;
 			MylarStatusHandler.log("Error connecting to Jira Server", this);
 			throw e;
 		}
-
-//		if (jiraServer == null) {
-//			jiraServer = initJiraServer(repository);
-//		}
 	}
 
 //	/**

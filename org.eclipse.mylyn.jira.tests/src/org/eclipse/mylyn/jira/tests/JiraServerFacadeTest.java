@@ -116,7 +116,6 @@ public class JiraServerFacadeTest extends TestCase {
 		} catch (Exception e) {
 			failedOnBogusUser = true;
 		}
-
 		assertTrue(failedOnBogusUser);
 
 		// Check that it works after putting the right password in

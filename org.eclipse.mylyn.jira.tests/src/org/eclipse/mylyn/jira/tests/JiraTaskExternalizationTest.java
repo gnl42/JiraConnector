@@ -56,17 +56,17 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	private TaskListManager manager = MylarTaskListPlugin.getTaskListManager();
 
-	private TaskRepository jiraRepo = null;
+	private TaskRepository repository = null;
 	
 	private TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		URL repoURL = new URL(SERVER_URL);
-		jiraRepo = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
+		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
 				repoURL);
-		jiraRepo.setAuthenticationCredentials(USER, PASSWORD);
-		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepo);
+		repository.setAuthenticationCredentials(USER, PASSWORD);
+		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
 
 	}
 
@@ -77,7 +77,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertNotNull(client);
 		taskList.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
-		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepo);
+		MylarTaskListPlugin.getRepositoryManager().removeRepository(repository);
 		super.tearDown();
 	}
 
@@ -118,14 +118,14 @@ public class JiraTaskExternalizationTest extends TestCase {
 		namedFilter.setName("Test Filter");
 		namedFilter.setId("123456");
 		namedFilter.setDescription("Test Filter Description");
-		JiraFilter jiraFilter = new JiraFilter(namedFilter, false);
+		JiraFilter jiraFilter = new JiraFilter(repository.getUrl().toExternalForm(), namedFilter);
 		String filterUrl = jiraFilter.getQueryUrl();
 
 		Issue jiraIssue = new Issue();
 		jiraIssue.setKey(ISSUE_KEY);
 		jiraIssue.setDescription(ISSUE_DESCRIPTION);
 		jiraIssue.setSummary(ISSUE_SUMMARY);
-		JiraFilterHit jiraHit = new JiraFilterHit(jiraIssue, jiraRepo.getUrl().toExternalForm(), 1);
+		JiraFilterHit jiraHit = new JiraFilterHit(jiraIssue, repository.getUrl().toExternalForm(), 1);
 		jiraFilter.addHit(jiraHit);
 		MylarTaskListPlugin.getTaskListManager().addQuery(jiraFilter);
 

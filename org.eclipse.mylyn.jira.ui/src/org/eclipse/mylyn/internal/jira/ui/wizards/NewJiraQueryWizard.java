@@ -46,8 +46,9 @@ public class NewJiraQueryWizard extends Wizard {
 		NamedFilter namedFilter = queryPage.getSelectedFilter();
 
 		if (namedFilter != null) {
-			JiraFilter filter = new JiraFilter(namedFilter, true);
+			JiraFilter filter = new JiraFilter(repository.getUrl().toExternalForm(), namedFilter);
 			MylarTaskListPlugin.getTaskListManager().addQuery(filter);
+			filter.refreshHits();
 		}
 		// if (TaskListView.getDefault() != null) {
 		// TaskListView.getDefault().getViewer().refresh();
