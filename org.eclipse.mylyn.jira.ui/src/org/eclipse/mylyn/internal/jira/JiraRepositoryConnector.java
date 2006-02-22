@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  */
-public class JiraRepositoryClient extends AbstractRepositoryConnector {
+public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String LABEL_JOB_SYNCHRONIZE = "Jira Synchronize";
 	
@@ -51,7 +51,7 @@ public class JiraRepositoryClient extends AbstractRepositoryConnector {
 		return MylarJiraPlugin.JIRA_CLIENT_LABEL;
 	}
 
-	public String getKind() {
+	public String getRepositoryType() {
 		return MylarJiraPlugin.JIRA_REPOSITORY_KIND;
 	}
 

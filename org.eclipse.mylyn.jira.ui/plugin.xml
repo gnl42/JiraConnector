@@ -9,7 +9,7 @@
 
       <repositoryType
             brandingIcon="icons/eview16/jira-logo.gif"
-            class="org.eclipse.mylar.internal.jira.JiraRepositoryClient"
+            class="org.eclipse.mylar.internal.jira.JiraRepositoryConnector"
             id="org.eclipse.mylar.jira.tasklist.repositories"
             name="JIRA Repository Client"
             type="jira"/>
