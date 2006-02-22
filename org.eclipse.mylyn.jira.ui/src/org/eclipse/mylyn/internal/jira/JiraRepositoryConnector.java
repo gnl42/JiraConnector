@@ -60,7 +60,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public ITask createTaskFromExistingId(TaskRepository repository, String id) {
-		return null;
+		return null; 
+//		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+//		if (server != null) {
+//			FilterDefinition filter = new FilterDefinition();
+//			filter.set
+//			server.findIssues(new Filter, collector)
+//		}
 //		String url = repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + id;
 //		String handle = AbstractRepositoryTask.getHandle(repository.getUrl().toExternalForm(), id);
 //		JiraTask newTask = new JiraTask(handle, NEW_TASK_DESC, true);
