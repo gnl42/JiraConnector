@@ -20,7 +20,7 @@ import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryClient;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskList;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
@@ -58,7 +58,7 @@ public class JiraTaskArchiveTest extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		AbstractRepositoryClient client = MylarTaskListPlugin
+		AbstractRepositoryConnector client = MylarTaskListPlugin
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
@@ -70,7 +70,7 @@ public class JiraTaskArchiveTest extends TestCase {
 	}
 
 	public void testJiraTaskRegistry() {
-		AbstractRepositoryClient client = MylarTaskListPlugin
+		AbstractRepositoryConnector client = MylarTaskListPlugin
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
@@ -86,7 +86,7 @@ public class JiraTaskArchiveTest extends TestCase {
 	}
 
 	public void testJiraTaskRegistryIntegration() {
-		AbstractRepositoryClient client = MylarTaskListPlugin
+		AbstractRepositoryConnector client = MylarTaskListPlugin
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);

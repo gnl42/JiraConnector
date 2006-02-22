@@ -18,15 +18,14 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylar.internal.tasklist.ui.TaskListUiUtil;
 import org.eclipse.mylar.internal.tasklist.ui.views.RetrieveTitleFromUrlJob;
 import org.eclipse.mylar.internal.tasklist.ui.views.TaskListView;
-import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractAddExistingTaskWizard;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
-import org.eclipse.mylar.internal.tasklist.ui.wizards.ExistingTaskWizardPage;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryClient;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
 import org.eclipse.mylar.provisional.tasklist.ITask;
@@ -41,8 +40,10 @@ import org.eclipse.swt.widgets.Display;
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  */
-public class JiraRepositoryClient extends AbstractRepositoryClient {
+public class JiraRepositoryClient extends AbstractRepositoryConnector {
 
+	private static final String LABEL_JOB_SYNCHRONIZE = "Jira Synchronize";
+	
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
@@ -59,12 +60,14 @@ public class JiraRepositoryClient extends AbstractRepositoryClient {
 	}
 
 	public ITask createTaskFromExistingId(TaskRepository repository, String id) {
-		JiraTask newTask = new JiraTask(repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + id, NEW_TASK_DESC,
-				true);
-		MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(newTask);
-		retrieveTaskDescription(newTask);
-		return newTask;
-	}
+		return null;
+//		String url = repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + id;
+//		String handle = AbstractRepositoryTask.getHandle(repository.getUrl().toExternalForm(), id);
+//		JiraTask newTask = new JiraTask(handle, NEW_TASK_DESC, true);
+//		MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(newTask);
+//		retrieveTaskDescription(newTask);
+//		return newTask;
+	} 
 
 	public AbstractRepositorySettingsPage getSettingsPage() {
 		return new JiraRepositorySettingsPage();
@@ -75,38 +78,25 @@ public class JiraRepositoryClient extends AbstractRepositoryClient {
 	}
 
 	public IWizard getAddExistingTaskWizard(TaskRepository repository) {
-		return new AbstractAddExistingTaskWizard(repository) {
-
-			private ExistingTaskWizardPage page;
-
-			public void addPages() {
-				super.addPages();
-				this.page = new ExistingTaskWizardPage();
-				addPage(page);
-			}
-
-			protected String getTaskId() {
-				return page.getTaskId();
-			}
-		};
+		return new AddExistingJiraTaskWizard(repository);
 	}
 
 	@Override
 	public void synchronize() {
-		Job j = new Job("Jira Synchronize") {
+		Job synchronizeJob = new Job(LABEL_JOB_SYNCHRONIZE) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				refreshFilters();
 				return Status.OK_STATUS;
 			}
 		};
-		j.schedule();
+		synchronizeJob.schedule();
 	}
 
 	@Override
 	public Job synchronize(ITask task, boolean forceUpdate, IJobChangeListener listener) {
 		// Sync for individual tasks not implemented
-		return new Job("Jira Synchronize") {
+		return new Job(LABEL_JOB_SYNCHRONIZE) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				refreshFilters();
@@ -170,4 +160,19 @@ public class JiraRepositoryClient extends AbstractRepositoryClient {
 	public void requestRefresh(AbstractRepositoryTask task) {
 		// Task refresh not implemented.
 	}
+
+	@Override
+	public boolean canCreateTaskFromId() {
+		return false;
+	}
+
+	@Override
+	public boolean canCreateNewTask() {
+		return false;
+	}
+
+	@Override
+	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
+		return null;
+	} 
 }

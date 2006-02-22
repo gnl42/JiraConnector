@@ -22,7 +22,7 @@ import org.eclipse.mylar.internal.jira.JiraFilter;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryClient;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
 import org.eclipse.mylar.provisional.tasklist.ITask;
@@ -71,7 +71,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		AbstractRepositoryClient client = MylarTaskListPlugin
+		AbstractRepositoryConnector client = MylarTaskListPlugin
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
@@ -157,7 +157,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		String handle = AbstractRepositoryTask.getHandle(jiraHit.getRepositoryUrl(), 1);
 		assertEquals(handle, jTask.getHandleIdentifier());
 
-		AbstractRepositoryClient client = MylarTaskListPlugin
+		AbstractRepositoryConnector client = MylarTaskListPlugin
 				.getRepositoryManager().getRepositoryClient(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);

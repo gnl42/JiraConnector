@@ -45,12 +45,13 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	/**
 	 * Lazily creates server.
 	 */
-	public JiraServer getJiraServer(TaskRepository repository) {	
+	public JiraServer getJiraServer(TaskRepository repository) {
 		try {
 			String serverHostname = repository.getUrl().getHost();
 			JiraServer server = serverManager.getServer(serverHostname);
 			if (server == null) {
-				server = serverManager.createServer(serverHostname, repository.getUrl().toExternalForm(), false, repository.getUserName(), repository.getPassword());
+				server = serverManager.createServer(serverHostname, repository.getUrl().toExternalForm(), false,
+						repository.getUserName(), repository.getPassword());
 				serverManager.addServer(server);
 			}
 			server.login();
@@ -63,14 +64,12 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 
-
 	public static JiraServerFacade getDefault() {
 		if (instance == null) {
 			instance = new JiraServerFacade();
 		}
 		return instance;
 	}
-	
 
 	public void logOutFromAll() {
 		try {
@@ -83,13 +82,12 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 
-
 	public void repositorySetUpdated() {
 		JiraServer[] servers = serverManager.getAllServers();
 		for (JiraServer server : servers) {
 			server.logout();
 			serverManager.removeServer(server);
-		} 
+		}
 	}
 
 	/** Returns true if all of the serverURL, user name, and password are valid */
