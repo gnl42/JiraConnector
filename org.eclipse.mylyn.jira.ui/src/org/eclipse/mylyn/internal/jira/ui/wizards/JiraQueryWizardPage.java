@@ -20,8 +20,11 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -56,6 +59,8 @@ public class JiraQueryWizardPage extends WizardPage {
 	
 	private TaskRepository repository;
 
+	private Button updateButton = null;
+	
 	public JiraQueryWizardPage(TaskRepository repository) {
 		super(TITLE);
 		this.repository = repository;
@@ -66,7 +71,7 @@ public class JiraQueryWizardPage extends WizardPage {
 
 	public void createControl(Composite parent) {
 
-		Composite innerComposite = new Composite(parent, SWT.NONE);
+		final Composite innerComposite = new Composite(parent, SWT.NONE);
 		innerComposite.setLayoutData(new GridData());
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
@@ -84,14 +89,34 @@ public class JiraQueryWizardPage extends WizardPage {
 		data.widthHint = COMBO_WIDTH_HINT;
 		filterCombo.setLayoutData(data);
 
+		new Label(innerComposite, SWT.NULL); // spacer
+		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
+		updateButton.setText("Update Filters from Repository");
+		updateButton.addMouseListener(new MouseListener() {
+
+			public void mouseUp(MouseEvent e) { 
+				filterCombo.removeAll();
+				filterCombo.add(WAIT_MESSAGE);
+				filterCombo.select(0);
+				JiraServerFacade.getDefault().refreshServerSettings(repository);
+				downloadFilters();
+			}
+			
+			public void mouseDoubleClick(MouseEvent e) {
+				// ignore				
+			}
+
+			public void mouseDown(MouseEvent e) {
+				// ignore				
+			} 
+		});
+		
 		setControl(innerComposite);
 		downloadFilters();
 	}
 
 	protected void downloadFilters() {
-
 		Job j = new Job(JOB_LABEL) {
-
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
 				try {
@@ -112,9 +137,7 @@ public class JiraQueryWizardPage extends WizardPage {
 				return Status.OK_STATUS;
 			}
 		};
-
 		j.schedule();
-
 	}
 
 	/** Called by the download job when the filters have been downloaded */

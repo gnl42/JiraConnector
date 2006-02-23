@@ -85,10 +85,29 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	public void repositorySetUpdated() {
 		JiraServer[] servers = serverManager.getAllServers();
 		for (JiraServer server : servers) {
-			server.logout();
-			serverManager.removeServer(server);
+			removeServer(server);
 		}
 	}
+
+	/**
+	 * TODO: using work-around, need API
+	 */
+	public void refreshServerSettings(TaskRepository repository) {
+		String serverHostname = repository.getUrl().getHost();
+		JiraServer server = serverManager.getServer(serverHostname);
+		if (server != null) {
+			removeServer(server);
+			server = serverManager.createServer(serverHostname, repository.getUrl().toExternalForm(), false,
+					repository.getUserName(), repository.getPassword());
+			serverManager.addServer(server);
+			server.login(); 
+		}
+	}
+	
+	private void removeServer(JiraServer server) {
+		server.logout();
+		serverManager.removeServer(server);
+	} 
 
 	/** Returns true if all of the serverURL, user name, and password are valid */
 	public boolean validateServerAndCredentials(String serverUrl, String user, String password) {
@@ -122,4 +141,6 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 					+ "Please check your credentials in the Task Repositories view", true);
 		}
 	}
+
+	
 }
