@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.mylar.jira_feature"
       label="Mylar Connector: JIRA (Experimental)"
-      version="0.4.8.v20060221-1550"
+      version="0.4.9"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
@@ -222,8 +222,8 @@ litigation.
       <import plugin="org.eclipse.mylar.tasklist"/>
       <import plugin="org.eclipse.mylar.core"/>
       <import plugin="org.tigris.jira.core.soap" version="0.7.0" match="compatible"/>
-      <import feature="org.tigris.jira.core" version="0.7.0" match="compatible"/>
-      <import feature="org.eclipse.mylar_feature" version="0.4.8.v20060215-1930"/>
+      <import feature="org.tigris.jira.core" version="0.7.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.mylar_feature" version="0.4.9" match="greaterOrEqual"/>
       <import feature="org.tigris.jira.core" version="0.7.0" match="compatible"/>
    </requires>
 
@@ -231,7 +231,7 @@ litigation.
          id="org.eclipse.mylar.jira"
          download-size="0"
          install-size="0"
-         version="0.4.8.v20060221-1550"
+         version="0.4.9"
          unpack="false"/>
 
 </feature>
