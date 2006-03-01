@@ -11,6 +11,9 @@
 
 package org.eclipse.mylar.internal.jira;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -42,7 +45,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
+	private static final String VERSION_SUPPORT = "3.3.1 and higher";
+
 	private static final String LABEL_JOB_SYNCHRONIZE = "Jira Synchronize";
+	
+	private List<String> supportedVersions;
 	
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
@@ -180,5 +187,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
 		return null;
+	}
+
+	@Override
+	public List<String> getSupportedVersions() {
+		if (supportedVersions == null) {
+			supportedVersions = new ArrayList<String>();
+			supportedVersions.add(VERSION_SUPPORT);
+		}
+		return supportedVersions;
 	} 
 }
