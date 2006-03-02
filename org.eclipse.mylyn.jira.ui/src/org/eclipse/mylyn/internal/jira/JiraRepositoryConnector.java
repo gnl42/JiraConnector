@@ -174,12 +174,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 				public void done() {
 //					jiraFilter.setRefreshing(false);
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							if (TaskListView.getDefault() != null)
-								TaskListView.getDefault().refreshAndFocus();
-						}
-					});
+//					Display.getDefault().asyncExec(new Runnable() {
+//						public void run() {
+//							if (TaskListView.getDefault() != null)
+//								TaskListView.getDefault().refreshAndFocus();
+//						}
+//					});
 				}
 
 				public boolean isCancelled() {
