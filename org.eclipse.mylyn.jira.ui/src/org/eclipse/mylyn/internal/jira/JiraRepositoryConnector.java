@@ -201,8 +201,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		} catch (Exception e) {
 //			isRefreshing = false;
 //			jiraFilter.setRefreshing(false);
-			JiraServerFacade.handleConnectionException(e);
-			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK, "Could not log in", e));
+//			JiraServerFacade.handleConnectionException(e);
+			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK, 
+					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
+					+ "\n\nCheck network connection.", e));
 //			queryStatus.add(Status.CANCEL_STATUS);
 			
 		}

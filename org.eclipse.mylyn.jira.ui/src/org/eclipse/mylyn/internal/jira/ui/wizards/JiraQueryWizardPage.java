@@ -116,7 +116,7 @@ public class JiraQueryWizardPage extends WizardPage {
 	}
 
 	protected void downloadFilters() {
-		Job j = new Job(JOB_LABEL) {
+		Job job = new Job(JOB_LABEL) {
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
 				try {
@@ -137,7 +137,7 @@ public class JiraQueryWizardPage extends WizardPage {
 				return Status.OK_STATUS;
 			}
 		};
-		j.schedule();
+		job.schedule();
 	}
 
 	/** Called by the download job when the filters have been downloaded */

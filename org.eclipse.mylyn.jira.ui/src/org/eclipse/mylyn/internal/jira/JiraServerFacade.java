@@ -78,7 +78,8 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 				allServers[i].logout();
 			}
 		} catch (Exception e) {
-			MylarStatusHandler.log(e, "Error logging out of Jira Server");
+			// ignore
+//			MylarStatusHandler.log(e, "Error logging out of Jira Server");
 		}
 	}
 
