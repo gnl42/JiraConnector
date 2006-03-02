@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
@@ -209,7 +210,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 //			isRefreshing = false;
 			jiraFilter.setRefreshing(false);
 			JiraServerFacade.handleConnectionException(e);
-			queryStatus.add(Status.CANCEL_STATUS);
+			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK, "Could not log in", e));
+//			queryStatus.add(Status.CANCEL_STATUS);
+			
 		}
 		queryStatus.add(Status.OK_STATUS);
 		return hits;

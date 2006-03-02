@@ -62,7 +62,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryClient(
+				.getRepositoryManager().getRepositoryConnector(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 		taskList.clearArchive();
@@ -74,7 +74,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	public void testJiraTaskRegistry() {
 		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryClient(
+				.getRepositoryManager().getRepositoryConnector(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 
@@ -90,7 +90,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	public void testJiraTaskRegistryIntegration() {
 		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryClient(
+				.getRepositoryManager().getRepositoryConnector(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 		taskList.clearArchive();

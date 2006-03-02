@@ -54,7 +54,7 @@ public class JiraFilterTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryClient(
+				.getRepositoryManager().getRepositoryConnector(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();

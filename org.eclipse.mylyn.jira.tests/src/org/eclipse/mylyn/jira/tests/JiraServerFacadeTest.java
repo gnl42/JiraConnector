@@ -51,7 +51,7 @@ public class JiraServerFacadeTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryClient(
+				.getRepositoryManager().getRepositoryConnector(
 						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 //		client.clearArchive();
