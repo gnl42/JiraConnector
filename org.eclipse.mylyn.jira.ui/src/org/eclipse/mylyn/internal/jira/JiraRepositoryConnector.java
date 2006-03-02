@@ -12,10 +12,11 @@
 package org.eclipse.mylar.internal.jira;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
@@ -28,6 +29,7 @@ import org.eclipse.mylar.internal.tasklist.ui.TaskListUiUtil;
 import org.eclipse.mylar.internal.tasklist.ui.views.RetrieveTitleFromUrlJob;
 import org.eclipse.mylar.internal.tasklist.ui.views.TaskListView;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
@@ -35,6 +37,8 @@ import org.eclipse.mylar.provisional.tasklist.ITask;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.eclipse.swt.widgets.Display;
+import org.tigris.jira.core.model.Issue;
+import org.tigris.jira.core.model.filter.IssueCollector;
 
 /**
  * This plugin is a task repository client for Jira. A single kind of repository
@@ -47,7 +51,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
-	private static final String LABEL_JOB_SYNCHRONIZE = "Jira Synchronize";
+//	private static final String LABEL_JOB_SYNCHRONIZE = "Jira Synchronize";
 	
 	private List<String> supportedVersions;
 	
@@ -94,29 +98,29 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return new AddExistingJiraTaskWizard(repository);
 	}
 
-	@Override
-	public void synchronize() {
-		Job synchronizeJob = new Job(LABEL_JOB_SYNCHRONIZE) {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				refreshFilters();
-				return Status.OK_STATUS;
-			}
-		};
-		synchronizeJob.schedule();
-	}
+//	@Override
+//	public void synchronize() {
+//		Job synchronizeJob = new Job(LABEL_JOB_SYNCHRONIZE) {
+//			@Override
+//			protected IStatus run(IProgressMonitor monitor) {
+//				refreshFilters();
+//				return Status.OK_STATUS;
+//			}
+//		};
+//		synchronizeJob.schedule();
+//	}
 
 	@Override
 	public Job synchronize(ITask task, boolean forceUpdate, IJobChangeListener listener) {
 		// Sync for individual tasks not implemented
-		return new Job(LABEL_JOB_SYNCHRONIZE) {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				refreshFilters();
-				return Status.OK_STATUS;
-			}
-
-		};
+		return null;
+//		return new Job(LABEL_JOB_SYNCHRONIZE) {
+//			@Override
+//			protected IStatus run(IProgressMonitor monitor) {
+//				refreshFilters();
+//				return Status.OK_STATUS;
+//			}
+//		};
 	}
 
 	@Override
@@ -126,13 +130,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		TaskListUiUtil.openUrl(title, title, filter.getQueryUrl());
 	}
 
-	public void refreshFilters() {
-		for (AbstractRepositoryQuery query : MylarTaskListPlugin.getTaskListManager().getTaskList().getQueries()) {
-			if (query instanceof JiraFilter) {
-				((JiraFilter) query).refreshHits();
-			}
-		}
-	}
+//	public void refreshFilters() {
+//		for (AbstractRepositoryQuery query : MylarTaskListPlugin.getTaskListManager().getTaskList().getQueries()) {
+//			if (query instanceof JiraFilter) {
+//				((JiraFilter) query).refreshHits();
+//			}
+//		}
+//	}
 
 	/**
 	 * Attempts to set the task pageTitle to the title from the specified url
@@ -164,11 +168,59 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void synchronize(AbstractRepositoryQuery repositoryQuery) {
-		if (repositoryQuery instanceof JiraFilter) {
-			((JiraFilter) repositoryQuery).refreshHits();
+	protected List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery, final IProgressMonitor monitor, MultiStatus queryStatus) {
+		if (!(repositoryQuery instanceof JiraFilter)) {
+			return Collections.emptyList();
 		}
-	}
+		final JiraFilter jiraFilter = (JiraFilter)repositoryQuery;
+		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
+		jiraFilter.setRefreshing(true);
+		try {
+			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
+			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(jiraFilter.getNamedFilter(), new IssueCollector() {
+
+				public void done() {
+					jiraFilter.setRefreshing(false);
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							if (TaskListView.getDefault() != null)
+								TaskListView.getDefault().refreshAndFocus();
+						}
+					});
+				}
+
+				public boolean isCancelled() {
+					return monitor.isCanceled();
+				}
+
+				public void collectIssue(Issue issue) {
+					int issueId = new Integer(issue.getId());
+					JiraFilterHit hit = new JiraFilterHit(issue, jiraFilter.getRepositoryUrl(), issueId);
+					hits.add(hit);
+//					addHit(hit);
+				}
+
+				public void start() {
+
+				}
+			});
+
+		} catch (Exception e) {
+//			isRefreshing = false;
+			jiraFilter.setRefreshing(false);
+			JiraServerFacade.handleConnectionException(e);
+			queryStatus.add(Status.CANCEL_STATUS);
+		}
+		queryStatus.add(Status.OK_STATUS);
+		return hits;
+	} 
+	
+//	@Override
+//	public void synchronize(AbstractRepositoryQuery repositoryQuery, IJobChangeListener listener) {
+//		if (repositoryQuery instanceof JiraFilter) {
+//			((JiraFilter) repositoryQuery).refreshHits();
+//		}
+//	}
 
 	public void requestRefresh(AbstractRepositoryTask task) {
 		// Task refresh not implemented.
@@ -196,5 +248,5 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			supportedVersions.add(VERSION_SUPPORT);
 		}
 		return supportedVersions;
-	} 
+	}
 }

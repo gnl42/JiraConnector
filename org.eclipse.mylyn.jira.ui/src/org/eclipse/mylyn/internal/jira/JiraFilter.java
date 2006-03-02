@@ -11,18 +11,8 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.mylar.internal.tasklist.ui.views.TaskListView;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.provisional.tasklist.TaskRepository;
-import org.eclipse.swt.widgets.Display;
-import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
-import org.tigris.jira.core.model.filter.IssueCollector;
 
 /**
  * A JiraFilter represents a query for issues from a Jira repository.
@@ -32,7 +22,7 @@ import org.tigris.jira.core.model.filter.IssueCollector;
  */
 public class JiraFilter extends AbstractRepositoryQuery {
 
-	private static final String LABEL_REFRESH_JOB = "Refreshing Jira Filter(s)";
+//	private static final String LABEL_REFRESH_JOB = "Refreshing Jira Filter(s)";
 
 	private static final int MAX_HITS = 75;
 
@@ -53,59 +43,59 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		return filter;
 	}
 
-	/**
-	 * TODO: refactor into common refresh mechanism.
-	 */
-	public void refreshHits() {
-		isRefreshing = true;
-		Job j = new Job(LABEL_REFRESH_JOB) {
-
-			@Override
-			protected IStatus run(final IProgressMonitor monitor) {
-				clearHits();
-				try {
-					TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
-					JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(filter, new IssueCollector() {
-
-						public void done() {
-							isRefreshing = false;
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									if (TaskListView.getDefault() != null)
-										TaskListView.getDefault().refreshAndFocus();
-								}
-							});
-						}
-
-						public boolean isCancelled() {
-							return monitor.isCanceled();
-						}
-
-						public void collectIssue(Issue issue) {
-							int issueId = new Integer(issue.getId());
-							JiraFilterHit hit = new JiraFilterHit(issue, JiraFilter.this.getRepositoryUrl(), issueId);
-							addHit(hit);
-						}
-
-						public void start() {
-
-						}
-					});
-
-				} catch (Exception e) {
-					isRefreshing = false;
-					JiraServerFacade.handleConnectionException(e);
-					return Status.CANCEL_STATUS;
-				}
-
-				return Status.OK_STATUS;
-			}
-
-		};
-
-		j.schedule();
-
-	}
+//	/**
+//	 * TODO: refactor into common refresh mechanism.
+//	 */
+//	public void refreshHits() {
+//		isRefreshing = true;
+//		Job j = new Job(LABEL_REFRESH_JOB) {
+//
+//			@Override
+//			protected IStatus run(final IProgressMonitor monitor) {
+//				clearHits();
+//				try {
+//					TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
+//					JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(filter, new IssueCollector() {
+//
+//						public void done() {
+//							isRefreshing = false;
+//							Display.getDefault().asyncExec(new Runnable() {
+//								public void run() {
+//									if (TaskListView.getDefault() != null)
+//										TaskListView.getDefault().refreshAndFocus();
+//								}
+//							});
+//						}
+//
+//						public boolean isCancelled() {
+//							return monitor.isCanceled();
+//						}
+//
+//						public void collectIssue(Issue issue) {
+//							int issueId = new Integer(issue.getId());
+//							JiraFilterHit hit = new JiraFilterHit(issue, JiraFilter.this.getRepositoryUrl(), issueId);
+//							addHit(hit);
+//						}
+//
+//						public void start() {
+//
+//						}
+//					});
+//
+//				} catch (Exception e) {
+//					isRefreshing = false;
+//					JiraServerFacade.handleConnectionException(e);
+//					return Status.CANCEL_STATUS;
+//				}
+//
+//				return Status.OK_STATUS;
+//			}
+//
+//		};
+//
+//		j.schedule();
+//
+//	}
 
 	public String getQueryUrl() {
 		return super.getQueryUrl();
@@ -138,6 +128,14 @@ public class JiraFilter extends AbstractRepositoryQuery {
 
 	public String getRepositoryKind() {
 		return MylarJiraPlugin.JIRA_REPOSITORY_KIND;
+	}
+
+	public NamedFilter getFilter() {
+		return filter;
+	}
+
+	public void setRefreshing(boolean refreshing) {
+		this.isRefreshing = refreshing;
 	}
 
 }

@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylar.internal.jira.JiraFilter;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
+import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
@@ -39,6 +40,8 @@ public class JiraFilterTest extends TestCase {
 
 	private TaskRepository repository = null;
 
+	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
+	
 	protected void setUp() throws Exception {
 		super.setUp();
 		URL repoURL = new URL(SERVER_URL);
@@ -67,7 +70,8 @@ public class JiraFilterTest extends TestCase {
 		assertTrue(filters.length > 0);
 		JiraFilter jFilter = new JiraFilter(repository.getUrl().toExternalForm(), filters[0]);
 		assertTrue(jFilter.getHits().size() == 0);
-		jFilter.refreshHits();
+//		jFilter.refreshHits();
+		connector.synchronize(jFilter, null);
 		while (jFilter.isRefreshing()) {
 			try {
 				Thread.sleep(100);

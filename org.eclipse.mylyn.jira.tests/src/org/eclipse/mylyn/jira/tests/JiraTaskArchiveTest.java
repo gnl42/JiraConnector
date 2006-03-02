@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylar.internal.jira.JiraFilter;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
+import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
@@ -46,6 +47,8 @@ public class JiraTaskArchiveTest extends TestCase {
 	private TaskRepository jiraRepository = null;
 	
 	private TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
+	
+	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -97,7 +100,9 @@ public class JiraTaskArchiveTest extends TestCase {
 		NamedFilter[] namedFilters = jiraFacade.getJiraServer(jiraRepository)
 				.getNamedFilters();
 		JiraFilter filter = new JiraFilter(jiraRepository.getUrl().toExternalForm(), namedFilters[0]);
-		filter.refreshHits();
+		
+		connector.synchronize(filter, null);
+//		filter.refreshHits();
 		MylarTaskListPlugin.getTaskListManager().addQuery(filter);
 
 		while (filter.isRefreshing()) {
