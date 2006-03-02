@@ -15,6 +15,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylar.internal.jira.JiraFilter;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
@@ -71,8 +72,10 @@ public class JiraFilterTest extends TestCase {
 		JiraFilter jFilter = new JiraFilter(repository.getUrl().toExternalForm(), filters[0]);
 		assertTrue(jFilter.getHits().size() == 0);
 //		jFilter.refreshHits();
-		connector.synchronize(jFilter, null);
-		while (jFilter.isRefreshing()) {
+//		boolean done = false;
+
+		Job job = connector.synchronize(jFilter, null);
+		while (job.getResult() == null) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

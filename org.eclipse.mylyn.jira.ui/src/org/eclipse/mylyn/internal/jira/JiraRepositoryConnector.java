@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
@@ -42,18 +40,12 @@ import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.filter.IssueCollector;
 
 /**
- * This plugin is a task repository client for Jira. A single kind of repository
- * client may have multiple repositories of that kind.
- * 
  * @author Mik Kersten
- * @author Wesley Coelho (initial integration patch)
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
-//	private static final String LABEL_JOB_SYNCHRONIZE = "Jira Synchronize";
-	
 	private List<String> supportedVersions;
 	
 	/** Name initially given to new tasks. Public for testing */
@@ -111,10 +103,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 //		synchronizeJob.schedule();
 //	}
 
-	@Override
-	public Job synchronize(ITask task, boolean forceUpdate, IJobChangeListener listener) {
-		// Sync for individual tasks not implemented
-		return null;
+//	@Override
+//	public Job synchronize(ITask task, boolean forceUpdate, IJobChangeListener listener) {
+//		// Sync for individual tasks not implemented
+//		return null;
 //		return new Job(LABEL_JOB_SYNCHRONIZE) {
 //			@Override
 //			protected IStatus run(IProgressMonitor monitor) {
@@ -122,7 +114,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 //				return Status.OK_STATUS;
 //			}
 //		};
-	}
+//	}
 
 	@Override
 	public void openEditQueryDialog(AbstractRepositoryQuery query) {
@@ -175,13 +167,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		final JiraFilter jiraFilter = (JiraFilter)repositoryQuery;
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
-		jiraFilter.setRefreshing(true);
+//		jiraFilter.setRefreshing(true);
 		try {
 			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
 			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(jiraFilter.getNamedFilter(), new IssueCollector() {
 
 				public void done() {
-					jiraFilter.setRefreshing(false);
+//					jiraFilter.setRefreshing(false);
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							if (TaskListView.getDefault() != null)
@@ -208,7 +200,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		} catch (Exception e) {
 //			isRefreshing = false;
-			jiraFilter.setRefreshing(false);
+//			jiraFilter.setRefreshing(false);
 			JiraServerFacade.handleConnectionException(e);
 			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK, "Could not log in", e));
 //			queryStatus.add(Status.CANCEL_STATUS);
@@ -251,5 +243,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			supportedVersions.add(VERSION_SUPPORT);
 		}
 		return supportedVersions;
+	}
+
+	@Override
+	protected void updateOfflineState(AbstractRepositoryTask repositoryTask, boolean forceSync) {
+		// ignore
 	}
 }

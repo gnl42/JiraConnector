@@ -96,4 +96,8 @@ public class JiraTask extends AbstractRepositoryTask {
 		return false;
 	}
 
+	@Override
+	public boolean isDownloaded() {
+		return false;
+	}
 }

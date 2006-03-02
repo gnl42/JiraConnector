@@ -15,6 +15,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylar.internal.jira.JiraFilter;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
@@ -103,9 +104,11 @@ public class JiraTaskArchiveTest extends TestCase {
 		
 		connector.synchronize(filter, null);
 //		filter.refreshHits();
-		MylarTaskListPlugin.getTaskListManager().addQuery(filter);
+//		MylarTaskListPlugin.getTaskListManager().addQuery(filter);
 
-		while (filter.isRefreshing()) {
+		Job job = connector.synchronize(filter, null);
+		while (job.getResult() == null) {
+//		while (filter.isRefreshing()) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

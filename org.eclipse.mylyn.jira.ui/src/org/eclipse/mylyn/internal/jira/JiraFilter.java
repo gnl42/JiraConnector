@@ -28,7 +28,7 @@ public class JiraFilter extends AbstractRepositoryQuery {
 
 	protected NamedFilter filter = null;
 
-	private boolean isRefreshing = false;
+//	private boolean isRefreshing = false;
 
 	public JiraFilter(String repositoryUrl, NamedFilter filter) {
 		setMaxHits(MAX_HITS);
@@ -121,10 +121,10 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		return false;
 	}
 
-	/** True if the filter is currently downloading hits */
-	public boolean isRefreshing() {
-		return isRefreshing;
-	}
+//	/** True if the filter is currently downloading hits */
+//	public boolean isRefreshing() {
+//		return isRefreshing;
+//	}
 
 	public String getRepositoryKind() {
 		return MylarJiraPlugin.JIRA_REPOSITORY_KIND;
@@ -134,8 +134,8 @@ public class JiraFilter extends AbstractRepositoryQuery {
 		return filter;
 	}
 
-	public void setRefreshing(boolean refreshing) {
-		this.isRefreshing = refreshing;
-	}
+//	public void setRefreshing(boolean refreshing) {
+//		this.isRefreshing = refreshing;
+//	}
 
 }
