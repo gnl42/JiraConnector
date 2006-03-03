@@ -32,13 +32,13 @@ public class JiraTaskDecorator implements ILightweightLabelDecorator {
 		if (element instanceof JiraTask) {
 			JiraTask task = (JiraTask) element;
 			if (JiraTask.Kind.BUG.toString().equals(task.getKind())) {
-				decoration.addOverlay(JiraImages.OVERLAY_BUG, IDecoration.TOP_LEFT);
+				decoration.addOverlay(JiraImages.OVERLAY_BUG, IDecoration.BOTTOM_RIGHT);
 			} else if (JiraTask.Kind.FEATURE.toString().equals(task.getKind())) {
-				decoration.addOverlay(JiraImages.OVERLAY_FEATURE, IDecoration.TOP_LEFT);
+				decoration.addOverlay(JiraImages.OVERLAY_FEATURE, IDecoration.BOTTOM_RIGHT);
 			} else if (JiraTask.Kind.IMPROVEMENT.toString().equals(task.getKind())) {
-				decoration.addOverlay(JiraImages.OVERLAY_IMPROVEMENT, IDecoration.TOP_LEFT);
+				decoration.addOverlay(JiraImages.OVERLAY_IMPROVEMENT, IDecoration.BOTTOM_RIGHT);
 			} else if (JiraTask.Kind.TASK.toString().equals(task.getKind())) {
-				decoration.addOverlay(JiraImages.OVERLAY_TASK, IDecoration.TOP_LEFT);
+				decoration.addOverlay(JiraImages.OVERLAY_TASK, IDecoration.BOTTOM_RIGHT);
 			}
 		}
 	}
