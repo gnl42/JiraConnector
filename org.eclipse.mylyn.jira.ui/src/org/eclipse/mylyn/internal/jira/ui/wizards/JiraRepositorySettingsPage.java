@@ -11,6 +11,9 @@
 
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
@@ -37,6 +40,17 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	/** Create a button to validate the specified repository settings */
 	protected void createAdditionalControls(Composite parent) {
 		// ignore
+	}
+	
+	protected boolean isValidUrl(String name) {
+		if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
+			try {
+				new URL(name);
+				return true;
+			} catch (MalformedURLException e) {
+			}
+		}
+		return false;
 	}
 
 	protected void validateSettings() {

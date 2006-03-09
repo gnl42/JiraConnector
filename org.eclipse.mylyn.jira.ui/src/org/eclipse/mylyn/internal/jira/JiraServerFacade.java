@@ -11,6 +11,9 @@
 
 package org.eclipse.mylar.internal.jira;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.provisional.tasklist.ITaskRepositoryListener;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
@@ -47,10 +50,10 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 */
 	public JiraServer getJiraServer(TaskRepository repository) {
 		try {
-			String serverHostname = repository.getUrl().getHost();
+			String serverHostname = getServerHost(repository);
 			JiraServer server = serverManager.getServer(serverHostname);
 			if (server == null) {
-				server = serverManager.createServer(serverHostname, repository.getUrl().toExternalForm(), false,
+				server = serverManager.createServer(serverHostname, repository.getUrl(), false,
 						repository.getUserName(), repository.getPassword());
 				serverManager.addServer(server);
 			}
@@ -94,11 +97,11 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * TODO: using work-around, need API
 	 */
 	public void refreshServerSettings(TaskRepository repository) {
-		String serverHostname = repository.getUrl().getHost();
+		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
 		if (server != null) {
 			removeServer(server);
-			server = serverManager.createServer(serverHostname, repository.getUrl().toExternalForm(), false,
+			server = serverManager.createServer(serverHostname, repository.getUrl(), false,
 					repository.getUserName(), repository.getPassword());
 			serverManager.addServer(server);
 			server.login(); 
@@ -123,6 +126,14 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		return true;
 	}
 
+	private static String getServerHost(TaskRepository repository) {
+		try {
+			return new URL(repository.getUrl()).getHost();
+		} catch (MalformedURLException ex) {
+			throw new RuntimeException("Invalid url "+repository.getUrl(), ex);
+		}
+	}
+	
 	/**
 	 * TODO: refactor
 	 */

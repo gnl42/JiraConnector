@@ -11,8 +11,6 @@
 
 package org.eclipse.mylar.jira.tests;
 
-import java.net.URL;
-
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.jobs.Job;
@@ -46,25 +44,22 @@ public class JiraTaskArchiveTest extends TestCase {
 	private JiraServerFacade jiraFacade = null;
 
 	private TaskRepository jiraRepository = null;
-	
+
 	private TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
-	
+
 	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		URL repoURL = new URL(SERVER_URL);
-		jiraRepository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
-				repoURL);
+		jiraRepository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, SERVER_URL);
 		jiraRepository.setAuthenticationCredentials(USER, PASSWORD);
 		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
 	protected void tearDown() throws Exception {
-		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryConnector(
-						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 		taskList.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
@@ -74,9 +69,8 @@ public class JiraTaskArchiveTest extends TestCase {
 	}
 
 	public void testJiraTaskRegistry() {
-		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryConnector(
-						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 
 		JiraTask task1 = new JiraTask(HANDLE1, LABEL, true);
@@ -90,25 +84,23 @@ public class JiraTaskArchiveTest extends TestCase {
 	}
 
 	public void testJiraTaskRegistryIntegration() {
-		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryConnector(
-						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 		taskList.clearArchive();
 
 		assertTrue(taskList.getArchiveTasks().size() == 0);
 
-		NamedFilter[] namedFilters = jiraFacade.getJiraServer(jiraRepository)
-				.getNamedFilters();
-		JiraFilter filter = new JiraFilter(jiraRepository.getUrl().toExternalForm(), namedFilters[0]);
-		
+		NamedFilter[] namedFilters = jiraFacade.getJiraServer(jiraRepository).getNamedFilters();
+		JiraFilter filter = new JiraFilter(jiraRepository.getUrl(), namedFilters[0]);
+
 		connector.synchronize(filter, null);
-//		filter.refreshHits();
-//		MylarTaskListPlugin.getTaskListManager().addQuery(filter);
+		// filter.refreshHits();
+		// MylarTaskListPlugin.getTaskListManager().addQuery(filter);
 
 		Job job = connector.synchronize(filter, null);
 		while (job.getResult() == null) {
-//		while (filter.isRefreshing()) {
+			// while (filter.isRefreshing()) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

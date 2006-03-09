@@ -48,7 +48,7 @@ public class NewJiraQueryWizard extends Wizard {
 		NamedFilter namedFilter = queryPage.getSelectedFilter();
 
 		if (namedFilter != null) {
-			JiraFilter filter = new JiraFilter(repository.getUrl().toExternalForm(), namedFilter);
+			JiraFilter filter = new JiraFilter(repository.getUrl(), namedFilter);
 			MylarTaskListPlugin.getTaskListManager().addQuery(filter);
 			AbstractRepositoryConnector connector = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(repository.getKind());
 			if (connector != null) {

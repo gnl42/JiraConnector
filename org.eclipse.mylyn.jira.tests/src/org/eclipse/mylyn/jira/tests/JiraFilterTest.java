@@ -11,8 +11,6 @@
 
 package org.eclipse.mylar.jira.tests;
 
-import java.net.URL;
-
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.jobs.Job;
@@ -42,24 +40,21 @@ public class JiraFilterTest extends TestCase {
 	private TaskRepository repository = null;
 
 	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
-	
+
 	protected void setUp() throws Exception {
 		super.setUp();
-		URL repoURL = new URL(SERVER_URL);
-		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND,
-				repoURL);
+		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
 	protected void tearDown() throws Exception {
-		AbstractRepositoryConnector client = MylarTaskListPlugin
-				.getRepositoryManager().getRepositoryConnector(
-						MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
-//		client.clearArchive();
+		// client.clearArchive();
 		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(repository);
 		jiraFacade.logOutFromAll();
@@ -69,10 +64,10 @@ public class JiraFilterTest extends TestCase {
 	public void testJiraFilterRefresh() {
 		NamedFilter[] filters = jiraFacade.getJiraServer(repository).getNamedFilters();
 		assertTrue(filters.length > 0);
-		JiraFilter jFilter = new JiraFilter(repository.getUrl().toExternalForm(), filters[0]);
+		JiraFilter jFilter = new JiraFilter(repository.getUrl(), filters[0]);
 		assertTrue(jFilter.getHits().size() == 0);
-//		jFilter.refreshHits();
-//		boolean done = false;
+		// jFilter.refreshHits();
+		// boolean done = false;
 
 		Job job = connector.synchronize(jFilter, null);
 		while (job.getResult() == null) {

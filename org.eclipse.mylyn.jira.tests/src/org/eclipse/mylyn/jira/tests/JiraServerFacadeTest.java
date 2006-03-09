@@ -11,8 +11,6 @@
 
 package org.eclipse.mylar.jira.tests;
 
-import java.net.URL;
-
 import junit.framework.TestCase;
 
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
@@ -42,8 +40,7 @@ public class JiraServerFacadeTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		URL repoURL = new URL(SERVER_URL);
-		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repoURL);
+		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
 		jiraFacade = JiraServerFacade.getDefault();
