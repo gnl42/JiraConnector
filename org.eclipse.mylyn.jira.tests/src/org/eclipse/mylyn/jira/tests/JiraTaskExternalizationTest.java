@@ -72,7 +72,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 		taskList.clearArchive();
-		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
+//		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
+		MylarTaskListPlugin.getTaskListManager().resetTaskList();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(repository);
 		super.tearDown();
 	}
@@ -82,7 +83,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraTask jiraTask = new JiraTask(TEST_TASK, TEST_LABEL, true);
 		String testUrl = "http://foo";
 		jiraTask.setUrl(testUrl);
-		manager.moveToRoot(jiraTask);
+		manager.getTaskList().moveToRoot(jiraTask);
 
 		manager.saveTaskList();
 
@@ -121,7 +122,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraIssue.setSummary(ISSUE_SUMMARY);
 		JiraFilterHit jiraHit = new JiraFilterHit(jiraIssue, repository.getUrl(), 1);
 		jiraFilter.addHit(jiraHit);
-		MylarTaskListPlugin.getTaskListManager().addQuery(jiraFilter);
+		MylarTaskListPlugin.getTaskListManager().getTaskList().addQuery(jiraFilter);
 
 		manager.saveTaskList();
 		TaskList newTaskList = new TaskList();

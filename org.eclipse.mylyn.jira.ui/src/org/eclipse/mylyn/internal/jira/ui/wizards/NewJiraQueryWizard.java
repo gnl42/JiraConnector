@@ -49,7 +49,7 @@ public class NewJiraQueryWizard extends Wizard {
 
 		if (namedFilter != null) {
 			JiraFilter filter = new JiraFilter(repository.getUrl(), namedFilter);
-			MylarTaskListPlugin.getTaskListManager().addQuery(filter);
+			MylarTaskListPlugin.getTaskListManager().getTaskList().addQuery(filter);
 			AbstractRepositoryConnector connector = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(repository.getKind());
 			if (connector != null) {
 				connector.synchronize(filter, null);

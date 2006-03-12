@@ -62,7 +62,8 @@ public class JiraTaskArchiveTest extends TestCase {
 				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
 		taskList.clearArchive();
-		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
+//		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
+		MylarTaskListPlugin.getTaskListManager().resetTaskList();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepository);
 		jiraFacade.logOutFromAll();
 		super.tearDown();
