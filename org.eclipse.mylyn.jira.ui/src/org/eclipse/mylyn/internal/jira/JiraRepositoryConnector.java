@@ -118,7 +118,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void openEditQueryDialog(AbstractRepositoryQuery query) {
-		JiraFilter filter = (JiraFilter) query;
+		JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
 		String title = "Filter: " + filter.getDescription();
 		TaskListUiUtil.openUrl(title, title, filter.getQueryUrl());
 	}
@@ -162,15 +162,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	protected List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery, final IProgressMonitor monitor, MultiStatus queryStatus) {
-		if (!(repositoryQuery instanceof JiraFilter)) {
+		if (!(repositoryQuery instanceof JiraRepositoryQuery)) {
 			return Collections.emptyList();
 		}
-		final JiraFilter jiraFilter = (JiraFilter)repositoryQuery;
+		final JiraRepositoryQuery jiraRepositoryQuery = (JiraRepositoryQuery)repositoryQuery;
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 //		jiraFilter.setRefreshing(true);
 		try {
 			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
-			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(jiraFilter.getNamedFilter(), new IssueCollector() {
+			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(jiraRepositoryQuery.getNamedFilter(), new IssueCollector() {
 
 				public void done() {
 //					jiraFilter.setRefreshing(false);
@@ -188,7 +188,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 				public void collectIssue(Issue issue) {
 					int issueId = new Integer(issue.getId());
-					JiraFilterHit hit = new JiraFilterHit(issue, jiraFilter.getRepositoryUrl(), issueId);
+					JiraFilterHit hit = new JiraFilterHit(issue, jiraRepositoryQuery.getRepositoryUrl(), issueId);
 					hits.add(hit);
 //					addHit(hit);
 				}

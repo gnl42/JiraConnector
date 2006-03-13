@@ -12,7 +12,7 @@
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.mylar.internal.jira.JiraFilter;
+import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
@@ -48,7 +48,7 @@ public class NewJiraQueryWizard extends Wizard {
 		NamedFilter namedFilter = queryPage.getSelectedFilter();
 
 		if (namedFilter != null) {
-			JiraFilter filter = new JiraFilter(repository.getUrl(), namedFilter);
+			JiraRepositoryQuery filter = new JiraRepositoryQuery(repository.getUrl(), namedFilter, MylarTaskListPlugin.getTaskListManager().getTaskList());
 			MylarTaskListPlugin.getTaskListManager().getTaskList().addQuery(filter);
 			AbstractRepositoryConnector connector = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(repository.getKind());
 			if (connector != null) {

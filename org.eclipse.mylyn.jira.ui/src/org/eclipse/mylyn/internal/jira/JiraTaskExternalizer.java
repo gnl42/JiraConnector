@@ -19,6 +19,7 @@ import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
 import org.eclipse.mylar.provisional.tasklist.DelegatingTaskExternalizer;
 import org.eclipse.mylar.provisional.tasklist.ITask;
 import org.eclipse.mylar.provisional.tasklist.ITaskListExternalizer;
+import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskCategory;
 import org.eclipse.mylar.provisional.tasklist.TaskList;
 import org.tigris.jira.core.model.Issue;
@@ -57,7 +58,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	public boolean canCreateElementFor(AbstractRepositoryQuery category) {
-		return category instanceof JiraFilter;
+		return category instanceof JiraRepositoryQuery;
 	}
 
 	public boolean canCreateElementFor(ITask task) {
@@ -73,7 +74,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
 //		namedFilter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
-		AbstractRepositoryQuery query = new JiraFilter(element.getAttribute(KEY_REPOSITORY_URL), namedFilter);
+		AbstractRepositoryQuery query = new JiraRepositoryQuery(element.getAttribute(KEY_REPOSITORY_URL), namedFilter, MylarTaskListPlugin.getTaskListManager().getTaskList());
 		
 		NodeList list = node.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
@@ -95,7 +96,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		String queryTagName = getQueryTagNameForElement(query);
 		Element node = doc.createElement(queryTagName);
 
-		NamedFilter filter = ((JiraFilter) query).getNamedFilter();
+		NamedFilter filter = ((JiraRepositoryQuery) query).getNamedFilter();
 		node.setAttribute(KEY_NAME, query.getDescription());
 		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
 		node.setAttribute(KEY_QUERY_STRING, query.getQueryUrl());
@@ -152,7 +153,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		JiraTask task = new JiraTask(handle, label, false);  
 		readTaskInfo(task, taskList, element, parent, category);
 
-		taskList.addTaskToArchive(task);
+		taskList.internalAddTask(task);
 		return task;
 	}
 
@@ -222,7 +223,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	public String getQueryTagNameForElement(AbstractRepositoryQuery query) {
-		if (query instanceof JiraFilter) {
+		if (query instanceof JiraRepositoryQuery) {
 			return KEY_JIRA_QUERY;
 		}
 		return "";

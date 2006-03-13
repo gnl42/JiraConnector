@@ -14,7 +14,7 @@ package org.eclipse.mylar.jira.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.mylar.internal.jira.JiraFilter;
+import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
@@ -53,7 +53,7 @@ public class JiraFilterTest extends TestCase {
 		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
 				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
-		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
+//		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
 		// client.clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		MylarTaskListPlugin.getTaskListManager().resetTaskList();
@@ -65,7 +65,7 @@ public class JiraFilterTest extends TestCase {
 	public void testJiraFilterRefresh() {
 		NamedFilter[] filters = jiraFacade.getJiraServer(repository).getNamedFilters();
 		assertTrue(filters.length > 0);
-		JiraFilter jFilter = new JiraFilter(repository.getUrl(), filters[0]);
+		JiraRepositoryQuery jFilter = new JiraRepositoryQuery(repository.getUrl(), filters[0], MylarTaskListPlugin.getTaskListManager().getTaskList());
 		assertTrue(jFilter.getHits().size() == 0);
 		// jFilter.refreshHits();
 		// boolean done = false;
