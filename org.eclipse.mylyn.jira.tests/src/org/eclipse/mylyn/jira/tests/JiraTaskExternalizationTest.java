@@ -57,14 +57,15 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	private TaskRepository repository = null;
 
-	private TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
+	private TaskList taskList;
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
-
+		MylarTaskListPlugin.getTaskListManager().resetTaskList();
+		taskList = MylarTaskListPlugin.getTaskListManager().getTaskList(); 
 	}
 
 	protected void tearDown() throws Exception {
@@ -86,13 +87,14 @@ public class JiraTaskExternalizationTest extends TestCase {
 		manager.getTaskList().moveToRoot(jiraTask);
 
 		manager.saveTaskList();
+		manager.resetTaskList();
+//		TaskList newTaskList = new TaskList();
+//		manager.getTaskListWriter().readTaskList(newTaskList, manager.getTaskListFile());
+		manager.readExistingOrCreateNewList();
+//		Collection<ITask> taskSet = newTaskList.getAllTasks();
+		Collection<ITask> taskSet = manager.getTaskList().getAllTasks();
 
-		TaskList newTaskList = new TaskList();
-
-		manager.getTaskListWriter().readTaskList(newTaskList, manager.getTaskListFile());
-
-		Collection<ITask> taskSet = newTaskList.getAllTasks();
-
+		
 		boolean taskFound = false;
 		for (Iterator iter = taskSet.iterator(); iter.hasNext();) {
 			ITask currTask = (ITask) iter.next();
@@ -120,22 +122,27 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraIssue.setKey(ISSUE_KEY);
 		jiraIssue.setDescription(ISSUE_DESCRIPTION);
 		jiraIssue.setSummary(ISSUE_SUMMARY);
-		JiraFilterHit jiraHit = new JiraFilterHit(jiraIssue, repository.getUrl(), 1);
+		JiraFilterHit jiraHit = new JiraFilterHit(jiraIssue, repository.getUrl(), 123);
+		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
 		jiraRepositoryQuery.addHit(jiraHit);
 		MylarTaskListPlugin.getTaskListManager().getTaskList().addQuery(jiraRepositoryQuery);
-
+		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
+		
 		manager.saveTaskList();
-		TaskList newTaskList = new TaskList();
-		manager.getTaskListWriter().readTaskList(newTaskList, manager.getTaskListFile());
+		manager.resetTaskList();
+		manager.readExistingOrCreateNewList();
+		System.err.println(">>> " + manager.getTaskList().getAllTasks());
+//		TaskList newTaskList = new TaskList();
+//		manager.getTaskListWriter().readTaskList(newTaskList, manager.getTaskListFile());
+//		List<AbstractRepositoryQuery> queries = newTaskList.getQueries();
 
-		List<AbstractRepositoryQuery> queries = newTaskList.getQueries();
-
+		List<AbstractRepositoryQuery> queries = manager.getTaskList().getQueries();
 		JiraRepositoryQuery savedFilter = null;
 		for (AbstractRepositoryQuery query : queries) {
 			if (query.getHandleIdentifier().equals(jiraRepositoryQuery.getHandleIdentifier())) {
 				savedFilter = (JiraRepositoryQuery) query;
 				break;
-			}
+			} 
 		}
 
 		assertNotNull(savedFilter);
@@ -147,13 +154,12 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraTask jTask = (JiraTask) savedHit.getCorrespondingTask();
 
 		assertEquals(jiraIssue.getKey() + ": " + jiraIssue.getSummary(), jTask.getDescription());
-		String handle = AbstractRepositoryTask.getHandle(jiraHit.getRepositoryUrl(), 1);
+		String handle = AbstractRepositoryTask.getHandle(jiraHit.getRepositoryUrl(), 123);
 		assertEquals(handle, jTask.getHandleIdentifier());
 
 		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
 				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
 		assertNotNull(client);
-		assertNotNull(taskList.getTask(savedHit.getHandleIdentifier()));
-
+		assertNotNull(taskList.getTask(savedHit.getHandleIdentifier())); 
 	}
 }

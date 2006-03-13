@@ -32,7 +32,7 @@ public class JiraFilterHit extends AbstractQueryHit {
 	public JiraFilterHit(Issue issue, String repositoryUrl, int id) {
 		super(repositoryUrl, issue.getSummary(), id);
 		this.issue = issue;
-		task = getOrCreateCorrespondingTask();		
+		task = getOrCreateCorrespondingTask();
 	}
 
 	public Issue getIssue() {
@@ -42,10 +42,10 @@ public class JiraFilterHit extends AbstractQueryHit {
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
 		if (task == null) {
 			String description = issue.getKey() + ": " + issue.getSummary();
-			ITask archiveTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(
+			ITask existingTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(
 					getHandleIdentifier());
-			if (archiveTask instanceof JiraTask) {
-				task = (JiraTask) archiveTask;
+			if (existingTask instanceof JiraTask) {
+				task = (JiraTask) existingTask;
 			} else { 
 				task = new JiraTask(getHandleIdentifier(), description, true);
 				MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);

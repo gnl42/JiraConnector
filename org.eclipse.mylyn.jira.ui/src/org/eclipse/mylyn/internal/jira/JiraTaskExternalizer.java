@@ -152,8 +152,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		}
 		JiraTask task = new JiraTask(handle, label, false);  
 		readTaskInfo(task, taskList, element, parent, category);
-
-//		taskList.internalAddTask(task, category);
+ 
+		// TODO: remove, should be done by readTaskInfo
+//		taskList.internalAddTask(task, taskList.getArchiveContainer());
 		return task;
 	}
 

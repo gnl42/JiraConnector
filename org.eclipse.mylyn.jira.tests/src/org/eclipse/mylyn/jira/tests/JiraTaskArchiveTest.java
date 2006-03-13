@@ -45,7 +45,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	private TaskRepository jiraRepository = null;
 
-	private TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
+	private TaskList taskList;
 
 	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
 
@@ -55,6 +55,7 @@ public class JiraTaskArchiveTest extends TestCase {
 		jiraRepository.setAuthenticationCredentials(USER, PASSWORD);
 		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
 		jiraFacade = JiraServerFacade.getDefault();
+		taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
 	}
 
 	protected void tearDown() throws Exception {
@@ -92,7 +93,7 @@ public class JiraTaskArchiveTest extends TestCase {
 		// TODO: put back?
 //		taskList.clearArchive();
 
-		assertTrue(taskList.getArchiveContainer().getChildren().size() == 0);
+		assertEquals(""+taskList.getArchiveContainer().getChildren(), 0, taskList.getArchiveContainer().getChildren().size());
 
 		NamedFilter[] namedFilters = jiraFacade.getJiraServer(jiraRepository).getNamedFilters();
 		JiraRepositoryQuery filter = new JiraRepositoryQuery(jiraRepository.getUrl(), namedFilters[0], MylarTaskListPlugin.getTaskListManager().getTaskList());
