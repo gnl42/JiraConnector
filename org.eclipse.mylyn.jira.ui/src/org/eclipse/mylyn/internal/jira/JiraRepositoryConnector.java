@@ -20,13 +20,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylar.internal.tasklist.ui.TaskListUiUtil;
-import org.eclipse.mylar.internal.tasklist.ui.views.RetrieveTitleFromUrlJob;
-import org.eclipse.mylar.internal.tasklist.ui.views.TaskListView;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
@@ -35,7 +32,6 @@ import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
 import org.eclipse.mylar.provisional.tasklist.ITask;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
-import org.eclipse.swt.widgets.Display;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.filter.IssueCollector;
 
@@ -91,73 +87,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return new AddExistingJiraTaskWizard(repository);
 	}
 
-//	@Override
-//	public void synchronize() {
-//		Job synchronizeJob = new Job(LABEL_JOB_SYNCHRONIZE) {
-//			@Override
-//			protected IStatus run(IProgressMonitor monitor) {
-//				refreshFilters();
-//				return Status.OK_STATUS;
-//			}
-//		};
-//		synchronizeJob.schedule();
-//	}
-
-//	@Override
-//	public Job synchronize(ITask task, boolean forceUpdate, IJobChangeListener listener) {
-//		// Sync for individual tasks not implemented
-//		return null;
-//		return new Job(LABEL_JOB_SYNCHRONIZE) {
-//			@Override
-//			protected IStatus run(IProgressMonitor monitor) {
-//				refreshFilters();
-//				return Status.OK_STATUS;
-//			}
-//		};
-//	}
-
 	@Override
 	public void openEditQueryDialog(AbstractRepositoryQuery query) {
 		JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
 		String title = "Filter: " + filter.getDescription();
 		TaskListUiUtil.openUrl(title, title, filter.getQueryUrl());
-	}
-
-//	public void refreshFilters() {
-//		for (AbstractRepositoryQuery query : MylarTaskListPlugin.getTaskListManager().getTaskList().getQueries()) {
-//			if (query instanceof JiraFilter) {
-//				((JiraFilter) query).refreshHits();
-//			}
-//		}
-//	}
-
-	/**
-	 * Attempts to set the task pageTitle to the title from the specified url
-	 */
-	protected void retrieveTaskDescription(final ITask jiraTask) {
-
-		try {
-			RetrieveTitleFromUrlJob job = new RetrieveTitleFromUrlJob(jiraTask.getUrl()) {
-
-				@Override
-				protected void setTitle(final String pageTitle) {
-					jiraTask.setDescription(pageTitle);
-
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							if (TaskListView.getDefault() != null)
-								TaskListView.getDefault().refreshAndFocus();
-						}
-					});
-				}
-
-			};
-
-			job.schedule();
-
-		} catch (RuntimeException e) {
-			MylarStatusHandler.fail(e, "could not open task web page", false);
-		}
 	}
 
 	@Override
@@ -167,7 +101,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		final JiraRepositoryQuery jiraRepositoryQuery = (JiraRepositoryQuery)repositoryQuery;
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
-//		jiraFilter.setRefreshing(true);
 		try {
 			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
 			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(jiraRepositoryQuery.getNamedFilter(), new IssueCollector() {
@@ -211,13 +144,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		queryStatus.add(Status.OK_STATUS);
 		return hits;
 	} 
-	
-//	@Override
-//	public void synchronize(AbstractRepositoryQuery repositoryQuery, IJobChangeListener listener) {
-//		if (repositoryQuery instanceof JiraFilter) {
-//			((JiraFilter) repositoryQuery).refreshHits();
-//		}
-//	}
 
 	public void requestRefresh(AbstractRepositoryTask task) {
 		// Task refresh not implemented.
