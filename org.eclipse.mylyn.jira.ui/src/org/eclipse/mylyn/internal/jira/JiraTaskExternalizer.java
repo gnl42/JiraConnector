@@ -16,11 +16,11 @@ import org.eclipse.mylar.internal.tasklist.TaskExternalizationException;
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
+import org.eclipse.mylar.provisional.tasklist.AbstractTaskContainer;
 import org.eclipse.mylar.provisional.tasklist.DelegatingTaskExternalizer;
 import org.eclipse.mylar.provisional.tasklist.ITask;
 import org.eclipse.mylar.provisional.tasklist.ITaskListExternalizer;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.provisional.tasklist.TaskCategory;
 import org.eclipse.mylar.provisional.tasklist.TaskList;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
@@ -134,7 +134,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public ITask readTask(Node node, TaskList taskList, TaskCategory category, ITask parent)
+	public ITask readTask(Node node, TaskList taskList, AbstractTaskContainer category, ITask parent)
 			throws TaskExternalizationException {
 
 		Element element = (Element) node;
@@ -153,7 +153,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		JiraTask task = new JiraTask(handle, label, false);  
 		readTaskInfo(task, taskList, element, parent, category);
 
-		taskList.internalAddTask(task);
+//		taskList.internalAddTask(task, category);
 		return task;
 	}
 
@@ -216,7 +216,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		hit.setHandleIdentifier(handle);
 		query.addHit(hit);
 		
-		ITask correspondingTask = taskList.getTaskForHandle(hit.getHandleIdentifier(), true);
+		ITask correspondingTask = taskList.getTask(hit.getHandleIdentifier());
 		if (correspondingTask instanceof JiraTask) {
 			hit.setCorrespondingTask((JiraTask)correspondingTask);
 		}

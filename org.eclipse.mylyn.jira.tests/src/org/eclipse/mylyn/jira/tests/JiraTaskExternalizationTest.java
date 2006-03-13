@@ -11,14 +11,14 @@
 
 package org.eclipse.mylar.jira.tests;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraFilterHit;
+import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
@@ -91,7 +91,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 		manager.getTaskListWriter().readTaskList(newTaskList, manager.getTaskListFile());
 
-		Set taskSet = newTaskList.getAllTasks();
+		Collection<ITask> taskSet = newTaskList.getAllTasks();
 
 		boolean taskFound = false;
 		for (Iterator iter = taskSet.iterator(); iter.hasNext();) {
