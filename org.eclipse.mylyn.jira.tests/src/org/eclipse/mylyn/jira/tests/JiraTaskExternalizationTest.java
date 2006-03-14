@@ -131,10 +131,6 @@ public class JiraTaskExternalizationTest extends TestCase {
 		manager.saveTaskList();
 		manager.resetTaskList();
 		manager.readExistingOrCreateNewList();
-		System.err.println(">>> " + manager.getTaskList().getAllTasks());
-//		TaskList newTaskList = new TaskList();
-//		manager.getTaskListWriter().readTaskList(newTaskList, manager.getTaskListFile());
-//		List<AbstractRepositoryQuery> queries = newTaskList.getQueries();
 
 		List<AbstractRepositoryQuery> queries = manager.getTaskList().getQueries();
 		JiraRepositoryQuery savedFilter = null;
