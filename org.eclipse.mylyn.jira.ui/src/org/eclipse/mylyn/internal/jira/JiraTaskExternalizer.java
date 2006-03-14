@@ -165,7 +165,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	public Element createQueryHitElement(AbstractQueryHit queryHit, Document doc, Element parent) {
 		Element node = doc.createElement(getQueryHitTagName());
 
-		JiraFilterHit hit = (JiraFilterHit) queryHit;
+		JiraQueryHit hit = (JiraQueryHit) queryHit;
 		Issue issue = hit.getIssue();
 
 		node.setAttribute(KEY_HANDLE, queryHit.getHandleIdentifier());
@@ -213,7 +213,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 //		}
 
 		int issueId = new Integer(AbstractRepositoryTask.getTaskIdAsInt(handle));
-		JiraFilterHit hit = new JiraFilterHit(issue, query.getRepositoryUrl(), issueId);
+		JiraQueryHit hit = new JiraQueryHit(issue, query.getRepositoryUrl(), issueId);
 		hit.setHandleIdentifier(handle);
 		query.addHit(hit);
 		

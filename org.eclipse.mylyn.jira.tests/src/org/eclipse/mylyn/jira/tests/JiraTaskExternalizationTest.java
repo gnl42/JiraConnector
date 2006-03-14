@@ -17,7 +17,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.JiraFilterHit;
+import org.eclipse.mylar.internal.jira.JiraQueryHit;
 import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
@@ -122,7 +122,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraIssue.setKey(ISSUE_KEY);
 		jiraIssue.setDescription(ISSUE_DESCRIPTION);
 		jiraIssue.setSummary(ISSUE_SUMMARY);
-		JiraFilterHit jiraHit = new JiraFilterHit(jiraIssue, repository.getUrl(), 123);
+		JiraQueryHit jiraHit = new JiraQueryHit(jiraIssue, repository.getUrl(), 123);
 		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
 		jiraRepositoryQuery.addHit(jiraHit);
 		MylarTaskListPlugin.getTaskListManager().getTaskList().addQuery(jiraRepositoryQuery);
@@ -150,7 +150,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 		assertTrue(savedFilter.getHits().size() > 0);
 
-		JiraFilterHit savedHit = (JiraFilterHit) savedFilter.getHits().iterator().next();
+		JiraQueryHit savedHit = (JiraQueryHit) savedFilter.getHits().iterator().next();
 		JiraTask jTask = (JiraTask) savedHit.getCorrespondingTask();
 
 		assertEquals(jiraIssue.getKey() + ": " + jiraIssue.getSummary(), jTask.getDescription());

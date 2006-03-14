@@ -121,9 +121,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 				public void collectIssue(Issue issue) {
 					int issueId = new Integer(issue.getId());
-					JiraFilterHit hit = new JiraFilterHit(issue, jiraRepositoryQuery.getRepositoryUrl(), issueId);
+					JiraQueryHit hit = new JiraQueryHit(issue, jiraRepositoryQuery.getRepositoryUrl(), issueId);
 					hits.add(hit);
-//					addHit(hit);
 				}
 
 				public void start() {
@@ -132,13 +131,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			});
 
 		} catch (Exception e) {
-//			isRefreshing = false;
-//			jiraFilter.setRefreshing(false);
-//			JiraServerFacade.handleConnectionException(e);
 			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK, 
 					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
 					+ "\n\nCheck network connection.", e));
-//			queryStatus.add(Status.CANCEL_STATUS);
 			
 		}
 		queryStatus.add(Status.OK_STATUS);

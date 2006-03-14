@@ -23,13 +23,13 @@ import org.tigris.jira.core.model.Issue;
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  */
-public class JiraFilterHit extends AbstractQueryHit {
+public class JiraQueryHit extends AbstractQueryHit {
 
 	private Issue issue = null;
 
 	private AbstractRepositoryTask task = null;
 
-	public JiraFilterHit(Issue issue, String repositoryUrl, int id) {
+	public JiraQueryHit(Issue issue, String repositoryUrl, int id) {
 		super(repositoryUrl, issue.getSummary(), id);
 		this.issue = issue;
 		task = getOrCreateCorrespondingTask();
@@ -106,5 +106,4 @@ public class JiraFilterHit extends AbstractQueryHit {
 	public boolean isLocal() {
 		return false;
 	}
-
 }

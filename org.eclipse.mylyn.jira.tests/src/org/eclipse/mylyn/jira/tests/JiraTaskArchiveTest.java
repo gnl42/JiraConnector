@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.JiraFilterHit;
+import org.eclipse.mylar.internal.jira.JiraQueryHit;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.JiraTask;
@@ -113,7 +113,7 @@ public class JiraTaskArchiveTest extends TestCase {
 		}
 
 		assertTrue(filter.getHits().size() > 0);
-		JiraFilterHit jHit = (JiraFilterHit) filter.getHits().iterator().next();
+		JiraQueryHit jHit = (JiraQueryHit) filter.getHits().iterator().next();
 
 		assertNotNull(taskList.getTask(jHit.getHandleIdentifier()));
 	}
