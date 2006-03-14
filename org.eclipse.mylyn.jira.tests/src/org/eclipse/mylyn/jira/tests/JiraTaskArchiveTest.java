@@ -51,7 +51,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		jiraRepository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, SERVER_URL);
+		jiraRepository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
 		jiraRepository.setAuthenticationCredentials(USER, PASSWORD);
 		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
 		jiraFacade = JiraServerFacade.getDefault();
@@ -60,7 +60,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+				MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 //		taskList.clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
@@ -72,7 +72,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	public void testJiraTaskRegistry() {
 		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+				MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 
 		JiraTask task1 = new JiraTask(HANDLE1, LABEL, true);
@@ -87,7 +87,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	public void testJiraTaskRegistryIntegration() {
 		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+				MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 		
 		// TODO: put back?

@@ -61,7 +61,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		repository = new TaskRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, SERVER_URL);
+		repository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
 		MylarTaskListPlugin.getTaskListManager().resetTaskList();
@@ -70,7 +70,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+				MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 //		taskList.clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
@@ -158,7 +158,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertEquals(handle, jTask.getHandleIdentifier());
 
 		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.JIRA_REPOSITORY_KIND);
+				MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 		assertNotNull(taskList.getTask(savedHit.getHandleIdentifier())); 
 	}

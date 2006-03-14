@@ -100,4 +100,8 @@ public class JiraTask extends AbstractRepositoryTask {
 	public boolean isDownloaded() {
 		return false;
 	}
+
+	public String getRepositoryKind() {
+		return MylarJiraPlugin.REPOSITORY_KIND;
+	}
 }

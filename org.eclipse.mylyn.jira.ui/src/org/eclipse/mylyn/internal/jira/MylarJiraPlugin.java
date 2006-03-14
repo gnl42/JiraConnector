@@ -23,7 +23,7 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 
 	private static MylarJiraPlugin plugin;
 
-	public final static String JIRA_REPOSITORY_KIND = "jira";
+	public final static String REPOSITORY_KIND = "jira";
 
 	public final static String JIRA_CLIENT_LABEL = "JIRA (supports 3.3.1 and later)";
 

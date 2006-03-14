@@ -52,7 +52,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public String getRepositoryType() {
-		return MylarJiraPlugin.JIRA_REPOSITORY_KIND;
+		return MylarJiraPlugin.REPOSITORY_KIND;
 	}
 
 	public String toString() {
@@ -102,7 +102,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		final JiraRepositoryQuery jiraRepositoryQuery = (JiraRepositoryQuery)repositoryQuery;
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 		try {
-			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
+			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
 			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(jiraRepositoryQuery.getNamedFilter(), new IssueCollector() {
 
 				public void done() {

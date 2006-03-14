@@ -38,7 +38,7 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 	}
 
 	public String getRepositoryKind() {
-		return MylarJiraPlugin.JIRA_REPOSITORY_KIND;
+		return MylarJiraPlugin.REPOSITORY_KIND;
 	}
 	
 	public NamedFilter getNamedFilter() {
