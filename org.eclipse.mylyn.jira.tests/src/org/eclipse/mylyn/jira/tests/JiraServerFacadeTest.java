@@ -79,7 +79,7 @@ public class JiraServerFacadeTest extends TestCase {
 		NamedFilter[] filters = jiraServer.getNamedFilters();
 		assertTrue(filters.length > 0);
 
-		jiraServer.executeNamedFilter(filters[0], new IssueCollector() {
+		jiraServer.search(filters[0], new IssueCollector() {
 
 			private boolean issueCollected = false;
 

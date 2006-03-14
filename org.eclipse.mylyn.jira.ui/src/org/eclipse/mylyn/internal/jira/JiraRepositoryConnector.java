@@ -103,7 +103,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 		try {
 			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
-			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(jiraRepositoryQuery.getNamedFilter(), new IssueCollector() {
+			JiraServerFacade.getDefault().getJiraServer(repository).search(jiraRepositoryQuery.getNamedFilter(), new IssueCollector() {
 
 				public void done() {
 //					jiraFilter.setRefreshing(false);
