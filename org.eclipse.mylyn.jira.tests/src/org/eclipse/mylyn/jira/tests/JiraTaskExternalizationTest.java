@@ -13,7 +13,7 @@ package org.eclipse.mylar.jira.tests;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -132,7 +132,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		manager.resetTaskList();
 		manager.readExistingOrCreateNewList();
 
-		List<AbstractRepositoryQuery> queries = manager.getTaskList().getQueries();
+		Set<AbstractRepositoryQuery> queries = manager.getTaskList().getQueries();
 		JiraRepositoryQuery savedFilter = null;
 		for (AbstractRepositoryQuery query : queries) {
 			if (query.getHandleIdentifier().equals(jiraRepositoryQuery.getHandleIdentifier())) {
