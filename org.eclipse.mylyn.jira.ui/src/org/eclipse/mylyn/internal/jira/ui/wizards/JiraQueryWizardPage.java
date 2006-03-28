@@ -20,8 +20,8 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -92,23 +92,17 @@ public class JiraQueryWizardPage extends WizardPage {
 		new Label(innerComposite, SWT.NULL); // spacer
 		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
 		updateButton.setText("Update Filters from Repository");
-		updateButton.addMouseListener(new MouseListener() {
-
-			public void mouseUp(MouseEvent e) { 
+		updateButton.addSelectionListener(new SelectionAdapter() {
+		
+			@Override
+			public void widgetSelected(SelectionEvent e) {
 				filterCombo.removeAll();
 				filterCombo.add(WAIT_MESSAGE);
 				filterCombo.select(0);
 				JiraServerFacade.getDefault().refreshServerSettings(repository);
 				downloadFilters();
 			}
-			
-			public void mouseDoubleClick(MouseEvent e) {
-				// ignore				
-			}
-
-			public void mouseDown(MouseEvent e) {
-				// ignore				
-			} 
+		
 		});
 		
 		setControl(innerComposite);
