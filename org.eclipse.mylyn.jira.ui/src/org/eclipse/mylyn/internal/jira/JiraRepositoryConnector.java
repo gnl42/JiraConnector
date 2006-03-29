@@ -11,9 +11,11 @@
 
 package org.eclipse.mylar.internal.jira;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -29,6 +31,7 @@ import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
+import org.eclipse.mylar.provisional.tasklist.IRemoteContextDelegate;
 import org.eclipse.mylar.provisional.tasklist.ITask;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
@@ -172,4 +175,19 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	protected void updateOfflineState(AbstractRepositoryTask repositoryTask, boolean forceSync) {
 		// ignore
 	}
-}
+
+	@Override
+	public boolean attachContext(TaskRepository repository, AbstractRepositoryTask task, String longComment) throws IOException {
+		return false;
+	}
+
+	@Override
+	public Set<IRemoteContextDelegate> getAvailableContexts(TaskRepository repository, AbstractRepositoryTask task) {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public boolean retrieveContext(TaskRepository repository, AbstractRepositoryTask task, IRemoteContextDelegate remoteContextDelegate) throws IOException {
+		return false;
+	}
+} 
