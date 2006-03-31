@@ -10,6 +10,10 @@
       JIRA client integrated with Eclipse and Mylar, can be used standalone.
 NOTE: depends on the org.tigris.jira.core feature from http://jira-dashboard.tigris.org/update
    </description>
+   
+   <copyright>
+      Copyright (c) 2004 - 2006 Mylar project committers and others.
+   </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
       Eclipse Public License - v 1.0
