@@ -190,4 +190,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public boolean retrieveContext(TaskRepository repository, AbstractRepositoryTask task, IRemoteContextDelegate remoteContextDelegate) throws IOException {
 		return false;
 	}
+
+	@Override
+	public String getRepositoryUrlFromTaskUrl(String comment) {
+		return null;
+	}
 } 
