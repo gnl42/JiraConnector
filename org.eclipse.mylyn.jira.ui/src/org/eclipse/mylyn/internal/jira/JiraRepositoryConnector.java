@@ -25,7 +25,7 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
-import org.eclipse.mylar.internal.tasklist.ui.TaskListUiUtil;
+import org.eclipse.mylar.internal.tasklist.ui.TaskUiUtil;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
@@ -42,6 +42,8 @@ import org.tigris.jira.core.model.filter.IssueCollector;
  * @author Mik Kersten
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
+
+	private static final String DELIM_URL = "/browse/";
 
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
@@ -94,7 +96,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public void openEditQueryDialog(AbstractRepositoryQuery query) {
 		JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
 		String title = "Filter: " + filter.getDescription();
-		TaskListUiUtil.openUrl(title, title, filter.getQueryUrl());
+		TaskUiUtil.openUrl(title, title, filter.getQueryUrl());
 	}
 
 	@Override
@@ -192,7 +194,16 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public String getRepositoryUrlFromTaskUrl(String comment) {
-		return null;
+	public String getRepositoryUrlFromTaskUrl(String url) {
+		if (url == null) {
+			return null;
+		} else {
+			int index = url.indexOf(DELIM_URL);
+			if (index != -1) {
+				return url.substring(0, index);
+			} else {
+				return null;
+			}
+		}
 	}
 } 
