@@ -27,6 +27,8 @@ import org.tigris.jira.core.model.NamedFilter;
  */
 public class NewJiraQueryWizard extends Wizard {
 
+	private static final String TITLE = "New JIRA Query";
+	
 	private final TaskRepository repository;
 
 	private JiraQueryWizardPage queryPage;
@@ -34,6 +36,7 @@ public class NewJiraQueryWizard extends Wizard {
 	public NewJiraQueryWizard(TaskRepository repository) {
 		this.repository = repository;
 		setNeedsProgressMonitor(true);
+		setWindowTitle(TITLE); 
 	}
 
 	@Override
