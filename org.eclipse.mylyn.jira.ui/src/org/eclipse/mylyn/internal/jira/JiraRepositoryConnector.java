@@ -48,10 +48,49 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
 	private List<String> supportedVersions;
-	
+
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
+	private final class JiraIssueCollector implements IssueCollector {
+		
+		private final IProgressMonitor monitor;
+
+		private final JiraRepositoryQuery query;
+
+		private final List<AbstractQueryHit> hits;
+		
+		private boolean done = false;
+
+		private JiraIssueCollector(IProgressMonitor monitor, JiraRepositoryQuery query, List<AbstractQueryHit> hits) {
+			this.monitor = monitor;
+			this.query = query;
+			this.hits = hits;
+		}
+
+		public void done() {
+			done = true;
+		}
+
+		public boolean isCancelled() {
+			return monitor.isCanceled();
+		}
+
+		public void collectIssue(Issue issue) {
+			int issueId = new Integer(issue.getId());
+			JiraQueryHit hit = new JiraQueryHit(issue, query.getRepositoryUrl(), issueId);
+			hits.add(hit);
+		}
+
+		public void start() {
+
+		}
+
+		public boolean isDone() {
+			return done;
+		}
+	}
+	
 	public String getLabel() {
 		return MylarJiraPlugin.JIRA_CLIENT_LABEL;
 	}
@@ -65,20 +104,24 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public ITask createTaskFromExistingId(TaskRepository repository, String id) {
-		return null; 
-//		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-//		if (server != null) {
-//			FilterDefinition filter = new FilterDefinition();
-//			filter.set
-//			server.findIssues(new Filter, collector)
-//		}
-//		String url = repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + id;
-//		String handle = AbstractRepositoryTask.getHandle(repository.getUrl().toExternalForm(), id);
-//		JiraTask newTask = new JiraTask(handle, NEW_TASK_DESC, true);
-//		MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(newTask);
-//		retrieveTaskDescription(newTask);
-//		return newTask;
-	} 
+		return null;
+		// JiraServer server =
+		// JiraServerFacade.getDefault().getJiraServer(repository);
+		// if (server != null) {
+		// FilterDefinition filter = new FilterDefinition();
+		// filter.set
+		// server.findIssues(new Filter, collector)
+		// }
+		// String url = repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX +
+		// id;
+		// String handle =
+		// AbstractRepositoryTask.getHandle(repository.getUrl().toExternalForm(),
+		// id);
+		// JiraTask newTask = new JiraTask(handle, NEW_TASK_DESC, true);
+		// MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(newTask);
+		// retrieveTaskDescription(newTask);
+		// return newTask;
+	}
 
 	public AbstractRepositorySettingsPage getSettingsPage() {
 		return new JiraRepositorySettingsPage();
@@ -100,50 +143,27 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	protected List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery, final IProgressMonitor monitor, MultiStatus queryStatus) {
+	protected List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery,
+			final IProgressMonitor monitor, MultiStatus queryStatus) {
 		if (!(repositoryQuery instanceof JiraRepositoryQuery)) {
 			return Collections.emptyList();
 		}
-		final JiraRepositoryQuery jiraRepositoryQuery = (JiraRepositoryQuery)repositoryQuery;
+		final JiraRepositoryQuery jiraRepositoryQuery = (JiraRepositoryQuery) repositoryQuery;
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
+		JiraIssueCollector collector = new JiraIssueCollector(monitor, jiraRepositoryQuery, hits);
 		try {
-			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
-			JiraServerFacade.getDefault().getJiraServer(repository).search(jiraRepositoryQuery.getNamedFilter(), new IssueCollector() {
-
-				public void done() {
-//					jiraFilter.setRefreshing(false);
-//					Display.getDefault().asyncExec(new Runnable() {
-//						public void run() {
-//							if (TaskListView.getDefault() != null)
-//								TaskListView.getDefault().refreshAndFocus();
-//						}
-//					});
-				}
-
-				public boolean isCancelled() {
-					return monitor.isCanceled();
-				}
-
-				public void collectIssue(Issue issue) {
-					int issueId = new Integer(issue.getId());
-					JiraQueryHit hit = new JiraQueryHit(issue, jiraRepositoryQuery.getRepositoryUrl(), issueId);
-					hits.add(hit);
-				}
-
-				public void start() {
-
-				}
-			});
+			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
+					MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
+			JiraServerFacade.getDefault().getJiraServer(repository).search(jiraRepositoryQuery.getNamedFilter(), collector);
 
 		} catch (Exception e) {
-			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK, 
+			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK,
 					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
-					+ "\n\nCheck network connection.", e));
-			
+							+ "\n\nCheck network connection.", e));
 		}
 		queryStatus.add(Status.OK_STATUS);
 		return hits;
-	} 
+	}
 
 	public void requestRefresh(AbstractRepositoryTask task) {
 		// Task refresh not implemented.
@@ -179,7 +199,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean attachContext(TaskRepository repository, AbstractRepositoryTask task, String longComment) throws IOException {
+	public boolean attachContext(TaskRepository repository, AbstractRepositoryTask task, String longComment)
+			throws IOException {
 		return false;
 	}
 
@@ -189,7 +210,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean retrieveContext(TaskRepository repository, AbstractRepositoryTask task, IRemoteContextDelegate remoteContextDelegate) throws IOException {
+	public boolean retrieveContext(TaskRepository repository, AbstractRepositoryTask task,
+			IRemoteContextDelegate remoteContextDelegate) throws IOException {
 		return false;
 	}
 
@@ -206,4 +228,4 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		}
 	}
-} 
+}
