@@ -85,13 +85,31 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 
-	public void repositorySetUpdated() {
-		JiraServer[] servers = serverManager.getAllServers();
-		for (JiraServer server : servers) {
-			removeServer(server);
+//	public void repositorySetUpdated() {
+//		JiraServer[] servers = serverManager.getAllServers();
+//		for (JiraServer server : servers) {
+//			removeServer(server);
+//		}
+//	}
+
+	public void repositoriesRead() {
+		// ignore
+	}
+
+	public void repositoryAdded(TaskRepository repository) {
+		if (repository.getKind().equals(MylarJiraPlugin.REPOSITORY_KIND)) {
+			getJiraServer(repository);
 		}
 	}
 
+	public void repositoryRemoved(TaskRepository repository) {
+		if (repository.getKind().equals(MylarJiraPlugin.REPOSITORY_KIND)) {
+			String serverHostname = getServerHost(repository);
+			JiraServer server = serverManager.getServer(serverHostname);
+			removeServer(server);
+		}
+	}
+	
 	/**
 	 * TODO: using work-around, need API
 	 */
@@ -108,8 +126,10 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	}
 	
 	private void removeServer(JiraServer server) {
-		server.logout();
-		serverManager.removeServer(server);
+		if (server != null) {
+			server.logout();
+			serverManager.removeServer(server);
+		}
 	} 
 
 	/** Returns true if all of the serverURL, user name, and password are valid */
@@ -151,7 +171,5 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			MylarStatusHandler.fail(e, "Could not connect to Jira repository.\n\n"
 					+ "Please check your credentials in the Task Repositories view", true);
 		}
-	}
-
-	
+	}	
 }

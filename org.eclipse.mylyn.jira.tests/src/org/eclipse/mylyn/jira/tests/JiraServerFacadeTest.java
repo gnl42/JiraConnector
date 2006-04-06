@@ -104,7 +104,7 @@ public class JiraServerFacadeTest extends TestCase {
 
 	public void testServerInfoChange() {
 		repository.setAuthenticationCredentials("Bogus User", "Bogus Password");
-		jiraFacade.repositorySetUpdated(); 
+		jiraFacade.repositoryRemoved(repository); 
 
 		boolean failedOnBogusUser = false;
 
@@ -117,7 +117,7 @@ public class JiraServerFacadeTest extends TestCase {
 
 		// Check that it works after putting the right password in
 		repository.setAuthenticationCredentials(USER, PASSWORD);
-		jiraFacade.repositorySetUpdated();
+		jiraFacade.repositoryRemoved(repository);
 		jiraFacade.getJiraServer(repository).getNamedFilters();
 	}
 
