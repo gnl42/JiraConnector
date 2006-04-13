@@ -127,7 +127,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return new JiraRepositorySettingsPage();
 	}
 
-	public IWizard getQueryWizard(TaskRepository repository) {
+	public IWizard getNewQueryWizard(TaskRepository repository) {
 		return new NewJiraQueryWizard(repository);
 	}
 
