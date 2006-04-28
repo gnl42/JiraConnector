@@ -11,6 +11,13 @@
 
 package org.eclipse.mylar.internal.jira;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StringWriter;
+
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasklist.TaskExternalizationException;
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
@@ -24,6 +31,7 @@ import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskList;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
+import org.tigris.jira.core.model.filter.FilterDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,12 +46,14 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	private static final String KEY_ISSUE_SUMMARY = "IssueSummary";
 
 	private static final String KEY_JIRA = "Jira";
+	private static final String KEY_CUSTOM = "JiraCustom";
 
 	private static final String KEY_JIRA_CATEGORY = "JiraQuery" + KEY_CATEGORY;
 
 	private static final String KEY_JIRA_QUERY_HIT = KEY_JIRA + KEY_QUERY_HIT;
 
 	private static final String KEY_JIRA_QUERY = KEY_JIRA + KEY_QUERY;
+	private static final String KEY_JIRA_CUSTOM = KEY_JIRA + KEY_CUSTOM + KEY_QUERY;
 
 	private static final String KEY_JIRA_ISSUE = "JiraIssue";
 
@@ -53,12 +63,17 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String KEY_FILTER_DESCRIPTION = "FilterDesc";
 
+	private static final String KEY_FILTER_CUSTOM = "FilterCustom";
+
+	
 	public boolean canReadQuery(Node node) {
-		return node.getNodeName().equals(KEY_JIRA_QUERY);
+		return node.getNodeName().equals(KEY_JIRA_QUERY) 
+			|| node.getNodeName().equals(KEY_JIRA_CUSTOM);
 	}
 
 	public boolean canCreateElementFor(AbstractRepositoryQuery category) {
-		return category instanceof JiraRepositoryQuery;
+		return category instanceof JiraRepositoryQuery 
+			|| category instanceof JiraCustomQuery;
 	}
 
 	public boolean canCreateElementFor(ITask task) {
@@ -69,12 +84,25 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		boolean hasCaughtException = false;
 		Element element = (Element) node;
 
-		NamedFilter namedFilter = new NamedFilter();
-		namedFilter.setId(element.getAttribute(KEY_FILTER_ID));
-		namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
-//		namedFilter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
-
-		AbstractRepositoryQuery query = new JiraRepositoryQuery(element.getAttribute(KEY_REPOSITORY_URL), namedFilter, MylarTaskListPlugin.getTaskListManager().getTaskList());
+		AbstractRepositoryQuery query;
+		String custom = element.getAttribute(KEY_FILTER_CUSTOM);
+		if(custom!=null && custom.length()>0) {
+			FilterDefinition filter = decodeFilter(custom);
+			if(filter==null) {
+				throw new TaskExternalizationException("Failed to restore custom query "+element.getAttribute(KEY_FILTER_ID));
+			}
+			filter.setName(element.getAttribute(KEY_FILTER_ID));
+			filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
+			
+			query = new JiraCustomQuery(element.getAttribute(KEY_REPOSITORY_URL), filter, MylarTaskListPlugin.getTaskListManager().getTaskList());
+		} else {
+			NamedFilter namedFilter = new NamedFilter();
+			namedFilter.setId(element.getAttribute(KEY_FILTER_ID));
+			namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
+			namedFilter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
+			
+			query = new JiraRepositoryQuery(element.getAttribute(KEY_REPOSITORY_URL), namedFilter, MylarTaskListPlugin.getTaskListManager().getTaskList());
+		}
 		
 		NodeList list = node.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
@@ -87,25 +115,34 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		}
 		if (hasCaughtException) {
 			throw new TaskExternalizationException("Failed to load all hits");
-		} else {
-			return query;
 		}
+		return query;
 	}
 
 	public Element createQueryElement(AbstractRepositoryQuery query, Document doc, Element parent) {
 		String queryTagName = getQueryTagNameForElement(query);
 		Element node = doc.createElement(queryTagName);
 
-		NamedFilter filter = ((JiraRepositoryQuery) query).getNamedFilter();
 		node.setAttribute(KEY_NAME, query.getDescription());
 		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
 		node.setAttribute(KEY_QUERY_STRING, query.getQueryUrl());
 		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl());
 
-		node.setAttribute(KEY_FILTER_ID, filter.getId());
-		node.setAttribute(KEY_FILTER_NAME, filter.getName());
-		node.setAttribute(KEY_FILTER_DESCRIPTION, filter.getDescription());
-
+		if (query instanceof JiraRepositoryQuery) {
+			NamedFilter filter = ((JiraRepositoryQuery) query).getNamedFilter();
+			node.setAttribute(KEY_FILTER_ID, filter.getId());
+			node.setAttribute(KEY_FILTER_NAME, filter.getName());
+			node.setAttribute(KEY_FILTER_DESCRIPTION, filter.getDescription());
+		} else {
+			FilterDefinition filter = ((JiraCustomQuery) query).getFilterDefinition();
+			node.setAttribute(KEY_FILTER_ID, filter.getName());			
+			node.setAttribute(KEY_FILTER_NAME, filter.getName());
+			node.setAttribute(KEY_FILTER_DESCRIPTION, filter.getDescription());
+			
+			// XXX implement actual export 
+			node.setAttribute(KEY_FILTER_CUSTOM, encodeFilter(filter));
+		}
+		
 		for (AbstractQueryHit hit : query.getHits()) {
 			try {
 				Element element = null;
@@ -123,6 +160,43 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return node;
 	}
 		
+	private String encodeFilter(FilterDefinition filter) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos; 
+		try {
+			oos = new ObjectOutputStream(bos);
+			oos.writeObject(filter);
+			oos.flush();
+		} catch (IOException ex) {
+			return null;
+		}
+
+		StringWriter sw = new StringWriter();
+		byte[] bytes = bos.toByteArray();
+		for (int i = 0; i < bytes.length; i++) {
+			byte b = bytes[i];
+			sw.append((char) ('A' + (b >> 4))).append((char) ('A'+ (b & 0xf)));
+		}
+		return sw.toString();
+	}
+
+	private FilterDefinition decodeFilter(String filter) {
+		byte[] buff = new byte[filter.length()/2];
+		char[] chars = filter.toCharArray();
+		for (int i = 0, k = 0; i < chars.length; i += 2, k++) {
+			buff[k] = (byte) ((((chars[i] - 'A') << 4) | (chars[i+1] - 'A')) & 0xff);
+		}
+		
+		ObjectInputStream ois;
+		try {
+			ois = new ObjectInputStream(new ByteArrayInputStream(buff));
+			return (FilterDefinition) ois.readObject();
+		} catch (Exception ex) {
+			// TODO Auto-generated catch block
+			return null;
+		}
+	}
+	
 	@Override
 	public String getTaskTagName() {
 		return KEY_JIRA_ISSUE;
@@ -226,6 +300,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	public String getQueryTagNameForElement(AbstractRepositoryQuery query) {
 		if (query instanceof JiraRepositoryQuery) {
 			return KEY_JIRA_QUERY;
+		} else if( query instanceof JiraCustomQuery) {
+			return KEY_JIRA_CUSTOM;
 		}
 		return "";
 	}

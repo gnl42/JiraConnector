@@ -21,11 +21,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizard;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
+import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
-import org.eclipse.mylar.internal.tasklist.ui.TaskUiUtil;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
@@ -35,8 +38,11 @@ import org.eclipse.mylar.provisional.tasklist.IRemoteContextDelegate;
 import org.eclipse.mylar.provisional.tasklist.ITask;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.filter.IssueCollector;
+import org.tigris.jira.core.service.JiraServer;
 
 /**
  * @author Mik Kersten
@@ -56,13 +62,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		
 		private final IProgressMonitor monitor;
 
-		private final JiraRepositoryQuery query;
+		private final AbstractRepositoryQuery query;
 
 		private final List<AbstractQueryHit> hits;
 		
 		private boolean done = false;
 
-		private JiraIssueCollector(IProgressMonitor monitor, JiraRepositoryQuery query, List<AbstractQueryHit> hits) {
+		JiraIssueCollector(IProgressMonitor monitor, AbstractRepositoryQuery query, List<AbstractQueryHit> hits) {
 			this.monitor = monitor;
 			this.query = query;
 			this.hits = hits;
@@ -135,31 +141,77 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return new AddExistingJiraTaskWizard(repository);
 	}
 
+	
+	
 	@Override
 	public void openEditQueryDialog(AbstractRepositoryQuery query) {
-		JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
-		String title = "Filter: " + filter.getDescription();
-		TaskUiUtil.openUrl(title, title, filter.getQueryUrl());
+//		JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
+//		String title = "Filter: " + filter.getDescription();
+//		TaskUiUtil.openUrl(title, title, filter.getQueryUrl());
+		
+//		if (query instanceof JiraRepositoryQuery) {
+//			JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
+//			String title = "Filter: " + filter.getDescription();
+//			TaskUiUtil.openUrl(title, title, filter.getQueryUrl());
+//		} else if(query instanceof JiraCustomQuery) {
+//			// new JiraQueryWizardPage();
+//		}
+		
+		try {
+			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
+					query.getRepositoryKind(), query.getRepositoryUrl());
+			if (repository == null)
+				return;
+
+			IWizard wizard = this.getEditQueryWizard(repository, query);
+
+			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			if (wizard != null && shell != null && !shell.isDisposed()) {
+				WizardDialog dialog = new WizardDialog(shell, wizard);
+				dialog.create();
+				dialog.setTitle("Edit Jira Query");
+				dialog.setBlockOnOpen(true);
+				if (dialog.open() == Window.CANCEL) {
+					dialog.close();
+					return;
+				}
+			}
+		} catch (Exception e) {
+			MylarStatusHandler.fail(e, e.getMessage(), true);
+		}
+		
+	}
+
+	private IWizard getEditQueryWizard(TaskRepository repository, AbstractRepositoryQuery query) {
+		if (query instanceof JiraRepositoryQuery || query instanceof JiraCustomQuery) {
+			return new EditJiraQueryWizard(repository, query);
+		}
+		return null;
 	}
 
 	@Override
 	protected List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery,
 			final IProgressMonitor monitor, MultiStatus queryStatus) {
-		if (!(repositoryQuery instanceof JiraRepositoryQuery)) {
-			return Collections.emptyList();
-		}
-		final JiraRepositoryQuery jiraRepositoryQuery = (JiraRepositoryQuery) repositoryQuery;
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
-		JiraIssueCollector collector = new JiraIssueCollector(monitor, jiraRepositoryQuery, hits);
-		try {
-			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
-					MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
-			JiraServerFacade.getDefault().getJiraServer(repository).search(jiraRepositoryQuery.getNamedFilter(), collector);
 
+		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
+				MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
+
+		JiraIssueCollector collector = new JiraIssueCollector(monitor, repositoryQuery, hits);
+
+		try {
+			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+			
+			if (repositoryQuery instanceof JiraRepositoryQuery) {			
+				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
+
+			} else if (repositoryQuery instanceof JiraCustomQuery) {
+				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(), collector);
+			}	
 		} catch (Exception e) {
-			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK,
+			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK, 
 					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
-							+ "\n\nCheck network connection.", e));
+					+ "\n\nCheck network connection.", e));
 		}
 		queryStatus.add(Status.OK_STATUS);
 		return hits;
@@ -219,13 +271,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public String getRepositoryUrlFromTaskUrl(String url) {
 		if (url == null) {
 			return null;
-		} else {
-			int index = url.indexOf(DELIM_URL);
-			if (index != -1) {
-				return url.substring(0, index);
-			} else {
-				return null;
-			}
 		}
+		int index = url.indexOf(DELIM_URL);
+		if (index != -1) {
+			return url.substring(0, index);
+		}
+		return null;
 	}
 }

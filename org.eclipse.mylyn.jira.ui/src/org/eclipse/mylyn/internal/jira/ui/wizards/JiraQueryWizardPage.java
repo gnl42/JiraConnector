@@ -16,8 +16,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.mylar.internal.jira.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
+import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -25,11 +30,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.tigris.jira.core.model.NamedFilter;
+import org.tigris.jira.core.model.filter.FilterDefinition;
 import org.tigris.jira.core.service.JiraServer;
 
 /**
@@ -38,29 +43,38 @@ import org.tigris.jira.core.service.JiraServer;
  * 
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
+ * @author Eugene Kuleshov (layout and other improvements)
  */
 public class JiraQueryWizardPage extends WizardPage {
 
-	private static final int COMBO_WIDTH_HINT = 200;
+	// private static final int COMBO_WIDTH_HINT = 200;
 
 	private static final String TITLE = "New Jira Query";
 
-	private static final String DESCRIPTION = "Please select a filter defined on the server.";
+	private static final String DESCRIPTION = "Please select a query type.";
 
-	private static final String COMBO_LABEL = "Filter:";
+	// private static final String COMBO_LABEL = "Filter:";
 
 	private static final String WAIT_MESSAGE = "Downloading...";
 
 	private static final String JOB_LABEL = "Downloading Filter Names";
 
-	private NamedFilter[] filters = null;
+	NamedFilter[] filters = null;
 
-	private Combo filterCombo = null;
-	
-	private TaskRepository repository;
+	List filterCombo;
 
-	private Button updateButton = null;
-	
+	TaskRepository repository;
+
+	Button updateButton = null;
+
+	private Button buttonCustom;
+
+	Button buttonSaved;
+
+	private FilterSummaryPage filterSummaryPage;
+
+	private AbstractRepositoryQuery query;
+
 	public JiraQueryWizardPage(TaskRepository repository) {
 		super(TITLE);
 		this.repository = repository;
@@ -69,7 +83,18 @@ public class JiraQueryWizardPage extends WizardPage {
 		setPageComplete(false);
 	}
 
+	public JiraQueryWizardPage(TaskRepository repository, AbstractRepositoryQuery query) {
+		super(TITLE);
+		this.repository = repository;
+		this.query = query;
+		setTitle(TITLE);
+		setDescription(DESCRIPTION);
+		setPageComplete(false);
+	}
+
 	public void createControl(Composite parent) {
+		boolean isCustom = query==null || query instanceof JiraCustomQuery;
+		boolean isRepository = query instanceof JiraRepositoryQuery;
 
 		final Composite innerComposite = new Composite(parent, SWT.NONE);
 		innerComposite.setLayoutData(new GridData());
@@ -77,23 +102,41 @@ public class JiraQueryWizardPage extends WizardPage {
 		gl.numColumns = 2;
 		innerComposite.setLayout(gl);
 
-		Label label = new Label(innerComposite, SWT.NONE);
-		label.setText(COMBO_LABEL);
-		label.setLayoutData(new GridData());
+		buttonCustom = new Button(innerComposite, SWT.RADIO);
+		buttonCustom.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		buttonCustom.setText("Create query using form (Experimental)");
+		buttonCustom.setSelection(isCustom);
 
-		filterCombo = new Combo(innerComposite, SWT.READ_ONLY);
-		filterCombo.add(WAIT_MESSAGE);
-		filterCombo.select(0);
-
-		GridData data = new GridData();
-		data.widthHint = COMBO_WIDTH_HINT;
-		filterCombo.setLayoutData(data);
-
-		new Label(innerComposite, SWT.NULL); // spacer
-		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
-		updateButton.setText("Update Filters from Repository");
-		updateButton.addSelectionListener(new SelectionAdapter() {
+		buttonSaved = new Button(innerComposite, SWT.RADIO);
+		buttonSaved.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		buttonSaved.setText("Use parameters from saved filter");
+		buttonSaved.setSelection(isRepository);
 		
+		buttonSaved.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				boolean selection = buttonSaved.getSelection();
+				filterCombo.setEnabled(selection);
+				updateButton.setEnabled(selection);
+				setPageComplete(selection);
+			}
+		});
+
+		filterCombo = new List(innerComposite, SWT.V_SCROLL | SWT.BORDER);
+		filterCombo.add(WAIT_MESSAGE);
+		filterCombo.select(0);  // XXX
+		
+		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+		data.horizontalIndent = 15;
+		filterCombo.setLayoutData(data);
+		filterCombo.setEnabled(isRepository);
+
+		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
+		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, false, true);
+		updateButton.setLayoutData(gridData);
+		updateButton.setText("Update from Repository");
+		updateButton.setEnabled(isRepository);
+		updateButton.addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				filterCombo.removeAll();
@@ -102,11 +145,30 @@ public class JiraQueryWizardPage extends WizardPage {
 				JiraServerFacade.getDefault().refreshServerSettings(repository);
 				downloadFilters();
 			}
-		
+
 		});
-		
+
 		setControl(innerComposite);
 		downloadFilters();
+	}
+
+	public IWizardPage getNextPage() {
+		if (!buttonCustom.getSelection()) {
+			return null;
+		}
+		if (filterSummaryPage == null) {
+			FilterDefinition workingCopy = new FilterDefinition();
+			boolean isAdd = true;
+
+			filterSummaryPage = new FilterSummaryPage(repository, "summaryPage", "Filter Summary", null, workingCopy,
+					isAdd);
+			filterSummaryPage.setWizard(getWizard());
+		}
+		return filterSummaryPage;
+	}
+
+	public boolean canFlipToNextPage() {
+		return buttonCustom.getSelection();
 	}
 
 	protected void downloadFilters() {
@@ -144,19 +206,41 @@ public class JiraQueryWizardPage extends WizardPage {
 
 		filterCombo.removeAll();
 
-		for (int i = 0; i < filters.length; i++) {
-			filterCombo.add(filters[i].getName());
+		String id = null;
+		if(query instanceof JiraRepositoryQuery) {
+			id = ((JiraRepositoryQuery) query).getNamedFilter().getId();
 		}
 
-		filterCombo.select(0);
+		int n = 0;
+		for (int i = 0; i < filters.length; i++) {
+			filterCombo.add(filters[i].getName());
+			if(filters[i].getId().equals(id)) {
+				n = i;
+			}
+		}
+
+		filterCombo.select(n);
 		setPageComplete(true);
 	}
 
 	/** Returns the filter selected by the user or null on failure */
-	public NamedFilter getSelectedFilter() {
+	private NamedFilter getSelectedFilter() {
 		if (filters != null && filters.length > 0) {
 			return filters[filterCombo.getSelectionIndex()];
 		}
+		return null;
+	}
+
+	public AbstractRepositoryQuery getQuery() {
+		if (buttonSaved.getSelection()) {
+			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), MylarTaskListPlugin
+					.getTaskListManager().getTaskList());
+		}
+
+		if (filterSummaryPage != null) {
+			return filterSummaryPage.getQuery();
+		}
+
 		return null;
 	}
 
