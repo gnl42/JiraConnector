@@ -190,7 +190,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	protected List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery,
+	public List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery,
 			final IProgressMonitor monitor, MultiStatus queryStatus) {
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 
