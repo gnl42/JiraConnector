@@ -11,10 +11,13 @@
 
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
@@ -28,6 +31,8 @@ import org.eclipse.swt.widgets.Composite;
  * @author Wesley Coelho (initial integration patch)
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
+
+	private static final String MESSAGE_FAILURE_CONNECT = "Could not connect to the Jira server or the login was not accepted.";
 
 	private static final String TITLE = "Jira Repository Settings";
 
@@ -54,14 +59,39 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	}
 
 	protected void validateSettings() {
-		if (JiraServerFacade.getDefault().validateServerAndCredentials(super.serverUrlEditor.getStringValue(),
-				getUserName(), getPassword())) {
+//		if (JiraServerFacade.getDefault().validateServerAndCredentials(JiraRepositorySettingsPage.super.serverUrlEditor.getStringValue(),
+//				getUserName(), getPassword())) {
+//			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG,
+//					"Valid Jira server found and your login was accepted.");
+//		} else {
+//			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
+//		}
+		final String serverUrl = super.serverUrlEditor.getStringValue();
+		final String userName = getUserName();
+		final String password = getPassword();
+		try {
+			getWizard().getContainer().run(true, false, new IRunnableWithProgress() {
+				
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					try {
+						monitor.beginTask("Validating repository settings", IProgressMonitor.UNKNOWN);
+						if (!JiraServerFacade.getDefault().validateServerAndCredentials(serverUrl, userName, password)) {
+							throw new InvocationTargetException(new RuntimeException("Could not log in"));
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new InvocationTargetException(e);
+					} finally {
+						monitor.done();
+					}
+				}
+			});
 			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG,
-					"Valid Jira server found and your login was accepted.");
-			super.getWizard().getContainer().updateButtons();
-		} else {
-			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG,
-					"Could not connect to the Jira server, or the login was not accepted.");
+				"Valid Jira server found and your login was accepted.");
+		} catch (InvocationTargetException e) {
+			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
+		} catch (InterruptedException e) {
+			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
 		}
 	}
 }
