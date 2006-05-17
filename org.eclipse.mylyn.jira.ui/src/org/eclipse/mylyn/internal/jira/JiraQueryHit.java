@@ -58,6 +58,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 				task.setUrl(url);
 				if (issue.getDescription() != null) {
 					task.setDescription(issue.getKey() + ": " + issue.getSummary());
+					task.setKey(issue.getKey());
 				}
 			} 
 			if (issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved())) {

@@ -121,7 +121,12 @@ public class JiraTaskEditor extends EditorPart {
 		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(task.getRepositoryKind(),
 				task.getRepositoryUrl());
 		server = JiraServerFacade.getDefault().getJiraServer(repository);
-		issue = server.getIssue(task.getKey());
+		String key = task.getKey();
+		if (key == null || key.trim().equals("")) {
+			throw new PartInitException("Could not find issue key, synchronize query to resolve.");
+		} else {
+			issue = server.getIssue(key);
+		}
 	}
 
 	/*
@@ -130,9 +135,13 @@ public class JiraTaskEditor extends EditorPart {
 	 * @see org.eclipse.ui.part.EditorPart#isDirty()
 	 */
 	public boolean isDirty() {
-		int charCount = comment.getCharCount();
-		isDirty = charCount > 0;
-		return isDirty;
+		if (comment != null) {
+			int charCount = comment.getCharCount();
+			isDirty = charCount > 0;
+			return isDirty;
+		} else {
+			return false;
+		}
 	}
 
 	/*
@@ -318,7 +327,6 @@ public class JiraTaskEditor extends EditorPart {
 
 		c1.setLayout(commentsLayout);
 
-		System.err.println(">>> " + issue.getComments().length);
 		for (int i = 0; i < issue.getComments().length; i++) {
 			Comment comment = issue.getComments()[i];
 
