@@ -61,6 +61,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 			} 
 			if (issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved())) {
 				task.setCompleted(true);
+				task.setCompletionDate(issue.getUpdated());
 			} 
 			
 			if (issue.getPriority() != null) {
