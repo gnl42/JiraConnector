@@ -20,7 +20,6 @@ import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.tigris.jira.core.JiraCorePlugin;
 import org.tigris.jira.core.ServerManager;
-import org.tigris.jira.core.service.CachedRpcJiraServer;
 import org.tigris.jira.core.service.JiraServer;
 import org.tigris.jira.core.service.exceptions.AuthenticationException;
 import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
@@ -57,7 +56,6 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 						repository.getUserName(), repository.getPassword());
 				serverManager.addServer(server);
 			}
-			server.login();
 			return server;
 		} catch (ServiceUnavailableException sue) {
 			throw sue;
@@ -117,11 +115,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
 		if (server != null) {
-			removeServer(server);
-			server = serverManager.createServer(serverHostname, repository.getUrl(), false,
-					repository.getUserName(), repository.getPassword());
-			serverManager.addServer(server);
-			server.login(); 
+			server.refreshDetails();
 		}
 	}
 	
@@ -135,10 +129,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	/** Returns true if all of the serverURL, user name, and password are valid */
 	public boolean validateServerAndCredentials(String serverUrl, String user, String password) {
 		try {
-			// TODO: use test method on ServerManager
-			CachedRpcJiraServer jiraServer = new CachedRpcJiraServer("ConnectionTest", serverUrl, false, user, password);
-			jiraServer.login();
-			jiraServer.logout();
+			serverManager.testConnection(serverUrl, user, password);
 		} catch (Exception e) {
 			return false;
 		}
