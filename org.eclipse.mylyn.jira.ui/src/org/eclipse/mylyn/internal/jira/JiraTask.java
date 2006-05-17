@@ -11,8 +11,6 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import java.util.Date;
-
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
 import org.tigris.jira.core.model.Priority;
 
@@ -107,8 +105,4 @@ public class JiraTask extends AbstractRepositoryTask {
 		return MylarJiraPlugin.REPOSITORY_KIND;
 	}
 	
-	@Override
-	public Date getCompletionDate() {
-		return super.getCompletionDate();
-	}
 }
