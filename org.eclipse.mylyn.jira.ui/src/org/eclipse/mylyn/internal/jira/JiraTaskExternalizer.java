@@ -64,6 +64,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	private static final String KEY_FILTER_DESCRIPTION = "FilterDesc";
 
 	private static final String KEY_FILTER_CUSTOM = "FilterCustom";
+	
+	private static final String KEY_KEY = "Key";
 
 	
 	public boolean canReadQuery(Node node) {
@@ -204,6 +206,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	
 	public Element createTaskElement(ITask task, Document doc, Element parent) {
 		Element node = super.createTaskElement(task, doc, parent);
+		
+		node.setAttribute(KEY_KEY, ((JiraTask)task).getKey());
 		return node; 
 	}
 
@@ -214,6 +218,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		Element element = (Element) node;
 		String handle;
 		String label;
+		String key;
 		if (element.hasAttribute(KEY_HANDLE)) {
 			handle = element.getAttribute(KEY_HANDLE);
 		} else {
@@ -224,7 +229,14 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		} else {
 			throw new TaskExternalizationException("Description not stored for bug report");
 		}
-		JiraTask task = new JiraTask(handle, label, false);  
+		
+		JiraTask task = new JiraTask(handle, label, false); 
+		if (element.hasAttribute(KEY_KEY)) {
+			key = element.getAttribute(KEY_KEY);
+			task.setKey(key);
+		} else {
+//			throw new TaskExternalizationException("Key not stored on bug report");
+		}
 		readTaskInfo(task, taskList, element, parent, category);
  
 		// TODO: remove, should be done by readTaskInfo

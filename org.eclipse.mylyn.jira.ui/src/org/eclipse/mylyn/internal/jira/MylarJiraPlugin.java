@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -62,6 +63,16 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.mylar.sandbox.jira", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.mylar.jira", path);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
+	 */
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		reg.put("icons/obj16/comment.gif", getImageDescriptor("icons/obj16/comment.gif"));
+		reg.put("icons/obj16/jira.png", getImageDescriptor("icons/obj16/jira.png"));
+		
 	}
 }

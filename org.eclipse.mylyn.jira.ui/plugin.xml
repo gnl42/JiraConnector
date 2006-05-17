@@ -33,5 +33,21 @@
 		 </description>
       </decorator>
    </extension>
+   <!--
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.mylar.internal.jira.ui.JiraTaskEditor"
+            default="false"
+            id="org.eclipse.mylar.jira.task.editor"
+            name="Jira Task Editor"/>
+   </extension>
+   -->
+   <extension
+         point="org.eclipse.mylar.tasklist.editors">
+      <editorFactory
+            class="org.eclipse.mylar.internal.jira.ui.JiraTaskEditorFactory"
+            id="org.eclipse.mylar.jira.ui.JiraTaskEditorFactory"/>
+   </extension>
 
 </plugin>

@@ -27,12 +27,12 @@ public class JiraQueryHit extends AbstractQueryHit {
 
 	private Issue issue = null;
 
-	private AbstractRepositoryTask task = null;
+	private JiraTask task = null;
 
 	public JiraQueryHit(Issue issue, String repositoryUrl, int id) {
 		super(repositoryUrl, issue.getSummary(), id);
 		this.issue = issue;
-		task = getOrCreateCorrespondingTask();
+		task = (JiraTask)getOrCreateCorrespondingTask();
 	}
 
 	public Issue getIssue() {
@@ -48,6 +48,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 				task = (JiraTask) existingTask;
 			} else { 
 				task = new JiraTask(getHandleIdentifier(), description, true);
+				task.setKey(issue.getKey());
 				MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
 			}
 		}
@@ -81,7 +82,9 @@ public class JiraQueryHit extends AbstractQueryHit {
 	}
 
 	public void setCorrespondingTask(AbstractRepositoryTask task) {
-		this.task = task;
+		if (task instanceof JiraTask) {
+			this.task = (JiraTask)task;
+		}
 	}
 
 	public boolean isCompleted() {
