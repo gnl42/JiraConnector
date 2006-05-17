@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mylar Jira Plug-in
 Bundle-SymbolicName: org.eclipse.mylar.jira; singleton:=true
-Bundle-Version: 0.5.1.v20060512-1800
+Bundle-Version: 0.5.1.v20060517-0800
 Bundle-Activator: org.eclipse.mylar.internal.jira.MylarJiraPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
@@ -12,8 +12,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.mylar.tasklist,
  org.eclipse.mylar.core,
- org.tigris.jira.core;bundle-version="[0.8.0,1.0.0)",
- org.tigris.jira.core.soap;bundle-version="[0.8.0,1.0.0)"
+ org.tigris.jira.core;bundle-version="[0.9.0,1.0.0)",
+ org.tigris.jira.core.soap;bundle-version="[0.9.0,1.0.0)"
 Eclipse-AutoStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.mylar.internal.jira,
