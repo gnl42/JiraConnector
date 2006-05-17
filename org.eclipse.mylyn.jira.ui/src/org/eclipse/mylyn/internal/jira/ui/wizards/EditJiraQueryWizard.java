@@ -11,7 +11,7 @@
 
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
-import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractEditQueryWizard;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
@@ -19,22 +19,18 @@ import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 
 /**
  * @author Rob Elves
+ * @author Mik Kersten
  */
-public class EditJiraQueryWizard extends Wizard {
-
-	private static final String TITLE = "Edit Bugzilla Query";
-
-	private final TaskRepository repository;
-
-	private AbstractRepositoryQuery query;
+public class EditJiraQueryWizard extends AbstractEditQueryWizard {
 
 	private JiraQueryWizardPage queryPage;
 
 	public EditJiraQueryWizard(TaskRepository repository, AbstractRepositoryQuery query) {
-		this.repository = repository;
-		this.query = query;
-		setNeedsProgressMonitor(true);
-		setWindowTitle(TITLE);
+		super(repository, query);
+//		this.repository = repository;
+//		this.query = query;
+//		setNeedsProgressMonitor(true);
+//		setWindowTitle(TITLE);
 	}
 
 	@Override
