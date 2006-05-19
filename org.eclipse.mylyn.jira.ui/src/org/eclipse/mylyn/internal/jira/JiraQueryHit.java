@@ -13,8 +13,6 @@ package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
-import org.eclipse.mylar.provisional.tasklist.ITask;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.tigris.jira.core.model.Issue;
 
 /**
@@ -41,36 +39,10 @@ public class JiraQueryHit extends AbstractQueryHit {
 
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
 		if (task == null) {
-			String description = issue.getKey() + ": " + issue.getSummary();
-			ITask existingTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(
-					getHandleIdentifier());
-			if (existingTask instanceof JiraTask) {
-				task = (JiraTask) existingTask;
-			} else { 
-				task = new JiraTask(getHandleIdentifier(), description, true);
-				task.setKey(issue.getKey());
-				MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
-			}
+			task = JiraRepositoryConnector.createTask(issue, getHandleIdentifier());
 		}
 		if (issue != null) {
-			if (issue.getKey() != null) {
-				String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
-				task.setUrl(url);
-				if (issue.getDescription() != null) {
-					task.setDescription(issue.getKey() + ": " + issue.getSummary());
-					task.setKey(issue.getKey());
-				}
-			} 
-			if (issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved())) {
-				task.setCompleted(true);
-				task.setCompletionDate(issue.getUpdated());
-			} 
-			
-			if (issue.getPriority() != null) {
-				String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
-				task.setPriority(translatedPriority);
-				task.setKind(issue.getType().getName());
-			}
+			JiraRepositoryConnector.setTaskDetails(repositoryUrl, task, issue);
 		} 
 		return task;
 	}

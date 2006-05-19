@@ -59,13 +59,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static final String NEW_TASK_DESC = "New Task";
 
 	private final class JiraIssueCollector implements IssueCollector {
-		
+
 		private final IProgressMonitor monitor;
 
 		private final AbstractRepositoryQuery query;
 
 		private final List<AbstractQueryHit> hits;
-		
+
 		private boolean done = false;
 
 		JiraIssueCollector(IProgressMonitor monitor, AbstractRepositoryQuery query, List<AbstractQueryHit> hits) {
@@ -96,7 +96,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return done;
 		}
 	}
-	
+
 	public String getLabel() {
 		return MylarJiraPlugin.JIRA_CLIENT_LABEL;
 	}
@@ -109,24 +109,27 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return getLabel();
 	}
 
-	public ITask createTaskFromExistingId(TaskRepository repository, String id) {
+	@Override
+	public boolean canCreateTaskFromKey() {
+		return true;
+	}
+
+	public ITask createTaskFromExistingKey(TaskRepository repository, String key) {
+		// return null;
+		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		if (server != null) {
+			Issue issue = server.getIssue(key);
+			if (issue != null) {
+				String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
+				JiraTask task = createTask(issue, handleIdentifier);
+				setTaskDetails(repository.getUrl(), task, issue);
+				if (task != null) {
+					MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
+					return task;
+				}
+			}
+		}
 		return null;
-		// JiraServer server =
-		// JiraServerFacade.getDefault().getJiraServer(repository);
-		// if (server != null) {
-		// FilterDefinition filter = new FilterDefinition();
-		// filter.set
-		// server.findIssues(new Filter, collector)
-		// }
-		// String url = repository.getUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX +
-		// id;
-		// String handle =
-		// AbstractRepositoryTask.getHandle(repository.getUrl().toExternalForm(),
-		// id);
-		// JiraTask newTask = new JiraTask(handle, NEW_TASK_DESC, true);
-		// MylarTaskListPlugin.getTaskListManager().getTaskList().addTaskToArchive(newTask);
-		// retrieveTaskDescription(newTask);
-		// return newTask;
 	}
 
 	public AbstractRepositorySettingsPage getSettingsPage() {
@@ -141,22 +144,20 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return new AddExistingJiraTaskWizard(repository);
 	}
 
-	
-	
 	@Override
 	public void openEditQueryDialog(AbstractRepositoryQuery query) {
-//		JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
-//		String title = "Filter: " + filter.getDescription();
-//		TaskUiUtil.openUrl(title, title, filter.getQueryUrl());
-		
-//		if (query instanceof JiraRepositoryQuery) {
-//			JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
-//			String title = "Filter: " + filter.getDescription();
-//			TaskUiUtil.openUrl(title, title, filter.getQueryUrl());
-//		} else if(query instanceof JiraCustomQuery) {
-//			// new JiraQueryWizardPage();
-//		}
-		
+		// JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
+		// String title = "Filter: " + filter.getDescription();
+		// TaskUiUtil.openUrl(title, title, filter.getQueryUrl());
+
+		// if (query instanceof JiraRepositoryQuery) {
+		// JiraRepositoryQuery filter = (JiraRepositoryQuery) query;
+		// String title = "Filter: " + filter.getDescription();
+		// TaskUiUtil.openUrl(title, title, filter.getQueryUrl());
+		// } else if(query instanceof JiraCustomQuery) {
+		// // new JiraQueryWizardPage();
+		// }
+
 		try {
 			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
 					query.getRepositoryKind(), query.getRepositoryUrl());
@@ -179,7 +180,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		} catch (Exception e) {
 			MylarStatusHandler.fail(e, e.getMessage(), true);
 		}
-		
+
 	}
 
 	private IWizard getEditQueryWizard(TaskRepository repository, AbstractRepositoryQuery query) {
@@ -190,8 +191,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery,
-			final IProgressMonitor monitor, MultiStatus queryStatus) {
+	public List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery, final IProgressMonitor monitor,
+			MultiStatus queryStatus) {
 		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 
 		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
@@ -201,29 +202,20 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-			
-			if (repositoryQuery instanceof JiraRepositoryQuery) {			
+
+			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
 
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
 				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(), collector);
-			}	
+			}
 		} catch (Exception e) {
-			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK, 
+			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK,
 					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
-					+ "\n\nCheck network connection.", e));
+							+ "\n\nCheck network connection.", e));
 		}
 		queryStatus.add(Status.OK_STATUS);
 		return hits;
-	}
-
-	public void requestRefresh(AbstractRepositoryTask task) {
-		// Task refresh not implemented.
-	}
-
-	@Override
-	public boolean canCreateTaskFromId() {
-		return false;
 	}
 
 	@Override
@@ -247,9 +239,19 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	protected void updateOfflineState(AbstractRepositoryTask repositoryTask, boolean forceSync) {
-		// ignore
+		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
+		if (repository != null && repositoryTask instanceof JiraTask) {
+			JiraTask jiraTask = (JiraTask)repositoryTask;
+			JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+			if (server != null) {
+				Issue issue = server.getIssue(jiraTask.getKey());
+				if (issue != null) {
+					setTaskDetails(repository.getUrl(), jiraTask, issue);
+				}
+			}
+		}
 	}
-
+	
 	@Override
 	public boolean attachContext(TaskRepository repository, AbstractRepositoryTask task, String longComment)
 			throws IOException {
@@ -277,5 +279,44 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return url.substring(0, index);
 		}
 		return null;
+	}
+
+	public static void setTaskDetails(String repositoryUrl, JiraTask task, Issue issue) {
+		if (issue.getKey() != null) {
+			String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
+			task.setUrl(url);
+			if (issue.getDescription() != null) {
+				task.setDescription(issue.getKey() + ": " + issue.getSummary());
+				task.setKey(issue.getKey());
+			}
+		}
+		if (issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved())) {
+			task.setCompleted(true);
+			task.setCompletionDate(issue.getUpdated());
+		} else {
+			task.setCompleted(false);
+			task.setCompletionDate(null);
+		}
+
+		if (issue.getPriority() != null) {
+			String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
+			task.setPriority(translatedPriority);
+			task.setKind(issue.getType().getName());
+		}
+		MylarTaskListPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
+	}
+
+	public static JiraTask createTask(Issue issue, String handleIdentifier) {
+		JiraTask task;
+		String description = issue.getKey() + ": " + issue.getSummary();
+		ITask existingTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+		if (existingTask instanceof JiraTask) {
+			task = (JiraTask) existingTask;
+		} else {
+			task = new JiraTask(handleIdentifier, description, true);
+			task.setKey(issue.getKey());
+			MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
+		}
+		return task;
 	}
 }
