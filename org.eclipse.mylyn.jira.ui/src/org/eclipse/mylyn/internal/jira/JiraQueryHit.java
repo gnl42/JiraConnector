@@ -42,7 +42,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 			task = JiraRepositoryConnector.createTask(issue, getHandleIdentifier());
 		}
 		if (issue != null) {
-			JiraRepositoryConnector.setTaskDetails(repositoryUrl, task, issue);
+			JiraRepositoryConnector.updateTaskDetails(repositoryUrl, task, issue);
 		} 
 		return task;
 	}

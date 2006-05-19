@@ -117,14 +117,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public ITask createTaskFromExistingKey(TaskRepository repository, String key) {
-		// return null;
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (server != null) {
 			Issue issue = server.getIssue(key);
 			if (issue != null) {
 				String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
 				JiraTask task = createTask(issue, handleIdentifier);
-				setTaskDetails(repository.getUrl(), task, issue);
+				updateTaskDetails(repository.getUrl(), task, issue);
 				if (task != null) {
 					MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
 					return task;
@@ -248,7 +247,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (server != null) {
 				Issue issue = server.getIssue(jiraTask.getKey());
 				if (issue != null) {
-					setTaskDetails(repository.getUrl(), jiraTask, issue);
+					updateTaskDetails(repository.getUrl(), jiraTask, issue);
 				}
 			}
 		}
@@ -283,7 +282,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return null;
 	}
 
-	public static void setTaskDetails(String repositoryUrl, JiraTask task, Issue issue) {
+	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue) {
 		if (issue.getKey() != null) {
 			String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
 			task.setUrl(url);

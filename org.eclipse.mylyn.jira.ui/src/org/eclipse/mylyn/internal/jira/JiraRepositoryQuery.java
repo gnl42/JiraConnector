@@ -26,8 +26,6 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 
 	protected NamedFilter filter = null;
 
-//	private boolean isRefreshing = false;
-
 	public JiraRepositoryQuery(String repositoryUrl, NamedFilter filter, TaskList taskList) {
 		super(filter.getName(), taskList);
 		setMaxHits(MAX_HITS);
