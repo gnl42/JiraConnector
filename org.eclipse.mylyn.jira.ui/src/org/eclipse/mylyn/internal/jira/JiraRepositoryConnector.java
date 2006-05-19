@@ -12,8 +12,10 @@
 package org.eclipse.mylar.internal.jira;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -318,5 +320,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
 		return task;
+	}
+
+	@Override
+	public List<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository, Set<ITask> tasks, Date lastSync) throws GeneralSecurityException, IOException {
+		// TODO: determine changes
+		List<AbstractRepositoryTask> changed = new ArrayList<AbstractRepositoryTask>();
+		for (ITask task : tasks) {
+			if (task instanceof AbstractRepositoryTask) {
+				changed.add((AbstractRepositoryTask)task);
+			}
+		}
+		return changed;
 	}
 }
