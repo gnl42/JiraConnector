@@ -88,6 +88,11 @@ public class JiraTaskEditor extends EditorPart {
 		server.addCommentToIssue(issue, comment.getText());
 		comment.setText("");
 		isDirty = false;
+//		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+//
+//			public void run() {
+//				JiraTaskEditor.this.getSite().getPage().closeEditor(JiraTaskEditor.this, false);
+//			} });
 	}
 
 	public boolean isSaveAsAllowed() {
