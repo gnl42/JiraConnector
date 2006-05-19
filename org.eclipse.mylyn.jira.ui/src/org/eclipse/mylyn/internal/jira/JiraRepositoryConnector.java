@@ -323,13 +323,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public List<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository, Set<ITask> tasks, Date lastSync) throws GeneralSecurityException, IOException {
-		// TODO: determine changes
-		List<AbstractRepositoryTask> changed = new ArrayList<AbstractRepositoryTask>();
-		for (ITask task : tasks) {
-			if (task instanceof AbstractRepositoryTask) {
-				changed.add((AbstractRepositoryTask)task);
-			}
-		}
-		return changed;
+		// XXX: determine changes
+		return Collections.emptyList();
+//		List<AbstractRepositoryTask> changed = new ArrayList<AbstractRepositoryTask>();
+//		for (ITask task : tasks) {
+//			if (task instanceof AbstractRepositoryTask) {
+//				changed.add((AbstractRepositoryTask)task);
+//			}
+//		}
+//		return changed;
 	}
 }

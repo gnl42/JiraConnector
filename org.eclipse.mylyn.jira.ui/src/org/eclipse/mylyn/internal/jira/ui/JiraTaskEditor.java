@@ -142,9 +142,9 @@ public class JiraTaskEditor extends EditorPart {
 
 		Section summarySection = toolkit.createSection(formBody, ExpandableComposite.TITLE_BAR
 				| ExpandableComposite.TWISTIE);
-		summarySection.setText("Summary");
+		summarySection.setText("Attributes");
 		summarySection.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
-
+		summarySection.setExpanded(true);
 		Composite summary = toolkit.createComposite(summarySection);
 		summary.setLayout(new GridLayout(6, false));
 
