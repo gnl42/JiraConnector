@@ -67,9 +67,6 @@ public class JiraTaskEditor extends EditorPart {
 
 	private boolean isDirty = false;
 
-	// private Image commentImage;
-	// private Font commentFont;
-
 	private Map<Comment, ExpandableComposite> commentToControlMap = new HashMap<Comment, ExpandableComposite>();
 
 	private JiraServer server;
@@ -87,31 +84,19 @@ public class JiraTaskEditor extends EditorPart {
 		// JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	public void doSave(IProgressMonitor monitor) {
 		server.addCommentToIssue(issue, comment.getText());
 		comment.setText("");
 		isDirty = false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
-	 */
+	public boolean isSaveAsAllowed() {
+		return false;
+	}
+	
 	public void doSaveAs() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
-	 *      org.eclipse.ui.IEditorInput)
-	 */
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		this.input = (JiraIssueEditorInput) input;
 		setSite(site);
@@ -129,11 +114,6 @@ public class JiraTaskEditor extends EditorPart {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isDirty()
-	 */
 	public boolean isDirty() {
 		if (comment != null) {
 			int charCount = comment.getCharCount();
@@ -144,20 +124,6 @@ public class JiraTaskEditor extends EditorPart {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
-	 */
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-	 */
 	public void createPartControl(Composite parent) {
 		FormToolkit toolkit = new FormToolkit(getSite().getShell().getDisplay());
 
