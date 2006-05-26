@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -322,15 +321,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public List<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository, Set<ITask> tasks, Date lastSync) throws GeneralSecurityException, IOException {
-		// XXX: determine changes
-		return Collections.emptyList();
-//		List<AbstractRepositoryTask> changed = new ArrayList<AbstractRepositoryTask>();
-//		for (ITask task : tasks) {
-//			if (task instanceof AbstractRepositoryTask) {
-//				changed.add((AbstractRepositoryTask)task);
-//			}
-//		}
-//		return changed;
+	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository, Set<AbstractRepositoryTask> tasks) throws GeneralSecurityException, IOException {
+		return Collections.emptySet();
 	}
 }
