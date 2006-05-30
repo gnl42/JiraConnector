@@ -76,11 +76,7 @@ public class JiraQueryWizardPage extends WizardPage {
 	private AbstractRepositoryQuery query;
 
 	public JiraQueryWizardPage(TaskRepository repository) {
-		super(TITLE);
-		this.repository = repository;
-		setTitle(TITLE);
-		setDescription(DESCRIPTION);
-		setPageComplete(false);
+		this(repository, null);
 	}
 
 	public JiraQueryWizardPage(TaskRepository repository, AbstractRepositoryQuery query) {
@@ -157,11 +153,17 @@ public class JiraQueryWizardPage extends WizardPage {
 			return null;
 		}
 		if (filterSummaryPage == null) {
-			FilterDefinition workingCopy = new FilterDefinition();
-			boolean isAdd = true;
+			FilterDefinition workingCopy;
+			boolean isNew;
+			if(query instanceof JiraCustomQuery) {
+				workingCopy = ((JiraCustomQuery) query).getFilterDefinition();
+				isNew = false;
+			} else {
+				workingCopy = new FilterDefinition();
+				isNew = true;
+			}
 
-			filterSummaryPage = new FilterSummaryPage(repository, "summaryPage", "Filter Summary", null, workingCopy,
-					isAdd);
+			filterSummaryPage = new FilterSummaryPage(repository, workingCopy, isNew);
 			filterSummaryPage.setWizard(getWizard());
 		}
 		return filterSummaryPage;
@@ -220,6 +222,7 @@ public class JiraQueryWizardPage extends WizardPage {
 		}
 
 		filterCombo.select(n);
+		filterCombo.showSelection();
 		setPageComplete(true);
 	}
 

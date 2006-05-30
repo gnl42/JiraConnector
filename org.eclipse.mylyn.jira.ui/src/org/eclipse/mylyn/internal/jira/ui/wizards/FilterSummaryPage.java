@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -35,6 +34,7 @@ import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -119,9 +119,8 @@ public class FilterSummaryPage extends WizardPage {
 	 * @param title
 	 * @param titleImage
 	 */
-	protected FilterSummaryPage(TaskRepository repository, String pageName, String title, ImageDescriptor titleImage,
-			FilterDefinition workingCopy, boolean isNew) {
-		super(pageName, title, titleImage);
+	protected FilterSummaryPage(TaskRepository repository, FilterDefinition workingCopy, boolean isNew) {
+		super("summaryPage", "Filter Summary", null);
 		this.repository = repository;
 
 		this.server = JiraServerFacade.getDefault().getJiraServer(repository);
@@ -132,9 +131,8 @@ public class FilterSummaryPage extends WizardPage {
 	}
 
 	public void createControl(Composite parent) {
-		GridData gd;
 		Composite c = new Composite(parent, SWT.NONE);
-		c.setLayout(new GridLayout(3, false));
+		c.setLayout(new GridLayout(5, false));
 
 		Label lblName = new Label(c, SWT.NONE);
 		final GridData gridData = new GridData();
@@ -142,7 +140,7 @@ public class FilterSummaryPage extends WizardPage {
 		lblName.setText("Name:");
 
 		name = new Text(c, SWT.BORDER);
-		name.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		name.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 4, 1));
 		name.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
@@ -160,7 +158,7 @@ public class FilterSummaryPage extends WizardPage {
 		lblDescription.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
 		description = new Text(c, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1);
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false, 4, 1);
 		gd.heightHint = 40;
 		description.setLayoutData(gd);
 		description.addFocusListener(new FocusAdapter() {
@@ -172,38 +170,62 @@ public class FilterSummaryPage extends WizardPage {
 		});
 
 		{
-			Composite cc = new Composite(c, SWT.NONE);
-			final GridData gridData_1 = new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1);
-			cc.setLayoutData(gridData_1);
-			cc.setLayout(new GridLayout(4, false));
+			SashForm cc = new SashForm(c, SWT.HORIZONTAL);
+			cc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 5, 1));
 
-			Label lblProject = new Label(cc, SWT.NONE);
-			lblProject.setText("Project:");
+			{
+				Composite comp = new Composite(cc, SWT.NONE);
+				GridLayout gridLayout = new GridLayout(1, false);
+				gridLayout.marginWidth = 0;
+				gridLayout.marginHeight = 0;
+				comp.setLayout(gridLayout);
+				
+				Label label = new Label(comp, SWT.NONE);
+				label.setText("Project:");
+				createProjectsViewer(comp);
+			}
 
-			Label lblFixFor = new Label(cc, SWT.NONE);
-			lblFixFor.setText("Fix For:");
-			lblFixFor.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+			{
+				Composite comp = new Composite(cc, SWT.NONE);
+				GridLayout gridLayout = new GridLayout(1, false);
+				gridLayout.marginWidth = 0;
+				gridLayout.marginHeight = 0;
+				comp.setLayout(gridLayout);
+				
+				new Label(comp, SWT.NONE).setText("Fix For:");
+				createFixForViewer(comp);
+			}
 
-			Label lblComponent = new Label(cc, SWT.NONE);
-			lblComponent.setText("In Components:");
-			lblComponent.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+			{
+				Composite comp = new Composite(cc, SWT.NONE);
+				GridLayout gridLayout = new GridLayout(1, false);
+				gridLayout.marginWidth = 0;
+				gridLayout.marginHeight = 0;
+				comp.setLayout(gridLayout);
+				
+				new Label(comp, SWT.NONE).setText("In Components:");
+				createComponentsViewer(comp);
+			}
 
-			Label lblReportedIn = new Label(cc, SWT.NONE);
-			lblReportedIn.setText("Reported In:");
-			lblReportedIn.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+			{
+				Composite comp = new Composite(cc, SWT.NONE);
+				GridLayout gridLayout = new GridLayout(1, false);
+				gridLayout.marginWidth = 0;
+				gridLayout.marginHeight = 0;
+				comp.setLayout(gridLayout);
 
-			createProjectsViewer(cc);
-			createFixForViewer(cc);
-			createComponentsViewer(cc);
-			createReportedInViewer(cc);
-
+				Label label = new Label(comp, SWT.NONE);
+				label.setText("Reported In:");
+				createReportedInViewer(comp);
+			}
+			// cc.setWeights(new int[] {1,1,1,1});
 		}
 
 		Label lblQuery = new Label(c, SWT.NONE);
 		lblQuery.setLayoutData(new GridData());
 		lblQuery.setText("Query:");
 		queryString = new Text(c, SWT.BORDER);
-		queryString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		queryString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 4, 1));
 		// TODO put content assist here and a label describing what is available
 
 		queryString.addFocusListener(new FocusAdapter() {
@@ -239,16 +261,6 @@ public class FilterSummaryPage extends WizardPage {
 			}
 
 		});
-		new Label(c, SWT.NONE);
-
-		// Need to turn off validation here
-		if (isNew) {
-			loadFromDefaults();
-		} else {
-			loadFromWorkingCopy();
-		}
-
-		setControl(c);
 
 		searchComments = new Button(c, SWT.CHECK);
 		searchComments.setLayoutData(new GridData());
@@ -262,7 +274,7 @@ public class FilterSummaryPage extends WizardPage {
 		});
 
 		searchEnvironment = new Button(c, SWT.CHECK);
-		searchEnvironment.setLayoutData(new GridData());
+		searchEnvironment.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 		searchEnvironment.setText("Environment");
 		searchEnvironment.addSelectionListener(new SelectionAdapter() {
 
@@ -271,12 +283,20 @@ public class FilterSummaryPage extends WizardPage {
 			}
 
 		});
+		
+		// Need to turn off validation here
+		if (isNew) {
+			loadFromDefaults();
+		} else {
+			loadFromWorkingCopy();
+		}
+		
+		setControl(c);
 	}
 
 	public IWizardPage getNextPage() {
 		if (issueAttributesPage == null) {
-			issueAttributesPage = new IssueAttributesPage(repository, "issueAttributes", "Issue Attributes", null,
-					workingCopy, isNew);
+			issueAttributesPage = new IssueAttributesPage(repository, workingCopy, isNew);
 			issueAttributesPage.setWizard(getWizard());
 		}
 
@@ -284,11 +304,11 @@ public class FilterSummaryPage extends WizardPage {
 	}
 
 	private void createReportedInViewer(Composite c) {
-		GridData gd;
-		reportedIn = new ListViewer(c, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.heightHint = 40;
-		reportedIn.getControl().setLayoutData(gd);
+		reportedIn = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.heightHint = 200;
+		gridData.widthHint = 80;
+		reportedIn.getControl().setLayoutData(gridData);
 
 		reportedIn.setContentProvider(new IStructuredContentProvider() {
 			private Project project;
@@ -327,11 +347,11 @@ public class FilterSummaryPage extends WizardPage {
 	}
 
 	private void createComponentsViewer(Composite c) {
-		GridData gd;
-		components = new ListViewer(c, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.heightHint = 40;
-		components.getControl().setLayoutData(gd);
+		components = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.heightHint = 200;
+		gridData.widthHint = 80;
+		components.getControl().setLayoutData(gridData);
 
 		components.setContentProvider(new IStructuredContentProvider() {
 			private Project project;
@@ -362,11 +382,11 @@ public class FilterSummaryPage extends WizardPage {
 	}
 
 	private void createFixForViewer(Composite c) {
-		GridData gd;
-		fixFor = new ListViewer(c, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.heightHint = 40;
-		fixFor.getControl().setLayoutData(gd);
+		fixFor = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.heightHint = 200;
+		gridData.widthHint = 80;
+		fixFor.getControl().setLayoutData(gridData);
 
 		fixFor.setContentProvider(new IStructuredContentProvider() {
 			private Project project;
@@ -405,8 +425,12 @@ public class FilterSummaryPage extends WizardPage {
 	}
 
 	private void createProjectsViewer(Composite c) {
-		project = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER);
-		project.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		project = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.heightHint = 200;
+		gridData.widthHint = 120;
+		project.getControl().setLayoutData(gridData);
+		
 		project.setContentProvider(new IStructuredContentProvider() {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {

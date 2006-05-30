@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -118,10 +117,8 @@ public class IssueAttributesPage extends WizardPage {
 	 * @param titleImage
 	 * @param server
 	 */
-	protected IssueAttributesPage(TaskRepository repository, String pageName, String title, ImageDescriptor titleImage,
-			FilterDefinition workingCopy, boolean isNew) {
-		super(pageName, title, titleImage);
-//		this.repository = repository;
+	protected IssueAttributesPage(TaskRepository repository, FilterDefinition workingCopy, boolean isNew) {
+		super("issueAttributes", "Issue Attributes", null);
 		this.jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 		this.workingCopy = workingCopy;
 		this.isNew = isNew;
@@ -277,19 +274,15 @@ public class IssueAttributesPage extends WizardPage {
 
 			Label lblIssueType = new Label(c, SWT.NONE);
 			lblIssueType.setText("Type:");
-			lblIssueType.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
 
 			Label lblStatus = new Label(c, SWT.NONE);
 			lblStatus.setText("Status:");
-			lblStatus.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
 
 			Label lblResolution = new Label(c, SWT.NONE);
 			lblResolution.setText("Resolution:");
-			lblResolution.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
 
 			Label lblPriority = new Label(c, SWT.NONE);
 			lblPriority.setText("Priority:");
-			lblPriority.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
 			
 			issueType = new ListViewer(c, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
 			gd = new GridData(SWT.FILL, SWT.FILL, true, true);

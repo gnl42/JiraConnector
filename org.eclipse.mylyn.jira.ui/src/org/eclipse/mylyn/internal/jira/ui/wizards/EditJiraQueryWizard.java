@@ -27,6 +27,7 @@ public class EditJiraQueryWizard extends AbstractEditQueryWizard {
 
 	public EditJiraQueryWizard(TaskRepository repository, AbstractRepositoryQuery query) {
 		super(repository, query);
+		setForcePreviousAndNextButtons(true);
 //		this.repository = repository;
 //		this.query = query;
 //		setNeedsProgressMonitor(true);
