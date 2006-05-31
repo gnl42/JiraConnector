@@ -13,7 +13,6 @@ package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
-import org.tigris.jira.core.model.Issue;
 
 /**
  * Represents an issue returned as the result of a Jira Filter (Query)
@@ -23,28 +22,30 @@ import org.tigris.jira.core.model.Issue;
  */
 public class JiraQueryHit extends AbstractQueryHit {
 
-	private Issue issue = null;
+//	private Issue issue = null;
 
 	private JiraTask task = null;
 
-	public JiraQueryHit(Issue issue, String repositoryUrl, int id) {
-		super(repositoryUrl, issue.getSummary(), id);
-		this.issue = issue;
-		task = (JiraTask)getOrCreateCorrespondingTask();
+	public JiraQueryHit(JiraTask task, String repositoryUrl, int id) {
+		super(repositoryUrl, task.getDescription(), id);
+		this.task = task;
+//		this.issue = issue;
+//		task = (JiraTask)getOrCreateCorrespondingTask();
 	}
 
-	public Issue getIssue() {
-		return issue;
-	}
+//	public Issue getIssue() {
+//		return issue;
+//	}
 
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
-		if (task == null) {
-			task = JiraRepositoryConnector.createTask(issue, getHandleIdentifier());
-		}
-		if (issue != null) {
-			JiraRepositoryConnector.updateTaskDetails(repositoryUrl, task, issue);
-		} 
 		return task;
+//		if (task == null) {
+//			task = JiraRepositoryConnector.createTask(issue, getHandleIdentifier());
+//		}
+//		if (issue != null) {
+//			JiraRepositoryConnector.updateTaskDetails(repositoryUrl, task, issue);
+//		} 
+//		return task;
 	}
 
 	/**

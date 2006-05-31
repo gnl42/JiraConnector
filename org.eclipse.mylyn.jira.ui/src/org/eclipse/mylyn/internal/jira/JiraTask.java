@@ -91,7 +91,6 @@ public class JiraTask extends AbstractRepositoryTask {
 	 */
 	public JiraTask(String handle, String label, boolean newTask) {
 		super(handle, label, newTask);
-//		this.key = key;
 	}
 
 	@Override
@@ -108,14 +107,12 @@ public class JiraTask extends AbstractRepositoryTask {
 		return MylarJiraPlugin.REPOSITORY_KIND;
 	}
 
-	
 	public String getKey() {
 		return key;
 	}
 
-	
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+
 }

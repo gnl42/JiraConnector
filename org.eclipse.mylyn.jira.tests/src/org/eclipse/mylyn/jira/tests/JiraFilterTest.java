@@ -14,9 +14,9 @@ package org.eclipse.mylar.jira.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraQueryHit;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
+import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
@@ -25,7 +25,8 @@ import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.tigris.jira.core.model.NamedFilter;
 
 /**
- * @author Wesley Coelho (initial integration patch) *
+ * @author Wesley Coelho (initial integration patch)
+ * @author Mik Kersten
  */
 public class JiraFilterTest extends TestCase {
 
@@ -38,7 +39,7 @@ public class JiraFilterTest extends TestCase {
 	private JiraServerFacade jiraFacade = null;
 
 	private TaskRepository repository = null;
-
+	
 	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
 
 	protected void setUp() throws Exception {
@@ -58,10 +59,10 @@ public class JiraFilterTest extends TestCase {
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		MylarTaskListPlugin.getTaskListManager().resetTaskList();
 		MylarTaskListPlugin.getRepositoryManager().removeRepository(repository);
-		jiraFacade.logOutFromAll();
+//		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
-
+	
 	public void testJiraFilterRefresh() {
 		NamedFilter[] filters = jiraFacade.getJiraServer(repository).getNamedFilters();
 		assertTrue(filters.length > 0);
@@ -82,4 +83,34 @@ public class JiraFilterTest extends TestCase {
 		JiraQueryHit jHit = (JiraQueryHit) jFilter.getHits().iterator().next();
 		assertTrue(jHit.getDescription().length() > 0);
 	}
+
+	// TODO: reneable
+//	public void testJiraTaskRegistryIntegration() {
+//	TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
+//		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+//				MylarJiraPlugin.REPOSITORY_KIND);
+//		assertNotNull(client);
+//		assertEquals(""+taskList.getArchiveContainer().getChildren(), 0, taskList.getArchiveContainer().getChildren().size());
+//		JiraServer server = jiraFacade.getJiraServer(repository);
+//		NamedFilter[] namedFilters = server.getNamedFilters();
+//		JiraRepositoryQuery filter = new JiraRepositoryQuery(repository.getUrl(), namedFilters[0], MylarTaskListPlugin.getTaskListManager().getTaskList());
+//		
+//		connector.synchronize(filter, null);
+//		// filter.refreshHits();
+//		// MylarTaskListPlugin.getTaskListManager().addQuery(filter);		
+//		Job job = connector.synchronize(filter, null);
+//		while (job.getResult() == null) {
+//			// while (filter.isRefreshing()) {
+//			try {
+//				Thread.sleep(500);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		assertTrue(filter.getHits().size() > 0);
+//		JiraQueryHit jHit = (JiraQueryHit) filter.getHits().iterator().next();
+//
+//		assertNotNull(taskList.getTask(jHit.getHandleIdentifier()));
+//	}
 }

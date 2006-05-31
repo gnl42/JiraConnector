@@ -63,16 +63,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		private final IProgressMonitor monitor;
 
-		private final AbstractRepositoryQuery query;
-
-		private final List<AbstractQueryHit> hits;
+		private final List<Issue> issues;
 
 		private boolean done = false;
 
-		JiraIssueCollector(IProgressMonitor monitor, AbstractRepositoryQuery query, List<AbstractQueryHit> hits) {
+		JiraIssueCollector(IProgressMonitor monitor, List<Issue> issues) {
 			this.monitor = monitor;
-			this.query = query;
-			this.hits = hits;
+			this.issues = issues;
 		}
 
 		public void done() {
@@ -84,9 +81,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		public void collectIssue(Issue issue) {
-			int issueId = new Integer(issue.getId());
-			JiraQueryHit hit = new JiraQueryHit(issue, query.getRepositoryUrl(), issueId);
-			hits.add(hit);
+			issues.add(issue);
 		}
 
 		public void start() {
@@ -193,26 +188,40 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public List<AbstractQueryHit> performQuery(AbstractRepositoryQuery repositoryQuery, final IProgressMonitor monitor,
 			MultiStatus queryStatus) {
-		final List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
+		List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
+		final List<Issue> issues = new ArrayList<Issue>();
 
 		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
 				MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
 
-		JiraIssueCollector collector = new JiraIssueCollector(monitor, repositoryQuery, hits);
+		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
 
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
-
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
 				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(), collector);
 			}
-		} catch (Exception e) {
+		} catch (Throwable t) {
 			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK,
 					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
-							+ "\n\nCheck network connection.", e));
+							+ "\n\nCheck network connection.", t));
+			return hits;
+		}
+		
+		for (Issue issue : issues) {
+			int issueId = new Integer(issue.getId());
+			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);			
+			ITask task = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+			if (!(task instanceof JiraTask)) {
+				task = createTask(issue, handleIdentifier);
+			} 
+			updateTaskDetails(repository.getUrl(), (JiraTask)task, issue);
+			
+			JiraQueryHit hit = new JiraQueryHit((JiraTask)task, repositoryQuery.getRepositoryUrl(), issueId);
+			hits.add(hit);
 		}
 		queryStatus.add(Status.OK_STATUS);
 		return hits;
