@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +31,8 @@ import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
+import org.eclipse.mylar.internal.tasklist.AbstractAttributeFactory;
+import org.eclipse.mylar.internal.tasklist.RepositoryTaskData;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
@@ -91,6 +94,33 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		public boolean isDone() {
 			return done;
 		}
+	}
+
+	public JiraRepositoryConnector() {
+		super(new AbstractAttributeFactory() {
+
+			private static final long serialVersionUID = -4685044081450189855L;
+
+			@Override
+			public boolean getIsHidden(String key) {
+				return false;
+			}
+
+			@Override
+			public String getName(String key) {
+				return key;
+			}
+
+			@Override
+			public String mapCommonAttributeKey(String key) {
+				return key;
+			}
+
+			@Override
+			public boolean isReadOnly(String key) {				
+				return false;
+			}
+		});
 	}
 
 	public String getLabel() {
@@ -198,7 +228,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
@@ -210,21 +239,28 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 							+ "\n\nCheck network connection.", t));
 			return hits;
 		}
-		
+		// TODO: work-around no other way of determining failure
+		if (!collector.isDone()) {
+			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK,
+					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
+							+ "\n\nCheck network connection.", new UnknownHostException()));
+			return hits;
+		} else {
 		for (Issue issue : issues) {
 			int issueId = new Integer(issue.getId());
-			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);			
+			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
 			ITask task = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
 			if (!(task instanceof JiraTask)) {
 				task = createTask(issue, handleIdentifier);
-			} 
-			updateTaskDetails(repository.getUrl(), (JiraTask)task, issue);
-			
-			JiraQueryHit hit = new JiraQueryHit((JiraTask)task, repositoryQuery.getRepositoryUrl(), issueId);
+			}
+			updateTaskDetails(repository.getUrl(), (JiraTask) task, issue);
+
+			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
 			hits.add(hit);
 		}
 		queryStatus.add(Status.OK_STATUS);
 		return hits;
+		}
 	}
 
 	@Override
@@ -248,9 +284,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	protected void updateOfflineState(AbstractRepositoryTask repositoryTask, boolean forceSync) {
-		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
+		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
+				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
 		if (repository != null && repositoryTask instanceof JiraTask) {
-			JiraTask jiraTask = (JiraTask)repositoryTask;
+			JiraTask jiraTask = (JiraTask) repositoryTask;
 			JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 			if (server != null) {
 				Issue issue = server.getIssue(jiraTask.getKey());
@@ -260,7 +297,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean attachContext(TaskRepository repository, AbstractRepositoryTask task, String longComment)
 			throws IOException {
@@ -330,7 +367,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository, Set<AbstractRepositoryTask> tasks) throws GeneralSecurityException, IOException {
+	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
+			Set<AbstractRepositoryTask> tasks) throws GeneralSecurityException, IOException {
 		return Collections.emptySet();
+	}
+
+	@Override
+	protected RepositoryTaskData downloadTaskData(AbstractRepositoryTask bugzillaTask) {
+		MylarStatusHandler.log("Unexpected call to JiraRepositoryConnector.downloadTaskData()", this);
+		return null;
 	}
 }
