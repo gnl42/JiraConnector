@@ -31,7 +31,6 @@ import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
-import org.eclipse.mylar.internal.tasklist.AbstractAttributeFactory;
 import org.eclipse.mylar.internal.tasklist.RepositoryAttachment;
 import org.eclipse.mylar.internal.tasklist.RepositoryTaskData;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
@@ -97,30 +96,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public JiraRepositoryConnector() {
-		super(new AbstractAttributeFactory() {
-
-			private static final long serialVersionUID = -4685044081450189855L;
-
-			@Override
-			public boolean getIsHidden(String key) {
-				return false;
-			}
-
-			@Override
-			public String getName(String key) {
-				return key;
-			}
-
-			@Override
-			public String mapCommonAttributeKey(String key) {
-				return key;
-			}
-
-			@Override
-			public boolean isReadOnly(String key) {				
-				return false;
-			}
-		});
+		super(new JiraAttributeFactory());
 	}
 
 	public String getLabel() {
