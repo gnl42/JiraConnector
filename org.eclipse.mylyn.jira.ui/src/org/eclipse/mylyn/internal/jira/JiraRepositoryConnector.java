@@ -38,6 +38,7 @@ import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
+import org.eclipse.mylar.provisional.tasklist.IAttachmentHandler;
 import org.eclipse.mylar.provisional.tasklist.ITask;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
@@ -106,9 +107,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public String getRepositoryType() {
 		return MylarJiraPlugin.REPOSITORY_KIND;
 	}
-
-	public String toString() {
-		return getLabel();
+	
+	@Override
+	protected IAttachmentHandler getAttachmentHandler() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -274,21 +277,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
-	@Override
-	public boolean attachContext(TaskRepository repository, AbstractRepositoryTask task, String longComment)
-			throws IOException {
-		return false;
-	}
 
 	@Override
 	public Set<RepositoryAttachment> getContextAttachments(TaskRepository repository, AbstractRepositoryTask task) {
 		return Collections.emptySet();
-	}
-
-	@Override
-	public boolean retrieveContext(TaskRepository repository, AbstractRepositoryTask task,
-			RepositoryAttachment attachment) throws IOException {
-		return false;
 	}
 
 	@Override
@@ -353,4 +345,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		MylarStatusHandler.log("Unexpected call to JiraRepositoryConnector.downloadTaskData()", this);
 		return null;
 	}
+	
+	public String toString() {
+		return getLabel();
+	}
+
 }
