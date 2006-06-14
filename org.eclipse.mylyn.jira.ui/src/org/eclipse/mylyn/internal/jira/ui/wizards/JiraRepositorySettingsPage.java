@@ -21,6 +21,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -38,8 +39,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private static final String DESCRIPTION = "Example: http://developer.atlassian.com/jira";
 
-	public JiraRepositorySettingsPage() {
-		super(TITLE, DESCRIPTION);
+	public JiraRepositorySettingsPage(AbstractRepositoryConnector connector) {
+		super(TITLE, DESCRIPTION, connector);
 	}
 
 	/** Create a button to validate the specified repository settings */
