@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Set;
 
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasklist.TaskExternalizationException;
@@ -65,8 +67,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	private static final String KEY_FILTER_CUSTOM = "FilterCustom";
 
 	private static final String KEY_KEY = "Key";
-	
-//	private static final String KEY_ISSUE_SUMMARY = "IssueSummary";
+
+	// private static final String KEY_ISSUE_SUMMARY = "IssueSummary";
 
 	public boolean canReadQuery(Node node) {
 		return node.getNodeName().equals(KEY_JIRA_QUERY) || node.getNodeName().equals(KEY_JIRA_CUSTOM);
@@ -146,19 +148,23 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			node.setAttribute(KEY_FILTER_CUSTOM, encodeFilter(filter));
 		}
 
-		for (AbstractQueryHit hit : query.getHits()) {
-			try {
-				Element element = null;
-				for (ITaskListExternalizer externalizer : super.getDelegateExternalizers()) {
-					if (externalizer.canCreateElementFor(hit))
-						element = externalizer.createQueryHitElement(hit, doc, node);
+		Set<AbstractQueryHit> hits = Collections.synchronizedSet(query.getHits());
+		synchronized (hits) {
+			for (AbstractQueryHit hit : hits) {
+				try {
+					Element element = null;
+					for (ITaskListExternalizer externalizer : super.getDelegateExternalizers()) {
+						if (externalizer.canCreateElementFor(hit))
+							element = externalizer.createQueryHitElement(hit, doc, node);
+					}
+					if (element == null)
+						createQueryHitElement(hit, doc, node);
+				} catch (Exception e) {
+					MylarStatusHandler.log(e, e.getMessage());
 				}
-				if (element == null)
-					createQueryHitElement(hit, doc, node);
-			} catch (Exception e) {
-				MylarStatusHandler.log(e, e.getMessage());
 			}
 		}
+
 		parent.appendChild(node);
 		return node;
 	}
@@ -248,13 +254,13 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	public Element createQueryHitElement(AbstractQueryHit queryHit, Document doc, Element parent) {
 		Element node = doc.createElement(getQueryHitTagName());
 
-//		JiraQueryHit hit = (JiraQueryHit) queryHit;
-//		Issue issue = hit.getIssue();
+		// JiraQueryHit hit = (JiraQueryHit) queryHit;
+		// Issue issue = hit.getIssue();
 
 		node.setAttribute(KEY_HANDLE, queryHit.getHandleIdentifier());
 		node.setAttribute(KEY_PRIORITY, queryHit.getPriority());
 
-//		node.setAttribute(KEY_ISSUE_SUMMARY, issue.getSummary());
+		// node.setAttribute(KEY_ISSUE_SUMMARY, issue.getSummary());
 		parent.appendChild(node);
 		return null;
 	}
@@ -262,7 +268,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	public void readQueryHit(Node node, TaskList taskList, AbstractRepositoryQuery query)
 			throws TaskExternalizationException {
 		Element element = (Element) node;
-//		Issue issue = new Issue();
+		// Issue issue = new Issue();
 
 		String handle;
 		if (element.hasAttribute(KEY_HANDLE)) {
@@ -270,16 +276,17 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		} else {
 			throw new TaskExternalizationException("Handle not stored for bug report");
 		}
-//		if (element.hasAttribute(KEY_ISSUE_SUMMARY)) {
-//			issue.setSummary(element.getAttribute(KEY_ISSUE_SUMMARY));
-//		} else {
-//			throw new TaskExternalizationException("Summary not stored for bug report");
-//		}
+		// if (element.hasAttribute(KEY_ISSUE_SUMMARY)) {
+		// issue.setSummary(element.getAttribute(KEY_ISSUE_SUMMARY));
+		// } else {
+		// throw new TaskExternalizationException("Summary not stored for bug
+		// report");
+		// }
 
 		ITask correspondingTask = taskList.getTask(handle);
 		if (correspondingTask instanceof JiraTask) {
 			int issueId = new Integer(AbstractRepositoryTask.getTaskIdAsInt(handle));
-			JiraQueryHit hit = new JiraQueryHit((JiraTask)correspondingTask, query.getRepositoryUrl(), issueId);
+			JiraQueryHit hit = new JiraQueryHit((JiraTask) correspondingTask, query.getRepositoryUrl(), issueId);
 			hit.setHandleIdentifier(handle);
 			query.addHit(hit);
 		}
