@@ -88,11 +88,6 @@ public class JiraTaskEditor extends EditorPart {
 		server.addCommentToIssue(issue, comment.getText());
 		comment.setText("");
 		isDirty = false;
-//		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-//
-//			public void run() {
-//				JiraTaskEditor.this.getSite().getPage().closeEditor(JiraTaskEditor.this, false);
-//			} });
 	}
 
 	public boolean isSaveAsAllowed() {
@@ -120,13 +115,14 @@ public class JiraTaskEditor extends EditorPart {
 	}
 
 	public boolean isDirty() {
-		if (comment != null) {
-			int charCount = comment.getCharCount();
-			isDirty = charCount > 0;
-			return isDirty;
-		} else {
-			return false;
-		}
+		return isDirty;
+//		if (comment != null) {
+//			int charCount = comment.getCharCount();
+//			isDirty = charCount > 0;
+//			return isDirty;
+//		} else {
+//			return false;
+//		}
 	}
 
 	public void createPartControl(Composite parent) {
@@ -374,7 +370,9 @@ public class JiraTaskEditor extends EditorPart {
 
 			public void modifyText(ModifyEvent e) {
 				int charCount = comment.getCharCount();
-				if ((isDirty && charCount == 0) || (!isDirty && charCount > 0)) {
+				if (charCount > 0) {
+					isDirty = true;
+//				if ((isDirty && charCount == 0) || (!isDirty && charCount > 0)) {
 					firePropertyChange(PROP_DIRTY);
 				}
 			}
@@ -396,32 +394,14 @@ public class JiraTaskEditor extends EditorPart {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-	 */
 	public void setFocus() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#dispose()
-	 */
 	public void dispose() {
 		super.dispose();
 		// commentImage.dispose();
-
-		// Don't dispose JFace resources
-		// commentFont.dispose();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.WorkbenchPart#getAdapter(java.lang.Class)
-	 */
 	public Object getAdapter(Class adapter) {
 		if (IContentOutlinePage.class.equals(adapter)) {
 			return new JiraIssueContentOutlinePage(this, this.issue);
