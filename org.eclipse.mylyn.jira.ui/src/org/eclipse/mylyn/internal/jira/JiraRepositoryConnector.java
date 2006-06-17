@@ -31,6 +31,7 @@ import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
+import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraTaskWizard;
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
@@ -176,32 +177,31 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
 							+ "\n\nCheck network connection.", new UnknownHostException()));
 			return hits;
-		} else {
-			for (Issue issue : issues) {
-				int issueId = new Integer(issue.getId());
-				String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
-				ITask task = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
-				if (!(task instanceof JiraTask)) {
-					task = createTask(issue, handleIdentifier);
-				}
-				updateTaskDetails(repository.getUrl(), (JiraTask) task, issue);
-
-				JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
-				hits.add(hit);
-			}
-			queryStatus.add(Status.OK_STATUS);
-			return hits;
 		}
+		for (Issue issue : issues) {
+			int issueId = new Integer(issue.getId());
+			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
+			ITask task = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+			if (!(task instanceof JiraTask)) {
+				task = createTask(issue, handleIdentifier);
+			}
+			updateTaskDetails(repository.getUrl(), (JiraTask) task, issue);
+
+			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
+			hits.add(hit);
+		}
+		queryStatus.add(Status.OK_STATUS);
+		return hits;
 	}
 
 	@Override
 	public boolean canCreateNewTask() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
-		return null;
+		return new NewJiraTaskWizard(taskRepository);
 	}
 
 	@Override
