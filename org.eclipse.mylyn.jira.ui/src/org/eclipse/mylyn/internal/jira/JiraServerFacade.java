@@ -126,14 +126,24 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	} 
 
-	/** Returns true if all of the serverURL, user name, and password are valid */
-	public boolean validateServerAndCredentials(String serverUrl, String user, String password) {
+	/**
+	 * Validate the server URL and user credentials
+	 * @param serverUrl Location of the Jira Server
+	 * @param user Username
+	 * @param password Password
+	 * @return String describing validation failure or null if the details are valid
+	 */
+	public String validateServerAndCredentials(String serverUrl, String user, String password) {
 		try {
 			serverManager.testConnection(serverUrl, user, password);
+			return null;
+		} catch (ServiceUnavailableException e) {
+			return e.getMessage();
+		} catch (AuthenticationException e) {
+			return "The supplied credentials are invalid";
 		} catch (Exception e) {
-			return false;
+			return e.getMessage();
 		}
-		return true;
 	}
 
 	private static String getServerHost(TaskRepository repository) {

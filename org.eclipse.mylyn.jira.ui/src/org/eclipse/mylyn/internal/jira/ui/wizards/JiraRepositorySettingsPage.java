@@ -76,12 +76,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {
 						monitor.beginTask("Validating repository settings", IProgressMonitor.UNKNOWN);
-						if (!JiraServerFacade.getDefault().validateServerAndCredentials(serverUrl, userName, password)) {
-							throw new InvocationTargetException(new RuntimeException("Could not log in"));
+						String message = JiraServerFacade.getDefault().validateServerAndCredentials(serverUrl, userName, password);
+						if (message != null) {
+							throw new InvocationTargetException(new RuntimeException(message));
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						throw new InvocationTargetException(e);
 					} finally {
 						monitor.done();
 					}
@@ -90,9 +88,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG,
 				"Valid Jira server found and your login was accepted.");
 		} catch (InvocationTargetException e) {
-			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
+			MessageDialog.openError(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, e.getTargetException().getMessage());
 		} catch (InterruptedException e) {
-			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
+			MessageDialog.openError(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
 		}
 	}
 }
