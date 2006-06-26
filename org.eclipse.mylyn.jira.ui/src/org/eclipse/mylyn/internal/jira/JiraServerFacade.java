@@ -83,13 +83,6 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 
-//	public void repositorySetUpdated() {
-//		JiraServer[] servers = serverManager.getAllServers();
-//		for (JiraServer server : servers) {
-//			removeServer(server);
-//		}
-//	}
-
 	public void repositoriesRead() {
 		// ignore
 	}
