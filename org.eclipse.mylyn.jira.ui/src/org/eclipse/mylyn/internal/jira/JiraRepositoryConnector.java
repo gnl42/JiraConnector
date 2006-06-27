@@ -95,7 +95,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (issue != null) {
 				String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
 				JiraTask task = createTask(issue, handleIdentifier);
-				updateTaskDetails(repository.getUrl(), task, issue);
+				updateTaskDetails(repository.getUrl(), task, issue, true);
 				if (task != null) {
 					MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
 					return task;
@@ -185,7 +185,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (!(task instanceof JiraTask)) {
 				task = createTask(issue, handleIdentifier);
 			}
-			updateTaskDetails(repository.getUrl(), (JiraTask) task, issue);
+			updateTaskDetails(repository.getUrl(), (JiraTask) task, issue, false);
 
 			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
 			hits.add(hit);
@@ -223,7 +223,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (server != null) {
 				Issue issue = server.getIssue(jiraTask.getKey());
 				if (issue != null) {
-					updateTaskDetails(repository.getUrl(), jiraTask, issue);
+					updateTaskDetails(repository.getUrl(), jiraTask, issue, true);
 				}
 			}
 		}
@@ -241,7 +241,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return null;
 	}
 
-	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue) {
+	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
 			String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
 			task.setUrl(url);
@@ -263,7 +263,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task.setPriority(translatedPriority);
 			task.setKind(issue.getType().getName());
 		}
-		MylarTaskListPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
+		if (notifyOfChange) {
+			MylarTaskListPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
+		}
 	}
 
 	public static JiraTask createTask(Issue issue, String handleIdentifier) {
