@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
@@ -37,6 +38,7 @@ public class NewJiraQueryWizard extends Wizard {
 		this.repository = repository;
 		setNeedsProgressMonitor(true);
 		setWindowTitle(TITLE); 
+		setDefaultPageImageDescriptor(TaskListImages.BANNER_REPOSITORY);
 	}
 
 	@Override
@@ -48,7 +50,6 @@ public class NewJiraQueryWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-
 		AbstractRepositoryQuery query = queryPage.getQuery();
 		if (query != null) {
 			MylarTaskListPlugin.getTaskListManager().getTaskList().addQuery(query);
@@ -56,9 +57,7 @@ public class NewJiraQueryWizard extends Wizard {
 			if (connector != null) {
 				connector.synchronize(query, null);
 			}
-//			filter.refreshHits();
 		} 
-
 		return true;
 	}
 
