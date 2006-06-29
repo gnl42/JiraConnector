@@ -13,6 +13,7 @@ package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
 import org.eclipse.mylar.internal.tasklist.ui.TaskUiUtil;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 import org.eclipse.ui.INewWizard;
@@ -22,6 +23,7 @@ import org.eclipse.ui.IWorkbench;
  * Wizard used to create new Jira task using web UI
  * 
  * @author Eugene Kuleshov
+ * @author Mik Kersten
  */
 public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
@@ -29,6 +31,8 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
 	public NewJiraTaskWizard(TaskRepository taskRepository) {
 		this.taskRepository = taskRepository;
+		setWindowTitle("New JIRA Task");
+		setDefaultPageImageDescriptor(TaskListImages.BANNER_REPOSITORY);
 	}
 
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
@@ -45,6 +49,8 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
 	public boolean performFinish() {
 		String newTaskUrl = taskRepository.getUrl();
+//		TaskUiUtil.openUrl(newTaskUrl);
+		// below doesn't work because component parameter is missing, probably from CGI vars
 		TaskUiUtil.openUrl(newTaskUrl + (newTaskUrl.endsWith("/") ? "" : "/") + "secure/CreateIssue!default.jspa");
 		return true;
 	}
