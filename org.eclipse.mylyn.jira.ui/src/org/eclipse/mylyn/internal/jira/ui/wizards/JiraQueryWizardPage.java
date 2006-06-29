@@ -185,7 +185,9 @@ public class JiraQueryWizardPage extends WizardPage {
 					monitor.done();
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							displayFilters(filters);
+							if (!filterCombo.isDisposed()) {
+								displayFilters(filters);
+							}
 						}
 					});
 				} catch (Exception e) {
