@@ -127,14 +127,19 @@ public class JiraTaskEditor extends EditorPart {
 
 	public void createPartControl(Composite parent) {
 		FormToolkit toolkit = new FormToolkit(getSite().getShell().getDisplay());
-
 		Form form = toolkit.createForm(parent);
-		form.setText(issue.getKey() + ": " + issue.getSummary());
-
 		GridLayout formLayout = new GridLayout(1, true);
-
 		final Composite formBody = form.getBody();
 		formBody.setLayout(formLayout);
+		
+		if (issue == null) {
+			form.setText("Error opening task");
+			toolkit.createLabel(formBody, "Could not download: " + this.input.getTask().getDescription());
+			toolkit.createLabel(formBody, "\nTry synchronizing the corresponding query");
+			return;
+		}
+		
+		form.setText(issue.getKey() + ": " + issue.getSummary());
 
 		Section summarySection = toolkit.createSection(formBody, ExpandableComposite.TITLE_BAR
 				| ExpandableComposite.TWISTIE);
