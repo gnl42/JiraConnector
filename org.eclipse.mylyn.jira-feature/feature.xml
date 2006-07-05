@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.mylar.jira_feature"
       label="Mylar Connector: JIRA"
-      version="0.6.0.v20060704-2200"
+      version="0.6.0.v20060705-1300"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
@@ -236,7 +236,7 @@ litigation.
          id="org.eclipse.mylar.jira"
          download-size="0"
          install-size="0"
-         version="0.6.0.v20060704-2200"
+         version="0.6.0.v20060705-1300"
          unpack="false"/>
 
 </feature>
