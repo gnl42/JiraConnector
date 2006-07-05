@@ -101,9 +101,6 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 	
-	/**
-	 * TODO: using work-around, need API
-	 */
 	public void refreshServerSettings(TaskRepository repository) {
 		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
