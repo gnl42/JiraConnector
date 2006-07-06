@@ -25,10 +25,8 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.ui.wizards.AddExistingJiraTaskWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
@@ -112,10 +110,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public IWizard getNewQueryWizard(TaskRepository repository) {
 		return new NewJiraQueryWizard(repository);
-	}
-
-	public Wizard getAddExistingTaskWizard(TaskRepository repository) {
-		return new AddExistingJiraTaskWizard(repository);
 	}
 
 	@Override
