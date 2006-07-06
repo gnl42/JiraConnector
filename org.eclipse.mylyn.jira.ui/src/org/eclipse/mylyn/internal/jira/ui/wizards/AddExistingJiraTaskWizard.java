@@ -12,7 +12,6 @@
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractAddExistingTaskWizard;
-import org.eclipse.mylar.internal.tasklist.ui.wizards.ExistingTaskWizardPage;
 import org.eclipse.mylar.provisional.tasklist.TaskRepository;
 
 /**
@@ -20,19 +19,7 @@ import org.eclipse.mylar.provisional.tasklist.TaskRepository;
  */
 public class AddExistingJiraTaskWizard extends AbstractAddExistingTaskWizard {
 	
-	private ExistingTaskWizardPage page;
-
 	public AddExistingJiraTaskWizard(TaskRepository repository) {
 		super(repository);
-	}
-
-	public void addPages() {
-		super.addPages();
-		this.page = new ExistingTaskWizardPage();
-		addPage(page);
-	}
-
-	protected String getTaskId() {
-		return page.getTaskId();
 	}
 } 
