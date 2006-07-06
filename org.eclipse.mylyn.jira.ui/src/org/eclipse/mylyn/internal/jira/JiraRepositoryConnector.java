@@ -179,7 +179,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return hits;
 		}
 		for (Issue issue : issues) {
-			int issueId = new Integer(issue.getId());
+			String issueId = issue.getId();
 			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
 			ITask task = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
 			if (!(task instanceof JiraTask)) {

@@ -26,7 +26,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 
 	private JiraTask task = null;
 
-	public JiraQueryHit(JiraTask task, String repositoryUrl, int id) {
+	public JiraQueryHit(JiraTask task, String repositoryUrl, String id) {
 		super(repositoryUrl, task.getDescription(), id);
 		this.task = task;
 //		this.issue = issue;
