@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -108,7 +109,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return new JiraRepositorySettingsPage(this);
 	}
 
-	public IWizard getNewQueryWizard(TaskRepository repository) {
+	public IWizard getNewQueryWizard(TaskRepository repository, IStructuredSelection selection) {
 		return new NewJiraQueryWizard(repository);
 	}
 
@@ -195,7 +196,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
+	public IWizard getNewTaskWizard(TaskRepository taskRepository, IStructuredSelection selection) {
 		return new NewJiraTaskWizard(taskRepository);
 	}
 
