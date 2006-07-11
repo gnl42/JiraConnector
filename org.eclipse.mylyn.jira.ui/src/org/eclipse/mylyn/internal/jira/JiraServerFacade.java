@@ -101,6 +101,11 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 	
+	public void repositorySettingsChanged(TaskRepository repository) {
+		repositoryRemoved(repository);
+		repositoryAdded(repository);
+	}
+	
 	public void refreshServerSettings(TaskRepository repository) {
 		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
@@ -162,5 +167,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			MylarStatusHandler.fail(e, "Could not connect to Jira repository.\n\n"
 					+ "Please check your credentials in the Task Repositories view", true);
 		}
-	}	
+	}
+
+	
 }

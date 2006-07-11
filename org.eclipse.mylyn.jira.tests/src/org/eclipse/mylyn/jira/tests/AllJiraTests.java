@@ -28,6 +28,7 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraTaskExternalizationTest.class);
 		suite.addTestSuite(JiraFilterTest.class);
 		suite.addTestSuite(JiraTaskArchiveTest.class);
+		suite.addTestSuite(JiraRepositoryConnectorTest.class);
 		// $JUnit-END$
 		return suite;
 	}
