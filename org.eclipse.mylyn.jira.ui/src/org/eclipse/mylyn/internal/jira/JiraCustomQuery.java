@@ -11,8 +11,8 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
-import org.eclipse.mylar.provisional.tasklist.TaskList;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylar.tasks.core.TaskList;
 import org.tigris.jira.core.model.filter.FilterDefinition;
 
 /**

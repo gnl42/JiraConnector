@@ -9,5 +9,6 @@ Require-Bundle: org.junit,
  org.eclipse.ui,
  org.tigris.jira.core,
  org.eclipse.mylar.tasklist,
- org.eclipse.mylar.jira
+ org.eclipse.mylar.jira,
+ org.eclipse.mylar.tasks.core
 Export-Package: org.eclipse.mylar.jira.tests

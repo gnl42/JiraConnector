@@ -23,13 +23,13 @@ import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
-import org.eclipse.mylar.provisional.tasklist.ITask;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.provisional.tasklist.TaskList;
 import org.eclipse.mylar.provisional.tasklist.TaskListManager;
-import org.eclipse.mylar.provisional.tasklist.TaskRepository;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylar.tasks.core.ITask;
+import org.eclipse.mylar.tasks.core.TaskList;
+import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
 
@@ -134,7 +134,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(jiraTask);
 		JiraQueryHit jiraHit = new JiraQueryHit(jiraTask, repository.getUrl(), "123");
 		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
-		jiraRepositoryQuery.addHit(jiraHit);
+		jiraRepositoryQuery.addHit(jiraHit, taskList);
 		MylarTaskListPlugin.getTaskListManager().getTaskList().addQuery(jiraRepositoryQuery);
 		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
 

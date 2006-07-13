@@ -14,10 +14,10 @@ package org.eclipse.mylar.internal.jira;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
-import org.eclipse.mylar.provisional.tasklist.ITaskRepositoryListener;
+import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.provisional.tasklist.TaskRepository;
+import org.eclipse.mylar.tasks.core.ITaskRepositoryListener;
+import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.tigris.jira.core.JiraCorePlugin;
 import org.tigris.jira.core.ServerManager;
 import org.tigris.jira.core.service.JiraServer;

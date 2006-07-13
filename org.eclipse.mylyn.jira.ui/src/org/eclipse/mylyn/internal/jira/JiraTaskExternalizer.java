@@ -20,17 +20,17 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Set;
 
-import org.eclipse.mylar.internal.core.util.MylarStatusHandler;
-import org.eclipse.mylar.internal.tasklist.TaskExternalizationException;
-import org.eclipse.mylar.provisional.tasklist.AbstractQueryHit;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryQuery;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryTask;
-import org.eclipse.mylar.provisional.tasklist.AbstractTaskContainer;
-import org.eclipse.mylar.provisional.tasklist.DelegatingTaskExternalizer;
-import org.eclipse.mylar.provisional.tasklist.ITask;
-import org.eclipse.mylar.provisional.tasklist.ITaskListExternalizer;
+import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.provisional.tasklist.TaskList;
+import org.eclipse.mylar.tasks.core.AbstractQueryHit;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylar.tasks.core.AbstractTaskContainer;
+import org.eclipse.mylar.tasks.core.DelegatingTaskExternalizer;
+import org.eclipse.mylar.tasks.core.ITask;
+import org.eclipse.mylar.tasks.core.ITaskListExternalizer;
+import org.eclipse.mylar.tasks.core.TaskExternalizationException;
+import org.eclipse.mylar.tasks.core.TaskList;
 import org.tigris.jira.core.model.NamedFilter;
 import org.tigris.jira.core.model.filter.FilterDefinition;
 import org.w3c.dom.Document;
@@ -288,7 +288,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			String issueId = AbstractRepositoryTask.getTaskId(handle);
 			JiraQueryHit hit = new JiraQueryHit((JiraTask) correspondingTask, query.getRepositoryUrl(), issueId);
 			hit.setHandleIdentifier(handle);
-			query.addHit(hit);
+			query.addHit(hit, taskList);
 		}
 	}
 
