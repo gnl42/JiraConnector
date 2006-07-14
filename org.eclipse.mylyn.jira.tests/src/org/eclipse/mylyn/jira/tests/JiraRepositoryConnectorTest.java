@@ -19,11 +19,11 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
-import org.eclipse.mylar.internal.tasklist.ui.wizards.EditRepositoryWizard;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
-import org.eclipse.mylar.provisional.tasklist.TaskRepositoryManager;
+import org.eclipse.mylar.internal.tasks.ui.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
+import org.eclipse.mylar.tasks.ui.TaskRepositoryManager;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.tigris.jira.core.service.JiraServer;
@@ -48,7 +48,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		manager = MylarTaskListPlugin.getRepositoryManager();
+		manager = TasksUiPlugin.getRepositoryManager();
 		manager.clearRepositories();
 	}
 

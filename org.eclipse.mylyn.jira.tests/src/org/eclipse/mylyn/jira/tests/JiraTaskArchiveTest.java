@@ -15,9 +15,9 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.tasks.core.TaskList;
+import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -39,23 +39,23 @@ public class JiraTaskArchiveTest extends TestCase {
 //		jiraRepository.setAuthenticationCredentials(USER, PASSWORD);
 //		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
 //		jiraFacade = JiraServerFacade.getDefault();
-		taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
+		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
 	}
 
 	protected void tearDown() throws Exception {
-		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 //		taskList.clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
-		MylarTaskListPlugin.getTaskListManager().resetTaskList();
+		TasksUiPlugin.getTaskListManager().resetTaskList();
 //		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepository);
 //		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
 	
 	public void testJiraTaskRegistry() {
-		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 

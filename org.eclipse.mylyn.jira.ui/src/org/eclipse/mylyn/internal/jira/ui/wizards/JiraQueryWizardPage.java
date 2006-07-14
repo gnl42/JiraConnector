@@ -21,9 +21,9 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.internal.jira.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -238,7 +238,7 @@ public class JiraQueryWizardPage extends WizardPage {
 
 	public AbstractRepositoryQuery getQuery() {
 		if (buttonSaved.getSelection()) {
-			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), MylarTaskListPlugin
+			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), TasksUiPlugin
 					.getTaskListManager().getTaskList());
 		}
 

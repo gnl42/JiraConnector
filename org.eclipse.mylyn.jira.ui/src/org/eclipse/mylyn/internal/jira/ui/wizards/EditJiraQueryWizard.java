@@ -11,11 +11,11 @@
 
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
-import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractEditQueryWizard;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
+import org.eclipse.mylar.internal.tasks.ui.ui.wizards.AbstractEditQueryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
  * @author Rob Elves
@@ -54,10 +54,10 @@ public class EditJiraQueryWizard extends AbstractEditQueryWizard {
 //				name = ((JiraCustomQuery) query).getFilterDefinition().getName();
 //			}
 			
-			MylarTaskListPlugin.getTaskListManager().getTaskList().deleteQuery(query);
-			MylarTaskListPlugin.getTaskListManager().getTaskList().addQuery(q);
+			TasksUiPlugin.getTaskListManager().getTaskList().deleteQuery(query);
+			TasksUiPlugin.getTaskListManager().getTaskList().addQuery(q);
 			
-			AbstractRepositoryConnector connector = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(repository.getKind());
+			AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(repository.getKind());
 			if (connector != null) {
 				connector.synchronize(q, null);
 			}

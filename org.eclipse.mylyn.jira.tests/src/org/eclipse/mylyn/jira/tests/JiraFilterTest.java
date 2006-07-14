@@ -19,9 +19,9 @@ import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.NamedFilter;
 
 /**
@@ -46,19 +46,19 @@ public class JiraFilterTest extends TestCase {
 		super.setUp();
 		repository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
-		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
+		TasksUiPlugin.getRepositoryManager().addRepository(repository);
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
 	protected void tearDown() throws Exception {
-		AbstractRepositoryConnector client = MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
 		// client.clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
-		MylarTaskListPlugin.getTaskListManager().resetTaskList();
-		MylarTaskListPlugin.getRepositoryManager().removeRepository(repository);
+		TasksUiPlugin.getTaskListManager().resetTaskList();
+		TasksUiPlugin.getRepositoryManager().removeRepository(repository);
 //		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
@@ -66,7 +66,7 @@ public class JiraFilterTest extends TestCase {
 	public void testJiraFilterRefresh() {
 		NamedFilter[] filters = jiraFacade.getJiraServer(repository).getNamedFilters();
 		assertTrue(filters.length > 0);
-		JiraRepositoryQuery jFilter = new JiraRepositoryQuery(repository.getUrl(), filters[0], MylarTaskListPlugin.getTaskListManager().getTaskList());
+		JiraRepositoryQuery jFilter = new JiraRepositoryQuery(repository.getUrl(), filters[0], TasksUiPlugin.getTaskListManager().getTaskList());
 		assertTrue(jFilter.getHits().size() == 0);
 		// jFilter.refreshHits();
 		// boolean done = false;

@@ -15,9 +15,9 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
 import org.tigris.jira.core.model.filter.IssueCollector;
@@ -42,20 +42,20 @@ public class JiraServerFacadeTest extends TestCase {
 		super.setUp();
 		repository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
-		MylarTaskListPlugin.getRepositoryManager().addRepository(repository);
+		TasksUiPlugin.getRepositoryManager().addRepository(repository);
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
 	protected void tearDown() throws Exception {
-		AbstractRepositoryConnector client = MylarTaskListPlugin
+		AbstractRepositoryConnector client = TasksUiPlugin
 				.getRepositoryManager().getRepositoryConnector(
 						MylarJiraPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 //		client.clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
-		MylarTaskListPlugin.getTaskListManager().resetTaskList();
-		MylarTaskListPlugin.getRepositoryManager().removeRepository(repository);
+		TasksUiPlugin.getTaskListManager().resetTaskList();
+		TasksUiPlugin.getRepositoryManager().removeRepository(repository);
 		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}

@@ -13,8 +13,8 @@ package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.mylar.internal.tasklist.ui.TaskListImages;
-import org.eclipse.mylar.internal.tasklist.ui.TaskUiUtil;
+import org.eclipse.mylar.internal.tasks.ui.ui.TaskListImages;
+import org.eclipse.mylar.internal.tasks.ui.ui.TaskUiUtil;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;

@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.eclipse.mylar.context.core.MylarStatusHandler;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -31,6 +30,7 @@ import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.ITaskListExternalizer;
 import org.eclipse.mylar.tasks.core.TaskExternalizationException;
 import org.eclipse.mylar.tasks.core.TaskList;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.NamedFilter;
 import org.tigris.jira.core.model.filter.FilterDefinition;
 import org.w3c.dom.Document;
@@ -97,7 +97,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			filter.setName(element.getAttribute(KEY_FILTER_ID));
 			filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
-			query = new JiraCustomQuery(element.getAttribute(KEY_REPOSITORY_URL), filter, MylarTaskListPlugin
+			query = new JiraCustomQuery(element.getAttribute(KEY_REPOSITORY_URL), filter, TasksUiPlugin
 					.getTaskListManager().getTaskList());
 		} else {
 			NamedFilter namedFilter = new NamedFilter();
@@ -105,7 +105,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
 			namedFilter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
-			query = new JiraRepositoryQuery(element.getAttribute(KEY_REPOSITORY_URL), namedFilter, MylarTaskListPlugin
+			query = new JiraRepositoryQuery(element.getAttribute(KEY_REPOSITORY_URL), namedFilter, TasksUiPlugin
 					.getTaskListManager().getTaskList());
 		}
 

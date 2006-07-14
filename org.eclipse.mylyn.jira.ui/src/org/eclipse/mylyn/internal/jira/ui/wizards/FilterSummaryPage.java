@@ -30,9 +30,9 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.internal.jira.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.FocusAdapter;
@@ -881,7 +881,7 @@ public class FilterSummaryPage extends WizardPage {
 			server.addLocalFilter(workingCopy);
 		}
 
-		return new JiraCustomQuery(repository.getUrl(), workingCopy, MylarTaskListPlugin.getTaskListManager()
+		return new JiraCustomQuery(repository.getUrl(), workingCopy, TasksUiPlugin.getTaskListManager()
 				.getTaskList());
 	}
 }

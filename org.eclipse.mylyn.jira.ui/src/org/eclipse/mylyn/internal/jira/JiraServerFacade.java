@@ -15,9 +15,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.mylar.context.core.MylarStatusHandler;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.JiraCorePlugin;
 import org.tigris.jira.core.ServerManager;
 import org.tigris.jira.core.service.JiraServer;
@@ -40,7 +40,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	private static JiraServerFacade instance = null;
 
 	public JiraServerFacade() {
-		MylarTaskListPlugin.getRepositoryManager().addListener(this);
+		TasksUiPlugin.getRepositoryManager().addListener(this);
 		serverManager = JiraCorePlugin.getDefault().getServerManager();
 	}
 

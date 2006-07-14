@@ -32,9 +32,7 @@ import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraTaskWizard;
-import org.eclipse.mylar.internal.tasklist.ui.wizards.AbstractRepositorySettingsPage;
-import org.eclipse.mylar.provisional.tasklist.AbstractRepositoryConnector;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
+import org.eclipse.mylar.internal.tasks.ui.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -42,6 +40,8 @@ import org.eclipse.mylar.tasks.core.IAttachmentHandler;
 import org.eclipse.mylar.tasks.core.IOfflineTaskHandler;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.tigris.jira.core.model.Issue;
@@ -97,7 +97,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				JiraTask task = createTask(issue, handleIdentifier);
 				updateTaskDetails(repository.getUrl(), task, issue, true);
 				if (task != null) {
-					MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
+					TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 					return task;
 				}
 			}
@@ -116,7 +116,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void openEditQueryDialog(AbstractRepositoryQuery query) {
 		try {
-			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
+			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 					query.getRepositoryKind(), query.getRepositoryUrl());
 			if (repository == null)
 				return;
@@ -149,7 +149,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 		final List<Issue> issues = new ArrayList<Issue>();
 
-		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
+		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 				MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
 
 		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
@@ -162,14 +162,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(), collector);
 			}
 		} catch (Throwable t) {
-			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK,
+			queryStatus.add(new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.OK,
 					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
 							+ "\n\nCheck network connection.", t));
 			return hits;
 		}
 		// TODO: work-around no other way of determining failure
 		if (!collector.isDone()) {
-			queryStatus.add(new Status(IStatus.OK, MylarTaskListPlugin.PLUGIN_ID, IStatus.OK,
+			queryStatus.add(new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.OK,
 					"Could not log in to server: " + repositoryQuery.getRepositoryUrl()
 							+ "\n\nCheck network connection.", new UnknownHostException()));
 			return hits;
@@ -177,7 +177,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		for (Issue issue : issues) {
 			String issueId = issue.getId();
 			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
-			ITask task = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
 			if (!(task instanceof JiraTask)) {
 				task = createTask(issue, handleIdentifier);
 			}
@@ -211,7 +211,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	protected void updateTaskState(AbstractRepositoryTask repositoryTask) {
-		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(
+		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
 		if (repository != null && repositoryTask instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) repositoryTask;
@@ -260,20 +260,20 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task.setKind(issue.getType().getName());
 		}
 		if (notifyOfChange) {
-			MylarTaskListPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
+			TasksUiPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
 		}
 	}
 
 	public static JiraTask createTask(Issue issue, String handleIdentifier) {
 		JiraTask task;
 		String description = issue.getKey() + ": " + issue.getSummary();
-		ITask existingTask = MylarTaskListPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
 		if (existingTask instanceof JiraTask) {
 			task = (JiraTask) existingTask;
 		} else {
 			task = new JiraTask(handleIdentifier, description, true);
 			task.setKey(issue.getKey());
-			MylarTaskListPlugin.getTaskListManager().getTaskList().addTask(task);
+			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
 		return task;
 	}

@@ -20,8 +20,8 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.JiraTask;
-import org.eclipse.mylar.provisional.tasklist.MylarTaskListPlugin;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
@@ -103,7 +103,7 @@ public class JiraTaskEditor extends EditorPart {
 		setInput(input);
 		setPartName(this.input.getName());
 		JiraTask task = this.input.getTask();
-		TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(task.getRepositoryKind(),
+		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(task.getRepositoryKind(),
 				task.getRepositoryUrl());
 		server = JiraServerFacade.getDefault().getJiraServer(repository);
 		String key = task.getKey();
