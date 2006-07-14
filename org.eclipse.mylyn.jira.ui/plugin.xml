@@ -5,7 +5,7 @@
    <extension
          id="org.eclipse.mylar.jira.repository"
          name="JIRA Repository"
-         point="org.eclipse.mylar.tasklist.repositories">
+         point="org.eclipse.mylar.tasks.ui.repositories">
 
       <repositoryType
             brandingIcon="icons/eview16/jira-logo.gif"
@@ -44,7 +44,7 @@
    </extension>
    -->
    <extension
-         point="org.eclipse.mylar.tasklist.editors">
+         point="org.eclipse.mylar.tasks.ui.editors">
       <editorFactory
             class="org.eclipse.mylar.internal.jira.ui.JiraTaskEditorFactory"
             id="org.eclipse.mylar.jira.ui.JiraTaskEditorFactory"/>
