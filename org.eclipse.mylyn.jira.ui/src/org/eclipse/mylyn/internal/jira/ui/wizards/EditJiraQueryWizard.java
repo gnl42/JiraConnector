@@ -11,7 +11,7 @@
 
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
-import org.eclipse.mylar.internal.tasks.ui.ui.wizards.AbstractEditQueryWizard;
+import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractEditQueryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
