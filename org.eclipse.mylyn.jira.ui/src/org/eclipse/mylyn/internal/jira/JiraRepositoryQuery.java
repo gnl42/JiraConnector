@@ -31,7 +31,7 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 		setMaxHits(MAX_HITS);
 		this.filter = filter;
 		super.repositoryUrl = repositoryUrl;
-		setQueryUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getId());
+		setUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getId());
 //		super.setDescription(filter.getName());
 	}
 

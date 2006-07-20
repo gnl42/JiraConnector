@@ -33,7 +33,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		setMaxHits(MAX_HITS);
 		this.filter = filter;
 		super.repositoryUrl = repositoryUrl;
-		setQueryUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getName());
+		setUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getName());
 //		super.setDescription(filter.getName());
 	}
 

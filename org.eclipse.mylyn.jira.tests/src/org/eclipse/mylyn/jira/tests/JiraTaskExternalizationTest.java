@@ -123,7 +123,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		namedFilter.setDescription("Test Filter Description");
 		JiraRepositoryQuery jiraRepositoryQuery = new JiraRepositoryQuery(repository.getUrl(), namedFilter,
 				TasksUiPlugin.getTaskListManager().getTaskList());
-		String filterUrl = jiraRepositoryQuery.getQueryUrl();
+		String filterUrl = jiraRepositoryQuery.getUrl();
 
 		Issue jiraIssue = new Issue();
 		jiraIssue.setKey(ISSUE_KEY);
@@ -152,7 +152,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		}
 
 		assertNotNull(savedFilter);
-		assertEquals(savedFilter.getQueryUrl(), filterUrl);
+		assertEquals(savedFilter.getUrl(), filterUrl);
 
 		assertTrue(savedFilter.getHits().size() > 0);
 
