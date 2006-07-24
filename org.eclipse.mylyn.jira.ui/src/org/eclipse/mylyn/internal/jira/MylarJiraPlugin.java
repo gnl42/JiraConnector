@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
  */
 public class MylarJiraPlugin extends AbstractUIPlugin {
 
-	private static MylarJiraPlugin plugin;
+	private static MylarJiraPlugin INSTANCE;
 
 	public final static String REPOSITORY_KIND = "jira";
 
@@ -37,7 +37,7 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide&requestId=";
 
 	public MylarJiraPlugin() {
-		plugin = this;
+		INSTANCE = this;
 	}
 
 	public void start(BundleContext context) throws Exception {
@@ -46,12 +46,12 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		plugin = null;
+		INSTANCE = null;
 		JiraServerFacade.getDefault().logOutFromAll();
 	}
 
 	public static MylarJiraPlugin getDefault() {
-		return plugin;
+		return INSTANCE;
 	}
 
 	/**

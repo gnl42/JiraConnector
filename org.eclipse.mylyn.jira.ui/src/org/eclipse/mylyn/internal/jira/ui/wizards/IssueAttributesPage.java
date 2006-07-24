@@ -686,31 +686,4 @@ public class IssueAttributesPage extends WizardPage {
 			priority.setSelection(new StructuredSelection(ANY_PRIORITY));
 		}
 	}
-
-	private final class Placeholder {
-		private final String text;
-
-		public Placeholder(String text) {
-			this.text = text;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		public boolean equals(Object obj) {
-			if (obj == null)
-				return false;
-			if (!(obj instanceof Placeholder))
-				return false;
-
-			Placeholder that = (Placeholder) obj;
-			return this.text.equals(that.text);
-		}
-
-		public String getText() {
-			return this.text;
-		}
-	}
 }

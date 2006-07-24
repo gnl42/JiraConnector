@@ -58,8 +58,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
-	private List<String> supportedVersions;
-
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
