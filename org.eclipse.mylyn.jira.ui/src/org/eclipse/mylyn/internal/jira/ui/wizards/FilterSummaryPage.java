@@ -12,9 +12,11 @@
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -26,10 +28,10 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.internal.jira.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
+import org.eclipse.mylar.internal.tasks.ui.views.DatePicker;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -43,6 +45,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -51,12 +54,27 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.tigris.jira.core.model.Component;
+import org.tigris.jira.core.model.IssueType;
+import org.tigris.jira.core.model.Priority;
 import org.tigris.jira.core.model.Project;
+import org.tigris.jira.core.model.Resolution;
+import org.tigris.jira.core.model.Status;
 import org.tigris.jira.core.model.Version;
 import org.tigris.jira.core.model.filter.ComponentFilter;
 import org.tigris.jira.core.model.filter.ContentFilter;
+import org.tigris.jira.core.model.filter.CurrentUserFilter;
+import org.tigris.jira.core.model.filter.DateFilter;
+import org.tigris.jira.core.model.filter.DateRangeFilter;
 import org.tigris.jira.core.model.filter.FilterDefinition;
+import org.tigris.jira.core.model.filter.IssueTypeFilter;
+import org.tigris.jira.core.model.filter.NobodyFilter;
+import org.tigris.jira.core.model.filter.PriorityFilter;
 import org.tigris.jira.core.model.filter.ProjectFilter;
+import org.tigris.jira.core.model.filter.ResolutionFilter;
+import org.tigris.jira.core.model.filter.SpecificUserFilter;
+import org.tigris.jira.core.model.filter.StatusFilter;
+import org.tigris.jira.core.model.filter.UserFilter;
+import org.tigris.jira.core.model.filter.UserInGroupFilter;
 import org.tigris.jira.core.model.filter.VersionFilter;
 import org.tigris.jira.core.service.JiraServer;
 
@@ -65,7 +83,7 @@ import org.tigris.jira.core.service.JiraServer;
  * @author Eugene Kuleshov (layout and other improvements)
  */
 public class FilterSummaryPage extends WizardPage {
-
+	
 	final Placeholder ANY_FIX_VERSION = new Placeholder("Any");
 
 	final Placeholder NO_FIX_VERSION = new Placeholder("No Fix Version");
@@ -82,8 +100,43 @@ public class FilterSummaryPage extends WizardPage {
 
 	final Placeholder NO_COMPONENT = new Placeholder("No Component");
 
+	// attributes
+	
+	final Placeholder ANY_ISSUE_TYPE = new Placeholder("Any");
+
+	final Placeholder ANY_RESOLUTION = new Placeholder("Any");
+
+	final Placeholder UNRESOLVED = new Placeholder("Unresolved");
+
+	final Placeholder UNASSIGNED = new Placeholder("Unassigned");
+
+	final Placeholder ANY_REPORTER = new Placeholder("Any");
+
+	final Placeholder NO_REPORTER = new Placeholder("No Reporter");
+
+	final Placeholder CURRENT_USER_REPORTER = new Placeholder("Current User");
+
+	final Placeholder SPECIFIC_USER_REPORTER = new Placeholder("Specified User");
+
+	final Placeholder SPECIFIC_GROUP_REPORTER = new Placeholder("Specified Group");
+
+	final Placeholder ANY_ASSIGNEE = new Placeholder("Any");
+
+	final Placeholder CURRENT_USER_ASSIGNEE = new Placeholder("Current User");
+
+	final Placeholder SPECIFIC_USER_ASSIGNEE = new Placeholder("Specified User");
+
+	final Placeholder SPECIFIC_GROUP_ASSIGNEE = new Placeholder("Specified Group");
+
+	final Placeholder ANY_STATUS = new Placeholder("Any");
+
+	final Placeholder ANY_PRIORITY = new Placeholder("Any");
+
+	
 	private final JiraServer server;
 
+	private Text name;
+	
 	private ListViewer project;
 
 	private ListViewer reportedIn;
@@ -91,12 +144,22 @@ public class FilterSummaryPage extends WizardPage {
 	private ListViewer components;
 
 	private ListViewer fixFor;
+	
+	private ListViewer issueType;
+	
+	private ListViewer status;
+	
+	private ListViewer resolution;
+	
+	private ListViewer priority;
+	
+	private ComboViewer assigneeType;
 
-	private final FilterDefinition workingCopy;
+	private Text assignee;
 
-	private Text name;
+	private ComboViewer reporterType;
 
-	private Text description;
+	private Text reporter;
 
 	private Text queryString;
 
@@ -108,12 +171,27 @@ public class FilterSummaryPage extends WizardPage {
 
 	private Button searchEnvironment;
 
-	private final boolean isNew;
+	private DatePicker dueStartDatePicker;
+	
+	private DatePicker dueEndDatePicker;
+	
+	private DatePicker updatedStartDatePicker;
+	
+	private DatePicker updatedEndDatePicker;
+	
+	private DatePicker createdStartDatePicker;
+	
+	private DatePicker createdEndDatePicker;
 
-	private IssueAttributesPage issueAttributesPage;
+	
+	private final boolean isNew;
 
 	private final TaskRepository repository;
 
+	private final FilterDefinition workingCopy;
+
+
+	
 	/**
 	 * @param pageName
 	 * @param title
@@ -132,7 +210,7 @@ public class FilterSummaryPage extends WizardPage {
 
 	public void createControl(Composite parent) {
 		Composite c = new Composite(parent, SWT.NONE);
-		c.setLayout(new GridLayout(5, false));
+		c.setLayout(new GridLayout(3, false));
 
 		Label lblName = new Label(c, SWT.NONE);
 		final GridData gridData = new GridData();
@@ -140,7 +218,7 @@ public class FilterSummaryPage extends WizardPage {
 		lblName.setText("Name:");
 
 		name = new Text(c, SWT.BORDER);
-		name.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 4, 1));
+		name.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
 		name.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
@@ -149,37 +227,18 @@ public class FilterSummaryPage extends WizardPage {
 
 		});
 
-		if (!isNew) {
-			name.setEnabled(false);
-		}
-
-		Label lblDescription = new Label(c, SWT.NONE);
-		lblDescription.setText("Description:");
-		lblDescription.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-
-		description = new Text(c, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false, 4, 1);
-		gd.heightHint = 40;
-		description.setLayoutData(gd);
-		description.addFocusListener(new FocusAdapter() {
-
-			public void focusLost(FocusEvent e) {
-				validatePage();
-			}
-
-		});
+		SashForm sashForm = new SashForm(c, SWT.VERTICAL);
+		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1));
 
 		{
-			SashForm cc = new SashForm(c, SWT.HORIZONTAL);
-			cc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 5, 1));
+			SashForm cc = new SashForm(sashForm, SWT.HORIZONTAL);
 
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout(1, false);
 				gridLayout.marginWidth = 0;
-				gridLayout.marginHeight = 0;
 				comp.setLayout(gridLayout);
-
+				
 				Label label = new Label(comp, SWT.NONE);
 				label.setText("Project:");
 				createProjectsViewer(comp);
@@ -189,9 +248,8 @@ public class FilterSummaryPage extends WizardPage {
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout(1, false);
 				gridLayout.marginWidth = 0;
-				gridLayout.marginHeight = 0;
 				comp.setLayout(gridLayout);
-
+				
 				new Label(comp, SWT.NONE).setText("Fix For:");
 				createFixForViewer(comp);
 			}
@@ -200,9 +258,8 @@ public class FilterSummaryPage extends WizardPage {
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout(1, false);
 				gridLayout.marginWidth = 0;
-				gridLayout.marginHeight = 0;
 				comp.setLayout(gridLayout);
-
+				
 				new Label(comp, SWT.NONE).setText("In Components:");
 				createComponentsViewer(comp);
 			}
@@ -211,21 +268,222 @@ public class FilterSummaryPage extends WizardPage {
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout(1, false);
 				gridLayout.marginWidth = 0;
-				gridLayout.marginHeight = 0;
 				comp.setLayout(gridLayout);
 
 				Label label = new Label(comp, SWT.NONE);
 				label.setText("Reported In:");
 				createReportedInViewer(comp);
 			}
-			// cc.setWeights(new int[] {1,1,1,1});
+			cc.setWeights(new int[] {1,1,1,1});
 		}
+
+		{
+			SashForm cc = new SashForm(sashForm, SWT.NONE);
+
+			ISelectionChangedListener selectionChangeListener = new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
+					validatePage();
+				}
+			};
+
+			{
+				Composite comp = new Composite(cc, SWT.NONE);
+				GridLayout gridLayout = new GridLayout();
+				gridLayout.marginWidth = 0;
+				comp.setLayout(gridLayout);
+		
+				Label typeLabel = new Label(comp, SWT.NONE);
+				typeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+				typeLabel.setText("Type:");
+		
+				issueType = new ListViewer(comp, SWT.BORDER);
+				issueType.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				
+				issueType.setContentProvider(new IStructuredContentProvider() {
+
+					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+					}
+
+					public void dispose() {
+					}
+
+					public Object[] getElements(Object inputElement) {
+						JiraServer server = (JiraServer) inputElement;
+						Object[] elements = new Object[server.getIssueTypes().length + 1];
+						elements[0] = ANY_ISSUE_TYPE;
+						System.arraycopy(server.getIssueTypes(), 0, elements, 1, server.getIssueTypes().length);
+
+						return elements;
+					}
+				});
+
+				issueType.setLabelProvider(new LabelProvider() {
+
+					public String getText(Object element) {
+						if (element instanceof Placeholder) {
+							return ((Placeholder) element).getText();
+						}
+
+						return ((IssueType) element).getName();
+					}
+
+				});
+
+				issueType.addSelectionChangedListener(selectionChangeListener);
+
+				issueType.setInput(server);
+			}
+	
+			{
+				Composite comp = new Composite(cc, SWT.NONE);
+				GridLayout gridLayout = new GridLayout();
+				gridLayout.marginWidth = 0;
+				comp.setLayout(gridLayout);
+		
+				Label statusLabel = new Label(comp, SWT.NONE);
+				statusLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+				statusLabel.setText("Status:");
+		
+				status = new ListViewer(comp, SWT.BORDER);
+				status.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				
+				status.setContentProvider(new IStructuredContentProvider() {
+
+					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+					}
+
+					public void dispose() {
+					}
+
+					public Object[] getElements(Object inputElement) {
+						JiraServer server = (JiraServer) inputElement;
+						Object[] elements = new Object[server.getStatuses().length + 1];
+						elements[0] = ANY_STATUS;
+						System.arraycopy(server.getStatuses(), 0, elements, 1, server.getStatuses().length);
+
+						return elements;
+					}
+				});
+
+				status.setLabelProvider(new LabelProvider() {
+
+					public String getText(Object element) {
+						if (element instanceof Placeholder) {
+							return ((Placeholder) element).getText();
+						}
+
+						return ((Status) element).getName();
+					}
+
+				});
+
+				status.addSelectionChangedListener(selectionChangeListener);
+				status.setInput(server);
+			}
+	
+			{
+				Composite comp = new Composite(cc, SWT.NONE);
+				GridLayout gridLayout = new GridLayout();
+				gridLayout.marginWidth = 0;
+				comp.setLayout(gridLayout);
+		
+				Label resolutionLabel = new Label(comp, SWT.NONE);
+				resolutionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+				resolutionLabel.setText("Resolution:");
+		
+				resolution = new ListViewer(comp, SWT.BORDER);
+				resolution.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+				resolution.setContentProvider(new IStructuredContentProvider() {
+
+					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+					}
+
+					public void dispose() {
+					}
+
+					public Object[] getElements(Object inputElement) {
+						JiraServer server = (JiraServer) inputElement;
+						Object[] elements = new Object[server.getResolutions().length + 2];
+						elements[0] = ANY_RESOLUTION;
+						elements[1] = UNRESOLVED;
+						System.arraycopy(server.getResolutions(), 0, elements, 2, server.getResolutions().length);
+
+						return elements;
+					}
+				});
+
+				resolution.setLabelProvider(new LabelProvider() {
+
+					public String getText(Object element) {
+						if (element instanceof Placeholder) {
+							return ((Placeholder) element).getText();
+						}
+
+						return ((Resolution) element).getName();
+					}
+
+				});
+
+				resolution.addSelectionChangedListener(selectionChangeListener);
+				resolution.setInput(server);
+			}
+	
+			{
+				Composite comp = new Composite(cc, SWT.NONE);
+				GridLayout gridLayout = new GridLayout();
+				gridLayout.marginWidth = 0;
+				comp.setLayout(gridLayout);
+		
+				Label priorityLabel = new Label(comp, SWT.NONE);
+				priorityLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+				priorityLabel.setText("Priority:");
+		
+				priority = new ListViewer(comp, SWT.BORDER);
+				priority.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+				priority.setContentProvider(new IStructuredContentProvider() {
+
+					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+					}
+
+					public void dispose() {
+					}
+
+					public Object[] getElements(Object inputElement) {
+						JiraServer server = (JiraServer) inputElement;
+						Object[] elements = new Object[server.getPriorities().length + 1];
+						elements[0] = ANY_PRIORITY;
+						System.arraycopy(server.getPriorities(), 0, elements, 1, server.getPriorities().length);
+
+						return elements;
+					}
+				});
+
+				priority.setLabelProvider(new LabelProvider() {
+
+					public String getText(Object element) {
+						if (element instanceof Placeholder) {
+							return ((Placeholder) element).getText();
+						}
+
+						return ((Priority) element).getName();
+					}
+
+				});
+				priority.addSelectionChangedListener(selectionChangeListener);
+				priority.setInput(server);
+			}
+			
+			cc.setWeights(new int[] {1, 1, 1, 1 });
+		}
+		sashForm.setWeights(new int[] {1, 1 });
 
 		Label lblQuery = new Label(c, SWT.NONE);
 		lblQuery.setLayoutData(new GridData());
 		lblQuery.setText("Query:");
 		queryString = new Text(c, SWT.BORDER);
-		queryString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 4, 1));
+		queryString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
 		// TODO put content assist here and a label describing what is available
 
 		queryString.addFocusListener(new FocusAdapter() {
@@ -238,76 +496,199 @@ public class FilterSummaryPage extends WizardPage {
 
 		Label lblFields = new Label(c, SWT.NONE);
 		lblFields.setText("Fields:");
-		lblFields.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+		lblFields.setLayoutData(new GridData());
 
-		searchSummary = new Button(c, SWT.CHECK);
-		searchSummary.setLayoutData(new GridData());
-		searchSummary.setText("Summary");
-		searchSummary.addSelectionListener(new SelectionAdapter() {
+		{
+			SelectionAdapter selectionAdapter = new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					validatePage();
+				}
+			};
 
-			public void widgetSelected(SelectionEvent e) {
-				validatePage();
-			}
+			Composite comp = new Composite(c, SWT.NONE);
+			comp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+			comp.setLayout(new FillLayout());
+	
+			searchSummary = new Button(comp, SWT.CHECK);
+			searchSummary.setText("Summary");
+			searchSummary.addSelectionListener(selectionAdapter);
+	
+			searchDescription = new Button(comp, SWT.CHECK);
+			searchDescription.setText("Description");
+			searchDescription.addSelectionListener(selectionAdapter);
+	
+			searchComments = new Button(comp, SWT.CHECK);
+			searchComments.setText("Comments");
+			searchComments.addSelectionListener(selectionAdapter);
+	
+			searchEnvironment = new Button(comp, SWT.CHECK);
+			searchEnvironment.setText("Environment");
+			searchEnvironment.addSelectionListener(selectionAdapter);
+		}
+		
+		{
+			Label reportedByLabel = new Label(c, SWT.NONE);
+			reportedByLabel.setText("Reported By:");
 
-		});
+			reporterType = new ComboViewer(c, SWT.BORDER | SWT.READ_ONLY);
+			GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, false, false);
+			gridData_1.widthHint = 133;
+			reporterType.getControl().setLayoutData(gridData_1);
+	
+			reporterType.setContentProvider(new IStructuredContentProvider() {
+	
+				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+				}
+	
+				public void dispose() {
+				}
+	
+				public Object[] getElements(Object inputElement) {
+					return new Object[] { ANY_REPORTER, NO_REPORTER, CURRENT_USER_REPORTER, SPECIFIC_USER_REPORTER,
+							SPECIFIC_GROUP_REPORTER };
+				}
+	
+			});
+	
+			reporterType.setLabelProvider(new LabelProvider() {
+				public String getText(Object element) {
+					return ((Placeholder) element).getText();
+				}
+			});
+	
+			reporterType.setInput(server);
+			
+			reporter = new Text(c, SWT.BORDER);
+			reporter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			reporter.setEnabled(false);
+			
+			reporter.addModifyListener(new ModifyListener() {
 
-		searchDescription = new Button(c, SWT.CHECK);
-		searchDescription.setLayoutData(new GridData());
-		searchDescription.setText("Description");
-		searchDescription.addSelectionListener(new SelectionAdapter() {
+				public void modifyText(ModifyEvent e) {
+					validatePage();
+				}
 
-			public void widgetSelected(SelectionEvent e) {
-				validatePage();
-			}
+			});
+		}
 
-		});
+		{
+			Label assignedToLabel = new Label(c, SWT.NONE);
+			assignedToLabel.setText("Assigned To:");
+	
+			assigneeType = new ComboViewer(c, SWT.BORDER | SWT.READ_ONLY);
+			GridData gridData_2 = new GridData(SWT.FILL, SWT.CENTER, false, false);
+			gridData_2.widthHint = 133;
+			assigneeType.getCombo().setLayoutData(gridData_2);
+	
+			assigneeType.setContentProvider(new IStructuredContentProvider() {
 
-		searchComments = new Button(c, SWT.CHECK);
-		searchComments.setLayoutData(new GridData());
-		searchComments.setText("Comments");
-		searchComments.addSelectionListener(new SelectionAdapter() {
+				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+				}
 
-			public void widgetSelected(SelectionEvent e) {
-				validatePage();
-			}
+				public void dispose() {
+				}
 
-		});
+				public Object[] getElements(Object inputElement) {
+					return new Object[] { ANY_ASSIGNEE, UNASSIGNED, CURRENT_USER_ASSIGNEE, SPECIFIC_USER_ASSIGNEE,
+							SPECIFIC_GROUP_ASSIGNEE };
+				}
 
-		searchEnvironment = new Button(c, SWT.CHECK);
-		searchEnvironment.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
-		searchEnvironment.setText("Environment");
-		searchEnvironment.addSelectionListener(new SelectionAdapter() {
+			});
 
-			public void widgetSelected(SelectionEvent e) {
-				validatePage();
-			}
+			assigneeType.setLabelProvider(new LabelProvider() {
 
-		});
+				public String getText(Object element) {
+					return ((Placeholder) element).getText();
+				}
 
-		// Need to turn off validation here
+			});
+
+			assigneeType.addSelectionChangedListener(new ISelectionChangedListener() {
+
+				public void selectionChanged(SelectionChangedEvent event) {
+					Object selection = ((IStructuredSelection) event.getSelection()).getFirstElement();
+					if (SPECIFIC_USER_ASSIGNEE.equals(selection) || SPECIFIC_GROUP_ASSIGNEE.equals(selection)) {
+						assignee.setEnabled(true);
+					} else {
+						assignee.setEnabled(false);
+						assignee.setText(""); //$NON-NLS-1$
+					}
+					validatePage();
+				}
+
+			});
+
+			assigneeType.setInput(server);
+			
+			assignee = new Text(c, SWT.BORDER);
+			assignee.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			assignee.setEnabled(false);
+			assignee.addModifyListener(new ModifyListener() {
+
+				public void modifyText(ModifyEvent e) {
+					validatePage();
+				}
+
+			});
+		}
+		
+		{
+			Label createdLabel = new Label(c, SWT.NONE);
+			createdLabel.setText("Created:");
+
+			Composite composite = new Composite(c, SWT.NONE);
+			FillLayout fillLayout = new FillLayout();
+			fillLayout.spacing = 5;
+			composite.setLayout(fillLayout);
+			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+
+			createdStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
+			createdEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
+		}
+		
+		{
+			Label updatedLabel = new Label(c, SWT.NONE);
+			updatedLabel.setText("Updated:");
+
+			Composite composite = new Composite(c, SWT.NONE);
+			FillLayout fillLayout = new FillLayout();
+			fillLayout.spacing = 5;
+			composite.setLayout(fillLayout);
+			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+	
+			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
+			updatedEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
+		}
+
+		{
+			Label dueDateLabel = new Label(c, SWT.NONE);
+			dueDateLabel.setText("Due Date:");
+			
+			Composite composite = new Composite(c, SWT.NONE);
+			FillLayout fillLayout = new FillLayout();
+			fillLayout.spacing = 5;
+			composite.setLayout(fillLayout);
+			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+
+			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
+			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
+		}
+		
+		//new FillLayout()f validation here
 		if (isNew) {
 			loadFromDefaults();
 		} else {
 			loadFromWorkingCopy();
 		}
-
+		
 		setControl(c);
-	}
-
-	public IWizardPage getNextPage() {
-		if (issueAttributesPage == null) {
-			issueAttributesPage = new IssueAttributesPage(repository, workingCopy, isNew);
-			issueAttributesPage.setWizard(getWizard());
-		}
-
-		return issueAttributesPage;
 	}
 
 	private void createReportedInViewer(Composite c) {
 		reportedIn = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 200;
-		gridData.widthHint = 80;
+		gridData.heightHint = 55;
+		gridData.widthHint = 90;
 		reportedIn.getControl().setLayoutData(gridData);
 
 		reportedIn.setContentProvider(new IStructuredContentProvider() {
@@ -349,8 +730,8 @@ public class FilterSummaryPage extends WizardPage {
 	private void createComponentsViewer(Composite c) {
 		components = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 200;
-		gridData.widthHint = 80;
+		gridData.heightHint = 63;
+		gridData.widthHint = 90;
 		components.getControl().setLayoutData(gridData);
 
 		components.setContentProvider(new IStructuredContentProvider() {
@@ -384,8 +765,8 @@ public class FilterSummaryPage extends WizardPage {
 	private void createFixForViewer(Composite c) {
 		fixFor = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 200;
-		gridData.widthHint = 80;
+		gridData.heightHint = 57;
+		gridData.widthHint = 90;
 		fixFor.getControl().setLayoutData(gridData);
 
 		fixFor.setContentProvider(new IStructuredContentProvider() {
@@ -427,10 +808,10 @@ public class FilterSummaryPage extends WizardPage {
 	private void createProjectsViewer(Composite c) {
 		project = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 200;
-		gridData.widthHint = 120;
+		gridData.heightHint = 59;
+		gridData.widthHint = 90;
 		project.getControl().setLayoutData(gridData);
-
+		
 		project.setContentProvider(new IStructuredContentProvider() {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -501,6 +882,13 @@ public class FilterSummaryPage extends WizardPage {
 		project.setSelection(new StructuredSelection(new Placeholder("All Projects")));
 		searchSummary.setSelection(true);
 		searchDescription.setSelection(true);
+		
+		issueType.setSelection(new StructuredSelection(ANY_ISSUE_TYPE));
+		reporterType.setSelection(new StructuredSelection(ANY_REPORTER));
+		assigneeType.setSelection(new StructuredSelection(ANY_ASSIGNEE));
+		status.setSelection(new StructuredSelection(ANY_STATUS));
+		resolution.setSelection(new StructuredSelection(ANY_RESOLUTION));
+		priority.setSelection(new StructuredSelection(ANY_PRIORITY));
 	}
 
 	private void loadFromWorkingCopy() {
@@ -509,7 +897,6 @@ public class FilterSummaryPage extends WizardPage {
 		}
 
 		if (workingCopy.getDescription() != null) {
-			description.setText(workingCopy.getDescription());
 		}
 
 		if (workingCopy.getProjectFilter() != null) {
@@ -570,11 +957,92 @@ public class FilterSummaryPage extends WizardPage {
 		} else {
 			components.setSelection(new StructuredSelection(ANY_COMPONENT));
 		}
+
+	    // attributes
+		
+		if (workingCopy.getIssueTypeFilter() != null) {
+			issueType.setSelection(new StructuredSelection(workingCopy.getIssueTypeFilter().getIsueTypes()));
+		} else {
+			issueType.setSelection(new StructuredSelection(ANY_ISSUE_TYPE));
+		}
+
+		if (workingCopy.getReportedByFilter() != null) {
+			UserFilter reportedByFilter = workingCopy.getReportedByFilter();
+			if (reportedByFilter instanceof NobodyFilter) {
+				reporterType.setSelection(new StructuredSelection(NO_REPORTER));
+			} else if (reportedByFilter instanceof CurrentUserFilter) {
+				reporterType.setSelection(new StructuredSelection(CURRENT_USER_REPORTER));
+			} else if (reportedByFilter instanceof SpecificUserFilter) {
+				reporterType.setSelection(new StructuredSelection(SPECIFIC_USER_REPORTER));
+				reporter.setText(((SpecificUserFilter) reportedByFilter).getUser());
+			} else if (reportedByFilter instanceof UserInGroupFilter) {
+				reporterType.setSelection(new StructuredSelection(SPECIFIC_GROUP_REPORTER));
+				reporter.setText(((UserInGroupFilter) reportedByFilter).getGroup());
+			}
+		} else {
+			reporterType.setSelection(new StructuredSelection(ANY_REPORTER));
+		}
+
+		if (workingCopy.getAssignedToFilter() != null) {
+			UserFilter assignedToFilter = workingCopy.getAssignedToFilter();
+			if (assignedToFilter instanceof NobodyFilter) {
+				assigneeType.setSelection(new StructuredSelection(UNASSIGNED));
+			} else if (assignedToFilter instanceof CurrentUserFilter) {
+				assigneeType.setSelection(new StructuredSelection(CURRENT_USER_ASSIGNEE));
+			} else if (assignedToFilter instanceof SpecificUserFilter) {
+				assigneeType.setSelection(new StructuredSelection(SPECIFIC_USER_ASSIGNEE));
+				assignee.setText(((SpecificUserFilter) assignedToFilter).getUser());
+			} else if (assignedToFilter instanceof UserInGroupFilter) {
+				assigneeType.setSelection(new StructuredSelection(SPECIFIC_GROUP_ASSIGNEE));
+				assignee.setText(((UserInGroupFilter) assignedToFilter).getGroup());
+			}
+		} else {
+			assigneeType.setSelection(new StructuredSelection(ANY_ASSIGNEE));
+		}
+
+		if (workingCopy.getStatusFilter() != null) {
+			status.setSelection(new StructuredSelection(workingCopy.getStatusFilter().getStatuses()));
+		} else {
+			status.setSelection(new StructuredSelection(ANY_STATUS));
+		}
+
+		if (workingCopy.getResolutionFilter() != null) {
+			Resolution[] resolutions = workingCopy.getResolutionFilter().getResolutions();
+			if(resolutions.length==0) {
+				resolution.setSelection(new StructuredSelection(UNRESOLVED));
+			} else {
+				resolution.setSelection(new StructuredSelection(resolutions));
+			}
+		} else {
+			resolution.setSelection(new StructuredSelection(ANY_RESOLUTION));
+		}
+
+		if (workingCopy.getPriorityFilter() != null) {
+			priority.setSelection(new StructuredSelection(workingCopy.getPriorityFilter().getPriorities()));
+		} else {
+			priority.setSelection(new StructuredSelection(ANY_PRIORITY));
+		}
+		
+		setDateRange(workingCopy.getCreatedDateFilter(), createdStartDatePicker, createdEndDatePicker);
+		setDateRange(workingCopy.getUpdatedDateFilter(), updatedStartDatePicker, updatedEndDatePicker);
+		setDateRange(workingCopy.getDueDateFilter(), dueStartDatePicker, dueEndDatePicker);
+	}
+
+	private void setDateRange(DateFilter dateFilter, DatePicker startDatePicker, DatePicker endDatePicker) {
+		if(dateFilter instanceof DateRangeFilter) {
+			DateRangeFilter rangeFilter = (DateRangeFilter) dateFilter;
+			Calendar c1 = Calendar.getInstance();
+			c1.setTime(rangeFilter.getFromDate());
+			startDatePicker.setDate(c1);
+			
+			Calendar c2 = Calendar.getInstance();
+			c2.setTime(rangeFilter.getToDate());
+			endDatePicker.setDate(c2);
+		}
 	}
 
 	/* default */void applyChanges() {
 		workingCopy.setName(this.name.getText());
-		workingCopy.setDescription(this.description.getText());
 		if (this.queryString.getText().length() > 0 || this.searchSummary.getSelection()
 				|| this.searchDescription.getSelection() || this.searchEnvironment.getSelection()
 				|| this.searchComments.getSelection()) {
@@ -705,6 +1173,162 @@ public class FilterSummaryPage extends WizardPage {
 				workingCopy.setComponentFilter(null);
 			}
 		}
+		
+		// attributes
+		
+		// TODO support standard and subtask issue types
+		IStructuredSelection issueTypeSelection = (IStructuredSelection) issueType.getSelection();
+		if (issueTypeSelection.isEmpty()) {
+			workingCopy.setIssueTypeFilter(null);
+		} else {
+			boolean isAnyIssueTypeSelected = false;
+
+			List<IssueType> selectedIssueTypes = new ArrayList<IssueType>();
+
+			for (Iterator i = issueTypeSelection.iterator(); i.hasNext();) {
+				Object selection = i.next();
+				if (ANY_ISSUE_TYPE.equals(selection)) {
+					isAnyIssueTypeSelected = true;
+				} else if (selection instanceof IssueType) {
+					selectedIssueTypes.add((IssueType) selection);
+				}
+			}
+
+			if (isAnyIssueTypeSelected) {
+				workingCopy.setIssueTypeFilter(null);
+			} else {
+				workingCopy.setIssueTypeFilter(
+					new IssueTypeFilter(selectedIssueTypes.toArray(new IssueType[selectedIssueTypes.size()])));
+			}
+		}
+
+		IStructuredSelection reporterSelection = (IStructuredSelection) reporterType.getSelection();
+		if (reporterSelection.isEmpty()) {
+			workingCopy.setReportedByFilter(null);
+		} else {
+			if (ANY_REPORTER.equals(reporterSelection.getFirstElement())) {
+				workingCopy.setReportedByFilter(null);
+			} else if (NO_REPORTER.equals(reporterSelection.getFirstElement())) {
+				workingCopy.setReportedByFilter(new NobodyFilter());
+			} else if (CURRENT_USER_REPORTER.equals(reporterSelection.getFirstElement())) {
+				workingCopy.setReportedByFilter(new CurrentUserFilter());
+			} else if (SPECIFIC_GROUP_REPORTER.equals(reporterSelection.getFirstElement())) {
+				workingCopy.setReportedByFilter(new UserInGroupFilter(reporter.getText()));
+			} else if (SPECIFIC_USER_REPORTER.equals(reporterSelection.getFirstElement())) {
+				workingCopy.setReportedByFilter(new SpecificUserFilter(reporter.getText()));
+			} else {
+				workingCopy.setReportedByFilter(null);
+			}
+		}
+
+		IStructuredSelection assigneeSelection = (IStructuredSelection) assigneeType.getSelection();
+		if (assigneeSelection.isEmpty()) {
+			workingCopy.setAssignedToFilter(null);
+		} else {
+			if (ANY_REPORTER.equals(assigneeSelection.getFirstElement())) {
+				workingCopy.setAssignedToFilter(null);
+			} else if (UNASSIGNED.equals(assigneeSelection.getFirstElement())) {
+				workingCopy.setAssignedToFilter(new NobodyFilter());
+			} else if (CURRENT_USER_REPORTER.equals(assigneeSelection.getFirstElement())) {
+				workingCopy.setAssignedToFilter(new CurrentUserFilter());
+			} else if (SPECIFIC_GROUP_REPORTER.equals(assigneeSelection.getFirstElement())) {
+				workingCopy.setAssignedToFilter(new UserInGroupFilter(assignee.getText()));
+			} else if (SPECIFIC_USER_REPORTER.equals(assigneeSelection.getFirstElement())) {
+				workingCopy.setAssignedToFilter(new SpecificUserFilter(assignee.getText()));
+			} else {
+				workingCopy.setAssignedToFilter(null);
+			}
+		}
+
+		IStructuredSelection statusSelection = (IStructuredSelection) status.getSelection();
+		if (statusSelection.isEmpty()) {
+			workingCopy.setStatusFilter(null);
+		} else {
+			boolean isAnyStatusSelected = false;
+
+			List<Status> selectedStatuses = new ArrayList<Status>();
+
+			for (Iterator i = statusSelection.iterator(); i.hasNext();) {
+				Object selection = i.next();
+				if (ANY_STATUS.equals(selection)) {
+					isAnyStatusSelected = true;
+				} else if (selection instanceof Status) {
+					selectedStatuses.add((Status) selection);
+				}
+			}
+
+			if (isAnyStatusSelected) {
+				workingCopy.setStatusFilter(null);
+			} else {
+				workingCopy.setStatusFilter(
+					new StatusFilter(selectedStatuses.toArray(new Status[selectedStatuses.size()])));
+			}
+		}
+
+		IStructuredSelection resolutionSelection = (IStructuredSelection) resolution.getSelection();
+		if (resolutionSelection.isEmpty()) {
+			workingCopy.setResolutionFilter(null);
+		} else {
+			boolean isAnyResolutionSelected = false;
+
+			List<Resolution> selectedResolutions = new ArrayList<Resolution>();
+
+			for (Iterator i = resolutionSelection.iterator(); i.hasNext();) {
+				Object selection = i.next();
+				if (ANY_RESOLUTION.equals(selection)) {
+					isAnyResolutionSelected = true;
+				} else if (selection instanceof Resolution) {
+					selectedResolutions.add((Resolution) selection);
+				}
+			}
+
+			if (isAnyResolutionSelected) {
+				workingCopy.setResolutionFilter(null);
+			} else {
+				workingCopy.setResolutionFilter(
+					new ResolutionFilter(selectedResolutions.toArray(new Resolution[selectedResolutions.size()])));
+			}
+		}
+
+		IStructuredSelection prioritySelection = (IStructuredSelection) priority.getSelection();
+		if (prioritySelection.isEmpty()) {
+			workingCopy.setPriorityFilter(null);
+		} else {
+			boolean isAnyPrioritiesSelected = false;
+
+			List<Priority> selectedPriorities = new ArrayList<Priority>();
+
+			for (Iterator i = prioritySelection.iterator(); i.hasNext();) {
+				Object selection = i.next();
+				if (ANY_PRIORITY.equals(selection)) {
+					isAnyPrioritiesSelected = true;
+				} else if (selection instanceof Priority) {
+					selectedPriorities.add((Priority) selection);
+				}
+			}
+
+			if (isAnyPrioritiesSelected) {
+				workingCopy.setPriorityFilter(null);
+			} else {
+				workingCopy.setPriorityFilter(
+					new PriorityFilter(selectedPriorities.toArray(new Priority[selectedPriorities.size()])));
+			}
+		}
+		
+		workingCopy.setDueDateFilter(getRangeFilter(dueStartDatePicker, dueEndDatePicker));
+		
+		workingCopy.setCreatedDateFilter(getRangeFilter(createdStartDatePicker, createdEndDatePicker));
+		
+		workingCopy.setUpdatedDateFilter(getRangeFilter(updatedStartDatePicker, updatedEndDatePicker));
+	}
+
+	private DateRangeFilter getRangeFilter(DatePicker startDatePicker, DatePicker endDatePicker) {
+		Calendar startDate = startDatePicker.getDate();
+		Calendar endDate = endDatePicker.getDate();
+		if(startDate!=null && endDate!=null) {
+			return new DateRangeFilter(startDate.getTime(), endDate.getTime());
+		}
+		return null;
 	}
 
 	final static class ComponentLabelProvider implements ILabelProvider {
@@ -740,7 +1364,7 @@ public class FilterSummaryPage extends WizardPage {
 		public Image getImage(Object element) {
 			return null;
 		}
-	
+
 		public String getText(Object element) {
 			if (element instanceof Placeholder) {
 				return ((Placeholder) element).getText();
@@ -775,9 +1399,35 @@ public class FilterSummaryPage extends WizardPage {
 
 	}
 
+	private final class Placeholder {
+		private final String text;
+
+		public Placeholder(String text) {
+			this.text = text;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		public boolean equals(Object obj) {
+			if (obj == null)
+				return false;
+			if (!(obj instanceof Placeholder))
+				return false;
+
+			Placeholder that = (Placeholder) obj;
+			return this.text.equals(that.text);
+		}
+
+		public String getText() {
+			return this.text;
+		}
+	}
+
 	public AbstractRepositoryQuery getQuery() {
 		this.applyChanges();
-		issueAttributesPage.applyChanges();
 		if (isNew) {
 			server.addLocalFilter(workingCopy);
 		}

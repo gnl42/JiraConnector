@@ -100,7 +100,7 @@ public class JiraQueryWizardPage extends WizardPage {
 
 		buttonCustom = new Button(innerComposite, SWT.RADIO);
 		buttonCustom.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		buttonCustom.setText("Create query using form (Experimental)");
+		buttonCustom.setText("Create query using form");
 		buttonCustom.setSelection(isCustom);
 
 		buttonSaved = new Button(innerComposite, SWT.RADIO);
