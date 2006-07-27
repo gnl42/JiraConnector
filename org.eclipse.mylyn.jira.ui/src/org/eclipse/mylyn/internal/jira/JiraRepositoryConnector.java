@@ -31,8 +31,8 @@ import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
-import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraTaskWizard;
 import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.mylar.internal.tasks.ui.wizards.NewWebTaskWizard;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -195,7 +195,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository, IStructuredSelection selection) {
-		return new NewJiraTaskWizard(taskRepository);
+		String newTaskUrl = taskRepository.getUrl();
+		return new NewWebTaskWizard(taskRepository, newTaskUrl + (newTaskUrl.endsWith("/") ? "" : "/") + "secure/CreateIssue!default.jspa");
 	}
 
 	@Override
