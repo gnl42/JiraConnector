@@ -11,13 +11,9 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import java.io.IOException;
 import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -277,10 +273,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return task;
 	}
 
-	@Override
-	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
-			Set<AbstractRepositoryTask> tasks) throws GeneralSecurityException, IOException {
-
+//	@Override
+//	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
+//			Set<AbstractRepositoryTask> tasks) throws GeneralSecurityException, IOException {
 //		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 //		if (server == null) {
 //			return Collections.emptySet();
@@ -305,9 +300,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 //				}
 //			}
 //		}
-
-		return Collections.emptySet();
-	}
+//		return Collections.emptySet();
+//	}
 
 	public String toString() {
 		return getLabel();
