@@ -53,4 +53,8 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 		return true;
 	}
 
+	public boolean canCreateEditorFor(IEditorInput input) {
+		return false;
+	}
+
 }
