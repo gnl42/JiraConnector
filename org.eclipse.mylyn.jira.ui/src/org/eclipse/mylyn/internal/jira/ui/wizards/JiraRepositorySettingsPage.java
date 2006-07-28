@@ -67,7 +67,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 //		} else {
 //			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
 //		}
-		final String serverUrl = super.serverUrlEditor.getStringValue();
+		final String serverUrl = getServerUrl();
 		final String userName = getUserName();
 		final String password = getPassword();
 		try {
