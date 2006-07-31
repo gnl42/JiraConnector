@@ -198,13 +198,13 @@ public class FilterSummaryPage extends WizardPage {
 	 * @param titleImage
 	 */
 	protected FilterSummaryPage(TaskRepository repository, FilterDefinition workingCopy, boolean isNew) {
-		super("summaryPage", "Filter Summary", null);
+		super("summaryPage", "JIRA Query", null);
 		this.repository = repository;
-
 		this.server = JiraServerFacade.getDefault().getJiraServer(repository);
 		this.workingCopy = workingCopy;
 		this.isNew = isNew;
-
+		
+		setDescription("Add search filters to define query.");
 		setPageComplete(false);
 	}
 
