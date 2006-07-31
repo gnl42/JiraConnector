@@ -221,6 +221,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
+	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) {
+		JiraServerFacade.getDefault().refreshServerSettings(repository);
+	}
+
+	
+	@Override
 	public String getRepositoryUrlFromTaskUrl(String url) {
 		if (url == null) {
 			return null;
@@ -306,5 +312,4 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public String toString() {
 		return getLabel();
 	}
-
 }
