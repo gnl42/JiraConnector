@@ -78,7 +78,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean canCreateTaskFromKey() {
+	public boolean canCreateTaskFromKey(TaskRepository repository) {
 		return true;
 	}
 
@@ -185,7 +185,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean canCreateNewTask() {
+	public boolean canCreateNewTask(TaskRepository repository) {
 		return true;
 	}
 
