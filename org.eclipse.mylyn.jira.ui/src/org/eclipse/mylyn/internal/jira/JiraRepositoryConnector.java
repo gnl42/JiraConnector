@@ -312,4 +312,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public String toString() {
 		return getLabel();
 	}
+
+	@Override
+	public boolean hasRichEditor() {
+		return true;
+	}
 }
