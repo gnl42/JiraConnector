@@ -24,6 +24,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.JiraTask.PriorityLevel;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
@@ -256,9 +257,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		if (issue.getPriority() != null) {
-			String translatedPriority = JiraTask.PriorityLevel.fromPriority(issue.getPriority()).toString();
-			task.setPriority(translatedPriority);
 			task.setKind(issue.getType().getName());
+			
+			PriorityLevel priorityLevel = JiraTask.PriorityLevel.fromPriority(issue.getPriority());
+			if (priorityLevel != null) {
+				task.setPriority(priorityLevel.toString());
+			} else {
+				MylarStatusHandler.log("unrecognized priority: " + issue.getPriority().getDescription(), null);
+			}
 		}
 		if (notifyOfChange) {
 			TasksUiPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
