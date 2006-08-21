@@ -323,4 +323,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public boolean hasRichEditor() {
 		return true;
 	}
+
+	@Override
+	public boolean validate(TaskRepository repository) {
+		return true;
+	}
 }
