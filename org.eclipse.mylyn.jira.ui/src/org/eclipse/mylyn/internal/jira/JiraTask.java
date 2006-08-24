@@ -93,16 +93,6 @@ public class JiraTask extends AbstractRepositoryTask {
 		super(handle, label, newTask);
 	}
 
-	@Override
-	public boolean isPersistentInWorkspace() {
-		return false;
-	}
-
-	@Override
-	public boolean isDownloaded() {
-		return false;
-	}
-
 	public String getRepositoryKind() {
 		return MylarJiraPlugin.REPOSITORY_KIND;
 	}
