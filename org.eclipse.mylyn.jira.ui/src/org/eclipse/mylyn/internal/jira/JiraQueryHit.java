@@ -65,20 +65,8 @@ public class JiraQueryHit extends AbstractQueryHit {
 		return task.isCompleted();
 	}
 
-	public String getPriority() {
-		return task.getPriority();
-	}
-
-	public String getDescription() {
-		return task.getDescription();
-	}
-
 	public void setDescription(String description) {
 		task.setDescription(description);
-	}
-
-	public void setHandleIdentifier(String id) {
-		task.setHandleIdentifier(id);
 	}
 
 	public boolean isLocal() {

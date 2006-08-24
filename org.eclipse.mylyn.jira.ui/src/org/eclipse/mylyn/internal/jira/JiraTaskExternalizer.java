@@ -251,20 +251,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return node.getNodeName().equals(getQueryHitTagName());
 	}
 
-	public Element createQueryHitElement(AbstractQueryHit queryHit, Document doc, Element parent) {
-		Element node = doc.createElement(getQueryHitTagName());
-
-		// JiraQueryHit hit = (JiraQueryHit) queryHit;
-		// Issue issue = hit.getIssue();
-
-		node.setAttribute(KEY_HANDLE, queryHit.getHandleIdentifier());
-		node.setAttribute(KEY_PRIORITY, queryHit.getPriority());
-
-		// node.setAttribute(KEY_ISSUE_SUMMARY, issue.getSummary());
-		parent.appendChild(node);
-		return null;
-	}
-
 	public void readQueryHit(Node node, TaskList taskList, AbstractRepositoryQuery query)
 			throws TaskExternalizationException {
 		Element element = (Element) node;
@@ -287,7 +273,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		if (correspondingTask instanceof JiraTask) {
 			String issueId = AbstractRepositoryTask.getTaskId(handle);
 			JiraQueryHit hit = new JiraQueryHit((JiraTask) correspondingTask, query.getRepositoryUrl(), issueId);
-			hit.setHandleIdentifier(handle);
 			query.addHit(hit, taskList);
 		}
 	}
