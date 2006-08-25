@@ -7,12 +7,12 @@
          name="JIRA Repository"
          point="org.eclipse.mylar.tasks.ui.repositories">
 
-      <repositoryConnector
+      <connectorCore
             class="org.eclipse.mylar.internal.jira.JiraRepositoryConnector"
             id="org.eclipse.mylar.jira.tasklist.repositories"
             name="JIRA Repository Connector"
             type="jira"/>
-	  <repositoryUi
+	  <connectorUi
          brandingIcon="icons/eview16/jira-logo.gif"
          class="org.eclipse.mylar.internal.jira.JiraRepositoryUi"
          name="JIRA Repository UI"/>

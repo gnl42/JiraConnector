@@ -20,7 +20,7 @@ import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractRepositorySettingsPag
 import org.eclipse.mylar.internal.tasks.ui.wizards.NewWebTaskWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.AbstractRepositoryUi;
+import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -28,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Mik Kersten
  */
-public class JiraRepositoryUi extends AbstractRepositoryUi {
+public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
 	private static final String TITLE_EDIT_QUERY = "Edit Jira Query";
 
