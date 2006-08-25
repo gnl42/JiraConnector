@@ -19,8 +19,8 @@ import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.NamedFilter;
 
@@ -71,7 +71,7 @@ public class JiraFilterTest extends TestCase {
 		// jFilter.refreshHits();
 		// boolean done = false;
 
-		Job job = connector.synchronize(jFilter, null);
+		Job job = TasksUiPlugin.getSynchronizationManager().synchronize(connector, jFilter, null);
 		while (job.getResult() == null) {
 			try {
 				Thread.sleep(100);

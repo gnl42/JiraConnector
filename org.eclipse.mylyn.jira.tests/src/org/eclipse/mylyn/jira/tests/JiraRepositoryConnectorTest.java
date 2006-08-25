@@ -16,12 +16,11 @@ import java.net.MalformedURLException;
 import junit.framework.TestCase;
 
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.EditRepositoryWizard;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.ui.TaskRepositoryManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Shell;
@@ -43,7 +42,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 	private TaskRepositoryManager manager;
 
-	private JiraRepositoryConnector connector;
+//	private JiraRepositoryConnector connector;
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -67,8 +66,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		AbstractRepositoryConnector abstractConnector = manager.getRepositoryConnector(kind);
 		assertEquals(abstractConnector.getRepositoryType(), kind);
 
-		connector = (JiraRepositoryConnector) abstractConnector;
-		connector.setForceSyncExec(true);
+//		connector = (JiraRepositoryConnector) abstractConnector;
+		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 	}
 
 	public void testChangeTaskRepositorySettings() throws MalformedURLException {

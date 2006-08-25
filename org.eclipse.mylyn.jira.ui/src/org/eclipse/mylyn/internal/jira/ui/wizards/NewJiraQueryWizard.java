@@ -13,9 +13,9 @@ package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylar.internal.tasks.ui.TaskListImages;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
@@ -55,7 +55,7 @@ public class NewJiraQueryWizard extends Wizard {
 			TasksUiPlugin.getTaskListManager().getTaskList().addQuery(query);
 			AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(repository.getKind());
 			if (connector != null) {
-				connector.synchronize(query, null);
+				TasksUiPlugin.getSynchronizationManager().synchronize(connector, query, null);
 			}
 		} 
 		return true;

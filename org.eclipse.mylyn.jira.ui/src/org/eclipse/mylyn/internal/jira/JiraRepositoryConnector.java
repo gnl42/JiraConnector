@@ -19,28 +19,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.JiraTask.PriorityLevel;
-import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
-import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
-import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
-import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractRepositorySettingsPage;
-import org.eclipse.mylar.internal.tasks.ui.wizards.NewWebTaskWizard;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.IAttachmentHandler;
 import org.eclipse.mylar.tasks.core.IOfflineTaskHandler;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.service.JiraServer;
 
@@ -48,8 +37,6 @@ import org.tigris.jira.core.service.JiraServer;
  * @author Mik Kersten
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
-
-	private static final String TITLE_EDIT_QUERY = "Edit Jira Query";
 
 	private static final String DELIM_URL = "/browse/";
 
@@ -98,44 +85,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		}
 		return null;
-	}
-
-	public AbstractRepositorySettingsPage getSettingsPage() {
-		return new JiraRepositorySettingsPage(this);
-	}
-
-	public IWizard getNewQueryWizard(TaskRepository repository, IStructuredSelection selection) {
-		return new NewJiraQueryWizard(repository);
-	}
-
-	@Override
-	public void openEditQueryDialog(AbstractRepositoryQuery query) {
-		try {
-			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
-					query.getRepositoryKind(), query.getRepositoryUrl());
-			if (repository == null)
-				return;
-
-			IWizard wizard = null;
-			if (query instanceof JiraRepositoryQuery || query instanceof JiraCustomQuery) {
-				wizard = new EditJiraQueryWizard(repository, query);
-			}
-
-			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-			if (wizard != null && shell != null && !shell.isDisposed()) {
-				WizardDialog dialog = new WizardDialog(shell, wizard);
-				dialog.create();
-				dialog.setTitle(TITLE_EDIT_QUERY);
-				dialog.setBlockOnOpen(true);
-				if (dialog.open() == Window.CANCEL) {
-					dialog.close();
-					return;
-				}
-			}
-		} catch (Exception e) {
-			MylarStatusHandler.fail(e, e.getMessage(), true);
-		}
-
 	}
 
 	@Override
@@ -191,12 +140,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public IWizard getNewTaskWizard(TaskRepository taskRepository, IStructuredSelection selection) {
-		String newTaskUrl = taskRepository.getUrl();
-		return new NewWebTaskWizard(taskRepository, newTaskUrl + (newTaskUrl.endsWith("/") ? "" : "/") + "secure/CreateIssue!default.jspa");
-	}
-
-	@Override
 	public List<String> getSupportedVersions() {
 		if (supportedVersions == null) {
 			supportedVersions = new ArrayList<String>();
@@ -206,7 +149,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	protected void updateTaskState(AbstractRepositoryTask repositoryTask) {
+	public void updateTaskState(AbstractRepositoryTask repositoryTask) {
 		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
 		if (repository != null && repositoryTask instanceof JiraTask) {
@@ -317,11 +260,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public String toString() {
 		return getLabel();
-	}
-
-	@Override
-	public boolean hasRichEditor() {
-		return true;
 	}
 
 	@Override

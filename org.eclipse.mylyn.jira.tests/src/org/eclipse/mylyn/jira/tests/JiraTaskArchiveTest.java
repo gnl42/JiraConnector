@@ -15,8 +15,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskList;
-import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**

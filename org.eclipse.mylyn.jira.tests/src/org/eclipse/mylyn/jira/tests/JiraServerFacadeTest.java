@@ -15,8 +15,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
