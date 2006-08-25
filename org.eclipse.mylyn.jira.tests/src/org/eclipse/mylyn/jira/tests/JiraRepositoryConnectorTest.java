@@ -21,7 +21,7 @@ import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.TaskRepositoryManager;
+import org.eclipse.mylar.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -48,7 +48,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		super.setUp();
 
 		manager = TasksUiPlugin.getRepositoryManager();
-		manager.clearRepositories();
+		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 	}
 
 	protected void tearDown() throws Exception {
@@ -61,7 +61,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		repository = new TaskRepository(kind, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 
-		manager.addRepository(repository);
+		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
 		AbstractRepositoryConnector abstractConnector = manager.getRepositoryConnector(kind);
 		assertEquals(abstractConnector.getRepositoryType(), kind);

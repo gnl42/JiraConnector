@@ -46,7 +46,7 @@ public class JiraFilterTest extends TestCase {
 		super.setUp();
 		repository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
-		TasksUiPlugin.getRepositoryManager().addRepository(repository);
+		TasksUiPlugin.getRepositoryManager().addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
@@ -58,7 +58,7 @@ public class JiraFilterTest extends TestCase {
 		// client.clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		TasksUiPlugin.getTaskListManager().resetTaskList();
-		TasksUiPlugin.getRepositoryManager().removeRepository(repository);
+		TasksUiPlugin.getRepositoryManager().removeRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 //		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
