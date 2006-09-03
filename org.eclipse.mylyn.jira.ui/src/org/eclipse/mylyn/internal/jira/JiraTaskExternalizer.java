@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
-import java.util.Collections;
-import java.util.Set;
 
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
@@ -148,20 +146,17 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			node.setAttribute(KEY_FILTER_CUSTOM, encodeFilter(filter));
 		}
 
-		Set<AbstractQueryHit> hits = Collections.synchronizedSet(query.getHits());
-		synchronized (hits) {
-			for (AbstractQueryHit hit : hits) {
-				try {
-					Element element = null;
-					for (ITaskListExternalizer externalizer : super.getDelegateExternalizers()) {
-						if (externalizer.canCreateElementFor(hit))
-							element = externalizer.createQueryHitElement(hit, doc, node);
-					}
-					if (element == null)
-						createQueryHitElement(hit, doc, node);
-				} catch (Exception e) {
-					MylarStatusHandler.log(e, e.getMessage());
+		for (AbstractQueryHit hit : query.getHits()) {
+			try {
+				Element element = null;
+				for (ITaskListExternalizer externalizer : super.getDelegateExternalizers()) {
+					if (externalizer.canCreateElementFor(hit))
+						element = externalizer.createQueryHitElement(hit, doc, node);
 				}
+				if (element == null)
+					createQueryHitElement(hit, doc, node);
+			} catch (Exception e) {
+				MylarStatusHandler.log(e, e.getMessage());
 			}
 		}
 
