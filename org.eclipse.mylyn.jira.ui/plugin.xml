@@ -15,7 +15,8 @@
 	  <connectorUi
          brandingIcon="icons/eview16/jira-logo.gif"
          class="org.eclipse.mylar.internal.jira.JiraRepositoryUi"
-         name="JIRA Repository UI"/>
+         name="JIRA Repository UI"
+         overlayIcon="icons/eview16/overlay-jira.gif"/>
             
       <externalizer 
             class="org.eclipse.mylar.internal.jira.JiraTaskExternalizer"
