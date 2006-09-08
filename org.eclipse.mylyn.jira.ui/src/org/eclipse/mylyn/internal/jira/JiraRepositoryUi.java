@@ -90,5 +90,4 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	public boolean hasSearchPage() {
 		return false;
 	}
-
 }

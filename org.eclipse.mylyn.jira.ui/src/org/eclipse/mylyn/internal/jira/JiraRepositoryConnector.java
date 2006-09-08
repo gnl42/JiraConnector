@@ -11,6 +11,7 @@
 
 package org.eclipse.mylar.internal.jira;
 
+import java.net.Proxy;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return true;
 	}
 
-	public ITask createTaskFromExistingKey(TaskRepository repository, String key) {
+	public ITask createTaskFromExistingKey(TaskRepository repository, String key, Proxy proxySettings) throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (server != null) {
 			Issue issue = server.getIssue(key);
@@ -88,13 +89,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, IProgressMonitor monitor,
-			IQueryHitCollector resultCollector) {
+	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
+			Proxy proxySettings, IProgressMonitor monitor, IQueryHitCollector resultCollector) {
 		//List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 		final List<Issue> issues = new ArrayList<Issue>();
 
-		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND,
-				repositoryQuery.getRepositoryUrl());
+//		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND,
+//				repositoryQuery.getRepositoryUrl());
 
 		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
 
@@ -225,11 +226,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) {
-		JiraServerFacade.getDefault().refreshServerSettings(repository);
-	}
-
-	@Override
 	public String getRepositoryUrlFromTaskUrl(String url) {
 		if (url == null) {
 			return null;
@@ -326,8 +322,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean validate(TaskRepository repository) {
-		return true;
+	public void updateAttributes(TaskRepository repository, Proxy proxySettings, IProgressMonitor monitor) throws CoreException {
+		JiraServerFacade.getDefault().refreshServerSettings(repository);
 	}
-
+	
 }
