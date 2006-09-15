@@ -65,8 +65,9 @@ public class JiraTaskExternalizationTest extends TestCase {
 		repository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		TasksUiPlugin.getTaskListManager().resetTaskList();
+		TasksUiPlugin.getTaskListManager().resetTaskList();		
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
+		TasksUiPlugin.getTaskListManager().saveTaskList();
 	}
 
 	protected void tearDown() throws Exception {
