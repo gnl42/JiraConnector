@@ -74,7 +74,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public boolean hasRichEditor() {
-		return true;
+		return false;
 	}
 
 	public IWizard getNewQueryWizard(TaskRepository repository, IStructuredSelection selection) {

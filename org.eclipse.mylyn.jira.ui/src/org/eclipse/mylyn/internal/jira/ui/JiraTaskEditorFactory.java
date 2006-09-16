@@ -1,5 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Mylar project committers - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.mylar.internal.jira.ui;
 
+/**
+ * @author Mik Kersten
+ */
 import org.eclipse.mylar.internal.jira.JiraTask;
 import org.eclipse.mylar.internal.tasks.ui.ITaskEditorFactory;
 import org.eclipse.mylar.internal.tasks.ui.editors.MylarTaskEditor;
@@ -12,43 +26,26 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 	public JiraTaskEditorFactory() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.mylar.internal.tasklist.ui.ITaskEditorFactory#canCreateEditorFor(org.eclipse.mylar.provisional.tasklist.ITask)
-	 */
 	public boolean canCreateEditorFor(ITask task) {
-		return task instanceof JiraTask;
+		return false;
+		// return task instanceof JiraTask;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.mylar.internal.tasklist.ui.ITaskEditorFactory#createEditor(org.eclipse.mylar.internal.tasklist.ui.editors.MylarTaskEditor)
-	 */
 	public IEditorPart createEditor(MylarTaskEditor parentEditor) {
 		return new JiraTaskEditor();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.mylar.internal.tasklist.ui.ITaskEditorFactory#createEditorInput(org.eclipse.mylar.provisional.tasklist.ITask)
-	 */
 	public IEditorInput createEditorInput(ITask task) {
 		return new JiraIssueEditorInput((JiraTask) task);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.mylar.internal.tasklist.ui.ITaskEditorFactory#getTitle()
-	 */
 	public String getTitle() {
 		return "Jira";
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.mylar.internal.tasklist.ui.ITaskEditorFactory#notifyEditorActivationChange(org.eclipse.ui.IEditorPart)
-	 */
 	public void notifyEditorActivationChange(IEditorPart editor) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.mylar.internal.tasklist.ui.ITaskEditorFactory#providesOutline()
-	 */
 	public boolean providesOutline() {
 		return true;
 	}
