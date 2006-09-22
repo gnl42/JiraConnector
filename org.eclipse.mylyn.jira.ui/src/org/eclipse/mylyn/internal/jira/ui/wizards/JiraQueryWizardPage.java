@@ -17,10 +17,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.internal.jira.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
+import org.eclipse.mylar.internal.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -45,31 +45,27 @@ import org.tigris.jira.core.service.JiraServer;
  * @author Wesley Coelho (initial integration patch)
  * @author Eugene Kuleshov (layout and other improvements)
  */
-public class JiraQueryWizardPage extends WizardPage {
-
-	// private static final int COMBO_WIDTH_HINT = 200;
+public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 	private static final String TITLE = "New Jira Query";
 
 	private static final String DESCRIPTION = "Please select a query type.";
 
-	// private static final String COMBO_LABEL = "Filter:";
-
 	private static final String WAIT_MESSAGE = "Downloading...";
 
 	private static final String JOB_LABEL = "Downloading Filter Names";
 
-	NamedFilter[] filters = null;
+	private NamedFilter[] filters = null;
 
-	List filterCombo;
+	private List filterCombo;
 
-	TaskRepository repository;
+	private TaskRepository repository;
 
-	Button updateButton = null;
+	private Button updateButton = null;
 
 	private Button buttonCustom;
 
-	Button buttonSaved;
+	private Button buttonSaved;
 
 	private FilterSummaryPage filterSummaryPage;
 
