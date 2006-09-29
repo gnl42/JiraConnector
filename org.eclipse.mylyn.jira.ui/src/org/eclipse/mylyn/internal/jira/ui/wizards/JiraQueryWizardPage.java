@@ -143,6 +143,10 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		setControl(innerComposite);
 		downloadFilters();
 	}
+	
+	public boolean isPageComplete() {
+		return buttonCustom.getSelection() ? super.isPageComplete() : true;
+	}
 
 	public IWizardPage getNextPage() {
 		if (!buttonCustom.getSelection()) {

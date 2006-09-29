@@ -296,7 +296,7 @@ public class FilterSummaryPage extends WizardPage {
 				typeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				typeLabel.setText("Type:");
 		
-				issueType = new ListViewer(comp, SWT.BORDER);
+				issueType = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				issueType.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				
 				issueType.setContentProvider(new IStructuredContentProvider() {
@@ -344,7 +344,7 @@ public class FilterSummaryPage extends WizardPage {
 				statusLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				statusLabel.setText("Status:");
 		
-				status = new ListViewer(comp, SWT.BORDER);
+				status = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				status.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 				
 				status.setContentProvider(new IStructuredContentProvider() {
@@ -391,7 +391,7 @@ public class FilterSummaryPage extends WizardPage {
 				resolutionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				resolutionLabel.setText("Resolution:");
 		
-				resolution = new ListViewer(comp, SWT.BORDER);
+				resolution = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				resolution.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 				resolution.setContentProvider(new IStructuredContentProvider() {
@@ -439,7 +439,7 @@ public class FilterSummaryPage extends WizardPage {
 				priorityLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				priorityLabel.setText("Priority:");
 		
-				priority = new ListViewer(comp, SWT.BORDER);
+				priority = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				priority.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 				priority.setContentProvider(new IStructuredContentProvider() {
