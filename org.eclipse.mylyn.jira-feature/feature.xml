@@ -215,7 +215,7 @@ litigation.
    </license>
 
    <url>
-      <update label="Mylar for Eclipse 3.3" url="http://download.eclipse.org/technology/mylar/update-site/e3.3"/>
+      <update label="Mylar for Eclipse 3.2" url="http://download.eclipse.org/technology/mylar/update-site/e3.2"/>
    </url>
 
    <requires>
