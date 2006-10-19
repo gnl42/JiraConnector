@@ -135,7 +135,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		TasksUiPlugin.getTaskListManager().getTaskList().addTask(jiraTask);
 		JiraQueryHit jiraHit = new JiraQueryHit(jiraTask, repository.getUrl(), "123");
 		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
-		jiraRepositoryQuery.addHit(jiraHit, taskList);
+		jiraRepositoryQuery.addHit(jiraHit);
 		TasksUiPlugin.getTaskListManager().getTaskList().addQuery(jiraRepositoryQuery);
 		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
 
