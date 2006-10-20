@@ -31,6 +31,7 @@ import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.QueryHitCollector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
+import org.eclipse.ui.PlatformUI;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.service.JiraServer;
 
@@ -71,7 +72,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return true;
 	}
 
-	public ITask createTaskFromExistingKey(TaskRepository repository, String key, Proxy proxySettings) throws CoreException {
+	public ITask createTaskFromExistingKey(TaskRepository repository, String key, Proxy proxySettings)
+			throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (server != null) {
 			Issue issue = server.getIssue(key);
@@ -91,16 +93,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
 			Proxy proxySettings, IProgressMonitor monitor, QueryHitCollector resultCollector) {
-		//List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
+		// List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 		final List<Issue> issues = new ArrayList<Issue>();
 
-//		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND,
-//				repositoryQuery.getRepositoryUrl());
+		// TaskRepository repository =
+		// TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND,
+		// repositoryQuery.getRepositoryUrl());
 
 		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
 
 		// TODO: Get rid of JiraIssueCollector and pass IQueryHitCollector
-		
+
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
@@ -110,13 +113,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		} catch (Throwable t) {
 			return new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.OK, "Could not log in to server: "
-					+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.", t);			
+					+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.", t);
 		}
 		// TODO: work-around no other way of determining failure
 		if (!collector.isDone()) {
 			return new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.OK, "Could not log in to server: "
-							+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.",
-							new UnknownHostException());			
+					+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.", new UnknownHostException());
 		}
 		for (Issue issue : issues) {
 			String issueId = issue.getId();
@@ -131,11 +133,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			try {
 				resultCollector.accept(hit);
 			} catch (CoreException e) {
-				return new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR, "Error while retrieving results from: "
-						+ repositoryQuery.getRepositoryUrl(), e );
+				return new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
+						"Error while retrieving results from: " + repositoryQuery.getRepositoryUrl(), e);
 			}
 		}
-		return Status.OK_STATUS;		
+		return Status.OK_STATUS;
 	}
 
 	// @Override
@@ -211,15 +213,20 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateTaskState(AbstractRepositoryTask repositoryTask) {
-		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
+		final TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
 		if (repository != null && repositoryTask instanceof JiraTask) {
-			JiraTask jiraTask = (JiraTask) repositoryTask;
-			JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+			final JiraTask jiraTask = (JiraTask) repositoryTask;
+			final JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 			if (server != null) {
-				Issue issue = server.getIssue(jiraTask.getKey());
+				final Issue issue = server.getIssue(jiraTask.getKey());
 				if (issue != null) {
-					updateTaskDetails(repository.getUrl(), jiraTask, issue, true);
+					// TODO: may not need to update details here
+					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							updateTaskDetails(repository.getUrl(), jiraTask, issue, true);
+						}
+					});
 				}
 			}
 		}
@@ -322,14 +329,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateAttributes(TaskRepository repository, Proxy proxySettings, IProgressMonitor monitor) throws CoreException {
+	public void updateAttributes(TaskRepository repository, Proxy proxySettings, IProgressMonitor monitor)
+			throws CoreException {
 		JiraServerFacade.getDefault().refreshServerSettings(repository);
 	}
 
-	
 	@Override
 	public String getTaskIdPrefix() {
 		return "issue";
 	}
-	
+
 }
