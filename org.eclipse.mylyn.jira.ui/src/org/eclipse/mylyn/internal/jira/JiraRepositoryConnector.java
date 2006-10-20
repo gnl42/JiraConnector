@@ -329,7 +329,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	
 	@Override
 	public String getTaskIdPrefix() {
-		return "issue ";
+		return "issue";
 	}
 	
 }
