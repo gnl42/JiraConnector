@@ -8,7 +8,6 @@
 
 package org.eclipse.mylar.internal.jira;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
@@ -66,7 +65,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 //	}
 
 	@Override
-	public IWizard getNewTaskWizard(TaskRepository taskRepository, IStructuredSelection selection) {
+	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
 		String newTaskUrl = taskRepository.getUrl();
 		return new NewWebTaskWizard(taskRepository, newTaskUrl + (newTaskUrl.endsWith("/") ? "" : "/") + "secure/CreateIssue!default.jspa");
 	}
