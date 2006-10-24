@@ -31,7 +31,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 		// return task instanceof JiraTask;
 	}
 
-	public IEditorPart createEditor(MylarTaskEditor parentEditor) {
+	public IEditorPart createEditor(MylarTaskEditor parentEditor, IEditorInput editorInput) {
 		return new JiraTaskEditor();
 	}
 
@@ -53,5 +53,4 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 	public boolean canCreateEditorFor(IEditorInput input) {
 		return false;
 	}
-
 }
