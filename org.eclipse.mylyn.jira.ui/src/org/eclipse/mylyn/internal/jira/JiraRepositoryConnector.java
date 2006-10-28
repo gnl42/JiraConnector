@@ -124,12 +124,16 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			String issueId = issue.getId();
 			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
 			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
-			if (!(task instanceof JiraTask)) {
-				task = createTask(issue, handleIdentifier);
+//			if (!(task instanceof JiraTask)) {
+//				task = createTask(issue, handleIdentifier);
+//			}
+			if (task instanceof JiraTask) {
+				updateTaskDetails(repository.getUrl(), (JiraTask) task, issue, false);
 			}
-			updateTaskDetails(repository.getUrl(), (JiraTask) task, issue, false);
-
-			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
+//			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
+			// TODO: set completion status
+			JiraQueryHit hit = new JiraQueryHit(issue.getDescription(), repositoryQuery.getRepositoryUrl(), issueId, issue.getKey(), false);
+			
 			try {
 				resultCollector.accept(hit);
 			} catch (CoreException e) {
@@ -276,6 +280,19 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
+	public static JiraTask createTask(String handleIdentifier, String key, String description) {
+		JiraTask task;
+		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+		if (existingTask instanceof JiraTask) {
+			task = (JiraTask) existingTask;
+		} else {
+			task = new JiraTask(handleIdentifier, description, true);
+			task.setKey(key);//issue.getKey());
+			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
+		}
+		return task;
+	}
+	
 	public static JiraTask createTask(Issue issue, String handleIdentifier) {
 		JiraTask task;
 		String description = issue.getKey() + ": " + issue.getSummary();

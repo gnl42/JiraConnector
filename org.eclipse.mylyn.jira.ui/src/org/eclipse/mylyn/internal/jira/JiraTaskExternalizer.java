@@ -267,7 +267,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		ITask correspondingTask = taskList.getTask(handle);
 		if (correspondingTask instanceof JiraTask) {
 			String issueId = AbstractRepositoryTask.getTaskId(handle);
-			JiraQueryHit hit = new JiraQueryHit((JiraTask) correspondingTask, query.getRepositoryUrl(), issueId);
+//			JiraQueryHit hit = new JiraQueryHit((JiraTask) correspondingTask, query.getRepositoryUrl(), issueId);
+			JiraQueryHit hit = new JiraQueryHit(correspondingTask.getDescription(), query.getRepositoryUrl(), issueId, ((JiraTask)correspondingTask).getKey(), correspondingTask.isCompleted());
 			query.addHit(hit);
 		}
 	}

@@ -8,8 +8,11 @@
 
 package org.eclipse.mylar.internal.jira;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
+import org.eclipse.mylar.internal.jira.ui.wizards.JiraQueryPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractRepositorySettingsPage;
@@ -17,13 +20,17 @@ import org.eclipse.mylar.internal.tasks.ui.wizards.NewWebTaskWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
+import org.tigris.jira.core.model.filter.FilterDefinition;
 
 /**
  * @author Mik Kersten
  */
 public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
-//	private static final String TITLE_EDIT_QUERY = "Edit Jira Query";
+	@Override
+	public WizardPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
+		return new JiraQueryPage(repository, new FilterDefinition(), true);
+	} 
 
 	public AbstractRepositorySettingsPage getSettingsPage() {
 		return new JiraRepositorySettingsPage(this);
@@ -37,33 +44,6 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 		}
 	}
 	
-//	@Override
-//	public void openEditQueryDialog(AbstractRepositoryQuery query) {
-//		try {
-//			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
-//					query.getRepositoryKind(), query.getRepositoryUrl());
-//			if (repository == null)
-//				return;
-//	
-//			IWizard wizard = null;
-//	
-//			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-//			if (wizard != null && shell != null && !shell.isDisposed()) {
-//				WizardDialog dialog = new WizardDialog(shell, wizard);
-//				dialog.create();
-//				dialog.setTitle(TITLE_EDIT_QUERY);
-//				dialog.setBlockOnOpen(true);
-//				if (dialog.open() == Window.CANCEL) {
-//					dialog.close();
-//					return;
-//				}
-//			}
-//		} catch (Exception e) {
-//			MylarStatusHandler.fail(e, e.getMessage(), true);
-//		}
-//	
-//	}
-
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
 		String newTaskUrl = taskRepository.getUrl();
@@ -82,6 +62,6 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public boolean hasSearchPage() {
-		return false;
+		return true;
 	}
 }

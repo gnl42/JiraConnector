@@ -28,9 +28,9 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.internal.jira.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
+import org.eclipse.mylar.internal.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.mylar.internal.tasks.ui.views.DatePicker;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -81,9 +81,12 @@ import org.tigris.jira.core.service.JiraServer;
 /**
  * @author Brock Janiczak
  * @author Eugene Kuleshov (layout and other improvements)
+ * @author Mik Kersten (generalized for search dialog)
  */
-public class FilterSummaryPage extends WizardPage {
-	
+public class JiraQueryPage extends AbstractRepositoryQueryPage {
+
+	private static final String TITLE_PAGE = "JIRA Query";
+
 	final Placeholder ANY_FIX_VERSION = new Placeholder("Any");
 
 	final Placeholder NO_FIX_VERSION = new Placeholder("No Fix Version");
@@ -101,7 +104,7 @@ public class FilterSummaryPage extends WizardPage {
 	final Placeholder NO_COMPONENT = new Placeholder("No Component");
 
 	// attributes
-	
+
 	final Placeholder ANY_ISSUE_TYPE = new Placeholder("Any");
 
 	final Placeholder ANY_RESOLUTION = new Placeholder("Any");
@@ -132,11 +135,10 @@ public class FilterSummaryPage extends WizardPage {
 
 	final Placeholder ANY_PRIORITY = new Placeholder("Any");
 
-	
 	private final JiraServer server;
 
 	private Text name;
-	
+
 	private ListViewer project;
 
 	private ListViewer reportedIn;
@@ -144,15 +146,15 @@ public class FilterSummaryPage extends WizardPage {
 	private ListViewer components;
 
 	private ListViewer fixFor;
-	
+
 	private ListViewer issueType;
-	
+
 	private ListViewer status;
-	
+
 	private ListViewer resolution;
-	
+
 	private ListViewer priority;
-	
+
 	private ComboViewer assigneeType;
 
 	private Text assignee;
@@ -172,38 +174,30 @@ public class FilterSummaryPage extends WizardPage {
 	private Button searchEnvironment;
 
 	private DatePicker dueStartDatePicker;
-	
+
 	private DatePicker dueEndDatePicker;
-	
+
 	private DatePicker updatedStartDatePicker;
-	
+
 	private DatePicker updatedEndDatePicker;
-	
+
 	private DatePicker createdStartDatePicker;
-	
+
 	private DatePicker createdEndDatePicker;
 
-	
 	private final boolean isNew;
-
-	private final TaskRepository repository;
 
 	private final FilterDefinition workingCopy;
 
+	private boolean namedQuery;
 
-	
-	/**
-	 * @param pageName
-	 * @param title
-	 * @param titleImage
-	 */
-	protected FilterSummaryPage(TaskRepository repository, FilterDefinition workingCopy, boolean isNew) {
-		super("summaryPage", "JIRA Query", null);
+	public JiraQueryPage(TaskRepository repository, FilterDefinition workingCopy, boolean isNew) {
+		super(TITLE_PAGE);
 		this.repository = repository;
 		this.server = JiraServerFacade.getDefault().getJiraServer(repository);
 		this.workingCopy = workingCopy;
 		this.isNew = isNew;
-		
+
 		setDescription("Add search filters to define query.");
 		setPageComplete(false);
 	}
@@ -212,20 +206,22 @@ public class FilterSummaryPage extends WizardPage {
 		Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new GridLayout(3, false));
 
-		Label lblName = new Label(c, SWT.NONE);
-		final GridData gridData = new GridData();
-		lblName.setLayoutData(gridData);
-		lblName.setText("Name:");
-
-		name = new Text(c, SWT.BORDER);
-		name.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
-		name.addModifyListener(new ModifyListener() {
-
-			public void modifyText(ModifyEvent e) {
-				validatePage();
-			}
-
-		});
+		if (namedQuery) {
+			Label lblName = new Label(c, SWT.NONE);
+			final GridData gridData = new GridData();
+			lblName.setLayoutData(gridData);
+			lblName.setText("Name:");
+	
+			name = new Text(c, SWT.BORDER);
+			name.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+			name.addModifyListener(new ModifyListener() {
+	
+				public void modifyText(ModifyEvent e) {
+					validatePage();
+				}
+	
+			});
+		}
 
 		SashForm sashForm = new SashForm(c, SWT.VERTICAL);
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1));
@@ -238,7 +234,7 @@ public class FilterSummaryPage extends WizardPage {
 				GridLayout gridLayout = new GridLayout(1, false);
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
-				
+
 				Label label = new Label(comp, SWT.NONE);
 				label.setText("Project:");
 				createProjectsViewer(comp);
@@ -249,7 +245,7 @@ public class FilterSummaryPage extends WizardPage {
 				GridLayout gridLayout = new GridLayout(1, false);
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
-				
+
 				new Label(comp, SWT.NONE).setText("Fix For:");
 				createFixForViewer(comp);
 			}
@@ -259,7 +255,7 @@ public class FilterSummaryPage extends WizardPage {
 				GridLayout gridLayout = new GridLayout(1, false);
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
-				
+
 				new Label(comp, SWT.NONE).setText("In Components:");
 				createComponentsViewer(comp);
 			}
@@ -274,7 +270,7 @@ public class FilterSummaryPage extends WizardPage {
 				label.setText("Reported In:");
 				createReportedInViewer(comp);
 			}
-			cc.setWeights(new int[] {1,1,1,1});
+			cc.setWeights(new int[] { 1, 1, 1, 1 });
 		}
 
 		{
@@ -291,14 +287,14 @@ public class FilterSummaryPage extends WizardPage {
 				GridLayout gridLayout = new GridLayout();
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
-		
+
 				Label typeLabel = new Label(comp, SWT.NONE);
 				typeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				typeLabel.setText("Type:");
-		
+
 				issueType = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				issueType.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-				
+
 				issueType.setContentProvider(new IStructuredContentProvider() {
 
 					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -333,20 +329,20 @@ public class FilterSummaryPage extends WizardPage {
 
 				issueType.setInput(server);
 			}
-	
+
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout();
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
-		
+
 				Label statusLabel = new Label(comp, SWT.NONE);
 				statusLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				statusLabel.setText("Status:");
-		
+
 				status = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				status.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-				
+
 				status.setContentProvider(new IStructuredContentProvider() {
 
 					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -380,17 +376,17 @@ public class FilterSummaryPage extends WizardPage {
 				status.addSelectionChangedListener(selectionChangeListener);
 				status.setInput(server);
 			}
-	
+
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout();
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
-		
+
 				Label resolutionLabel = new Label(comp, SWT.NONE);
 				resolutionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				resolutionLabel.setText("Resolution:");
-		
+
 				resolution = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				resolution.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -428,17 +424,17 @@ public class FilterSummaryPage extends WizardPage {
 				resolution.addSelectionChangedListener(selectionChangeListener);
 				resolution.setInput(server);
 			}
-	
+
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout();
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
-		
+
 				Label priorityLabel = new Label(comp, SWT.NONE);
 				priorityLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				priorityLabel.setText("Priority:");
-		
+
 				priority = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				priority.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -474,10 +470,10 @@ public class FilterSummaryPage extends WizardPage {
 				priority.addSelectionChangedListener(selectionChangeListener);
 				priority.setInput(server);
 			}
-			
-			cc.setWeights(new int[] {1, 1, 1, 1 });
+
+			cc.setWeights(new int[] { 1, 1, 1, 1 });
 		}
-		sashForm.setWeights(new int[] {1, 1 });
+		sashForm.setWeights(new int[] { 1, 1 });
 
 		Label lblQuery = new Label(c, SWT.NONE);
 		lblQuery.setLayoutData(new GridData());
@@ -508,24 +504,24 @@ public class FilterSummaryPage extends WizardPage {
 			Composite comp = new Composite(c, SWT.NONE);
 			comp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 			comp.setLayout(new FillLayout());
-	
+
 			searchSummary = new Button(comp, SWT.CHECK);
 			searchSummary.setText("Summary");
 			searchSummary.addSelectionListener(selectionAdapter);
-	
+
 			searchDescription = new Button(comp, SWT.CHECK);
 			searchDescription.setText("Description");
 			searchDescription.addSelectionListener(selectionAdapter);
-	
+
 			searchComments = new Button(comp, SWT.CHECK);
 			searchComments.setText("Comments");
 			searchComments.addSelectionListener(selectionAdapter);
-	
+
 			searchEnvironment = new Button(comp, SWT.CHECK);
 			searchEnvironment.setText("Environment");
 			searchEnvironment.addSelectionListener(selectionAdapter);
 		}
-		
+
 		{
 			Label reportedByLabel = new Label(c, SWT.NONE);
 			reportedByLabel.setText("Reported By:");
@@ -534,34 +530,34 @@ public class FilterSummaryPage extends WizardPage {
 			GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, false, false);
 			gridData_1.widthHint = 133;
 			reporterType.getControl().setLayoutData(gridData_1);
-	
+
 			reporterType.setContentProvider(new IStructuredContentProvider() {
-	
+
 				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				}
-	
+
 				public void dispose() {
 				}
-	
+
 				public Object[] getElements(Object inputElement) {
 					return new Object[] { ANY_REPORTER, NO_REPORTER, CURRENT_USER_REPORTER, SPECIFIC_USER_REPORTER,
 							SPECIFIC_GROUP_REPORTER };
 				}
-	
+
 			});
-	
+
 			reporterType.setLabelProvider(new LabelProvider() {
 				public String getText(Object element) {
 					return ((Placeholder) element).getText();
 				}
 			});
-	
+
 			reporterType.setInput(server);
-			
+
 			reporter = new Text(c, SWT.BORDER);
 			reporter.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 			reporter.setEnabled(false);
-			
+
 			reporter.addModifyListener(new ModifyListener() {
 
 				public void modifyText(ModifyEvent e) {
@@ -574,12 +570,12 @@ public class FilterSummaryPage extends WizardPage {
 		{
 			Label assignedToLabel = new Label(c, SWT.NONE);
 			assignedToLabel.setText("Assigned To:");
-	
+
 			assigneeType = new ComboViewer(c, SWT.BORDER | SWT.READ_ONLY);
 			GridData gridData_2 = new GridData(SWT.FILL, SWT.CENTER, false, false);
 			gridData_2.widthHint = 133;
 			assigneeType.getCombo().setLayoutData(gridData_2);
-	
+
 			assigneeType.setContentProvider(new IStructuredContentProvider() {
 
 				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -619,7 +615,7 @@ public class FilterSummaryPage extends WizardPage {
 			});
 
 			assigneeType.setInput(server);
-			
+
 			assignee = new Text(c, SWT.BORDER);
 			assignee.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 			assignee.setEnabled(false);
@@ -631,7 +627,7 @@ public class FilterSummaryPage extends WizardPage {
 
 			});
 		}
-		
+
 		{
 			Label createdLabel = new Label(c, SWT.NONE);
 			createdLabel.setText("Created:");
@@ -645,7 +641,7 @@ public class FilterSummaryPage extends WizardPage {
 			createdStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
 			createdEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
 		}
-		
+
 		{
 			Label updatedLabel = new Label(c, SWT.NONE);
 			updatedLabel.setText("Updated:");
@@ -655,7 +651,7 @@ public class FilterSummaryPage extends WizardPage {
 			fillLayout.spacing = 5;
 			composite.setLayout(fillLayout);
 			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-	
+
 			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
 			updatedEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
 		}
@@ -663,7 +659,7 @@ public class FilterSummaryPage extends WizardPage {
 		{
 			Label dueDateLabel = new Label(c, SWT.NONE);
 			dueDateLabel.setText("Due Date:");
-			
+
 			Composite composite = new Composite(c, SWT.NONE);
 			FillLayout fillLayout = new FillLayout();
 			fillLayout.spacing = 5;
@@ -673,14 +669,14 @@ public class FilterSummaryPage extends WizardPage {
 			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
 			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
 		}
-		
-		//new FillLayout()f validation here
+
+		// new FillLayout()f validation here
 		if (isNew) {
 			loadFromDefaults();
 		} else {
 			loadFromWorkingCopy();
 		}
-		
+
 		setControl(c);
 	}
 
@@ -811,7 +807,7 @@ public class FilterSummaryPage extends WizardPage {
 		gridData.heightHint = 59;
 		gridData.widthHint = 90;
 		project.getControl().setLayoutData(gridData);
-		
+
 		project.setContentProvider(new IStructuredContentProvider() {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -868,7 +864,7 @@ public class FilterSummaryPage extends WizardPage {
 	}
 
 	void validatePage() {
-		if (name.getText().length() == 0) {
+		if (namedQuery && name.getText().length() == 0) {
 			setErrorMessage("Name is mandatory");
 			setPageComplete(false);
 			return;
@@ -882,7 +878,7 @@ public class FilterSummaryPage extends WizardPage {
 		project.setSelection(new StructuredSelection(new Placeholder("All Projects")));
 		searchSummary.setSelection(true);
 		searchDescription.setSelection(true);
-		
+
 		issueType.setSelection(new StructuredSelection(ANY_ISSUE_TYPE));
 		reporterType.setSelection(new StructuredSelection(ANY_REPORTER));
 		assigneeType.setSelection(new StructuredSelection(ANY_ASSIGNEE));
@@ -892,7 +888,7 @@ public class FilterSummaryPage extends WizardPage {
 	}
 
 	private void loadFromWorkingCopy() {
-		if (workingCopy.getName() != null) {
+		if (namedQuery && workingCopy.getName() != null) {
 			name.setText(workingCopy.getName());
 		}
 
@@ -958,8 +954,8 @@ public class FilterSummaryPage extends WizardPage {
 			components.setSelection(new StructuredSelection(ANY_COMPONENT));
 		}
 
-	    // attributes
-		
+		// attributes
+
 		if (workingCopy.getIssueTypeFilter() != null) {
 			issueType.setSelection(new StructuredSelection(workingCopy.getIssueTypeFilter().getIsueTypes()));
 		} else {
@@ -1008,7 +1004,7 @@ public class FilterSummaryPage extends WizardPage {
 
 		if (workingCopy.getResolutionFilter() != null) {
 			Resolution[] resolutions = workingCopy.getResolutionFilter().getResolutions();
-			if(resolutions.length==0) {
+			if (resolutions.length == 0) {
 				resolution.setSelection(new StructuredSelection(UNRESOLVED));
 			} else {
 				resolution.setSelection(new StructuredSelection(resolutions));
@@ -1022,27 +1018,29 @@ public class FilterSummaryPage extends WizardPage {
 		} else {
 			priority.setSelection(new StructuredSelection(ANY_PRIORITY));
 		}
-		
+
 		setDateRange(workingCopy.getCreatedDateFilter(), createdStartDatePicker, createdEndDatePicker);
 		setDateRange(workingCopy.getUpdatedDateFilter(), updatedStartDatePicker, updatedEndDatePicker);
 		setDateRange(workingCopy.getDueDateFilter(), dueStartDatePicker, dueEndDatePicker);
 	}
 
 	private void setDateRange(DateFilter dateFilter, DatePicker startDatePicker, DatePicker endDatePicker) {
-		if(dateFilter instanceof DateRangeFilter) {
+		if (dateFilter instanceof DateRangeFilter) {
 			DateRangeFilter rangeFilter = (DateRangeFilter) dateFilter;
 			Calendar c1 = Calendar.getInstance();
 			c1.setTime(rangeFilter.getFromDate());
 			startDatePicker.setDate(c1);
-			
+
 			Calendar c2 = Calendar.getInstance();
 			c2.setTime(rangeFilter.getToDate());
 			endDatePicker.setDate(c2);
 		}
 	}
 
-	/* default */void applyChanges() {
-		workingCopy.setName(this.name.getText());
+	void applyChanges() {
+		if (namedQuery) {
+			workingCopy.setName(this.name.getText());
+		}
 		if (this.queryString.getText().length() > 0 || this.searchSummary.getSelection()
 				|| this.searchDescription.getSelection() || this.searchEnvironment.getSelection()
 				|| this.searchComments.getSelection()) {
@@ -1173,9 +1171,9 @@ public class FilterSummaryPage extends WizardPage {
 				workingCopy.setComponentFilter(null);
 			}
 		}
-		
+
 		// attributes
-		
+
 		// TODO support standard and subtask issue types
 		IStructuredSelection issueTypeSelection = (IStructuredSelection) issueType.getSelection();
 		if (issueTypeSelection.isEmpty()) {
@@ -1197,8 +1195,8 @@ public class FilterSummaryPage extends WizardPage {
 			if (isAnyIssueTypeSelected) {
 				workingCopy.setIssueTypeFilter(null);
 			} else {
-				workingCopy.setIssueTypeFilter(
-					new IssueTypeFilter(selectedIssueTypes.toArray(new IssueType[selectedIssueTypes.size()])));
+				workingCopy.setIssueTypeFilter(new IssueTypeFilter(selectedIssueTypes
+						.toArray(new IssueType[selectedIssueTypes.size()])));
 			}
 		}
 
@@ -1260,8 +1258,8 @@ public class FilterSummaryPage extends WizardPage {
 			if (isAnyStatusSelected) {
 				workingCopy.setStatusFilter(null);
 			} else {
-				workingCopy.setStatusFilter(
-					new StatusFilter(selectedStatuses.toArray(new Status[selectedStatuses.size()])));
+				workingCopy.setStatusFilter(new StatusFilter(selectedStatuses.toArray(new Status[selectedStatuses
+						.size()])));
 			}
 		}
 
@@ -1285,8 +1283,8 @@ public class FilterSummaryPage extends WizardPage {
 			if (isAnyResolutionSelected) {
 				workingCopy.setResolutionFilter(null);
 			} else {
-				workingCopy.setResolutionFilter(
-					new ResolutionFilter(selectedResolutions.toArray(new Resolution[selectedResolutions.size()])));
+				workingCopy.setResolutionFilter(new ResolutionFilter(selectedResolutions
+						.toArray(new Resolution[selectedResolutions.size()])));
 			}
 		}
 
@@ -1310,22 +1308,22 @@ public class FilterSummaryPage extends WizardPage {
 			if (isAnyPrioritiesSelected) {
 				workingCopy.setPriorityFilter(null);
 			} else {
-				workingCopy.setPriorityFilter(
-					new PriorityFilter(selectedPriorities.toArray(new Priority[selectedPriorities.size()])));
+				workingCopy.setPriorityFilter(new PriorityFilter(selectedPriorities
+						.toArray(new Priority[selectedPriorities.size()])));
 			}
 		}
-		
+
 		workingCopy.setDueDateFilter(getRangeFilter(dueStartDatePicker, dueEndDatePicker));
-		
+
 		workingCopy.setCreatedDateFilter(getRangeFilter(createdStartDatePicker, createdEndDatePicker));
-		
+
 		workingCopy.setUpdatedDateFilter(getRangeFilter(updatedStartDatePicker, updatedEndDatePicker));
 	}
 
 	private DateRangeFilter getRangeFilter(DatePicker startDatePicker, DatePicker endDatePicker) {
 		Calendar startDate = startDatePicker.getDate();
 		Calendar endDate = endDatePicker.getDate();
-		if(startDate!=null && endDate!=null) {
+		if (startDate != null && endDate != null) {
 			return new DateRangeFilter(startDate.getTime(), endDate.getTime());
 		}
 		return null;

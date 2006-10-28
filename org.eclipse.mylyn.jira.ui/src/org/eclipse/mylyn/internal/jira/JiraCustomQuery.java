@@ -22,11 +22,9 @@ import org.tigris.jira.core.model.filter.FilterDefinition;
  */
 public class JiraCustomQuery extends AbstractRepositoryQuery {
 
-	private static final int MAX_HITS = 75;
+	private static final int MAX_HITS = 200;
 
 	protected FilterDefinition filter = null;
-
-//	private boolean isRefreshing = false;
 
 	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, TaskList taskList) {
 		super(filter.getName(), taskList);
@@ -34,7 +32,6 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		this.filter = filter;
 		super.repositoryUrl = repositoryUrl;
 		setUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getName());
-//		super.setDescription(filter.getName());
 	}
 
 	public String getRepositoryKind() {

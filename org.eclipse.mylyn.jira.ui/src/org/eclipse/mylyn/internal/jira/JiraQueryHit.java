@@ -25,10 +25,19 @@ public class JiraQueryHit extends AbstractQueryHit {
 //	private Issue issue = null;
 
 	private JiraTask task = null;
+	
+	private String key = null;
+	
+	private String description = "";
+	
+	private boolean completed;
 
-	public JiraQueryHit(JiraTask task, String repositoryUrl, String id) {
-		super(repositoryUrl, task.getDescription(), id);
-		this.task = task;
+	public JiraQueryHit(String description, String repositoryUrl, String id, String key, boolean completed) {
+		super(repositoryUrl, description, id);
+		this.description = description;
+		this.key = key;
+		this.completed = completed;
+//		this.task = task;
 //		this.issue = issue;
 //		task = (JiraTask)getOrCreateCorrespondingTask();
 	}
@@ -38,7 +47,9 @@ public class JiraQueryHit extends AbstractQueryHit {
 //	}
 
 	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
-		return task;
+		return JiraRepositoryConnector.createTask(super.getHandleIdentifier(), key, description);
+		
+//		return task;
 //		if (task == null) {
 //			task = JiraRepositoryConnector.createTask(issue, getHandleIdentifier());
 //		}
@@ -62,14 +73,18 @@ public class JiraQueryHit extends AbstractQueryHit {
 	}
 
 	public boolean isCompleted() {
-		return task.isCompleted();
+		if (task != null) {
+			return task.isCompleted();
+		} else {
+			return completed;
+		}
 	}
 
 	public void setDescription(String description) {
-		task.setDescription(description);
-	}
-
-	public boolean isLocal() {
-		return false;
+		if (task != null) {
+			task.setDescription(description);
+		} else {
+			this.description = description;
+		}
 	}
 }

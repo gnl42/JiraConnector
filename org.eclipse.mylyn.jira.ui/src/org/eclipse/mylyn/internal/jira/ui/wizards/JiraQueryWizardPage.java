@@ -59,15 +59,13 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 	private List filterCombo;
 
-	private TaskRepository repository;
-
 	private Button updateButton = null;
 
 	private Button buttonCustom;
 
 	private Button buttonSaved;
 
-	private FilterSummaryPage filterSummaryPage;
+	private JiraQueryPage filterSummaryPage;
 
 	private AbstractRepositoryQuery query;
 
@@ -163,7 +161,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 				isNew = true;
 			}
 
-			filterSummaryPage = new FilterSummaryPage(repository, workingCopy, isNew);
+			filterSummaryPage = new JiraQueryPage(repository, workingCopy, isNew);
 			filterSummaryPage.setWizard(getWizard());
 		}
 		return filterSummaryPage;
