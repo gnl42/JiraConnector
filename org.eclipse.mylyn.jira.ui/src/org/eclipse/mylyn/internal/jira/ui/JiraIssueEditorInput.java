@@ -62,6 +62,7 @@ public class JiraIssueEditorInput implements IEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
