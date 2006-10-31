@@ -407,6 +407,7 @@ public class JiraTaskEditor extends EditorPart {
 		// commentImage.dispose();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		if (IContentOutlinePage.class.equals(adapter)) {
 			return new JiraIssueContentOutlinePage(this, this.issue);

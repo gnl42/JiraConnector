@@ -83,6 +83,7 @@ import org.tigris.jira.core.service.JiraServer;
  * @author Eugene Kuleshov (layout and other improvements)
  * @author Mik Kersten (generalized for search dialog)
  */
+@SuppressWarnings("unchecked")
 public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private static final String TITLE_PAGE = "JIRA Query";

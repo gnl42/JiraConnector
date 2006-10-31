@@ -12,7 +12,6 @@
 package org.eclipse.mylar.jira.tests;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -105,8 +104,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		Collection<ITask> taskSet = manager.getTaskList().getAllTasks();
 
 		boolean taskFound = false;
-		for (Iterator iter = taskSet.iterator(); iter.hasNext();) {
-			ITask currTask = (ITask) iter.next();
+		for (ITask currTask : taskSet) {
 			if (currTask instanceof JiraTask && currTask.getHandleIdentifier().equals(TEST_TASK)) {
 				taskFound = true;
 				// Check that the URL of the Jira task is it's handle
