@@ -45,7 +45,7 @@
             id="org.eclipse.mylar.jira.task.editor"
             name="Jira Task Editor"/>
    </extension>
-   -->
+   --> 
    <extension
          point="org.eclipse.mylar.tasks.ui.editors">
       <editorFactory
