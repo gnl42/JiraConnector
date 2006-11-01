@@ -346,7 +346,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateAttributes(TaskRepository repository, Proxy proxySettings, IProgressMonitor monitor)
+	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor)
 			throws CoreException {
 		JiraServerFacade.getDefault().refreshServerSettings(repository);
 	}
