@@ -160,7 +160,9 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraQueryHit savedHit = (JiraQueryHit) savedFilter.getHits().iterator().next();
 		JiraTask jTask = (JiraTask) savedHit.getCorrespondingTask();
 		
-		assertEquals(jiraIssue.getKey() + ": " + jiraIssue.getSummary(), jTask.getDescription());
+		assertEquals(jiraIssue.getKey(), jTask.getKey());
+		assertEquals(jiraIssue.getSummary(), jTask.getDescription());
+		
 		String handle = AbstractRepositoryTask.getHandle(jiraHit.getRepositoryUrl(), 123);
 		assertEquals(handle, jTask.getHandleIdentifier());
 
