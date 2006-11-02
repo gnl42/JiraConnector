@@ -13,6 +13,7 @@ package org.eclipse.mylar.internal.jira;
 
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylar.tasks.core.TaskList;
 
 /**
  * Represents an issue returned as the result of a Jira Filter (Query)
@@ -22,54 +23,21 @@ import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
  */
 public class JiraQueryHit extends AbstractQueryHit {
 
-//	private Issue issue = null;
-
-	private JiraTask task = null;
-	
 	private String key = null;
 	
-	private String description = "";
+//	private String description = "";
 	
 	private boolean completed;
 
-	public JiraQueryHit(String description, String repositoryUrl, String id, String key, boolean completed) {
-		super(repositoryUrl, description, id);
-		this.description = description;
+	public JiraQueryHit(TaskList taskList, String description, String repositoryUrl, String id, String key, boolean completed) {
+		super(taskList, repositoryUrl, description, id);
+//		this.description = description;
 		this.key = key;
 		this.completed = completed;
-//		this.task = task;
-//		this.issue = issue;
-//		task = (JiraTask)getOrCreateCorrespondingTask();
 	}
 
-//	public Issue getIssue() {
-//		return issue;
-//	}
-
-	public AbstractRepositoryTask getOrCreateCorrespondingTask() {
+	protected AbstractRepositoryTask createTask() {
 		return JiraRepositoryConnector.createTask(super.getHandleIdentifier(), key, description);
-		
-//		return task;
-//		if (task == null) {
-//			task = JiraRepositoryConnector.createTask(issue, getHandleIdentifier());
-//		}
-//		if (issue != null) {
-//			JiraRepositoryConnector.updateTaskDetails(repositoryUrl, task, issue);
-//		} 
-//		return task;
-	}
-
-	/**
-	 * @return null if there is no corresponding report
-	 */
-	public AbstractRepositoryTask getCorrespondingTask() {
-		return task;
-	}
-
-	public void setCorrespondingTask(AbstractRepositoryTask task) {
-		if (task instanceof JiraTask) {
-			this.task = (JiraTask)task;
-		}
 	}
 
 	public boolean isCompleted() {
@@ -86,5 +54,10 @@ public class JiraQueryHit extends AbstractQueryHit {
 		} else {
 			this.description = description;
 		}
+	}
+
+	@Override
+	public String getIdLabel() {
+		return key;
 	}
 }

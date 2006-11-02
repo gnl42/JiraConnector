@@ -132,7 +132,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 //			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
 			// TODO: set completion status
-			JiraQueryHit hit = new JiraQueryHit(issue.getDescription(), repositoryQuery.getRepositoryUrl(), issueId, issue.getKey(), false);
+			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(), issueId, issue.getKey(), false);
 			
 			try {
 				resultCollector.accept(hit);
@@ -295,12 +295,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	
 	public static JiraTask createTask(Issue issue, String handleIdentifier) {
 		JiraTask task;
-		String description = issue.getKey() + ": " + issue.getSummary();
+		String summary = issue.getSummary();
 		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
 		if (existingTask instanceof JiraTask) {
 			task = (JiraTask) existingTask;
 		} else {
-			task = new JiraTask(handleIdentifier, description, true);
+			task = new JiraTask(handleIdentifier, summary, true);
 			task.setKey(issue.getKey());
 			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}

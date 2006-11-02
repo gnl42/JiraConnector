@@ -257,20 +257,17 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		} else {
 			throw new TaskExternalizationException("Handle not stored for bug report");
 		}
-		// if (element.hasAttribute(KEY_ISSUE_SUMMARY)) {
-		// issue.setSummary(element.getAttribute(KEY_ISSUE_SUMMARY));
-		// } else {
-		// throw new TaskExternalizationException("Summary not stored for bug
-		// report");
-		// }
 
-		ITask correspondingTask = taskList.getTask(handle);
-		if (correspondingTask instanceof JiraTask) {
-			String issueId = AbstractRepositoryTask.getTaskId(handle);
-//			JiraQueryHit hit = new JiraQueryHit((JiraTask) correspondingTask, query.getRepositoryUrl(), issueId);
-			JiraQueryHit hit = new JiraQueryHit(correspondingTask.getDescription(), query.getRepositoryUrl(), issueId, ((JiraTask)correspondingTask).getKey(), correspondingTask.isCompleted());
-			query.addHit(hit);
+		String key = "";
+		if (element.hasAttribute(KEY_KEY)) {
+			key = element.getAttribute(KEY_KEY);
 		}
+
+		String issueId = AbstractRepositoryTask.getTaskId(handle);
+
+		// TODO: implement completion
+		JiraQueryHit hit = new JiraQueryHit(taskList, "<description>", query.getRepositoryUrl(), issueId, key, false);
+		readQueryHitInfo(hit, taskList, query, element);
 	}
 
 	public String getQueryTagNameForElement(AbstractRepositoryQuery query) {
