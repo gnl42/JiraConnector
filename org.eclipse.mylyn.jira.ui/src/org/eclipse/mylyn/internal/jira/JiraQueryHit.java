@@ -24,36 +24,19 @@ import org.eclipse.mylar.tasks.core.TaskList;
 public class JiraQueryHit extends AbstractQueryHit {
 
 	private String key = null;
-	
-//	private String description = "";
-	
-	private boolean completed;
 
 	public JiraQueryHit(TaskList taskList, String description, String repositoryUrl, String id, String key, boolean completed) {
 		super(taskList, repositoryUrl, description, id);
-//		this.description = description;
 		this.key = key;
-		this.completed = completed;
+		
+	}
+
+	public String getKey() {
+		return key;
 	}
 
 	protected AbstractRepositoryTask createTask() {
 		return JiraRepositoryConnector.createTask(super.getHandleIdentifier(), key, description);
-	}
-
-	public boolean isCompleted() {
-		if (task != null) {
-			return task.isCompleted();
-		} else {
-			return completed;
-		}
-	}
-
-	public void setDescription(String description) {
-		if (task != null) {
-			task.setDescription(description);
-		} else {
-			this.description = description;
-		}
 	}
 
 	@Override

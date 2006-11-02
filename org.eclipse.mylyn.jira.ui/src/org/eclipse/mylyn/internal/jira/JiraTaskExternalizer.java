@@ -72,6 +72,18 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return node.getNodeName().equals(KEY_JIRA_QUERY) || node.getNodeName().equals(KEY_JIRA_CUSTOM);
 	}
 
+	@Override
+	public boolean canCreateElementFor(AbstractQueryHit queryHit) {
+		return queryHit instanceof JiraQueryHit;
+	}
+
+	@Override
+	public Element createQueryHitElement(AbstractQueryHit queryHit, Document doc, Element parent) {
+		Element node = super.createQueryHitElement(queryHit, doc, parent);
+		node.setAttribute(KEY_KEY, ((JiraQueryHit) queryHit).getKey());
+		return node;
+	}
+		
 	public boolean canCreateElementFor(AbstractRepositoryQuery category) {
 		return category instanceof JiraRepositoryQuery || category instanceof JiraCustomQuery;
 	}
@@ -150,11 +162,13 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			try {
 				Element element = null;
 				for (ITaskListExternalizer externalizer : super.getDelegateExternalizers()) {
-					if (externalizer.canCreateElementFor(hit))
+					if (externalizer.canCreateElementFor(hit)) {
 						element = externalizer.createQueryHitElement(hit, doc, node);
+					}
 				}
-				if (element == null)
+				if (element == null) {
 					createQueryHitElement(hit, doc, node);
+				}
 			} catch (Exception e) {
 				MylarStatusHandler.log(e, e.getMessage());
 			}
@@ -210,7 +224,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		Element node = super.createTaskElement(task, doc, parent);
 		node.setAttribute(KEY_KEY, ((JiraTask) task).getKey());
 		return node;
-	}
+	} 
 
 	@Override
 	public ITask readTask(Node node, TaskList taskList, AbstractTaskContainer category, ITask parent)
