@@ -38,6 +38,10 @@ public class JiraQueryHit extends AbstractQueryHit {
 		return JiraRepositoryConnector.createTask(super.getHandleIdentifier(), key, description);
 	}
 
+	public String getUrl() {
+		return getRepositoryUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + key;
+	}
+	
 	@Override
 	public String getIdLabel() {
 		return key;

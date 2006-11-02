@@ -133,7 +133,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 //			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
 			// TODO: set completion status
 			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(), issueId, issue.getKey(), false);
-			
+		
 			try {
 				resultCollector.accept(hit);
 			} catch (CoreException e) {
@@ -253,7 +253,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
 			task.setUrl(url);
 			if (issue.getDescription() != null) {
-				task.setDescription(issue.getKey() + ": " + issue.getSummary());
+				task.setDescription(issue.getSummary());
 				task.setKey(issue.getKey());
 			}
 		}
