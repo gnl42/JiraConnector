@@ -28,7 +28,6 @@ public class JiraQueryHit extends AbstractQueryHit {
 	public JiraQueryHit(TaskList taskList, String description, String repositoryUrl, String id, String key, boolean completed) {
 		super(taskList, repositoryUrl, description, id);
 		this.key = key;
-		
 	}
 
 	public String getKey() {
