@@ -66,8 +66,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String KEY_KEY = "Key";
 
-	// private static final String KEY_ISSUE_SUMMARY = "IssueSummary";
-
 	public boolean canReadQuery(Node node) {
 		return node.getNodeName().equals(KEY_JIRA_QUERY) || node.getNodeName().equals(KEY_JIRA_CUSTOM);
 	}
