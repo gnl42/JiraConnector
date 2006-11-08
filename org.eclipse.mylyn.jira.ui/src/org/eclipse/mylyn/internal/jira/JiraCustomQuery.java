@@ -11,36 +11,430 @@
 
 package org.eclipse.mylar.internal.jira;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskList;
+import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.tigris.jira.core.model.Component;
+import org.tigris.jira.core.model.IssueType;
+import org.tigris.jira.core.model.Priority;
+import org.tigris.jira.core.model.Project;
+import org.tigris.jira.core.model.Resolution;
+import org.tigris.jira.core.model.Status;
+import org.tigris.jira.core.model.Version;
+import org.tigris.jira.core.model.filter.ComponentFilter;
+import org.tigris.jira.core.model.filter.ContentFilter;
+import org.tigris.jira.core.model.filter.CurrentUserFilter;
+import org.tigris.jira.core.model.filter.DateFilter;
+import org.tigris.jira.core.model.filter.DateRangeFilter;
 import org.tigris.jira.core.model.filter.FilterDefinition;
+import org.tigris.jira.core.model.filter.IssueTypeFilter;
+import org.tigris.jira.core.model.filter.NobodyFilter;
+import org.tigris.jira.core.model.filter.PriorityFilter;
+import org.tigris.jira.core.model.filter.ProjectFilter;
+import org.tigris.jira.core.model.filter.ResolutionFilter;
+import org.tigris.jira.core.model.filter.SpecificUserFilter;
+import org.tigris.jira.core.model.filter.StatusFilter;
+import org.tigris.jira.core.model.filter.UserFilter;
+import org.tigris.jira.core.model.filter.UserInGroupFilter;
+import org.tigris.jira.core.model.filter.VersionFilter;
+import org.tigris.jira.core.service.JiraServer;
 
 /**
- * A JiraFilter represents a query for issues from a Jira repository.
- * 
+ * A JiraCustomQuery represents a custom query for issues from a Jira repository.
+ *
  * @author Mik Kersten
+ * @author Eugene Kuleshov
  */
 public class JiraCustomQuery extends AbstractRepositoryQuery {
 
+	private static final String PROJECT_KEY = "pid";
+	private static final String COMPONENT_KEY = "component";
+	private static final String TYPE_KEY = "type";
+	private static final String PRIORITY_KEY = "priority";
+	private static final String STATUS_KEY = "status";
+	private static final String RESOLUTION_KEY = "resolution";
+
+	private static final String FIXFOR_KEY = "fixfor";
+	private static final String VERSION_KEY = "version";
+
+	private static final String QUERY_KEY = "query";
+	private static final String ENVIRONMENT_KEY = "environment";
+	private static final String BODY_KEY = "body";
+	private static final String DESCRIPTION_KEY = "description";
+	private static final String SUMMARY_KEY = "summary";
+
+	private static final String ASSIGNEE_KEY = "assignee";
+	private static final String REPORTER_KEY = "reporter";
+
+	private static final String CREATED_KEY = "created";
+	private static final String UPDATED_KEY = "updated";
+	private static final String DUEDATE_KEY = "duedate";
+
+	private static final String ISSUE_SPECIFIC_GROUP = "specificgroup";
+	private static final String ISSUE_SPECIFIC_USER = "specificuser";
+	private static final String ISSUE_CURRENT_USER = "issue_current_user";
+	private static final String ISSUE_NO_REPORTER = "issue_no_reporter";
+
 	private static final int MAX_HITS = 200;
 
-	protected FilterDefinition filter = null;
 
-	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, TaskList taskList) {
+	private final FilterDefinition filter;
+	private String encoding;
+
+
+	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, TaskList taskList, TaskRepository taskRepository) {
 		super(filter.getName(), taskList);
-		setMaxHits(MAX_HITS);
 		this.filter = filter;
-		super.repositoryUrl = repositoryUrl;
-		setUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getName());
+		this.repositoryUrl = repositoryUrl;
+		this.encoding = taskRepository.getCharacterEncoding();
+		this.url = repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
+		this.maxHits = MAX_HITS;
+	}
+
+	public JiraCustomQuery(String name, String queryUrl, String repositoryUrl,
+			JiraServer jiraServer, TaskList taskList, TaskRepository taskRepository) {
+		super(name, taskList);
+		this.repositoryUrl = repositoryUrl;
+		this.url = queryUrl;
+		this.encoding = taskRepository.getCharacterEncoding();
+		this.filter = createFilter(jiraServer, queryUrl);
+		this.filter.setName(name);
+		this.maxHits = MAX_HITS;
 	}
 
 	public String getRepositoryKind() {
 		return MylarJiraPlugin.REPOSITORY_KIND;
 	}
-	
+
 	public FilterDefinition getFilterDefinition() {
 		return filter;
 	}
+
+
+	private FilterDefinition createFilter(JiraServer jiraServer, String url) {
+		FilterDefinition filter = new FilterDefinition();
+
+		int n = url.indexOf('?');
+		if(n==-1) {
+			return filter;
+		}
+
+		HashMap<String, List<String>> params = new HashMap<String, List<String>>();
+		for (String pair : url.substring(n+1).split("&")) {
+			String[] tokens = pair.split("=");
+			if (tokens.length > 1) {
+				try {
+					String key = tokens[0];
+					String value = tokens.length==1 ? "" : URLDecoder.decode(tokens[1], encoding);
+					List<String> values = params.get(key);
+					if(values==null) {
+						values = new ArrayList<String>();
+						params.put(key, values);
+					}
+					values.add(value);
+				} catch (UnsupportedEncodingException ex) {
+					// ignore
+				}
+			}
+		}
+
+		List<String> projectIds = getIds(params, PROJECT_KEY);
+		for (String projectId : projectIds) {
+			Project project = jiraServer.getProjectById(projectId);
+			filter.setProjectFilter(new ProjectFilter(project));
+
+			List<String> componentIds = getIds(params, COMPONENT_KEY);
+			List<Component> components = new ArrayList<Component>();
+			for (String componentId : componentIds) {
+				Component[] projectComponents = project.getComponents();
+				for(Component component : projectComponents) {
+					if(component.getId().equals(componentId)) {
+						components.add(component);
+					}
+				}
+			}
+			if(!components.isEmpty()) {
+				filter.setComponentFilter(new ComponentFilter(components.toArray(new Component[components.size()])));
+			}
+
+			Version[] projectVersions = project.getVersions();
+
+			List<String> fixForIds = getIds(params, FIXFOR_KEY);
+			List<Version> fixForversions = new ArrayList<Version>();
+			for (String fixForId : fixForIds) {
+				for (Version projectVersion : projectVersions) {
+					if(projectVersion.getId().equals(fixForId)) {
+						fixForversions.add(projectVersion);
+					}
+				}
+			}
+			if(!fixForversions.isEmpty()) {
+				filter.setFixForVersionFilter(new VersionFilter(fixForversions.toArray(new Version[fixForversions.size()])));
+			}
+
+			List<String> versionIds = getIds(params, VERSION_KEY);
+			List<Version> versions = new ArrayList<Version>();
+			for (String versionId : versionIds) {
+				for (Version projectVersion : projectVersions) {
+					if(projectVersion.getId().equals(versionId)) {
+						versions.add(projectVersion);
+					}
+				}
+			}
+			if(!versions.isEmpty()) {
+				filter.setReportedInVersionFilter(new VersionFilter(versions.toArray(new Version[versions.size()])));
+			}
+		}
+
+		List<String> typeIds = getIds(params, TYPE_KEY);
+		List<IssueType> issueTypes = new ArrayList<IssueType>();
+		for (String typeId : typeIds) {
+			IssueType issueType = jiraServer.getIssueTypeById(typeId);
+			if(!IssueType.MISSING_ISSUE_TYPE.equals(issueType)) {
+				issueTypes.add(issueType);
+			}
+		}
+		if(!issueTypes.isEmpty()) {
+			filter.setIssueTypeFilter(new IssueTypeFilter(issueTypes.toArray(new IssueType[issueTypes.size()])));
+		}
+
+		List<String> statusIds = getIds(params, STATUS_KEY);
+		List<Status> statuses = new ArrayList<Status>();
+		for (String statusId : statusIds) {
+			Status status = jiraServer.getStatusById(statusId);
+			if(!Status.MISSING_STATUS.equals(status)) {
+				statuses.add(status);
+			}
+		}
+		if(!statuses.isEmpty()) {
+			filter.setStatusFilter(new StatusFilter(statuses.toArray(new Status[statuses.size()])));
+		}
+
+		List<String> resolutionIds = getIds(params, RESOLUTION_KEY);
+		List<Resolution> resolutions = new ArrayList<Resolution>();
+		for (String resolutionId : resolutionIds) {
+			Resolution resolution = jiraServer.getResolutionById(resolutionId);
+			if(!Resolution.UNKNOWN_RESOLUTION.equals(resolution)) {
+				resolutions.add(resolution);
+			}
+		}
+		if(!resolutions.isEmpty()) {
+			filter.setResolutionFilter(new ResolutionFilter(resolutions.toArray(new Resolution[resolutions.size()])));
+		}
+
+		List<String> queries = getIds(params, QUERY_KEY);
+		for (String query : queries) {
+			boolean searchSummary = getIds(params, SUMMARY_KEY).contains("true");
+			boolean searchDescription = getIds(params, DESCRIPTION_KEY).contains("true");
+			boolean searchEnvironment = getIds(params, ENVIRONMENT_KEY).contains("true");
+			boolean searchComments = getIds(params, BODY_KEY).contains("true");
+			filter.setContentFilter(new ContentFilter(query, searchSummary, searchDescription, searchEnvironment, searchComments));
+		}
+
+		filter.setReportedByFilter(createUserFilter(params, REPORTER_KEY));
+		filter.setAssignedToFilter(createUserFilter(params, ASSIGNEE_KEY));
+
+		filter.setCreatedDateFilter(createDateFilter(params, CREATED_KEY));
+		filter.setUpdatedDateFilter(createDateFilter(params, UPDATED_KEY));
+		filter.setDueDateFilter(createDateFilter(params, DUEDATE_KEY));
+
+		return filter;
+	}
+
+	private DateFilter createDateFilter(Map<String, List<String>> params, String key) {
+		String after = getId(params, key + ":after");
+		String before = getId(params, key + ":before");
+
+		SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy");
+		Date fromDate;
+		try {
+			fromDate = df.parse(after);
+		} catch (Exception ex) {
+			fromDate = null;
+		}
+		Date toDate;
+		try {
+			toDate = df.parse(before);
+		} catch (Exception ex) {
+			toDate = null;
+		}
+
+		return fromDate==null && toDate==null ? null : new DateRangeFilter(fromDate, toDate);
+	}
+
+	private UserFilter createUserFilter(Map<String, List<String>> params, String key) {
+		String type = getId(params, key + "Select");
+		if(ISSUE_NO_REPORTER.equals(type)) {
+			return new NobodyFilter();
+		} else if(ISSUE_CURRENT_USER.equals(type)) {
+			return new CurrentUserFilter();
+		} else {
+			String reporter = getId(params, key);
+			if(reporter!=null) {
+				if(ISSUE_SPECIFIC_USER.equals(type)) {
+					return new SpecificUserFilter(reporter);
+				} else if(ISSUE_SPECIFIC_GROUP.equals(type)) {
+					return new UserInGroupFilter(reporter);
+				}
+			}
+		}
+		return null;
+	}
+
+	private String getId(Map<String, List<String>> params, String key) {
+		List<String> ids = getIds(params, key);
+		return ids.isEmpty() ? null : ids.get(0);
+	}
+
+	private List<String> getIds(Map<String, List<String>> params, String key) {
+		List<String> ids = params.get(key);
+		if (ids==null) {
+			return Collections.emptyList();
+		}
+		return ids;
+	}
+
+
+	private String getQueryParams(FilterDefinition filter) {
+		StringBuffer sb = new StringBuffer();
+
+		ProjectFilter projectFilter = filter.getProjectFilter();
+		if(projectFilter!=null) {
+			Project project = projectFilter.getProject();
+			// TODO all projects
+			addParameter(sb, PROJECT_KEY, project.getId());
+		}
+
+		ComponentFilter componentFilter = filter.getComponentFilter();
+		// TODO all components
+		if(componentFilter!=null) {
+			if(componentFilter.hasNoComponent()) {
+				addParameter(sb, COMPONENT_KEY, "-1");
+			} else {
+				for (Component component : componentFilter.getComponents()) {
+					addParameter(sb, COMPONENT_KEY, component.getId());
+				}
+			}
+		}
+
+		// TODO
+		VersionFilter fixForVersionFilter = filter.getFixForVersionFilter();
+		if (fixForVersionFilter != null) {
+			for ( Version fixVersion : fixForVersionFilter.getVersions()) {
+				addParameter(sb, FIXFOR_KEY, fixVersion.getId());
+			}
+		}
+
+		// TODO
+		VersionFilter reportedInVersionFilter = filter.getReportedInVersionFilter();
+		if (reportedInVersionFilter != null) {
+			for (Version reportedVersion : reportedInVersionFilter.getVersions()) {
+				addParameter(sb, VERSION_KEY, reportedVersion.getId());
+			}
+		}
+
+		// TODO
+		IssueTypeFilter issueTypeFilter = filter.getIssueTypeFilter();
+		if (issueTypeFilter != null) {
+			for (IssueType issueType : issueTypeFilter.getIsueTypes()) {
+				addParameter(sb, TYPE_KEY, issueType.getId());
+			}
+		}
+
+		// TODO
+		StatusFilter statusFilter = filter.getStatusFilter();
+		if(statusFilter!=null) {
+			for ( Status status : statusFilter.getStatuses()) {
+				addParameter(sb, STATUS_KEY, status.getId());
+			}
+		}
+
+		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
+		if(resolutionFilter!=null) {
+			for (Resolution resolution : resolutionFilter.getResolutions()) {
+				addParameter(sb, RESOLUTION_KEY, resolution.getId());
+			}
+		}
+
+		PriorityFilter priorityFilter = filter.getPriorityFilter();
+		if(priorityFilter!=null) {
+			for ( Priority priority : priorityFilter.getPriorities()) {
+				addParameter(sb, PRIORITY_KEY, priority.getId());
+			}
+		}
+
+		ContentFilter contentFilter = filter.getContentFilter();
+		if(contentFilter!=null) {
+			String queryString = contentFilter.getQueryString();
+			if(queryString!=null) {
+				addParameter(sb, QUERY_KEY, queryString);
+			}
+			if(contentFilter.isSearchingSummary()) {
+				addParameter(sb, SUMMARY_KEY, "true");
+			}
+			if(contentFilter.isSearchingDescription()) {
+				addParameter(sb, DESCRIPTION_KEY, "true");
+			}
+			if(contentFilter.isSearchingComments()) {
+				addParameter(sb, BODY_KEY, "true");
+			}
+			if(contentFilter.isSearchingEnvironment()) {
+				addParameter(sb, ENVIRONMENT_KEY, "true");
+			}
+		}
+
+		addUserFilter(sb, filter.getReportedByFilter(), REPORTER_KEY);
+		addUserFilter(sb, filter.getAssignedToFilter(), ASSIGNEE_KEY);
+
+		addDateFilter(sb, filter.getCreatedDateFilter(), CREATED_KEY);
+		addDateFilter(sb, filter.getUpdatedDateFilter(), UPDATED_KEY);
+		addDateFilter(sb, filter.getDueDateFilter(), DUEDATE_KEY);
+
+		return sb.toString();
+	}
+
+	private void addDateFilter(StringBuffer sb, DateFilter filter, String type) {
+		if(filter instanceof DateRangeFilter) {
+			SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy");
+			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
+			addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate()));
+			addParameter(sb, type + ":before", df.format(rangeFilter.getToDate()));
+		}
+	}
+
+	private void addUserFilter(StringBuffer sb, UserFilter filter, String type) {
+		if(filter instanceof NobodyFilter) {
+			addParameter(sb, type + "Select", ISSUE_NO_REPORTER);
+		} else if(filter instanceof CurrentUserFilter) {
+			addParameter(sb, type + "Select", ISSUE_CURRENT_USER);
+		} else if(filter instanceof SpecificUserFilter) {
+			addParameter(sb, type + "Select", ISSUE_SPECIFIC_USER);
+			addParameter(sb, type, ((SpecificUserFilter) filter).getUser());
+		} else if(filter instanceof UserInGroupFilter) {
+			addParameter(sb, type + "Select", ISSUE_SPECIFIC_GROUP);
+			addParameter(sb, type, ((UserInGroupFilter) filter).getGroup());
+		}
+	}
+
+	private void addParameter(StringBuffer sb, String name, String value) {
+		try {
+			sb.append('&').append(name).append('=').append(URLEncoder.encode(value, encoding));
+		} catch (UnsupportedEncodingException ex) {
+			// ignore
+		}
+	}
+
 }
 
 //public void refreshHits() {

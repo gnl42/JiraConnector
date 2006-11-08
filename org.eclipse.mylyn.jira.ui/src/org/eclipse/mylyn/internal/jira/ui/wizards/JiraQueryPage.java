@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylar.internal.jira.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.mylar.internal.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.mylar.internal.tasks.ui.views.DatePicker;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
@@ -138,8 +139,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private final JiraServer server;
 
-//	private Text name;
-
 	private ListViewer project;
 
 	private ListViewer reportedIn;
@@ -199,7 +198,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		this.workingCopy = workingCopy;
 		this.isNew = isNew;
 		this.namedQuery = namedQuery;
-		
+
 		setDescription("Add search filters to define query.");
 		setPageComplete(false);
 	}
@@ -213,15 +212,15 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			final GridData gridData = new GridData();
 			lblName.setLayoutData(gridData);
 			lblName.setText("Name:");
-	
+
 			title = new Text(c, SWT.BORDER);
 			title.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
 			title.addModifyListener(new ModifyListener() {
-	
+
 				public void modifyText(ModifyEvent e) {
 					validatePage();
 				}
-	
+
 			});
 		}
 
@@ -865,7 +864,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	}
 
-	
+
 //	public boolean isPageComplete() {
 //		if (namedQuery && name != null && name.getText().length() == 0) {
 //			return false;
@@ -873,13 +872,13 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 //			return true;
 //		}
 //	}
-	
+
 	void validatePage() {
 		if (namedQuery && super.isPageComplete()) {
-			setErrorMessage("Name is mandatory"); 
+			setErrorMessage("Name is mandatory");
 			setPageComplete(false);
 			return;
-		} else { 
+		} else {
 			setPageComplete(true);
 			setErrorMessage(null);
 		}
@@ -1417,7 +1416,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.lang.Object#equals(java.lang.Object)
 		 */
 		public boolean equals(Object obj) {
@@ -1441,6 +1440,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			server.addLocalFilter(workingCopy);
 		}
 
-		return new JiraCustomQuery(repository.getUrl(), workingCopy, TasksUiPlugin.getTaskListManager().getTaskList());
+		String url = repository.getUrl();
+		return new JiraCustomQuery(url, workingCopy, TasksUiPlugin.getTaskListManager().getTaskList(),
+				TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND, url));
 	}
 }

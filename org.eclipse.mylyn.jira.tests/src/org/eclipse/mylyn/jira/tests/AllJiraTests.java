@@ -14,6 +14,7 @@ package org.eclipse.mylar.jira.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+
 /**
  * @author Wesley Coelho (initial integration patch)
  */
@@ -23,6 +24,7 @@ public class AllJiraTests {
 		TestSuite suite = new TestSuite("Test for mylar.jira.tests");
 
 		// $JUnit-BEGIN$
+		suite.addTestSuite(JiraCustomQueryTest.class);
 		suite.addTestSuite(JiraTaskTest.class);
 		suite.addTestSuite(JiraServerFacadeTest.class);
 		suite.addTestSuite(JiraTaskExternalizationTest.class);

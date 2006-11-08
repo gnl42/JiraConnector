@@ -34,7 +34,7 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 	public final static String ISSUE_URL_PREFIX = "/browse/";
 
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
-	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide&requestId=";
+	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
 
 	public MylarJiraPlugin() {
 		INSTANCE = this;

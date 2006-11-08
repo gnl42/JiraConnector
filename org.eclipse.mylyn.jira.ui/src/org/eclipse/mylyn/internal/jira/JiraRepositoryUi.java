@@ -39,9 +39,8 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	public IWizard getQueryWizard(TaskRepository repository, AbstractRepositoryQuery query) {
 		if (query instanceof JiraRepositoryQuery || query instanceof JiraCustomQuery) {
 			return new EditJiraQueryWizard(repository, query);
-		} else {
-			return new NewJiraQueryWizard(repository);
 		}
+		return new NewJiraQueryWizard(repository);
 	}
 	
 	@Override

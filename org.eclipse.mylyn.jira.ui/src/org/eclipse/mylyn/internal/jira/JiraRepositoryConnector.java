@@ -44,13 +44,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
-	private JiraOfflineTaskHandler offlineHandler;
+//	private JiraOfflineTaskHandler offlineHandler;
 	
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
 	public JiraRepositoryConnector() {
-		offlineHandler = new JiraOfflineTaskHandler(this);
+//		offlineHandler = new JiraOfflineTaskHandler(this);
 	}
 	
 	public String getLabel() {

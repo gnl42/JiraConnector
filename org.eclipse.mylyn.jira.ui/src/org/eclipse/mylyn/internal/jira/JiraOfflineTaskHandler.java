@@ -40,6 +40,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		this.connector = connector;
 	}
 
+	@SuppressWarnings("deprecation")
 	public RepositoryTaskData downloadTaskData(TaskRepository repository, String taskId, Proxy proxySettings)
 			throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);

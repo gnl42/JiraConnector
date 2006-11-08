@@ -16,7 +16,7 @@ import org.eclipse.mylar.tasks.core.TaskList;
 import org.tigris.jira.core.model.NamedFilter;
 
 /**
- * A JiraFilter represents a query for issues from a Jira repository.
+ * A JiraRepositoryQuery represents a server-side query for Jira repository.
  * 
  * @author Mik Kersten
  */
@@ -31,7 +31,7 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 		setMaxHits(MAX_HITS);
 		this.filter = filter;
 		super.repositoryUrl = repositoryUrl;
-		setUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + filter.getId());
+		setUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + "&requestId=" + filter.getId());
 //		super.setDescription(filter.getName());
 	}
 
