@@ -85,6 +85,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.DESCRIPTION, "Description: ", true);
 		attribute.setValue(convertHtml(jiraIssue.getDescription()));
+		attribute.setReadOnly(true);
 		data.addAttribute(RepositoryTaskAttribute.DESCRIPTION, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.STATUS, "Status: ", true);
