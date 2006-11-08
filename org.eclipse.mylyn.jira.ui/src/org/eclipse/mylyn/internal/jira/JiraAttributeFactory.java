@@ -19,24 +19,22 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	@Override
 	public boolean getIsHidden(String key) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public String getName(String key) {
-		System.err.println(">>>> get: " + key);
 		return key;
 	}
 
 	@Override
 	public boolean isReadOnly(String key) {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String mapCommonAttributeKey(String key) {
-		return null;
+		return key;
 	}
 
 }

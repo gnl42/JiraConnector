@@ -56,15 +56,24 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			connector.updateAttributes(repository, new NullProgressMonitor());
 			
 			data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, jiraIssue.getCreated().toGMTString());
-//			data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, jiraTask.get.toGMTString());
-			
-			
-			
+			data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, convertHtml(jiraIssue.getSummary()));
+			data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, convertHtml(jiraIssue.getDescription()));
+			data.setAttributeValue(RepositoryTaskAttribute.STATUS, jiraIssue.getStatus().getName());			
+			data.setAttributeValue(RepositoryTaskAttribute.PRIORITY, jiraIssue.getPriority().getName());			
 			
 			return data;
 		} else {
 			return null;
 		}
+	}
+
+	public Date getDateForAttributeType(String attributeKey, String dateString) {
+		return null;
+	}
+	
+	private String convertHtml(String text) { 
+		// TODO: hack, format properly
+		return text.replace("<br/>", "").replace("&nbsp;", "").replace("\n\n", "\n");
 	}
 
 	public AbstractAttributeFactory getAttributeFactory() {
@@ -74,10 +83,6 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
 			Set<AbstractRepositoryTask> tasks, Proxy proxySettings) throws CoreException, UnsupportedEncodingException {
 		return Collections.emptySet();
-	}
-
-	public Date getDateForAttributeType(String attributeKey, String dateString) {
-		return null;
 		// JiraServer server =
 		// JiraServerFacade.getDefault().getJiraServer(repository);
 		// if (server == null) {
@@ -106,5 +111,4 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		// }
 		// return Collections.emptySet();
 	}
-
 }

@@ -31,7 +31,6 @@ import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.QueryHitCollector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.eclipse.ui.PlatformUI;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.service.JiraServer;
 
@@ -44,13 +43,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
-//	private JiraOfflineTaskHandler offlineHandler;
+	private JiraOfflineTaskHandler offlineHandler;
 	
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
 	public JiraRepositoryConnector() {
-//		offlineHandler = new JiraOfflineTaskHandler(this);
+		offlineHandler = new JiraOfflineTaskHandler(this);
 	}
 	
 	public String getLabel() {
@@ -69,7 +68,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IOfflineTaskHandler getOfflineTaskHandler() {
-		return null;
+		return offlineHandler;
 	}
 
 	@Override
@@ -220,26 +219,26 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return supportedVersions;
 	}
 
-	@Override
-	public void updateTaskState(AbstractRepositoryTask repositoryTask) {
-		final TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
-				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
-		if (repository != null && repositoryTask instanceof JiraTask) {
-			final JiraTask jiraTask = (JiraTask) repositoryTask;
-			final JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-			if (server != null) {
-				final Issue issue = server.getIssue(jiraTask.getKey());
-				if (issue != null) {
-					// TODO: may not need to update details here
-					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-						public void run() {
-							updateTaskDetails(repository.getUrl(), jiraTask, issue, true);
-						}
-					});
-				}
-			}
-		}
-	}
+//	@Override
+//	public void updateTaskState(AbstractRepositoryTask repositoryTask) {
+//		final TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
+//				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
+//		if (repository != null && repositoryTask instanceof JiraTask) {
+//			final JiraTask jiraTask = (JiraTask) repositoryTask;
+//			final JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+//			if (server != null) {
+//				final Issue issue = server.getIssue(jiraTask.getKey());
+//				if (issue != null) {
+//					// TODO: may not need to update details here
+//					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+//						public void run() {
+//							updateTaskDetails(repository.getUrl(), jiraTask, issue, true);
+//						}
+//					});
+//				}
+//			}
+//		}
+//	}
 
 	@Override
 	public String getRepositoryUrlFromTaskUrl(String url) {

@@ -51,7 +51,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public boolean hasRichEditor() {
-		return false;
+		return true;
 	}
 
 	@Override

@@ -9,8 +9,12 @@
 package org.eclipse.mylar.internal.jira.ui.editor;
 
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractRepositoryTaskEditor;
+import org.eclipse.mylar.internal.tasks.ui.editors.AbstractTaskEditorInput;
+import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
@@ -20,6 +24,21 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
+	}
+	
+	public void init(IEditorSite site, IEditorInput input) {
+		if (!(input instanceof RepositoryTaskEditorInput))
+			return;
+
+		editorInput = (AbstractTaskEditorInput) input;
+		repository = editorInput.getRepository();
+//		connector = (TracRepositoryConnector) TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+//				repository.getKind());
+
+		setSite(site);
+		setInput(input);
+		isDirty = false;
+		updateEditorTitle();
 	}
 	
 	@Override
@@ -39,14 +58,12 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	@Override
 	protected void submitToRepository() {
-		// TODO Auto-generated method stub
-
+		// not implemented
 	}
 
 	@Override
 	protected void validateInput() {
 		// TODO Auto-generated method stub
-
 	}
 
 }
