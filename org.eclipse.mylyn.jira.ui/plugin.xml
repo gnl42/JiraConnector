@@ -49,7 +49,7 @@
    <extension
          point="org.eclipse.mylar.tasks.ui.editors">
       <editorFactory
-            class="org.eclipse.mylar.internal.jira.ui.JiraTaskEditorFactory"
+            class="org.eclipse.mylar.internal.jira.ui.editor.JiraTaskEditorFactory"
             id="org.eclipse.mylar.jira.ui.JiraTaskEditorFactory"/>
    </extension>
 
