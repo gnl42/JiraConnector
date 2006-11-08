@@ -17,6 +17,10 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	private static final long serialVersionUID = 8000933300692372211L;
 
+	public static final String ATTRIBUTE_TYPE = "attribute.jira.type";
+	
+	public static final String ATTRIBUTE_ISSUE_KEY = "attribute.jira.issue_key";
+	
 	@Override
 	public boolean getIsHidden(String key) {
 		return false;
