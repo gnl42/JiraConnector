@@ -190,15 +190,16 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private final FilterDefinition workingCopy;
 
-	private boolean namedQuery;
+	private boolean namedQuery = false;
 
-	public JiraQueryPage(TaskRepository repository, FilterDefinition workingCopy, boolean isNew) {
+	public JiraQueryPage(TaskRepository repository, FilterDefinition workingCopy, boolean isNew, boolean namedQuery) {
 		super(TITLE_PAGE);
 		this.repository = repository;
 		this.server = JiraServerFacade.getDefault().getJiraServer(repository);
 		this.workingCopy = workingCopy;
 		this.isNew = isNew;
-
+		this.namedQuery = namedQuery;
+		
 		setDescription("Add search filters to define query.");
 		setPageComplete(false);
 	}
@@ -864,15 +865,24 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	}
 
+	
+	public boolean isPageComplete() {
+		if (namedQuery && name != null && name.getText().length() == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	void validatePage() {
 		if (namedQuery && name.getText().length() == 0) {
-			setErrorMessage("Name is mandatory");
+			setErrorMessage("Name is mandatory"); 
 			setPageComplete(false);
 			return;
+		} else { 
+			setPageComplete(true);
+			setErrorMessage(null);
 		}
-
-		setErrorMessage(null);
-		setPageComplete(true);
 	}
 
 	private void loadFromDefaults() {

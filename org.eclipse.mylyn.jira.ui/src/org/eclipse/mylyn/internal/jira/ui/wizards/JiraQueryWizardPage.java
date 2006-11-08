@@ -161,7 +161,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 				isNew = true;
 			}
 
-			filterSummaryPage = new JiraQueryPage(repository, workingCopy, isNew);
+			filterSummaryPage = new JiraQueryPage(repository, workingCopy, isNew, true);
 			filterSummaryPage.setWizard(getWizard());
 		}
 		return filterSummaryPage;
