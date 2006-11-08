@@ -69,7 +69,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IOfflineTaskHandler getOfflineTaskHandler() {
-		return offlineHandler;
+		return null;
 	}
 
 	@Override

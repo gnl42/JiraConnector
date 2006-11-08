@@ -138,7 +138,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private final JiraServer server;
 
-	private Text name;
+//	private Text name;
 
 	private ListViewer project;
 
@@ -214,9 +214,9 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			lblName.setLayoutData(gridData);
 			lblName.setText("Name:");
 	
-			name = new Text(c, SWT.BORDER);
-			name.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
-			name.addModifyListener(new ModifyListener() {
+			title = new Text(c, SWT.BORDER);
+			title.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+			title.addModifyListener(new ModifyListener() {
 	
 				public void modifyText(ModifyEvent e) {
 					validatePage();
@@ -866,16 +866,16 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	}
 
 	
-	public boolean isPageComplete() {
-		if (namedQuery && name != null && name.getText().length() == 0) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+//	public boolean isPageComplete() {
+//		if (namedQuery && name != null && name.getText().length() == 0) {
+//			return false;
+//		} else {
+//			return true;
+//		}
+//	}
 	
 	void validatePage() {
-		if (namedQuery && name.getText().length() == 0) {
+		if (namedQuery && super.isPageComplete()) {
 			setErrorMessage("Name is mandatory"); 
 			setPageComplete(false);
 			return;
@@ -900,7 +900,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private void loadFromWorkingCopy() {
 		if (namedQuery && workingCopy.getName() != null) {
-			name.setText(workingCopy.getName());
+			title.setText(workingCopy.getName());
 		}
 
 		if (workingCopy.getDescription() != null) {
@@ -1050,7 +1050,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	void applyChanges() {
 		if (namedQuery) {
-			workingCopy.setName(this.name.getText());
+			workingCopy.setName(this.title.getText());
 		}
 		if (this.queryString.getText().length() > 0 || this.searchSummary.getSelection()
 				|| this.searchDescription.getSelection() || this.searchEnvironment.getSelection()
