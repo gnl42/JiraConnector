@@ -22,6 +22,37 @@ public class JiraTask extends AbstractRepositoryTask {
 
 	private String key = null;
 
+	// XXX: from Trac
+	public enum Key {
+		CC("cc"), CHANGE_TIME("changetime"), COMPONENT("component"), DESCRIPTION("description"), ID("id"), KEYWORDS(
+				"keywords"), MILESTONE("milestone"), OWNER("owner"), PRIORITY("priority"), REPORTER("reporter"), RESOLUTION(
+				"resolution"), STATUS("status"), SEVERITY("severity"), SUMMARY("summary"), TIME("time"), TYPE("type"), VERSION(
+				"version");
+
+		public static Key fromKey(String name) {
+			for (Key key : Key.values()) {
+				if (key.getKey().equals(name)) {
+					return key;
+				}
+			}
+			return null;
+		}
+
+		private String key;
+
+		Key(String key) {
+			this.key = key;
+		}
+
+		public String toString() {
+			return key;
+		}
+
+		public String getKey() {
+			return key;
+		}
+	}
+	
 	public enum PriorityLevel {
 		BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL;
 

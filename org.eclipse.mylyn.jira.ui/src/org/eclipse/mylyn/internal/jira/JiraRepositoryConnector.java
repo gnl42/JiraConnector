@@ -44,9 +44,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
+	private JiraOfflineTaskHandler offlineHandler;
+	
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
+	public JiraRepositoryConnector() {
+		offlineHandler = new JiraOfflineTaskHandler(this);
+	}
+	
 	public String getLabel() {
 		return MylarJiraPlugin.JIRA_CLIENT_LABEL;
 	}
@@ -63,8 +69,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IOfflineTaskHandler getOfflineTaskHandler() {
-		// not implemented
-		return null;
+		return offlineHandler;
 	}
 
 	@Override
@@ -306,40 +311,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		return task;
 	}
-
-	// @Override
-	// public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository
-	// repository,
-	// Set<AbstractRepositoryTask> tasks) throws GeneralSecurityException,
-	// IOException {
-	// JiraServer server =
-	// JiraServerFacade.getDefault().getJiraServer(repository);
-	// if (server == null) {
-	// return Collections.emptySet();
-	// } else {
-	// List<AbstractRepositoryTask> changedTasks = new
-	// ArrayList<AbstractRepositoryTask>();
-	// for (AbstractRepositoryTask task : tasks) {
-	// if (task instanceof JiraTask) {
-	// Date lastCommentDate = null;
-	// JiraTask jiraTask = (JiraTask) task;
-	// Issue issue = server.getIssue(jiraTask.getKey());
-	// if (issue != null) {
-	// Comment[] comments = issue.getComments();
-	// if (comments != null && comments.length > 0) {
-	// lastCommentDate = comments[comments.length - 1].getCreated();
-	// }
-	// }
-	// if (lastCommentDate != null && task.getLastSynchronized() != null) {
-	// if (lastCommentDate.after(task.getLastSynchronized())) {
-	// changedTasks.add(task);
-	// }
-	// }
-	// }
-	// }
-	// }
-	// return Collections.emptySet();
-	// }
 
 	public String toString() {
 		return getLabel();
