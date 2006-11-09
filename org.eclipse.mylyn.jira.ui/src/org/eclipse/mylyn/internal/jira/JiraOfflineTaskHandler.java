@@ -186,8 +186,8 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			}
 			return parsedDate;
 		} catch (Exception e) {
-			MylarStatusHandler.log(e, "Error while parsing date field");			
-			return null;			
+			MylarStatusHandler.log(e, "Error while parsing date field");
+			return null;
 		}
 	}
 
@@ -201,8 +201,9 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			return new String(chars).trim();
 		} catch (IOException e) {
 			return text;
-		} 
-//		return text.replace("<br/>", "").replace("&nbsp;", "").replace("\n\n", "\n");
+		}
+		// return text.replace("<br/>", "").replace("&nbsp;",
+		// "").replace("\n\n", "\n");
 	}
 
 	public AbstractAttributeFactory getAttributeFactory() {
@@ -211,44 +212,41 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
 			Set<AbstractRepositoryTask> tasks, Proxy proxySettings) throws CoreException, UnsupportedEncodingException {
+//		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+//		if (server == null) {
+//			return Collections.emptySet();
+//		} else {
+//			List<AbstractRepositoryTask> changedTasks = new ArrayList<AbstractRepositoryTask>();
+//			for (AbstractRepositoryTask task : tasks) {
+//				if (task instanceof JiraTask) {
+//					Date lastCommentDate = null;
+//					JiraTask jiraTask = (JiraTask) task;
+//					Issue issue = server.getIssue(jiraTask.getKey());
+//					if (issue != null) {
+//						Comment[] comments = issue.getComments();
+//						if (comments != null && comments.length > 0) {
+//							lastCommentDate = comments[comments.length - 1].getCreated();
+//						}
+//					}
+//					if (lastCommentDate != null && task.getLastSyncDateStamp()() != null) {
+//						if (lastCommentDate.after(task.getLastSynchronized())) {
+//							changedTasks.add(task);
+//						}
+//					}
+//				}
+//			}
+//		}
 		return Collections.emptySet();
-		// JiraServer server =
-		// JiraServerFacade.getDefault().getJiraServer(repository);
-		// if (server == null) {
-		// return Collections.emptySet();
-		// } else {
-		// List<AbstractRepositoryTask> changedTasks = new
-		// ArrayList<AbstractRepositoryTask>();
-		// for (AbstractRepositoryTask task : tasks) {
-		// if (task instanceof JiraTask) {
-		// Date lastCommentDate = null;
-		// JiraTask jiraTask = (JiraTask) task;
-		// Issue issue = server.getIssue(jiraTask.getKey());
-		// if (issue != null) {
-		// Comment[] comments = issue.getComments();
-		// if (comments != null && comments.length > 0) {
-		// lastCommentDate = comments[comments.length - 1].getCreated();
-		// }
-		// }
-		// if (lastCommentDate != null && task.getLastSynchronized() != null) {
-		// if (lastCommentDate.after(task.getLastSynchronized())) {
-		// changedTasks.add(task);
-		// }
-		// }
-		// }
-		// }
-		// }
-		// return Collections.emptySet();
 	}
 
 	private void addOperations(Issue issue, RepositoryTaskData data) {
 		Status status = issue.getStatus();
 		if (status.isStarted() || status.isReopened()) {
-			RepositoryOperation op = new RepositoryOperation("leave", "Leave as "+issue.getStatus().getName());
+			RepositoryOperation op = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
 			op.setChecked(true);
 			data.addOperation(op);
 			op = new RepositoryOperation(Status.RESOLVED_ID, "Resolve");
-			op.setUpOptions("resolution");			
+			op.setUpOptions("resolution");
 			op.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
 			op.addOption("Incomplete", Resolution.INCOMPLETE_ID);
 			op.addOption("Fixed", Resolution.FIXED_ID);
@@ -256,7 +254,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			data.addOperation(op);
 			data.addOperation(new RepositoryOperation(Status.CLOSED_ID, "Close"));
 		} else if (status.isClosed() || status.isResolved()) {
-			RepositoryOperation op = new RepositoryOperation("leave", "Leave as "+issue.getStatus().getName());
+			RepositoryOperation op = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
 			op.setChecked(true);
 			data.addOperation(op);
 			data.addOperation(new RepositoryOperation(Status.OPEN_ID, "Open"));
