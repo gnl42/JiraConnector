@@ -8,6 +8,8 @@
 
 package org.eclipse.mylar.internal.jira;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.Proxy;
 import java.text.SimpleDateFormat;
@@ -17,6 +19,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.internal.text.html.*;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -188,9 +191,18 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	private String convertHtml(String text) {
-		// TODO: hack, format properly
-		return text.replace("<br/>", "").replace("&nbsp;", "").replace("\n\n", "\n");
+		StringReader stringReader = new StringReader(text);
+		HTML2TextReader html2TextReader = new HTML2TextReader(stringReader, null);
+		try {
+			char[] chars = new char[text.length()];
+			html2TextReader.read(chars, 0, text.length());
+			return new String(chars).trim();
+		} catch (IOException e) {
+			return text;
+		} 
+//		return text.replace("<br/>", "").replace("&nbsp;", "").replace("\n\n", "\n");
 	}
 
 	public AbstractAttributeFactory getAttributeFactory() {
