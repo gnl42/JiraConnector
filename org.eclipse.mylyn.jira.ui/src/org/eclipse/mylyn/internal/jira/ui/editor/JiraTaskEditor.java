@@ -24,6 +24,7 @@ import org.eclipse.mylar.internal.tasks.ui.editors.AbstractTaskEditorInput;
 import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.ITask;
+import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -40,13 +41,13 @@ import org.tigris.jira.core.service.JiraServer;
 public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	private static final String SUBMIT_JOB_LABEL = "Submitting to JIRA repository";
-	
+
 	private JiraRepositoryConnector connector;
-	
+
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
 	}
-	
+
 	public void init(IEditorSite site, IEditorInput input) {
 		if (!(input instanceof RepositoryTaskEditorInput))
 			return;
@@ -61,7 +62,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		isDirty = false;
 		updateEditorTitle();
 	}
-	
+
 	@Override
 	protected void addAttachContextButton(Composite buttonComposite, ITask task) {
 		// disabled
@@ -87,21 +88,22 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		showBusy(true);
 
 		final JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-		if(jiraServer == null)  {
+		if (jiraServer == null) {
 			submitButton.setEnabled(true);
 			JiraTaskEditor.this.showBusy(false);
 			return;
 		}
-		
+
 		// TODO: build a new issue object rather then retrieving from server
-		final Issue issue = jiraServer.getIssue(this.getRepositoryTaskData().getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
-		if(issue == null)  {
+		final Issue issue = jiraServer.getIssue(this.getRepositoryTaskData().getAttributeValue(
+				JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
+		if (issue == null) {
 			MylarStatusHandler.log("Unable to retrieve issue from repository", this);
 			submitButton.setEnabled(true);
 			JiraTaskEditor.this.showBusy(false);
 			return;
 		}
-		
+
 		final String comment = getNewCommentText();
 		final AbstractRepositoryTask task = (AbstractRepositoryTask) TasksUiPlugin.getTaskListManager().getTaskList()
 				.getTask(AbstractRepositoryTask.getHandle(repository.getUrl(), getRepositoryTaskData().getId()));
@@ -124,7 +126,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 								}
 							}
 							close();
-						} else {							
+						} else {
 							submitButton.setEnabled(true);
 							JiraTaskEditor.this.showBusy(false);
 						}
@@ -138,12 +140,26 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
+
 					
-					// TODO: update the entire issue
-					jiraServer.addCommentToIssue(issue, comment);
+					Issue issue = JiraRepositoryConnector.buildJiraIssue(getRepositoryTaskData(), jiraServer);
 					
+					RepositoryOperation operation = getRepositoryTaskData().getSelectedOperation();
+					if (operation != null) {
+						//String action = operation.getKnobName();
+						if("leave".equals(operation.getKnobName())) {
+							jiraServer.updateIssue(issue, comment);
+						}
+//						else if(org.tigris.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
+//							String value = operation.getOptionValue("resolution");							
+//							jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), fixVersions, comment, assigneeType, user);
+//						}
+						
+					}
+
 					if (task != null) {
-						// XXX hack to avoid message about lost changes to local task
+						// XXX hack to avoid message about lost changes to local
+						// task
 						task.setTaskData(null);
 						TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 					}

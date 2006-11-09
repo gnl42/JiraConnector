@@ -29,9 +29,13 @@ import org.eclipse.mylar.tasks.core.IAttachmentHandler;
 import org.eclipse.mylar.tasks.core.IOfflineTaskHandler;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.QueryHitCollector;
+import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.Issue;
+import org.tigris.jira.core.model.IssueType;
+import org.tigris.jira.core.model.Priority;
 import org.tigris.jira.core.service.JiraServer;
 
 /**
@@ -326,4 +330,28 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return "issue";
 	}
 
+	public static Issue buildJiraIssue(RepositoryTaskData taskData, JiraServer server) {
+		Issue issue = new Issue();
+		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
+		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
+		
+		for (IssueType type: server.getIssueTypes()) {
+			if(type.getName().equals(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE))) {
+				issue.setType(type);
+				break;
+			}
+		}
+		
+		issue.setAssignee(taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED));
+		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
+		issue.setId(taskData.getId());
+		issue.setKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
+		for (Priority priority: server.getPriorities()) {
+			if(priority.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY))) {
+				issue.setPriority(priority);
+				break;
+			}
+		}			
+		return issue;
+	}
 }

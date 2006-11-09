@@ -20,6 +20,8 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_TYPE = "attribute.jira.type";
 	
 	public static final String ATTRIBUTE_ISSUE_KEY = "attribute.jira.issue_key";
+
+	public static final String ATTRIBUTE_ENVIRONMENT = "attribute.jira.environment";;
 	
 	@Override
 	public boolean getIsHidden(String key) {

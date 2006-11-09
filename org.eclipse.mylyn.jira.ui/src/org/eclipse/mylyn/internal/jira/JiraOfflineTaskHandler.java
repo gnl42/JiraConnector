@@ -17,10 +17,12 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.IOfflineTaskHandler;
 import org.eclipse.mylar.tasks.core.ITask;
+import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.TaskComment;
@@ -28,10 +30,15 @@ import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.Comment;
 import org.tigris.jira.core.model.Issue;
+import org.tigris.jira.core.model.IssueType;
+import org.tigris.jira.core.model.Priority;
+import org.tigris.jira.core.model.Resolution;
+import org.tigris.jira.core.model.Status;
 import org.tigris.jira.core.service.JiraServer;
 
 /**
  * @author Mik Kersten
+ * @author Rob Elves
  */
 public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 
@@ -64,7 +71,8 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			RepositoryTaskData data = new RepositoryTaskData(attributeFactory, MylarJiraPlugin.REPOSITORY_KIND,
 					repository.getUrl(), taskId);
 			connector.updateAttributes(repository, new NullProgressMonitor());
-			updateTaskData(data, jiraIssue);
+			updateTaskData(data, jiraIssue, server);
+			addOperations(jiraIssue, data);
 			return data;
 		} else {
 			return null;
@@ -72,7 +80,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue) {
+	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraServer server) {
 		data.removeAllAttributes();
 		RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.DATE_CREATION,
 				"Created: ", true);
@@ -92,22 +100,6 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		attribute.setValue(convertHtml(jiraIssue.getStatus().getName()));
 		data.addAttribute(RepositoryTaskAttribute.STATUS, attribute);
 
-		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRIORITY, "Priority: ", true);
-		attribute.setValue(jiraIssue.getPriority().getName());
-		data.addAttribute(RepositoryTaskAttribute.PRIORITY, attribute);
-
-		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRIORITY, "Priority: ", true);
-		attribute.setValue(jiraIssue.getPriority().getName());
-		data.addAttribute(RepositoryTaskAttribute.PRIORITY, attribute);
-
-		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRODUCT, "Project: ", false);
-		attribute.setValue(jiraIssue.getProject().getName());
-		data.addAttribute(RepositoryTaskAttribute.PRODUCT, attribute);
-
-		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, "Type: ", false);
-		attribute.setValue(jiraIssue.getType().getName());
-		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, attribute);
-		
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY, "Issue ID: ", true);
 		attribute.setValue(jiraIssue.getKey());
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY, attribute);
@@ -127,7 +119,31 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.DATE_MODIFIED, "Date modified: ", true);
 		attribute.setValue(jiraIssue.getUpdated().toGMTString());
 		data.addAttribute(RepositoryTaskAttribute.DATE_MODIFIED, attribute);
-		
+
+		// VISIBLE FIELDS (order added = order in layout)
+
+		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRODUCT, "Project: ", false);
+		attribute.setValue(jiraIssue.getProject().getName());
+		attribute.setReadOnly(true);
+		data.addAttribute(RepositoryTaskAttribute.PRODUCT, attribute);
+
+		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRIORITY, "Priority: ", false);
+		attribute.setValue(jiraIssue.getPriority().getName());
+		for (Priority priority : server.getPriorities()) {
+			attribute.addOptionValue(priority.getName(), priority.getId());
+		}
+		data.addAttribute(RepositoryTaskAttribute.PRIORITY, attribute);
+
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, "Type: ", false);
+		attribute.setValue(jiraIssue.getType().getName());
+		for (IssueType type : server.getIssueTypes()) {
+			attribute.addOptionValue(type.getName(), type.getId());
+		}
+		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, attribute);
+
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "Environment: ", false);
+		attribute.setValue(jiraIssue.getEnvironment());
+		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, attribute);
 
 		int x = 0;
 		for (Comment comment : jiraIssue.getComments()) {
@@ -140,6 +156,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 
 				attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.COMMENT_TEXT, "Text: ", true);
 				attribute.setValue(convertHtml(comment.getComment()));
+				attribute.setReadOnly(true);
 				taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_TEXT, attribute);
 
 				attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.COMMENT_DATE, "Text: ", true);
@@ -165,20 +182,10 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			} else if (mappedKey.equals(RepositoryTaskAttribute.DATE_CREATION)) {
 				parsedDate = creation_ts_format.parse(dateString);
 			}
-			// else if
-			// (mappedKey.equals(BugzillaReportElement.BUG_WHEN.getKeyString()))
-			// {
-			// parsedDate = comment_creation_ts_format.parse(dateString);
-			// } else if
-			// (mappedKey.equals(BugzillaReportElement.DATE.getKeyString())) {
-			// parsedDate = attachment_creation_ts_format.parse(dateString);
-			// }
 			return parsedDate;
 		} catch (Exception e) {
-			return null;
-			// throw new CoreException(new Status(IStatus.ERROR,
-			// BugzillaPlugin.PLUGIN_ID, 0,
-			// "Error parsing date string: " + dateString, e));
+			MylarStatusHandler.log(e, "Error while parsing date field");			
+			return null;			
 		}
 	}
 
@@ -221,5 +228,27 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		// }
 		// }
 		// return Collections.emptySet();
+	}
+
+	private void addOperations(Issue issue, RepositoryTaskData data) {
+		Status status = issue.getStatus();
+		if (status.isStarted() || status.isReopened()) {
+			RepositoryOperation op = new RepositoryOperation("leave", "Leave as "+issue.getStatus().getName());
+			op.setChecked(true);
+			data.addOperation(op);
+			op = new RepositoryOperation(Status.RESOLVED_ID, "Resolve");
+			op.setUpOptions("resolution");			
+			op.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
+			op.addOption("Incomplete", Resolution.INCOMPLETE_ID);
+			op.addOption("Fixed", Resolution.FIXED_ID);
+			op.addOption("Won't Fix", Resolution.WONT_FIX_ID);
+			data.addOperation(op);
+			data.addOperation(new RepositoryOperation(Status.CLOSED_ID, "Close"));
+		} else if (status.isClosed() || status.isResolved()) {
+			RepositoryOperation op = new RepositoryOperation("leave", "Leave as "+issue.getStatus().getName());
+			op.setChecked(true);
+			data.addOperation(op);
+			data.addOperation(new RepositoryOperation(Status.OPEN_ID, "Open"));
+		}
 	}
 }
