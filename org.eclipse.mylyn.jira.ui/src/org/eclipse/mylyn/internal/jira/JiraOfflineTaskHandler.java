@@ -67,7 +67,6 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		if (task instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) task;
 			Issue jiraIssue = server.getIssue(jiraTask.getKey());
-
 			RepositoryTaskData data = new RepositoryTaskData(attributeFactory, MylarJiraPlugin.REPOSITORY_KIND,
 					repository.getUrl(), taskId);
 			connector.updateAttributes(repository, new NullProgressMonitor());
