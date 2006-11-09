@@ -22,6 +22,7 @@ import org.eclipse.mylar.internal.jira.JiraServerFacade;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractTaskEditorInput;
 import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
+import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskOutlineNode;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.RepositoryOperation;
@@ -57,6 +58,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		connector = (JiraRepositoryConnector) TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				repository.getKind());
 
+		taskOutlineModel = RepositoryTaskOutlineNode.parseBugReport(editorInput.getRepositoryTaskData());
+		
 		setSite(site);
 		setInput(input);
 		isDirty = false;
