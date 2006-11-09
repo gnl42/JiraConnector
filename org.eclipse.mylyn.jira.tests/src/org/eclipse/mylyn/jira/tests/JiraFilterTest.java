@@ -13,7 +13,6 @@ package org.eclipse.mylar.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylar.internal.jira.JiraQueryHit;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
@@ -44,6 +43,7 @@ public class JiraFilterTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
+		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 		repository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
@@ -72,14 +72,8 @@ public class JiraFilterTest extends TestCase {
 		// jFilter.refreshHits();
 		// boolean done = false;
 
-		Job job = TasksUiPlugin.getSynchronizationManager().synchronize(connector, jFilter, null);
-		while (job.getResult() == null) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		TasksUiPlugin.getSynchronizationManager().synchronize(connector, jFilter, null);
+
 		assertTrue(jFilter.getHits().size() > 0);
 		JiraQueryHit jHit = (JiraQueryHit) jFilter.getHits().iterator().next();
 		assertTrue(jHit.getDescription().length() > 0);
