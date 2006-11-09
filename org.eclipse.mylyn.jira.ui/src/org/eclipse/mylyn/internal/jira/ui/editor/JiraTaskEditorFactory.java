@@ -64,6 +64,6 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 	}
 
 	public boolean providesOutline() {
-		return true;
+		return false;
 	}
 }
