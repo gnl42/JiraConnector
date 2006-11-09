@@ -223,8 +223,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return supportedVersions;
 	}
 
-//	@Override
-//	public void updateTaskState(AbstractRepositoryTask repositoryTask) {
+	@Override
+	public void updateTaskState(AbstractRepositoryTask repositoryTask) {
 //		final TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 //				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
 //		if (repository != null && repositoryTask instanceof JiraTask) {
@@ -242,7 +242,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 //				}
 //			}
 //		}
-//	}
+	}
 
 	@Override
 	public String getRepositoryUrlFromTaskUrl(String url) {
