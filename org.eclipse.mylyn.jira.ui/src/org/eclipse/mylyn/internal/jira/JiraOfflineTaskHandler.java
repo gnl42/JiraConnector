@@ -32,11 +32,13 @@ import org.eclipse.mylar.tasks.core.TaskComment;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.Comment;
+import org.tigris.jira.core.model.Component;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.IssueType;
 import org.tigris.jira.core.model.Priority;
 import org.tigris.jira.core.model.Resolution;
 import org.tigris.jira.core.model.Status;
+import org.tigris.jira.core.model.Version;
 import org.tigris.jira.core.service.JiraServer;
 
 /**
@@ -147,6 +149,25 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		attribute.setValue(jiraIssue.getEnvironment());
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, attribute);
 
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "Components: ", true);
+		for (Component component: jiraIssue.getComponents()) {
+			attribute.addValue(component.getName());
+		}
+		for (Component component : jiraIssue.getProject().getComponents()) {
+			attribute.addOptionValue(component.getName(), component.getId());
+			
+		}
+		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, attribute);
+		
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, "Fix Versions: ", true);
+		for (Version version: jiraIssue.getFixVersions()) {
+			attribute.addValue(version.getName());
+		}
+		for (Version version: jiraIssue.getProject().getVersions()) {
+			attribute.addOptionValue(version.getName(), version.getId());
+		}
+		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, attribute);
+		
 		int x = 0;
 		for (Comment comment : jiraIssue.getComments()) {
 			if (comment != null) {
@@ -247,12 +268,22 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			data.addOperation(op);
 			op = new RepositoryOperation(Status.RESOLVED_ID, "Resolve");
 			op.setUpOptions("resolution");
-			op.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
-			op.addOption("Incomplete", Resolution.INCOMPLETE_ID);
 			op.addOption("Fixed", Resolution.FIXED_ID);
 			op.addOption("Won't Fix", Resolution.WONT_FIX_ID);
+			op.addOption("Duplicate", Resolution.DUPLICATE_ID);
+			op.addOption("Incomplete", Resolution.INCOMPLETE_ID);
+			op.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
 			data.addOperation(op);
-			data.addOperation(new RepositoryOperation(Status.CLOSED_ID, "Close"));
+			
+			op = new RepositoryOperation(Status.CLOSED_ID, "Close");
+			op.setUpOptions("resolution");
+			op.addOption("Fixed", Resolution.FIXED_ID);
+			op.addOption("Won't Fix", Resolution.WONT_FIX_ID);
+			op.addOption("Duplicate", Resolution.DUPLICATE_ID);
+			op.addOption("Incomplete", Resolution.INCOMPLETE_ID);
+			op.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
+			data.addOperation(op);
+
 		} else if (status.isClosed() || status.isResolved()) {
 			RepositoryOperation op = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
 			op.setChecked(true);

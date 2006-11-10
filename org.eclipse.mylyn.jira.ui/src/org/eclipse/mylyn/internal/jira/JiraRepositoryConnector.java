@@ -33,9 +33,11 @@ import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
+import org.tigris.jira.core.model.Component;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.IssueType;
 import org.tigris.jira.core.model.Priority;
+import org.tigris.jira.core.model.Version;
 import org.tigris.jira.core.service.JiraServer;
 
 /**
@@ -341,6 +343,31 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				break;
 			}
 		}
+		for (org.tigris.jira.core.model.Status status: server.getStatuses()) {
+			if(status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
+				issue.setStatus(status);
+				break;
+			}
+		}
+		ArrayList<Component> components = new ArrayList<Component>();
+		RepositoryTaskAttribute attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+		for (String compStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {		
+			Component comp = new Component();
+			comp.setId(attrib.getOptionValues().get(compStr));
+			comp.setName(compStr);			
+			components.add(comp);
+		}
+		issue.setComponents(components.toArray(new Component[components.size()]));
+		
+		ArrayList<Version> fixversions = new ArrayList<Version>();
+		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);	
+		for (String fixStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {	
+			Version version = new Version();
+			version.setId(attrib.getOptionValues().get(fixStr));
+			version.setName(fixStr);			
+			fixversions.add(version);
+		}
+		issue.setFixVersions(fixversions.toArray(new Version[fixversions.size()]));
 		
 		issue.setAssignee(taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED));
 		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
