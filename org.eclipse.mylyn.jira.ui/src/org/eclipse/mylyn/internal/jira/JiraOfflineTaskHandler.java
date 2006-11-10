@@ -124,8 +124,41 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		attribute.setValue(jiraIssue.getUpdated().toGMTString());
 		data.addAttribute(RepositoryTaskAttribute.DATE_MODIFIED, attribute);
 
-		// VISIBLE FIELDS (order added = order in layout)
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "Components: ", true);
+		for (Component component: jiraIssue.getComponents()) {
+			attribute.addValue(component.getName());
+		}
+		for (Component component : jiraIssue.getProject().getComponents()) {
+			attribute.addOptionValue(component.getName(), component.getId());
+			
+		}
+		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, attribute);
+		
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, "Fix Versions: ", true);
+		for (Version version: jiraIssue.getFixVersions()) {
+			attribute.addValue(version.getName());
+		}
+		for (Version version: jiraIssue.getProject().getVersions()) {
+			attribute.addOptionValue(version.getName(), version.getId());
+		}
+		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, attribute);
 
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, "Affects Versions: ", true);
+		for (Version version: jiraIssue.getReportedVersions()) {
+			attribute.addValue(version.getName());
+		}
+		for (Version version: jiraIssue.getProject().getVersions()) {
+			attribute.addOptionValue(version.getName(), version.getId());
+		}
+		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, attribute);
+		
+		
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, "Estimate: ", true);
+		attribute.setValue(String.valueOf(jiraIssue.getEstimate()));
+		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, attribute);
+		
+		// VISIBLE FIELDS (order added = order in layout)
+		
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRODUCT, "Project: ", false);
 		attribute.setValue(jiraIssue.getProject().getName());
 		attribute.setReadOnly(true);
@@ -148,25 +181,6 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "Environment: ", false);
 		attribute.setValue(jiraIssue.getEnvironment());
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, attribute);
-
-		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "Components: ", true);
-		for (Component component: jiraIssue.getComponents()) {
-			attribute.addValue(component.getName());
-		}
-		for (Component component : jiraIssue.getProject().getComponents()) {
-			attribute.addOptionValue(component.getName(), component.getId());
-			
-		}
-		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, attribute);
-		
-		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, "Fix Versions: ", true);
-		for (Version version: jiraIssue.getFixVersions()) {
-			attribute.addValue(version.getName());
-		}
-		for (Version version: jiraIssue.getProject().getVersions()) {
-			attribute.addOptionValue(version.getName(), version.getId());
-		}
-		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, attribute);
 		
 		int x = 0;
 		for (Comment comment : jiraIssue.getComments()) {

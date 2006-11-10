@@ -337,6 +337,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
 		
+		//issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));
+		
 		for (IssueType type: server.getIssueTypes()) {
 			if(type.getName().equals(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE))) {
 				issue.setType(type);
@@ -368,6 +370,16 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			fixversions.add(version);
 		}
 		issue.setFixVersions(fixversions.toArray(new Version[fixversions.size()]));
+		
+		ArrayList<Version> affectsversions = new ArrayList<Version>();
+		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);	
+		for (String fixStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {	
+			Version version = new Version();
+			version.setId(attrib.getOptionValues().get(fixStr));
+			version.setName(fixStr);			
+			affectsversions.add(version);
+		}
+		issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));
 		
 		issue.setAssignee(taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED));
 		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));

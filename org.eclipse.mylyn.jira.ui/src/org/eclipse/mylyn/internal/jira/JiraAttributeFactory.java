@@ -24,6 +24,8 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_ENVIRONMENT = "attribute.jira.environment";
 	public static final String ATTRIBUTE_COMPONENTS = "attribute.jira.components";
 	public static final String ATTRIBUTE_FIXVERSIONS = "attribute.jira.fixversions";
+	public static final String ATTRIBUTE_AFFECTSVERSIONS = "attribute.jira.affectsversions";
+	public static final String ATTRIBUTE_ESTIMATE = "attribute.jira.estimate";
 	
 	@Override
 	public boolean getIsHidden(String key) {

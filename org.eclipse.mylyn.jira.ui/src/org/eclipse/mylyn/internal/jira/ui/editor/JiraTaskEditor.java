@@ -58,7 +58,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	private JiraRepositoryConnector connector;
 
 	private RepositoryTaskData taskData;
-	
+
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
 	}
@@ -96,7 +96,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		FormToolkit toolkit = getManagedForm().getToolkit();
 		Label label = toolkit.createLabel(composite, "Components:");
 		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
-		
+
 		final List componentsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
 		componentsList.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		componentsList.setFont(TEXT_FONT);
@@ -106,19 +106,23 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		compTextData.heightHint = 40;
 		componentsList.setLayoutData(compTextData);
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
-		componentsList.setItems(attribute.getOptionValues().keySet().toArray(new String[1]));
-		for (String compStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
-			componentsList.select(componentsList.indexOf(compStr));
-		}
-		componentsList.addSelectionListener(new SelectionAdapter() {
+		if (attribute != null) {
+			componentsList.setItems(attribute.getOptionValues().keySet().toArray(new String[1]));
+			for (String compStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
+				componentsList.select(componentsList.indexOf(compStr));
+			}
+			componentsList.addSelectionListener(new SelectionAdapter() {
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
-				attribute.clearValues();
-				attribute.setValues(Arrays.asList(componentsList.getSelection()));
-			}});
-		
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					RepositoryTaskAttribute attribute = taskData
+							.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+					attribute.clearValues();
+					attribute.setValues(Arrays.asList(componentsList.getSelection()));
+				}
+			});
+		}
+
 		label = toolkit.createLabel(composite, "Fix Versions:");
 		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
 		final List versionsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
@@ -130,19 +134,52 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		versionsTextData.heightHint = 40;
 		versionsList.setLayoutData(versionsTextData);
 		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
-		versionsList.setItems(attribute.getOptionValues().keySet().toArray(new String[1]));
-		for (String versionStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
-			versionsList.select(versionsList.indexOf(versionStr));
-		}
-		versionsList.addSelectionListener(new SelectionAdapter() {
+		if (attribute != null) {
+			versionsList.setItems(attribute.getOptionValues().keySet().toArray(new String[1]));
+			for (String versionStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
+				versionsList.select(versionsList.indexOf(versionStr));
+			}
+			versionsList.addSelectionListener(new SelectionAdapter() {
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
-				attribute.clearValues();
-				attribute.setValues(Arrays.asList(versionsList.getSelection()));
-			}});
-		
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					RepositoryTaskAttribute attribute = taskData
+							.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+					attribute.clearValues();
+					attribute.setValues(Arrays.asList(versionsList.getSelection()));
+				}
+			});
+		}
+
+		label = toolkit.createLabel(composite, "Affects Versions:");
+		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
+		final List affectsVersionsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
+		affectsVersionsList.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+		affectsVersionsList.setFont(TEXT_FONT);
+		GridData affectsVersionsTextData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		affectsVersionsTextData.horizontalSpan = 1;
+		affectsVersionsTextData.widthHint = 125;
+		affectsVersionsTextData.heightHint = 40;
+		affectsVersionsTextData.verticalIndent = 3;
+		affectsVersionsList.setLayoutData(affectsVersionsTextData);
+		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+		if (attribute != null) {
+			affectsVersionsList.setItems(attribute.getOptionValues().keySet().toArray(new String[1]));
+			for (String versionStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {
+				affectsVersionsList.select(affectsVersionsList.indexOf(versionStr));
+			}
+			affectsVersionsList.addSelectionListener(new SelectionAdapter() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					RepositoryTaskAttribute attribute = taskData
+							.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+					attribute.clearValues();
+					attribute.setValues(Arrays.asList(affectsVersionsList.getSelection()));
+				}
+			});
+		}
+
 	}
 
 	@Override
@@ -222,8 +259,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 									.getUserName());
 						} else if (org.tigris.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
 							String value = operation.getOptionValue(operation.getOptionSelection());
-							jiraServer.closeIssue(issue, jiraServer.getResolutionById(value),issue.getFixVersions(), comment,
-									JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+							jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
+									comment, JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
 						}
 
 					}
