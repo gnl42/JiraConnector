@@ -72,15 +72,19 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		if (task instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) task;
 			Issue jiraIssue = server.getIssue(jiraTask.getKey());
-			RepositoryTaskData data = new RepositoryTaskData(attributeFactory, MylarJiraPlugin.REPOSITORY_KIND,
-					repository.getUrl(), taskId);
-			connector.updateAttributes(repository, new NullProgressMonitor());
-			updateTaskData(data, jiraIssue, server);
-			addOperations(jiraIssue, data);
-			return data;
-		} else {
-			return null;
+			if (jiraIssue != null) {
+				// TODO: remove this call?
+				JiraRepositoryConnector.updateTaskDetails(repository.getUrl(), (JiraTask) task, jiraIssue, false);
+
+				RepositoryTaskData data = new RepositoryTaskData(attributeFactory, MylarJiraPlugin.REPOSITORY_KIND,
+						repository.getUrl(), taskId);
+				connector.updateAttributes(repository, new NullProgressMonitor());
+				updateTaskData(data, jiraIssue, server);
+				addOperations(jiraIssue, data);
+				return data;
+			}
 		}
+		return null;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -125,40 +129,40 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		data.addAttribute(RepositoryTaskAttribute.DATE_MODIFIED, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "Components: ", true);
-		for (Component component: jiraIssue.getComponents()) {
+		for (Component component : jiraIssue.getComponents()) {
 			attribute.addValue(component.getName());
 		}
 		for (Component component : jiraIssue.getProject().getComponents()) {
 			attribute.addOptionValue(component.getName(), component.getId());
-			
+
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, attribute);
-		
+
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, "Fix Versions: ", true);
-		for (Version version: jiraIssue.getFixVersions()) {
+		for (Version version : jiraIssue.getFixVersions()) {
 			attribute.addValue(version.getName());
 		}
-		for (Version version: jiraIssue.getProject().getVersions()) {
+		for (Version version : jiraIssue.getProject().getVersions()) {
 			attribute.addOptionValue(version.getName(), version.getId());
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, attribute);
 
-		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, "Affects Versions: ", true);
-		for (Version version: jiraIssue.getReportedVersions()) {
+		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, "Affects Versions: ",
+				true);
+		for (Version version : jiraIssue.getReportedVersions()) {
 			attribute.addValue(version.getName());
 		}
-		for (Version version: jiraIssue.getProject().getVersions()) {
+		for (Version version : jiraIssue.getProject().getVersions()) {
 			attribute.addOptionValue(version.getName(), version.getId());
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, attribute);
-		
-		
+
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, "Estimate: ", true);
 		attribute.setValue(String.valueOf(jiraIssue.getEstimate()));
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, attribute);
-		
+
 		// VISIBLE FIELDS (order added = order in layout)
-		
+
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRODUCT, "Project: ", false);
 		attribute.setValue(jiraIssue.getProject().getName());
 		attribute.setReadOnly(true);
@@ -181,7 +185,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "Environment: ", false);
 		attribute.setValue(jiraIssue.getEnvironment());
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, attribute);
-		
+
 		int x = 0;
 		for (Comment comment : jiraIssue.getComments()) {
 			if (comment != null) {
@@ -247,30 +251,33 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
 			Set<AbstractRepositoryTask> tasks, Proxy proxySettings) throws CoreException, UnsupportedEncodingException {
-//		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-//		if (server == null) {
-//			return Collections.emptySet();
-//		} else {
-//			List<AbstractRepositoryTask> changedTasks = new ArrayList<AbstractRepositoryTask>();
-//			for (AbstractRepositoryTask task : tasks) {
-//				if (task instanceof JiraTask) {
-//					Date lastCommentDate = null;
-//					JiraTask jiraTask = (JiraTask) task;
-//					Issue issue = server.getIssue(jiraTask.getKey());
-//					if (issue != null) {
-//						Comment[] comments = issue.getComments();
-//						if (comments != null && comments.length > 0) {
-//							lastCommentDate = comments[comments.length - 1].getCreated();
-//						}
-//					}
-//					if (lastCommentDate != null && task.getLastSyncDateStamp()() != null) {
-//						if (lastCommentDate.after(task.getLastSynchronized())) {
-//							changedTasks.add(task);
-//						}
-//					}
-//				}
-//			}
-//		}
+		// JiraServer server =
+		// JiraServerFacade.getDefault().getJiraServer(repository);
+		// if (server == null) {
+		// return Collections.emptySet();
+		// } else {
+		// List<AbstractRepositoryTask> changedTasks = new
+		// ArrayList<AbstractRepositoryTask>();
+		// for (AbstractRepositoryTask task : tasks) {
+		// if (task instanceof JiraTask) {
+		// Date lastCommentDate = null;
+		// JiraTask jiraTask = (JiraTask) task;
+		// Issue issue = server.getIssue(jiraTask.getKey());
+		// if (issue != null) {
+		// Comment[] comments = issue.getComments();
+		// if (comments != null && comments.length > 0) {
+		// lastCommentDate = comments[comments.length - 1].getCreated();
+		// }
+		// }
+		// if (lastCommentDate != null && task.getLastSyncDateStamp()() != null)
+		// {
+		// if (lastCommentDate.after(task.getLastSynchronized())) {
+		// changedTasks.add(task);
+		// }
+		// }
+		// }
+		// }
+		// }
 		return Collections.emptySet();
 	}
 
@@ -288,7 +295,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			op.addOption("Incomplete", Resolution.INCOMPLETE_ID);
 			op.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
 			data.addOperation(op);
-			
+
 			op = new RepositoryOperation(Status.CLOSED_ID, "Close");
 			op.setUpOptions("resolution");
 			op.addOption("Fixed", Resolution.FIXED_ID);
