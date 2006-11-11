@@ -183,7 +183,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "Environment: ", false);
-		attribute.setValue(jiraIssue.getEnvironment());
+		attribute.setValue(convertHtml(jiraIssue.getEnvironment()));
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, attribute);
 
 		int x = 0;

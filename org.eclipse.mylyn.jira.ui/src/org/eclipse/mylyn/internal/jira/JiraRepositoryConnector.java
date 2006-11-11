@@ -31,6 +31,7 @@ import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.QueryHitCollector;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
+import org.eclipse.mylar.tasks.core.Task;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.Component;
@@ -143,7 +144,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 //			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
 			// TODO: set completion status
 			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(), issueId, issue.getKey(), false);
-		
+			// XXX: HACK, need to map jira priority to tasklist priorities
+			hit.setPriority(Task.PriorityLevel.P3.toString());
 			try {
 				resultCollector.accept(hit);
 			} catch (CoreException e) {
