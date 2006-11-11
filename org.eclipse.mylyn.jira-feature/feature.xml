@@ -229,7 +229,7 @@ litigation.
       <import plugin="org.tigris.jira.core.soap" version="0.9.0" match="compatible"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import feature="org.tigris.jira.core" version="0.9.1" match="greaterOrEqual"/>
-      <import feature="org.eclipse.mylar_feature" version="0.8.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.mylar_feature" version="0.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylar.tasks.core"/>
    </requires>
 
