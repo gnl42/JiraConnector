@@ -228,7 +228,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateTaskState(AbstractRepositoryTask repositoryTask) {
+	public void updateTask(TaskRepository repository, AbstractRepositoryTask repositoryTask) {
 //		final TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 //				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
 //		if (repository != null && repositoryTask instanceof JiraTask) {
