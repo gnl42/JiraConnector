@@ -87,7 +87,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	}
 
 	@Override
-	protected void addSelfToCC(Composite composite) {
+	protected void createPeopleLayout(Composite composite) {
 		// disabled
 	}
 
