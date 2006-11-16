@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.tasks.ui.util.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
@@ -55,12 +54,12 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 
 	private static SimpleDateFormat modified_ts_format = new SimpleDateFormat(DATE_FORMAT_1);
 
-	private JiraRepositoryConnector connector;
+	// private JiraRepositoryConnector connector = null;
 
 	private static final JiraAttributeFactory attributeFacotry = new JiraAttributeFactory();
 
 	public JiraOfflineTaskHandler(JiraRepositoryConnector connector) {
-		this.connector = connector;
+		// this.connector = connector;
 	}
 
 	public RepositoryTaskData downloadTaskData(TaskRepository repository, String taskId, Proxy proxySettings)
@@ -78,7 +77,8 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 
 				RepositoryTaskData data = new RepositoryTaskData(attributeFactory, MylarJiraPlugin.REPOSITORY_KIND,
 						repository.getUrl(), taskId);
-				connector.updateAttributes(repository, new NullProgressMonitor());
+				// connector.updateAttributes(repository, new
+				// NullProgressMonitor());
 				updateTaskData(data, jiraIssue, server);
 				addOperations(jiraIssue, data);
 				return data;
@@ -186,7 +186,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		attribute.setValue(convertHtml(jiraIssue.getEnvironment()));
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, attribute);
 
-		int x = 0;
+		int x = 1;
 		for (Comment comment : jiraIssue.getComments()) {
 			if (comment != null) {
 				TaskComment taskComment = new TaskComment(attributeFacotry, data, x++);

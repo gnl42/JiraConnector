@@ -22,6 +22,7 @@ import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.JiraAttributeFactory;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraServerFacade;
+import org.eclipse.mylar.internal.tasks.ui.TaskUiUtil;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractTaskEditorInput;
 import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
@@ -119,6 +120,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 					attribute.clearValues();
 					attribute.setValues(Arrays.asList(componentsList.getSelection()));
+					markDirty(true);
+					
 				}
 			});
 		}
@@ -147,6 +150,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
 					attribute.clearValues();
 					attribute.setValues(Arrays.asList(versionsList.getSelection()));
+					markDirty(true);
 				}
 			});
 		}
@@ -176,6 +180,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
 					attribute.clearValues();
 					attribute.setValues(Arrays.asList(affectsVersionsList.getSelection()));
+					markDirty(true);
 				}
 			});
 		}
@@ -229,7 +234,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 									e.printStackTrace();
 								}
 							}
-							close();
+							//close();
 						} else {
 							submitButton.setEnabled(true);
 							JiraTaskEditor.this.showBusy(false);
@@ -266,10 +271,19 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 					}
 
 					if (task != null) {
-						// XXX hack to avoid message about lost changes to local
-						// task
+						// XXX set data to null hack (to avoid message lost changes mesg)						
 						task.setTaskData(null);
-						TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+						TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, new JobChangeAdapter() {
+
+							@Override
+							public void done(IJobChangeEvent event) {
+								close();
+								TaskUiUtil.openEditor(task, false);
+							}
+						});
+					} else {
+						//TaskUiUtil.openRepositoryTask(...);
+						close();
 					}
 					return Status.OK_STATUS;
 				} catch (Exception e) {
