@@ -271,8 +271,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 					}
 
 					if (task != null) {
-						// XXX set data to null hack (to avoid message lost changes mesg)						
-						task.setTaskData(null);
 						TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, new JobChangeAdapter() {
 
 							@Override
