@@ -106,7 +106,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			Proxy proxySettings, IProgressMonitor monitor, QueryHitCollector resultCollector) {
 		// List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 		final List<Issue> issues = new ArrayList<Issue>();
-
+		
 		// TaskRepository repository =
 		// TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND,
 		// repositoryQuery.getRepositoryUrl());
@@ -117,6 +117,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+			// TODO: removes, added to re-open connection, bug 164543
+			jiraServer.getServerInfo();
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
