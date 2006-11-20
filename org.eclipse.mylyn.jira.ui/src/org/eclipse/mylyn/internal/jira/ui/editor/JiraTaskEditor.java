@@ -270,6 +270,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 					}
 
 					if (task != null) {
+						// XXX: HACK TO AVOID OVERWRITE WARNING
+						task.setTaskData(null);
 						TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, new JobChangeAdapter() {
 
 							@Override
