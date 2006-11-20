@@ -227,8 +227,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 								// TODO check for task == null
 								// TODO should be done as part of job
 								try {
-									connector.attachContext(repository, (AbstractRepositoryTask) task, "",
-											TasksUiPlugin.getDefault().getProxySettings());
+									connector.attachContext(repository, (AbstractRepositoryTask) task, "");
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();

@@ -11,7 +11,6 @@ package org.eclipse.mylar.internal.jira;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.Proxy;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -62,7 +61,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		// this.connector = connector;
 	}
 
-	public RepositoryTaskData downloadTaskData(TaskRepository repository, String taskId, Proxy proxySettings)
+	public RepositoryTaskData downloadTaskData(TaskRepository repository, String taskId)
 			throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), taskId);
@@ -250,7 +249,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 	}
 
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
-			Set<AbstractRepositoryTask> tasks, Proxy proxySettings) throws CoreException, UnsupportedEncodingException {
+			Set<AbstractRepositoryTask> tasks) throws CoreException, UnsupportedEncodingException {
 		// JiraServer server =
 		// JiraServerFacade.getDefault().getJiraServer(repository);
 		// if (server == null) {

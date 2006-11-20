@@ -103,7 +103,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
-			Proxy proxySettings, IProgressMonitor monitor, QueryHitCollector resultCollector) {
+			IProgressMonitor monitor, QueryHitCollector resultCollector) {
 		// List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 		final List<Issue> issues = new ArrayList<Issue>();
 		
