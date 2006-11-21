@@ -162,9 +162,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			// filter.getDescription());
 		} else if (query instanceof JiraCustomQuery) {
 			JiraCustomQuery customQuery = (JiraCustomQuery) query;
-			FilterDefinition filter = customQuery.getFilterDefinition();
-			node.setAttribute(KEY_FILTER_ID, filter.getName());
-			node.setAttribute(KEY_FILTER_NAME, filter.getName());
+//			FilterDefinition filter = customQuery.getFilterDefinition();
+			node.setAttribute(KEY_FILTER_ID, customQuery.getDescription());
+			node.setAttribute(KEY_FILTER_NAME, customQuery.getDescription());
 			// node.setAttribute(KEY_FILTER_DESCRIPTION,
 			// filter.getDescription());
 			node.setAttribute(KEY_FILTER_CUSTOM_URL, customQuery.getUrl());

@@ -16,6 +16,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.eclipse.mylar.internal.jira.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.JiraQueryHit;
 import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
@@ -31,6 +32,7 @@ import org.eclipse.mylar.tasks.ui.TaskListManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.NamedFilter;
+import org.tigris.jira.core.model.filter.FilterDefinition;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -80,6 +82,44 @@ public class JiraTaskExternalizationTest extends TestCase {
 		super.tearDown();
 	}
 
+	public void testNamedFilterNotRenamed() {
+		NamedFilter filter = new NamedFilter();
+		filter.setName("f-name");
+		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter,
+				TasksUiPlugin.getTaskListManager().getTaskList());
+		taskList.addQuery(query);
+		query.setDescription("q-name");
+
+		assertEquals(1, taskList.getQueries().size());
+		assertEquals("q-name", taskList.getQueries().iterator().next().getDescription());
+		
+		manager.saveTaskList();
+		manager.resetTaskList();
+		manager.readExistingOrCreateNewList();
+		
+		assertEquals(1, taskList.getQueries().size());
+		assertEquals("f-name", taskList.getQueries().iterator().next().getDescription());
+	}
+	
+	public void testCustomQueryRename() {
+		FilterDefinition filter = new FilterDefinition();
+		filter.setName("f-name");
+		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter,
+				TasksUiPlugin.getTaskListManager().getTaskList(), repository);
+		taskList.addQuery(query);
+		query.setDescription("q-name");
+
+		assertEquals(1, taskList.getQueries().size());
+		assertEquals("q-name", taskList.getQueries().iterator().next().getDescription());
+		
+		manager.saveTaskList();
+		manager.resetTaskList();
+		manager.readExistingOrCreateNewList();
+		
+		assertEquals(1, taskList.getQueries().size());
+		assertEquals("q-name", taskList.getQueries().iterator().next().getDescription());
+	}
+	
 	public void testCompletionSave() {
 		JiraTask jiraTask = new JiraTask(TEST_TASK, TEST_LABEL, true);
 		jiraTask.setCompleted(true);
