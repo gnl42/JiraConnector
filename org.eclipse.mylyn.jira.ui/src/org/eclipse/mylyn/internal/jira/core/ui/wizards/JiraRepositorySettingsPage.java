@@ -9,7 +9,7 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui.wizards;
+package org.eclipse.mylar.internal.jira.core.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -18,8 +18,8 @@ import java.net.URL;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.mylar.internal.jira.JiraServerFacade;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.swt.widgets.Composite;
@@ -62,10 +62,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	protected void validateSettings() {
 //		if (JiraServerFacade.getDefault().validateServerAndCredentials(JiraRepositorySettingsPage.super.serverUrlEditor.getStringValue(),
 //				getUserName(), getPassword())) {
-//			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG,
+//			MessageDialog.openInformation(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG,
 //					"Valid Jira server found and your login was accepted.");
 //		} else {
-//			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
+//			MessageDialog.openInformation(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
 //		}
 		final String serverUrl = getServerUrl();
 		final String userName = getUserName();
@@ -85,12 +85,12 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 					}
 				}
 			});
-			MessageDialog.openInformation(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG,
+			MessageDialog.openInformation(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG,
 				"Valid Jira server found and your login was accepted.");
 		} catch (InvocationTargetException e) {
-			MessageDialog.openError(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, e.getTargetException().getMessage());
+			MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, e.getTargetException().getMessage());
 		} catch (InterruptedException e) {
-			MessageDialog.openError(null, MylarJiraPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
+			MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
 		}
 	}
 }

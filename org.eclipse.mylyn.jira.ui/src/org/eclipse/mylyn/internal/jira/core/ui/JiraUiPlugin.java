@@ -9,10 +9,11 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -20,9 +21,9 @@ import org.osgi.framework.BundleContext;
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  */
-public class MylarJiraPlugin extends AbstractUIPlugin {
+public class JiraUiPlugin extends AbstractUIPlugin {
 
-	private static MylarJiraPlugin INSTANCE;
+	private static JiraUiPlugin INSTANCE;
 
 	public final static String REPOSITORY_KIND = "jira";
 
@@ -36,7 +37,7 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
 
-	public MylarJiraPlugin() {
+	public JiraUiPlugin() {
 		INSTANCE = this;
 	}
 
@@ -50,7 +51,7 @@ public class MylarJiraPlugin extends AbstractUIPlugin {
 		JiraServerFacade.getDefault().logOutFromAll();
 	}
 
-	public static MylarJiraPlugin getDefault() {
+	public static JiraUiPlugin getDefault() {
 		return INSTANCE;
 	}
 

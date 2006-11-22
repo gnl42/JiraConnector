@@ -9,8 +9,9 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.tigris.jira.core.model.Priority;
 
@@ -125,7 +126,7 @@ public class JiraTask extends AbstractRepositoryTask {
 	}
 
 	public String getRepositoryKind() {
-		return MylarJiraPlugin.REPOSITORY_KIND;
+		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
 	public String getKey() {

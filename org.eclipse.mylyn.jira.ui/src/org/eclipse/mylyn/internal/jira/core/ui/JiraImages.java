@@ -11,14 +11,13 @@
 /*
  * Created on Apr 20, 2004
  */
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylar.internal.jira.core.ui;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -30,7 +29,7 @@ public class JiraImages {
 
 	private static final String T_VIEW = "eview16";
 
-	private static final URL baseURL = MylarJiraPlugin.getDefault().getBundle().getEntry("/icons/");
+	private static final URL baseURL = JiraUiPlugin.getDefault().getBundle().getEntry("/icons/");
 
 	public static final ImageDescriptor OVERLAY_JIRA = create(T_VIEW, "overlay-jira.gif");
 	

@@ -9,8 +9,9 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.tigris.jira.core.model.NamedFilter;
@@ -31,12 +32,12 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 		setMaxHits(MAX_HITS);
 		this.filter = filter;
 		super.repositoryUrl = repositoryUrl;
-		setUrl(repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + "&requestId=" + filter.getId());
+		setUrl(repositoryUrl + JiraUiPlugin.FILTER_URL_PREFIX + "&requestId=" + filter.getId());
 //		super.setDescription(filter.getName());
 	}
 
 	public String getRepositoryKind() {
-		return MylarJiraPlugin.REPOSITORY_KIND;
+		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 	
 	public NamedFilter getNamedFilter() {
@@ -59,7 +60,7 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 //	protected IStatus run(final IProgressMonitor monitor) {
 //		clearHits();
 //		try {
-//			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
+//			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(JiraUiPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
 //			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(filter, new IssueCollector() {
 //
 //				public void done() {

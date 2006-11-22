@@ -13,7 +13,7 @@ package org.eclipse.mylar.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.JiraTask;
+import org.eclipse.mylar.internal.jira.core.JiraTask;
 import org.tigris.jira.core.model.Priority;
 
 /**

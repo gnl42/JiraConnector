@@ -9,7 +9,7 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui.wizards;
+package org.eclipse.mylar.internal.jira.core.ui.wizards;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.mylar.internal.jira.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.core.JiraRepositoryQuery;
+import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
 import org.eclipse.mylar.internal.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;

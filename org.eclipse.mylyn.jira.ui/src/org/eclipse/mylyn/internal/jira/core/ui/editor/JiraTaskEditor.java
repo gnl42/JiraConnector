@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui.editor;
+package org.eclipse.mylar.internal.jira.core.ui.editor;
 
 import java.util.Arrays;
 
@@ -19,9 +19,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.JiraAttributeFactory;
-import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
-import org.eclipse.mylar.internal.jira.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.core.JiraAttributeFactory;
+import org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
 import org.eclipse.mylar.internal.tasks.ui.TaskUiUtil;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractTaskEditorInput;

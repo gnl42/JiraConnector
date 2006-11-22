@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.util.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -74,7 +75,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 				// TODO: remove this call?
 				JiraRepositoryConnector.updateTaskDetails(repository.getUrl(), (JiraTask) task, jiraIssue, false);
 
-				RepositoryTaskData data = new RepositoryTaskData(attributeFactory, MylarJiraPlugin.REPOSITORY_KIND,
+				RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
 						repository.getUrl(), taskId);
 				// connector.updateAttributes(repository, new
 				// NullProgressMonitor());

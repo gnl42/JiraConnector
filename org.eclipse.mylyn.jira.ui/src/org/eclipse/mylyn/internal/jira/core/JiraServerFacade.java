@@ -9,12 +9,13 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.mylar.context.core.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -88,13 +89,13 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	}
 
 	public void repositoryAdded(TaskRepository repository) {
-		if (repository.getKind().equals(MylarJiraPlugin.REPOSITORY_KIND)) {
+		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
 			getJiraServer(repository);
 		}
 	}
 
 	public void repositoryRemoved(TaskRepository repository) {
-		if (repository.getKind().equals(MylarJiraPlugin.REPOSITORY_KIND)) {
+		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
 			String serverHostname = getServerHost(repository);
 			JiraServer server = serverManager.getServer(serverHostname);
 			removeServer(server);

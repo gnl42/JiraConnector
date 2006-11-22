@@ -9,8 +9,9 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.TaskList;
@@ -39,7 +40,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 	}
 
 	public String getUrl() {
-		return getRepositoryUrl() + MylarJiraPlugin.ISSUE_URL_PREFIX + key;
+		return getRepositoryUrl() + JiraUiPlugin.ISSUE_URL_PREFIX + key;
 	}
 	
 	@Override

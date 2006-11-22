@@ -9,13 +9,13 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylar.internal.jira.core.ui;
 
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
-import org.eclipse.mylar.internal.jira.JiraQueryHit;
-import org.eclipse.mylar.internal.jira.JiraTask;
+import org.eclipse.mylar.internal.jira.core.JiraQueryHit;
+import org.eclipse.mylar.internal.jira.core.JiraTask;
 
 /**
  * @author Mik Kersten

@@ -9,7 +9,7 @@
  *     Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui.wizards;
+package org.eclipse.mylar.internal.jira.core.ui.wizards;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,9 +28,9 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylar.internal.jira.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.JiraServerFacade;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.mylar.internal.tasks.ui.views.DatePicker;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
@@ -1442,6 +1442,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		String url = repository.getUrl();
 		return new JiraCustomQuery(url, workingCopy, TasksUiPlugin.getTaskListManager().getTaskList(),
-				TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND, url));
+				TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND, url));
 	}
 }

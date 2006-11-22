@@ -9,9 +9,9 @@
  *     Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui.wizards;
+package org.eclipse.mylar.internal.jira.core.ui.wizards;
 
-import org.eclipse.mylar.internal.jira.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractEditQueryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;

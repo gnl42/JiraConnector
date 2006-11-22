@@ -13,8 +13,8 @@ package org.eclipse.mylar.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.JiraServerFacade;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -40,22 +40,23 @@ public class JiraServerFacadeTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		repository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
+		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
-		TasksUiPlugin.getRepositoryManager().addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getRepositoryManager().addRepository(repository,
+				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
 	protected void tearDown() throws Exception {
-		AbstractRepositoryConnector client = TasksUiPlugin
-				.getRepositoryManager().getRepositoryConnector(
-						MylarJiraPlugin.REPOSITORY_KIND);
+		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
-//		client.clearArchive();
-//		MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
-//		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
+		// client.clearArchive();
+		// MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
+		// MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		TasksUiPlugin.getTaskListManager().resetTaskList();
-		TasksUiPlugin.getRepositoryManager().removeRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getRepositoryManager().removeRepository(repository,
+				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
@@ -104,7 +105,7 @@ public class JiraServerFacadeTest extends TestCase {
 
 	public void testServerInfoChange() {
 		repository.setAuthenticationCredentials("Bogus User", "Bogus Password");
-		jiraFacade.repositoryRemoved(repository); 
+		jiraFacade.repositoryRemoved(repository);
 
 		boolean failedOnBogusUser = false;
 

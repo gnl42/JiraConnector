@@ -6,11 +6,11 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui.editor;
+package org.eclipse.mylar.internal.jira.core.ui.editor;
 
 import org.eclipse.mylar.context.core.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.JiraTask;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.internal.jira.core.JiraTask;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.ITaskEditorFactory;
 import org.eclipse.mylar.internal.tasks.ui.editors.MylarTaskEditor;
 import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
@@ -35,7 +35,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 		if (input instanceof RepositoryTaskEditorInput) {
 			RepositoryTaskEditorInput existingInput = (RepositoryTaskEditorInput) input;
 			return existingInput.getRepositoryTaskData() != null
-					&& MylarJiraPlugin.REPOSITORY_KIND.equals(existingInput.getRepository().getKind());
+					&& JiraUiPlugin.REPOSITORY_KIND.equals(existingInput.getRepository().getKind());
 		} 
 		return false;
 	}
@@ -49,7 +49,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 
 	public IEditorInput createEditorInput(ITask task) {
 		JiraTask jiraTask = (JiraTask) task;
-		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND,
+		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND,
 				jiraTask.getRepositoryUrl());
 		try {
 			return new RepositoryTaskEditorInput(repository, jiraTask.getTaskData(), AbstractRepositoryTask.getTaskId(jiraTask.getHandleIdentifier()), jiraTask.getUrl());

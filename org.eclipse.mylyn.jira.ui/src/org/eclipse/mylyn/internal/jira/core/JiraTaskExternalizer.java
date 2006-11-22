@@ -9,12 +9,13 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 
 import org.eclipse.mylar.context.core.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.OfflineTaskManager;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
@@ -112,10 +113,10 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
 			query = new JiraCustomQuery(repositoryUrl, filter, TasksUiPlugin.getTaskListManager().getTaskList(),
-					TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND, repositoryUrl));
+					TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND, repositoryUrl));
 		} else if (customUrl != null && customUrl.length() > 0) {
 			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
-					MylarJiraPlugin.REPOSITORY_KIND, repositoryUrl);
+					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 			query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl, jiraServer,
 					TasksUiPlugin.getTaskListManager().getTaskList(), repository);

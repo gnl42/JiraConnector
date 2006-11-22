@@ -16,12 +16,12 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.JiraQueryHit;
-import org.eclipse.mylar.internal.jira.JiraRepositoryConnector;
-import org.eclipse.mylar.internal.jira.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.JiraTask;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.core.JiraQueryHit;
+import org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylar.internal.jira.core.JiraRepositoryQuery;
+import org.eclipse.mylar.internal.jira.core.JiraTask;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -63,7 +63,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		repository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
+		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		TasksUiPlugin.getTaskListManager().resetTaskList();		
@@ -73,7 +73,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.REPOSITORY_KIND);
+				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 		// taskList.clearArchive();
 		// MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
@@ -207,7 +207,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertEquals(handle, jTask.getHandleIdentifier());
 
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.REPOSITORY_KIND);
+				JiraUiPlugin.REPOSITORY_KIND);  
 		assertNotNull(client);
 		assertNotNull(taskList.getTask(savedHit.getHandleIdentifier()));
 	}

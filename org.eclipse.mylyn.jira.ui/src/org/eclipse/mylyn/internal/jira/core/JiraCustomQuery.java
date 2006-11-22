@@ -9,7 +9,7 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -98,7 +99,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		this.filter = filter;
 		this.repositoryUrl = repositoryUrl;
 		this.encoding = taskRepository.getCharacterEncoding();
-		this.url = repositoryUrl + MylarJiraPlugin.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
+		this.url = repositoryUrl + JiraUiPlugin.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
 		this.maxHits = MAX_HITS;
 	}
 
@@ -114,7 +115,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	}
 
 	public String getRepositoryKind() {
-		return MylarJiraPlugin.REPOSITORY_KIND;
+		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
 	public FilterDefinition getFilterDefinition() {
@@ -445,7 +446,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 //	protected IStatus run(final IProgressMonitor monitor) {
 //		clearHits();
 //		try {
-//			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
+//			TaskRepository repository = MylarTaskListPlugin.getRepositoryManager().getRepository(JiraUiPlugin.JIRA_REPOSITORY_KIND, repositoryUrl);
 //			JiraServerFacade.getDefault().getJiraServer(repository).executeNamedFilter(filter, new IssueCollector() {
 //
 //				public void done() {

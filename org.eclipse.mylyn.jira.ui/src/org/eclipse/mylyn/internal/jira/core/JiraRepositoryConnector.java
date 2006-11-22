@@ -9,7 +9,7 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
 import java.net.Proxy;
 import java.net.UnknownHostException;
@@ -21,7 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.JiraTask.PriorityLevel;
+import org.eclipse.mylar.internal.jira.core.JiraTask.PriorityLevel;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -60,11 +61,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 	
 	public String getLabel() {
-		return MylarJiraPlugin.JIRA_CLIENT_LABEL;
+		return JiraUiPlugin.JIRA_CLIENT_LABEL;
 	}
 
 	public String getRepositoryType() {
-		return MylarJiraPlugin.REPOSITORY_KIND;
+		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		final List<Issue> issues = new ArrayList<Issue>();
 		
 		// TaskRepository repository =
-		// TasksUiPlugin.getRepositoryManager().getRepository(MylarJiraPlugin.REPOSITORY_KIND,
+		// TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND,
 		// repositoryQuery.getRepositoryUrl());
 
 		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
@@ -167,7 +168,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	//
 	// TaskRepository repository =
 	// TasksUiPlugin.getRepositoryManager().getRepository(
-	// MylarJiraPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
+	// JiraUiPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
 	//
 	// JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
 	//
@@ -264,7 +265,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
-			String url = repositoryUrl + MylarJiraPlugin.ISSUE_URL_PREFIX + issue.getKey();
+			String url = repositoryUrl + JiraUiPlugin.ISSUE_URL_PREFIX + issue.getKey();
 			task.setUrl(url);
 			if (issue.getDescription() != null) {
 				task.setDescription(issue.getSummary());

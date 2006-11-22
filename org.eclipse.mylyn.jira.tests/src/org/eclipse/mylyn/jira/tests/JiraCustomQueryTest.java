@@ -18,8 +18,8 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.tigris.jira.core.model.Component;
@@ -134,7 +134,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 		TaskList taskList = new TaskList();
 
-		TaskRepository taskRepository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, repositoryUrl);
+		TaskRepository taskRepository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
 
 		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskList, taskRepository);

@@ -16,8 +16,8 @@ import java.net.MalformedURLException;
 import junit.framework.TestCase;
 
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.mylar.internal.jira.JiraServerFacade;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -56,7 +56,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	protected void init() {
-		String kind = MylarJiraPlugin.REPOSITORY_KIND;
+		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
 		repository = new TaskRepository(kind, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);

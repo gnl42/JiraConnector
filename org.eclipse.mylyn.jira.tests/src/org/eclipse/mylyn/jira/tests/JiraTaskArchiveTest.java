@@ -13,8 +13,8 @@ package org.eclipse.mylar.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.JiraTask;
-import org.eclipse.mylar.internal.jira.MylarJiraPlugin;
+import org.eclipse.mylar.internal.jira.core.JiraTask;
+import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -44,7 +44,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.REPOSITORY_KIND);
+				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 //		taskList.clearArchive();
 //		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
@@ -56,7 +56,7 @@ public class JiraTaskArchiveTest extends TestCase {
 	
 	public void testJiraTaskRegistry() {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				MylarJiraPlugin.REPOSITORY_KIND);
+				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 
 		JiraTask task1 = new JiraTask(HANDLE1, LABEL, true);

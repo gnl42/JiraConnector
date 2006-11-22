@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core;
 
 import java.util.List;
 

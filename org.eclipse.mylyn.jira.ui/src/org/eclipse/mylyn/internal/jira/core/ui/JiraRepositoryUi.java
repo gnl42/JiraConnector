@@ -6,15 +6,17 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira;
+package org.eclipse.mylar.internal.jira.core.ui;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
-import org.eclipse.mylar.internal.jira.ui.wizards.JiraQueryPage;
-import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
-import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
+import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.core.JiraRepositoryQuery;
+import org.eclipse.mylar.internal.jira.core.ui.wizards.EditJiraQueryWizard;
+import org.eclipse.mylar.internal.jira.core.ui.wizards.JiraQueryPage;
+import org.eclipse.mylar.internal.jira.core.ui.wizards.JiraRepositorySettingsPage;
+import org.eclipse.mylar.internal.jira.core.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylar.internal.tasks.ui.wizards.NewWebTaskWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
@@ -56,7 +58,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public String getRepositoryType() {
-		return MylarJiraPlugin.REPOSITORY_KIND;
+		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
 	@Override
