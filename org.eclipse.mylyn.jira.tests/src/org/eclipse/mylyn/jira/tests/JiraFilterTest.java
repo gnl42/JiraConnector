@@ -76,7 +76,7 @@ public class JiraFilterTest extends TestCase {
 
 		assertTrue(jFilter.getHits().size() > 0);
 		JiraQueryHit jHit = (JiraQueryHit) jFilter.getHits().iterator().next();
-		assertTrue(jHit.getDescription().length() > 0);
+		assertTrue(jHit.getSummary().length() > 0);
 	}
 
 	// TODO: reneable

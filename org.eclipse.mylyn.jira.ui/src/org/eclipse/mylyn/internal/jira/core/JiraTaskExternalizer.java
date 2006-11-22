@@ -150,7 +150,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		String queryTagName = getQueryTagNameForElement(query);
 		Element node = doc.createElement(queryTagName);
 
-		node.setAttribute(KEY_NAME, query.getDescription());
+		node.setAttribute(KEY_NAME, query.getSummary());
 		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
 		node.setAttribute(KEY_QUERY_STRING, query.getUrl());
 		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl());
@@ -164,8 +164,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		} else if (query instanceof JiraCustomQuery) {
 			JiraCustomQuery customQuery = (JiraCustomQuery) query;
 //			FilterDefinition filter = customQuery.getFilterDefinition();
-			node.setAttribute(KEY_FILTER_ID, customQuery.getDescription());
-			node.setAttribute(KEY_FILTER_NAME, customQuery.getDescription());
+			node.setAttribute(KEY_FILTER_ID, customQuery.getSummary());
+			node.setAttribute(KEY_FILTER_NAME, customQuery.getSummary());
 			// node.setAttribute(KEY_FILTER_DESCRIPTION,
 			// filter.getDescription());
 			node.setAttribute(KEY_FILTER_CUSTOM_URL, customQuery.getUrl());
