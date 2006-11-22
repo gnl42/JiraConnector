@@ -139,8 +139,5 @@ public class JiraTask extends AbstractRepositoryTask {
 	@Override
 	public String getIdLabel() {
 		return getKey();
-	}
-
-
-	
+	}	
 }
