@@ -118,7 +118,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-			// TODO: removes, added to re-open connection, bug 164543
+			// TODO: remove, added to re-open connection, bug 164543
 			jiraServer.getServerInfo();
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);

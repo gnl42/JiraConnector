@@ -11,12 +11,17 @@ package org.eclipse.mylar.internal.jira.core;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.util.HTML2TextReader;
@@ -38,6 +43,10 @@ import org.tigris.jira.core.model.Priority;
 import org.tigris.jira.core.model.Resolution;
 import org.tigris.jira.core.model.Status;
 import org.tigris.jira.core.model.Version;
+import org.tigris.jira.core.model.filter.DateRangeFilter;
+import org.tigris.jira.core.model.filter.FilterDefinition;
+import org.tigris.jira.core.model.filter.RelativeDateRangeFilter;
+import org.tigris.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.tigris.jira.core.service.JiraServer;
 
 /**
@@ -62,8 +71,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		// this.connector = connector;
 	}
 
-	public RepositoryTaskData downloadTaskData(TaskRepository repository, String taskId)
-			throws CoreException {
+	public RepositoryTaskData downloadTaskData(TaskRepository repository, String taskId) throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), taskId);
 
@@ -251,34 +259,60 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
 			Set<AbstractRepositoryTask> tasks) throws CoreException, UnsupportedEncodingException {
-		// JiraServer server =
-		// JiraServerFacade.getDefault().getJiraServer(repository);
-		// if (server == null) {
-		// return Collections.emptySet();
-		// } else {
-		// List<AbstractRepositoryTask> changedTasks = new
-		// ArrayList<AbstractRepositoryTask>();
-		// for (AbstractRepositoryTask task : tasks) {
-		// if (task instanceof JiraTask) {
-		// Date lastCommentDate = null;
-		// JiraTask jiraTask = (JiraTask) task;
-		// Issue issue = server.getIssue(jiraTask.getKey());
-		// if (issue != null) {
-		// Comment[] comments = issue.getComments();
-		// if (comments != null && comments.length > 0) {
-		// lastCommentDate = comments[comments.length - 1].getCreated();
-		// }
-		// }
-		// if (lastCommentDate != null && task.getLastSyncDateStamp()() != null)
-		// {
-		// if (lastCommentDate.after(task.getLastSynchronized())) {
-		// changedTasks.add(task);
-		// }
-		// }
-		// }
-		// }
-		// }
-		return Collections.emptySet();
+
+		Set<AbstractRepositoryTask> changedTasks = new HashSet<AbstractRepositoryTask>();
+
+		String dateString = repository.getSyncTimeStamp();
+		if (dateString == null) {
+			dateString = "";
+		}
+
+		Date lastSyncDate;
+		try {
+			lastSyncDate = modified_ts_format.parse(dateString);
+		} catch (ParseException e) {
+			return tasks;
+		}
+
+		final List<Issue> issues = new ArrayList<Issue>();
+		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues);
+		JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+		if (jiraServer == null) {
+			return tasks;
+		}
+		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
+		changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, new Date()));
+		long mil = lastSyncDate.getTime();
+		long now = Calendar.getInstance().getTimeInMillis();
+		if (now - mil <= 0) {
+			// return empty set
+			return changedTasks;
+		}
+		long minutes = -1 * ((now - mil) / (1000 * 60));
+		if (minutes == 0)
+			return changedTasks;
+		// XXX: This is a HACK. RangeType.MINUTES doesn't exist in RangeType but
+		// RangeType.MONTH
+		// uses the correct 'm' character upon submission so we get the correct
+		// result
+		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MONTH, minutes));
+
+		// TODO: Need some way to further scope this query
+
+		// TODO: remove, added to re-open connection, bug 164543
+		jiraServer.getServerInfo();
+		// Will get ALL issues that have changed since lastSyncDate
+		jiraServer.search(changedFilter, collector);
+
+		for (Issue issue : issues) {
+			String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
+			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handle);
+			if (task instanceof AbstractRepositoryTask) {
+				changedTasks.add((AbstractRepositoryTask) task);
+			}
+		}
+
+		return changedTasks;
 	}
 
 	private void addOperations(Issue issue, RepositoryTaskData data) {
