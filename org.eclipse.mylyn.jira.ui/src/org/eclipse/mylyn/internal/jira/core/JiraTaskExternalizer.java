@@ -16,7 +16,6 @@ import java.io.ObjectInputStream;
 
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
-import org.eclipse.mylar.internal.tasks.ui.OfflineTaskManager;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -296,13 +295,11 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return KEY_JIRA_QUERY_HIT;
 	}
 
-	// TODO move up to DelegatingTaskExternalizer
+	// TODO move up to DelegatingTaskExternalizer (or eliminate all together bug#157257)
 	@Override
 	public void readTaskData(AbstractRepositoryTask task) {
-		RepositoryTaskData data = OfflineTaskManager.findBug(task.getRepositoryUrl(), AbstractRepositoryTask
-				.getTaskId(task.getHandleIdentifier()));
-		task.setTaskData((RepositoryTaskData) data);
-
+		RepositoryTaskData data = TasksUiPlugin.getDefault().getTaskDataManager().getTaskData(task.getHandleIdentifier());		
+		task.setTaskData(data);
 		if (data != null && data.hasLocalChanges()) {
 			task.setSyncState(RepositoryTaskSyncState.OUTGOING);
 		}

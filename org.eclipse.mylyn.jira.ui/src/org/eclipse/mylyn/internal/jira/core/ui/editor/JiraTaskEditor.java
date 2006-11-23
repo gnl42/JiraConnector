@@ -69,12 +69,12 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			return;
 
 		editorInput = (AbstractTaskEditorInput) input;
-		taskData = editorInput.getRepositoryTaskData();
+		taskData = editorInput.getTaskData();
 		repository = editorInput.getRepository();
 		connector = (JiraRepositoryConnector) TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				repository.getKind());
 
-		taskOutlineModel = RepositoryTaskOutlineNode.parseBugReport(editorInput.getRepositoryTaskData());
+		taskOutlineModel = RepositoryTaskOutlineNode.parseBugReport(editorInput.getTaskData());
 
 		setSite(site);
 		setInput(input);

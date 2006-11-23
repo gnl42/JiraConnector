@@ -15,7 +15,6 @@ import org.eclipse.mylar.internal.tasks.ui.ITaskEditorFactory;
 import org.eclipse.mylar.internal.tasks.ui.editors.MylarTaskEditor;
 import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
 import org.eclipse.mylar.internal.tasks.ui.editors.TaskEditorInput;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -34,7 +33,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 	public boolean canCreateEditorFor(IEditorInput input) {
 		if (input instanceof RepositoryTaskEditorInput) {
 			RepositoryTaskEditorInput existingInput = (RepositoryTaskEditorInput) input;
-			return existingInput.getRepositoryTaskData() != null
+			return existingInput.getTaskData() != null
 					&& JiraUiPlugin.REPOSITORY_KIND.equals(existingInput.getRepository().getKind());
 		} 
 		return false;
@@ -52,7 +51,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND,
 				jiraTask.getRepositoryUrl());
 		try {
-			return new RepositoryTaskEditorInput(repository, jiraTask.getTaskData(), AbstractRepositoryTask.getTaskId(jiraTask.getHandleIdentifier()), jiraTask.getUrl());
+			return new RepositoryTaskEditorInput(repository, jiraTask.getHandleIdentifier(), jiraTask.getUrl());
 		} catch (Exception e) {
 			MylarStatusHandler.fail(e, "Could not create Trac editor input", true);
 		}
