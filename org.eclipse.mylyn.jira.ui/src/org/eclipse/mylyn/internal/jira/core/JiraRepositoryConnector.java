@@ -105,13 +105,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
 			IProgressMonitor monitor, QueryHitCollector resultCollector) {
-		// List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
 		final List<Issue> issues = new ArrayList<Issue>();
-		
-		// TaskRepository repository =
-		// TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND,
-		// repositoryQuery.getRepositoryUrl());
-
 		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
 
 		// TODO: Get rid of JiraIssueCollector and pass IQueryHitCollector
@@ -120,6 +114,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 			// TODO: remove, added to re-open connection, bug 164543
 			jiraServer.getServerInfo();
+			
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
@@ -158,63 +153,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		return Status.OK_STATUS;
 	}
-
-	// @Override
-	// public List<AbstractQueryHit> performQuery(AbstractRepositoryQuery
-	// repositoryQuery, final IProgressMonitor monitor,
-	// MultiStatus queryStatus) {
-	// List<AbstractQueryHit> hits = new ArrayList<AbstractQueryHit>();
-	// final List<Issue> issues = new ArrayList<Issue>();
-	//
-	// TaskRepository repository =
-	// TasksUiPlugin.getRepositoryManager().getRepository(
-	// JiraUiPlugin.REPOSITORY_KIND, repositoryQuery.getRepositoryUrl());
-	//
-	// JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
-	//
-	// try {
-	// JiraServer jiraServer =
-	// JiraServerFacade.getDefault().getJiraServer(repository);
-	// if (repositoryQuery instanceof JiraRepositoryQuery) {
-	// jiraServer.search(((JiraRepositoryQuery)
-	// repositoryQuery).getNamedFilter(), collector);
-	// } else if (repositoryQuery instanceof JiraCustomQuery) {
-	// jiraServer.search(((JiraCustomQuery)
-	// repositoryQuery).getFilterDefinition(), collector);
-	// }
-	// } catch (Throwable t) {
-	// queryStatus.add(new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID,
-	// IStatus.OK,
-	// "Could not log in to server: " + repositoryQuery.getRepositoryUrl()
-	// + "\n\nCheck network connection.", t));
-	// return hits;
-	// }
-	// // TODO: work-around no other way of determining failure
-	// if (!collector.isDone()) {
-	// queryStatus.add(new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID,
-	// IStatus.OK,
-	// "Could not log in to server: " + repositoryQuery.getRepositoryUrl()
-	// + "\n\nCheck network connection.", new UnknownHostException()));
-	// return hits;
-	// }
-	// for (Issue issue : issues) {
-	// String issueId = issue.getId();
-	// String handleIdentifier =
-	// AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
-	// ITask task =
-	// TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
-	// if (!(task instanceof JiraTask)) {
-	// task = createTask(issue, handleIdentifier);
-	// }
-	// updateTaskDetails(repository.getUrl(), (JiraTask) task, issue, false);
-	//
-	// JiraQueryHit hit = new JiraQueryHit((JiraTask) task,
-	// repositoryQuery.getRepositoryUrl(), issueId);
-	// hits.add(hit);
-	// }
-	// queryStatus.add(Status.OK_STATUS);
-	// return hits;
-	// }
 
 	@Override
 	public boolean canCreateNewTask(TaskRepository repository) {

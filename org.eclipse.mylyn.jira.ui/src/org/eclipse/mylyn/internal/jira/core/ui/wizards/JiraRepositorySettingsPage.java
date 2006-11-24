@@ -60,13 +60,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	}
 
 	protected void validateSettings() {
-//		if (JiraServerFacade.getDefault().validateServerAndCredentials(JiraRepositorySettingsPage.super.serverUrlEditor.getStringValue(),
-//				getUserName(), getPassword())) {
-//			MessageDialog.openInformation(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG,
-//					"Valid Jira server found and your login was accepted.");
-//		} else {
-//			MessageDialog.openInformation(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
-//		}
 		final String serverUrl = getServerUrl();
 		final String userName = getUserName();
 		final String password = getPassword();
