@@ -141,7 +141,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			attribute.addValue(component.getName());
 		}
 		for (Component component : jiraIssue.getProject().getComponents()) {
-			attribute.addOptionValue(component.getName(), component.getId());
+			attribute.addOption(component.getName(), component.getId());
 
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, attribute);
@@ -151,7 +151,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			attribute.addValue(version.getName());
 		}
 		for (Version version : jiraIssue.getProject().getVersions()) {
-			attribute.addOptionValue(version.getName(), version.getId());
+			attribute.addOption(version.getName(), version.getId());
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, attribute);
 
@@ -161,7 +161,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			attribute.addValue(version.getName());
 		}
 		for (Version version : jiraIssue.getProject().getVersions()) {
-			attribute.addOptionValue(version.getName(), version.getId());
+			attribute.addOption(version.getName(), version.getId());
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, attribute);
 
@@ -179,14 +179,14 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRIORITY, "Priority: ", false);
 		attribute.setValue(jiraIssue.getPriority().getName());
 		for (Priority priority : server.getPriorities()) {
-			attribute.addOptionValue(priority.getName(), priority.getId());
+			attribute.addOption(priority.getName(), priority.getId());
 		}
 		data.addAttribute(RepositoryTaskAttribute.PRIORITY, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, "Type: ", false);
 		attribute.setValue(jiraIssue.getType().getName());
 		for (IssueType type : server.getIssueTypes()) {
-			attribute.addOptionValue(type.getName(), type.getId());
+			attribute.addOption(type.getName(), type.getId());
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, attribute);
 

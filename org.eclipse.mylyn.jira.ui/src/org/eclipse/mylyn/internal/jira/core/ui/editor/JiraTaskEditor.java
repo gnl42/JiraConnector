@@ -108,7 +108,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		componentsList.setLayoutData(compTextData);
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 		if (attribute != null) {
-			componentsList.setItems(attribute.getOptionValues().keySet().toArray(new String[1]));
+			componentsList.setItems(attribute.getOptions().toArray(new String[1]));
 			for (String compStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
 				componentsList.select(componentsList.indexOf(compStr));
 			}
@@ -138,7 +138,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		versionsList.setLayoutData(versionsTextData);
 		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
 		if (attribute != null) {
-			versionsList.setItems(attribute.getOptionValues().keySet().toArray(new String[1]));
+			versionsList.setItems(attribute.getOptions().toArray(new String[1]));
 			for (String versionStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
 				versionsList.select(versionsList.indexOf(versionStr));
 			}
@@ -168,7 +168,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		affectsVersionsList.setLayoutData(affectsVersionsTextData);
 		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
 		if (attribute != null) {
-			affectsVersionsList.setItems(attribute.getOptionValues().keySet().toArray(new String[1]));
+			affectsVersionsList.setItems(attribute.getOptions().toArray(new String[1]));
 			for (String versionStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {
 				affectsVersionsList.select(affectsVersionsList.indexOf(versionStr));
 			}

@@ -298,7 +298,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		RepositoryTaskAttribute attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 		for (String compStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {		
 			Component comp = new Component();
-			comp.setId(attrib.getOptionValues().get(compStr));
+			comp.setId(attrib.getOptionParameter(compStr));
 			comp.setName(compStr);			
 			components.add(comp);
 		}
@@ -308,7 +308,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);	
 		for (String fixStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {	
 			Version version = new Version();
-			version.setId(attrib.getOptionValues().get(fixStr));
+			version.setId(attrib.getOptionParameter(fixStr));
 			version.setName(fixStr);			
 			fixversions.add(version);
 		}
@@ -318,7 +318,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);	
 		for (String fixStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {	
 			Version version = new Version();
-			version.setId(attrib.getOptionValues().get(fixStr));
+			version.setId(attrib.getOptionParameter(fixStr));
 			version.setName(fixStr);			
 			affectsversions.add(version);
 		}
