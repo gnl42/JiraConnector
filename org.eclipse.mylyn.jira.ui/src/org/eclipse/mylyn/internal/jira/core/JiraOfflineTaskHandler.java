@@ -197,7 +197,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		int x = 1;
 		for (Comment comment : jiraIssue.getComments()) {
 			if (comment != null) {
-				TaskComment taskComment = new TaskComment(attributeFacotry, data, x++);
+				TaskComment taskComment = new TaskComment(attributeFacotry, x++);
 
 				attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.USER_OWNER, "Commenter: ", true);
 				attribute.setValue(comment.getAuthor());
