@@ -203,8 +203,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		setPageComplete(false);
 	}
 
-	public void createControl(Composite parent) {
-		Composite c = new Composite(parent, SWT.NONE);
+	public void createControl(final Composite parent) {
+		Composite c = null;
+
+		c = new Composite(parent, SWT.NONE);
 		c.setLayout(new GridLayout(3, false));
 
 		if (namedQuery) {
@@ -481,7 +483,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		lblQuery.setText("Query:");
 		queryString = new Text(c, SWT.BORDER);
 		queryString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
-		// TODO put content assist here and a label describing what is available
+		// TODO put content assist here and a label describing what is
+		// available
 
 		queryString.addFocusListener(new FocusAdapter() {
 
@@ -677,7 +680,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		} else {
 			loadFromWorkingCopy();
 		}
-
 		setControl(c);
 	}
 
@@ -822,7 +824,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				Object[] elements = new Object[server.getProjects().length + 1];
 				elements[0] = new Placeholder("All Projects");
 				System.arraycopy(server.getProjects(), 0, elements, 1, server.getProjects().length);
-
 				return elements;
 			}
 
@@ -864,14 +865,13 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	}
 
-
-//	public boolean isPageComplete() {
-//		if (namedQuery && name != null && name.getText().length() == 0) {
-//			return false;
-//		} else {
-//			return true;
-//		}
-//	}
+	// public boolean isPageComplete() {
+	// if (namedQuery && name != null && name.getText().length() == 0) {
+	// return false;
+	// } else {
+	// return true;
+	// }
+	// }
 
 	void validatePage() {
 		if (namedQuery && super.isPageComplete()) {
@@ -1416,7 +1416,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see java.lang.Object#equals(java.lang.Object)
 		 */
 		public boolean equals(Object obj) {
@@ -1441,7 +1441,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		String url = repository.getUrl();
-		return new JiraCustomQuery(url, workingCopy, TasksUiPlugin.getTaskListManager().getTaskList(),
-				TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND, url));
+		return new JiraCustomQuery(url, workingCopy, TasksUiPlugin.getTaskListManager().getTaskList(), TasksUiPlugin
+				.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND, url));
 	}
 }
