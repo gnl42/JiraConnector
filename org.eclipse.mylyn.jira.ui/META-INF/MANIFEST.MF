@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mylar JIRA UI Plug-in
 Bundle-SymbolicName: org.eclipse.mylar.jira.ui;singleton:=true
-Bundle-Version: 0.9.0.v20061124-1700
+Bundle-Version: 0.9.0.v20061124-2015
 Bundle-Activator: org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
