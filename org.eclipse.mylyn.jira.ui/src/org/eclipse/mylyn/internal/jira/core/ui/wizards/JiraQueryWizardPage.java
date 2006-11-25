@@ -82,6 +82,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		setPageComplete(false);
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		boolean isCustom = query==null || query instanceof JiraCustomQuery;
 		boolean isRepository = query instanceof JiraRepositoryQuery;
@@ -103,6 +104,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		buttonSaved.setSelection(isRepository);
 		
 		buttonSaved.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean selection = buttonSaved.getSelection();
 				filterCombo.setEnabled(selection);
@@ -142,10 +144,12 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		downloadFilters();
 	}
 	
+	@Override
 	public boolean isPageComplete() {
 		return buttonCustom.getSelection() ? super.isPageComplete() : true;
 	}
 
+	@Override
 	public IWizardPage getNextPage() {
 		if (!buttonCustom.getSelection()) {
 			return null;
@@ -167,6 +171,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		return filterSummaryPage;
 	}
 
+	@Override
 	public boolean canFlipToNextPage() {
 		return buttonCustom.getSelection();
 	}
@@ -234,6 +239,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		return null;
 	}
 
+	@Override
 	public AbstractRepositoryQuery getQuery() {
 		if (buttonSaved.getSelection()) {
 			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), TasksUiPlugin

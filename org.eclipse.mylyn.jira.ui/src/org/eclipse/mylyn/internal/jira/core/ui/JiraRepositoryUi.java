@@ -34,10 +34,12 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 		return new JiraQueryPage(repository, new FilterDefinition(), true, false);
 	} 
 
+	@Override
 	public AbstractRepositorySettingsPage getSettingsPage() {
 		return new JiraRepositorySettingsPage(this);
 	}
 
+	@Override
 	public IWizard getQueryWizard(TaskRepository repository, AbstractRepositoryQuery query) {
 		if (query instanceof JiraRepositoryQuery || query instanceof JiraCustomQuery) {
 			return new EditJiraQueryWizard(repository, query);

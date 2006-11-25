@@ -61,6 +61,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	private TaskList taskList;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, SERVER_URL);
@@ -71,6 +72,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		TasksUiPlugin.getTaskListManager().saveTaskList();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);

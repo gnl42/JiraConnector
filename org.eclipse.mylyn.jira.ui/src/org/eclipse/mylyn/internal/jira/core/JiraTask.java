@@ -45,6 +45,7 @@ public class JiraTask extends AbstractRepositoryTask {
 			this.key = key;
 		}
 
+		@Override
 		public String toString() {
 			return key;
 		}
@@ -125,6 +126,7 @@ public class JiraTask extends AbstractRepositoryTask {
 		super(handle, label, newTask);
 	}
 
+	@Override
 	public String getRepositoryKind() {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}

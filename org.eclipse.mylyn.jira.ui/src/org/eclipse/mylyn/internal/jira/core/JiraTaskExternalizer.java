@@ -69,6 +69,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String KEY_KEY = "Key";
 
+	@Override
 	public boolean canReadQuery(Node node) {
 		return node.getNodeName().equals(KEY_JIRA_QUERY) || node.getNodeName().equals(KEY_JIRA_CUSTOM);
 	}
@@ -85,14 +86,17 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return node;
 	}
 
+	@Override
 	public boolean canCreateElementFor(AbstractRepositoryQuery category) {
 		return category instanceof JiraRepositoryQuery || category instanceof JiraCustomQuery;
 	}
 
+	@Override
 	public boolean canCreateElementFor(ITask task) {
 		return task instanceof JiraTask;
 	}
 
+	@Override
 	public AbstractRepositoryQuery readQuery(Node node, TaskList taskList) throws TaskExternalizationException {
 		boolean hasCaughtException = false;
 		Element element = (Element) node;
@@ -145,6 +149,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return query;
 	}
 
+	@Override
 	public Element createQueryElement(AbstractRepositoryQuery query, Document doc, Element parent) {
 		String queryTagName = getQueryTagNameForElement(query);
 		Element node = doc.createElement(queryTagName);
@@ -212,6 +217,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return KEY_JIRA_ISSUE;
 	}
 
+	@Override
 	public Element createTaskElement(ITask task, Document doc, Element parent) {
 		Element node = super.createTaskElement(task, doc, parent);
 		node.setAttribute(KEY_KEY, ((JiraTask) task).getKey());
@@ -248,10 +254,12 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return task;
 	}
 
+	@Override
 	public boolean canReadQueryHit(Node node) {
 		return node.getNodeName().equals(getQueryHitTagName());
 	}
 
+	@Override
 	public void readQueryHit(Node node, TaskList taskList, AbstractRepositoryQuery query)
 			throws TaskExternalizationException {
 		Element element = (Element) node;
@@ -276,6 +284,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		readQueryHitInfo(hit, taskList, query, element);
 	}
 
+	@Override
 	public String getQueryTagNameForElement(AbstractRepositoryQuery query) {
 		if (query instanceof JiraRepositoryQuery) {
 			return KEY_JIRA_QUERY;

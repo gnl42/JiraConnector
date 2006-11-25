@@ -33,6 +33,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 //	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 //		jiraRepository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
@@ -42,6 +43,7 @@ public class JiraTaskArchiveTest extends TestCase {
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);

@@ -44,6 +44,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 //	private JiraRepositoryConnector connector;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
@@ -51,6 +52,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}

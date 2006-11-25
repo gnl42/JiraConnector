@@ -35,10 +35,12 @@ public class JiraQueryHit extends AbstractQueryHit {
 		return key;
 	}
 
+	@Override
 	protected AbstractRepositoryTask createTask() {
 		return JiraRepositoryConnector.createTask(super.getHandleIdentifier(), key, description);
 	}
 
+	@Override
 	public String getUrl() {
 		return getRepositoryUrl() + JiraUiPlugin.ISSUE_URL_PREFIX + key;
 	}

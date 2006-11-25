@@ -60,10 +60,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		offlineHandler = new JiraOfflineTaskHandler(this);
 	}
 	
+	@Override
 	public String getLabel() {
 		return JiraUiPlugin.JIRA_CLIENT_LABEL;
 	}
 
+	@Override
 	public String getRepositoryType() {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
@@ -84,6 +86,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return true;
 	}
 
+	@Override
 	public ITask createTaskFromExistingKey(TaskRepository repository, String key, Proxy proxySettings)
 			throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
@@ -260,6 +263,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return task;
 	}
 
+	@Override
 	public String toString() {
 		return getLabel();
 	}

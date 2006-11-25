@@ -49,6 +49,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 	private Project project;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 

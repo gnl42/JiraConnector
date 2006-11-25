@@ -38,6 +38,7 @@ public class JiraServerFacadeTest extends TestCase {
 
 	private TaskRepository repository = null;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, SERVER_URL);
@@ -47,6 +48,7 @@ public class JiraServerFacadeTest extends TestCase {
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);

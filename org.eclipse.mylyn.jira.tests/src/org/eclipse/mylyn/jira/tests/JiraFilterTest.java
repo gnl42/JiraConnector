@@ -41,6 +41,7 @@ public class JiraFilterTest extends TestCase {
 	
 	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
@@ -50,6 +51,7 @@ public class JiraFilterTest extends TestCase {
 		jiraFacade = JiraServerFacade.getDefault();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);

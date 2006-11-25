@@ -114,6 +114,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		this.maxHits = MAX_HITS;
 	}
 
+	@Override
 	public String getRepositoryKind() {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}

@@ -64,6 +64,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		super(editor);
 	}
 
+	@Override
 	public void init(IEditorSite site, IEditorInput input) {
 		if (!(input instanceof RepositoryTaskEditorInput))
 			return;
@@ -219,6 +220,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		final boolean attachContext = false;
 
 		JobChangeAdapter listener = new JobChangeAdapter() {
+			@Override
 			public void done(final IJobChangeEvent event) {
 				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 					public void run() {
@@ -227,7 +229,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 								// TODO check for task == null
 								// TODO should be done as part of job
 								try {
-									connector.attachContext(repository, (AbstractRepositoryTask) task, "");
+									connector.attachContext(repository, task, "");
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();

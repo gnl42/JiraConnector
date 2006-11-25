@@ -36,6 +36,7 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 //		super.setDescription(filter.getName());
 	}
 
+	@Override
 	public String getRepositoryKind() {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
@@ -47,6 +48,7 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 	/**
 	 * Name comes from server.
 	 */
+	@Override
 	public boolean canRename() {
 		return false;
 	}

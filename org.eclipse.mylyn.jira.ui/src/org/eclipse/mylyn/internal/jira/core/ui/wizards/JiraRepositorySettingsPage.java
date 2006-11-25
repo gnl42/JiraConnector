@@ -44,10 +44,12 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	}
 
 	/** Create a button to validate the specified repository settings */
+	@Override
 	protected void createAdditionalControls(Composite parent) {
 		// ignore
 	}
 	
+	@Override
 	protected boolean isValidUrl(String name) {
 		if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
 			try {
@@ -59,6 +61,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		return false;
 	}
 
+	@Override
 	protected void validateSettings() {
 		final String serverUrl = getServerUrl();
 		final String userName = getUserName();
