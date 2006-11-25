@@ -41,6 +41,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	public JiraRepositorySettingsPage(AbstractRepositoryConnectorUi repositoryUi) {
 		super(TITLE, DESCRIPTION, repositoryUi);
+		setNeedsProxy(false);
 	}
 
 	/** Create a button to validate the specified repository settings */
