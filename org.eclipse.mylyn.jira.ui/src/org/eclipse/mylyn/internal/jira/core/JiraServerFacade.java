@@ -53,8 +53,11 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			String serverHostname = getServerHost(repository);
 			JiraServer server = serverManager.getServer(serverHostname);
 			if (server == null) {
-				server = serverManager.createServer(serverHostname, repository.getUrl(), false,
-						repository.getUserName(), repository.getPassword());
+				String userName = repository.getUserName();
+				String password = repository.getPassword();
+				server = serverManager.createServer(serverHostname, repository.getUrl(), false, //
+						userName == null ? "" : userName, //
+						password == null ? "" : password);
 				serverManager.addServer(server);
 			}
 			return server;
