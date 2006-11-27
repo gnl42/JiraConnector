@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraTask.PriorityLevel;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -227,9 +226,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			PriorityLevel priorityLevel = JiraTask.PriorityLevel.fromPriority(issue.getPriority());
 			if (priorityLevel != null) {
 				task.setPriority(priorityLevel.toString());
-			} else {
-				MylarStatusHandler.log("unrecognized priority: " + issue.getPriority().getDescription(), null);
-			}
+			} 
+//			else {
+//				MylarStatusHandler.log("unrecognized priority: " + issue.getPriority().getDescription(), null);
+//			}
 		}
 		if (notifyOfChange) {
 			TasksUiPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
