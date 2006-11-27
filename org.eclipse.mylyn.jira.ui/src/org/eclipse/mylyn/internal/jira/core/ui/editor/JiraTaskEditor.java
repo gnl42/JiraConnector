@@ -22,7 +22,7 @@ import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
-import org.eclipse.mylar.internal.tasks.ui.TaskUiUtil;
+import org.eclipse.mylar.internal.tasks.ui.TasksUiUtil;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractTaskEditorInput;
 import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
@@ -279,11 +279,11 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							@Override
 							public void done(IJobChangeEvent event) {
 								close();
-								TaskUiUtil.openEditor(task, false);
+								TasksUiUtil.openEditor(task, false);
 							}
 						});
 					} else {
-						//TaskUiUtil.openRepositoryTask(...);
+						//TasksUiUtil.openRepositoryTask(...);
 						close();
 					}
 					return Status.OK_STATUS;
