@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.mylar.jira_feature"
       label="Mylar Connector: JIRA"
-      version="0.9.0.v20061127-1300"
+      version="0.9.1"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
@@ -223,21 +223,22 @@ litigation.
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.mylar.tasks.ui"/>
       <import plugin="org.eclipse.mylar.context.core" version="0.6.1" match="greaterOrEqual"/>
-      <import plugin="org.tigris.jira.core" version="0.9.0" match="compatible"/>
-      <import plugin="org.tigris.jira.core.soap" version="0.9.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import feature="org.tigris.jira.core" version="0.9.3" match="greaterOrEqual"/>
-      <import feature="org.eclipse.mylar_feature" version="0.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylar.tasks.core"/>
+      <import feature="org.tigris.jira.core" version="0.9.3" match="greaterOrEqual"/>
+      <import feature="org.eclipse.mylar_feature" version="0.9.1" match="greaterOrEqual"/>
+      <import plugin="org.tigris.jira.core" version="0.9.3" match="compatible"/>
+      <import plugin="org.tigris.jira.core.soap" version="0.9.3" match="compatible"/>
    </requires>
 
    <plugin
          id="org.eclipse.mylar.jira.ui"
          download-size="0"
          install-size="0"
-         version="0.9.0.v20061127-1300"
+         version="0.9.1"
          unpack="false"/>
 
 </feature>
