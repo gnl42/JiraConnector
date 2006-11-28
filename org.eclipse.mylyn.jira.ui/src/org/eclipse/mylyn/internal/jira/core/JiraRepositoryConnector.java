@@ -11,7 +11,6 @@
 
 package org.eclipse.mylar.internal.jira.core;
 
-import java.net.Proxy;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +25,8 @@ import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.IAttachmentHandler;
-import org.eclipse.mylar.tasks.core.IOfflineTaskHandler;
 import org.eclipse.mylar.tasks.core.ITask;
+import org.eclipse.mylar.tasks.core.ITaskDataHandler;
 import org.eclipse.mylar.tasks.core.QueryHitCollector;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
@@ -76,7 +75,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public IOfflineTaskHandler getOfflineTaskHandler() {
+	public ITaskDataHandler getTaskDataHandler() {
 		return offlineHandler;
 	}
 
@@ -85,8 +84,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return true;
 	}
 
+
 	@Override
-	public ITask createTaskFromExistingKey(TaskRepository repository, String key, Proxy proxySettings)
+	public AbstractRepositoryTask createTaskFromExistingKey(TaskRepository repository, String key)
 			throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (server != null) {

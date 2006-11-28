@@ -27,7 +27,7 @@ import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.util.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
-import org.eclipse.mylar.tasks.core.IOfflineTaskHandler;
+import org.eclipse.mylar.tasks.core.ITaskDataHandler;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
@@ -53,7 +53,7 @@ import org.tigris.jira.core.service.JiraServer;
  * @author Mik Kersten
  * @author Rob Elves
  */
-public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
+public class JiraOfflineTaskHandler implements ITaskDataHandler {
 
 	private AbstractAttributeFactory attributeFactory = new JiraAttributeFactory();
 
@@ -71,7 +71,7 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 		// this.connector = connector;
 	}
 
-	public RepositoryTaskData downloadTaskData(TaskRepository repository, String taskId) throws CoreException {
+	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId) throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), taskId);
 
@@ -345,5 +345,10 @@ public class JiraOfflineTaskHandler implements IOfflineTaskHandler {
 			data.addOperation(op);
 			data.addOperation(new RepositoryOperation(Status.OPEN_ID, "Open"));
 		}
+	}
+
+	public String postTaskData(TaskRepository repository, RepositoryTaskData taskData) throws CoreException {
+		// TODO: implement
+		return null;
 	}
 }

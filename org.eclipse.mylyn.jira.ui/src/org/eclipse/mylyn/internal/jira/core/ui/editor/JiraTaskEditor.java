@@ -56,8 +56,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	private static final String SUBMIT_JOB_LABEL = "Submitting to JIRA repository";
 
-	private JiraRepositoryConnector connector;
-
 	private RepositoryTaskData taskData;
 
 	public JiraTaskEditor(FormEditor editor) {
@@ -189,7 +187,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	}
 
 	@Override
-	protected void submitToRepository() {
+	public void submitToRepository() {
 		if (isDirty()) {
 			this.doSave(new NullProgressMonitor());
 		}
@@ -302,6 +300,11 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	@Override
 	protected void validateInput() {
 		// TODO Auto-generated method stub
+	}
+	
+	@Override
+	protected String getPluginId() {
+		return "Jira";
 	}
 
 }
