@@ -197,10 +197,21 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return null;
 		}
 		int index = url.indexOf(DELIM_URL);
-		if (index != -1) {
-			return url.substring(0, index);
+		return index == -1 ? null : url.substring(0, index);
+	}
+
+	@Override
+	public String getTaskIdFromTaskUrl(String url) {
+		if (url == null) {
+			return null;
 		}
-		return null;
+		int index = url.indexOf(DELIM_URL);
+		return index == -1 ? null : url.substring(index + DELIM_URL.length());
+	}
+	
+	@Override
+	public String getTaskWebUrl(String repositoryUrl, String taskId) {
+		return repositoryUrl + DELIM_URL + taskId;
 	}
 
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
@@ -226,7 +237,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			PriorityLevel priorityLevel = JiraTask.PriorityLevel.fromPriority(issue.getPriority());
 			if (priorityLevel != null) {
 				task.setPriority(priorityLevel.toString());
-			} 
+			}
 //			else {
 //				MylarStatusHandler.log("unrecognized priority: " + issue.getPriority().getDescription(), null);
 //			}
