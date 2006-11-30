@@ -27,14 +27,15 @@ import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.util.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
-import org.eclipse.mylar.tasks.core.ITaskDataHandler;
 import org.eclipse.mylar.tasks.core.ITask;
+import org.eclipse.mylar.tasks.core.ITaskDataHandler;
 import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.TaskComment;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
+import org.tigris.jira.core.JiraCorePlugin;
 import org.tigris.jira.core.model.Comment;
 import org.tigris.jira.core.model.Component;
 import org.tigris.jira.core.model.Issue;
@@ -317,38 +318,88 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 
 	private void addOperations(Issue issue, RepositoryTaskData data) {
 		Status status = issue.getStatus();
-		if (status.isStarted() || status.isReopened()) {
-			RepositoryOperation op = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
-			op.setChecked(true);
-			data.addOperation(op);
-			op = new RepositoryOperation(Status.RESOLVED_ID, "Resolve");
-			op.setUpOptions("resolution");
-			op.addOption("Fixed", Resolution.FIXED_ID);
-			op.addOption("Won't Fix", Resolution.WONT_FIX_ID);
-			op.addOption("Duplicate", Resolution.DUPLICATE_ID);
-			op.addOption("Incomplete", Resolution.INCOMPLETE_ID);
-			op.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
-			data.addOperation(op);
 
-			op = new RepositoryOperation(Status.CLOSED_ID, "Close");
-			op.setUpOptions("resolution");
-			op.addOption("Fixed", Resolution.FIXED_ID);
-			op.addOption("Won't Fix", Resolution.WONT_FIX_ID);
-			op.addOption("Duplicate", Resolution.DUPLICATE_ID);
-			op.addOption("Incomplete", Resolution.INCOMPLETE_ID);
-			op.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
-			data.addOperation(op);
+		RepositoryOperation opLeave = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
+		// RepositoryOperation opStart = new
+		// RepositoryOperation(Status.STARTED_ID, "Start");
+		// RepositoryOperation opStop = new RepositoryOperation(Status.OPEN_ID,
+		// "Stop (open)");
+		RepositoryOperation opReopen = new RepositoryOperation(Status.REOPENED_ID, "Reopen");
 
-		} else if (status.isClosed() || status.isResolved()) {
-			RepositoryOperation op = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
-			op.setChecked(true);
-			data.addOperation(op);
-			data.addOperation(new RepositoryOperation(Status.OPEN_ID, "Open"));
+		RepositoryOperation opResolve = new RepositoryOperation(Status.RESOLVED_ID, "Resolve");
+		opResolve.setUpOptions("resolution");
+		opResolve.addOption("Fixed", Resolution.FIXED_ID);
+		opResolve.addOption("Won't Fix", Resolution.WONT_FIX_ID);
+		opResolve.addOption("Duplicate", Resolution.DUPLICATE_ID);
+		opResolve.addOption("Incomplete", Resolution.INCOMPLETE_ID);
+		opResolve.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
+
+		RepositoryOperation opClose = new RepositoryOperation(Status.CLOSED_ID, "Close");
+		opClose.setUpOptions("resolution");
+		opClose.addOption("Fixed", Resolution.FIXED_ID);
+		opClose.addOption("Won't Fix", Resolution.WONT_FIX_ID);
+		opClose.addOption("Duplicate", Resolution.DUPLICATE_ID);
+		opClose.addOption("Incomplete", Resolution.INCOMPLETE_ID);
+		opClose.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
+
+		opLeave.setChecked(true);
+		data.addOperation(opLeave);
+		if (status.getId().equals(Status.OPEN_ID) || status.getId().equals(Status.STARTED_ID)) {
+			data.addOperation(opResolve);
+			data.addOperation(opClose);
+			// //data.addOperation(opStart);
+			// } else if (status.getId().equals(Status.STARTED_ID)) {
+			// data.addOperation(opResolve);
+			// data.addOperation(opStop);
+		} else if (status.getId().equals(Status.RESOLVED_ID)) {
+			data.addOperation(opReopen);
+			data.addOperation(opClose);
+		} else if (status.getId().equals(Status.REOPENED_ID)) {
+			data.addOperation(opResolve);
+			data.addOperation(opClose);
+			// data.addOperation(opStart);
+		} else if (status.getId().equals(Status.CLOSED_ID)) {
+			data.addOperation(opReopen);
 		}
 	}
 
 	public String postTaskData(TaskRepository repository, RepositoryTaskData taskData) throws CoreException {
-		// TODO: implement
-		return null;
+
+		final JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+		if (jiraServer == null) {
+			throw new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
+					JiraCorePlugin.ID, org.eclipse.core.runtime.Status.ERROR, "Unable to produce Jira Server", null));
+		}
+
+		Issue issue = JiraRepositoryConnector.buildJiraIssue(taskData, jiraServer);
+
+		RepositoryOperation operation = taskData.getSelectedOperation();
+		if (operation != null) {
+			if ("leave".equals(operation.getKnobName())) {
+				if (!issue.getStatus().isClosed()) {
+					jiraServer.updateIssue(issue, taskData.getNewComment());
+				} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
+					jiraServer.addCommentToIssue(issue, taskData.getNewComment());
+				}
+			} else if (org.tigris.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
+				String value = operation.getOptionValue(operation.getOptionSelection());
+				jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
+						.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+			} else if (org.tigris.jira.core.model.Status.REOPENED_ID.equals(operation.getKnobName())) {
+				jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository
+						.getUserName());
+			} else if (org.tigris.jira.core.model.Status.STARTED_ID.equals(operation.getKnobName())) {
+				jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
+			} else if (org.tigris.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
+				jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
+			} else if (org.tigris.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
+				String value = operation.getOptionValue(operation.getOptionSelection());
+				jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
+						.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+			}
+		} else {
+			jiraServer.updateIssue(issue, taskData.getNewComment());
+		}
+		return "";
 	}
 }

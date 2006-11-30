@@ -10,26 +10,14 @@ package org.eclipse.mylar.internal.jira.core.ui.editor;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector;
-import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
-import org.eclipse.mylar.internal.tasks.ui.TasksUiUtil;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.mylar.internal.tasks.ui.editors.AbstractTaskEditorInput;
 import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
 import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskOutlineNode;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.ITask;
-import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -42,11 +30,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.tigris.jira.core.model.Issue;
-import org.tigris.jira.core.service.JiraServer;
 
 /**
  * @author Mik Kersten
@@ -54,7 +39,7 @@ import org.tigris.jira.core.service.JiraServer;
  */
 public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
-	private static final String SUBMIT_JOB_LABEL = "Submitting to JIRA repository";
+	//private static final String SUBMIT_JOB_LABEL = "Submitting to JIRA repository";
 
 	private RepositoryTaskData taskData;
 
@@ -186,116 +171,116 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	}
 
-	@Override
-	public void submitToRepository() {
-		if (isDirty()) {
-			this.doSave(new NullProgressMonitor());
-		}
-		updateTask();
-		submitButton.setEnabled(false);
-		showBusy(true);
-
-		final JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-		if (jiraServer == null) {
-			submitButton.setEnabled(true);
-			JiraTaskEditor.this.showBusy(false);
-			return;
-		}
-
-		// TODO: build a new issue object rather then retrieving from server
-		final Issue issue = jiraServer.getIssue(this.getRepositoryTaskData().getAttributeValue(
-				JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
-		if (issue == null) {
-			MylarStatusHandler.log("Unable to retrieve issue from repository", this);
-			submitButton.setEnabled(true);
-			JiraTaskEditor.this.showBusy(false);
-			return;
-		}
-
-		final String comment = getNewCommentText();
-		final AbstractRepositoryTask task = (AbstractRepositoryTask) TasksUiPlugin.getTaskListManager().getTaskList()
-				.getTask(AbstractRepositoryTask.getHandle(repository.getUrl(), getRepositoryTaskData().getId()));
-		final boolean attachContext = false;
-
-		JobChangeAdapter listener = new JobChangeAdapter() {
-			@Override
-			public void done(final IJobChangeEvent event) {
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						if (event.getJob().getResult().isOK()) {
-							if (attachContext) {
-								// TODO check for task == null
-								// TODO should be done as part of job
-								try {
-									connector.attachContext(repository, task, "");
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-							//close();
-						} else {
-							submitButton.setEnabled(true);
-							JiraTaskEditor.this.showBusy(false);
-						}
-					}
-				});
-			}
-		};
-
-		Job submitJob = new Job(SUBMIT_JOB_LABEL) {
-
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					Issue issue = JiraRepositoryConnector.buildJiraIssue(getRepositoryTaskData(), jiraServer);
-
-					RepositoryOperation operation = getRepositoryTaskData().getSelectedOperation();
-					if (operation != null) {
-						if ("leave".equals(operation.getKnobName())) {
-							jiraServer.updateIssue(issue, comment);
-						} else if (org.tigris.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
-							String value = operation.getOptionValue(operation.getOptionSelection());
-							jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
-									comment, JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
-						} else if (org.tigris.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
-							jiraServer.reopenIssue(issue, comment, JiraServer.ASSIGNEE_CURRENT, repository
-									.getUserName());
-						} else if (org.tigris.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
-							String value = operation.getOptionValue(operation.getOptionSelection());
-							jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
-									comment, JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
-						}
-
-					}
-
-					if (task != null) {
-						// XXX: HACK TO AVOID OVERWRITE WARNING
-						task.setTaskData(null);
-						TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, new JobChangeAdapter() {
-
-							@Override
-							public void done(IJobChangeEvent event) {
-								close();
-								TasksUiUtil.openEditor(task, false);
-							}
-						});
-					} else {
-						//TasksUiUtil.openRepositoryTask(...);
-						close();
-					}
-					return Status.OK_STATUS;
-				} catch (Exception e) {
-					MylarStatusHandler.fail(e, "Error submitting to JIRA server", true);
-					return Status.OK_STATUS;
-				}
-			}
-
-		};
-
-		submitJob.addJobChangeListener(listener);
-		submitJob.schedule();
-	}
+//	@Override
+//	public void submitToRepository() {
+//		if (isDirty()) {
+//			this.doSave(new NullProgressMonitor());
+//		}
+//		updateTask();
+//		submitButton.setEnabled(false);
+//		showBusy(true);
+//
+//		final JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+//		if (jiraServer == null) {
+//			submitButton.setEnabled(true);
+//			JiraTaskEditor.this.showBusy(false);
+//			return;
+//		}
+//
+////		// TODO: build a new issue object rather then retrieving from server
+////		final Issue issue = jiraServer.getIssue(this.getRepositoryTaskData().getAttributeValue(
+////				JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
+////		if (issue == null) {
+////			MylarStatusHandler.log("Unable to retrieve issue from repository", this);
+////			submitButton.setEnabled(true);
+////			JiraTaskEditor.this.showBusy(false);
+////			return;
+////		}
+//
+////		final String comment = getNewCommentText();
+//		final AbstractRepositoryTask task = (AbstractRepositoryTask) TasksUiPlugin.getTaskListManager().getTaskList()
+//				.getTask(AbstractRepositoryTask.getHandle(repository.getUrl(), getRepositoryTaskData().getId()));
+//		final boolean attachContext = false;
+//
+//		JobChangeAdapter listener = new JobChangeAdapter() {
+//			@Override
+//			public void done(final IJobChangeEvent event) {
+//				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+//					public void run() {
+//						if (event.getJob().getResult().isOK()) {
+//							if (attachContext) {
+//								// TODO check for task == null
+//								// TODO should be done as part of job
+//								try {
+//									connector.attachContext(repository, task, "");
+//								} catch (Exception e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//							}
+//							//close();
+//						} else {
+//							submitButton.setEnabled(true);
+//							JiraTaskEditor.this.showBusy(false);
+//						}
+//					}
+//				});
+//			}
+//		};
+//
+//		Job submitJob = new Job(SUBMIT_JOB_LABEL) {
+//
+//			@Override
+//			protected IStatus run(IProgressMonitor monitor) {
+//				try {
+//					Issue issue = JiraRepositoryConnector.buildJiraIssue(getRepositoryTaskData(), jiraServer);
+//
+//					RepositoryOperation operation = getRepositoryTaskData().getSelectedOperation();
+//					if (operation != null) {
+//						if ("leave".equals(operation.getKnobName())) {
+//							jiraServer.updateIssue(issue, comment);
+//						} else if (org.tigris.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
+//							String value = operation.getOptionValue(operation.getOptionSelection());
+//							jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
+//									comment, JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+//						} else if (org.tigris.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
+//							jiraServer.reopenIssue(issue, comment, JiraServer.ASSIGNEE_CURRENT, repository
+//									.getUserName());
+//						} else if (org.tigris.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
+//							String value = operation.getOptionValue(operation.getOptionSelection());
+//							jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
+//									comment, JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+//						}
+//
+//					}
+//
+//					if (task != null) {
+//						// XXX: HACK TO AVOID OVERWRITE WARNING
+//						task.setTaskData(null);
+//						TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, new JobChangeAdapter() {
+//
+//							@Override
+//							public void done(IJobChangeEvent event) {
+//								close();
+//								TasksUiUtil.openEditor(task, false);
+//							}
+//						});
+//					} else {
+//						//TasksUiUtil.openRepositoryTask(...);
+//						close();
+//					}
+//					return Status.OK_STATUS;
+//				} catch (Exception e) {
+//					MylarStatusHandler.fail(e, "Error submitting to JIRA server", true);
+//					return Status.OK_STATUS;
+//				}
+//			}
+//
+//		};
+//
+//		submitJob.addJobChangeListener(listener);
+//		submitJob.schedule();
+//	}
 
 	@Override
 	protected void validateInput() {
