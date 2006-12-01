@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
@@ -49,6 +50,9 @@ import org.tigris.jira.core.model.filter.FilterDefinition;
 import org.tigris.jira.core.model.filter.RelativeDateRangeFilter;
 import org.tigris.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.tigris.jira.core.service.JiraServer;
+import org.tigris.jira.core.service.exceptions.AuthenticationException;
+import org.tigris.jira.core.service.exceptions.InsufficientPermissionException;
+import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
 
 /**
  * @author Mik Kersten
@@ -300,10 +304,18 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 
 		// TODO: Need some way to further scope this query
 
-		// TODO: remove, added to re-open connection, bug 164543
-		jiraServer.getServerInfo();
-		// Will get ALL issues that have changed since lastSyncDate
-		jiraServer.search(changedFilter, collector);
+		try {
+			// TODO: remove, added to re-open connection, bug 164543
+			jiraServer.getServerInfo();
+			// Will get ALL issues that have changed since lastSyncDate
+			jiraServer.search(changedFilter, collector);
+		} catch(AuthenticationException ex) {
+			throw createCoreException(ex, "Authentication Error: " + jiraServer.getBaseURL());
+		} catch(InsufficientPermissionException ex) {
+			throw createCoreException(ex, "Insufficient Permissions: " + jiraServer.getBaseURL());
+		} catch(ServiceUnavailableException ex) {
+			throw createCoreException(ex, "Service Unavailable: " + jiraServer.getBaseURL());
+		}
 
 		for (Issue issue : issues) {
 			String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
@@ -314,6 +326,11 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 		}
 
 		return changedTasks;
+	}
+
+	private CoreException createCoreException(Exception ex, String msg) {
+		return new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
+				TasksUiPlugin.PLUGIN_ID, IStatus.OK, msg, ex));
 	}
 
 	private void addOperations(Issue issue, RepositoryTaskData data) {
@@ -369,7 +386,7 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 		if (jiraServer == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
 					JiraCorePlugin.ID, org.eclipse.core.runtime.Status.ERROR, "Unable to produce Jira Server", null));
-		}
+	}
 
 		Issue issue = JiraRepositoryConnector.buildJiraIssue(taskData, jiraServer);
 
@@ -380,7 +397,7 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 					jiraServer.updateIssue(issue, taskData.getNewComment());
 				} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
 					jiraServer.addCommentToIssue(issue, taskData.getNewComment());
-				}
+				}			
 			} else if (org.tigris.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
 				String value = operation.getOptionValue(operation.getOptionSelection());
 				jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
