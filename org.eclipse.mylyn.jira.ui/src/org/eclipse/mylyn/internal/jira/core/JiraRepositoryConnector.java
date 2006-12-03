@@ -13,7 +13,10 @@ package org.eclipse.mylar.internal.jira.core;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,6 +40,7 @@ import org.tigris.jira.core.model.Component;
 import org.tigris.jira.core.model.Issue;
 import org.tigris.jira.core.model.IssueType;
 import org.tigris.jira.core.model.Priority;
+import org.tigris.jira.core.model.Project;
 import org.tigris.jira.core.model.Version;
 import org.tigris.jira.core.service.JiraServer;
 
@@ -213,6 +217,32 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public String getTaskWebUrl(String repositoryUrl, String taskId) {
 		return repositoryUrl + DELIM_URL + taskId;
 	}
+	
+	@Override
+	public String[] getTaskIdsFromComment(TaskRepository repository, String comment) {
+		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		if (server != null) {
+			// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
+			StringBuffer sb = new StringBuffer("(");
+			String sep = "";
+			for (Project project : server.getProjects()) {
+				sb.append(sep).append("(?:"+project.getKey()+"\\-\\d+?)");
+				sep = "|";
+			}
+			sb.append(")\\D");
+			
+			Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+			Matcher m = p.matcher(comment);
+			HashSet<String> ids = new HashSet<String>();
+			while(m.find()) {
+				ids.add(m.group(1));
+			}
+			return ids.toArray(new String[ids.size()]);
+		}
+		
+		return super.getTaskIdsFromComment(repository, comment);
+	}
+	
 
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
