@@ -91,7 +91,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		compTextData.heightHint = 40;
 		componentsList.setLayoutData(compTextData);
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
-		if (attribute != null) {
+		if (attribute != null && !attribute.getOptions().isEmpty()) {
 			componentsList.setItems(attribute.getOptions().toArray(new String[1]));
 			for (String compStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
 				componentsList.select(componentsList.indexOf(compStr));
@@ -121,7 +121,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		versionsTextData.heightHint = 40;
 		versionsList.setLayoutData(versionsTextData);
 		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
-		if (attribute != null) {
+		if (attribute != null && !attribute.getOptions().isEmpty()) {
 			versionsList.setItems(attribute.getOptions().toArray(new String[1]));
 			for (String versionStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
 				versionsList.select(versionsList.indexOf(versionStr));
@@ -151,7 +151,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		affectsVersionsTextData.verticalIndent = 3;
 		affectsVersionsList.setLayoutData(affectsVersionsTextData);
 		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
-		if (attribute != null) {
+		if (attribute != null && !attribute.getOptions().isEmpty()) {
 			affectsVersionsList.setItems(attribute.getOptions().toArray(new String[1]));
 			for (String versionStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {
 				affectsVersionsList.select(affectsVersionsList.indexOf(versionStr));
@@ -168,7 +168,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				}
 			});
 		}
-
 	}
 
 //	@Override
