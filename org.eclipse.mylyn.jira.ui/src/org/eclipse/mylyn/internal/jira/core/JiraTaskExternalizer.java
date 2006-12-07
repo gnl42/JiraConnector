@@ -23,11 +23,9 @@ import org.eclipse.mylar.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylar.tasks.core.DelegatingTaskExternalizer;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.ITaskListExternalizer;
-import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.TaskExternalizationException;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryTask.RepositoryTaskSyncState;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.tigris.jira.core.model.NamedFilter;
 import org.tigris.jira.core.model.filter.FilterDefinition;
@@ -302,15 +300,5 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	@Override
 	public String getQueryHitTagName() {
 		return KEY_JIRA_QUERY_HIT;
-	}
-
-	// TODO move up to DelegatingTaskExternalizer (or eliminate all together bug#157257)
-	@Override
-	public void readTaskData(AbstractRepositoryTask task) {
-		RepositoryTaskData data = TasksUiPlugin.getDefault().getTaskDataManager().getTaskData(task.getHandleIdentifier());		
-		task.setTaskData(data);
-		if (data != null && data.hasLocalChanges()) {
-			task.setSyncState(RepositoryTaskSyncState.OUTGOING);
-		}
 	}
 }

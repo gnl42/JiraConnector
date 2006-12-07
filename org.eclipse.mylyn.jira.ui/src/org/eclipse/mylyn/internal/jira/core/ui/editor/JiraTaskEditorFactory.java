@@ -11,13 +11,13 @@ package org.eclipse.mylar.internal.jira.core.ui.editor;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraTask;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
-import org.eclipse.mylar.internal.tasks.ui.ITaskEditorFactory;
-import org.eclipse.mylar.internal.tasks.ui.editors.MylarTaskEditor;
-import org.eclipse.mylar.internal.tasks.ui.editors.RepositoryTaskEditorInput;
-import org.eclipse.mylar.internal.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylar.tasks.ui.editors.ITaskEditorFactory;
+import org.eclipse.mylar.tasks.ui.editors.RepositoryTaskEditorInput;
+import org.eclipse.mylar.tasks.ui.editors.TaskEditor;
+import org.eclipse.mylar.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
@@ -39,7 +39,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 		return false;
 	}
 
-	public IEditorPart createEditor(MylarTaskEditor parentEditor, IEditorInput editorInput) {
+	public IEditorPart createEditor(TaskEditor parentEditor, IEditorInput editorInput) {
 		if (editorInput instanceof RepositoryTaskEditorInput  || editorInput instanceof TaskEditorInput) {
 			return new JiraTaskEditor(parentEditor);
 		} 

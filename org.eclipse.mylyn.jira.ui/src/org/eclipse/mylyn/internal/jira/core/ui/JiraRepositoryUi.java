@@ -17,11 +17,11 @@ import org.eclipse.mylar.internal.jira.core.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.core.ui.wizards.JiraQueryPage;
 import org.eclipse.mylar.internal.jira.core.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.core.ui.wizards.NewJiraQueryWizard;
-import org.eclipse.mylar.internal.tasks.ui.wizards.AbstractRepositorySettingsPage;
-import org.eclipse.mylar.internal.tasks.ui.wizards.NewWebTaskWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
+import org.eclipse.mylar.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.mylar.tasks.ui.wizards.NewWebTaskWizard;
 import org.tigris.jira.core.model.filter.FilterDefinition;
 
 /**
