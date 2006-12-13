@@ -72,10 +72,15 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	}
 
 	@Override
-	protected void createPeopleLayout(Composite composite) {
+	protected void addSelfToCC(Composite composite) {
 		// disabled
 	}
-
+	
+	@Override
+	protected void addCCList(Composite attributesComposite) {
+		// disabled
+	}
+	
 	@Override
 	protected void createCustomAttributeLayout(Composite composite) {
 		FormToolkit toolkit = getManagedForm().getToolkit();
