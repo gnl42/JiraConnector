@@ -245,6 +245,9 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 
 	@SuppressWarnings("restriction")
 	private String convertHtml(String text) {
+		if (text == null || text.equals("")) {
+			return "";
+		}
 		StringReader stringReader = new StringReader(text);
 		HTML2TextReader html2TextReader = new HTML2TextReader(stringReader, null);
 		try {
@@ -254,8 +257,6 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 		} catch (IOException e) {
 			return text;
 		}
-		// return text.replace("<br/>", "").replace("&nbsp;",
-		// "").replace("\n\n", "\n");
 	}
 
 	public AbstractAttributeFactory getAttributeFactory() {
