@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraTask.PriorityLevel;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -118,9 +119,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-			// TODO: remove, added to re-open connection, bug 164543
-			jiraServer.getServerInfo();
 			
+			// TODO: remove, added to re-open connection, bug 164543, bug 167697
+			String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(), repository.getUserName(), repository.getPassword());
+			if (message != null) {
+				MylarStatusHandler.log("Could not reset JIRA server settings: " + message, this);
+			}
+
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
