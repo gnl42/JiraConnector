@@ -208,7 +208,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		c = new Composite(parent, SWT.NONE);
 		c.setLayout(new GridLayout(3, false));
-
+		setControl(c);
+		
 		if (namedQuery) {
 			Label lblName = new Label(c, SWT.NONE);
 			final GridData gridData = new GridData();
@@ -680,7 +681,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		} else {
 			loadFromWorkingCopy();
 		}
-		setControl(c);
 	}
 
 	private void createReportedInViewer(Composite c) {
