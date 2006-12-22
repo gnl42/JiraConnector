@@ -89,7 +89,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return true;
 	}
 
-
 	@Override
 	public AbstractRepositoryTask createTaskFromExistingKey(TaskRepository repository, String key)
 			throws CoreException {
@@ -121,10 +120,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 			
 			// TODO: remove, added to re-open connection, bug 164543, bug 167697
-			String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(), repository.getUserName(), repository.getPassword());
-			if (message != null) {
-				MylarStatusHandler.log("Could not reset JIRA server settings: " + message, this);
-			}
+			ensureServerConnectionValid(repository);
 
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
@@ -317,7 +313,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor)
 			throws CoreException {
+		// TODO: remove, added to re-open connection, bug 164543, bug 167697
+		ensureServerConnectionValid(repository);
+		
 		JiraServerFacade.getDefault().refreshServerSettings(repository);
+	}
+
+	private void ensureServerConnectionValid(TaskRepository repository) {
+		String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(), repository.getUserName(), repository.getPassword());
+		if (message != null) {
+			MylarStatusHandler.log("Could not reset JIRA server settings: " + message, this);
+		}
 	}
 
 	@Override
