@@ -62,13 +62,7 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 
 	private AbstractAttributeFactory attributeFactory = new JiraAttributeFactory();
 
-	private static final String DATE_FORMAT_1 = "dd MMM yyyy HH:mm:ss z";
-
-	private static SimpleDateFormat creation_ts_format = new SimpleDateFormat(DATE_FORMAT_1);
-
-	private static SimpleDateFormat modified_ts_format = new SimpleDateFormat(DATE_FORMAT_1);
-
-	// private JiraRepositoryConnector connector = null;
+	private static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
 
 	private static final JiraAttributeFactory attributeFacotry = new JiraAttributeFactory();
 
@@ -229,14 +223,15 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 			return null;
 		}
 		try {
-			String mappedKey = attributeFactory.mapCommonAttributeKey(attributeKey);
-			Date parsedDate = null;
-			if (mappedKey.equals(RepositoryTaskAttribute.DATE_MODIFIED)) {
-				parsedDate = modified_ts_format.parse(dateString);
-			} else if (mappedKey.equals(RepositoryTaskAttribute.DATE_CREATION)) {
-				parsedDate = creation_ts_format.parse(dateString);
-			}
-			return parsedDate;
+//			String mappedKey = attributeFactory.mapCommonAttributeKey(attributeKey);
+//			Date parsedDate = null;
+//			if (mappedKey.equals(RepositoryTaskAttribute.DATE_MODIFIED)) {
+//				parsedDate = modified_ts_format.parse(dateString);
+//			} else if (mappedKey.equals(RepositoryTaskAttribute.DATE_CREATION)) {
+//				parsedDate = creation_ts_format.parse(dateString);
+//			}
+//			return parsedDate;
+			return new SimpleDateFormat(JIRA_DATE_FORMAT).parse(dateString);
 		} catch (Exception e) {
 			MylarStatusHandler.log(e, "Error while parsing date field");
 			return null;
@@ -245,15 +240,15 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 
 	@SuppressWarnings("restriction")
 	private String convertHtml(String text) {
-		if (text == null || text.equals("")) {
+		if (text == null || text.length()==0) {
 			return "";
 		}
 		StringReader stringReader = new StringReader(text);
 		HTML2TextReader html2TextReader = new HTML2TextReader(stringReader, null);
 		try {
 			char[] chars = new char[text.length()];
-			html2TextReader.read(chars, 0, text.length());
-			return new String(chars).trim();
+			int len = html2TextReader.read(chars, 0, text.length());
+			return new String(chars, 0, len).trim();
 		} catch (IOException e) {
 			return text;
 		}
@@ -275,7 +270,7 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 
 		Date lastSyncDate;
 		try {
-			lastSyncDate = modified_ts_format.parse(dateString);
+			lastSyncDate = new SimpleDateFormat(JIRA_DATE_FORMAT).parse(dateString);
 		} catch (ParseException e) {
 			return tasks;
 		}
