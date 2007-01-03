@@ -166,7 +166,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 					}
 				}
 			}
-			if(!components.isEmpty()) {
+			if(!componentIds.isEmpty()) {
 				filter.setComponentFilter(new ComponentFilter(components.toArray(new Component[components.size()])));
 			}
 
@@ -231,7 +231,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 				resolutions.add(resolution);
 			}
 		}
-		if(!resolutions.isEmpty()) {
+		if(!resolutionIds.isEmpty()) {
 			filter.setResolutionFilter(new ResolutionFilter(resolutions.toArray(new Resolution[resolutions.size()])));
 		}
 
@@ -364,9 +364,14 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
 		if(resolutionFilter!=null) {
-			for (Resolution resolution : resolutionFilter.getResolutions()) {
-				addParameter(sb, RESOLUTION_KEY, resolution.getId());
-			}
+			Resolution[] resolutions = resolutionFilter.getResolutions();
+			if (resolutions.length == 0) {
+				addParameter(sb, RESOLUTION_KEY, "-1");  // Unresolved
+			} else {
+				for (Resolution resolution : resolutions) {
+					addParameter(sb, RESOLUTION_KEY, resolution.getId());
+				}
+			}			
 		}
 
 		PriorityFilter priorityFilter = filter.getPriorityFilter();
