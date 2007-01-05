@@ -12,15 +12,10 @@ import java.util.Arrays;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylar.internal.jira.core.JiraAttributeFactory;
-import org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.editors.AbstractRepositoryTaskEditor;
-import org.eclipse.mylar.tasks.ui.editors.AbstractTaskEditorInput;
-import org.eclipse.mylar.tasks.ui.editors.RepositoryTaskEditorInput;
-import org.eclipse.mylar.tasks.ui.editors.RepositoryTaskOutlineNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -49,21 +44,25 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input) {
-		if (!(input instanceof RepositoryTaskEditorInput))
-			return;
-
-		editorInput = (AbstractTaskEditorInput) input;
-		taskData = editorInput.getTaskData();
-		repository = editorInput.getRepository();
-		connector = (JiraRepositoryConnector) TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				repository.getKind());
-
-		taskOutlineModel = RepositoryTaskOutlineNode.parseBugReport(editorInput.getTaskData());
-
-		setSite(site);
-		setInput(input);
-		isDirty = false;
-		updateEditorTitle();
+		super.init(site, input);
+//		if (!(input instanceof RepositoryTaskEditorInput)) {
+//			return;
+//		}
+//		super.init(site, input);
+//
+//		editorInput = (AbstractTaskEditorInput) input;
+//		taskData = editorInput.getTaskData();
+//		repository = editorInput.getRepository();
+//		connector = (JiraRepositoryConnector) TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+//				repository.getKind());
+//
+//		setSite(site);
+//		setInput(input);
+//
+//		taskOutlineModel = RepositoryTaskOutlineNode.parseBugReport(editorInput.getTaskData());
+//		
+//		isDirty = false;
+//		updateEditorTitle();
 	}
 
 	@Override
