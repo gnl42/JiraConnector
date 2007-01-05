@@ -58,7 +58,7 @@ import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
  * @author Mik Kersten
  * @author Rob Elves
  */
-public class JiraOfflineTaskHandler implements ITaskDataHandler {
+public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	private AbstractAttributeFactory attributeFactory = new JiraAttributeFactory();
 
@@ -66,7 +66,7 @@ public class JiraOfflineTaskHandler implements ITaskDataHandler {
 
 	private static final JiraAttributeFactory attributeFacotry = new JiraAttributeFactory();
 
-	public JiraOfflineTaskHandler(JiraRepositoryConnector connector) {
+	public JiraTaskDataHandler(JiraRepositoryConnector connector) {
 		// this.connector = connector;
 	}
 
