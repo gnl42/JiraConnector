@@ -94,6 +94,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		compTextData.widthHint = 125;
 		compTextData.heightHint = 40;
 		componentsList.setLayoutData(compTextData);
+		taskData = getRepositoryTaskData();
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 		if (attribute != null && !attribute.getOptions().isEmpty()) {
 			componentsList.setItems(attribute.getOptions().toArray(new String[1]));
