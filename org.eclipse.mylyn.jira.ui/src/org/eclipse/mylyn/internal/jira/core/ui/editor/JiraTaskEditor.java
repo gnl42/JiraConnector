@@ -22,8 +22,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -37,9 +35,9 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		super(editor);
 	}
 
-	@Override
-	public void init(IEditorSite site, IEditorInput input) {
-		super.init(site, input);
+//	@Override
+//	public void init(IEditorSite site, IEditorInput input) {
+//		super.init(site, input);
 //		if (!(input instanceof RepositoryTaskEditorInput)) {
 //			return;
 //		}
@@ -58,7 +56,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 //		
 //		isDirty = false;
 //		updateEditorTitle();
-	}
+//	}
 
 	@Override
 	protected void addAttachContextButton(Composite buttonComposite, ITask task) {
