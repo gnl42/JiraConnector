@@ -14,7 +14,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylar.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -33,10 +32,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Rob Elves
  */
 public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
-
-	//private static final String SUBMIT_JOB_LABEL = "Submitting to JIRA repository";
-
-	private RepositoryTaskData taskData;
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
@@ -94,7 +89,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		compTextData.widthHint = 125;
 		compTextData.heightHint = 40;
 		componentsList.setLayoutData(compTextData);
-		taskData = getRepositoryTaskData();
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 		if (attribute != null && !attribute.getOptions().isEmpty()) {
 			componentsList.setItems(attribute.getOptions().toArray(new String[1]));
