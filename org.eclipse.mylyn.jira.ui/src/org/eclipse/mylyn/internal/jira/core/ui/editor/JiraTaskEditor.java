@@ -283,9 +283,4 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		// TODO Auto-generated method stub
 	}
 	
-	@Override
-	protected String getPluginId() {
-		return "Jira";
-	}
-
 }

@@ -10,7 +10,6 @@ package org.eclipse.mylar.internal.jira.core;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -223,14 +222,16 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			return null;
 		}
 		try {
-//			String mappedKey = attributeFactory.mapCommonAttributeKey(attributeKey);
-//			Date parsedDate = null;
-//			if (mappedKey.equals(RepositoryTaskAttribute.DATE_MODIFIED)) {
-//				parsedDate = modified_ts_format.parse(dateString);
-//			} else if (mappedKey.equals(RepositoryTaskAttribute.DATE_CREATION)) {
-//				parsedDate = creation_ts_format.parse(dateString);
-//			}
-//			return parsedDate;
+			// String mappedKey =
+			// attributeFactory.mapCommonAttributeKey(attributeKey);
+			// Date parsedDate = null;
+			// if (mappedKey.equals(RepositoryTaskAttribute.DATE_MODIFIED)) {
+			// parsedDate = modified_ts_format.parse(dateString);
+			// } else if
+			// (mappedKey.equals(RepositoryTaskAttribute.DATE_CREATION)) {
+			// parsedDate = creation_ts_format.parse(dateString);
+			// }
+			// return parsedDate;
 			return new SimpleDateFormat(JIRA_DATE_FORMAT).parse(dateString);
 		} catch (Exception e) {
 			MylarStatusHandler.log(e, "Error while parsing date field");
@@ -240,7 +241,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	@SuppressWarnings("restriction")
 	private String convertHtml(String text) {
-		if (text == null || text.length()==0) {
+		if (text == null || text.length() == 0) {
 			return "";
 		}
 		StringReader stringReader = new StringReader(text);
@@ -259,7 +260,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
-			Set<AbstractRepositoryTask> tasks) throws CoreException, UnsupportedEncodingException {
+			Set<AbstractRepositoryTask> tasks) throws CoreException {
 
 		Set<AbstractRepositoryTask> changedTasks = new HashSet<AbstractRepositoryTask>();
 
@@ -305,11 +306,11 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			jiraServer.getServerInfo();
 			// Will get ALL issues that have changed since lastSyncDate
 			jiraServer.search(changedFilter, collector);
-		} catch(AuthenticationException ex) {
+		} catch (AuthenticationException ex) {
 			throw createCoreException(ex, "Authentication Error: " + jiraServer.getBaseURL());
-		} catch(InsufficientPermissionException ex) {
+		} catch (InsufficientPermissionException ex) {
 			throw createCoreException(ex, "Insufficient Permissions: " + jiraServer.getBaseURL());
-		} catch(ServiceUnavailableException ex) {
+		} catch (ServiceUnavailableException ex) {
 			throw createCoreException(ex, "Service Unavailable: " + jiraServer.getBaseURL());
 		}
 
@@ -382,7 +383,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		if (jiraServer == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
 					JiraCorePlugin.ID, org.eclipse.core.runtime.Status.ERROR, "Unable to produce Jira Server", null));
-	}
+		}
 
 		Issue issue = JiraRepositoryConnector.buildJiraIssue(taskData, jiraServer);
 
@@ -393,7 +394,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					jiraServer.updateIssue(issue, taskData.getNewComment());
 				} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
 					jiraServer.addCommentToIssue(issue, taskData.getNewComment());
-				}			
+				}
 			} else if (org.tigris.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
 				String value = operation.getOptionValue(operation.getOptionSelection());
 				jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
