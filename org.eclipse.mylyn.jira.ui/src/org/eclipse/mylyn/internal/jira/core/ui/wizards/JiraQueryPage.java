@@ -1233,15 +1233,15 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		if (assigneeSelection.isEmpty()) {
 			workingCopy.setAssignedToFilter(null);
 		} else {
-			if (ANY_REPORTER.equals(assigneeSelection.getFirstElement())) {
+			if (ANY_ASSIGNEE.equals(assigneeSelection.getFirstElement())) {
 				workingCopy.setAssignedToFilter(null);
 			} else if (UNASSIGNED.equals(assigneeSelection.getFirstElement())) {
 				workingCopy.setAssignedToFilter(new NobodyFilter());
-			} else if (CURRENT_USER_REPORTER.equals(assigneeSelection.getFirstElement())) {
+			} else if (CURRENT_USER_ASSIGNEE.equals(assigneeSelection.getFirstElement())) {
 				workingCopy.setAssignedToFilter(new CurrentUserFilter());
-			} else if (SPECIFIC_GROUP_REPORTER.equals(assigneeSelection.getFirstElement())) {
+			} else if (SPECIFIC_GROUP_ASSIGNEE.equals(assigneeSelection.getFirstElement())) {
 				workingCopy.setAssignedToFilter(new UserInGroupFilter(assignee.getText()));
-			} else if (SPECIFIC_USER_REPORTER.equals(assigneeSelection.getFirstElement())) {
+			} else if (SPECIFIC_USER_ASSIGNEE.equals(assigneeSelection.getFirstElement())) {
 				workingCopy.setAssignedToFilter(new SpecificUserFilter(assignee.getText()));
 			} else {
 				workingCopy.setAssignedToFilter(null);
