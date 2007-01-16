@@ -57,4 +57,20 @@
             
    </extension>
 
+   <extension
+         point="org.eclipse.mylar.tasks.core.templates">
+      <repository
+            addAutomatically="false"
+            anonymous="false"
+            repositoryKind="jira"
+            label="Codehaus"
+            urlRepository="http://jira.codehaus.org/"/>
+      <repository
+            addAutomatically="false"
+            anonymous="false"
+            repositoryKind="jira"
+            label="Apache"
+            urlRepository="http://issues.apache.org/jira/"/>
+   </extension>
+
 </plugin>

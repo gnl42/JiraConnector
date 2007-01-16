@@ -20,8 +20,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.tasks.core.RepositoryTemplate;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylar.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -47,9 +50,27 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	/** Create a button to validate the specified repository settings */
 	@Override
 	protected void createAdditionalControls(Composite parent) {
-		// ignore
+		for (RepositoryTemplate template : connector.getTemplates()) {
+			serverUrlCombo.add(template.label);
+		}
+
+		serverUrlCombo.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				String text = serverUrlCombo.getText();
+				RepositoryTemplate template = connector.getTemplate(text);
+				if (template != null) {
+					repositoryLabelEditor.setStringValue(template.label);
+					setUrl(nvl(template.repositoryUrl));
+					getContainer().updateButtons();
+				}
+			}
+
+			private String nvl(String s) {
+				return s == null ? "" : s;
+			}
+		});
 	}
-	
+
 	@Override
 	protected boolean isValidUrl(String name) {
 		if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
@@ -69,11 +90,12 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		final String password = getPassword();
 		try {
 			getWizard().getContainer().run(true, false, new IRunnableWithProgress() {
-				
+
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {
 						monitor.beginTask("Validating repository settings", IProgressMonitor.UNKNOWN);
-						String message = JiraServerFacade.getDefault().validateServerAndCredentials(serverUrl, userName, password);
+						String message = JiraServerFacade.getDefault().validateServerAndCredentials(serverUrl,
+								userName, password);
 						if (message != null) {
 							throw new InvocationTargetException(new RuntimeException(message));
 						}
@@ -83,7 +105,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				}
 			});
 			MessageDialog.openInformation(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG,
-				"Valid Jira server found and your login was accepted.");
+					"Valid Jira server found and your login was accepted.");
 		} catch (InvocationTargetException e) {
 			MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, e.getTargetException().getMessage());
 		} catch (InterruptedException e) {
