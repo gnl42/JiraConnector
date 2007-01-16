@@ -230,7 +230,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				sb.append(sep).append("(?:"+project.getKey()+"\\-\\d+?)");
 				sep = "|";
 			}
-			sb.append(")\\D");
+			sb.append(")(?:\\D|\\z)");
 			
 			Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 			Matcher m = p.matcher(comment);
