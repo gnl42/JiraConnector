@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.core.JiraRepositoryQuery;
@@ -95,12 +95,12 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 		buttonCustom = new Button(innerComposite, SWT.RADIO);
 		buttonCustom.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		buttonCustom.setText("Create query using form");
+		buttonCustom.setText("&Create query using form");
 		buttonCustom.setSelection(isCustom);
 
 		buttonSaved = new Button(innerComposite, SWT.RADIO);
 		buttonSaved.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		buttonSaved.setText("Use parameters from saved filter");
+		buttonSaved.setText("Use saved &filter from the repository");
 		buttonSaved.setSelection(isRepository);
 		
 		buttonSaved.addSelectionListener(new SelectionAdapter() {
@@ -115,25 +115,26 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 		filterCombo = new List(innerComposite, SWT.V_SCROLL | SWT.BORDER);
 		filterCombo.add(WAIT_MESSAGE);
-		filterCombo.select(0);  // XXX
+		filterCombo.deselectAll();
 		
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.horizontalIndent = 15;
 		filterCombo.setLayoutData(data);
-		filterCombo.setEnabled(isRepository);
+		filterCombo.setEnabled(false);
 
 		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
 		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, false, true);
 		updateButton.setLayoutData(gridData);
-		updateButton.setText("Update from Repository");
+		updateButton.setText("Update from &Repository");
 		updateButton.setEnabled(isRepository);
 		updateButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				filterCombo.setEnabled(false);
 				filterCombo.removeAll();
 				filterCombo.add(WAIT_MESSAGE);
-				filterCombo.select(0);
+				filterCombo.deselectAll();
 				JiraServerFacade.getDefault().refreshServerSettings(repository);
 				downloadFilters();
 			}
@@ -146,7 +147,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 	
 	@Override
 	public boolean isPageComplete() {
-		return buttonCustom.getSelection() ? super.isPageComplete() : true;
+		return buttonCustom.getSelection() ? super.isPageComplete() : filterCombo.getSelectionCount()==1;
 	}
 
 	@Override
@@ -205,13 +206,18 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 	/** Called by the download job when the filters have been downloaded */
 	public void displayFilters(NamedFilter[] filters) {
+		filterCombo.removeAll();
+
 		if (filters.length == 0) {
-			MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "No Filters Found",
-					"Please specify a filter using your Jira web interface");
+			filterCombo.setEnabled(false);
+			filterCombo.add("No filters found");
+			filterCombo.deselectAll();
+			
+			setMessage("No saved filters found. Please create filters using JIRA web interface or" +
+					" follow to the next page to create custom query.", IMessageProvider.WARNING);
+			setPageComplete(false);
 			return;
 		}
-
-		filterCombo.removeAll();
 
 		String id = null;
 		if(query instanceof JiraRepositoryQuery) {
@@ -228,6 +234,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 		filterCombo.select(n);
 		filterCombo.showSelection();
+		filterCombo.setEnabled(true);
 		setPageComplete(true);
 	}
 
