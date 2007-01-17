@@ -16,10 +16,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
-import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.RepositoryTemplate;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylar.tasks.ui.wizards.AbstractRepositorySettingsPage;
@@ -33,10 +31,11 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
+ * @author Eugene Kuleshov
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
-	private static final String MESSAGE_FAILURE_CONNECT = "Could not connect to the Jira server or the login was not accepted.";
+	private static final String MESSAGE_FAILURE_CONNECT = "Could not connect to the Jira server or the login was not accepted";
 
 	private static final String TITLE = "Jira Repository Settings";
 
@@ -90,10 +89,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		final String password = getPassword();
 		try {
 			getWizard().getContainer().run(true, false, new IRunnableWithProgress() {
-
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {
-						monitor.beginTask("Validating repository settings", IProgressMonitor.UNKNOWN);
+						new URL(serverUrl);
+					} catch (MalformedURLException ex) {
+						throw new InvocationTargetException(new RuntimeException("Malformed server URL"));
+					}
+					monitor.beginTask("Validating repository settings", IProgressMonitor.UNKNOWN);
+					try {
 						String message = JiraServerFacade.getDefault().validateServerAndCredentials(serverUrl,
 								userName, password);
 						if (message != null) {
@@ -104,12 +107,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 					}
 				}
 			});
-			MessageDialog.openInformation(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG,
-					"Valid Jira server found and your login was accepted.");
+			setErrorMessage(null);
+			setMessage("Valid Jira server found and your login was accepted");
 		} catch (InvocationTargetException e) {
-			MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, e.getTargetException().getMessage());
+			// MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, e.getTargetException().getMessage());
+			setErrorMessage(e.getTargetException().getMessage());
 		} catch (InterruptedException e) {
-			MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
+			// MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
+			setErrorMessage(MESSAGE_FAILURE_CONNECT);
 		}
 	}
 }
