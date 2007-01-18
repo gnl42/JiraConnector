@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
 import org.eclipse.mylar.tasks.core.RepositoryTemplate;
@@ -108,13 +109,15 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				}
 			});
 			setErrorMessage(null);
-			setMessage("Valid Jira server found and your login was accepted");
+			setMessage("Valid Jira server found and your login was accepted", IMessageProvider.INFORMATION);
 		} catch (InvocationTargetException e) {
 			// MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, e.getTargetException().getMessage());
 			setErrorMessage(e.getTargetException().getMessage());
+			setMessage(null);
 		} catch (InterruptedException e) {
 			// MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
 			setErrorMessage(MESSAGE_FAILURE_CONNECT);
+			setMessage(null);
 		}
 	}
 }
