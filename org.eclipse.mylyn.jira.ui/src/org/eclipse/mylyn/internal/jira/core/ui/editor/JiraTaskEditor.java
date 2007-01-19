@@ -12,8 +12,10 @@ import java.util.Arrays;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylar.internal.jira.core.JiraAttributeFactory;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -281,6 +283,22 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	@Override
 	protected void validateInput() {
 		// TODO Auto-generated method stub
+	}
+
+	protected String getActivityUrl() {
+		if (taskData != null) {
+			String taskId = taskData.getId();
+			String repositoryUrl = taskData.getRepositoryUrl();
+			if (repositoryUrl != null && taskId != null) {
+				ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(
+						AbstractRepositoryTask.getHandle(repositoryUrl, taskId));
+				if (task != null) {
+					return task.getUrl() + "?page=history";
+				}
+			}
+		}
+
+		return super.getActivityUrl();
 	}
 	
 }
