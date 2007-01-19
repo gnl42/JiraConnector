@@ -234,16 +234,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			
 			Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 			Matcher m = p.matcher(comment);
-			HashSet<String> ids = new HashSet<String>();
-			while(m.find()) {
-				ids.add(m.group(1));
+			if(m.find()) {
+				HashSet<String> ids = new HashSet<String>();
+				do {
+					ids.add(m.group(1));
+				} while(m.find());
+				return ids.toArray(new String[ids.size()]);
 			}
-			return ids.toArray(new String[ids.size()]);
 		}
-		
+
 		return super.getTaskIdsFromComment(repository, comment);
 	}
-	
 
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
