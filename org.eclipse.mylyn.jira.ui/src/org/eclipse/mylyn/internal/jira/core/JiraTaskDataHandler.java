@@ -56,6 +56,7 @@ import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
 /**
  * @author Mik Kersten
  * @author Rob Elves
+ * @author Eugene Kuleshov
  */
 public class JiraTaskDataHandler implements ITaskDataHandler {
 
@@ -71,24 +72,33 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId) throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-		String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), taskId);
+		Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
+		if (jiraIssue != null) {
+			// TODO: remove this call?
+			// JiraRepositoryConnector.updateTaskDetails(repository.getUrl(), (JiraTask) task, jiraIssue, false);
 
-		ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handle);
-		if (task instanceof JiraTask) {
-			JiraTask jiraTask = (JiraTask) task;
-			Issue jiraIssue = server.getIssue(jiraTask.getKey());
-			if (jiraIssue != null) {
-				// TODO: remove this call?
-				JiraRepositoryConnector.updateTaskDetails(repository.getUrl(), (JiraTask) task, jiraIssue, false);
+			RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
+					repository.getUrl(), taskId);
+			// connector.updateAttributes(repository, new
+			// NullProgressMonitor());
+			updateTaskData(data, jiraIssue, server);
+			addOperations(jiraIssue, data);
+			return data;
+		}
+		return null;
+	}
 
-				RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
-						repository.getUrl(), taskId);
-				// connector.updateAttributes(repository, new
-				// NullProgressMonitor());
-				updateTaskData(data, jiraIssue, server);
-				addOperations(jiraIssue, data);
-				return data;
+	private Issue getJiraIssue(JiraServer server, String taskId, String repositoryUrl) {
+		try {
+			int id = Integer.parseInt(taskId);
+			String handle = AbstractRepositoryTask.getHandle(repositoryUrl, id);
+			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handle);
+			if (task instanceof JiraTask) {
+				JiraTask jiraTask = (JiraTask) task;
+				return server.getIssue(jiraTask.getKey());
 			}
+		} catch (NumberFormatException e) {
+			return server.getIssue(taskId);
 		}
 		return null;
 	}
