@@ -35,30 +35,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
+		super.showAttachments = false;
 	}
-
-//	@Override
-//	public void init(IEditorSite site, IEditorInput input) {
-//		super.init(site, input);
-//		if (!(input instanceof RepositoryTaskEditorInput)) {
-//			return;
-//		}
-//		super.init(site, input);
-//
-//		editorInput = (AbstractTaskEditorInput) input;
-//		taskData = editorInput.getTaskData();
-//		repository = editorInput.getRepository();
-//		connector = (JiraRepositoryConnector) TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-//				repository.getKind());
-//
-//		setSite(site);
-//		setInput(input);
-//
-//		taskOutlineModel = RepositoryTaskOutlineNode.parseBugReport(editorInput.getTaskData());
-//		
-//		isDirty = false;
-//		updateEditorTitle();
-//	}
 
 	@Override
 	protected void addAttachContextButton(Composite buttonComposite, ITask task) {
