@@ -336,7 +336,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		Issue issue = new Issue();
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
-		
+		issue.setProject(server.getProject(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT)));
 		//issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));
 		
 		for (IssueType type: server.getIssueTypes()) {
@@ -380,7 +380,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			affectsversions.add(version);
 		}
 		issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));
-		
+		issue.setReporter(taskData.getAttributeValue(RepositoryTaskAttribute.USER_REPORTER));
 		issue.setAssignee(taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED));
 		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
 		issue.setId(taskData.getId());
