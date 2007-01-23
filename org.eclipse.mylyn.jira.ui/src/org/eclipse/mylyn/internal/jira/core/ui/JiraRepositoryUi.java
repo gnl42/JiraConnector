@@ -26,6 +26,7 @@ import org.tigris.jira.core.model.filter.FilterDefinition;
 
 /**
  * @author Mik Kersten
+ * @author Eugene Kuleshov
  */
 public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
