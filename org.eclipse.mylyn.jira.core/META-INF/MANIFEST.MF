@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Mylar JIRA UI Plug-in
 Bundle-SymbolicName: org.eclipse.mylar.jira.ui;singleton:=true
 Bundle-Version: 1.0.1.v20070124-1930
-Bundle-Activator: org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -19,6 +18,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylar.tasks.core
 Eclipse-AutoStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.eclipse.mylar.internal.jira.core,
- org.eclipse.mylar.internal.jira.core.ui,
- org.eclipse.mylar.internal.jira.core.ui.wizards
+Export-Package: 
+
