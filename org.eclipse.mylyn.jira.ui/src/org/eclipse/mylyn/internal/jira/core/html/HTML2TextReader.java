@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Locale;
 
 import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.swt.SWT;
@@ -146,7 +147,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 		if (html == null || html.length() == 0)
 			return EMPTY_STRING;
 
-		html= html.toLowerCase();
+		html= html.toLowerCase(Locale.ENGLISH);
 		
 		String tag= html;
 		if ('/' == tag.charAt(0))
