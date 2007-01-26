@@ -315,9 +315,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor)
 			throws CoreException {
 		// TODO: remove, added to re-open connection, bug 164543, bug 167697
-		ensureServerConnectionValid(repository);
+//		ensureServerConnectionValid(repository);
+//		JiraServerFacade.getDefault().refreshServerSettings(repository);
+		JiraServerFacade.getDefault().forceServerReset(repository);
 		
-		JiraServerFacade.getDefault().refreshServerSettings(repository);
 	}
 
 	private void ensureServerConnectionValid(TaskRepository repository) {
