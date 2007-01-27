@@ -10,18 +10,10 @@ package org.eclipse.mylar.internal.jira.core;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.html.HTML2TextReader;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
@@ -44,14 +36,7 @@ import org.tigris.jira.core.model.Priority;
 import org.tigris.jira.core.model.Resolution;
 import org.tigris.jira.core.model.Status;
 import org.tigris.jira.core.model.Version;
-import org.tigris.jira.core.model.filter.DateRangeFilter;
-import org.tigris.jira.core.model.filter.FilterDefinition;
-import org.tigris.jira.core.model.filter.RelativeDateRangeFilter;
-import org.tigris.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.tigris.jira.core.service.JiraServer;
-import org.tigris.jira.core.service.exceptions.AuthenticationException;
-import org.tigris.jira.core.service.exceptions.InsufficientPermissionException;
-import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
 
 /**
  * @author Mik Kersten
@@ -62,7 +47,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	private AbstractAttributeFactory attributeFactory = new JiraAttributeFactory();
 
-	private static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
+	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
 
 	private static final JiraAttributeFactory attributeFacotry = new JiraAttributeFactory();
 
@@ -269,76 +254,6 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		return attributeFactory;
 	}
 
-	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
-			Set<AbstractRepositoryTask> tasks) throws CoreException {
-
-		Set<AbstractRepositoryTask> changedTasks = new HashSet<AbstractRepositoryTask>();
-
-		String dateString = repository.getSyncTimeStamp();
-		if (dateString == null) {
-			dateString = "";
-		}
-
-		Date lastSyncDate;
-		try {
-			lastSyncDate = new SimpleDateFormat(JIRA_DATE_FORMAT).parse(dateString);
-		} catch (ParseException e) {
-			return tasks;
-		}
-
-		final List<Issue> issues = new ArrayList<Issue>();
-		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues);
-		JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-		if (jiraServer == null) {
-			return tasks;
-		}
-		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
-		changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, new Date()));
-		long mil = lastSyncDate.getTime();
-		long now = Calendar.getInstance().getTimeInMillis();
-		if (now - mil <= 0) {
-			// return empty set
-			return changedTasks;
-		}
-		long minutes = -1 * ((now - mil) / (1000 * 60));
-		if (minutes == 0)
-			return changedTasks;
-		// XXX: This is a HACK. RangeType.MINUTES doesn't exist in RangeType but
-		// RangeType.MONTH
-		// uses the correct 'm' character upon submission so we get the correct
-		// result
-		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MONTH, minutes));
-
-		// TODO: Need some way to further scope this query
-
-		try {
-			// TODO: remove, added to re-open connection, bug 164543
-			jiraServer.getServerInfo();
-			// Will get ALL issues that have changed since lastSyncDate
-			jiraServer.search(changedFilter, collector);
-		} catch (AuthenticationException ex) {
-			throw createCoreException(ex, "Authentication Error: " + jiraServer.getBaseURL());
-		} catch (InsufficientPermissionException ex) {
-			throw createCoreException(ex, "Insufficient Permissions: " + jiraServer.getBaseURL());
-		} catch (ServiceUnavailableException ex) {
-			throw createCoreException(ex, "Service Unavailable: " + jiraServer.getBaseURL());
-		}
-
-		for (Issue issue : issues) {
-			String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
-			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handle);
-			if (task instanceof AbstractRepositoryTask) {
-				changedTasks.add((AbstractRepositoryTask) task);
-			}
-		}
-
-		return changedTasks;
-	}
-
-	private CoreException createCoreException(Exception ex, String msg) {
-		return new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
-				TasksUiPlugin.PLUGIN_ID, IStatus.OK, msg, ex));
-	}
 
 	private void addOperations(Issue issue, RepositoryTaskData data) {
 		Status status = issue.getStatus();

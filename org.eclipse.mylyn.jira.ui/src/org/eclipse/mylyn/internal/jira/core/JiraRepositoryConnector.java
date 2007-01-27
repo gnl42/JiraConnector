@@ -12,15 +12,21 @@
 package org.eclipse.mylar.internal.jira.core;
 
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraTask.PriorityLevel;
@@ -43,7 +49,14 @@ import org.tigris.jira.core.model.IssueType;
 import org.tigris.jira.core.model.Priority;
 import org.tigris.jira.core.model.Project;
 import org.tigris.jira.core.model.Version;
+import org.tigris.jira.core.model.filter.DateRangeFilter;
+import org.tigris.jira.core.model.filter.FilterDefinition;
+import org.tigris.jira.core.model.filter.RelativeDateRangeFilter;
+import org.tigris.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.tigris.jira.core.service.JiraServer;
+import org.tigris.jira.core.service.exceptions.AuthenticationException;
+import org.tigris.jira.core.service.exceptions.InsufficientPermissionException;
+import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
 
 /**
  * @author Mik Kersten
@@ -55,14 +68,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
 	private JiraTaskDataHandler offlineHandler;
-	
+
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
 	public JiraRepositoryConnector() {
 		offlineHandler = new JiraTaskDataHandler(this);
 	}
-	
+
 	@Override
 	public String getLabel() {
 		return JiraUiPlugin.JIRA_CLIENT_LABEL;
@@ -90,8 +103,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public AbstractRepositoryTask createTaskFromExistingKey(TaskRepository repository, String key)
-			throws CoreException {
+	public AbstractRepositoryTask createTaskFromExistingKey(TaskRepository repository, String key) throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (server != null) {
 			Issue issue = server.getIssue(key);
@@ -118,7 +130,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-			
+
 			// TODO: remove, added to re-open connection, bug 164543, bug 167697
 			ensureServerConnectionValid(repository);
 
@@ -140,15 +152,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			String issueId = issue.getId();
 			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
 			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
-//			if (!(task instanceof JiraTask)) {
-//				task = createTask(issue, handleIdentifier);
-//			}
+			// if (!(task instanceof JiraTask)) {
+			// task = createTask(issue, handleIdentifier);
+			// }
 			if (task instanceof JiraTask) {
 				updateTaskDetails(repository.getUrl(), (JiraTask) task, issue, false);
 			}
-//			JiraQueryHit hit = new JiraQueryHit((JiraTask) task, repositoryQuery.getRepositoryUrl(), issueId);
+			// JiraQueryHit hit = new JiraQueryHit((JiraTask) task,
+			// repositoryQuery.getRepositoryUrl(), issueId);
 			// TODO: set completion status
-			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(), issueId, issue.getKey(), false);
+			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(),
+					issueId, issue.getKey(), false);
 			// XXX: HACK, need to map jira priority to tasklist priorities
 			hit.setPriority(Task.PriorityLevel.P3.toString());
 			try {
@@ -159,6 +173,77 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		}
 		return Status.OK_STATUS;
+	}
+
+	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
+			Set<AbstractRepositoryTask> tasks) throws CoreException {
+
+		Set<AbstractRepositoryTask> changedTasks = new HashSet<AbstractRepositoryTask>();
+
+		String dateString = repository.getSyncTimeStamp();
+		if (dateString == null) {
+			dateString = "";
+		}
+
+		Date lastSyncDate;
+		try {
+			lastSyncDate = new SimpleDateFormat(JiraTaskDataHandler.JIRA_DATE_FORMAT).parse(dateString);
+		} catch (ParseException e) {
+			return tasks;
+		}
+
+		final List<Issue> issues = new ArrayList<Issue>();
+		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues);
+		JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+		if (jiraServer == null) {
+			return tasks;
+		}
+		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
+		changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, new Date()));
+		long mil = lastSyncDate.getTime();
+		long now = Calendar.getInstance().getTimeInMillis();
+		if (now - mil <= 0) {
+			// return empty set
+			return changedTasks;
+		}
+		long minutes = -1 * ((now - mil) / (1000 * 60));
+		if (minutes == 0)
+			return changedTasks;
+		// XXX: This is a HACK. RangeType.MINUTES doesn't exist in RangeType but
+		// RangeType.MONTH
+		// uses the correct 'm' character upon submission so we get the correct
+		// result
+		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MONTH, minutes));
+
+		// TODO: Need some way to further scope this query
+
+		try {
+			// TODO: remove, added to re-open connection, bug 164543
+			jiraServer.getServerInfo();
+			// Will get ALL issues that have changed since lastSyncDate
+			jiraServer.search(changedFilter, collector);
+		} catch (AuthenticationException ex) {
+			throw createCoreException(ex, "Authentication Error: " + jiraServer.getBaseURL());
+		} catch (InsufficientPermissionException ex) {
+			throw createCoreException(ex, "Insufficient Permissions: " + jiraServer.getBaseURL());
+		} catch (ServiceUnavailableException ex) {
+			throw createCoreException(ex, "Service Unavailable: " + jiraServer.getBaseURL());
+		}
+
+		for (Issue issue : issues) {
+			String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
+			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handle);
+			if (task instanceof AbstractRepositoryTask) {
+				changedTasks.add((AbstractRepositoryTask) task);
+			}
+		}
+
+		return changedTasks;
+	}
+
+	private CoreException createCoreException(Exception ex, String msg) {
+		return new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
+				TasksUiPlugin.PLUGIN_ID, IStatus.OK, msg, ex));
 	}
 
 	@Override
@@ -177,23 +262,26 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateTask(TaskRepository repository, AbstractRepositoryTask repositoryTask) {
-//		final TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
-//				repositoryTask.getRepositoryKind(), repositoryTask.getRepositoryUrl());
-//		if (repository != null && repositoryTask instanceof JiraTask) {
-//			final JiraTask jiraTask = (JiraTask) repositoryTask;
-//			final JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-//			if (server != null) {
-//				final Issue issue = server.getIssue(jiraTask.getKey());
-//				if (issue != null) {
-//					// TODO: may not need to update details here
-//					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-//						public void run() {
-//							updateTaskDetails(repository.getUrl(), jiraTask, issue, true);
-//						}
-//					});
-//				}
-//			}
-//		}
+		// final TaskRepository repository =
+		// TasksUiPlugin.getRepositoryManager().getRepository(
+		// repositoryTask.getRepositoryKind(),
+		// repositoryTask.getRepositoryUrl());
+		// if (repository != null && repositoryTask instanceof JiraTask) {
+		// final JiraTask jiraTask = (JiraTask) repositoryTask;
+		// final JiraServer server =
+		// JiraServerFacade.getDefault().getJiraServer(repository);
+		// if (server != null) {
+		// final Issue issue = server.getIssue(jiraTask.getKey());
+		// if (issue != null) {
+		// // TODO: may not need to update details here
+		// PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+		// public void run() {
+		// updateTaskDetails(repository.getUrl(), jiraTask, issue, true);
+		// }
+		// });
+		// }
+		// }
+		// }
 	}
 
 	@Override
@@ -213,12 +301,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		int index = url.indexOf(DELIM_URL);
 		return index == -1 ? null : url.substring(index + DELIM_URL.length());
 	}
-	
+
 	@Override
 	public String getTaskWebUrl(String repositoryUrl, String taskId) {
 		return repositoryUrl + DELIM_URL + taskId;
 	}
-	
+
 	@Override
 	public String[] getTaskIdsFromComment(TaskRepository repository, String comment) {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
@@ -227,18 +315,18 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			StringBuffer sb = new StringBuffer("(");
 			String sep = "";
 			for (Project project : server.getProjects()) {
-				sb.append(sep).append("(?:"+project.getKey()+"\\-\\d+?)");
+				sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)");
 				sep = "|";
 			}
 			sb.append(")(?:\\D|\\z)");
-			
+
 			Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 			Matcher m = p.matcher(comment);
-			if(m.find()) {
+			if (m.find()) {
 				HashSet<String> ids = new HashSet<String>();
 				do {
 					ids.add(m.group(1));
-				} while(m.find());
+				} while (m.find());
 				return ids.toArray(new String[ids.size()]);
 			}
 		}
@@ -270,9 +358,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (priorityLevel != null) {
 				task.setPriority(priorityLevel.toString());
 			}
-//			else {
-//				MylarStatusHandler.log("unrecognized priority: " + issue.getPriority().getDescription(), null);
-//			}
+			// else {
+			// MylarStatusHandler.log("unrecognized priority: " +
+			// issue.getPriority().getDescription(), null);
+			// }
 		}
 		if (notifyOfChange) {
 			TasksUiPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
@@ -286,12 +375,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task = (JiraTask) existingTask;
 		} else {
 			task = new JiraTask(handleIdentifier, description, true);
-			task.setKey(key);//issue.getKey());
+			task.setKey(key);// issue.getKey());
 			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
 		return task;
 	}
-	
+
 	public static JiraTask createTask(Issue issue, String handleIdentifier) {
 		JiraTask task;
 		String summary = issue.getSummary();
@@ -312,8 +401,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor)
-			throws CoreException {
+	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
 		// TODO: remove, added to re-open connection, bug 164543, bug 167697
 //		ensureServerConnectionValid(repository);
 //		JiraServerFacade.getDefault().refreshServerSettings(repository);
@@ -322,7 +410,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	private void ensureServerConnectionValid(TaskRepository repository) {
-		String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(), repository.getUserName(), repository.getPassword());
+		String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
+				repository.getUserName(), repository.getPassword());
 		if (message != null) {
 			MylarStatusHandler.log("Could not reset JIRA server settings: " + message, this);
 		}
@@ -338,46 +427,46 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
 		issue.setProject(server.getProject(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT)));
-		//issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));
-		
-		for (IssueType type: server.getIssueTypes()) {
-			if(type.getName().equals(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE))) {
+		// issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));
+
+		for (IssueType type : server.getIssueTypes()) {
+			if (type.getName().equals(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE))) {
 				issue.setType(type);
 				break;
 			}
 		}
-		for (org.tigris.jira.core.model.Status status: server.getStatuses()) {
-			if(status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
+		for (org.tigris.jira.core.model.Status status : server.getStatuses()) {
+			if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 				issue.setStatus(status);
 				break;
 			}
 		}
 		ArrayList<Component> components = new ArrayList<Component>();
 		RepositoryTaskAttribute attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
-		for (String compStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {		
+		for (String compStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
 			Component comp = new Component();
 			comp.setId(attrib.getOptionParameter(compStr));
-			comp.setName(compStr);			
+			comp.setName(compStr);
 			components.add(comp);
 		}
 		issue.setComponents(components.toArray(new Component[components.size()]));
-		
+
 		ArrayList<Version> fixversions = new ArrayList<Version>();
-		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);	
-		for (String fixStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {	
+		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+		for (String fixStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
 			Version version = new Version();
 			version.setId(attrib.getOptionParameter(fixStr));
-			version.setName(fixStr);			
+			version.setName(fixStr);
 			fixversions.add(version);
 		}
 		issue.setFixVersions(fixversions.toArray(new Version[fixversions.size()]));
-		
+
 		ArrayList<Version> affectsversions = new ArrayList<Version>();
-		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);	
-		for (String fixStr: taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {	
+		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+		for (String fixStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {
 			Version version = new Version();
 			version.setId(attrib.getOptionParameter(fixStr));
-			version.setName(fixStr);			
+			version.setName(fixStr);
 			affectsversions.add(version);
 		}
 		issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));
@@ -386,12 +475,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
 		issue.setId(taskData.getId());
 		issue.setKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
-		for (Priority priority: server.getPriorities()) {
-			if(priority.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY))) {
+		for (Priority priority : server.getPriorities()) {
+			if (priority.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY))) {
 				issue.setPriority(priority);
 				break;
 			}
-		}			
+		}
 		return issue;
 	}
 }
