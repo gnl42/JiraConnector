@@ -213,7 +213,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// RangeType.MONTH
 		// uses the correct 'm' character upon submission so we get the correct
 		// result
-		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MONTH, minutes));
+		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, minutes));
 
 		// TODO: Need some way to further scope this query
 
