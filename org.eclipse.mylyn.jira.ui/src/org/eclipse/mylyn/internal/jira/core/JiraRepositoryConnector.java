@@ -31,6 +31,20 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraTask.PriorityLevel;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.jira.core.internal.model.Component;
+import org.eclipse.mylar.jira.core.internal.model.Issue;
+import org.eclipse.mylar.jira.core.internal.model.IssueType;
+import org.eclipse.mylar.jira.core.internal.model.Priority;
+import org.eclipse.mylar.jira.core.internal.model.Project;
+import org.eclipse.mylar.jira.core.internal.model.Version;
+import org.eclipse.mylar.jira.core.internal.model.filter.DateRangeFilter;
+import org.eclipse.mylar.jira.core.internal.model.filter.FilterDefinition;
+import org.eclipse.mylar.jira.core.internal.model.filter.RelativeDateRangeFilter;
+import org.eclipse.mylar.jira.core.internal.model.filter.RelativeDateRangeFilter.RangeType;
+import org.eclipse.mylar.jira.core.internal.service.JiraServer;
+import org.eclipse.mylar.jira.core.internal.service.exceptions.AuthenticationException;
+import org.eclipse.mylar.jira.core.internal.service.exceptions.InsufficientPermissionException;
+import org.eclipse.mylar.jira.core.internal.service.exceptions.ServiceUnavailableException;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -43,20 +57,6 @@ import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.Task;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.tigris.jira.core.model.Component;
-import org.tigris.jira.core.model.Issue;
-import org.tigris.jira.core.model.IssueType;
-import org.tigris.jira.core.model.Priority;
-import org.tigris.jira.core.model.Project;
-import org.tigris.jira.core.model.Version;
-import org.tigris.jira.core.model.filter.DateRangeFilter;
-import org.tigris.jira.core.model.filter.FilterDefinition;
-import org.tigris.jira.core.model.filter.RelativeDateRangeFilter;
-import org.tigris.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import org.tigris.jira.core.service.JiraServer;
-import org.tigris.jira.core.service.exceptions.AuthenticationException;
-import org.tigris.jira.core.service.exceptions.InsufficientPermissionException;
-import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
 
 /**
  * @author Mik Kersten
@@ -209,10 +209,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		long minutes = -1 * ((now - mil) / (1000 * 60));
 		if (minutes == 0)
 			return changedTasks;
-		// XXX: This is a HACK. RangeType.MINUTES doesn't exist in RangeType but
-		// RangeType.MONTH
-		// uses the correct 'm' character upon submission so we get the correct
-		// result
 		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, minutes));
 
 		// TODO: Need some way to further scope this query
@@ -435,7 +431,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				break;
 			}
 		}
-		for (org.tigris.jira.core.model.Status status : server.getStatuses()) {
+		for (org.eclipse.mylar.jira.core.internal.model.Status status : server.getStatuses()) {
 			if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 				issue.setStatus(status);
 				break;

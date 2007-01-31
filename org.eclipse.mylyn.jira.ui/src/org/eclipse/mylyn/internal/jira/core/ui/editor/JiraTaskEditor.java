@@ -215,14 +215,14 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 //					if (operation != null) {
 //						if ("leave".equals(operation.getKnobName())) {
 //							jiraServer.updateIssue(issue, comment);
-//						} else if (org.tigris.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
+//						} else if (org.eclipse.mylar.jira.core.internal.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
 //							String value = operation.getOptionValue(operation.getOptionSelection());
 //							jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
 //									comment, JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
-//						} else if (org.tigris.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
+//						} else if (org.eclipse.mylar.jira.core.internal.model.Status.OPEN_ID.equals(operation.getKnobName())) {
 //							jiraServer.reopenIssue(issue, comment, JiraServer.ASSIGNEE_CURRENT, repository
 //									.getUserName());
-//						} else if (org.tigris.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
+//						} else if (org.eclipse.mylar.jira.core.internal.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
 //							String value = operation.getOptionValue(operation.getOptionSelection());
 //							jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
 //									comment, JiraServer.ASSIGNEE_CURRENT, repository.getUserName());

@@ -6,8 +6,8 @@ package org.eclipse.mylar.internal.jira.core;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.tigris.jira.core.model.Issue;
-import org.tigris.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylar.jira.core.internal.model.Issue;
+import org.eclipse.mylar.jira.core.internal.model.filter.IssueCollector;
 
 /**
  * @author Mik Kersten

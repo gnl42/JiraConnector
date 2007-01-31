@@ -12,8 +12,8 @@
 package org.eclipse.mylar.internal.jira.core;
 
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.jira.core.internal.model.Priority;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
-import org.tigris.jira.core.model.Priority;
 
 /**
  * @author Mik Kersten

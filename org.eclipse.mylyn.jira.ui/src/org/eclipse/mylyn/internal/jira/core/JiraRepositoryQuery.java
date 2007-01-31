@@ -12,9 +12,9 @@
 package org.eclipse.mylar.internal.jira.core;
 
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.jira.core.internal.model.NamedFilter;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskList;
-import org.tigris.jira.core.model.NamedFilter;
 
 /**
  * A JiraRepositoryQuery represents a server-side query for Jira repository.

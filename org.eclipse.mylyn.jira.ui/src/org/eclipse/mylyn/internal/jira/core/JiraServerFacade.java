@@ -16,14 +16,14 @@ import java.net.URL;
 
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.jira.core.internal.JiraCorePlugin;
+import org.eclipse.mylar.jira.core.internal.ServerManager;
+import org.eclipse.mylar.jira.core.internal.service.JiraServer;
+import org.eclipse.mylar.jira.core.internal.service.exceptions.AuthenticationException;
+import org.eclipse.mylar.jira.core.internal.service.exceptions.ServiceUnavailableException;
 import org.eclipse.mylar.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.tigris.jira.core.JiraCorePlugin;
-import org.tigris.jira.core.ServerManager;
-import org.tigris.jira.core.service.JiraServer;
-import org.tigris.jira.core.service.exceptions.AuthenticationException;
-import org.tigris.jira.core.service.exceptions.ServiceUnavailableException;
 
 /**
  * This class acts as a layer of indirection between clients in this project and

@@ -17,6 +17,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.mylar.context.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.html.HTML2TextReader;
 import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.jira.core.internal.JiraCorePlugin;
+import org.eclipse.mylar.jira.core.internal.model.Comment;
+import org.eclipse.mylar.jira.core.internal.model.Component;
+import org.eclipse.mylar.jira.core.internal.model.Issue;
+import org.eclipse.mylar.jira.core.internal.model.IssueType;
+import org.eclipse.mylar.jira.core.internal.model.Priority;
+import org.eclipse.mylar.jira.core.internal.model.Resolution;
+import org.eclipse.mylar.jira.core.internal.model.Status;
+import org.eclipse.mylar.jira.core.internal.model.Version;
+import org.eclipse.mylar.jira.core.internal.service.JiraServer;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.ITask;
@@ -27,16 +37,6 @@ import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.TaskComment;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.tigris.jira.core.JiraCorePlugin;
-import org.tigris.jira.core.model.Comment;
-import org.tigris.jira.core.model.Component;
-import org.tigris.jira.core.model.Issue;
-import org.tigris.jira.core.model.IssueType;
-import org.tigris.jira.core.model.Priority;
-import org.tigris.jira.core.model.Resolution;
-import org.tigris.jira.core.model.Status;
-import org.tigris.jira.core.model.Version;
-import org.tigris.jira.core.service.JiraServer;
 
 /**
  * @author Mik Kersten
@@ -320,18 +320,18 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
 					jiraServer.addCommentToIssue(issue, taskData.getNewComment());
 				}
-			} else if (org.tigris.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
+			} else if (org.eclipse.mylar.jira.core.internal.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
 				String value = operation.getOptionValue(operation.getOptionSelection());
 				jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
 						.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
-			} else if (org.tigris.jira.core.model.Status.REOPENED_ID.equals(operation.getKnobName())) {
+			} else if (org.eclipse.mylar.jira.core.internal.model.Status.REOPENED_ID.equals(operation.getKnobName())) {
 				jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository
 						.getUserName());
-			} else if (org.tigris.jira.core.model.Status.STARTED_ID.equals(operation.getKnobName())) {
+			} else if (org.eclipse.mylar.jira.core.internal.model.Status.STARTED_ID.equals(operation.getKnobName())) {
 				jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
-			} else if (org.tigris.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
+			} else if (org.eclipse.mylar.jira.core.internal.model.Status.OPEN_ID.equals(operation.getKnobName())) {
 				jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
-			} else if (org.tigris.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
+			} else if (org.eclipse.mylar.jira.core.internal.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
 				String value = operation.getOptionValue(operation.getOptionSelection());
 				jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
 						.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());

@@ -20,6 +20,9 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.core.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
+import org.eclipse.mylar.jira.core.internal.model.NamedFilter;
+import org.eclipse.mylar.jira.core.internal.model.filter.FilterDefinition;
+import org.eclipse.mylar.jira.core.internal.service.JiraServer;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -33,9 +36,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
-import org.tigris.jira.core.model.NamedFilter;
-import org.tigris.jira.core.model.filter.FilterDefinition;
-import org.tigris.jira.core.service.JiraServer;
 
 /**
  * Wizard page that allows the user to select a named Jira filter they have
