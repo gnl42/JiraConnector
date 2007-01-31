@@ -21,7 +21,7 @@ import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.tigris.jira.core.model.NamedFilter;
+import org.eclipse.mylar.jira.core.internal.model.NamedFilter;
 
 /**
  * @author Wesley Coelho (initial integration patch)

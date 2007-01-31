@@ -30,9 +30,9 @@ import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TaskListManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.tigris.jira.core.model.Issue;
-import org.tigris.jira.core.model.NamedFilter;
-import org.tigris.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylar.jira.core.internal.model.Issue;
+import org.eclipse.mylar.jira.core.internal.model.NamedFilter;
+import org.eclipse.mylar.jira.core.internal.model.filter.FilterDefinition;
 
 /**
  * @author Wesley Coelho (initial integration patch)

@@ -25,7 +25,7 @@ import org.eclipse.mylar.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.tigris.jira.core.service.JiraServer;
+import org.eclipse.mylar.jira.core.internal.service.JiraServer;
 
 /**
  * @author Steffen Pingel
