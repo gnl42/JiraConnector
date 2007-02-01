@@ -225,10 +225,7 @@ litigation.
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import feature="org.tigris.jira.core" version="0.9.3" match="greaterOrEqual"/>
       <import feature="org.eclipse.mylar_feature" version="1.0.1" match="greaterOrEqual"/>
-      <import plugin="org.tigris.jira.core" version="0.9.3" match="compatible"/>
-      <import plugin="org.tigris.jira.core.soap" version="0.9.3" match="compatible"/>
    </requires>
 
    <plugin
