@@ -11,10 +11,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.search,
  org.eclipse.ui.forms,
- org.eclipse.mylar.tasks.ui,
- org.eclipse.mylar.context.core,
+ org.eclipse.mylar.jira.core,
  org.eclipse.mylar.tasks.core,
- org.eclipse.mylar.jira.core
+ org.eclipse.mylar.tasks.ui,
+ org.eclipse.mylar.context.core
 Eclipse-AutoStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.mylar.internal.jira.ui,
