@@ -18,29 +18,29 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.internal.jira.core.model.Component;
+import org.eclipse.mylar.internal.jira.core.model.IssueType;
+import org.eclipse.mylar.internal.jira.core.model.Project;
+import org.eclipse.mylar.internal.jira.core.model.Resolution;
+import org.eclipse.mylar.internal.jira.core.model.Status;
+import org.eclipse.mylar.internal.jira.core.model.Version;
+import org.eclipse.mylar.internal.jira.core.model.filter.ComponentFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.ContentFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.DateFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.DateRangeFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylar.internal.jira.core.model.filter.IssueTypeFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.ProjectFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.ResolutionFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.SpecificUserFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.UserFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
+import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.jira.core.internal.model.Component;
-import org.eclipse.mylar.jira.core.internal.model.IssueType;
-import org.eclipse.mylar.jira.core.internal.model.Project;
-import org.eclipse.mylar.jira.core.internal.model.Resolution;
-import org.eclipse.mylar.jira.core.internal.model.Status;
-import org.eclipse.mylar.jira.core.internal.model.Version;
-import org.eclipse.mylar.jira.core.internal.model.filter.ComponentFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.ContentFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.DateFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.DateRangeFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.FilterDefinition;
-import org.eclipse.mylar.jira.core.internal.model.filter.IssueTypeFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.ProjectFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.ResolutionFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.SpecificUserFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.StatusFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.UserFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.VersionFilter;
-import org.eclipse.mylar.jira.core.internal.service.JiraServer;
 
 /**
  * @author Eugene Kuleshov

@@ -16,8 +16,9 @@ import java.net.MalformedURLException;
 import junit.framework.TestCase;
 
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
-import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -25,7 +26,6 @@ import org.eclipse.mylar.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.mylar.jira.core.internal.service.JiraServer;
 
 /**
  * @author Steffen Pingel

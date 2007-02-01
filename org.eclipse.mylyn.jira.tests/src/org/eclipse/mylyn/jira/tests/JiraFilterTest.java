@@ -13,15 +13,15 @@ package org.eclipse.mylar.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.core.JiraQueryHit;
-import org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector;
-import org.eclipse.mylar.internal.jira.core.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.core.JiraServerFacade;
-import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
+import org.eclipse.mylar.internal.jira.ui.JiraQueryHit;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
+import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylar.jira.core.internal.model.NamedFilter;
 
 /**
  * @author Wesley Coelho (initial integration patch)

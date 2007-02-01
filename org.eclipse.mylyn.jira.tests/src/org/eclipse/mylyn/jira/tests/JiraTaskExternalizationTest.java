@@ -16,12 +16,15 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.core.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.core.JiraQueryHit;
-import org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector;
-import org.eclipse.mylar.internal.jira.core.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.core.JiraTask;
-import org.eclipse.mylar.internal.jira.core.ui.JiraUiPlugin;
+import org.eclipse.mylar.internal.jira.core.model.Issue;
+import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
+import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.ui.JiraQueryHit;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
+import org.eclipse.mylar.internal.jira.ui.JiraTask;
+import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -30,9 +33,6 @@ import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TaskListManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylar.jira.core.internal.model.Issue;
-import org.eclipse.mylar.jira.core.internal.model.NamedFilter;
-import org.eclipse.mylar.jira.core.internal.model.filter.FilterDefinition;
 
 /**
  * @author Wesley Coelho (initial integration patch)

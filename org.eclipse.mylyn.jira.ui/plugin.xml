@@ -8,24 +8,24 @@
          point="org.eclipse.mylar.tasks.ui.repositories">
 
       <connectorCore
-            class="org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector"
+            class="org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector"
             id="org.eclipse.mylar.jira.tasklist.repositories"
             name="JIRA Repository Connector"
             type="jira"/>
 	  <connectorUi
          brandingIcon="icons/eview16/jira-logo.gif"
-         class="org.eclipse.mylar.internal.jira.core.ui.JiraRepositoryUi"
+         class="org.eclipse.mylar.internal.jira.ui.JiraRepositoryUi"
          name="JIRA Repository UI"
          overlayIcon="icons/eview16/overlay-jira.gif"/>
             
       <externalizer 
-            class="org.eclipse.mylar.internal.jira.core.JiraTaskExternalizer"
+            class="org.eclipse.mylar.internal.jira.ui.JiraTaskExternalizer"
             id="org.eclipse.mylar.jira.tasklist.externalizer"/>
    </extension>  
    
    <extension point="org.eclipse.ui.decorators">
       <decorator
-            class="org.eclipse.mylar.internal.jira.core.ui.JiraTaskDecorator"
+            class="org.eclipse.mylar.internal.jira.ui.JiraTaskDecorator"
             id="org.eclipse.mylar.jira.ui.decorator.task"
             label="Mylar JIRA Task Decorator"
             lightweight="true"
@@ -49,10 +49,10 @@
    <extension
          point="org.eclipse.mylar.tasks.ui.editors">
       <editorFactory
-            class="org.eclipse.mylar.internal.jira.core.ui.editor.JiraTaskEditorFactory"
+            class="org.eclipse.mylar.internal.jira.ui.editor.JiraTaskEditorFactory"
             id="org.eclipse.mylar.jira.ui.JiraTaskEditorFactory"/>
       <hyperlinkDetector
-            class="org.eclipse.mylar.internal.jira.core.ui.JiraTaskHyperlinkDetector"
+            class="org.eclipse.mylar.internal.jira.ui.JiraTaskHyperlinkDetector"
             id="org.eclipse.mylar.tasks.hyperlinkdetector.jiratask"/>
             
    </extension>
