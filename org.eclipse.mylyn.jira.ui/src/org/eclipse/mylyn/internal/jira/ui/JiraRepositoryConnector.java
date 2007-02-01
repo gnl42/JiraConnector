@@ -35,8 +35,8 @@ import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.model.filter.DateRangeFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylar.internal.jira.core.model.filter.Order;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
@@ -197,8 +197,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (jiraServer == null) {
 			return tasks;
 		}
-		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
-		changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, new Date()));
+
 		long mil = lastSyncDate.getTime();
 		long now = Calendar.getInstance().getTimeInMillis();
 		if (now - mil <= 0) {
@@ -208,7 +207,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		long minutes = -1 * ((now - mil) / (1000 * 60));
 		if (minutes == 0)
 			return changedTasks;
+		
+		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
 		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, minutes));
+		changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
 
 		// TODO: Need some way to further scope this query
 
