@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Mylar Jira Core Plug-in
+Bundle-Name: Mylar JIRA Core Plug-in
 Bundle-SymbolicName: org.eclipse.mylar.jira.core;singleton:=true
 Bundle-Version: 1.0.1.v20070201-1700
 Bundle-Activator: org.eclipse.mylar.internal.jira.core.JiraCorePlugin
