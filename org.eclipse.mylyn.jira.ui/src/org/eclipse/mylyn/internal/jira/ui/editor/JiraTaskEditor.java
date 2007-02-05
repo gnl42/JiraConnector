@@ -55,7 +55,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	
 	@Override
 	protected void createCustomAttributeLayout(Composite composite) {
-		FormToolkit toolkit = getManagedForm().getToolkit();
 		Label label = toolkit.createLabel(composite, "Components:");
 		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
 
@@ -81,8 +80,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 					attribute.clearValues();
 					attribute.setValues(Arrays.asList(componentsList.getSelection()));
-					markDirty(true);
-					
+					attributeChanged(attribute);
 				}
 			});
 		}
@@ -111,7 +109,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
 					attribute.clearValues();
 					attribute.setValues(Arrays.asList(versionsList.getSelection()));
-					markDirty(true);
+					attributeChanged(attribute);
 				}
 			});
 		}
@@ -141,7 +139,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
 					attribute.clearValues();
 					attribute.setValues(Arrays.asList(affectsVersionsList.getSelection()));
-					markDirty(true);
+					attributeChanged(attribute);
 				}
 			});
 		}
