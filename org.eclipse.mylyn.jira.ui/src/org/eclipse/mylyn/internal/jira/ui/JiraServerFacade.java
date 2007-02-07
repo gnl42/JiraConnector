@@ -14,7 +14,7 @@ package org.eclipse.mylar.internal.jira.ui;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.mylar.context.core.MylarStatusHandler;
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.ServerManager;
 import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;

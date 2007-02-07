@@ -14,7 +14,7 @@ package org.eclipse.mylar.internal.jira.ui;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 
-import org.eclipse.mylar.context.core.MylarStatusHandler;
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;

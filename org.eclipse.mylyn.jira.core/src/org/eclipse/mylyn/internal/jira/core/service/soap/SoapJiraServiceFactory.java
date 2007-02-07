@@ -15,10 +15,10 @@ import java.net.Proxy;
 
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import org.eclipse.mylar.core.net.SslProtocolSocketFactory;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraService;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceFactory;
-import org.eclipse.mylar.internal.tasks.core.SslProtocolSocketFactory;
 
 /**
  * @author Brock Janiczak

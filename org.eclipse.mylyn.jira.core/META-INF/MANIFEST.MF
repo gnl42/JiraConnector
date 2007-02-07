@@ -2,12 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mylar JIRA Core Plug-in
 Bundle-SymbolicName: org.eclipse.mylar.jira.core;singleton:=true
-Bundle-Version: 1.0.1.v20070206-1500
+Bundle-Version: 1.0.1.v20070202-1900
 Bundle-Activator: org.eclipse.mylar.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.mylar.context.core,
- org.eclipse.mylar.tasks.core
+ org.eclipse.mylar
 Eclipse-AutoStart: true
 Export-Package: org.eclipse.mylar.internal.jira.core,
  org.eclipse.mylar.internal.jira.core.model,
@@ -18,11 +17,5 @@ Export-Package: org.eclipse.mylar.internal.jira.core,
  org.eclipse.mylar.internal.jira.core.service.web.rss,
  org.eclipse.mylar.internal.jira.core.wsdl.beans,
  org.eclipse.mylar.internal.jira.core.wsdl.soap
-Bundle-ClassPath: .,
- lib/axis-1.3.jar,
- lib/commons-codec-1.3.jar,
- lib/commons-discovery-0.2.jar,
- lib/jaxrpc.jar,
- lib/saaj.jar,
- lib/wsdl4j-1.5.1.jar
+Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

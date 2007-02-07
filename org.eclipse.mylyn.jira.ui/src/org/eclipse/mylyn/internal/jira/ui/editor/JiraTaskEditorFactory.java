@@ -8,7 +8,7 @@
 
 package org.eclipse.mylar.internal.jira.ui.editor;
 
-import org.eclipse.mylar.context.core.MylarStatusHandler;
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.ui.JiraTask;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.ITask;

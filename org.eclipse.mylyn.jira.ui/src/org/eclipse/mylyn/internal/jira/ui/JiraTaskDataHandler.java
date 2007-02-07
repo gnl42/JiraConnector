@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.mylar.context.core.MylarStatusHandler;
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
