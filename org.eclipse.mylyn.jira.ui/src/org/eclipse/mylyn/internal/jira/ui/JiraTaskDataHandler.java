@@ -27,7 +27,6 @@ import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.ITaskDataHandler;
 import org.eclipse.mylar.tasks.core.RepositoryOperation;
@@ -74,9 +73,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	private Issue getJiraIssue(JiraServer server, String taskId, String repositoryUrl) {
 		try {
-			int id = Integer.parseInt(taskId);
-			String handle = AbstractRepositoryTask.getHandle(repositoryUrl, id);
-			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handle);
+//			int id = Integer.parseInt(taskId);
+//			String handle = AbstractRepositoryTask.getHandle(repositoryUrl, id);
+			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
 			if (task instanceof JiraTask) {
 				JiraTask jiraTask = (JiraTask) task;
 				return server.getIssue(jiraTask.getKey());

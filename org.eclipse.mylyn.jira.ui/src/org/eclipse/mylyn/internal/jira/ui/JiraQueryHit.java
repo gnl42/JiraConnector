@@ -36,7 +36,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 
 	@Override
 	protected AbstractRepositoryTask createTask() {
-		return JiraRepositoryConnector.createTask(super.getHandleIdentifier(), key, description);
+		return JiraRepositoryConnector.createTask(super.getRepositoryUrl(), super.getId(), key, description);
 	}
 
 	@Override

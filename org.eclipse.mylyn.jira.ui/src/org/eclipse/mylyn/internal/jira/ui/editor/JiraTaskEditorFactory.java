@@ -51,7 +51,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND,
 				jiraTask.getRepositoryUrl());
 		try {
-			return new RepositoryTaskEditorInput(repository, jiraTask.getHandleIdentifier(), jiraTask.getUrl());
+			return new RepositoryTaskEditorInput(repository, jiraTask.getHandleIdentifier(), jiraTask.getTaskUrl());
 		} catch (Exception e) {
 			MylarStatusHandler.fail(e, "Could not create Trac editor input", true);
 		}

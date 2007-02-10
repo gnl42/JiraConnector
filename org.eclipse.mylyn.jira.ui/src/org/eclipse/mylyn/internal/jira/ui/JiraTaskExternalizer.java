@@ -18,9 +18,9 @@ import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylar.tasks.core.DelegatingTaskExternalizer;
 import org.eclipse.mylar.tasks.core.ITask;
@@ -240,7 +240,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			throw new TaskExternalizationException("Description not stored for bug report");
 		}
 
-		JiraTask task = new JiraTask(handle, label, false);
+		String repositoryUrl = RepositoryTaskHandleUtil.getRepositoryUrl(handle);
+		String taskId = RepositoryTaskHandleUtil.getTaskId(handle);
+		JiraTask task = new JiraTask(repositoryUrl, taskId, label, false);
 		if (element.hasAttribute(KEY_KEY)) {
 			key = element.getAttribute(KEY_KEY);
 			task.setKey(key);
@@ -274,7 +276,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			key = element.getAttribute(KEY_KEY);
 		}
 
-		String issueId = AbstractRepositoryTask.getTaskId(handle);
+		String issueId = RepositoryTaskHandleUtil.getTaskId(handle);
 
 		// TODO: implement completion
 		JiraQueryHit hit = new JiraQueryHit(taskList, "<description>", query.getRepositoryUrl(), issueId, key, false);

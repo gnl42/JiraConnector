@@ -107,8 +107,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (server != null) {
 			Issue issue = server.getIssue(key);
 			if (issue != null) {
-				String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
-				JiraTask task = createTask(issue, handleIdentifier);
+//				String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
+				JiraTask task = createTask(issue, repository.getUrl(), issue.getId());
 				updateTaskDetails(repository.getUrl(), task, issue, true);
 				if (task != null) {
 					TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
@@ -148,9 +148,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.", new UnknownHostException());
 		}
 		for (Issue issue : issues) {
-			String issueId = issue.getId();
-			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issueId);
-			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+			String taskId = issue.getId();
+//			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), taskId);
+			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(), taskId);
 			// if (!(task instanceof JiraTask)) {
 			// task = createTask(issue, handleIdentifier);
 			// }
@@ -161,7 +161,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			// repositoryQuery.getRepositoryUrl(), issueId);
 			// TODO: set completion status
 			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(),
-					issueId, issue.getKey(), false);
+					taskId, issue.getKey(), false);
 			// XXX: HACK, need to map jira priority to tasklist priorities
 			hit.setPriority(Task.PriorityLevel.P3.toString());
 			try {
@@ -228,8 +228,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		for (Issue issue : issues) {
-			String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
-			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handle);
+//			String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
+			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(), issue.getId());
 			if (task instanceof AbstractRepositoryTask) {
 				changedTasks.add((AbstractRepositoryTask) task);
 			}
@@ -334,7 +334,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
 			String url = repositoryUrl + JiraUiPlugin.ISSUE_URL_PREFIX + issue.getKey();
-			task.setUrl(url);
+			task.setTaskUrl(url);
 			if (issue.getDescription() != null) {
 				task.setDescription(issue.getSummary());
 				task.setKey(issue.getKey());
@@ -365,27 +365,29 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
-	public static JiraTask createTask(String handleIdentifier, String key, String description) {
+	public static JiraTask createTask(String repositoryUrl, String taskId, String key, String description) {
 		JiraTask task;
-		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+//		String handle = AbstractRepositoryTask.getHandle(repositoryUrl, taskId);
+		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
 		if (existingTask instanceof JiraTask) {
 			task = (JiraTask) existingTask;
 		} else {
-			task = new JiraTask(handleIdentifier, description, true);
+			task = new JiraTask(repositoryUrl, taskId, description, true);
 			task.setKey(key);// issue.getKey());
 			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
 		return task;
 	}
 
-	public static JiraTask createTask(Issue issue, String handleIdentifier) {
+	public static JiraTask createTask(Issue issue, String repositoryUrl, String taskId) {
 		JiraTask task;
 		String summary = issue.getSummary();
-		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(handleIdentifier);
+//		String handle = AbstractRepositoryTask.getHandle(repositoryUrl, taskId);
+		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
 		if (existingTask instanceof JiraTask) {
 			task = (JiraTask) existingTask;
 		} else {
-			task = new JiraTask(handleIdentifier, summary, true);
+			task = new JiraTask(repositoryUrl, taskId, summary, true);
 			task.setKey(issue.getKey());
 			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
