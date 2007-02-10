@@ -18,7 +18,6 @@ import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractTaskContainer;
@@ -226,25 +225,24 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			throws TaskExternalizationException {
 
 		Element element = (Element) node;
-		String handle;
-		String label;
-		String key;
-		if (element.hasAttribute(KEY_HANDLE)) {
-			handle = element.getAttribute(KEY_HANDLE);
-		} else {
-			throw new TaskExternalizationException("Handle not stored for bug report");
-		}
-		if (element.hasAttribute(KEY_LABEL)) {
-			label = element.getAttribute(KEY_LABEL);
-		} else {
-			throw new TaskExternalizationException("Description not stored for bug report");
-		}
+//		String handle;
+//		String label;
+//		if (element.hasAttribute(KEY_HANDLE)) {
+//			handle = element.getAttribute(KEY_HANDLE);
+//		} else {
+//			throw new TaskExternalizationException("Handle not stored for bug report");
+//		}
+//		if (element.hasAttribute(KEY_LABEL)) {
+//			label = element.getAttribute(KEY_LABEL);
+//		} else {
+//			throw new TaskExternalizationException("Description not stored for bug report");
+//		}
 
-		String repositoryUrl = RepositoryTaskHandleUtil.getRepositoryUrl(handle);
-		String taskId = RepositoryTaskHandleUtil.getTaskId(handle);
-		JiraTask task = new JiraTask(repositoryUrl, taskId, label, false);
+//		String repositoryUrl = RepositoryTaskHandleUtil.getRepositoryUrl(handle);
+//		String taskId = RepositoryTaskHandleUtil.getTaskId(handle);
+		JiraTask task = new JiraTask(null, null, null, false);
 		if (element.hasAttribute(KEY_KEY)) {
-			key = element.getAttribute(KEY_KEY);
+			String key = element.getAttribute(KEY_KEY);
 			task.setKey(key);
 		} else {
 			// ignore if key not found
@@ -264,22 +262,21 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		Element element = (Element) node;
 		// Issue issue = new Issue();
 
-		String handle;
-		if (element.hasAttribute(KEY_HANDLE)) {
-			handle = element.getAttribute(KEY_HANDLE);
-		} else {
-			throw new TaskExternalizationException("Handle not stored for bug report");
-		}
-
+//		String handle;
+//		if (element.hasAttribute(KEY_HANDLE)) {
+//			handle = element.getAttribute(KEY_HANDLE);
+//		} else {
+//			throw new TaskExternalizationException("Handle not stored for bug report");
+//		}
+//		String issueId = RepositoryTaskHandleUtil.getTaskId(handle);
+		
 		String key = "";
 		if (element.hasAttribute(KEY_KEY)) {
 			key = element.getAttribute(KEY_KEY);
 		}
 
-		String issueId = RepositoryTaskHandleUtil.getTaskId(handle);
-
 		// TODO: implement completion
-		JiraQueryHit hit = new JiraQueryHit(taskList, "<description>", query.getRepositoryUrl(), issueId, key, false);
+		JiraQueryHit hit = new JiraQueryHit(taskList, "<description>", query.getRepositoryUrl(), null, key, false);
 		readQueryHitInfo(hit, taskList, query, element);
 	}
 
