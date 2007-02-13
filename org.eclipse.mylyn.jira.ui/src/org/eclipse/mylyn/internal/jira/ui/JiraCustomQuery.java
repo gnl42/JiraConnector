@@ -71,7 +71,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	private static final String QUERY_KEY = "query";
 	private static final String ENVIRONMENT_KEY = "environment";
 	private static final String BODY_KEY = "body";
-	private static final String DESCRIPTION_KEY = "description";
+	private static final String DESCRIPTION_KEY = "summary";
 	private static final String SUMMARY_KEY = "summary";
 
 	private static final String ASSIGNEE_KEY = "assignee";
@@ -510,8 +510,8 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 //}
 //}
 //
-//public void setDescription(String description) {
-//filter.setDescription(description);
+//public void setDescription(String summary) {
+//filter.setDescription(summary);
 //}
 
 //public boolean isLocal() {

@@ -31,7 +31,6 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Mik Kersten
@@ -56,8 +55,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	private static final String KEY_FILTER_NAME = "FilterName";
 
 	private static final String KEY_FILTER_ID = "FilterID";
-
-	// private static final String KEY_FILTER_DESCRIPTION = "FilterDesc";
 
 	private static final String KEY_FILTER_CUSTOM = "FilterCustom";
 
@@ -94,9 +91,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	@Override
 	public AbstractRepositoryQuery readQuery(Node node, TaskList taskList) throws TaskExternalizationException {
-		boolean hasCaughtException = false;
 		Element element = (Element) node;
-
 		String repositoryUrl = element.getAttribute(KEY_REPOSITORY_URL);
 		String custom = element.getAttribute(KEY_FILTER_CUSTOM);
 		String customUrl = element.getAttribute(KEY_FILTER_CUSTOM_URL);
@@ -128,19 +123,6 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, TasksUiPlugin.getTaskListManager()
 					.getTaskList());
-		}
-
-		NodeList list = node.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			Node child = list.item(i);
-			try {
-				readQueryHit(child, taskList, query);
-			} catch (TaskExternalizationException e) {
-				hasCaughtException = true;
-			}
-		}
-		if (hasCaughtException) {
-			throw new TaskExternalizationException("Failed to load all hits");
 		}
 		return query;
 	}
@@ -221,33 +203,16 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public ITask readTask(Node node, TaskList taskList, AbstractTaskContainer category, ITask parent)
+	public ITask createTask(String repositoryUrl, String taskId, String summary, Element element, TaskList taskList, AbstractTaskContainer category, ITask parent)
 			throws TaskExternalizationException {
-
-		Element element = (Element) node;
-//		String handle;
-//		String label;
-//		if (element.hasAttribute(KEY_HANDLE)) {
-//			handle = element.getAttribute(KEY_HANDLE);
-//		} else {
-//			throw new TaskExternalizationException("Handle not stored for bug report");
-//		}
-//		if (element.hasAttribute(KEY_LABEL)) {
-//			label = element.getAttribute(KEY_LABEL);
-//		} else {
-//			throw new TaskExternalizationException("Description not stored for bug report");
-//		}
-
-//		String repositoryUrl = RepositoryTaskHandleUtil.getRepositoryUrl(handle);
-//		String taskId = RepositoryTaskHandleUtil.getTaskId(handle);
-		JiraTask task = new JiraTask(null, null, null, false);
+		JiraTask task = new JiraTask(repositoryUrl, taskId, summary, false);
+		
 		if (element.hasAttribute(KEY_KEY)) {
 			String key = element.getAttribute(KEY_KEY);
 			task.setKey(key);
 		} else {
 			// ignore if key not found
 		}
-		readTaskInfo(task, taskList, element, parent, category);
 		return task;
 	}
 
@@ -257,34 +222,14 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public void readQueryHit(Node node, TaskList taskList, AbstractRepositoryQuery query)
+	public AbstractQueryHit createQueryHit(String repositoryUrl, String taskId, String summary, Element element, TaskList taskList, AbstractRepositoryQuery query)
 			throws TaskExternalizationException {
-		Element element = (Element) node;
-		// Issue issue = new Issue();
-
-//		String handle;
-//		if (element.hasAttribute(KEY_HANDLE)) {
-//			handle = element.getAttribute(KEY_HANDLE);
-//		} else {
-//			throw new TaskExternalizationException("Handle not stored for bug report");
-//		}
-//		String issueId = RepositoryTaskHandleUtil.getTaskId(handle);
-		
 		String key = "";
 		if (element.hasAttribute(KEY_KEY)) {
 			key = element.getAttribute(KEY_KEY);
 		}
 
-		// TODO: implement completion
-		JiraQueryHit hit = new JiraQueryHit(taskList, "<description>", query.getRepositoryUrl(), null, key);
-		// TODO move to DelegationTaskExternalizer
-		if (element.hasAttribute(KEY_COMPLETE)
-				&& element.getAttribute(KEY_COMPLETE).compareTo(VAL_TRUE) == 0) {
-			hit.setCompleted(true);
-		} else {
-			hit.setCompleted(false);
-		}
-		readQueryHitInfo(hit, taskList, query, element);
+		return new JiraQueryHit(taskList, summary, repositoryUrl, taskId, key);
 	}
 
 	@Override

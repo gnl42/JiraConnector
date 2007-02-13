@@ -120,8 +120,8 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 //}
 //}
 //
-//public void setDescription(String description) {
-//filter.setDescription(description);
+//public void setDescription(String summary) {
+//filter.setDescription(summary);
 //}
 
 //public boolean isLocal() {

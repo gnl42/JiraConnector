@@ -24,7 +24,7 @@ public class JiraTask extends AbstractRepositoryTask {
 
 	// XXX: from Trac
 	public enum Key {
-		CC("cc"), CHANGE_TIME("changetime"), COMPONENT("component"), DESCRIPTION("description"), ID("id"), KEYWORDS(
+		CC("cc"), CHANGE_TIME("changetime"), COMPONENT("component"), DESCRIPTION("summary"), ID("id"), KEYWORDS(
 				"keywords"), MILESTONE("milestone"), OWNER("owner"), PRIORITY("priority"), REPORTER("reporter"), RESOLUTION(
 				"resolution"), STATUS("status"), SEVERITY("severity"), SUMMARY("summary"), TIME("time"), TYPE("type"), VERSION(
 				"version");
