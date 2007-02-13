@@ -41,7 +41,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 
 	@Override
 	public String getUrl() {
-		return getRepositoryUrl() + JiraUiPlugin.ISSUE_URL_PREFIX + key;
+		return JiraRepositoryConnector.getTaskUrl(getRepositoryUrl(), key);
 	}
 	
 	@Override

@@ -98,7 +98,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		this.filter = filter;
 		this.repositoryUrl = repositoryUrl;
 		this.encoding = taskRepository.getCharacterEncoding();
-		this.url = repositoryUrl + JiraUiPlugin.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
+		this.url = repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
 		this.maxHits = MAX_HITS;
 	}
 

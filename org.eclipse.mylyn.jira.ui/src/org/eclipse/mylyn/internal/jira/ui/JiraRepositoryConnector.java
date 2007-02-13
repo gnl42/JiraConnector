@@ -62,8 +62,12 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
-	private static final String DELIM_URL = "/browse/";
-
+	/** Repository address + Issue Prefix + Issue key = the issue's web address */
+	public final static String ISSUE_URL_PREFIX = "/browse/";
+	
+	/** Repository address + Filter Prefix + Issue key = the filter's web address */
+	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
+	
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
 	private JiraTaskDataHandler offlineHandler;
@@ -284,7 +288,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (url == null) {
 			return null;
 		}
-		int index = url.indexOf(DELIM_URL);
+		int index = url.indexOf(ISSUE_URL_PREFIX);
 		return index == -1 ? null : url.substring(0, index);
 	}
 
@@ -293,13 +297,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (url == null) {
 			return null;
 		}
-		int index = url.indexOf(DELIM_URL);
-		return index == -1 ? null : url.substring(index + DELIM_URL.length());
+		int index = url.indexOf(ISSUE_URL_PREFIX);
+		return index == -1 ? null : url.substring(index + ISSUE_URL_PREFIX.length());
 	}
 
 	@Override
 	public String getTaskWebUrl(String repositoryUrl, String taskId) {
-		return repositoryUrl + DELIM_URL + taskId;
+		return repositoryUrl + ISSUE_URL_PREFIX + taskId;
 	}
 
 	@Override
@@ -331,11 +335,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
-			String url = repositoryUrl + JiraUiPlugin.ISSUE_URL_PREFIX + issue.getKey();
-			task.setTaskUrl(url);
+			task.setKey(issue.getKey());
+			task.setTaskUrl(getTaskUrl(repositoryUrl, issue.getKey()));
 			if (issue.getDescription() != null) {
 				task.setDescription(issue.getSummary());
-				task.setKey(issue.getKey());
 			}
 		}
 		if (isCompleted(issue)) {
@@ -363,6 +366,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
+	public static String getTaskUrl(String repositoryUrl, String key) {
+		return repositoryUrl + JiraRepositoryConnector.ISSUE_URL_PREFIX + key;
+	}
+
 	private static boolean isCompleted(Issue issue) {
 		return issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved());
 	}
@@ -376,6 +383,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		} else {
 			task = new JiraTask(repositoryUrl, taskId, description, true);
 			task.setKey(key);// issue.getKey());
+			task.setTaskUrl(getTaskUrl(repositoryUrl, key));
 			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
 		return task;
@@ -391,6 +399,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		} else {
 			task = new JiraTask(repositoryUrl, taskId, summary, true);
 			task.setKey(issue.getKey());
+			task.setTaskUrl(getTaskUrl(repositoryUrl, issue.getKey()));
 			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
 		return task;
