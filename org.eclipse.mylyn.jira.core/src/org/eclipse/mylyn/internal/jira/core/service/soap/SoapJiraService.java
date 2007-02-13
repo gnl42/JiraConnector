@@ -671,23 +671,23 @@ public class SoapJiraService implements JiraService {
 	}
 
 	private static class StandardLoginToken implements LoginToken {
-		private String token;
-
-		private long lastAccessed;
-
 		private final String username;
 
 		private final String password;
 
 		private final long timeout;
 
-		private final JiraSoapService jirasoapserviceV2;
+		private final JiraSoapService jiraSoapService;
 
-		public StandardLoginToken(String username, String password, long timeout, JiraSoapService jirasoapserviceV2) {
+		private String token;
+		
+		private long lastAccessed;
+		
+		public StandardLoginToken(String username, String password, long timeout, JiraSoapService jiraSoapService) {
 			this.username = username;
 			this.password = password;
 			this.timeout = timeout;
-			this.jirasoapserviceV2 = jirasoapserviceV2;
+			this.jiraSoapService = jiraSoapService;
 			this.lastAccessed = -1L;
 		}
 
@@ -695,22 +695,25 @@ public class SoapJiraService implements JiraService {
 			if ((System.currentTimeMillis() - lastAccessed) >= timeout || token == null) {
 				if (token != null) {
 					try {
-						jirasoapserviceV2.logout(this.token);
-					} catch (java.rmi.RemoteException e) {
-						// Do nothing
+						jiraSoapService.logout(this.token);
+					} catch (Exception e) {
+						// do nothing
 					}
 				}
 
 				try {
-					this.token = jirasoapserviceV2.login(username, password);
+					this.token = jiraSoapService.login(username, password);
+					this.lastAccessed = System.currentTimeMillis();
 				} catch (RemoteAuthenticationException e) {
+					this.token = null;
+					this.lastAccessed = -1L;
 					throw new AuthenticationException(e.getMessage());
 				} catch (java.rmi.RemoteException e) {
+					this.token = null;
+					this.lastAccessed = -1L;
 					throw new ServiceUnavailableException(unwrapRemoteException(e));
 				}
 			}
-
-			this.lastAccessed = System.currentTimeMillis();
 
 			return this.token;
 		}
@@ -723,11 +726,12 @@ public class SoapJiraService implements JiraService {
 		public void expire() {
 			if (token != null) {
 				try {
-					jirasoapserviceV2.logout(this.token);
+					jiraSoapService.logout(this.token);
 				} catch (java.rmi.RemoteException e) {
 					// Do nothing
 				}
 				token = null;
+				lastAccessed = -1;
 			}
 		}
 
