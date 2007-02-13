@@ -276,7 +276,14 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		}
 
 		// TODO: implement completion
-		JiraQueryHit hit = new JiraQueryHit(taskList, "<description>", query.getRepositoryUrl(), null, key, false);
+		JiraQueryHit hit = new JiraQueryHit(taskList, "<description>", query.getRepositoryUrl(), null, key);
+		// TODO move to DelegationTaskExternalizer
+		if (element.hasAttribute(KEY_COMPLETE)
+				&& element.getAttribute(KEY_COMPLETE).compareTo(VAL_TRUE) == 0) {
+			hit.setCompleted(true);
+		} else {
+			hit.setCompleted(false);
+		}
 		readQueryHitInfo(hit, taskList, query, element);
 	}
 

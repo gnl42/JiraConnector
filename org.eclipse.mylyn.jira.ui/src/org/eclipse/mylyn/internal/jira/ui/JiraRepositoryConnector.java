@@ -157,11 +157,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (task instanceof JiraTask) {
 				updateTaskDetails(repository.getUrl(), (JiraTask) task, issue, false);
 			}
-			// JiraQueryHit hit = new JiraQueryHit((JiraTask) task,
-			// repositoryQuery.getRepositoryUrl(), issueId);
-			// TODO: set completion status
 			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(),
-					taskId, issue.getKey(), false);
+					taskId, issue.getKey());
+			hit.setCompleted(isCompleted(issue));
 			// XXX: HACK, need to map jira priority to tasklist priorities
 			hit.setPriority(Task.PriorityLevel.P3.toString());
 			try {
@@ -340,7 +338,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				task.setKey(issue.getKey());
 			}
 		}
-		if (issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved())) {
+		if (isCompleted(issue)) {
 			task.setCompleted(true);
 			task.setCompletionDate(issue.getUpdated());
 		} else {
@@ -363,6 +361,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (notifyOfChange) {
 			TasksUiPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
 		}
+	}
+
+	private static boolean isCompleted(Issue issue) {
+		return issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved());
 	}
 
 	public static JiraTask createTask(String repositoryUrl, String taskId, String key, String description) {
