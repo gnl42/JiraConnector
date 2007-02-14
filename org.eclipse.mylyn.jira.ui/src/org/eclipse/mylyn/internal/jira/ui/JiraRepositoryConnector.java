@@ -146,12 +146,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
 					"Unable to login to the repository. Check credentials", ex);
 		} catch (Throwable t) {
+			// TODO need to refactor this to use better checked exceptions and only log severe cases
 			String msg = t.getMessage();
 			if (msg == null) {
 				msg = t.toString();
 			}
-			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
+			Status status = new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
 					"Unable to retrieve query results from " + repositoryQuery.getRepositoryUrl() + "\n" + msg, t);
+			MylarStatusHandler.log(status);
+			return status;
 		}
 		// TODO: work-around no other way of determining failure
 		Exception ex = collector.getException();
