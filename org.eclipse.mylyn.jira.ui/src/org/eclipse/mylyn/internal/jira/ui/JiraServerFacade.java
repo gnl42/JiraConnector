@@ -47,7 +47,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	/**
 	 * Lazily creates server.
 	 */
-	public JiraServer getJiraServer(TaskRepository repository) {
+	public synchronized JiraServer getJiraServer(TaskRepository repository) {
 		try {
 			String serverHostname = getServerHost(repository);
 			JiraServer server = serverManager.getServer(serverHostname);
@@ -75,7 +75,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		return instance;
 	}
 
-	public void logOutFromAll() {
+	public synchronized void logOutFromAll() {
 		try {
 			JiraServer[] allServers = serverManager.getAllServers();
 			for (int i = 0; i < allServers.length; i++) {
@@ -90,13 +90,13 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		// ignore
 	}
 
-	public void repositoryAdded(TaskRepository repository) {
+	public synchronized void repositoryAdded(TaskRepository repository) {
 		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
 			getJiraServer(repository);
 		}
 	}
 
-	public void repositoryRemoved(TaskRepository repository) {
+	public synchronized void repositoryRemoved(TaskRepository repository) {
 		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
 			String serverHostname = getServerHost(repository);
 			JiraServer server = serverManager.getServer(serverHostname);
@@ -109,7 +109,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		repositoryAdded(repository);
 	}
 	
-	public void forceServerReset(TaskRepository repository) {
+	public synchronized void forceServerReset(TaskRepository repository) {
 		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
 		if (server != null) {
@@ -119,7 +119,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 	
-	public void refreshServerSettings(TaskRepository repository) {
+	public synchronized void refreshServerSettings(TaskRepository repository) {
 		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
 		if (server != null) {
@@ -127,7 +127,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 	
-	private void removeServer(JiraServer server) {
+	private synchronized void removeServer(JiraServer server) {
 		if (server != null) {
 			server.logout();
 			serverManager.removeServer(server);
@@ -141,7 +141,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * @param password Password
 	 * @return String describing validation failure or null if the details are valid
 	 */
-	public String validateServerAndCredentials(String serverUrl, String user, String password) {
+	public synchronized String validateServerAndCredentials(String serverUrl, String user, String password) {
 		try {
 			serverManager.testConnection(serverUrl, user, password);
 			return null;
@@ -181,6 +181,5 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 					+ "Please check your credentials in the Task Repositories view", true);
 		}
 	}
-
 	
 }
