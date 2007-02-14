@@ -20,6 +20,8 @@ import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
  */
 public class JiraTask extends AbstractRepositoryTask {
 
+	public static final String UNASSIGNED_USER = "-1";
+	
 	private String key = null;
 
 	// XXX: from Trac

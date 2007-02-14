@@ -116,7 +116,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		data.addAttribute(RepositoryTaskAttribute.RESOLUTION, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.USER_ASSIGNED, "Assigned to: ", true);
-		attribute.setValue(jiraIssue.getAssignee());
+		attribute.setValue(getAssignee(jiraIssue));
 		data.addAttribute(RepositoryTaskAttribute.USER_ASSIGNED, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.USER_REPORTER, "Reported by: ", true);
@@ -210,6 +210,10 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	}
 
+	private String getAssignee(Issue jiraIssue) {
+		return JiraTask.UNASSIGNED_USER.equals(jiraIssue.getAssignee()) ? "" : jiraIssue.getAssignee();
+	}
+
 	public Date getDateForAttributeType(String attributeKey, String dateString) {
 		if (dateString == null || dateString.equals("")) {
 			return null;
@@ -279,11 +283,16 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		opClose.addOption("Incomplete", Resolution.INCOMPLETE_ID);
 		opClose.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
 
+		RepositoryOperation assignOperation = new RepositoryOperation("reassign", "Reassign to");
+		assignOperation.setInputName("assignee");
+		assignOperation.setInputValue(getAssignee(issue));
+		
 		opLeave.setChecked(true);
 		data.addOperation(opLeave);
 		if (status.getId().equals(Status.OPEN_ID) || status.getId().equals(Status.STARTED_ID)) {
 			data.addOperation(opResolve);
 			data.addOperation(opClose);
+			data.addOperation(assignOperation);
 			// //data.addOperation(opStart);
 			// } else if (status.getId().equals(Status.STARTED_ID)) {
 			// data.addOperation(opResolve);
@@ -312,7 +321,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 		RepositoryOperation operation = taskData.getSelectedOperation();
 		if (operation != null) {
-			if ("leave".equals(operation.getKnobName())) {
+			if ("leave".equals(operation.getKnobName()) || "reassign".equals(operation.getKnobName())) {
 				if (!issue.getStatus().isClosed()) {
 					jiraServer.updateIssue(issue, taskData.getNewComment());
 				} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {

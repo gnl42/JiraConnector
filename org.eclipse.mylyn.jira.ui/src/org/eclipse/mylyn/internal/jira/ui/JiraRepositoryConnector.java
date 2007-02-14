@@ -50,6 +50,7 @@ import org.eclipse.mylar.tasks.core.IAttachmentHandler;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.ITaskDataHandler;
 import org.eclipse.mylar.tasks.core.QueryHitCollector;
+import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.Task;
@@ -492,7 +493,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));
 		issue.setReporter(taskData.getAttributeValue(RepositoryTaskAttribute.USER_REPORTER));
-		issue.setAssignee(taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED));
+		String assignee;
+		RepositoryOperation operation = taskData.getSelectedOperation();
+		if (operation != null && "reassign".equals(operation.getKnobName())) {
+			assignee = operation.getInputValue();
+		} else {
+			assignee = taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED);
+		}
+		issue.setAssignee(getAssigneeFromAttribute(assignee));
 		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
 		issue.setId(taskData.getId());
 		issue.setKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
@@ -504,4 +512,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		return issue;
 	}
+	
+	public static String getAssigneeFromAttribute(String assignee) {
+		return "".equals(assignee) ? JiraTask.UNASSIGNED_USER : assignee;
+	}
+	
 }
