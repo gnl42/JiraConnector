@@ -17,7 +17,6 @@ import java.io.ObjectInputStream;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractTaskContainer;
@@ -106,23 +105,19 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			filter.setName(element.getAttribute(KEY_FILTER_ID));
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
-			query = new JiraCustomQuery(repositoryUrl, filter, TasksUiPlugin.getTaskListManager().getTaskList(),
-					TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND, repositoryUrl));
+			query = new JiraCustomQuery(repositoryUrl, filter, TasksUiPlugin.getRepositoryManager().getRepository(
+					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding(), taskList);
 		} else if (customUrl != null && customUrl.length() > 0) {
 			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
-			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-			query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl, jiraServer,
-					TasksUiPlugin.getTaskListManager().getTaskList(), repository);
+			query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl, repository
+					.getCharacterEncoding(), taskList);
 
 		} else {
 			NamedFilter namedFilter = new NamedFilter();
 			namedFilter.setId(element.getAttribute(KEY_FILTER_ID));
 			namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
-			// namedFilter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
-
-			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, TasksUiPlugin.getTaskListManager()
-					.getTaskList());
+			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, taskList);
 		}
 		return query;
 	}

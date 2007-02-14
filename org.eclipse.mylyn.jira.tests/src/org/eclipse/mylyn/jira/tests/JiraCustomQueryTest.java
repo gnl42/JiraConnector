@@ -138,7 +138,8 @@ public class JiraCustomQueryTest extends TestCase {
 		TaskRepository taskRepository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
 
-		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskList, taskRepository);
+		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskRepository.getCharacterEncoding(),
+				taskList);
 
 		String queryUrl = customQuery.getUrl();
 
@@ -166,9 +167,10 @@ public class JiraCustomQueryTest extends TestCase {
 					}
 				});
 
-		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl, jiraServer, taskList, taskRepository);
+		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl, taskRepository
+				.getCharacterEncoding(), taskList);
 
-		FilterDefinition filter2 = customQuery2.getFilterDefinition();
+		FilterDefinition filter2 = customQuery2.getFilterDefinition(jiraServer);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();
 		assertEquals(project.getId(), projectFilter2.getProject().getId());

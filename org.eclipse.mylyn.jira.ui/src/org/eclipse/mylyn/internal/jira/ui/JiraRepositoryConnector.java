@@ -140,7 +140,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
-				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(), collector);
+				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(jiraServer), collector);
 			}
 		} catch (AuthenticationException ex) {
 			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,

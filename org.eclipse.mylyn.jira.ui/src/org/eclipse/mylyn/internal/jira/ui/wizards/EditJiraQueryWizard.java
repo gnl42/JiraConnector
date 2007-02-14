@@ -11,7 +11,9 @@
 
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
+import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.wizards.AbstractEditQueryWizard;
@@ -36,8 +38,9 @@ public class EditJiraQueryWizard extends AbstractEditQueryWizard {
 	@Override
 	public void addPages() {
 		if(query instanceof JiraCustomQuery) {
+			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);;
 			JiraCustomQuery customQuery = (JiraCustomQuery) query;
-			page = new JiraQueryPage(repository, customQuery.getFilterDefinition(), false, true);
+			page = new JiraQueryPage(repository, customQuery.getFilterDefinition(jiraServer), false, true);
 		} else {
 			page = new JiraQueryWizardPage(repository, query);
 		}

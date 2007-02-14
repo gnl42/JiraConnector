@@ -159,7 +159,8 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 			FilterDefinition workingCopy;
 			boolean isNew;
 			if(query instanceof JiraCustomQuery) {
-				workingCopy = ((JiraCustomQuery) query).getFilterDefinition();
+				JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+				workingCopy = ((JiraCustomQuery) query).getFilterDefinition(jiraServer);
 				isNew = false;
 			} else {
 				workingCopy = new FilterDefinition();

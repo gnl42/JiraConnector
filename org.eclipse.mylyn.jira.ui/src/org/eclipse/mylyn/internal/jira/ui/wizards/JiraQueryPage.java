@@ -54,7 +54,6 @@ import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
-import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.DatePicker;
@@ -1426,7 +1425,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		String url = repository.getUrl();
-		return new JiraCustomQuery(url, workingCopy, TasksUiPlugin.getTaskListManager().getTaskList(), TasksUiPlugin
-				.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND, url));
+		return new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding(), TasksUiPlugin
+				.getTaskListManager().getTaskList());
 	}
 }

@@ -48,7 +48,6 @@ import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskList;
-import org.eclipse.mylar.tasks.core.TaskRepository;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.
@@ -88,28 +87,26 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	private static final int MAX_HITS = 200;
 
-
-	private final FilterDefinition filter;
+	private FilterDefinition filter;
 	private String encoding;
 
 
-	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, TaskList taskList, TaskRepository taskRepository) {
+	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, String encoding, TaskList taskList) {
 		super(filter.getName(), taskList);
 		this.filter = filter;
 		this.repositoryUrl = repositoryUrl;
-		this.encoding = taskRepository.getCharacterEncoding();
+		this.encoding = encoding;
 		this.url = repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
 		this.maxHits = MAX_HITS;
 	}
 
-	public JiraCustomQuery(String name, String queryUrl, String repositoryUrl,
-			JiraServer jiraServer, TaskList taskList, TaskRepository taskRepository) {
+	public JiraCustomQuery(String name, String queryUrl, String repositoryUrl, String encoding, TaskList taskList) {
 		super(name, taskList);
 		this.repositoryUrl = repositoryUrl;
 		this.url = queryUrl;
-		this.encoding = taskRepository.getCharacterEncoding();
-		this.filter = createFilter(jiraServer, queryUrl);
-		this.filter.setName(name);
+		this.encoding = encoding;
+		// this.filter = createFilter(jiraServer, queryUrl);
+		// this.filter.setName(name);
 		this.maxHits = MAX_HITS;
 	}
 
@@ -118,10 +115,13 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
-	public FilterDefinition getFilterDefinition() {
+	public FilterDefinition getFilterDefinition(JiraServer jiraServer) {
+		if (filter == null && jiraServer != null) {
+			this.filter = createFilter(jiraServer, getUrl());
+			this.filter.setName(getSummary());
+		}
 		return filter;
 	}
-
 
 	private FilterDefinition createFilter(JiraServer jiraServer, String url) {
 		FilterDefinition filter = new FilterDefinition();

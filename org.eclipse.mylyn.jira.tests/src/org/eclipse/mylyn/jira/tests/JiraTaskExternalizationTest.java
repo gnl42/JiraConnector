@@ -106,8 +106,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testCustomQueryRename() {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setName("f-name");
-		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter,
-				TasksUiPlugin.getTaskListManager().getTaskList(), repository);
+		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding(),
+				TasksUiPlugin.getTaskListManager().getTaskList());
 		taskList.addQuery(query);
 		query.setDescription("q-name");
 
