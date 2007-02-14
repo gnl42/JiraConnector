@@ -522,7 +522,7 @@ public class RssContentHandler extends DefaultHandler {
 			}
 
 			else {
-				System.err.println("Unknown Issue attribute: " + localName);
+				//System.err.println("Unknown Issue attribute: " + localName);
 			}
 
 			break;
