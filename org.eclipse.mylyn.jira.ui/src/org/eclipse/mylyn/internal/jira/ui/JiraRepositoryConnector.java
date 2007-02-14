@@ -143,12 +143,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(), collector);
 			}
 		} catch (Throwable t) {
-			return new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.OK, "Could not log in to server: "
+			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.OK, "Could not log in to server: "
 					+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.", t);
 		}
 		// TODO: work-around no other way of determining failure
 		if (!collector.isDone()) {
-			return new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.OK, "Could not log in to server: "
+			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.OK, "Could not log in to server: "
 					+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.", new UnknownHostException());
 		}
 		for (Issue issue : issues) {
@@ -169,7 +169,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			try {
 				resultCollector.accept(hit);
 			} catch (CoreException e) {
-				return new Status(IStatus.OK, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
+				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
 						"Error while retrieving results from: " + repositoryQuery.getRepositoryUrl(), e);
 			}
 		}
