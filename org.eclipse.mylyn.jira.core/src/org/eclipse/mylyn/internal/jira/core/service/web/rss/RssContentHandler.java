@@ -95,6 +95,12 @@ public class RssContentHandler extends DefaultHandler {
 
 	private static final String ACTUAL = "timespent"; //$NON-NLS-1$
 
+	private static final String SUBTASKS = "subtasks"; //$NON-NLS-1$
+	
+	private static final String ATTACHMENTS = "attachments"; //$NON-NLS-1$
+
+	private static final String ATTACHMENT = "attachment"; //$NON-NLS-1$
+	
 	private static final String DUE = "due"; //$NON-NLS-1$
 
 	private static final String COMPONENT = "component"; //$NON-NLS-1$
@@ -519,9 +525,13 @@ public class RssContentHandler extends DefaultHandler {
 
 			} else if (ACTUAL.equals(localName)) {
 
-			}
+			} else if (SUBTASKS.equals(localName)) {
 
-			else {
+			} else if (ATTACHMENTS.equals(localName)) {
+			
+			} else if (ATTACHMENT.equals(localName)) {
+
+			} else {
 				//System.err.println("Unknown Issue attribute: " + localName);
 			}
 
