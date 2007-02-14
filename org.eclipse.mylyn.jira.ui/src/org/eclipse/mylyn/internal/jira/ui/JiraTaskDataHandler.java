@@ -65,7 +65,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			// connector.updateAttributes(repository, new
 			// NullProgressMonitor());
 			updateTaskData(data, jiraIssue, server);
-			addOperations(jiraIssue, data);
+			addOperations(repository, jiraIssue, data);
 			return data;
 		}
 		return null;
@@ -257,7 +257,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 
-	private void addOperations(Issue issue, RepositoryTaskData data) {
+	private void addOperations(TaskRepository repository, Issue issue, RepositoryTaskData data) {
 		Status status = issue.getStatus();
 
 		RepositoryOperation opLeave = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
@@ -283,16 +283,16 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		opClose.addOption("Incomplete", Resolution.INCOMPLETE_ID);
 		opClose.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
 
-		RepositoryOperation assignOperation = new RepositoryOperation("reassign", "Reassign to");
-		assignOperation.setInputName("assignee");
-		assignOperation.setInputValue(getAssignee(issue));
+		RepositoryOperation reassignOperation = new RepositoryOperation("reassign", "Reassign to");
+		reassignOperation.setInputName("assignee");
+		reassignOperation.setInputValue(repository.getUserName());
 		
 		opLeave.setChecked(true);
 		data.addOperation(opLeave);
 		if (status.getId().equals(Status.OPEN_ID) || status.getId().equals(Status.STARTED_ID)) {
 			data.addOperation(opResolve);
 			data.addOperation(opClose);
-			data.addOperation(assignOperation);
+			data.addOperation(reassignOperation);
 			// //data.addOperation(opStart);
 			// } else if (status.getId().equals(Status.STARTED_ID)) {
 			// data.addOperation(opResolve);
@@ -304,6 +304,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			data.addOperation(opResolve);
 			data.addOperation(opClose);
 			// data.addOperation(opStart);
+			data.addOperation(reassignOperation);
 		} else if (status.getId().equals(Status.CLOSED_ID)) {
 			data.addOperation(opReopen);
 		}
