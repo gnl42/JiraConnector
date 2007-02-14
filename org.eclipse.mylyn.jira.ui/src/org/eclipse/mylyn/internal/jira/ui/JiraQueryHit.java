@@ -45,7 +45,7 @@ public class JiraQueryHit extends AbstractQueryHit {
 	}
 	
 	@Override
-	public String getIdLabel() {
+	public String getIdentifyingLabel() {
 		return key;
 	}
 }
