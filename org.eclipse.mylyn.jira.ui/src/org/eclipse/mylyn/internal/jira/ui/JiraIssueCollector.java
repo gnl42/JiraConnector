@@ -1,6 +1,14 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2006 - 2007 Mylar eclipse.org project and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Mylar project committers - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.mylar.internal.jira.ui;
 
 import java.util.List;
@@ -20,11 +28,16 @@ class JiraIssueCollector implements IssueCollector {
 
 	private boolean done = false;
 
+	private Exception exception;
+
 	JiraIssueCollector(IProgressMonitor monitor, List<Issue> issues) {
 		this.monitor = monitor;
 		this.issues = issues;
 	}
 
+	public void start() {
+	}
+	
 	public void done() {
 		done = true;
 	}
@@ -37,11 +50,15 @@ class JiraIssueCollector implements IssueCollector {
 		issues.add(issue);
 	}
 
-	public void start() {
-
-	}
-
 	public boolean isDone() {
 		return done;
+	}
+
+	public Exception getException() {
+		return exception;
+	}
+
+	public void setException(Exception e) {
+		this.exception = e;
 	}
 }

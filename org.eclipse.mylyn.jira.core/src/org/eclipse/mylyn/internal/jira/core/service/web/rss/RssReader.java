@@ -43,13 +43,11 @@ class RssReader {
 			XMLReader reader = factory.newSAXParser().getXMLReader();
 			reader.setContentHandler(new RssContentHandler(server, collector));
 			reader.parse(new InputSource(feed));
+			collector.done();
 		} catch (ParseCancelledException e) {
 			// User requested this action, so don't log anything
-			collector.done();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			collector.done();
+			collector.setException(e);
 		}
 	}
 }

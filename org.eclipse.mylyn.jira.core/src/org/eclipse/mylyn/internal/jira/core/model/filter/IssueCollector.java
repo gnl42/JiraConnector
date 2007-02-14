@@ -40,4 +40,15 @@ public interface IssueCollector {
 	 * will be no more data.
 	 */
 	public void done();
+
+	/**
+	 * Record exception for any error
+	 */
+	public void setException(Exception e);
+
+	/**
+	 * Returns recorded exception 
+	 */
+	public Exception getException();
+	
 }

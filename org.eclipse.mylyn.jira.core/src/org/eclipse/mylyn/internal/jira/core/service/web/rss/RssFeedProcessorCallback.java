@@ -144,8 +144,10 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 				}
 			}
 		} catch (HttpException e) {
+			collector.setException(e);
 			DebugManager.error(e.getMessage(), e);
 		} catch (IOException e) {
+			collector.setException(e);
 			DebugManager.error(e.getMessage(), e);
 		} finally {
 			rssRequest.releaseConnection();

@@ -102,6 +102,13 @@ public class JiraServerFacadeTest extends TestCase {
 					fail("No Issues were collected");
 				}
 			}
+
+			public Exception getException() {
+				return null;
+			}
+
+			public void setException(Exception e) {
+			}
 		});
 	}
 

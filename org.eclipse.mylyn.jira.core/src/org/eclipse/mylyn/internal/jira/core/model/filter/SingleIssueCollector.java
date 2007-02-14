@@ -18,6 +18,7 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
  */
 public final class SingleIssueCollector implements IssueCollector {
 	private Issue matchingIssue;
+	private Exception exception;
 
 	public Issue getIssue() {
 		return matchingIssue;
@@ -35,5 +36,13 @@ public final class SingleIssueCollector implements IssueCollector {
 	}
 
 	public void start() {
+	}
+
+	public Exception getException() {
+		return exception;
+	}
+
+	public void setException(Exception e) {
+		this.exception = e;
 	}
 }

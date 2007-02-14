@@ -11,7 +11,6 @@
 
 package org.eclipse.mylar.internal.jira.ui;
 
-import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -142,14 +141,26 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
 				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(), collector);
 			}
+		} catch (AuthenticationException ex) {
+			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
+					"Unable to login to the repository. Check credentials", ex);
 		} catch (Throwable t) {
-			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.OK, "Could not log in to server: "
-					+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.", t);
+			String msg = t.getMessage();
+			if (msg == null) {
+				msg = t.toString();
+			}
+			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
+					"Unable to retrieve query results from " + repositoryQuery.getRepositoryUrl() + "\n" + msg, t);
 		}
 		// TODO: work-around no other way of determining failure
-		if (!collector.isDone()) {
-			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.OK, "Could not log in to server: "
-					+ repositoryQuery.getRepositoryUrl() + "\n\nCheck network connection.", new UnknownHostException());
+		Exception ex = collector.getException();
+		if (ex != null) {
+			String msg = ex.getMessage();
+			if (msg == null) {
+				msg = ex.toString();
+			}
+			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
+					"Unable to retrieve query results from " + repositoryQuery.getRepositoryUrl() + "\n" + msg, ex);
 		}
 		for (Issue issue : issues) {
 			String taskId = issue.getId();
