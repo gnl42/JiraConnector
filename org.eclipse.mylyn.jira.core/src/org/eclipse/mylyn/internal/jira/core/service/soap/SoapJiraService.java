@@ -69,7 +69,7 @@ public class SoapJiraService implements JiraService {
 	 * Default session timeout for a jira instance. The default value is 10
 	 * minutes.
 	 */
-	private static final long DEFAULT_SESSION_TIMEOUT = 1000L * 60L * 60L * 10L;
+	private static final long DEFAULT_SESSION_TIMEOUT = 1000L * 60L * 10L;
 
 	private JiraSoapService jirasoapserviceV2 = null;
 
