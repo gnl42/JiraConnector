@@ -68,7 +68,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 
-	public static JiraServerFacade getDefault() {
+	public synchronized static JiraServerFacade getDefault() {
 		if (instance == null) {
 			instance = new JiraServerFacade();
 		}
@@ -104,7 +104,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 	
-	public void repositorySettingsChanged(TaskRepository repository) {
+	public synchronized void repositorySettingsChanged(TaskRepository repository) {
 		repositoryRemoved(repository);
 		repositoryAdded(repository);
 	}
@@ -141,7 +141,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * @param password Password
 	 * @return String describing validation failure or null if the details are valid
 	 */
-	public synchronized String validateServerAndCredentials(String serverUrl, String user, String password) {
+	public String validateServerAndCredentials(String serverUrl, String user, String password) {
 		try {
 			serverManager.testConnection(serverUrl, user, password);
 			return null;
