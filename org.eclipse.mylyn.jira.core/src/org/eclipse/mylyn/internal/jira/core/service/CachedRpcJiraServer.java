@@ -518,7 +518,8 @@ public class CachedRpcJiraServer implements JiraServer, Serializable {
 	 */
 	public int getMaximumNumberOfMatches() {
 		// return 100;
-		return JiraServer.NO_LIMIT;
+		// return JiraServer.NO_LIMIT;
+		return Integer.MAX_VALUE;
 	}
 
 	/*
