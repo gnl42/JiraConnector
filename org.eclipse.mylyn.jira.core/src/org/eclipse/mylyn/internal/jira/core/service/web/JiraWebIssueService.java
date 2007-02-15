@@ -46,8 +46,7 @@ import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCall
  */
 public class JiraWebIssueService {
 
-	// TODO this was copied from the Converter
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy"); //$NON-NLS-1$
+	private static final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
 
 	private final JiraServer server;
 
@@ -99,7 +98,11 @@ public class JiraWebIssueService {
 				post.addParameter("summary", issue.getSummary());
 				post.addParameter("issuetype", issue.getType().getId());
 				post.addParameter("priority", issue.getPriority().getId());
-				post.addParameter("duedate", issue.getDue() != null ? DATE_FORMAT.format(issue.getDue()) : "");
+				if (issue.getDue() != null) {
+					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT).format(issue.getDue()));
+				} else {
+					post.addParameter("duedate", "");
+				}
 				Component[] components = issue.getComponents();
 				if (components.length == 0) {
 					post.addParameter("components", "-1");
@@ -468,7 +471,7 @@ public class JiraWebIssueService {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
 				if (issue.getDue() != null) {
-					post.addParameter("duedate", DATE_FORMAT.format(issue.getDue()));
+					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT).format(issue.getDue()));
 				}
 
 				if (issue.getComponents() != null) {

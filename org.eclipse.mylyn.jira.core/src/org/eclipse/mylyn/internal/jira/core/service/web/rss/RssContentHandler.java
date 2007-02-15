@@ -11,7 +11,6 @@
 
 package org.eclipse.mylar.internal.jira.core.service.web.rss;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,6 +60,8 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class RssContentHandler extends DefaultHandler {
 
+	private static final String XML_DATE_FORMAT = "E, dd MMM yyyy HH:mm:ss Z (zz)"; //$NON-NLS-1$
+	
 	private static final String CREATED_ATTR = "created"; //$NON-NLS-1$
 
 	private static final String LEVEL_ATTR = "level"; //$NON-NLS-1$
@@ -74,8 +75,6 @@ public class RssContentHandler extends DefaultHandler {
 	private static final String USERNAME_ATTR = "username"; //$NON-NLS-1$
 
 	private static final String SECONDS_ATTR = "seconds"; //$NON-NLS-1$
-
-	private static final DateFormat xmlDateFormat = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
 
 	private static final String RSS = "rss"; //$NON-NLS-1$
 
@@ -325,7 +324,8 @@ public class RssContentHandler extends DefaultHandler {
 				commentAuthor = attributes.getValue(AUTHOR_ATTR);
 				commentLevel = attributes.getValue(LEVEL_ATTR);
 				try {
-					commentDate = xmlDateFormat.parse(attributes.getValue(CREATED_ATTR));
+					commentDate = new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(attributes
+							.getValue(CREATED_ATTR));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -569,7 +569,7 @@ public class RssContentHandler extends DefaultHandler {
 		}
 
 		try {
-			return xmlDateFormat.parse(value);
+			return new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(value);
 		} catch (ParseException e) {
 			return null;
 		}

@@ -44,7 +44,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
  */
 class RssFilterConverter {
 
-	private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy"); //$NON-NLS-1$
+	private final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
 
 	String convert(FilterDefinition filterDefinition) {
 		StringBuffer buffer = new StringBuffer();
@@ -329,15 +329,14 @@ class RssFilterConverter {
 		StringBuffer buffer = new StringBuffer();
 
 		if (dueDateFilter instanceof DateRangeFilter) {
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 			DateRangeFilter filter = (DateRangeFilter) dueDateFilter;
 			if (filter.getFromDate() != null) {
-				buffer.append("&duedateAfter=").append(DATE_FORMAT.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&duedateAfter=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
-
 			if (filter.getToDate() != null) {
-				buffer.append("&duedateBefore=").append(DATE_FORMAT.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&duedateBefore=").append(df.format(filter.getToDate())); //$NON-NLS-1$
 			}
-
 		} else if (dueDateFilter instanceof RelativeDateRangeFilter) {
 			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) dueDateFilter);
 			if (relativeFilter.previousMilliseconds() != 0L) {
@@ -356,15 +355,14 @@ class RssFilterConverter {
 		StringBuffer buffer = new StringBuffer();
 
 		if (updatedDateFilter instanceof DateRangeFilter) {
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 			DateRangeFilter filter = (DateRangeFilter) updatedDateFilter;
 			if (filter.getFromDate() != null) {
-				buffer.append("&updatedAfter=").append(DATE_FORMAT.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&updatedAfter=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
-
 			if (filter.getToDate() != null) {
-				buffer.append("&updatedBefore=").append(DATE_FORMAT.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&updatedBefore=").append(df.format(filter.getToDate())); //$NON-NLS-1$
 			}
-
 		} else if (updatedDateFilter instanceof RelativeDateRangeFilter) {
 			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) updatedDateFilter);
 			if (relativeFilter.previousMilliseconds() != 0L) {
@@ -379,15 +377,14 @@ class RssFilterConverter {
 		StringBuffer buffer = new StringBuffer();
 
 		if (createdDateFilter instanceof DateRangeFilter) {
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 			DateRangeFilter filter = (DateRangeFilter) createdDateFilter;
 			if (filter.getFromDate() != null) {
-				buffer.append("&createdAfter=").append(DATE_FORMAT.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&createdAfter=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
-
 			if (filter.getToDate() != null) {
-				buffer.append("&createdBefore=").append(DATE_FORMAT.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&createdBefore=").append(df.format(filter.getToDate())); //$NON-NLS-1$
 			}
-
 		} else if (createdDateFilter instanceof RelativeDateRangeFilter) {
 			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) createdDateFilter);
 			if (relativeFilter.previousMilliseconds() != 0L) {

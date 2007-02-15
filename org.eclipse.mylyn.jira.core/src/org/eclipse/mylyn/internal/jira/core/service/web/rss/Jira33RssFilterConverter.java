@@ -28,7 +28,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter
  * @author Brock Janiczak
  */
 public class Jira33RssFilterConverter extends RssFilterConverter {
-	private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy"); //$NON-NLS-1$
+	private final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
 
 	/*
 	 * (non-Javadoc)
@@ -106,13 +106,14 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 		StringBuffer buffer = new StringBuffer();
 
 		if (createdDateFilter instanceof DateRangeFilter) {
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 			DateRangeFilter filter = (DateRangeFilter) createdDateFilter;
 			if (filter.getFromDate() != null) {
-				buffer.append("&created:after=").append(DATE_FORMAT.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&created:after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
 
 			if (filter.getToDate() != null) {
-				buffer.append("&created:before=").append(DATE_FORMAT.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&created:before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
 			}
 
 		} else if (createdDateFilter instanceof RelativeDateRangeFilter) {
@@ -141,12 +142,13 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 
 		if (updatedDateFilter instanceof DateRangeFilter) {
 			DateRangeFilter filter = (DateRangeFilter) updatedDateFilter;
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 			if (filter.getFromDate() != null) {
-				buffer.append("&updated:after=").append(DATE_FORMAT.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&updated:after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
 
 			if (filter.getToDate() != null) {
-				buffer.append("&updated:before=").append(DATE_FORMAT.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&updated:before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
 			}
 
 		} else if (updatedDateFilter instanceof RelativeDateRangeFilter) {
@@ -175,12 +177,13 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 
 		if (dueDateFilter instanceof DateRangeFilter) {
 			DateRangeFilter filter = (DateRangeFilter) dueDateFilter;
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 			if (filter.getFromDate() != null) {
-				buffer.append("&duedate:after=").append(DATE_FORMAT.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&duedate:after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
 
 			if (filter.getToDate() != null) {
-				buffer.append("&duedate:before=").append(DATE_FORMAT.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&duedate:before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
 			}
 
 		} else if (dueDateFilter instanceof RelativeDateRangeFilter) {
