@@ -14,9 +14,11 @@ package org.eclipse.mylar.internal.jira.core.model.filter;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public interface IssueCollector {
+
+	public static final int NO_LIMIT = -1;
 
 	/**
 	 * Issues will start arriving soon. Do any setup that is required
@@ -47,8 +49,18 @@ public interface IssueCollector {
 	public void setException(Exception e);
 
 	/**
-	 * Returns recorded exception 
+	 * Returns recorded exception
 	 */
 	public Exception getException();
-	
+
+	/**
+	 * If the server only supports inefficient mechanisims for getting issues
+	 * the user can choose to limit the number of matches. This is only used as
+	 * a hint.
+	 * 
+	 * @return Maximum number of matches to return or<code>NO_LIMIT</code> if
+	 *         there is no limit.
+	 */
+	public int getMaxHits();
+
 }

@@ -41,8 +41,6 @@ import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
  * @author Brock Janiczak
  */
 public interface JiraServer {
-	public static final int NO_LIMIT = -1;
-
 	/**
 	 * Assign to the default user
 	 */
@@ -79,16 +77,6 @@ public interface JiraServer {
 	public abstract String getCurrentUserName();
 
 	public abstract String getCurrentUserPassword();
-
-	/**
-	 * If the server only supports inefficient mechanisims for getting issues
-	 * the user can choose to limit the number of matches. This is only used as
-	 * a hint.
-	 * 
-	 * @return Maximum number of matches to return or<code>NO_LIMIT</code> if
-	 *         there is no limit.
-	 */
-	public abstract int getMaximumNumberOfMatches();
 
 	/**
 	 * Force a login to the remote repository.

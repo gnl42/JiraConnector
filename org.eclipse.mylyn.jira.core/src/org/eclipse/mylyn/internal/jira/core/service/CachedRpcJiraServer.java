@@ -514,17 +514,6 @@ public class CachedRpcJiraServer implements JiraServer, Serializable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.gbst.jira.core.service.JiraServer#getMaximumNumberOfMatches()
-	 */
-	public int getMaximumNumberOfMatches() {
-		// return 100;
-		// return JiraServer.NO_LIMIT;
-		return Integer.MAX_VALUE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.eclipse.mylar.internal.jira.core.service.JiraServer#addLocalFilter(org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition)
 	 */
 	public void addLocalFilter(FilterDefinition filter) {

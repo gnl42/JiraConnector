@@ -58,8 +58,8 @@ public class RssJiraFilterService {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&reset=true&");
 
-				if (server.getMaximumNumberOfMatches() != JiraServer.NO_LIMIT) {
-					rssUrlBuffer.append("tempMax=").append(server.getMaximumNumberOfMatches()).append('&');
+				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+					rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
 				}
 
 				rssUrlBuffer.append(RssJiraFilterConverterFactory.getConverter(server).convert(filterDefinition));
@@ -89,8 +89,8 @@ public class RssJiraFilterService {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&");
 
-				if (server.getMaximumNumberOfMatches() != JiraServer.NO_LIMIT) {
-					rssUrlBuffer.append("tempMax=").append(server.getMaximumNumberOfMatches()).append('&');
+				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+					rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
 				}
 				rssUrlBuffer.append("requestId=").append(filter.getId());
 
@@ -105,7 +105,7 @@ public class RssJiraFilterService {
 	 * @see org.eclipse.mylar.internal.jira.core.service.JiraFilterService#quickSearch(java.lang.String,
 	 *      org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector)
 	 */
-	public void quickSearch(final String searchString, IssueCollector collector) {
+	public void quickSearch(final String searchString, final IssueCollector collector) {
 		JiraWebSession session = new JiraWebSession(server);
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
@@ -119,8 +119,8 @@ public class RssJiraFilterService {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/QuickSearch.jspa?view=rss&decorator=none&reset=true&");
 
-				if (server.getMaximumNumberOfMatches() != JiraServer.NO_LIMIT) {
-					rssUrlBuffer.append("tempMax=").append(server.getMaximumNumberOfMatches()).append('&');
+				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+					rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
 				}
 
 				try {

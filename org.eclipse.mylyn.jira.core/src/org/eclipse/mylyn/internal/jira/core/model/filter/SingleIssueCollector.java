@@ -45,4 +45,8 @@ public final class SingleIssueCollector implements IssueCollector {
 	public void setException(Exception e) {
 		this.exception = e;
 	}
+
+	public int getMaxHits() {
+		return 1;
+	}
 }

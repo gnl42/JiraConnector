@@ -127,7 +127,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
 			IProgressMonitor monitor, QueryHitCollector resultCollector) {
 		final List<Issue> issues = new ArrayList<Issue>();
-		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues);
+		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues, repositoryQuery.getMaxHits());
 
 		// TODO: Get rid of JiraIssueCollector and pass IQueryHitCollector
 
@@ -209,7 +209,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		final List<Issue> issues = new ArrayList<Issue>();
-		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues);
+		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, Integer.MAX_VALUE);
 		JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (jiraServer == null) {
 			return tasks;

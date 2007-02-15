@@ -109,6 +109,10 @@ public class JiraServerFacadeTest extends TestCase {
 
 			public void setException(Exception e) {
 			}
+
+			public int getMaxHits() {
+				return Integer.MAX_VALUE;
+			}
 		});
 	}
 

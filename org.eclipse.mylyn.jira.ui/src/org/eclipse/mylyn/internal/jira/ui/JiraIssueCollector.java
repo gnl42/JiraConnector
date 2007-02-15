@@ -30,14 +30,17 @@ class JiraIssueCollector implements IssueCollector {
 
 	private Exception exception;
 
-	JiraIssueCollector(IProgressMonitor monitor, List<Issue> issues) {
+	private int maxHits;
+
+	JiraIssueCollector(IProgressMonitor monitor, List<Issue> issues, int maxHits) {
 		this.monitor = monitor;
 		this.issues = issues;
+		this.maxHits = maxHits;
 	}
 
 	public void start() {
 	}
-	
+
 	public void done() {
 		done = true;
 	}
@@ -60,5 +63,9 @@ class JiraIssueCollector implements IssueCollector {
 
 	public void setException(Exception e) {
 		this.exception = e;
+	}
+
+	public int getMaxHits() {
+		return maxHits;
 	}
 }
