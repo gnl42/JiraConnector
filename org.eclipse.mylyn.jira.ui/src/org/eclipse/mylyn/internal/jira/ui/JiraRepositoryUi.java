@@ -17,6 +17,7 @@ import org.eclipse.mylar.internal.jira.ui.wizards.JiraQueryPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylar.tasks.ui.wizards.AbstractRepositorySettingsPage;
@@ -28,6 +29,10 @@ import org.eclipse.mylar.tasks.ui.wizards.NewWebTaskWizard;
  */
 public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
+	public String getTaskKindLabel(AbstractRepositoryTask repositoryTask) {
+		return "Issue";
+	}
+	
 	@Override
 	public WizardPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
 		return new JiraQueryPage(repository, new FilterDefinition(), true, false);
