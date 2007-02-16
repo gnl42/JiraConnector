@@ -13,7 +13,9 @@ package org.eclipse.mylar.internal.jira.ui;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.TasksUiUtil;
 
 /**
@@ -24,16 +26,16 @@ public class JiraHyperLink implements IHyperlink {
 	private final IRegion region;
 
 	private final TaskRepository repository;
-	
-	private final String id;
 
-	private final String taskUrl;
+	private final String key;
 
-	public JiraHyperLink(IRegion nlsKeyRegion, TaskRepository repository, String id, String taskUrl) {
+//	private final String taskUrl;
+
+	public JiraHyperLink(IRegion nlsKeyRegion, TaskRepository repository, String key, String taskUrl) {
 		this.region = nlsKeyRegion;
 		this.repository = repository;
-		this.id = id;
-		this.taskUrl = taskUrl;
+		this.key = key;
+//		this.taskUrl = taskUrl;
 	}
 
 	public IRegion getHyperlinkRegion() {
@@ -45,15 +47,24 @@ public class JiraHyperLink implements IHyperlink {
 	}
 
 	public String getHyperlinkText() {
-		return "Open Task " + id;
+		return "Open Task " + key;
 	}
 
 	public void open() {
 		if (repository != null) {
-			TasksUiUtil.openRepositoryTask(repository.getUrl(), id, taskUrl);
+			// TODO: put this back when TaskUiUtil.open(..) methods are fixed
+//			TasksUiUtil.openRepositoryTask(repository.getUrl(), key, taskUrl);
+			for (ITask task : TasksUiPlugin.getTaskListManager().getTaskList().getAllTasks()) {
+				if (task instanceof JiraTask) {
+					JiraTask jiraTask = (JiraTask) task;
+					if (jiraTask.getKey() != null && jiraTask.getKey().equals(key)) {
+						TasksUiUtil.refreshAndOpenTaskListElement(jiraTask);
+					}
+				}
+			}
+
 		} else {
-			MessageDialog.openError(null, "Mylar Jira Connector",
-					"Could not determine repository for report");
+			MessageDialog.openError(null, "Mylar Jira Connector", "Could not determine repository for report");
 		}
 	}
 
