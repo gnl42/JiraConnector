@@ -23,14 +23,17 @@ public class JiraHyperLink implements IHyperlink {
 
 	private final IRegion region;
 
+	private final TaskRepository repository;
+	
 	private final String id;
 
-	private final TaskRepository repository;
+	private final String taskUrl;
 
-	public JiraHyperLink(IRegion nlsKeyRegion, String id, TaskRepository repository) {
+	public JiraHyperLink(IRegion nlsKeyRegion, TaskRepository repository, String id, String taskUrl) {
 		this.region = nlsKeyRegion;
-		this.id = id;
 		this.repository = repository;
+		this.id = id;
+		this.taskUrl = taskUrl;
 	}
 
 	public IRegion getHyperlinkRegion() {
@@ -47,7 +50,7 @@ public class JiraHyperLink implements IHyperlink {
 
 	public void open() {
 		if (repository != null) {
-			TasksUiUtil.openRepositoryTask(repository, id);
+			TasksUiUtil.openRepositoryTask(repository.getUrl(), id, taskUrl);
 		} else {
 			MessageDialog.openError(null, "Mylar Jira Connector",
 					"Could not determine repository for report");

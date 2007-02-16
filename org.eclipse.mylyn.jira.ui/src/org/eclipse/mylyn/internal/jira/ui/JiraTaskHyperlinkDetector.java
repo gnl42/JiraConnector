@@ -75,7 +75,8 @@ public class JiraTaskHyperlinkDetector implements IHyperlinkDetector {
 		for (int i = 0; i<taskIds.length; i++) {
 			String taskId = taskIds[i];
 			int startRegion = line.indexOf(taskId, startPos);
-			links[i] = new JiraHyperLink(new Region(lineInfo.getOffset() + startRegion, taskId.length()), taskId, repository);
+			links[i] = new JiraHyperLink(new Region(lineInfo.getOffset() + startRegion, taskId.length()), repository,
+					taskId, connector.getTaskWebUrl(repository.getUrl(), taskId));
 		}
 		return links;
 	}
