@@ -59,6 +59,7 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
  * @author Mik Kersten
+ * @author Steffen Pingel
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
@@ -107,20 +108,19 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public AbstractRepositoryTask createTaskFromExistingKey(TaskRepository repository, String key) throws CoreException {
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-		if (server != null) {
-			Issue issue = server.getIssue(key);
-			if (issue != null) {
-//				String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
-				JiraTask task = createTask(issue, repository.getUrl(), issue.getId());
-				updateTaskDetails(repository.getUrl(), task, issue, true);
-				if (task != null) {
-					TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
-					return task;
-				}
-			}
+
+		ITask existingTask = taskList.getRepositoryTask(getTaskWebUrl(repository.getUrl(), key));
+		if (existingTask instanceof JiraTask) {
+			return (JiraTask) existingTask;
 		}
-		return null;
+		
+//		existingTask = taskList.getTask(repository.getUrl(), key);
+//		if (existingTask instanceof JiraTask) {
+//			return (JiraTask) existingTask;
+//		}
+		
+		RepositoryTaskData taskData = offlineHandler.getTaskData(repository, key);
+		return createTask(repository.getUrl(), taskData);
 	}
 
 	@Override
@@ -209,7 +209,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		final List<Issue> issues = new ArrayList<Issue>();
-		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, Integer.MAX_VALUE);
+		// if the maximum is unlimited this will can create crazy amounts of traffic
+		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
 		JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (jiraServer == null) {
 			return tasks;
@@ -420,6 +421,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return task;
 	}
 
+	private JiraTask createTask(String repositoryUrl, RepositoryTaskData taskData) {
+		JiraTask task = new JiraTask(repositoryUrl, taskData.getId(), taskData.getSummary(), true);
+		task.setKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
+		task.setTaskUrl(getTaskUrl(repositoryUrl, task.getKey()));
+		task.setTaskData(taskData);
+		TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);		
+		return task;
+	}
+
 	@Override
 	public String toString() {
 		return getLabel();
@@ -451,7 +461,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		Issue issue = new Issue();
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
-		issue.setProject(server.getProject(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT)));
+		for (org.eclipse.mylar.internal.jira.core.model.Project project : server.getProjects()) {
+			if (project.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT))) {
+				issue.setProject(project);
+				break;
+			}
+		}
 		// issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));
 
 		for (IssueType type : server.getIssueTypes()) {

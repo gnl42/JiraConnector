@@ -5,6 +5,7 @@
 		<accessrules>
 			<accessrule kind="accessible" pattern="**/TaskListImages"/>
 			<accessrule kind="accessible" pattern="**/mylar/internal/jira/core/**"/>
+			<accessrule kind="accessible" pattern="**/TaskListPreferenceConstants"/>
 			<accessrule kind="discouraged" pattern="**/mylar/**internal/**"/>
 		</accessrules>
 	</classpathentry>

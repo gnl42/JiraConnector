@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
@@ -21,6 +22,7 @@ import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
+import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Status;
 import org.eclipse.mylar.internal.jira.core.model.Version;
@@ -40,6 +42,7 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
  * @author Mik Kersten
  * @author Rob Elves
  * @author Eugene Kuleshov
+ * @author Steffen Pingel
  */
 public class JiraTaskDataHandler implements ITaskDataHandler {
 
@@ -56,25 +59,18 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId) throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
-		if (jiraIssue != null) {
-			// TODO: remove this call?
-			// JiraRepositoryConnector.updateTaskDetails(repository.getUrl(), (JiraTask) task, jiraIssue, false);
-
-			RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
-					repository.getUrl(), taskId);
-			// connector.updateAttributes(repository, new
-			// NullProgressMonitor());
-			updateTaskData(data, jiraIssue, server);
-			addOperations(repository, jiraIssue, data);
-			return data;
-		}
-		return null;
+		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
+				.getUrl(), jiraIssue.getId());
+		initializeTaskData(data, server, jiraIssue.getProject());
+		updateTaskData(data, jiraIssue, server);
+		addOperations(repository, jiraIssue, data);
+		return data;
 	}
 
-	private Issue getJiraIssue(JiraServer server, String taskId, String repositoryUrl) {
+	private Issue getJiraIssue(JiraServer server, String taskId, String repositoryUrl) throws CoreException {
 		try {
 			int id = Integer.parseInt(taskId);
-			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, ""+id);
+			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
 			if (task instanceof JiraTask) {
 				JiraTask jiraTask = (JiraTask) task;
 				return server.getIssue(jiraTask.getKey());
@@ -82,114 +78,122 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		} catch (NumberFormatException e) {
 			return server.getIssue(taskId);
 		}
-		return null;
+		throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, "JIRA ticket not found: " + taskId));
 	}
 
 	@SuppressWarnings("deprecation")
-	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraServer server) {
+	public void initializeTaskData(RepositoryTaskData data, JiraServer server, Project project) {
 		data.removeAllAttributes();
+		
 		RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.DATE_CREATION,
 				"Created: ", true);
-		attribute.setValue(jiraIssue.getCreated().toGMTString());
 		data.addAttribute(RepositoryTaskAttribute.DATE_CREATION, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.SUMMARY, "Summary: ", true);
-		attribute.setValue(convertHtml(jiraIssue.getSummary()));
 		data.addAttribute(RepositoryTaskAttribute.SUMMARY, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.DESCRIPTION, "Description: ", true);
-		attribute.setValue(convertHtml(jiraIssue.getDescription()));
 		attribute.setReadOnly(true);
 		data.addAttribute(RepositoryTaskAttribute.DESCRIPTION, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.STATUS, "Status: ", true);
-		attribute.setValue(convertHtml(jiraIssue.getStatus().getName()));
 		data.addAttribute(RepositoryTaskAttribute.STATUS, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY, "Issue ID: ", true);
-		attribute.setValue(jiraIssue.getKey());
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.RESOLUTION, "Resolution: ", true);
-		attribute.setValue(jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getName());
 		data.addAttribute(RepositoryTaskAttribute.RESOLUTION, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.USER_ASSIGNED, "Assigned to: ", true);
-		attribute.setValue(getAssignee(jiraIssue));
 		data.addAttribute(RepositoryTaskAttribute.USER_ASSIGNED, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.USER_REPORTER, "Reported by: ", true);
-		attribute.setValue(jiraIssue.getReporter());
 		data.addAttribute(RepositoryTaskAttribute.USER_REPORTER, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.DATE_MODIFIED, "Date modified: ", true);
-		attribute.setValue(jiraIssue.getUpdated().toGMTString());
 		data.addAttribute(RepositoryTaskAttribute.DATE_MODIFIED, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "Components: ", true);
-		for (Component component : jiraIssue.getComponents()) {
-			attribute.addValue(component.getName());
-		}
-		for (Component component : jiraIssue.getProject().getComponents()) {
+		for (Component component : project.getComponents()) {
 			attribute.addOption(component.getName(), component.getId());
 
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, "Fix Versions: ", true);
-		for (Version version : jiraIssue.getFixVersions()) {
-			attribute.addValue(version.getName());
-		}
-		for (Version version : jiraIssue.getProject().getVersions()) {
+		for (Version version : project.getVersions()) {
 			attribute.addOption(version.getName(), version.getId());
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, "Affects Versions: ",
 				true);
-		for (Version version : jiraIssue.getReportedVersions()) {
-			attribute.addValue(version.getName());
-		}
-		for (Version version : jiraIssue.getProject().getVersions()) {
+		for (Version version : project.getVersions()) {
 			attribute.addOption(version.getName(), version.getId());
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, "Estimate: ", true);
-		attribute.setValue(String.valueOf(jiraIssue.getEstimate()));
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, attribute);
 
 		// VISIBLE FIELDS (order added = order in layout)
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRODUCT, "Project: ", false);
-		attribute.setValue(jiraIssue.getProject().getName());
 		attribute.setReadOnly(true);
 		data.addAttribute(RepositoryTaskAttribute.PRODUCT, attribute);
 
 		attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRIORITY, "Priority: ", false);
-		attribute.setValue(jiraIssue.getPriority().getName());
 		for (Priority priority : server.getPriorities()) {
 			attribute.addOption(priority.getName(), priority.getId());
 		}
 		data.addAttribute(RepositoryTaskAttribute.PRIORITY, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, "Type: ", false);
-		attribute.setValue(jiraIssue.getType().getName());
 		for (IssueType type : server.getIssueTypes()) {
 			attribute.addOption(type.getName(), type.getId());
 		}
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE, attribute);
 
 		attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "Environment: ", false);
-		attribute.setValue(convertHtml(jiraIssue.getEnvironment()));
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, attribute);
+	}
+
+	@SuppressWarnings("deprecation")
+	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraServer server) {
+		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, jiraIssue.getCreated().toGMTString());
+		data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, convertHtml(jiraIssue.getSummary()));
+		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, convertHtml(jiraIssue.getDescription()));
+		data.setAttributeValue(RepositoryTaskAttribute.STATUS, convertHtml(jiraIssue.getStatus().getName()));
+		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY, jiraIssue.getKey());
+		data.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getName());
+		data.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
+		data.setAttributeValue(RepositoryTaskAttribute.USER_REPORTER, jiraIssue.getReporter());
+		data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, jiraIssue.getUpdated().toGMTString());
+		for (Component component : jiraIssue.getComponents()) {
+			data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, component.getName());
+		}
+		for (Version version : jiraIssue.getFixVersions()) {
+			data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, version.getName());
+		}
+		for (Version version : jiraIssue.getReportedVersions()) {
+			data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, version.getName());
+		}
+		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, String.valueOf(jiraIssue.getEstimate()));
+
+		// VISIBLE FIELDS (order added = order in layout)
+
+		data.setAttributeValue(RepositoryTaskAttribute.PRODUCT, jiraIssue.getProject().getName());
+		data.setAttributeValue(RepositoryTaskAttribute.PRIORITY, jiraIssue.getPriority().getName());
+		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, jiraIssue.getType().getName());
+		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, convertHtml(jiraIssue.getEnvironment()));
 
 		int x = 1;
 		for (Comment comment : jiraIssue.getComments()) {
 			if (comment != null) {
 				TaskComment taskComment = new TaskComment(attributeFacotry, x++);
 
-				attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.USER_OWNER, "Commenter: ", true);
+				RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.USER_OWNER, "Commenter: ", true);
 				attribute.setValue(comment.getAuthor());
 				taskComment.addAttribute(RepositoryTaskAttribute.USER_OWNER, attribute);
 
@@ -255,7 +259,6 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		return attributeFactory;
 	}
 
-
 	private void addOperations(TaskRepository repository, Issue issue, RepositoryTaskData data) {
 		Status status = issue.getStatus();
 
@@ -285,7 +288,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		RepositoryOperation reassignOperation = new RepositoryOperation("reassign", "Reassign to");
 		reassignOperation.setInputName("assignee");
 		reassignOperation.setInputValue(repository.getUserName());
-		
+
 		opLeave.setChecked(true);
 		data.addOperation(opLeave);
 		if (status.getId().equals(Status.OPEN_ID) || status.getId().equals(Status.STARTED_ID)) {
@@ -310,7 +313,6 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 	public String postTaskData(TaskRepository repository, RepositoryTaskData taskData) throws CoreException {
-
 		final JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (jiraServer == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
@@ -318,34 +320,42 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 
 		Issue issue = JiraRepositoryConnector.buildJiraIssue(taskData, jiraServer);
-
-		RepositoryOperation operation = taskData.getSelectedOperation();
-		if (operation != null) {
-			if ("leave".equals(operation.getKnobName()) || "reassign".equals(operation.getKnobName())) {
-				if (!issue.getStatus().isClosed()) {
-					jiraServer.updateIssue(issue, taskData.getNewComment());
-				} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
-					jiraServer.addCommentToIssue(issue, taskData.getNewComment());
-				}
-			} else if (org.eclipse.mylar.internal.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
-				String value = operation.getOptionValue(operation.getOptionSelection());
-				jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
-						.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
-			} else if (org.eclipse.mylar.internal.jira.core.model.Status.REOPENED_ID.equals(operation.getKnobName())) {
-				jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository
-						.getUserName());
-			} else if (org.eclipse.mylar.internal.jira.core.model.Status.STARTED_ID.equals(operation.getKnobName())) {
-				jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
-			} else if (org.eclipse.mylar.internal.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
-				jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
-			} else if (org.eclipse.mylar.internal.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
-				String value = operation.getOptionValue(operation.getOptionSelection());
-				jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
-						.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+		if (taskData.isNew()) {
+			issue = jiraServer.createIssue(issue);
+			if (issue == null ){
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, "Could not create ticket."));
 			}
+			// this is severly broken: should return id instead
+			return issue.getKey();
 		} else {
-			jiraServer.updateIssue(issue, taskData.getNewComment());
+			RepositoryOperation operation = taskData.getSelectedOperation();
+			if (operation != null) {
+				if ("leave".equals(operation.getKnobName()) || "reassign".equals(operation.getKnobName())) {
+					if (!issue.getStatus().isClosed()) {
+						jiraServer.updateIssue(issue, taskData.getNewComment());
+					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
+						jiraServer.addCommentToIssue(issue, taskData.getNewComment());
+					}
+				} else if (org.eclipse.mylar.internal.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
+					String value = operation.getOptionValue(operation.getOptionSelection());
+					jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
+							.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+				} else if (org.eclipse.mylar.internal.jira.core.model.Status.REOPENED_ID.equals(operation.getKnobName())) {
+					jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository
+							.getUserName());
+				} else if (org.eclipse.mylar.internal.jira.core.model.Status.STARTED_ID.equals(operation.getKnobName())) {
+					jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
+				} else if (org.eclipse.mylar.internal.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
+					jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
+				} else if (org.eclipse.mylar.internal.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
+					String value = operation.getOptionValue(operation.getOptionSelection());
+					jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
+							.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+				}
+			} else {
+				jiraServer.updateIssue(issue, taskData.getNewComment());
+			}
+			return "";
 		}
-		return "";
 	}
 }

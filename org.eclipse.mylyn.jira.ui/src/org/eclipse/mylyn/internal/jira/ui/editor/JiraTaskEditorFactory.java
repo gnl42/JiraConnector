@@ -23,6 +23,7 @@ import org.eclipse.ui.IEditorPart;
 
 /**
  * @author Mik Kersten
+ * @author Steffen Pingel
  */
 public class JiraTaskEditorFactory implements ITaskEditorFactory {
 
@@ -40,9 +41,16 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 	}
 
 	public IEditorPart createEditor(TaskEditor parentEditor, IEditorInput editorInput) {
-		if (editorInput instanceof RepositoryTaskEditorInput  || editorInput instanceof TaskEditorInput) {
+		if (editorInput instanceof RepositoryTaskEditorInput) {
+			RepositoryTaskEditorInput taskInput = (RepositoryTaskEditorInput) editorInput;
+			if (taskInput.getTaskData().isNew()) {
+				return new NewJiraTaskEditor(parentEditor);
+			} else {
+				return new JiraTaskEditor(parentEditor);
+			}
+		} else if (editorInput instanceof TaskEditorInput) {
 			return new JiraTaskEditor(parentEditor);
-		} 
+		}
 		return null;
 	}
 
@@ -53,7 +61,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 		try {
 			return new RepositoryTaskEditorInput(repository, jiraTask.getHandleIdentifier(), jiraTask.getTaskUrl(), jiraTask.getTaskId());
 		} catch (Exception e) {
-			MylarStatusHandler.fail(e, "Could not create Trac editor input", true);
+			MylarStatusHandler.fail(e, "Could not create JIRA editor input", true);
 		}
 		return null;
 	}
