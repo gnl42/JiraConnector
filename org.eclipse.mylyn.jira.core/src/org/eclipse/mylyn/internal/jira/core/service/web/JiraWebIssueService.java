@@ -136,6 +136,7 @@ public class JiraWebIssueService {
 				} else {
 					post.addParameter("assignee", "-1");
 				}
+				post.addParameter("reporter", issue.getReporter());
 				post.addParameter("environment", issue.getEnvironment());
 				post.addParameter("description", issue.getDescription());
 
