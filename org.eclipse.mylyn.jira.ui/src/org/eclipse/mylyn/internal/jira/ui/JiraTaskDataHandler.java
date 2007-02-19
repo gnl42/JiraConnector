@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
@@ -357,5 +358,11 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			}
 			return "";
 		}
+	}
+
+	public boolean initializeTaskData(TaskRepository repository, RepositoryTaskData data, IProgressMonitor monitor)
+			throws CoreException {
+		// JIRA needs a project to create task data
+		return false;
 	}
 }
