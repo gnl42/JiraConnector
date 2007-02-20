@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -118,9 +119,10 @@ public class ServerManager {
 	 * @throws ServiceUnavailableException
 	 *             URL was not valid
 	 */
-	public String testConnection(String baseUrl, String username, String password) throws AuthenticationException,
+	public String testConnection(String baseUrl, String username, String password, 
+			Proxy proxy, String httpUser, String httpPassword) throws AuthenticationException,
 			ServiceUnavailableException {
-		JiraServer server = createServer("Connection Test", baseUrl, false, username, password);
+		JiraServer server = createServer("Connection Test", baseUrl, false, username, password, proxy, httpUser, httpPassword);
 		ServerInfo serverInfo = server.getServerInfo();
 		return "Jira " + serverInfo.getEdition() + " " + serverInfo.getVersion() + " #" + serverInfo.getBuildNumber();
 	}
@@ -134,12 +136,12 @@ public class ServerManager {
 	}
 
 	public JiraServer createServer(String name, String baseUrl, boolean hasSlowConnection, String username,
-			String password) {
+			String password, Proxy proxy, String httpUser, String httpPassword) {
 		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 		}
 
-		JiraServer server = new CachedRpcJiraServer(name, baseUrl, hasSlowConnection, username, password);
+		JiraServer server = new CachedRpcJiraServer(name, baseUrl, hasSlowConnection, username, password, proxy, httpUser, httpPassword);
 		return server;
 	}
 

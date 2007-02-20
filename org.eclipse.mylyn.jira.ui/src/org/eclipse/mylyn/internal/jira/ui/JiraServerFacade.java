@@ -56,8 +56,13 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 				String password = repository.getPassword();
 				server = serverManager.createServer(serverHostname, repository.getUrl(), false, //
 						userName == null ? "" : userName, //
-						password == null ? "" : password);
+						password == null ? "" : password, //
+						repository.getProxy(), //
+						repository.getHttpUser(), repository.getHttpPassword());
 				serverManager.addServer(server);
+			} else {
+				// FIXME the proxy is not serialized
+				server.setProxy(repository.getProxy());
 			}
 			return server;
 		} catch (ServiceUnavailableException sue) {
@@ -103,12 +108,12 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			removeServer(server);
 		}
 	}
-	
+
 	public synchronized void repositorySettingsChanged(TaskRepository repository) {
 		repositoryRemoved(repository);
 		repositoryAdded(repository);
 	}
-	
+
 	public synchronized void forceServerReset(TaskRepository repository) {
 		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
@@ -118,7 +123,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			getJiraServer(repository);
 		}
 	}
-	
+
 	public synchronized void refreshServerSettings(TaskRepository repository) {
 		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
@@ -126,24 +131,30 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			server.refreshDetails();
 		}
 	}
-	
+
 	private synchronized void removeServer(JiraServer server) {
 		if (server != null) {
 			server.logout();
 			serverManager.removeServer(server);
 		}
-	} 
+	}
 
 	/**
 	 * Validate the server URL and user credentials
-	 * @param serverUrl Location of the Jira Server
-	 * @param user Username
-	 * @param password Password
-	 * @return String describing validation failure or null if the details are valid
+	 * 
+	 * @param serverUrl
+	 *            Location of the Jira Server
+	 * @param user
+	 *            Username
+	 * @param password
+	 *            Password
+	 * @return String describing validation failure or null if the details are
+	 *         valid
 	 */
 	public String validateServerAndCredentials(String serverUrl, String user, String password) {
 		try {
-			serverManager.testConnection(serverUrl, user, password);
+			// FIXME pass real values instead of null
+			serverManager.testConnection(serverUrl, user, password, null, null, null);
 			return null;
 		} catch (ServiceUnavailableException e) {
 			return e.getMessage();
@@ -158,10 +169,10 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		try {
 			return new URL(repository.getUrl()).getHost();
 		} catch (MalformedURLException ex) {
-			throw new RuntimeException("Invalid url "+repository.getUrl(), ex);
+			throw new RuntimeException("Invalid url " + repository.getUrl(), ex);
 		}
 	}
-	
+
 	/**
 	 * TODO: refactor
 	 */
@@ -181,5 +192,5 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 					+ "Please check your credentials in the Task Repositories view", true);
 		}
 	}
-	
+
 }

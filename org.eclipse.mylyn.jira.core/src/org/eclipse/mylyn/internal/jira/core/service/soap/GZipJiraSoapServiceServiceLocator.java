@@ -7,6 +7,7 @@
 
 package org.eclipse.mylar.internal.jira.core.service.soap;
 
+import java.net.Proxy;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -25,6 +26,10 @@ import org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLoca
 @SuppressWarnings("serial")
 public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLocator {
 
+	private Proxy proxy;
+	private String httpUser;
+	private String httpPassword;
+	
 	public GZipJiraSoapServiceServiceLocator() {
 	}
 
@@ -48,7 +53,14 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 		// in Jira
 		// call.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
 		call.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
-
+		if (httpUser != null && httpPassword != null) {
+			call.setProperty(JiraHttpSender.HTTP_USER, httpUser);
+			call.setProperty(JiraHttpSender.HTTP_PASSWORD, httpPassword);
+		}
+		if (proxy != null) {
+			call.setProperty(JiraHttpSender.PROXY, proxy);
+		}
+		
 		// Some servers break with a 411 Length Required when chunked encoding
 		// is used
 		Map<String, Boolean> headers = new Hashtable<String, Boolean>();
@@ -56,4 +68,29 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 		call.setProperty(HTTPConstants.REQUEST_HEADERS, headers);
 		return call;
 	}
+
+	public Proxy getProxy() {
+		return proxy;
+	}
+
+	public void setProxy(Proxy proxy) {
+		this.proxy = proxy;
+	}
+
+	public String getHttpUser() {
+		return httpUser;
+	}
+
+	public void setHttpUser(String httpUser) {
+		this.httpUser = httpUser;
+	}
+
+	public String getHttpPassword() {
+		return httpPassword;
+	}
+
+	public void setHttpPassword(String httpPassword) {
+		this.httpPassword = httpPassword;
+	}
+	
 }

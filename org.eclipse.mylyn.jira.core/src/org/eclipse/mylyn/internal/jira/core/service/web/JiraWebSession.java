@@ -12,25 +12,19 @@
 package org.eclipse.mylar.internal.jira.core.service.web;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NTCredentials;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.eclipse.mylar.internal.jira.core.DebugManager;
+import org.eclipse.mylar.core.net.WebClientUtil;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 
 // TODO Clean up this implementation. It is really dodgey
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 public class JiraWebSession {
 
@@ -38,31 +32,7 @@ public class JiraWebSession {
 
 	private String baseUrl;
 
-	private HostConfiguration hostConfiguration;
-
-	private String hostname;
-
 	public JiraWebSession(JiraServer server) {
-		hostConfiguration = new HostConfiguration();
-
-		// XXX It would be nice if HTTPClient supported a nicer way of doing
-		// this
-		// Having the url as a URL object would make this whole process
-		// easier...
-		try {
-			hostname = new URL(server.getBaseURL()).getHost();
-			if (System.getProperty("http.proxyHost") != null) {
-				String nonProxiedHosts = System.getProperty("http.nonProxyHosts");
-				if (nonProxiedHosts == null || nonProxiedHosts.indexOf(hostname) == -1) {
-					hostConfiguration.setProxy(System.getProperty("http.proxyHost"), Integer.parseInt(System
-							.getProperty("http.proxyPort", "80")));
-				}
-
-			}
-		} catch (MalformedURLException e) {
-			DebugManager.log("Unable to set proxy for conection", e);
-		}
-
 		this.server = server;
 		// TODO this canonization is duplicated
 		StringBuffer urlBuffer = new StringBuffer(server.getBaseURL());
@@ -74,25 +44,8 @@ public class JiraWebSession {
 
 	public void doInSession(JiraWebSessionCallback callback) {
 		HttpClient client = new HttpClient();
-		client.setHostConfiguration(hostConfiguration);
-		if (System.getProperty("http.proxyHost") != null) {
-			Credentials creds;
-			String proxyUser = System.getProperty("http.proxyUser");
-			String proxyPass = System.getProperty("http.proxyPassword");
-			if (proxyUser != null && proxyPass != null) {
-				int domainSplit = proxyUser.indexOf('\\');
-				String domain = null;
 
-				if (domainSplit != -1) {
-					proxyUser = proxyUser.substring(0, domainSplit);
-					domain = proxyUser.substring(domainSplit + 1);
-					creds = new NTCredentials(proxyUser, proxyPass, hostname, domain);
-				} else {
-					creds = new UsernamePasswordCredentials(proxyUser, proxyPass);
-				}
-				client.getState().setProxyCredentials(AuthScope.ANY, creds);
-			}
-		}
+		WebClientUtil.setupHttpClient(client, server.getProxy(), baseUrl, server.getHttpUser(), server.getHttpPassword());
 
 		login(client);
 		try {

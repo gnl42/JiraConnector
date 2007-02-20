@@ -42,7 +42,6 @@ import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebIssueService;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssJiraFilterService;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapService;
-import org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.RemoteException;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.RemotePermissionException;
@@ -87,8 +86,11 @@ public class SoapJiraService implements JiraService {
 		try {
 			// JiraSoapServiceServiceLocator s = new
 			// JiraSoapServiceServiceLocator();
-			JiraSoapServiceServiceLocator s = new GZipJiraSoapServiceServiceLocator(new FileProvider(this.getClass()
+			GZipJiraSoapServiceServiceLocator s = new GZipJiraSoapServiceServiceLocator(new FileProvider(this.getClass()
 					.getClassLoader().getResourceAsStream("client-config.wsdd")));
+			s.setHttpUser(server.getHttpUser());
+			s.setHttpPassword(server.getHttpPassword());
+			s.setProxy(server.getProxy());
 			jirasoapserviceV2 = s.getJirasoapserviceV2(new URL(server.getBaseURL() + "/rpc/soap/jirasoapservice-v2")); //$NON-NLS-1$
 			filterService = new RssJiraFilterService(server);
 			issueService = new JiraWebIssueService(server);

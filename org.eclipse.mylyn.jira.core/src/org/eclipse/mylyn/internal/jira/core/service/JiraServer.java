@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira.core.service;
 
 import java.io.File;
+import java.net.Proxy;
 
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
@@ -292,4 +293,13 @@ public interface JiraServer {
 	 * called from a UI thread.
 	 */
 	public abstract void refreshDetails();
+
+	public abstract Proxy getProxy();
+
+	public abstract String getHttpUser();
+
+	public abstract String getHttpPassword();
+	
+	public abstract void setProxy(Proxy proxy);
+	
 }

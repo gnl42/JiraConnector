@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +36,6 @@ import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.model.filter.SmartQuery;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.core.service.JiraService;
-import org.eclipse.mylar.internal.jira.core.service.ServiceManager;
 
 /**
  * Jira server implementation that caches information that is unlikey to change
@@ -109,13 +107,23 @@ public class CachedRpcJiraServer implements JiraServer, Serializable {
 
 	private boolean hasSlowConnection;
 
-	public CachedRpcJiraServer(String name, String baseURL, boolean hasSlowConnection, String username, String password) {
+	private transient Proxy proxy;
+
+	private String httpUser;
+
+	private String httpPassword;
+
+	public CachedRpcJiraServer(String name, String baseURL, boolean hasSlowConnection, String username, String password, Proxy proxy, String httpUser, String httpPassword) {
 		this.name = name;
 		this.baseURL = baseURL;
 		this.hasSlowConnection = hasSlowConnection;
 		this.username = username;
 		this.password = password;
 
+		this.proxy = proxy;
+		this.username = username;
+		this.password = password;
+		
 		this.serviceDelegate = ServiceManager.getJiraService(this);
 
 	}
@@ -727,4 +735,21 @@ public class CachedRpcJiraServer implements JiraServer, Serializable {
 	public String toString() {
 		return this.name;
 	}
+
+	public String getHttpPassword() {
+		return httpPassword;
+	}
+
+	public String getHttpUser() {
+		return httpUser;
+	}
+
+	public Proxy getProxy() {
+		return proxy;
+	}
+	
+	public void setProxy(Proxy proxy) {
+		this.proxy = proxy;
+	}
+	
 }
