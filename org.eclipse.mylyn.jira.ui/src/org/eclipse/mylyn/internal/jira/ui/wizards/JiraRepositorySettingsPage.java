@@ -11,15 +11,17 @@
 
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.RepositoryTemplate;
+import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylar.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -35,8 +37,6 @@ import org.eclipse.swt.widgets.Composite;
  * @author Eugene Kuleshov
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
-
-	private static final String MESSAGE_FAILURE_CONNECT = "Could not connect to the Jira server or the login was not accepted";
 
 	private static final String TITLE = "Jira Repository Settings";
 
@@ -85,40 +85,35 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	}
 
 	@Override
-	protected void validateSettings() {
-		final String serverUrl = getServerUrl();
-		final String userName = getUserName();
-		final String password = getPassword();
-		try {
-			getWizard().getContainer().run(true, false, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						new URL(serverUrl);
-					} catch (MalformedURLException ex) {
-						throw new InvocationTargetException(new RuntimeException("Malformed server URL"));
-					}
-					monitor.beginTask("Validating repository settings", IProgressMonitor.UNKNOWN);
-					try {
-						String message = JiraServerFacade.getDefault().validateServerAndCredentials(serverUrl,
-								userName, password);
-						if (message != null) {
-							throw new InvocationTargetException(new RuntimeException(message));
-						}
-					} finally {
-						monitor.done();
-					}
-				}
-			});
-			setErrorMessage(null);
-			setMessage("Valid Jira server found and your login was accepted", IMessageProvider.INFORMATION);
-		} catch (InvocationTargetException e) {
-			// MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, e.getTargetException().getMessage());
-			setErrorMessage(e.getTargetException().getMessage());
-			setMessage(null);
-		} catch (InterruptedException e) {
-			// MessageDialog.openError(null, JiraUiPlugin.TITLE_MESSAGE_DIALOG, MESSAGE_FAILURE_CONNECT);
-			setErrorMessage(MESSAGE_FAILURE_CONNECT);
-			setMessage(null);
-		}
+	protected Validator getValidator(TaskRepository repository) {
+		return new JiraValidator(repository);
 	}
+	
+	private class JiraValidator extends Validator {
+
+		final TaskRepository repository;
+
+		public JiraValidator(TaskRepository repository) {
+			this.repository = repository;
+		}
+		
+		@Override
+		public void run(IProgressMonitor monitor) throws CoreException {
+			try {
+				new URL(repository.getUrl());
+			} catch (MalformedURLException ex) {
+				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, INVALID_REPOSITORY_URL));
+			}
+
+			String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
+						repository.getUserName(), repository.getPassword());
+			if (message != null) {
+				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, message));
+			}
+			
+			setStatus(new Status(IStatus.OK, JiraUiPlugin.PLUGIN_ID, "Valid JIRA server found and your login was accepted"));
+		}
+		
+	}
+	
 }

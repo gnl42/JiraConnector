@@ -22,6 +22,8 @@ import org.osgi.framework.BundleContext;
  */
 public class JiraUiPlugin extends AbstractUIPlugin {
 
+	public static final String PLUGIN_ID = "org.eclipse.mylar.jira.ui";
+	
 	private static JiraUiPlugin INSTANCE;
 
 	public final static String REPOSITORY_KIND = "jira";
