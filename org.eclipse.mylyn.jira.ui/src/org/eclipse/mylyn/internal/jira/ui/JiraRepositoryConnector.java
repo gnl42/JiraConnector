@@ -65,10 +65,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	/** Repository address + Issue Prefix + Issue key = the issue's web address */
 	public final static String ISSUE_URL_PREFIX = "/browse/";
-	
+
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
-	
+
 	private static final String VERSION_SUPPORT = "3.3.1 and higher";
 
 	private JiraTaskDataHandler offlineHandler;
@@ -113,12 +113,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (existingTask instanceof JiraTask) {
 			return (JiraTask) existingTask;
 		}
-		
-//		existingTask = taskList.getTask(repository.getUrl(), key);
-//		if (existingTask instanceof JiraTask) {
-//			return (JiraTask) existingTask;
-//		}
-		
+
+		// existingTask = taskList.getTask(repository.getUrl(), key);
+		// if (existingTask instanceof JiraTask) {
+		// return (JiraTask) existingTask;
+		// }
+
 		RepositoryTaskData taskData = offlineHandler.getTaskData(repository, key);
 		return createTask(repository.getUrl(), taskData);
 	}
@@ -146,7 +146,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
 					"Unable to login to the repository. Check credentials", ex);
 		} catch (Throwable t) {
-			// TODO need to refactor this to use better checked exceptions and only log severe cases
+			// TODO need to refactor this to use better checked exceptions and
+			// only log severe cases
 			String msg = t.getMessage();
 			if (msg == null) {
 				msg = t.toString();
@@ -168,7 +169,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		for (Issue issue : issues) {
 			String taskId = issue.getId();
-//			String handleIdentifier = AbstractRepositoryTask.getHandle(repository.getUrl(), taskId);
+			// String handleIdentifier =
+			// AbstractRepositoryTask.getHandle(repository.getUrl(), taskId);
 			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(), taskId);
 			// if (!(task instanceof JiraTask)) {
 			// task = createTask(issue, handleIdentifier);
@@ -209,7 +211,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		final List<Issue> issues = new ArrayList<Issue>();
-		// if the maximum is unlimited this will can create crazy amounts of traffic
+		// if the maximum is unlimited this will can create crazy amounts of
+		// traffic
 		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
 		JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (jiraServer == null) {
@@ -225,7 +228,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		long minutes = -1 * ((now - mil) / (1000 * 60));
 		if (minutes == 0)
 			return changedTasks;
-		
+
 		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
 		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, minutes));
 		changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
@@ -246,7 +249,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		for (Issue issue : issues) {
-//			String handle = AbstractRepositoryTask.getHandle(repository.getUrl(), issue.getId());
+			// String handle =
+			// AbstractRepositoryTask.getHandle(repository.getUrl(),
+			// issue.getId());
 			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(), issue.getId());
 			if (task instanceof AbstractRepositoryTask) {
 				changedTasks.add((AbstractRepositoryTask) task);
@@ -392,7 +397,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public static JiraTask createTask(String repositoryUrl, String taskId, String key, String description) {
 		JiraTask task;
-//		String handle = AbstractRepositoryTask.getHandle(repositoryUrl, taskId);
+		// String handle = AbstractRepositoryTask.getHandle(repositoryUrl,
+		// taskId);
 		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
 		if (existingTask instanceof JiraTask) {
 			task = (JiraTask) existingTask;
@@ -408,7 +414,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static JiraTask createTask(Issue issue, String repositoryUrl, String taskId) {
 		JiraTask task;
 		String summary = issue.getSummary();
-//		String handle = AbstractRepositoryTask.getHandle(repositoryUrl, taskId);
+		// String handle = AbstractRepositoryTask.getHandle(repositoryUrl,
+		// taskId);
 		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
 		if (existingTask instanceof JiraTask) {
 			task = (JiraTask) existingTask;
@@ -426,7 +433,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		task.setKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
 		task.setTaskUrl(getTaskUrl(repositoryUrl, task.getKey()));
 		task.setTaskData(taskData);
-		TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);		
+		TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		return task;
 	}
 
@@ -438,15 +445,16 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
 		// TODO: remove, added to re-open connection, bug 164543, bug 167697
-//		ensureServerConnectionValid(repository);
-//		JiraServerFacade.getDefault().refreshServerSettings(repository);
+		// ensureServerConnectionValid(repository);
+		// JiraServerFacade.getDefault().refreshServerSettings(repository);
 		JiraServerFacade.getDefault().forceServerReset(repository);
-		
+
 	}
 
 	private void ensureServerConnectionValid(TaskRepository repository) {
 		String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
-				repository.getUserName(), repository.getPassword());
+				repository.getUserName(), repository.getPassword(), repository.getProxy(), repository.getHttpUser(),
+				repository.getHttpPassword());
 		if (message != null) {
 			MylarStatusHandler.log("Could not reset JIRA server settings: " + message, this);
 		}
@@ -530,9 +538,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		return issue;
 	}
-	
+
 	public static String getAssigneeFromAttribute(String assignee) {
 		return "".equals(assignee) ? JiraTask.UNASSIGNED_USER : assignee;
 	}
-	
+
 }

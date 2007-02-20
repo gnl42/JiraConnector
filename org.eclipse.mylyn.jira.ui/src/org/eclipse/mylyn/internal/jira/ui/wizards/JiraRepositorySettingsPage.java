@@ -106,7 +106,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			}
 
 			String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
-						repository.getUserName(), repository.getPassword());
+						repository.getUserName(), repository.getPassword(), repository.getProxy(), 
+						repository.getHttpUser(), repository.getHttpPassword());
 			if (message != null) {
 				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, message));
 			}

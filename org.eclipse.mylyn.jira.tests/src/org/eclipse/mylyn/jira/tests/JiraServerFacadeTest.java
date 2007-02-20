@@ -68,7 +68,7 @@ public class JiraServerFacadeTest extends TestCase {
 		jiraFacade.getJiraServer(repository);
 
 		// Tests connection using the currently specified credentials
-		jiraFacade.validateServerAndCredentials(SERVER_URL, USER, PASSWORD);
+		jiraFacade.validateServerAndCredentials(SERVER_URL, USER, PASSWORD, null, null, null);
 	}
 
 	public void testFilterDownload() {

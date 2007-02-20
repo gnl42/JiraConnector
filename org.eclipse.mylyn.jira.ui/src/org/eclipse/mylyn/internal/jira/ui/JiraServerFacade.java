@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira.ui;
 
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 
 import org.eclipse.mylar.core.MylarStatusHandler;
@@ -151,10 +152,10 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * @return String describing validation failure or null if the details are
 	 *         valid
 	 */
-	public String validateServerAndCredentials(String serverUrl, String user, String password) {
+	public String validateServerAndCredentials(String serverUrl, String user, String password,
+			Proxy proxy, String httpUser, String httpPassword) {
 		try {
-			// FIXME pass real values instead of null
-			serverManager.testConnection(serverUrl, user, password, null, null, null);
+			serverManager.testConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
 			return null;
 		} catch (ServiceUnavailableException e) {
 			return e.getMessage();
