@@ -23,7 +23,7 @@ import org.eclipse.mylar.internal.jira.core.service.web.JiraWebSession;
 // TODO there is a mutual dependency on between this and the jira server
 // I don't think there is any way to avoid it though
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class RssJiraFilterService {
 
@@ -87,13 +87,19 @@ public class RssJiraFilterService {
 			 */
 			protected String getRssUrl() {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
-				rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&");
-
-				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
-					rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
+				if (server.getServerInfo().getVersion().compareTo("3.7") >= 0) {
+					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append(
+							"/SearchRequest-").append(filter.getId()).append(".xml");
+					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+						rssUrlBuffer.append("?tempMax=").append(collector.getMaxHits());
+					}
+				} else {
+					rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&");
+					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
+					}
+					rssUrlBuffer.append("requestId=").append(filter.getId());
 				}
-				rssUrlBuffer.append("requestId=").append(filter.getId());
-
 				return rssUrlBuffer.toString();
 			}
 		});
