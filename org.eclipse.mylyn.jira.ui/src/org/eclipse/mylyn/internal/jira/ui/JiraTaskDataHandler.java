@@ -10,13 +10,10 @@ package org.eclipse.mylar.internal.jira.ui;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
@@ -35,6 +32,7 @@ import org.eclipse.mylar.tasks.core.ITaskDataHandler;
 import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
+import org.eclipse.mylar.tasks.core.Task;
 import org.eclipse.mylar.tasks.core.TaskComment;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -49,8 +47,6 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	private AbstractAttributeFactory attributeFactory = new JiraAttributeFactory();
 
-	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
-
 	private static final JiraAttributeFactory attributeFacotry = new JiraAttributeFactory();
 
 	public JiraTaskDataHandler(JiraRepositoryConnector connector) {
@@ -61,7 +57,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
-				.getUrl(), jiraIssue.getId());
+				.getUrl(), jiraIssue.getId(), Task.DEFAULT_TASK_KIND);
 		initializeTaskData(data, server, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, server);
 		addOperations(repository, jiraIssue, data);
@@ -217,29 +213,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	private String getAssignee(Issue jiraIssue) {
 		return JiraTask.UNASSIGNED_USER.equals(jiraIssue.getAssignee()) ? "" : jiraIssue.getAssignee();
 	}
-
-	public Date getDateForAttributeType(String attributeKey, String dateString) {
-		if (dateString == null || dateString.equals("")) {
-			return null;
-		}
-		try {
-			// String mappedKey =
-			// attributeFactory.mapCommonAttributeKey(attributeKey);
-			// Date parsedDate = null;
-			// if (mappedKey.equals(RepositoryTaskAttribute.DATE_MODIFIED)) {
-			// parsedDate = modified_ts_format.parse(dateString);
-			// } else if
-			// (mappedKey.equals(RepositoryTaskAttribute.DATE_CREATION)) {
-			// parsedDate = creation_ts_format.parse(dateString);
-			// }
-			// return parsedDate;
-			return new SimpleDateFormat(JIRA_DATE_FORMAT).parse(dateString);
-		} catch (Exception e) {
-			MylarStatusHandler.log(e, "Error while parsing date field");
-			return null;
-		}
-	}
-
+	
 	@SuppressWarnings("restriction")
 	private String convertHtml(String text) {
 		if (text == null || text.length() == 0) {
@@ -255,11 +229,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			return text;
 		}
 	}
-
-	public AbstractAttributeFactory getAttributeFactory() {
-		return attributeFactory;
-	}
-
+	
 	private void addOperations(TaskRepository repository, Issue issue, RepositoryTaskData data) {
 		Status status = issue.getStatus();
 
@@ -364,5 +334,10 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			throws CoreException {
 		// JIRA needs a project to create task data
 		return false;
+	}
+
+	public AbstractAttributeFactory getAttributeFactory(String repositoryUrl, String repositoryKind, String taskKind) {
+		// we don't care about the repository information right now
+		return attributeFactory;
 	}
 }

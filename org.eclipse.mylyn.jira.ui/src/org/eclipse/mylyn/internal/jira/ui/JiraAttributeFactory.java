@@ -8,6 +8,10 @@
 
 package org.eclipse.mylar.internal.jira.ui;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 
 /**
@@ -26,7 +30,9 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_FIXVERSIONS = "attribute.jira.fixversions";
 	public static final String ATTRIBUTE_AFFECTSVERSIONS = "attribute.jira.affectsversions";
 	public static final String ATTRIBUTE_ESTIMATE = "attribute.jira.estimate";
-	
+
+	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
+
 	@Override
 	public boolean getIsHidden(String key) {
 		return false;
@@ -47,4 +53,26 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 		return key;
 	}
 
+	public Date getDateForAttributeType(String attributeKey, String dateString) {
+		if (dateString == null || dateString.equals("")) {
+			return null;
+		}
+		try {
+			// String mappedKey =
+			// attributeFactory.mapCommonAttributeKey(attributeKey);
+			// Date parsedDate = null;
+			// if (mappedKey.equals(RepositoryTaskAttribute.DATE_MODIFIED)) {
+			// parsedDate = modified_ts_format.parse(dateString);
+			// } else if
+			// (mappedKey.equals(RepositoryTaskAttribute.DATE_CREATION)) {
+			// parsedDate = creation_ts_format.parse(dateString);
+			// }
+			// return parsedDate;
+			return new SimpleDateFormat(JIRA_DATE_FORMAT).parse(dateString);
+		} catch (Exception e) {
+			MylarStatusHandler.log(e, "Error while parsing date field");
+			return null;
+		}
+	}
+	
 }

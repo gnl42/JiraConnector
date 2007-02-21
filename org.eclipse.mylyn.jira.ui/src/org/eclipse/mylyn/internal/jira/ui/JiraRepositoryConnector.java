@@ -205,7 +205,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		Date lastSyncDate;
 		try {
-			lastSyncDate = new SimpleDateFormat(JiraTaskDataHandler.JIRA_DATE_FORMAT).parse(dateString);
+			lastSyncDate = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT).parse(dateString);
 		} catch (ParseException e) {
 			return tasks;
 		}
