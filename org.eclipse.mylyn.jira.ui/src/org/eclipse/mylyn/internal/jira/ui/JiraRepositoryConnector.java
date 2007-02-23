@@ -492,30 +492,42 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		ArrayList<Component> components = new ArrayList<Component>();
 		RepositoryTaskAttribute attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 		for (String compStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
-			Component comp = new Component();
-			comp.setId(attrib.getOptionParameter(compStr));
-			comp.setName(compStr);
-			components.add(comp);
+			if (attrib.getOptionParameter(compStr) != null) {
+				Component comp = new Component();
+				comp.setId(attrib.getOptionParameter(compStr));
+				comp.setName(compStr);
+				components.add(comp);
+			} else {
+				MylarStatusHandler.fail(null, "Error setting component for JIRA issue. Component id is null: " + compStr, false);
+			}
 		}
 		issue.setComponents(components.toArray(new Component[components.size()]));
 
 		ArrayList<Version> fixversions = new ArrayList<Version>();
 		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
 		for (String fixStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
-			Version version = new Version();
-			version.setId(attrib.getOptionParameter(fixStr));
-			version.setName(fixStr);
-			fixversions.add(version);
+			if (attrib.getOptionParameter(fixStr) != null) {
+				Version version = new Version();
+				version.setId(attrib.getOptionParameter(fixStr));
+				version.setName(fixStr);
+				fixversions.add(version);
+			} else {
+				MylarStatusHandler.fail(null, "Error setting fix version for JIRA issue. Version id is null: " + fixStr, false);
+			}
 		}
 		issue.setFixVersions(fixversions.toArray(new Version[fixversions.size()]));
 
 		ArrayList<Version> affectsversions = new ArrayList<Version>();
 		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
 		for (String fixStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {
-			Version version = new Version();
-			version.setId(attrib.getOptionParameter(fixStr));
-			version.setName(fixStr);
-			affectsversions.add(version);
+			if (attrib.getOptionParameter(fixStr) != null) {
+				Version version = new Version();
+				version.setId(attrib.getOptionParameter(fixStr));
+				version.setName(fixStr);
+				affectsversions.add(version);
+			} else {
+				MylarStatusHandler.fail(null, "Error setting affects version for JIRA issue. Version id is null: " + fixStr, false);
+			}
 		}
 		issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));
 		issue.setReporter(taskData.getAttributeValue(RepositoryTaskAttribute.USER_REPORTER));
