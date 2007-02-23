@@ -211,7 +211,8 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 	private String getAssignee(Issue jiraIssue) {
-		return JiraTask.UNASSIGNED_USER.equals(jiraIssue.getAssignee()) ? "" : jiraIssue.getAssignee();
+		String assignee = jiraIssue.getAssignee(); 
+		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;
 	}
 	
 	@SuppressWarnings("restriction")
