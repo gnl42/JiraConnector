@@ -75,7 +75,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		} catch (NumberFormatException e) {
 			return server.getIssue(taskId);
 		}
-		throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, "JIRA ticket not found: " + taskId));
+		throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "JIRA ticket not found: " + taskId, null));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -295,7 +295,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		if (taskData.isNew()) {
 			issue = jiraServer.createIssue(issue);
 			if (issue == null ){
-				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, "Could not create ticket."));
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "Could not create ticket.", null));
 			}
 			// this is severly broken: should return id instead
 			return issue.getKey();

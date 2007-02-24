@@ -102,17 +102,17 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			try {
 				new URL(repository.getUrl());
 			} catch (MalformedURLException ex) {
-				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, INVALID_REPOSITORY_URL));
+				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IStatus.OK, INVALID_REPOSITORY_URL, null));
 			}
 
 			String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
 						repository.getUserName(), repository.getPassword(), repository.getProxy(), 
 						repository.getHttpUser(), repository.getHttpPassword());
 			if (message != null) {
-				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, message));
+				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IStatus.OK, message, null));
 			}
 			
-			setStatus(new Status(IStatus.OK, JiraUiPlugin.PLUGIN_ID, "Valid JIRA server found and your login was accepted"));
+			setStatus(new Status(IStatus.OK, JiraUiPlugin.PLUGIN_ID, IStatus.OK, "Valid JIRA server found and your login was accepted", null));
 		}
 		
 	}
