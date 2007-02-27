@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylar.tasks.core,
  org.eclipse.mylar.tasks.ui,
  org.eclipse.mylar.context.core,
- org.eclipse.mylar
+ org.eclipse.mylar,
+ org.eclipse.core.resources
 Eclipse-AutoStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.mylar.internal.jira.ui,

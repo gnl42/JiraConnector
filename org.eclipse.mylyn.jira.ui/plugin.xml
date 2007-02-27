@@ -72,5 +72,15 @@
             label="Apache"
             urlRepository="http://issues.apache.org/jira/"/>
    </extension>
+   
+    <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+      <hyperlinkDetector            
+            class="org.eclipse.mylar.internal.jira.ui.JiraTaskHyperlinkDetector"
+            id="org.eclipse.mylar.jira.ui.hyperlinkdetector"
+            name="Mylar Task"
+            targetId="org.eclipse.jdt.ui.javaCode">
+      </hyperlinkDetector>
+   </extension>
 
 </plugin>
