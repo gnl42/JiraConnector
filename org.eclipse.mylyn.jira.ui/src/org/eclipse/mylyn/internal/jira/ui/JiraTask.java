@@ -139,9 +139,4 @@ public class JiraTask extends AbstractRepositoryTask {
 	public void setKey(String key) {
 		this.key = key;
 	}
-
-	@Override
-	public String getIdentifyingLabel() {
-		return getKey();
-	}	
 }
