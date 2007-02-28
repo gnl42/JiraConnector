@@ -56,6 +56,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId) throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
+		if (jiraIssue == null) {
+			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "JIRA ticket not found: " + taskId, null));
+		}
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
 				.getUrl(), jiraIssue.getId(), Task.DEFAULT_TASK_KIND);
 		initializeTaskData(data, server, jiraIssue.getProject());
