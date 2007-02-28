@@ -121,8 +121,8 @@ public class CachedRpcJiraServer implements JiraServer, Serializable {
 		this.password = password;
 
 		this.proxy = proxy;
-		this.username = username;
-		this.password = password;
+		this.httpUser = httpUser;
+		this.httpPassword = httpPassword;
 		
 		this.serviceDelegate = ServiceManager.getJiraService(this);
 
