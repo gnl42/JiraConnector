@@ -73,7 +73,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
 			if (task instanceof JiraTask) {
 				JiraTask jiraTask = (JiraTask) task;
-				return server.getIssue(jiraTask.getKey());
+				return server.getIssue(jiraTask.getTaskKey());
 			}
 		} catch (NumberFormatException e) {
 			return server.getIssue(taskId);

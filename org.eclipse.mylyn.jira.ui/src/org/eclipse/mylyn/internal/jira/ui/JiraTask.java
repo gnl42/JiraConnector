@@ -23,38 +23,6 @@ public class JiraTask extends AbstractRepositoryTask {
 	public static final String UNASSIGNED_USER = "-1";
 	
 	private String key = null;
-
-	// XXX: from Trac
-	public enum Key {
-		CC("cc"), CHANGE_TIME("changetime"), COMPONENT("component"), DESCRIPTION("description"), ID("id"), KEYWORDS(
-				"keywords"), MILESTONE("milestone"), OWNER("owner"), PRIORITY("priority"), REPORTER("reporter"), RESOLUTION(
-				"resolution"), STATUS("status"), SEVERITY("severity"), SUMMARY("summary"), TIME("time"), TYPE("type"), VERSION(
-				"version");
-
-		public static Key fromKey(String name) {
-			for (Key key : Key.values()) {
-				if (key.getKey().equals(name)) {
-					return key;
-				}
-			}
-			return null;
-		}
-
-		private String key;
-
-		Key(String key) {
-			this.key = key;
-		}
-
-		@Override
-		public String toString() {
-			return key;
-		}
-
-		public String getKey() {
-			return key;
-		}
-	}
 	
 	public enum PriorityLevel {
 		BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL;
@@ -132,11 +100,13 @@ public class JiraTask extends AbstractRepositoryTask {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
-	public String getKey() {
+	@Override
+	public String getTaskKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setTaskKey(String key) {
 		this.key = key;
 	}
+	
 }

@@ -57,7 +57,7 @@ public class JiraHyperLink implements IHyperlink {
 			for (ITask task : TasksUiPlugin.getTaskListManager().getTaskList().getAllTasks()) {
 				if (task instanceof JiraTask) {
 					JiraTask jiraTask = (JiraTask) task;
-					if (jiraTask.getKey() != null && jiraTask.getKey().equals(key)) {
+					if (jiraTask.getTaskKey() != null && jiraTask.getTaskKey().equals(key)) {
 						TasksUiUtil.refreshAndOpenTaskListElement(jiraTask);
 					}
 				}

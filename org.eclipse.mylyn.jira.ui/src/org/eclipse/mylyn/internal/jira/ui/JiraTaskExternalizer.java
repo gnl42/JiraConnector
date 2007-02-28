@@ -193,7 +193,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	@Override
 	public Element createTaskElement(ITask task, Document doc, Element parent) {
 		Element node = super.createTaskElement(task, doc, parent);
-		node.setAttribute(KEY_KEY, ((JiraTask) task).getKey());
+		node.setAttribute(KEY_KEY, ((JiraTask) task).getTaskKey());
 		return node;
 	}
 
@@ -204,7 +204,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		
 		if (element.hasAttribute(KEY_KEY)) {
 			String key = element.getAttribute(KEY_KEY);
-			task.setKey(key);
+			task.setTaskKey(key);
 		} else {
 			// ignore if key not found
 		}

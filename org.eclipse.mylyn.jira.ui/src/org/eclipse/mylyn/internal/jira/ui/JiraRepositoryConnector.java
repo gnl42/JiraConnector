@@ -356,7 +356,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
-			task.setKey(issue.getKey());
+			task.setTaskKey(issue.getKey());
 			task.setTaskUrl(getTaskUrl(repositoryUrl, issue.getKey()));
 			if (issue.getDescription() != null) {
 				task.setDescription(issue.getSummary());
@@ -404,7 +404,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task = (JiraTask) existingTask;
 		} else {
 			task = new JiraTask(repositoryUrl, taskId, description, true);
-			task.setKey(key);// issue.getKey());
+			task.setTaskKey(key);// issue.getKey());
 			task.setTaskUrl(getTaskUrl(repositoryUrl, key));
 			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
@@ -421,7 +421,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task = (JiraTask) existingTask;
 		} else {
 			task = new JiraTask(repositoryUrl, taskId, summary, true);
-			task.setKey(issue.getKey());
+			task.setTaskKey(issue.getKey());
 			task.setTaskUrl(getTaskUrl(repositoryUrl, issue.getKey()));
 			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		}
@@ -430,8 +430,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private JiraTask createTask(String repositoryUrl, RepositoryTaskData taskData) {
 		JiraTask task = new JiraTask(repositoryUrl, taskData.getId(), taskData.getSummary(), true);
-		task.setKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
-		task.setTaskUrl(getTaskUrl(repositoryUrl, task.getKey()));
+		task.setTaskKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
+		task.setTaskUrl(getTaskUrl(repositoryUrl, task.getTaskKey()));
 		task.setTaskData(taskData);
 		TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
 		return task;
