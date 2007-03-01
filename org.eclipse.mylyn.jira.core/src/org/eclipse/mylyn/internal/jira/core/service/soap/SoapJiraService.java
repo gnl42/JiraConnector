@@ -47,7 +47,6 @@ import org.eclipse.mylar.internal.jira.core.wsdl.soap.RemoteException;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.RemotePermissionException;
 import org.w3c.dom.Element;
 
-
 // This class does not represent the data in a JIRA installation. It is merely
 // a helper to get any data that is missing in the cached JiraInstallation
 // object
@@ -61,7 +60,7 @@ import org.w3c.dom.Element;
 // not yet cached. Also need the ability to flush and fully re-load the cached
 // installation
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class SoapJiraService implements JiraService {
 	/**
@@ -86,8 +85,8 @@ public class SoapJiraService implements JiraService {
 		try {
 			// JiraSoapServiceServiceLocator s = new
 			// JiraSoapServiceServiceLocator();
-			GZipJiraSoapServiceServiceLocator s = new GZipJiraSoapServiceServiceLocator(new FileProvider(this.getClass()
-					.getClassLoader().getResourceAsStream("client-config.wsdd")));
+			GZipJiraSoapServiceServiceLocator s = new GZipJiraSoapServiceServiceLocator(new FileProvider(this
+					.getClass().getClassLoader().getResourceAsStream("client-config.wsdd")));
 			s.setHttpUser(server.getHttpUser());
 			s.setHttpPassword(server.getHttpPassword());
 			s.setProxy(server.getProxy());
@@ -516,9 +515,10 @@ public class SoapJiraService implements JiraService {
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.mylar.internal.jira.core.service.JiraService#advanceIssueWorkflow(org.eclipse.mylar.internal.jira.core.model.Issue,
-	 *      java.lang.String, org.eclipse.mylar.internal.jira.core.model.Resolution,
-	 *      org.eclipse.mylar.internal.jira.core.model.Version[], java.lang.String, int,
-	 *      java.lang.String)
+	 *      java.lang.String,
+	 *      org.eclipse.mylar.internal.jira.core.model.Resolution,
+	 *      org.eclipse.mylar.internal.jira.core.model.Version[],
+	 *      java.lang.String, int, java.lang.String)
 	 */
 	public void advanceIssueWorkflow(Issue issue, String action, Resolution resolution, Version[] fixVersions,
 			String comment, int assigneeType, String user) {
@@ -560,8 +560,8 @@ public class SoapJiraService implements JiraService {
 	 * 
 	 * @see org.eclipse.mylar.internal.jira.core.service.JiraService#resolveIssue(org.eclipse.mylar.internal.jira.core.model.Issue,
 	 *      org.eclipse.mylar.internal.jira.core.model.Resolution,
-	 *      org.eclipse.mylar.internal.jira.core.model.Version[], java.lang.String, int,
-	 *      java.lang.String)
+	 *      org.eclipse.mylar.internal.jira.core.model.Version[],
+	 *      java.lang.String, int, java.lang.String)
 	 */
 	public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
 			int assigneeType, String user) {
@@ -583,8 +583,8 @@ public class SoapJiraService implements JiraService {
 	 * 
 	 * @see org.eclipse.mylar.internal.jira.core.service.JiraService#closeIssue(org.eclipse.mylar.internal.jira.core.model.Issue,
 	 *      org.eclipse.mylar.internal.jira.core.model.Resolution,
-	 *      org.eclipse.mylar.internal.jira.core.model.Version[], java.lang.String, int,
-	 *      java.lang.String)
+	 *      org.eclipse.mylar.internal.jira.core.model.Version[],
+	 *      java.lang.String, int, java.lang.String)
 	 */
 	public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
 			String user) {
@@ -673,6 +673,7 @@ public class SoapJiraService implements JiraService {
 	}
 
 	private static class StandardLoginToken implements LoginToken {
+		
 		private final String username;
 
 		private final String password;
@@ -682,9 +683,9 @@ public class SoapJiraService implements JiraService {
 		private final JiraSoapService jiraSoapService;
 
 		private String token;
-		
+
 		private long lastAccessed;
-		
+
 		public StandardLoginToken(String username, String password, long timeout, JiraSoapService jiraSoapService) {
 			this.username = username;
 			this.password = password;
@@ -693,7 +694,7 @@ public class SoapJiraService implements JiraService {
 			this.lastAccessed = -1L;
 		}
 
-		public String getCurrentValue() {
+		public synchronized String getCurrentValue() {
 			if ((System.currentTimeMillis() - lastAccessed) >= timeout || token == null) {
 				if (token != null) {
 					try {
@@ -720,12 +721,7 @@ public class SoapJiraService implements JiraService {
 			return this.token;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.mylar.internal.jira.core.service.CachedRpcJiraServer.LoginToken#expire()
-		 */
-		public void expire() {
+		public synchronized void expire() {
 			if (token != null) {
 				try {
 					jiraSoapService.logout(this.token);
@@ -737,14 +733,10 @@ public class SoapJiraService implements JiraService {
 			}
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.mylar.internal.jira.core.service.soap.SoapJiraService.LoginToken#isValidToken()
-		 */
-		public boolean isValidToken() {
+		public synchronized boolean isValidToken() {
 			return token != null && (System.currentTimeMillis() - lastAccessed) < timeout;
 		}
+
 	}
 
 	private static class AnonymousLoginToken implements LoginToken {
@@ -753,19 +745,9 @@ public class SoapJiraService implements JiraService {
 			return "";
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.mylar.internal.jira.core.service.CachedRpcJiraServer.LoginToken#expire()
-		 */
 		public void expire() {
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.mylar.internal.jira.core.service.soap.SoapJiraService.LoginToken#isValidToken()
-		 */
 		public boolean isValidToken() {
 			return false;
 		}
