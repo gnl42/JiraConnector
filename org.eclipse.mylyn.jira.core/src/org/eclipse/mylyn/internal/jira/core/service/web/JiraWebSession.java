@@ -13,13 +13,15 @@ package org.eclipse.mylar.internal.jira.core.service.web;
 
 import java.io.IOException;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.mylar.core.net.WebClientUtil;
+import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 
 // TODO Clean up this implementation. It is really dodgey
 /**
@@ -45,10 +47,12 @@ public class JiraWebSession {
 	public void doInSession(JiraWebSessionCallback callback) {
 		HttpClient client = new HttpClient();
 
-		WebClientUtil.setupHttpClient(client, server.getProxy(), baseUrl, server.getHttpUser(), server.getHttpPassword());
+		WebClientUtil.setupHttpClient(client, server.getProxy(), baseUrl, server.getHttpUser(), server
+				.getHttpPassword());
 
 		login(client);
 		try {
+			// client.getState().getCookies()[0].setSecure(false);
 			callback.execute(client, server);
 		} finally {
 			logout(client);
@@ -59,21 +63,25 @@ public class JiraWebSession {
 		PostMethod login = new PostMethod(baseUrl + "login.jsp"); //$NON-NLS-1$
 		login.addParameter("os_username", server.getCurrentUserName()); //$NON-NLS-1$
 		login.addParameter("os_password", server.getCurrentUserPassword()); //$NON-NLS-1$
+		login.addParameter("os_destination", "/success"); //$NON-NLS-1$
+
+		login.setFollowRedirects(false);
 
 		try {
 			int statusCode = client.executeMethod(login);
-			switch (statusCode) {
-			case HttpStatus.SC_OK:
-				break;
-			case HttpStatus.SC_FORBIDDEN:
-			case HttpStatus.SC_UNAUTHORIZED:
-				// TODO let the user know
-				break;
-			default:
-				// log the exception and tell the user
+			if (statusCode == HttpStatus.SC_OK) {
+				throw new AuthenticationException("Login failed.");
+			} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+				Header locationHeader = login.getResponseHeader("location");
+				if (locationHeader != null && locationHeader.getValue().endsWith("/success")) {
+					// successful login
+					return;
+				}
 			}
-		} catch (HttpException e) {
+
+			throw new ServiceUnavailableException("Unexpected status code on login: " + statusCode);
 		} catch (IOException e) {
+			throw new ServiceUnavailableException(e);
 		} finally {
 			login.releaseConnection();
 		}
@@ -81,13 +89,13 @@ public class JiraWebSession {
 
 	private void logout(HttpClient client) {
 		GetMethod logout = new GetMethod(baseUrl + "logout"); //$NON-NLS-1$
+		logout.setFollowRedirects(false);
 
 		try {
 			client.executeMethod(logout);
-		} catch (HttpException e) {
+		} catch (IOException e) {
 			// It doesn't matter if the logout fails. The server will clean up
 			// the session eventually
-		} catch (IOException e) {
 		} finally {
 			logout.releaseConnection();
 		}

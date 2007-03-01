@@ -12,11 +12,17 @@
 package org.eclipse.mylar.internal.jira.core.service;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 @SuppressWarnings("serial")
 public class ServiceUnavailableException extends RuntimeException {
+	
 	public ServiceUnavailableException(String message) {
 		super(message);
 	}
+
+	public ServiceUnavailableException(Throwable cause) {
+		super(cause);
+	}
+
 }
