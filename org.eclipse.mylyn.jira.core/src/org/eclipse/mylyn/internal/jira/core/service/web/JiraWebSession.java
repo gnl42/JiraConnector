@@ -30,6 +30,8 @@ import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
  */
 public class JiraWebSession {
 
+	private static final int MAX_REDIRECTS = 3;
+
 	private final JiraServer server;
 
 	private String baseUrl;
@@ -60,33 +62,42 @@ public class JiraWebSession {
 	}
 
 	private void login(HttpClient client) {
-		PostMethod login = new PostMethod(baseUrl + "login.jsp"); //$NON-NLS-1$
-		login.addParameter("os_username", server.getCurrentUserName()); //$NON-NLS-1$
-		login.addParameter("os_password", server.getCurrentUserPassword()); //$NON-NLS-1$
-		login.addParameter("os_destination", "/success"); //$NON-NLS-1$
+		String url = baseUrl + "login.jsp";
+		for (int i = 0; i < MAX_REDIRECTS; i++) {
+			PostMethod login = new PostMethod(url); //$NON-NLS-1$
+			login.setFollowRedirects(false);
+			login.addParameter("os_username", server.getCurrentUserName()); //$NON-NLS-1$
+			login.addParameter("os_password", server.getCurrentUserPassword()); //$NON-NLS-1$
+			login.addParameter("os_destination", "/success"); //$NON-NLS-1$
 
-		login.setFollowRedirects(false);
-
-		try {
-			int statusCode = client.executeMethod(login);
-			if (statusCode == HttpStatus.SC_OK) {
-				throw new AuthenticationException("Login failed.");
-			} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
-				Header locationHeader = login.getResponseHeader("location");
-				if (locationHeader != null && locationHeader.getValue().endsWith("/success")) {
-					// successful login
-					return;
+			try {
+				int statusCode = client.executeMethod(login);
+				if (statusCode == HttpStatus.SC_OK) {
+					throw new AuthenticationException("Login failed.");
+				} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+					Header locationHeader = login.getResponseHeader("location");
+					if (locationHeader != null) {
+						if (locationHeader.getValue().endsWith("/success")) {
+							return;
+						}
+						else {
+							url = locationHeader.getValue();
+						}
+					} else {
+						throw new ServiceUnavailableException("Invalid redirect, missing location");
+					}
+				} else {
+					throw new ServiceUnavailableException("Unexpected status code on login: " + statusCode);
 				}
+			} catch (IOException e) {
+				throw new ServiceUnavailableException(e);
+			} finally {
+				login.releaseConnection();
 			}
-
-			throw new ServiceUnavailableException("Unexpected status code on login: " + statusCode);
-		} catch (IOException e) {
-			throw new ServiceUnavailableException(e);
-		} finally {
-			login.releaseConnection();
 		}
+		throw new ServiceUnavailableException("Exceeded maximum number of allowed redirects on login");
 	}
-
+	
 	private void logout(HttpClient client) {
 		GetMethod logout = new GetMethod(baseUrl + "logout"); //$NON-NLS-1$
 		logout.setFollowRedirects(false);
