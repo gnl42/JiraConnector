@@ -13,9 +13,7 @@ package org.eclipse.mylar.internal.jira.ui;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.TasksUiUtil;
 
 /**
@@ -29,13 +27,13 @@ public class JiraHyperLink implements IHyperlink {
 
 	private final String key;
 
-//	private final String taskUrl;
+	private final String taskUrl;
 
 	public JiraHyperLink(IRegion nlsKeyRegion, TaskRepository repository, String key, String taskUrl) {
 		this.region = nlsKeyRegion;
 		this.repository = repository;
 		this.key = key;
-//		this.taskUrl = taskUrl;
+		this.taskUrl = taskUrl;
 	}
 
 	public IRegion getHyperlinkRegion() {
@@ -52,17 +50,7 @@ public class JiraHyperLink implements IHyperlink {
 
 	public void open() {
 		if (repository != null) {
-			// TODO: put this back when TaskUiUtil.open(..) methods are fixed
-//			TasksUiUtil.openRepositoryTask(repository.getUrl(), key, taskUrl);
-			for (ITask task : TasksUiPlugin.getTaskListManager().getTaskList().getAllTasks()) {
-				if (task instanceof JiraTask) {
-					JiraTask jiraTask = (JiraTask) task;
-					if (jiraTask.getTaskKey() != null && jiraTask.getTaskKey().equals(key)) {
-						TasksUiUtil.refreshAndOpenTaskListElement(jiraTask);
-					}
-				}
-			}
-
+			TasksUiUtil.openRepositoryTask(repository.getUrl(), key, taskUrl);
 		} else {
 			MessageDialog.openError(null, "Mylar Jira Connector", "Could not determine repository for report");
 		}
