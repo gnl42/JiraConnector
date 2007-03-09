@@ -78,7 +78,7 @@
       <hyperlinkDetector            
             class="org.eclipse.mylar.internal.jira.ui.JiraTaskHyperlinkDetector"
             id="org.eclipse.mylar.jira.ui.hyperlinkdetector"
-            name="Mylar Task"
+            name="Mylar Task - JIRA"
             targetId="org.eclipse.jdt.ui.javaCode">
       </hyperlinkDetector>
    </extension>
