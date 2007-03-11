@@ -49,9 +49,8 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 	 */
 	public Call createCall() throws ServiceException {
 		Call call = super.createCall();
-		// TODO allow this to be turned on. It does not match up with the option
-		// in Jira
-		// call.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
+		// see bug 175915
+		//call.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
 		call.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
 		if (httpUser != null && httpPassword != null) {
 			call.setProperty(JiraHttpSender.HTTP_USER, httpUser);
