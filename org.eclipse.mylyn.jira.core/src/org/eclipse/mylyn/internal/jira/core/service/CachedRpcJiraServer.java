@@ -98,6 +98,7 @@ public class CachedRpcJiraServer implements JiraServer {
 		initializeStatuses(newData);
 		advance(monitor, 1);
 
+		newData.lastUpdate = System.currentTimeMillis();
 		this.data = newData;
 		
 		monitor.done();

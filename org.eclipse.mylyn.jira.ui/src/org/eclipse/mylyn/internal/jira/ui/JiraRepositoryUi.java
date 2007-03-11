@@ -36,7 +36,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	
 	@Override
 	public WizardPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
-		return new JiraQueryPage(repository, new FilterDefinition(), true, false);
+		return new JiraQueryPage(repository, new FilterDefinition());
 	} 
 
 	@Override

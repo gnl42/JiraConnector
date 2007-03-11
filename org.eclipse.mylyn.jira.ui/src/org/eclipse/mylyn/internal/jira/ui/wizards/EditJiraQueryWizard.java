@@ -40,7 +40,7 @@ public class EditJiraQueryWizard extends AbstractEditQueryWizard {
 		if(query instanceof JiraCustomQuery) {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);;
 			JiraCustomQuery customQuery = (JiraCustomQuery) query;
-			page = new JiraQueryPage(repository, customQuery.getFilterDefinition(jiraServer), false, true);
+			page = new JiraQueryPage(repository, customQuery.getFilterDefinition(jiraServer));
 		} else {
 			page = new JiraQueryWizardPage(repository, query);
 		}

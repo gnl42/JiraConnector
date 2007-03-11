@@ -87,13 +87,13 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	private static final int MAX_HITS = 200;
 
-	private FilterDefinition filter;
+//	private FilterDefinition filter;
 	private String encoding;
 
 
 	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, String encoding, TaskList taskList) {
 		super(filter.getName(), taskList);
-		this.filter = filter;
+//		this.filter = filter;
 		this.repositoryUrl = repositoryUrl;
 		this.encoding = encoding;
 		this.url = repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
@@ -116,10 +116,10 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	}
 
 	public FilterDefinition getFilterDefinition(JiraServer jiraServer) {
-		if (filter == null && jiraServer != null) {
-			this.filter = createFilter(jiraServer, getUrl());
-			this.filter.setName(getSummary());
-		}
+//		if (filter == null && jiraServer != null) {
+			FilterDefinition filter = createFilter(jiraServer, getUrl());
+			filter.setName(getSummary());
+//		}
 		return filter;
 	}
 

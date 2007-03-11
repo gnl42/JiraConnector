@@ -11,11 +11,16 @@
 
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -28,6 +33,7 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
@@ -54,6 +60,8 @@ import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.DatePicker;
@@ -74,19 +82,28 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.IProgressService;
 
 /**
  * @author Brock Janiczak
  * @author Eugene Kuleshov (layout and other improvements)
  * @author Mik Kersten (generalized for search dialog)
+ * @author Steffen Pingel
  */
 @SuppressWarnings("unchecked")
 public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private static final String TITLE_PAGE = "JIRA Query";
+
+	protected final static String PAGE_NAME = "Jira" +
+			"SearchPage"; //$NON-NLS-1$
+
+	private static final String SEARCH_URL_ID = PAGE_NAME + ".SEARCHURL";
 
 	final Placeholder ANY_FIX_VERSION = new Placeholder("Any");
 
@@ -184,19 +201,15 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private DatePicker createdEndDatePicker;
 
-	private final boolean isNew;
+	private FilterDefinition workingCopy;
 
-	private final FilterDefinition workingCopy;
+	private boolean firstTime = true;
 
-	private boolean namedQuery = false;
-
-	public JiraQueryPage(TaskRepository repository, FilterDefinition workingCopy, boolean isNew, boolean namedQuery) {
+	public JiraQueryPage(TaskRepository repository, FilterDefinition workingCopy) {
 		super(TITLE_PAGE);
 		this.repository = repository;
 		this.server = JiraServerFacade.getDefault().getJiraServer(repository);
 		this.workingCopy = workingCopy;
-		this.isNew = isNew;
-		this.namedQuery = namedQuery;
 
 		setDescription("Add search filters to define query.");
 		setPageComplete(false);
@@ -207,9 +220,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		c = new Composite(parent, SWT.NONE);
 		c.setLayout(new GridLayout(3, false));
+		c.setLayoutData(new GridData(GridData.FILL_BOTH));
 		setControl(c);
 		
-		if (namedQuery) {
+		if (!inSearchContainer()) {
 			Label lblName = new Label(c, SWT.NONE);
 			final GridData gridData = new GridData();
 			lblName.setLayoutData(gridData);
@@ -298,24 +312,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				issueType = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				issueType.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-				issueType.setContentProvider(new IStructuredContentProvider() {
-
-					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-					}
-
-					public void dispose() {
-					}
-
-					public Object[] getElements(Object inputElement) {
-						JiraServer server = (JiraServer) inputElement;
-						Object[] elements = new Object[server.getIssueTypes().length + 1];
-						elements[0] = ANY_ISSUE_TYPE;
-						System.arraycopy(server.getIssueTypes(), 0, elements, 1, server.getIssueTypes().length);
-
-						return elements;
-					}
-				});
-
 				issueType.setLabelProvider(new LabelProvider() {
 
 					public String getText(Object element) {
@@ -329,8 +325,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				});
 
 				issueType.addSelectionChangedListener(selectionChangeListener);
-
-				issueType.setInput(server);
 			}
 
 			{
@@ -346,24 +340,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				status = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				status.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-				status.setContentProvider(new IStructuredContentProvider() {
-
-					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-					}
-
-					public void dispose() {
-					}
-
-					public Object[] getElements(Object inputElement) {
-						JiraServer server = (JiraServer) inputElement;
-						Object[] elements = new Object[server.getStatuses().length + 1];
-						elements[0] = ANY_STATUS;
-						System.arraycopy(server.getStatuses(), 0, elements, 1, server.getStatuses().length);
-
-						return elements;
-					}
-				});
-
 				status.setLabelProvider(new LabelProvider() {
 
 					public String getText(Object element) {
@@ -377,7 +353,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				});
 
 				status.addSelectionChangedListener(selectionChangeListener);
-				status.setInput(server);
 			}
 
 			{
@@ -393,25 +368,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				resolution = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				resolution.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-				resolution.setContentProvider(new IStructuredContentProvider() {
-
-					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-					}
-
-					public void dispose() {
-					}
-
-					public Object[] getElements(Object inputElement) {
-						JiraServer server = (JiraServer) inputElement;
-						Object[] elements = new Object[server.getResolutions().length + 2];
-						elements[0] = ANY_RESOLUTION;
-						elements[1] = UNRESOLVED;
-						System.arraycopy(server.getResolutions(), 0, elements, 2, server.getResolutions().length);
-
-						return elements;
-					}
-				});
-
 				resolution.setLabelProvider(new LabelProvider() {
 
 					public String getText(Object element) {
@@ -425,7 +381,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				});
 
 				resolution.addSelectionChangedListener(selectionChangeListener);
-				resolution.setInput(server);
 			}
 
 			{
@@ -441,24 +396,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				priority = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				priority.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-				priority.setContentProvider(new IStructuredContentProvider() {
-
-					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-					}
-
-					public void dispose() {
-					}
-
-					public Object[] getElements(Object inputElement) {
-						JiraServer server = (JiraServer) inputElement;
-						Object[] elements = new Object[server.getPriorities().length + 1];
-						elements[0] = ANY_PRIORITY;
-						System.arraycopy(server.getPriorities(), 0, elements, 1, server.getPriorities().length);
-
-						return elements;
-					}
-				});
-
 				priority.setLabelProvider(new LabelProvider() {
 
 					public String getText(Object element) {
@@ -471,13 +408,14 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 				});
 				priority.addSelectionChangedListener(selectionChangeListener);
-				priority.setInput(server);
 			}
 
 			cc.setWeights(new int[] { 1, 1, 1, 1 });
 		}
 		sashForm.setWeights(new int[] { 1, 1 });
 
+		createUpdateButton(c);
+		
 		Label lblQuery = new Label(c, SWT.NONE);
 		lblQuery.setLayoutData(new GridData());
 		lblQuery.setText("Query:");
@@ -675,11 +613,11 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		// new FillLayout()f validation here
-		if (isNew) {
-			loadFromDefaults();
-		} else {
-			loadFromWorkingCopy();
-		}
+//		if (isNew) {
+			loadDefaults();
+//		} else {
+			
+//		}
 	}
 
 	private void createReportedInViewer(Composite c) {
@@ -810,24 +748,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		gridData.widthHint = 90;
 		project.getControl().setLayoutData(gridData);
 
-		project.setContentProvider(new IStructuredContentProvider() {
-
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			}
-
-			public void dispose() {
-			}
-
-			public Object[] getElements(Object inputElement) {
-				JiraServer server = (JiraServer) inputElement;
-				Object[] elements = new Object[server.getProjects().length + 1];
-				elements[0] = new Placeholder("All Projects");
-				System.arraycopy(server.getProjects(), 0, elements, 1, server.getProjects().length);
-				return elements;
-			}
-
-		});
-
 		project.setLabelProvider(new LabelProvider() {
 
 			public String getText(Object element) {
@@ -840,7 +760,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		});
 
-		project.setInput(server);
 		project.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -855,6 +774,27 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			}
 
 		});
+	}
+
+	protected Control createUpdateButton(final Composite control) {
+		Composite group = new Composite(control, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		group.setLayout(layout);
+		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
+
+		Button updateButton = new Button(group, SWT.PUSH);
+		updateButton.setText("Update Attributes from Repository");
+		updateButton.setLayoutData(new GridData());
+		updateButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				applyChanges();
+				updateAttributesFromRepository(true);
+				loadFromWorkingCopy();
+			}
+		});
+
+		return group;
 	}
 
 	void updateCurrentProject(Project project) {
@@ -873,31 +813,26 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	// }
 
 	void validatePage() {
-		if (namedQuery && super.isPageComplete()) {
-			setErrorMessage("Name is mandatory");
-			setPageComplete(false);
-			return;
-		} else {
-			setPageComplete(true);
-			setErrorMessage(null);
-		}
+		// causes exception in WizardDialog
+		//getContainer().updateButtons();
+		setPageComplete(isPageComplete());
 	}
 
-	private void loadFromDefaults() {
-		project.setSelection(new StructuredSelection(new Placeholder("All Projects")));
+	private void loadDefaults() {
+//		project.setSelection(new StructuredSelection(new Placeholder("All Projects")));
 		searchSummary.setSelection(true);
 		searchDescription.setSelection(true);
 
-		issueType.setSelection(new StructuredSelection(ANY_ISSUE_TYPE));
-		reporterType.setSelection(new StructuredSelection(ANY_REPORTER));
-		assigneeType.setSelection(new StructuredSelection(ANY_ASSIGNEE));
-		status.setSelection(new StructuredSelection(ANY_STATUS));
-		resolution.setSelection(new StructuredSelection(ANY_RESOLUTION));
-		priority.setSelection(new StructuredSelection(ANY_PRIORITY));
+//		issueType.setSelection(new StructuredSelection(ANY_ISSUE_TYPE));
+//		reporterType.setSelection(new StructuredSelection(ANY_REPORTER));
+//		assigneeType.setSelection(new StructuredSelection(ANY_ASSIGNEE));
+//		status.setSelection(new StructuredSelection(ANY_STATUS));
+//		resolution.setSelection(new StructuredSelection(ANY_RESOLUTION));
+//		priority.setSelection(new StructuredSelection(ANY_PRIORITY));
 	}
 
 	private void loadFromWorkingCopy() {
-		if (namedQuery && workingCopy.getName() != null) {
+		if (title != null && workingCopy.getName() != null) {
 			title.setText(workingCopy.getName());
 		}
 
@@ -1047,7 +982,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	}
 
 	void applyChanges() {
-		if (namedQuery) {
+		if (!inSearchContainer()) {
 			workingCopy.setName(this.title.getText());
 		}
 		if (this.queryString.getText().length() > 0 || this.searchSummary.getSelection()
@@ -1336,6 +1271,218 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			return new DateRangeFilter(startDate.getTime(), endDate.getTime());
 		}
 		return null;
+	}
+
+	private void updateAttributesFromRepository(final boolean force) {
+		if (!server.hasDetails() || force) {
+			final AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager()
+			.getRepositoryConnector(repository.getKind());
+			try {
+				IRunnableWithProgress runnable = new IRunnableWithProgress() {
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+						try {
+							connector.updateAttributes(repository, monitor);
+						} catch (CoreException e) {
+							throw new InvocationTargetException(e);
+						}
+					}
+				};
+
+				if (getContainer() != null) {
+					getContainer().run(true, true, runnable);
+				} else if (scontainer != null) {
+					scontainer.getRunnableContext().run(true, true, runnable);
+				} else {
+					IProgressService service = PlatformUI.getWorkbench().getProgressService();
+					service.run(true, true, runnable);
+				}
+			} catch (InvocationTargetException e) {
+				if (e.getCause() instanceof CoreException) {
+					MylarStatusHandler.displayStatus("Error updating attributes", ((CoreException)e.getCause()).getStatus());
+				} else {
+					MylarStatusHandler.fail(e, "Error updating attributes", true);
+				}
+				return;
+			} catch (InterruptedException e) {
+				return;
+			}
+		}
+
+		initializeContentProviders();
+	}
+
+	private void initializeContentProviders() {
+		project.setContentProvider(new IStructuredContentProvider() {
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+
+			public void dispose() {
+			}
+
+			public Object[] getElements(Object inputElement) {
+				JiraServer server = (JiraServer) inputElement;
+				Object[] elements = new Object[server.getProjects().length + 1];
+				elements[0] = new Placeholder("All Projects");
+				System.arraycopy(server.getProjects(), 0, elements, 1, server.getProjects().length);
+				return elements;
+			}
+
+		});
+		project.setInput(server);
+		
+		issueType.setContentProvider(new IStructuredContentProvider() {
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+
+			public void dispose() {
+			}
+
+			public Object[] getElements(Object inputElement) {
+				JiraServer server = (JiraServer) inputElement;
+				Object[] elements = new Object[server.getIssueTypes().length + 1];
+				elements[0] = ANY_ISSUE_TYPE;
+				System.arraycopy(server.getIssueTypes(), 0, elements, 1, server.getIssueTypes().length);
+
+				return elements;
+			}
+		});
+		issueType.setInput(server);
+		
+		status.setContentProvider(new IStructuredContentProvider() {
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+
+			public void dispose() {
+			}
+
+			public Object[] getElements(Object inputElement) {
+				JiraServer server = (JiraServer) inputElement;
+				Object[] elements = new Object[server.getStatuses().length + 1];
+				elements[0] = ANY_STATUS;
+				System.arraycopy(server.getStatuses(), 0, elements, 1, server.getStatuses().length);
+
+				return elements;
+			}
+		});
+		status.setInput(server);
+
+		resolution.setContentProvider(new IStructuredContentProvider() {
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+
+			public void dispose() {
+			}
+
+			public Object[] getElements(Object inputElement) {
+				JiraServer server = (JiraServer) inputElement;
+				Object[] elements = new Object[server.getResolutions().length + 2];
+				elements[0] = ANY_RESOLUTION;
+				elements[1] = UNRESOLVED;
+				System.arraycopy(server.getResolutions(), 0, elements, 2, server.getResolutions().length);
+
+				return elements;
+			}
+		});
+		resolution.setInput(server);
+		
+		priority.setContentProvider(new IStructuredContentProvider() {
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+
+			public void dispose() {
+			}
+
+			public Object[] getElements(Object inputElement) {
+				JiraServer server = (JiraServer) inputElement;
+				Object[] elements = new Object[server.getPriorities().length + 1];
+				elements[0] = ANY_PRIORITY;
+				System.arraycopy(server.getPriorities(), 0, elements, 1, server.getPriorities().length);
+
+				return elements;
+			}
+		});
+		priority.setInput(server);
+	}
+	
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+
+		if (scontainer != null) {
+			scontainer.setPerformActionEnabled(true);
+		}
+
+		if (visible && firstTime ) {
+			firstTime = false;
+			if (!server.hasDetails()) {
+				// delay the execution so the dialog's progress bar is visible
+				// when the attributes are updated
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						if (getControl() != null && !getControl().isDisposed()) {
+							initializePage();
+						}
+					}
+
+				});
+			} else {
+				// no remote connection is needed to get attributes therefore do
+				// not use delayed execution to avoid flickering
+				initializePage();
+			}
+		}
+	}
+
+	private void initializePage() {
+		updateAttributesFromRepository(false);
+		if (inSearchContainer()) {
+			restoreWidgetValues();
+		}
+		loadFromWorkingCopy();
+	}
+
+	public IDialogSettings getDialogSettings() {
+		IDialogSettings settings = JiraUiPlugin.getDefault().getDialogSettings();
+		IDialogSettings dialogSettings = settings.getSection(PAGE_NAME);
+		if (dialogSettings == null) {
+			dialogSettings = settings.addNewSection(PAGE_NAME);
+		}
+		return dialogSettings;
+	}
+
+	private boolean restoreWidgetValues() {
+		IDialogSettings settings = getDialogSettings();
+		
+		String searchUrl = settings.get(SEARCH_URL_ID + "." + repository.getUrl());
+		if (searchUrl == null) {
+			return false;
+		}
+
+		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getUrl(), repository.getCharacterEncoding(), TasksUiPlugin
+				.getTaskListManager().getTaskList());
+		workingCopy = query.getFilterDefinition(server);
+		return true;
+	}
+
+	public void saveWidgetValues() {
+		String repoId = "." + repository.getUrl();
+		IDialogSettings settings = getDialogSettings();
+		applyChanges();
+		settings.put(SEARCH_URL_ID + repoId, getQuery().getUrl());
+	}
+
+	@Override
+	public boolean performAction() {
+		if (inSearchContainer()) {
+			saveWidgetValues();
+		}
+
+		return super.performAction();
 	}
 
 	final static class ComponentLabelProvider implements ILabelProvider {
