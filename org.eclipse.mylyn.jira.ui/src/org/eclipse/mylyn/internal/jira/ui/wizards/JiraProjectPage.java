@@ -11,8 +11,6 @@
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -59,8 +57,6 @@ public class JiraProjectPage extends WizardPage {
 
 	private final TaskRepository repository;
 
-	private ArrayList<Project> projects = null;
-
 	public JiraProjectPage(TaskRepository repository) {
 		super("jiraProject");
 		setTitle("New JIRA Task");
@@ -91,8 +87,8 @@ public class JiraProjectPage extends WizardPage {
 		projectTreeViewer.setContentProvider(new ITreeContentProvider() {
 
 			public Object[] getChildren(Object parentElement) {
-				if (parentElement instanceof Collection) {
-					return ((Collection<?>) parentElement).toArray();
+				if (parentElement instanceof Project[]) {
+					return (Project[]) parentElement;
 				}
 				return null;
 			}
@@ -156,42 +152,40 @@ public class JiraProjectPage extends WizardPage {
 	}
 
 	private void updateProjectsFromRepository(final boolean force) {
-		final AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager()
-		.getRepositoryConnector(repository.getKind());
-		try {
-			getContainer().run(true, false, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					monitor.beginTask("Updating project list...", IProgressMonitor.UNKNOWN);
-					try { 
-						JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-						try {
-							connector.updateAttributes(repository, monitor);
-						} catch (CoreException e) {
-							throw new InvocationTargetException(e);
+		final JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		if (!server.hasDetails() || force) {
+			final AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager()
+			.getRepositoryConnector(repository.getKind());
+			try {
+				getContainer().run(true, false, new IRunnableWithProgress() {
+					public void run(IProgressMonitor monitor) throws InvocationTargetException,
+					InterruptedException {
+						try { 
+							try {
+								connector.updateAttributes(repository, monitor);
+							} catch (CoreException e) {
+								throw new InvocationTargetException(e);
+							}
+						} finally {
+							monitor.done();
 						}
-
-						projects = new ArrayList<Project>();
-						for (Project project : server.getProjects()) {
-							projects.add(project);
-						}
-					} finally {
-						monitor.done();
 					}
+				});
+			} catch (InvocationTargetException e) {
+				if (e.getCause() instanceof CoreException) {
+					MylarStatusHandler.displayStatus("Error updating project list", ((CoreException) e.getCause())
+							.getStatus());
+				} else {
+					MylarStatusHandler.fail(e, "Error updating project list", true);
 				}
-			});
-			
-			projectTree.getViewer().setInput(projects);
-		} catch (InvocationTargetException e) {
-			if (e.getCause() instanceof CoreException) {
-				MylarStatusHandler.displayStatus("Error updating project list", ((CoreException) e.getCause())
-						.getStatus());
-			} else {
-				MylarStatusHandler.fail(e, "Error updating project list", true);
+				return;
+			} catch (InterruptedException ex) {
+				// canceled
+				return;
 			}
-		} catch (InterruptedException ex) {
-			// canceled
 		}
+		
+		projectTree.getViewer().setInput(server.getProjects());
 	}
 
 	public Project getSelectedProject() {
