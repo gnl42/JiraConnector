@@ -13,6 +13,7 @@ package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -135,7 +136,8 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 				filterCombo.removeAll();
 				filterCombo.add(WAIT_MESSAGE);
 				filterCombo.deselectAll();
-				JiraServerFacade.getDefault().refreshServerSettings(repository);
+				// FIXME run in job
+				JiraServerFacade.getDefault().refreshServerSettings(repository, new NullProgressMonitor());
 				downloadFilters();
 			}
 

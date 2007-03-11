@@ -26,19 +26,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.CachedRpcJiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraServerData;
 import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 
+/**
+ * Note: This class is not thread safe.
+ * 
+ * @author Brock Janiczak
+ * @author Steffen Pingel
+ */
 public class ServerManager {
 
 	private final File cacheLocation;
 
-	private Map<String, JiraServer> serverByName = new HashMap<String, JiraServer>();
+	private Map<String, CachedRpcJiraServer> serverByName = new HashMap<String, CachedRpcJiraServer>();
 
-	// TODO Use a decent listener list
+	private Map<String, JiraServerData> serverDataByName = new HashMap<String, JiraServerData>();
+
 	private List<JiraServerListener> listeners = new ArrayList<JiraServerListener>();
 
 	public ServerManager(File cacheLocation) {
@@ -46,7 +56,7 @@ public class ServerManager {
 	}
 
 	protected void start() {
-		// On first load the cache may not exist
+		// on first load the cache may not exist
 		cacheLocation.mkdirs();
 
 		File[] servers = this.cacheLocation.listFiles();
@@ -54,22 +64,17 @@ public class ServerManager {
 			File serverCache = servers[i];
 			File serverFile = new File(serverCache, "server.ser");
 
-			ObjectInputStream ois = null;
+			ObjectInputStream in = null;
 			try {
-				ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(serverFile)));
-				JiraServer server = (JiraServer) ois.readObject();
-				// TODO reconnect the services depending on user preferences
-
-				serverByName.put(serverCache.getName(), server);
-				ois.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(serverFile)));
+				JiraServerData data = (JiraServerData) in.readObject();
+				serverDataByName.put(serverCache.getName(), data);
+			} catch (Throwable e) {
+				MylarStatusHandler.fail(e, "Error reading JIRA repository configuration cache", false);
 			} finally {
-				if (ois != null) {
+				if (in != null) {
 					try {
-						ois.close();
+						in.close();
 					} catch (IOException e) {
 					}
 				}
@@ -78,23 +83,21 @@ public class ServerManager {
 	}
 
 	protected void stop() {
-		for (Iterator<JiraServer> iServers = serverByName.values().iterator(); iServers.hasNext();) {
-			JiraServer server = iServers.next();
-
-			ObjectOutputStream oos = null;
+		for (CachedRpcJiraServer server : serverByName.values()) {
+			ObjectOutputStream out = null;
 			try {
 				File cacheDir = new File(cacheLocation, server.getName());
 				cacheDir.mkdirs();
 
-				oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(cacheDir,
+				out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(cacheDir,
 						"server.ser"))));
-				oos.writeObject(server);
-			} catch (IOException e) {
-				e.printStackTrace();
+				out.writeObject(server.getData());
+			} catch (Throwable e) {
+				MylarStatusHandler.fail(e, "Error writing JIRA repository configuration cache", false);
 			} finally {
-				if (oos != null) {
+				if (out != null) {
 					try {
-						oos.close();
+						out.close();
 					} catch (IOException e) {
 					}
 				}
@@ -119,12 +122,12 @@ public class ServerManager {
 	 * @throws ServiceUnavailableException
 	 *             URL was not valid
 	 */
-	public String testConnection(String baseUrl, String username, String password, 
-			Proxy proxy, String httpUser, String httpPassword) throws AuthenticationException,
-			ServiceUnavailableException {
-		JiraServer server = createServer("Connection Test", baseUrl, false, username, password, proxy, httpUser, httpPassword);
-		ServerInfo serverInfo = server.getServerInfo();
-		return "Jira " + serverInfo.getEdition() + " " + serverInfo.getVersion() + " #" + serverInfo.getBuildNumber();
+	public ServerInfo testConnection(String baseUrl, String username, String password, Proxy proxy, String httpUser,
+			String httpPassword) throws AuthenticationException, ServiceUnavailableException {
+		JiraServer server = createServer("Connection Test", baseUrl, false, username, password, proxy, httpUser,
+				httpPassword);
+		server.refreshServerInfo(new NullProgressMonitor());
+		return server.getServerInfo();
 	}
 
 	public JiraServer getServer(String name) {
@@ -135,25 +138,37 @@ public class ServerManager {
 		return serverByName.values().toArray(new JiraServer[serverByName.size()]);
 	}
 
-	public JiraServer createServer(String name, String baseUrl, boolean hasSlowConnection, String username,
+	private CachedRpcJiraServer createServer(String name, String baseUrl, boolean useCompression, String username,
 			String password, Proxy proxy, String httpUser, String httpPassword) {
 		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 		}
 
-		JiraServer server = new CachedRpcJiraServer(name, baseUrl, hasSlowConnection, username, password, proxy, httpUser, httpPassword);
+		CachedRpcJiraServer server = new CachedRpcJiraServer(name, baseUrl, useCompression, username, password, proxy,
+				httpUser, httpPassword);
 		return server;
 	}
 
-	public void addServer(JiraServer server) {
-		if (serverByName.containsKey(server.getName())) {
+	public JiraServer addServer(String name, String baseUrl, boolean useCompression, String username,
+			String password, Proxy proxy, String httpUser, String httpPassword) {
+		if (serverByName.containsKey(name)) {
 			throw new RuntimeException("A server with that name already exists");
 		}
-		serverByName.put(server.getName(), server);
+		
+		CachedRpcJiraServer server = createServer(name, baseUrl, useCompression, username, password, proxy, httpUser, httpPassword);
+		JiraServerData data = serverDataByName.get(name);
+		if (data != null) {
+			server.setData(data);
+		}
+		serverByName.put(name, server);
+		
 		fireServerAddded(server);
+		
+		return server;
 	}
 
 	public void removeServer(JiraServer server) {
+		serverDataByName.remove(server.getName());
 		serverByName.remove(server.getName());
 
 		File serverCache = new File(this.cacheLocation, server.getName());
@@ -163,30 +178,32 @@ public class ServerManager {
 		fireServerRemoved(server);
 	}
 
-	/**
-	 * TODO need to make this a bit smarter. Perhaps have an object to hold
-	 * connectino info
-	 * 
-	 * @param name
-	 * @param baseURL
-	 * @param username
-	 * @param password
-	 */
-	public void updateServerDetails(String name, String baseURL, boolean hasSlowConnection, String username,
-			String password) {
-		CachedRpcJiraServer server = (CachedRpcJiraServer) serverByName.get(name);
-		// TODO we should really have a modify event
-		fireServerRemoved(server);
-
-		// TODO need to flush the server cache since we are possibly a different
-		// person
-		server.setBaseURL(baseURL);
-		server.setSlowConnection(hasSlowConnection);
-		server.setCurrentUserName(username);
-		server.setCurrentPassword(password);
-
-		fireServerAddded(server);
-	}
+	// /**
+	// * TODO need to make this a bit smarter. Perhaps have an object to hold
+	// * connectino info
+	// *
+	// * @param name
+	// * @param baseURL
+	// * @param username
+	// * @param password
+	// */
+	// public void updateServerDetails(String name, String baseURL, boolean
+	// hasSlowConnection, String username,
+	// String password) {
+	// CachedRpcJiraServer server = (CachedRpcJiraServer)
+	// serverByName.get(name);
+	// // TODO we should really have a modify event
+	// fireServerRemoved(server);
+	//
+	// // TODO need to flush the server cache since we are possibly a different
+	// // person
+	// server.setBaseURL(baseURL);
+	// server.setSlowConnection(hasSlowConnection);
+	// server.setCurrentUserName(username);
+	// server.setCurrentPassword(password);
+	//
+	// fireServerAddded(server);
+	// }
 
 	public void addServerListener(JiraServerListener listener) {
 		listeners.add(listener);

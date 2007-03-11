@@ -33,7 +33,7 @@ public class RssJiraFilterService {
 
 	public RssJiraFilterService(JiraServer server) {
 		this.server = server;
-		this.useGZipCompression = server.hasSlowConnection();
+		this.useGZipCompression = server.useCompression();
 	}
 
 	/*

@@ -236,8 +236,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// TODO: Need some way to further scope this query
 
 		try {
+			// XXX: disabled work around
 			// TODO: remove, added to re-open connection, bug 164543
-			jiraServer.getServerInfo();
+			//jiraServer.getServerInfo();
 			// Will get ALL issues that have changed since lastSyncDate
 			jiraServer.search(changedFilter, collector);
 		} catch (AuthenticationException ex) {
@@ -444,11 +445,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
-		// TODO: remove, added to re-open connection, bug 164543, bug 167697
-		// ensureServerConnectionValid(repository);
-		// JiraServerFacade.getDefault().refreshServerSettings(repository);
-		JiraServerFacade.getDefault().forceServerReset(repository);
-
+		JiraServerFacade.getDefault().refreshServerSettings(repository, monitor);
 	}
 
 	private void ensureServerConnectionValid(TaskRepository repository) {

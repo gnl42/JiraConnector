@@ -1420,9 +1420,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	public AbstractRepositoryQuery getQuery() {
 		this.applyChanges();
-		if (isNew) {
-			server.addLocalFilter(workingCopy);
-		}
 
 		String url = repository.getUrl();
 		return new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding(), TasksUiPlugin

@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.ServerManager;
@@ -33,6 +34,7 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
  * 
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
+ * @author Steffen Pingel
  */
 public class JiraServerFacade implements ITaskRepositoryListener {
 
@@ -55,15 +57,11 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			if (server == null) {
 				String userName = repository.getUserName();
 				String password = repository.getPassword();
-				server = serverManager.createServer(serverHostname, repository.getUrl(), false, //
+				server = serverManager.addServer(serverHostname, repository.getUrl(), false, //
 						userName == null ? "" : userName, //
 						password == null ? "" : password, //
 						repository.getProxy(), //
 						repository.getHttpUser(), repository.getHttpPassword());
-				serverManager.addServer(server);
-			} else {
-				// FIXME the proxy is not serialized
-				server.setProxy(repository.getProxy());
 			}
 			return server;
 		} catch (ServiceUnavailableException sue) {
@@ -115,22 +113,21 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		repositoryAdded(repository);
 	}
 
-	public synchronized void forceServerReset(TaskRepository repository) {
+	/**
+	 * Forces a reset of the {@link JiraServer} object and updates the
+	 * repository configuration.
+	 */
+	public synchronized void refreshServerSettings(TaskRepository repository, IProgressMonitor monitor) {
+		// XXX this block of code is a work around: bug 164543, bug 167697
 		String serverHostname = getServerHost(repository);
 		JiraServer server = serverManager.getServer(serverHostname);
 		if (server != null) {
 			server.logout();
 			serverManager.removeServer(server);
-			getJiraServer(repository);
 		}
-	}
 
-	public synchronized void refreshServerSettings(TaskRepository repository) {
-		String serverHostname = getServerHost(repository);
-		JiraServer server = serverManager.getServer(serverHostname);
-		if (server != null) {
-			server.refreshDetails();
-		}
+		server = getJiraServer(repository);
+		server.refreshDetails(monitor);
 	}
 
 	private synchronized void removeServer(JiraServer server) {
@@ -152,8 +149,8 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * @return String describing validation failure or null if the details are
 	 *         valid
 	 */
-	public String validateServerAndCredentials(String serverUrl, String user, String password,
-			Proxy proxy, String httpUser, String httpPassword) {
+	public String validateServerAndCredentials(String serverUrl, String user, String password, Proxy proxy,
+			String httpUser, String httpPassword) {
 		try {
 			serverManager.testConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
 			return null;

@@ -14,6 +14,7 @@ package org.eclipse.mylar.internal.jira.core.service;
 import java.io.File;
 import java.net.Proxy;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
@@ -23,9 +24,7 @@ import org.eclipse.mylar.internal.jira.core.model.Query;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.User;
 import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 
 /**
@@ -40,6 +39,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
  * TODO move all of the assignee stuff somewhere else.
  * 
  * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 public interface JiraServer {
 	/**
@@ -69,7 +69,7 @@ public interface JiraServer {
 	 */
 	public static final int ASSIGNEE_SELF = 5;
 
-	public abstract boolean hasSlowConnection();
+	public abstract boolean useCompression();
 
 	public abstract String getName();
 
@@ -118,41 +118,43 @@ public interface JiraServer {
 
 	public abstract Resolution[] getResolutions();
 
-	public abstract User getUserByName(String name);
+	// disabled since these methods will not return correct results
+//	public abstract User getUserByName(String name);
+//
+//	public abstract User[] getUsers();
 
-	public abstract User[] getUsers();
-
-	/**
-	 * Finds all issues matching <code>searchString</code> using server
-	 * defined matching rules. This query supports smart tags in the expression
-	 * 
-	 * @deprecated Use {@link #search(Query, IssueCollector) instead
-	 * @param searchString
-	 *            Value to search for
-	 * @param collector
-	 *            Colelctor that will process the matching issues
-	 */
-	public abstract void quickSearch(String searchString, IssueCollector collector);
-
-	/**
-	 * Finds issues given a user defined query string
-	 * 
-	 * @deprecated Use {@link #search(Query, IssueCollector) instead
-	 * @param filter
-	 *            Custom query to be executed
-	 * @param collector
-	 *            Reciever for the matching issues
-	 */
-	public abstract void findIssues(FilterDefinition filter, IssueCollector collector);
-
-	/**
-	 * @deprecated Use {@link #search(Query, IssueCollector) instead
-	 * @param filter
-	 *            Server defined query to execute
-	 * @param collector
-	 *            Reciever for the matching issues
-	 */
-	public abstract void executeNamedFilter(NamedFilter filter, IssueCollector collector);
+	// disabled deprecated API
+//	/**
+//	 * Finds all issues matching <code>searchString</code> using server
+//	 * defined matching rules. This query supports smart tags in the expression
+//	 * 
+//	 * @deprecated Use {@link #search(Query, IssueCollector) instead
+//	 * @param searchString
+//	 *            Value to search for
+//	 * @param collector
+//	 *            Colelctor that will process the matching issues
+//	 */
+//	public abstract void quickSearch(String searchString, IssueCollector collector);
+//
+//	/**
+//	 * Finds issues given a user defined query string
+//	 * 
+//	 * @deprecated Use {@link #search(Query, IssueCollector) instead
+//	 * @param filter
+//	 *            Custom query to be executed
+//	 * @param collector
+//	 *            Reciever for the matching issues
+//	 */
+//	public abstract void findIssues(FilterDefinition filter, IssueCollector collector);
+//
+//	/**
+//	 * @deprecated Use {@link #search(Query, IssueCollector) instead
+//	 * @param filter
+//	 *            Server defined query to execute
+//	 * @param collector
+//	 *            Reciever for the matching issues
+//	 */
+//	public abstract void executeNamedFilter(NamedFilter filter, IssueCollector collector);
 
 	/**
 	 * Retrieve an issue using its unique key
@@ -180,11 +182,11 @@ public interface JiraServer {
 	 * 
 	 * @return List of all locally defined filters for this server
 	 */
-	public abstract FilterDefinition[] getLocalFilters();
-
-	public abstract void addLocalFilter(FilterDefinition filter);
-
-	public abstract void removeLocalFilter(String filterName);
+//	public abstract FilterDefinition[] getLocalFilters();
+//
+//	public abstract void addLocalFilter(FilterDefinition filter);
+//
+//	public abstract void removeLocalFilter(String filterName);
 
 	/**
 	 * Retrieves all filters that are stored and run on the server. The client
@@ -292,14 +294,18 @@ public interface JiraServer {
 	 * server. This operation may take a long time to complete and should not be
 	 * called from a UI thread.
 	 */
-	public abstract void refreshDetails();
+	public abstract void refreshDetails(IProgressMonitor monitor);
 
+	public abstract void refreshServerInfo(IProgressMonitor monitor);
+
+	public abstract boolean hasDetails();
+	
 	public abstract Proxy getProxy();
 
 	public abstract String getHttpUser();
 
 	public abstract String getHttpPassword();
 	
-	public abstract void setProxy(Proxy proxy);
+//	public abstract void setProxy(Proxy proxy);
 	
 }

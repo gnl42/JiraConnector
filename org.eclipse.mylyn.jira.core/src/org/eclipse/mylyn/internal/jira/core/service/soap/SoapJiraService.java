@@ -75,13 +75,9 @@ public class SoapJiraService implements JiraService {
 
 	private RssJiraFilterService filterService = null;
 
-	private final JiraServer server;
-
 	private LoginToken loginToken;
 
 	public SoapJiraService(JiraServer server) {
-		this.server = server;
-
 		try {
 			// JiraSoapServiceServiceLocator s = new
 			// JiraSoapServiceServiceLocator();
@@ -292,10 +288,6 @@ public class SoapJiraService implements JiraService {
 	 */
 	public IssueType[] getSubTaskIssueTypes() throws InsufficientPermissionException, AuthenticationException,
 			ServiceUnavailableException {
-		if (server.getServerInfo().getVersion().compareTo("3.2") < 0) {
-			return new IssueType[0];
-		}
-
 		try {
 			return Converter.convert(jirasoapserviceV2.getSubTaskIssueTypes(loginToken.getCurrentValue()));
 		} catch (RemotePermissionException e) {
@@ -696,26 +688,17 @@ public class SoapJiraService implements JiraService {
 
 		public synchronized String getCurrentValue() {
 			if ((System.currentTimeMillis() - lastAccessed) >= timeout || token == null) {
-				if (token != null) {
-					try {
-						jiraSoapService.logout(this.token);
-					} catch (Exception e) {
-						// do nothing
-					}
-				}
-
+				expire();
+				
 				try {
 					this.token = jiraSoapService.login(username, password);
-					this.lastAccessed = System.currentTimeMillis();
 				} catch (RemoteAuthenticationException e) {
-					this.token = null;
-					this.lastAccessed = -1L;
 					throw new AuthenticationException(e.getMessage());
 				} catch (java.rmi.RemoteException e) {
-					this.token = null;
-					this.lastAccessed = -1L;
 					throw new ServiceUnavailableException(unwrapRemoteException(e));
 				}
+				
+				this.lastAccessed = System.currentTimeMillis();
 			}
 
 			return this.token;
@@ -737,6 +720,12 @@ public class SoapJiraService implements JiraService {
 			return token != null && (System.currentTimeMillis() - lastAccessed) < timeout;
 		}
 
+		@Override
+		public String toString() {
+			long expiresIn = (timeout - (System.currentTimeMillis() - lastAccessed)) / 1000;
+			return "[username=" + username + ", password=" + password + ", timeout=" + timeout + ", valid=" + isValidToken() + ", expires=" + expiresIn + "]"; 
+		}
+		
 	}
 
 	private static class AnonymousLoginToken implements LoginToken {
