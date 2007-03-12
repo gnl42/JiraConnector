@@ -69,8 +69,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
 
-	private static final String VERSION_SUPPORT = "3.3.1 and higher";
-
 	private JiraTaskDataHandler offlineHandler;
 
 	/** Name initially given to new tasks. Public for testing */
@@ -270,15 +268,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public boolean canCreateNewTask(TaskRepository repository) {
 		return true;
-	}
-
-	@Override
-	public List<String> getSupportedVersions() {
-		if (supportedVersions == null) {
-			supportedVersions = new ArrayList<String>();
-			supportedVersions.add(VERSION_SUPPORT);
-		}
-		return supportedVersions;
 	}
 
 	@Override
