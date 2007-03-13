@@ -58,7 +58,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 	private NamedFilter[] filters = null;
 
-	private List filterCombo;
+	private List filterList;
 
 	private Button updateButton = null;
 
@@ -108,20 +108,20 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean selection = buttonSaved.getSelection();
-				filterCombo.setEnabled(selection);
+				filterList.setEnabled(selection);
 				updateButton.setEnabled(selection);
 				setPageComplete(selection);
 			}
 		});
 
-		filterCombo = new List(innerComposite, SWT.V_SCROLL | SWT.BORDER);
-		filterCombo.add(WAIT_MESSAGE);
-		filterCombo.deselectAll();
+		filterList = new List(innerComposite, SWT.V_SCROLL | SWT.BORDER);
+		filterList.add(WAIT_MESSAGE);
+		filterList.deselectAll();
 
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.horizontalIndent = 15;
-		filterCombo.setLayoutData(data);
-		filterCombo.setEnabled(false);
+		filterList.setLayoutData(data);
+		filterList.setEnabled(false);
 
 		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
 		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, false, true);
@@ -132,10 +132,10 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				filterCombo.setEnabled(false);
-				filterCombo.removeAll();
-				filterCombo.add(WAIT_MESSAGE);
-				filterCombo.deselectAll();
+				filterList.setEnabled(false);
+				filterList.removeAll();
+				filterList.add(WAIT_MESSAGE);
+				filterList.deselectAll();
 				// FIXME run in job
 				JiraServerFacade.getDefault().refreshServerSettings(repository, new NullProgressMonitor());
 				downloadFilters();
@@ -149,7 +149,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public boolean isPageComplete() {
-		return buttonCustom.getSelection() ? super.isPageComplete() : filterCombo.getSelectionCount() == 1;
+		return buttonCustom.getSelection() ? super.isPageComplete() : filterList.getSelectionCount() == 1;
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 					monitor.done();
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							if (!filterCombo.isDisposed()) {
+							if (!filterList.isDisposed()) {
 								displayFilters(filters);
 							}
 						}
@@ -206,12 +206,12 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 	/** Called by the download job when the filters have been downloaded */
 	public void displayFilters(NamedFilter[] filters) {
-		filterCombo.removeAll();
+		filterList.removeAll();
 
 		if (filters.length == 0) {
-			filterCombo.setEnabled(false);
-			filterCombo.add("No filters found");
-			filterCombo.deselectAll();
+			filterList.setEnabled(false);
+			filterList.add("No filters found");
+			filterList.deselectAll();
 
 			setMessage("No saved filters found. Please create filters using JIRA web interface or"
 					+ " follow to the next page to create custom query.", IMessageProvider.WARNING);
@@ -226,22 +226,22 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 		int n = 0;
 		for (int i = 0; i < filters.length; i++) {
-			filterCombo.add(filters[i].getName());
+			filterList.add(filters[i].getName());
 			if (filters[i].getId().equals(id)) {
 				n = i;
 			}
 		}
 
-		filterCombo.select(n);
-		filterCombo.showSelection();
-		filterCombo.setEnabled(true);
+		filterList.select(n);
+		filterList.showSelection();
+		filterList.setEnabled(buttonSaved.getSelection());
 		setPageComplete(true);
 	}
 
 	/** Returns the filter selected by the user or null on failure */
 	private NamedFilter getSelectedFilter() {
 		if (filters != null && filters.length > 0) {
-			return filters[filterCombo.getSelectionIndex()];
+			return filters[filterList.getSelectionIndex()];
 		}
 		return null;
 	}
