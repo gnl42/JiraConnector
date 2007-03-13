@@ -132,9 +132,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		try {
 			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 
-			// TODO: remove, added to re-open connection, bug 164543, bug 167697
-			ensureServerConnectionValid(repository);
-
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
@@ -435,15 +432,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
 		JiraServerFacade.getDefault().refreshServerSettings(repository, monitor);
-	}
-
-	private void ensureServerConnectionValid(TaskRepository repository) {
-		String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
-				repository.getUserName(), repository.getPassword(), repository.getProxy(), repository.getHttpUser(),
-				repository.getHttpPassword());
-		if (message != null) {
-			MylarStatusHandler.log("Could not reset JIRA server settings: " + message, this);
-		}
 	}
 
 	@Override

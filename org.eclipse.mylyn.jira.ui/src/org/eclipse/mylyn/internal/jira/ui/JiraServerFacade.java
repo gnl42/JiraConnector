@@ -19,7 +19,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.ServerManager;
+import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 import org.eclipse.mylar.tasks.core.ITaskRepositoryListener;
@@ -37,7 +39,11 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
  * @author Steffen Pingel
  */
 public class JiraServerFacade implements ITaskRepositoryListener {
-
+	
+	public final static String MIN_VERSION = "3.3.3";
+	
+	public final static int MIN_BUILD_NUMBER = 99;
+	
 	private ServerManager serverManager = null;
 
 	private static JiraServerFacade instance = null;
@@ -151,17 +157,11 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * @return String describing validation failure or null if the details are
 	 *         valid
 	 */
-	public String validateServerAndCredentials(String serverUrl, String user, String password, Proxy proxy,
-			String httpUser, String httpPassword) {
-		try {
-			serverManager.testConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
-			return null;
-		} catch (ServiceUnavailableException e) {
-			return e.getMessage();
-		} catch (AuthenticationException e) {
-			return "The supplied credentials are invalid";
-		} catch (Exception e) {
-			return e.getMessage();
+	public void validateServerAndCredentials(String serverUrl, String user, String password, Proxy proxy,
+			String httpUser, String httpPassword) throws JiraException {
+		ServerInfo info = serverManager.testConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
+		if (MIN_VERSION.compareTo(info.getVersion()) > 0) {
+			throw new JiraException("Mylar requires JIRA version " + MIN_VERSION + " or later");
 		}
 	}
 

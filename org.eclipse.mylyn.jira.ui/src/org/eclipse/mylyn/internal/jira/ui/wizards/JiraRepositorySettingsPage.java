@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.RepositoryTemplate;
@@ -35,6 +36,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  * @author Eugene Kuleshov
+ * @author Steffen Pingel
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
@@ -105,11 +107,12 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IStatus.OK, INVALID_REPOSITORY_URL, null));
 			}
 
-			String message = JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
-						repository.getUserName(), repository.getPassword(), repository.getProxy(), 
-						repository.getHttpUser(), repository.getHttpPassword());
-			if (message != null) {
-				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IStatus.OK, message, null));
+			try {
+				JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
+							repository.getUserName(), repository.getPassword(), repository.getProxy(), 
+							repository.getHttpUser(), repository.getHttpPassword());
+			} catch (Exception e) {
+				throw new CoreException(JiraCorePlugin.toStatus(e));
 			}
 			
 			setStatus(new Status(IStatus.OK, JiraUiPlugin.PLUGIN_ID, IStatus.OK, "Valid JIRA server found and your login was accepted", null));

@@ -17,8 +17,12 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.ServiceUnavailableException;
+
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -130,6 +134,18 @@ public class JiraCorePlugin extends Plugin {
 
 	public static void log(int severity, String message, Throwable e) {
 		getDefault().getLog().log(new Status(severity, ID, -1, message, e));
+	}
+
+	public static IStatus toStatus(Throwable e) {
+		if (e instanceof AuthenticationException) {
+			return new Status(Status.ERROR, ID, Status.OK, "The supplied credentials are invalid", e);
+		} else if (e instanceof ServiceUnavailableException) {	
+			return new Status(Status.ERROR, ID, Status.OK, e.getMessage(), e);
+		} else if (e instanceof Exception) {	
+			return new Status(Status.ERROR, ID, Status.OK, e.getMessage(), e);
+		} else {
+			return new Status(Status.ERROR, ID, Status.OK, "Unexpected error", e);
+		}
 	}
 
 }

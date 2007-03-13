@@ -63,7 +63,7 @@ public class JiraServerFacadeTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testLogin() {
+	public void testLogin() throws Exception {
 		// This connects and logs into the default Jira repository
 		jiraFacade.getJiraServer(repository);
 
