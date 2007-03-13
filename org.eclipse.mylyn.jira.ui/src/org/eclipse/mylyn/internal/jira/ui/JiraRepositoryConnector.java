@@ -74,6 +74,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
+	public static final String COMPRESSION_KEY = "compression";
+	
 	public JiraRepositoryConnector() {
 		offlineHandler = new JiraTaskDataHandler(this);
 	}

@@ -39,11 +39,11 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
  * @author Steffen Pingel
  */
 public class JiraServerFacade implements ITaskRepositoryListener {
-	
+
 	public final static String MIN_VERSION = "3.3.3";
-	
+
 	public final static int MIN_BUILD_NUMBER = 99;
-	
+
 	private ServerManager serverManager = null;
 
 	private static JiraServerFacade instance = null;
@@ -55,6 +55,9 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	/**
 	 * Lazily creates server.
+	 * 
+	 * @see #validateServerAndCredentials(String, String, String, Proxy, String,
+	 *      String)
 	 */
 	public synchronized JiraServer getJiraServer(TaskRepository repository) {
 		try {
@@ -63,7 +66,8 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 			if (server == null) {
 				String userName = repository.getUserName();
 				String password = repository.getPassword();
-				server = serverManager.addServer(serverHostname, repository.getUrl(), false, //
+				server = serverManager.addServer(serverHostname, repository.getUrl(), //
+						Boolean.parseBoolean(repository.getProperty(JiraRepositoryConnector.COMPRESSION_KEY)), //
 						userName == null ? "" : userName, //
 						password == null ? "" : password, //
 						repository.getProxy(), //
@@ -127,7 +131,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		// XXX disabled because this breaks objects holding a reference to the
 		// same server
 		// XXX this block of code is a work around: bug 164543, bug 167697
-		//String serverHostname = getServerHost(repository);
+		// String serverHostname = getServerHost(repository);
 		// JiraServer server = serverManager.getServer(serverHostname);
 		// if (server != null) {
 		// server.logout();

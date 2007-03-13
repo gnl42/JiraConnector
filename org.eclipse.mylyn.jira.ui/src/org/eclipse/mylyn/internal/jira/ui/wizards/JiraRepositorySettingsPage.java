@@ -19,18 +19,22 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.RepositoryTemplate;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylar.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 /**
- * Wizard page used to specify a Jira repository address, username, and
+ * Wizard page used to specify a JIRA repository address, username, and
  * password.
  * 
  * @author Mik Kersten
@@ -43,6 +47,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	private static final String TITLE = "Jira Repository Settings";
 
 	private static final String DESCRIPTION = "Example: http://developer.atlassian.com/jira";
+
+	private Button compressionButton;
 
 	public JiraRepositorySettingsPage(AbstractRepositoryConnectorUi repositoryUi) {
 		super(TITLE, DESCRIPTION, repositoryUi);
@@ -72,6 +78,15 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				return s == null ? "" : s;
 			}
 		});
+
+		Label compressionLabel = new Label(parent, SWT.NONE);
+		compressionLabel.setText("Compression:");
+		compressionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+		if (repository != null) {
+			boolean shortLogin = Boolean.parseBoolean(repository.getProperty(JiraRepositoryConnector.COMPRESSION_KEY));
+			compressionButton.setSelection(shortLogin);
+		}
+
 	}
 
 	@Override
@@ -90,7 +105,13 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	protected Validator getValidator(TaskRepository repository) {
 		return new JiraValidator(repository);
 	}
-	
+
+	@Override
+	public void updateProperties(TaskRepository repository) {
+		repository.setProperty(JiraRepositoryConnector.COMPRESSION_KEY, String
+				.valueOf(compressionButton.getSelection()));
+	}
+
 	private class JiraValidator extends Validator {
 
 		final TaskRepository repository;
@@ -98,26 +119,28 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		public JiraValidator(TaskRepository repository) {
 			this.repository = repository;
 		}
-		
+
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
 			try {
 				new URL(repository.getUrl());
 			} catch (MalformedURLException ex) {
-				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IStatus.OK, INVALID_REPOSITORY_URL, null));
+				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
+						INVALID_REPOSITORY_URL, null));
 			}
 
 			try {
 				JiraServerFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
-							repository.getUserName(), repository.getPassword(), repository.getProxy(), 
-							repository.getHttpUser(), repository.getHttpPassword());
+						repository.getUserName(), repository.getPassword(), repository.getProxy(),
+						repository.getHttpUser(), repository.getHttpPassword());
 			} catch (Exception e) {
 				throw new CoreException(JiraCorePlugin.toStatus(e));
 			}
-			
-			setStatus(new Status(IStatus.OK, JiraUiPlugin.PLUGIN_ID, IStatus.OK, "Valid JIRA server found and your login was accepted", null));
+
+			setStatus(new Status(IStatus.OK, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
+					"Valid JIRA server found and your login was accepted", null));
 		}
-		
+
 	}
-	
+
 }

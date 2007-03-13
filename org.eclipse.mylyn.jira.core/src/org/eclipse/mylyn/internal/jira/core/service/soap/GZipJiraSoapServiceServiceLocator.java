@@ -29,6 +29,7 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 	private Proxy proxy;
 	private String httpUser;
 	private String httpPassword;
+	private boolean compression;
 	
 	public GZipJiraSoapServiceServiceLocator() {
 	}
@@ -49,9 +50,11 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 	 */
 	public Call createCall() throws ServiceException {
 		Call call = super.createCall();
-		// see bug 175915
+		// JIRA does not accept compressed SOAP messages: see bug 175915
 		//call.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
-		call.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+		if (compression) {
+			call.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+		}
 		if (httpUser != null && httpPassword != null) {
 			call.setProperty(JiraHttpSender.HTTP_USER, httpUser);
 			call.setProperty(JiraHttpSender.HTTP_PASSWORD, httpPassword);
@@ -90,6 +93,14 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 
 	public void setHttpPassword(String httpPassword) {
 		this.httpPassword = httpPassword;
+	}
+
+	public boolean isCompression() {
+		return compression;
+	}
+	
+	public void setCompression(boolean compression) {
+		this.compression = compression;
 	}
 	
 }

@@ -86,6 +86,7 @@ public class SoapJiraService implements JiraService {
 			s.setHttpUser(server.getHttpUser());
 			s.setHttpPassword(server.getHttpPassword());
 			s.setProxy(server.getProxy());
+			s.setCompression(server.useCompression());
 			jirasoapserviceV2 = s.getJirasoapserviceV2(new URL(server.getBaseURL() + "/rpc/soap/jirasoapservice-v2")); //$NON-NLS-1$
 			filterService = new RssJiraFilterService(server);
 			issueService = new JiraWebIssueService(server);
