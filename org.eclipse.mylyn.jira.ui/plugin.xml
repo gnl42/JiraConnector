@@ -51,9 +51,9 @@
       <editorFactory
             class="org.eclipse.mylar.internal.jira.ui.editor.JiraTaskEditorFactory"
             id="org.eclipse.mylar.jira.ui.JiraTaskEditorFactory"/>
-      <hyperlinkDetector
+     <!-- <hyperlinkDetector
             class="org.eclipse.mylar.internal.jira.ui.JiraTaskHyperlinkDetector"
-            id="org.eclipse.mylar.tasks.hyperlinkdetector.jiratask"/>
+            id="org.eclipse.mylar.tasks.hyperlinkdetector.jiratask"/>-->
             
    </extension>
 
@@ -73,7 +73,7 @@
             urlRepository="http://issues.apache.org/jira/"/>
    </extension>
    
-    <extension
+   <!-- <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
       <hyperlinkDetector            
             class="org.eclipse.mylar.internal.jira.ui.JiraTaskHyperlinkDetector"
@@ -81,6 +81,6 @@
             name="Mylar Task - JIRA"
             targetId="org.eclipse.jdt.ui.javaCode">
       </hyperlinkDetector>
-   </extension>
+   </extension>-->
 
 </plugin>
