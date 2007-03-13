@@ -45,7 +45,7 @@ public interface JiraService {
 			AuthenticationException, ServiceUnavailableException;
 
 	// public Group createGroup(String in1, User in2);
-	public String login(String username, String password) throws AuthenticationException, ServiceUnavailableException;
+	public void login() throws AuthenticationException, ServiceUnavailableException;
 
 	public Group getGroup(String name) throws InsufficientPermissionException, AuthenticationException,
 			ServiceUnavailableException;

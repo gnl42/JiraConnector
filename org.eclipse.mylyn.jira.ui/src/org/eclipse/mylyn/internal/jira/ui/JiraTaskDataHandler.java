@@ -14,6 +14,7 @@ import java.io.StringReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
@@ -55,6 +56,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId) throws CoreException {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		if (!server.hasDetails()) {
+			server.refreshDetails(new NullProgressMonitor());
+		}
 		Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
 		if (jiraIssue == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "JIRA ticket not found: " + taskId, null));

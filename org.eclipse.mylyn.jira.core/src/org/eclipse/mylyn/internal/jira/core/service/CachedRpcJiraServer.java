@@ -81,8 +81,9 @@ public class CachedRpcJiraServer implements JiraServer {
 	}
 
 	public synchronized void refreshDetails(IProgressMonitor monitor) {
-		monitor.beginTask("Updating repository configuration", 6);
-		
+		// use UNKNOWN since some of the update operations block for a long time
+		monitor.beginTask("Updating repository configuration", IProgressMonitor.UNKNOWN);
+
 		JiraServerData newData = new JiraServerData();
 
 		initializeServerInfo(newData);
@@ -127,7 +128,7 @@ public class CachedRpcJiraServer implements JiraServer {
 	}
 
 	public void login() {
-		serviceDelegate.login(username, password);
+		serviceDelegate.login();
 	}
 
 	public void logout() {
