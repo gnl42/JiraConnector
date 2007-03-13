@@ -188,6 +188,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return Status.OK_STATUS;
 	}
 
+	@SuppressWarnings("deprecation")
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
 			Set<AbstractRepositoryTask> tasks) throws CoreException {
 
@@ -252,9 +253,21 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (task instanceof AbstractRepositoryTask) {
 				changedTasks.add((AbstractRepositoryTask) task);
 			}
+			
+			if (issue.getUpdated() != null && issue.getUpdated().after(lastSyncDate)) {
+				lastSyncDate = issue.getUpdated();
+			}
 		}
 
+		repository.setSyncTimeStamp(lastSyncDate.toGMTString());
+		
 		return changedTasks;
+	}
+	
+	@Override
+	public String getLastSyncTimestamp(TaskRepository repository, Set<AbstractRepositoryTask> changedTasks) {
+		// XXX to late for JIRA to calcualate the timestamp: bug 176934
+		return repository.getSyncTimeStamp();
 	}
 
 	private CoreException createCoreException(Exception ex, String msg) {
