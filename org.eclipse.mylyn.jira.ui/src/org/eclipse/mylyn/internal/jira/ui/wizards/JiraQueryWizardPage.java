@@ -13,7 +13,6 @@ package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -44,6 +43,7 @@ import org.eclipse.swt.widgets.List;
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  * @author Eugene Kuleshov (layout and other improvements)
+ * @author Steffen Pingel
  */
 public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
@@ -135,8 +135,10 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 				filterList.removeAll();
 				filterList.add(WAIT_MESSAGE);
 				filterList.deselectAll();
-				// FIXME run in job
-				JiraServerFacade.getDefault().refreshServerSettings(repository, new NullProgressMonitor());
+				
+				getContainer().updateButtons();
+				updateButton.setEnabled(false);
+				
 				downloadFilters();
 			}
 
@@ -178,15 +180,18 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
 				try {
+					monitor.beginTask("Downloading list of filters", IProgressMonitor.UNKNOWN);
 					JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 					filters = jiraServer.getNamedFilters();
-
-					monitor.worked(1);
 					monitor.done();
+					
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							if (!filterList.isDisposed()) {
 								displayFilters(filters);
+							}
+							if (!updateButton.isDisposed() && !buttonSaved.isDisposed()) {
+								updateButton.setEnabled(buttonSaved.getSelection());
 							}
 						}
 					});
