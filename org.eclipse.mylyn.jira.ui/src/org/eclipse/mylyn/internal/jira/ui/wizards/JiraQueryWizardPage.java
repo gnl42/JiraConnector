@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
@@ -157,16 +156,13 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		if (!buttonCustom.getSelection()) {
 			return null;
 		}
-		if (filterSummaryPage == null) {
-			FilterDefinition workingCopy;
-			if (query instanceof JiraCustomQuery) {
-				JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-				workingCopy = ((JiraCustomQuery) query).getFilterDefinition(jiraServer);
-			} else {
-				workingCopy = new FilterDefinition();
-			}
 
-			filterSummaryPage = new JiraQueryPage(repository, workingCopy);
+		if (filterSummaryPage == null) {
+			if (query instanceof JiraCustomQuery) {
+				filterSummaryPage = new JiraQueryPage(repository, (JiraCustomQuery) query);
+			} else {
+				filterSummaryPage = new JiraQueryPage(repository);
+			}
 			filterSummaryPage.setWizard(getWizard());
 		}
 		return filterSummaryPage;

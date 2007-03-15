@@ -13,7 +13,6 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraQueryPage;
 import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
@@ -40,7 +39,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	
 	@Override
 	public WizardPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
-		return new JiraQueryPage(repository, new FilterDefinition());
+		return new JiraQueryPage(repository);
 	} 
 
 	@Override

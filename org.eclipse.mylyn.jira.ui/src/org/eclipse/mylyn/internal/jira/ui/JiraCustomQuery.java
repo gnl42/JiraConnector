@@ -85,7 +85,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	private static final String ISSUE_CURRENT_USER = "issue_current_user";
 	private static final String ISSUE_NO_REPORTER = "issue_no_reporter";
 
-	private static final int MAX_HITS = 200;
+	public static final int MAX_HITS = 200;
 
 //	private FilterDefinition filter;
 	private String encoding;
