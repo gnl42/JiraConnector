@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -40,7 +41,7 @@ import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
 
 /**
- * TODO look at creatign Opration classes to perform each of these actions
+ * TODO look at creation Operation classes to perform each of these actions
  * 
  * @author Brock Janiczak
  */
@@ -99,7 +100,7 @@ public class JiraWebIssueService {
 				post.addParameter("issuetype", issue.getType().getId());
 				post.addParameter("priority", issue.getPriority().getId());
 				if (issue.getDue() != null) {
-					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT).format(issue.getDue()));
+					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT, Locale.US).format(issue.getDue()));
 				} else {
 					post.addParameter("duedate", "");
 				}
@@ -472,7 +473,7 @@ public class JiraWebIssueService {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
 				if (issue.getDue() != null) {
-					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT).format(issue.getDue()));
+					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT, Locale.US).format(issue.getDue()));
 				}
 
 				if (issue.getComponents() != null) {

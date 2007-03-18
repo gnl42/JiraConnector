@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira.core.service.web.rss;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
@@ -326,69 +327,37 @@ class RssFilterConverter {
 	}
 
 	protected String convertDueDateFilter(DateFilter dueDateFilter) {
-		StringBuffer buffer = new StringBuffer();
-
-		if (dueDateFilter instanceof DateRangeFilter) {
-			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
-			DateRangeFilter filter = (DateRangeFilter) dueDateFilter;
-			if (filter.getFromDate() != null) {
-				buffer.append("&duedateAfter=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
-			}
-			if (filter.getToDate() != null) {
-				buffer.append("&duedateBefore=").append(df.format(filter.getToDate())); //$NON-NLS-1$
-			}
-		} else if (dueDateFilter instanceof RelativeDateRangeFilter) {
-			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) dueDateFilter);
-			if (relativeFilter.previousMilliseconds() != 0L) {
-				buffer.append("&duedatePrevious=").append(relativeFilter.previousMilliseconds()); //$NON-NLS-1$
-			}
-
-			if (relativeFilter.nextMilliseconds() != 0L) {
-				buffer.append("&duedateNext=").append(relativeFilter.nextMilliseconds()); //$NON-NLS-1$
-			}
-		}
-
-		return buffer.toString();
+		return convertDateFilder(dueDateFilter, "duedate");
 	}
 
 	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
-		StringBuffer buffer = new StringBuffer();
-
-		if (updatedDateFilter instanceof DateRangeFilter) {
-			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
-			DateRangeFilter filter = (DateRangeFilter) updatedDateFilter;
-			if (filter.getFromDate() != null) {
-				buffer.append("&updatedAfter=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
-			}
-			if (filter.getToDate() != null) {
-				buffer.append("&updatedBefore=").append(df.format(filter.getToDate())); //$NON-NLS-1$
-			}
-		} else if (updatedDateFilter instanceof RelativeDateRangeFilter) {
-			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) updatedDateFilter);
-			if (relativeFilter.previousMilliseconds() != 0L) {
-				buffer.append("&updatedPrevious=").append(relativeFilter.previousMilliseconds()); //$NON-NLS-1$
-			}
-		}
-
-		return buffer.toString();
+		return convertDateFilder(updatedDateFilter, "updated");
 	}
 
 	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
+		return convertDateFilder(createdDateFilter, "created");
+	}
+
+	private String convertDateFilder(DateFilter dateFilter, String name) {
 		StringBuffer buffer = new StringBuffer();
 
-		if (createdDateFilter instanceof DateRangeFilter) {
-			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
-			DateRangeFilter filter = (DateRangeFilter) createdDateFilter;
+		if (dateFilter instanceof DateRangeFilter) {
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+			DateRangeFilter filter = (DateRangeFilter) dateFilter;
 			if (filter.getFromDate() != null) {
-				buffer.append("&createdAfter=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&" + name + "After=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
 			if (filter.getToDate() != null) {
-				buffer.append("&createdBefore=").append(df.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&" + name + "Before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
 			}
-		} else if (createdDateFilter instanceof RelativeDateRangeFilter) {
-			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) createdDateFilter);
+		} else if (dateFilter instanceof RelativeDateRangeFilter) {
+			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) dateFilter);
 			if (relativeFilter.previousMilliseconds() != 0L) {
-				buffer.append("&createdPrevious=").append(relativeFilter.previousMilliseconds()); //$NON-NLS-1$
+				buffer.append("&" + name + "Previous=").append(relativeFilter.previousMilliseconds()); //$NON-NLS-1$
+			}
+
+			if (relativeFilter.nextMilliseconds() != 0L) {
+				buffer.append("&" + name + "Next=").append(relativeFilter.nextMilliseconds()); //$NON-NLS-1$
 			}
 		}
 

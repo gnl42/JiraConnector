@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira.core.service.web.rss;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
@@ -40,12 +41,12 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 			return "resolution=-1"; //$NON-NLS-1$
 		}
 
-		StringBuffer buffer = new StringBuffer();
 		Resolution[] resolution = resolutionFilter.getResolutions();
 		if (resolution.length == 0) {
 			return ""; //$NON-NLS-1$
 		}
 
+		StringBuffer buffer = new StringBuffer();
 		buffer.append("resolution=").append(resolution[0].getId()); //$NON-NLS-1$
 
 		for (int i = 1; i < resolution.length; i++) {
@@ -61,12 +62,12 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertPriorityFilter(org.eclipse.mylar.internal.jira.core.model.filter.PriorityFilter)
 	 */
 	protected String convertPriorityFilter(PriorityFilter priorityFilter) {
-		StringBuffer buffer = new StringBuffer();
 		Priority[] priorities = priorityFilter.getPriorities();
 		if (priorities.length == 0) {
 			return ""; //$NON-NLS-1$
 		}
 
+		StringBuffer buffer = new StringBuffer();
 		buffer.append("priority=").append(priorities[0].getId()); //$NON-NLS-1$
 
 		for (int i = 1; i < priorities.length; i++) {
@@ -82,12 +83,12 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertStatusFilter(org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter)
 	 */
 	protected String convertStatusFilter(StatusFilter statusFilter) {
-		StringBuffer buffer = new StringBuffer();
 		Status[] statuses = statusFilter.getStatuses();
 		if (statuses.length == 0) {
 			return ""; //$NON-NLS-1$
 		}
 
+		StringBuffer buffer = new StringBuffer();
 		buffer.append("status=").append(statuses[0].getId()); //$NON-NLS-1$
 
 		for (int i = 1; i < statuses.length; i++) {
@@ -103,33 +104,7 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertCreatedDateFilter(org.eclipse.mylar.internal.jira.core.model.filter.DateFilter)
 	 */
 	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
-		StringBuffer buffer = new StringBuffer();
-
-		if (createdDateFilter instanceof DateRangeFilter) {
-			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
-			DateRangeFilter filter = (DateRangeFilter) createdDateFilter;
-			if (filter.getFromDate() != null) {
-				buffer.append("&created:after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
-			}
-
-			if (filter.getToDate() != null) {
-				buffer.append("&created:before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
-			}
-
-		} else if (createdDateFilter instanceof RelativeDateRangeFilter) {
-			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) createdDateFilter);
-			if (relativeFilter.previousMilliseconds() != 0L) {
-				buffer
-						.append("&created:previous=").append(createRelativeDateString(relativeFilter.getPreviousRangeType(), relativeFilter.getPreviousCount())); //$NON-NLS-1$
-			}
-
-			if (relativeFilter.nextMilliseconds() != 0L) {
-				buffer
-						.append("&created:next=").append(createRelativeDateString(relativeFilter.getNextRangeType(), relativeFilter.getNextCount())); //$NON-NLS-1$
-			}
-		}
-
-		return buffer.toString();
+		return createDateFilder(createdDateFilter, "created");
 	}
 
 	/*
@@ -138,33 +113,7 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertUpdatedDateFilter(org.eclipse.mylar.internal.jira.core.model.filter.DateFilter)
 	 */
 	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
-		StringBuffer buffer = new StringBuffer();
-
-		if (updatedDateFilter instanceof DateRangeFilter) {
-			DateRangeFilter filter = (DateRangeFilter) updatedDateFilter;
-			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
-			if (filter.getFromDate() != null) {
-				buffer.append("&updated:after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
-			}
-
-			if (filter.getToDate() != null) {
-				buffer.append("&updated:before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
-			}
-
-		} else if (updatedDateFilter instanceof RelativeDateRangeFilter) {
-			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) updatedDateFilter);
-			if (relativeFilter.previousMilliseconds() != 0L) {
-				buffer
-						.append("&updated:previous=").append(createRelativeDateString(relativeFilter.getPreviousRangeType(), relativeFilter.getPreviousCount())); //$NON-NLS-1$
-			}
-
-			if (relativeFilter.nextMilliseconds() != 0L) {
-				buffer
-						.append("&updated:next=").append(createRelativeDateString(relativeFilter.getNextRangeType(), relativeFilter.getNextCount())); //$NON-NLS-1$
-			}
-		}
-
-		return buffer.toString();
+		return createDateFilder(updatedDateFilter, "updated");
 	}
 
 	/*
@@ -173,29 +122,32 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertDueDateFilter(org.eclipse.mylar.internal.jira.core.model.filter.DateFilter)
 	 */
 	protected String convertDueDateFilter(DateFilter dueDateFilter) {
-		StringBuffer buffer = new StringBuffer();
+		return createDateFilder(dueDateFilter, "duedate");
+	}
 
-		if (dueDateFilter instanceof DateRangeFilter) {
-			DateRangeFilter filter = (DateRangeFilter) dueDateFilter;
-			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
+	private String createDateFilder(DateFilter dateFilter, String name) {
+		StringBuffer buffer = new StringBuffer();
+		if (dateFilter instanceof DateRangeFilter) {
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
+			DateRangeFilter filter = (DateRangeFilter) dateFilter;
 			if (filter.getFromDate() != null) {
-				buffer.append("&duedate:after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&" + name + ":after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
 
 			if (filter.getToDate() != null) {
-				buffer.append("&duedate:before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&" + name + ":before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
 			}
 
-		} else if (dueDateFilter instanceof RelativeDateRangeFilter) {
-			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) dueDateFilter);
-			if (relativeFilter.previousMilliseconds() != 0L) {
-				buffer
-						.append("&duedate:previous=").append(createRelativeDateString(relativeFilter.getPreviousRangeType(), relativeFilter.getPreviousCount())); //$NON-NLS-1$
+		} else if (dateFilter instanceof RelativeDateRangeFilter) {
+			RelativeDateRangeFilter filter = ((RelativeDateRangeFilter) dateFilter);
+			if (filter.previousMilliseconds() != 0L) {
+				buffer.append("&" + name + ":previous=") //$NON-NLS-1$
+						.append(createRelativeDateString(filter.getPreviousRangeType(), filter.getPreviousCount()));
 			}
 
-			if (relativeFilter.nextMilliseconds() != 0L) {
-				buffer
-						.append("&duedate:next=").append(createRelativeDateString(relativeFilter.getNextRangeType(), relativeFilter.getNextCount())); //$NON-NLS-1$
+			if (filter.nextMilliseconds() != 0L) {
+				buffer.append("&" + name + ":next=") //$NON-NLS-1$
+						.append(createRelativeDateString(filter.getNextRangeType(), filter.getNextCount()));
 			}
 		}
 

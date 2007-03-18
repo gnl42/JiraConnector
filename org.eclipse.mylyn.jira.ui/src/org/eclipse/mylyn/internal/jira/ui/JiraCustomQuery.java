@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.mylar.internal.jira.core.model.Component;
@@ -257,7 +258,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		String after = getId(params, key + ":after");
 		String before = getId(params, key + ":before");
 
-		SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy");
+		SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US);
 		Date fromDate;
 		try {
 			fromDate = df.parse(after);
@@ -412,7 +413,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	private void addDateFilter(StringBuffer sb, DateFilter filter, String type) {
 		if(filter instanceof DateRangeFilter) {
-			SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy");
+			SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US);
 			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
 			addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate()));
 			addParameter(sb, type + ":before", df.format(rangeFilter.getToDate()));

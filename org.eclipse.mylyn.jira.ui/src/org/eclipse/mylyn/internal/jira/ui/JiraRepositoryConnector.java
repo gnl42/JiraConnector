@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,7 +76,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static final String NEW_TASK_DESC = "New Task";
 
 	public static final String COMPRESSION_KEY = "compression";
-	
+
 	public JiraRepositoryConnector() {
 		offlineHandler = new JiraTaskDataHandler(this);
 	}
@@ -203,7 +204,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		Date lastSyncDate;
 		try {
-			lastSyncDate = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT).parse(dateString);
+			lastSyncDate = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
 		} catch (ParseException e) {
 			return tasks;
 		}
