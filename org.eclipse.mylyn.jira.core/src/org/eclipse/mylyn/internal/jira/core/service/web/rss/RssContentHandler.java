@@ -248,7 +248,7 @@ public class RssContentHandler extends DefaultHandler {
 	 */
 	public void endDocument() throws SAXException {
 		if (state != START) {
-			System.err.println("Document ended abnormally");
+			// System.err.println("Document ended abnormally");
 		}
 		this.collector.done();
 		// remove unused buffers
