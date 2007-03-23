@@ -98,15 +98,11 @@ import org.eclipse.ui.progress.IProgressService;
 @SuppressWarnings("unchecked")
 public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
-	private static final String MAX_HITS_ERROR = "Max hits must be greater than 0.";
-
 	private static final String TITLE_PAGE = "JIRA Query";
 
 	protected final static String PAGE_NAME = "Jira" + "SearchPage"; //$NON-NLS-1$
 
 	private static final String SEARCH_URL_ID = PAGE_NAME + ".SEARCHURL";
-
-	private static final String MAX_HITS_ID = PAGE_NAME + ".MAXHITS";
 
 	final Placeholder ANY_FIX_VERSION = new Placeholder("Any");
 
@@ -208,20 +204,14 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private boolean firstTime = true;
 
-	private Text maxHitsText;
-
-	private int maxHits;
-
 	public JiraQueryPage(TaskRepository repository, JiraCustomQuery query) {
 		super(TITLE_PAGE);
 		this.repository = repository;
 		this.server = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (query != null) {
 			this.workingCopy = query.getFilterDefinition(server);
-			this.maxHits = query.getMaxHits();
 		} else {
 			this.workingCopy = new FilterDefinition();
-			this.maxHits = JiraCustomQuery.MAX_HITS;
 		}
 
 		setDescription("Add search filters to define query.");
@@ -630,24 +620,15 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		{
-			Label maxHitsLabel = new Label(c, SWT.NONE);
-			maxHitsLabel.setText("Maximum Results:");
-
-			Composite composite = new Composite(c, SWT.NONE);
-			FillLayout fillLayout = new FillLayout();
-			fillLayout.spacing = 5;
-			composite.setLayout(fillLayout);
-			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-
-			maxHitsText = new Text(composite, SWT.BORDER);
-			maxHitsText.setTextLimit(6);
-			maxHitsText.addModifyListener(new ModifyListener() {
-
-				public void modifyText(ModifyEvent e) {
-					validatePage();
-				}
-
-			});
+			// Label maxHitsLabel = new Label(c, SWT.NONE);
+			// maxHitsLabel.setText("Maximum Results:");
+			//
+			// Composite composite = new Composite(c, SWT.NONE);
+			// FillLayout fillLayout = new FillLayout();
+			// fillLayout.spacing = 5;
+			// composite.setLayout(fillLayout);
+			// composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
+			// false, 2, 1));
 		}
 
 		// new FillLayout()f validation here
@@ -852,25 +833,9 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public boolean isPageComplete() {
-		boolean complete = false;
-		String maxHitsString = maxHitsText.getText();
-		if (maxHitsString != null && maxHitsString.length() != 0) {
-			try {
-				if (Integer.parseInt(maxHitsString) > 0) {
-					complete = true;
-				}
-			} catch (NumberFormatException ex) {
-			}
-		}
-
-		if (!complete) {
-			setErrorMessage(MAX_HITS_ERROR);
-			return false;
-		} else {
-			return super.isPageComplete();
-		}
+		return super.isPageComplete();
 	}
-	
+
 	void validatePage() {
 		// causes exception in WizardDialog
 		// getContainer().updateButtons();
@@ -1026,8 +991,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		setDateRange(workingCopy.getCreatedDateFilter(), createdStartDatePicker, createdEndDatePicker);
 		setDateRange(workingCopy.getUpdatedDateFilter(), updatedStartDatePicker, updatedEndDatePicker);
 		setDateRange(workingCopy.getDueDateFilter(), dueStartDatePicker, dueEndDatePicker);
-
-		maxHitsText.setText(maxHits + "");
 	}
 
 	private void setDateRange(DateFilter dateFilter, DatePicker startDatePicker, DatePicker endDatePicker) {
@@ -1526,17 +1489,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			return false;
 		}
 
-		String maxHitsString = settings.get(SEARCH_URL_ID + "." + repository.getUrl());
-		if (maxHitsString != null) {
-			try {
-				maxHits = Integer.parseInt(maxHitsString);
-			} catch (NumberFormatException e) {
-				MylarStatusHandler.fail(e, "Invalid value for max hits: " + maxHitsString, false);
-			}
-		}
-
 		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getUrl(), repository
-				.getCharacterEncoding(), TasksUiPlugin.getTaskListManager().getTaskList());
+				.getCharacterEncoding(), TasksUiPlugin.MAX_HITS, TasksUiPlugin.getTaskListManager().getTaskList());
 		workingCopy = query.getFilterDefinition(server);
 		return true;
 	}
@@ -1546,11 +1500,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		IDialogSettings settings = getDialogSettings();
 		applyChanges();
 		settings.put(SEARCH_URL_ID + repoId, getQuery().getUrl());
-		settings.put(MAX_HITS_ID + repoId, getMaxHits() + "");
-	}
-
-	private int getMaxHits() {
-		return Integer.parseInt(maxHitsText.getText());
 	}
 
 	@Override
@@ -1646,9 +1595,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		this.applyChanges();
 
 		String url = repository.getUrl();
-		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding(), TasksUiPlugin
-				.getTaskListManager().getTaskList());
-		query.setMaxHits(getMaxHits());
+		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding(),
+				TasksUiPlugin.MAX_HITS, TasksUiPlugin.getTaskListManager().getTaskList());
 		return query;
 	}
 }

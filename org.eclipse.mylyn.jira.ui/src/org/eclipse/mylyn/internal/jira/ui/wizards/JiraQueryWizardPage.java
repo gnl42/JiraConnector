@@ -135,10 +135,10 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 				filterList.removeAll();
 				filterList.add(WAIT_MESSAGE);
 				filterList.deselectAll();
-				
+
 				getContainer().updateButtons();
 				updateButton.setEnabled(false);
-				
+
 				downloadFilters();
 			}
 
@@ -184,7 +184,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 					JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
 					filters = jiraServer.getNamedFilters();
 					monitor.done();
-					
+
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							if (!filterList.isDisposed()) {
@@ -250,8 +250,8 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 	@Override
 	public AbstractRepositoryQuery getQuery() {
 		if (buttonSaved.getSelection()) {
-			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), TasksUiPlugin.getTaskListManager()
-					.getTaskList());
+			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), TasksUiPlugin.MAX_HITS,
+					TasksUiPlugin.getTaskListManager().getTaskList());
 		}
 
 		if (filterSummaryPage != null) {

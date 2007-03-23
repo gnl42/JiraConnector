@@ -106,19 +106,20 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
 			query = new JiraCustomQuery(repositoryUrl, filter, TasksUiPlugin.getRepositoryManager().getRepository(
-					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding(), taskList);
+					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding(), TasksUiPlugin.MAX_HITS, taskList);
 		} else if (customUrl != null && customUrl.length() > 0) {
 			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
 			query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl, repository
-					.getCharacterEncoding(), taskList);
+					.getCharacterEncoding(), TasksUiPlugin.MAX_HITS, taskList);
 
 		} else {
 			NamedFilter namedFilter = new NamedFilter();
 			namedFilter.setId(element.getAttribute(KEY_FILTER_ID));
 			namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
-			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, taskList);
+			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, TasksUiPlugin.MAX_HITS, taskList);
 		}
+		
 		return query;
 	}
 
@@ -140,7 +141,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			// filter.getDescription());
 		} else if (query instanceof JiraCustomQuery) {
 			JiraCustomQuery customQuery = (JiraCustomQuery) query;
-//			FilterDefinition filter = customQuery.getFilterDefinition();
+			// FilterDefinition filter = customQuery.getFilterDefinition();
 			node.setAttribute(KEY_FILTER_ID, customQuery.getSummary());
 			node.setAttribute(KEY_FILTER_NAME, customQuery.getSummary());
 			// node.setAttribute(KEY_FILTER_DESCRIPTION,
@@ -198,10 +199,10 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public ITask createTask(String repositoryUrl, String taskId, String summary, Element element, TaskList taskList, AbstractTaskContainer category, ITask parent)
-			throws TaskExternalizationException {
+	public ITask createTask(String repositoryUrl, String taskId, String summary, Element element, TaskList taskList,
+			AbstractTaskContainer category, ITask parent) throws TaskExternalizationException {
 		JiraTask task = new JiraTask(repositoryUrl, taskId, summary, false);
-		
+
 		if (element.hasAttribute(KEY_KEY)) {
 			String key = element.getAttribute(KEY_KEY);
 			task.setTaskKey(key);
@@ -217,8 +218,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public AbstractQueryHit createQueryHit(String repositoryUrl, String taskId, String summary, Element element, TaskList taskList, AbstractRepositoryQuery query)
-			throws TaskExternalizationException {
+	public AbstractQueryHit createQueryHit(String repositoryUrl, String taskId, String summary, Element element,
+			TaskList taskList, AbstractRepositoryQuery query) throws TaskExternalizationException {
 		String key = "";
 		if (element.hasAttribute(KEY_KEY)) {
 			key = element.getAttribute(KEY_KEY);

@@ -68,7 +68,7 @@ public class JiraFilterTest extends TestCase {
 	public void testJiraFilterRefresh() {
 		NamedFilter[] filters = jiraFacade.getJiraServer(repository).getNamedFilters();
 		assertTrue(filters.length > 0);
-		JiraRepositoryQuery jFilter = new JiraRepositoryQuery(repository.getUrl(), filters[0], TasksUiPlugin.getTaskListManager().getTaskList());
+		JiraRepositoryQuery jFilter = new JiraRepositoryQuery(repository.getUrl(), filters[0], TasksUiPlugin.MAX_HITS, TasksUiPlugin.getTaskListManager().getTaskList());
 		TasksUiPlugin.getTaskListManager().getTaskList().addQuery(jFilter);
 		assertTrue(jFilter.getHits().size() == 0);
 		// jFilter.refreshHits();
