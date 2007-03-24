@@ -250,8 +250,8 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 	@Override
 	public AbstractRepositoryQuery getQuery() {
 		if (buttonSaved.getSelection()) {
-			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), TasksUiPlugin.MAX_HITS,
-					TasksUiPlugin.getTaskListManager().getTaskList());
+			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), TasksUiPlugin.getTaskListManager()
+					.getTaskList());
 		}
 
 		if (filterSummaryPage != null) {

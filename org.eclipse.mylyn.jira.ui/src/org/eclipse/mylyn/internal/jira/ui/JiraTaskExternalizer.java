@@ -106,18 +106,18 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
 			query = new JiraCustomQuery(repositoryUrl, filter, TasksUiPlugin.getRepositoryManager().getRepository(
-					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding(), TasksUiPlugin.MAX_HITS, taskList);
+					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding(), taskList);
 		} else if (customUrl != null && customUrl.length() > 0) {
 			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
 			query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl, repository
-					.getCharacterEncoding(), TasksUiPlugin.MAX_HITS, taskList);
+					.getCharacterEncoding(), taskList);
 
 		} else {
 			NamedFilter namedFilter = new NamedFilter();
 			namedFilter.setId(element.getAttribute(KEY_FILTER_ID));
 			namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
-			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, TasksUiPlugin.MAX_HITS, taskList);
+			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, taskList);
 		}
 		
 		return query;
@@ -129,7 +129,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		Element node = doc.createElement(queryTagName);
 
 		node.setAttribute(KEY_NAME, query.getSummary());
-		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
+//		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
 		node.setAttribute(KEY_QUERY_STRING, query.getUrl());
 		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl());
 

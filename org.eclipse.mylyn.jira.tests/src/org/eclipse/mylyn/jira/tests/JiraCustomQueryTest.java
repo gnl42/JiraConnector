@@ -41,7 +41,6 @@ import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
  * @author Eugene Kuleshov
@@ -139,8 +138,7 @@ public class JiraCustomQueryTest extends TestCase {
 		TaskRepository taskRepository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
 
-		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskRepository.getCharacterEncoding(), TasksUiPlugin.MAX_HITS,
-				taskList);
+		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskRepository.getCharacterEncoding(), taskList);
 
 		String queryUrl = customQuery.getUrl();
 
@@ -169,7 +167,7 @@ public class JiraCustomQueryTest extends TestCase {
 				});
 
 		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl, taskRepository
-				.getCharacterEncoding(), TasksUiPlugin.MAX_HITS, taskList);
+				.getCharacterEncoding(), taskList);
 
 		FilterDefinition filter2 = customQuery2.getFilterDefinition(jiraServer);
 

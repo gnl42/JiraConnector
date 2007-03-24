@@ -24,9 +24,8 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 
 	protected NamedFilter filter = null;
 
-	public JiraRepositoryQuery(String repositoryUrl, NamedFilter filter, int maxHits, TaskList taskList) {
+	public JiraRepositoryQuery(String repositoryUrl, NamedFilter filter, TaskList taskList) {
 		super(filter.getName(), taskList);
-		setMaxHits(maxHits);
 		this.filter = filter;
 		super.repositoryUrl = repositoryUrl;
 		setUrl(repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&requestId=" + filter.getId());

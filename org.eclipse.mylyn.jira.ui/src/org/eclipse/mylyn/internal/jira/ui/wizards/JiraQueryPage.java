@@ -1490,7 +1490,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getUrl(), repository
-				.getCharacterEncoding(), TasksUiPlugin.MAX_HITS, TasksUiPlugin.getTaskListManager().getTaskList());
+				.getCharacterEncoding(), TasksUiPlugin.getTaskListManager().getTaskList());
 		workingCopy = query.getFilterDefinition(server);
 		return true;
 	}
@@ -1596,7 +1596,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		String url = repository.getUrl();
 		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding(),
-				TasksUiPlugin.MAX_HITS, TasksUiPlugin.getTaskListManager().getTaskList());
+				TasksUiPlugin.getTaskListManager().getTaskList());
 		return query;
 	}
 }
