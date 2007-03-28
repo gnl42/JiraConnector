@@ -82,7 +82,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -234,7 +233,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			Label lblName = new Label(c, SWT.NONE);
 			final GridData gridData = new GridData();
 			lblName.setLayoutData(gridData);
-			lblName.setText("Name:");
+			lblName.setText("Query Title:");
 
 			title = new Text(c, SWT.BORDER);
 			title.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
@@ -309,6 +308,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout();
+				gridLayout.marginHeight = 0;
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
 
@@ -337,6 +337,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout();
+				gridLayout.marginHeight = 0;
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
 
@@ -365,6 +366,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout();
+				gridLayout.marginHeight = 0;
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
 
@@ -393,6 +395,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout();
+				gridLayout.marginHeight = 0;
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
 
@@ -424,10 +427,14 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		createUpdateButton(c);
 
 		Label lblQuery = new Label(c, SWT.NONE);
-		lblQuery.setLayoutData(new GridData());
+		final GridData gd_lblQuery = new GridData();
+		gd_lblQuery.verticalIndent = 7;
+		lblQuery.setLayoutData(gd_lblQuery);
 		lblQuery.setText("Query:");
 		queryString = new Text(c, SWT.BORDER);
-		queryString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
+		final GridData gd_queryString = new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1);
+		gd_queryString.verticalIndent = 7;
+		queryString.setLayoutData(gd_queryString);
 		// TODO put content assist here and a label describing what is
 		// available
 
@@ -795,15 +802,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		});
 	}
 
-	protected Control createUpdateButton(final Composite control) {
-		Composite group = new Composite(control, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
-		group.setLayout(layout);
-		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-
-		Button updateButton = new Button(group, SWT.PUSH);
+	protected void createUpdateButton(final Composite control) {
+		Button updateButton = new Button(control, SWT.PUSH);
 		updateButton.setText("Update Attributes from Repository");
-		updateButton.setLayoutData(new GridData());
+		updateButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false, 3, 1));
 		updateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -812,8 +814,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				loadFromWorkingCopy();
 			}
 		});
-
-		return group;
 	}
 
 	void updateCurrentProject(Project project) {
