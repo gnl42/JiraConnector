@@ -12,7 +12,7 @@
 package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.mylar.internal.tasks.ui.TaskListImages;
+import org.eclipse.mylar.internal.tasks.ui.TasksUiImages;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -38,7 +38,7 @@ public class NewJiraQueryWizard extends Wizard {
 		this.repository = repository;
 		setNeedsProgressMonitor(true);
 		setWindowTitle(TITLE); 
-		setDefaultPageImageDescriptor(TaskListImages.BANNER_REPOSITORY);
+		setDefaultPageImageDescriptor(TasksUiImages.BANNER_REPOSITORY);
 	}
 
 	@Override

@@ -21,7 +21,7 @@ import org.eclipse.mylar.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylar.internal.tasks.ui.TaskListImages;
+import org.eclipse.mylar.internal.tasks.ui.TasksUiImages;
 import org.eclipse.mylar.internal.tasks.ui.TaskListPreferenceConstants;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -54,7 +54,7 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		projectPage = new JiraProjectPage(taskRepository);
 
 		setWindowTitle("New Repository Task");
-		setDefaultPageImageDescriptor(TaskListImages.BANNER_REPOSITORY);
+		setDefaultPageImageDescriptor(TasksUiImages.BANNER_REPOSITORY);
 
 		setNeedsProgressMonitor(true);
 	}
