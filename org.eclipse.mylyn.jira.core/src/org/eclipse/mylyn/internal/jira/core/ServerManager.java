@@ -70,7 +70,7 @@ public class ServerManager {
 				JiraServerData data = (JiraServerData) in.readObject();
 				serverDataByName.put(serverCache.getName(), data);
 			} catch (Throwable e) {
-				MylarStatusHandler.fail(e, "Error reading JIRA repository configuration cache", false);
+				MylarStatusHandler.log("Reset JIRA repository configuration cache due to format update", false);
 			} finally {
 				if (in != null) {
 					try {
