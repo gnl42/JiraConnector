@@ -219,7 +219,7 @@ litigation.
    </url>
 
    <requires>
-      <import feature="org.eclipse.mylar_feature" version="2.0.0.v20070330-2000" match="greaterOrEqual"/>
+      <import feature="org.eclipse.mylar_feature" version="2.0.0.v20070413-1700" match="greaterOrEqual"/>
    </requires>
 
    <plugin
