@@ -110,23 +110,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public AbstractRepositoryTask createTaskFromExistingKey(TaskRepository repository, String key) throws CoreException {
-
-		ITask existingTask = taskList.getRepositoryTask(getTaskWebUrl(repository.getUrl(), key));
-		if (existingTask instanceof JiraTask) {
-			return (JiraTask) existingTask;
-		}
-
-		// existingTask = taskList.getTask(repository.getUrl(), key);
-		// if (existingTask instanceof JiraTask) {
-		// return (JiraTask) existingTask;
-		// }
-
-		RepositoryTaskData taskData = offlineHandler.getTaskData(repository, key);
-		return createTask(repository.getUrl(), taskData);
-	}
-
-	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
 			IProgressMonitor monitor, QueryHitCollector resultCollector) {
 		final List<Issue> issues = new ArrayList<Issue>();
@@ -364,7 +347,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task.setTaskKey(issue.getKey());
 			task.setTaskUrl(getTaskUrl(repositoryUrl, issue.getKey()));
 			if (issue.getDescription() != null) {
-				task.setDescription(issue.getSummary());
+				task.setSummary(issue.getSummary());
 			}
 		}
 		if (isCompleted(issue)) {
@@ -416,30 +399,29 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return task;
 	}
 
-	public static JiraTask createTask(Issue issue, String repositoryUrl, String taskId) {
-		JiraTask task;
-		String summary = issue.getSummary();
-		// String handle = AbstractRepositoryTask.getHandle(repositoryUrl,
-		// taskId);
-		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
-		if (existingTask instanceof JiraTask) {
-			task = (JiraTask) existingTask;
-		} else {
-			task = new JiraTask(repositoryUrl, taskId, summary, true);
-			task.setTaskKey(issue.getKey());
-			task.setTaskUrl(getTaskUrl(repositoryUrl, issue.getKey()));
-			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
-		}
-		return task;
+	protected AbstractRepositoryTask makeTask(String repositoryUrl, String id, String summary) {
+		return new JiraTask(repositoryUrl, id, summary, true);
 	}
 
-	private JiraTask createTask(String repositoryUrl, RepositoryTaskData taskData) {
-		JiraTask task = new JiraTask(repositoryUrl, taskData.getId(), taskData.getSummary(), true);
-		task.setTaskKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
-		task.setTaskUrl(getTaskUrl(repositoryUrl, task.getTaskKey()));
-		task.setTaskData(taskData);
-		TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
-		return task;
+	public void updateTask(TaskRepository repository, AbstractRepositoryTask repositoryTask, RepositoryTaskData taskData) {
+		if (repositoryTask instanceof JiraTask) {
+			JiraTask jiraTask = (JiraTask) repositoryTask;			
+			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
+			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));			
+			jiraTask.setTaskKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
+			jiraTask.setTaskUrl(getTaskUrl(repository.getUrl(), repositoryTask.getTaskKey()));
+			String priority = JiraTask.PriorityLevel.TRIVIAL.toString();
+			if (taskData.getAttribute(RepositoryTaskAttribute.PRIORITY) != null) {
+				priority = taskData.getAttribute(RepositoryTaskAttribute.PRIORITY).getValue();
+			}
+			jiraTask.setPriority(priority);
+			
+			// TODO: Completed, Completion Date 
+			
+		} else {
+			MylarStatusHandler.log("Unable to update data for task of type " + repositoryTask.getClass().getName(),
+					this);
+		}
 	}
 
 	@Override
