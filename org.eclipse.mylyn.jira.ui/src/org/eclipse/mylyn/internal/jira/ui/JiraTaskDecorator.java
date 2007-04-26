@@ -13,12 +13,12 @@ package org.eclipse.mylar.internal.jira.ui;
 
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ILightweightLabelDecorator;
+import org.eclipse.mylar.tasks.ui.AbstractTaskDecorator;
 
 /**
  * @author Mik Kersten
  */
-public class JiraTaskDecorator implements ILightweightLabelDecorator {
+public class JiraTaskDecorator extends AbstractTaskDecorator {
 
 	public void decorate(Object element, IDecoration decoration) {
 		if (element instanceof JiraQueryHit) {
@@ -30,13 +30,13 @@ public class JiraTaskDecorator implements ILightweightLabelDecorator {
 		if (element instanceof JiraTask) {
 			JiraTask task = (JiraTask) element;
 			if (JiraTask.Kind.BUG.toString().equals(task.getTaskKind())) {
-				decoration.addOverlay(JiraImages.OVERLAY_BUG, IDecoration.BOTTOM_RIGHT);
+				decoration.addOverlay(JiraImages.OVERLAY_BUG, getQuadrantForKind());
 			} else if (JiraTask.Kind.FEATURE.toString().equals(task.getTaskKind())) {
-				decoration.addOverlay(JiraImages.OVERLAY_FEATURE, IDecoration.BOTTOM_RIGHT);
+				decoration.addOverlay(JiraImages.OVERLAY_FEATURE, getQuadrantForKind());
 			} else if (JiraTask.Kind.IMPROVEMENT.toString().equals(task.getTaskKind())) {
-				decoration.addOverlay(JiraImages.OVERLAY_IMPROVEMENT, IDecoration.BOTTOM_RIGHT);
+				decoration.addOverlay(JiraImages.OVERLAY_IMPROVEMENT, getQuadrantForKind());
 			} else if (JiraTask.Kind.TASK.toString().equals(task.getTaskKind())) {
-				decoration.addOverlay(JiraImages.OVERLAY_TASK, IDecoration.BOTTOM_RIGHT);
+				decoration.addOverlay(JiraImages.OVERLAY_TASK, getQuadrantForKind());
 			}
 		}
 	}
