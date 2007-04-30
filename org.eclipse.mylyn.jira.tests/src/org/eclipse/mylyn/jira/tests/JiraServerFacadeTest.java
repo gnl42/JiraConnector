@@ -13,10 +13,15 @@ package org.eclipse.mylar.jira.tests;
 
 import junit.framework.TestCase;
 
+import org.eclipse.mylar.context.tests.support.MylarTestUtils;
+import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
+import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -69,6 +74,10 @@ public class JiraServerFacadeTest extends TestCase {
 
 		// Tests connection using the currently specified credentials
 		jiraFacade.validateServerAndCredentials(SERVER_URL, USER, PASSWORD, null, null, null);
+	}
+
+	public void testLogin381() throws Exception {
+		validate(JiraTestConstants.JIRA_381_URL);
 	}
 
 	public void testFilterDownload() {
@@ -133,6 +142,34 @@ public class JiraServerFacadeTest extends TestCase {
 		repository.setAuthenticationCredentials(USER, PASSWORD);
 		jiraFacade.repositoryRemoved(repository);
 		jiraFacade.getJiraServer(repository).getNamedFilters();
+	}
+
+	protected void validate(String url) throws Exception {
+		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
+		
+		// standard connect
+		jiraFacade.validateServerAndCredentials(url, credentials.username, credentials.password, null, null, null);
+
+		// invalid URL		
+		try {
+			jiraFacade.validateServerAndCredentials("http://non.existant/repository", credentials.username, credentials.password, null, null, null);
+			fail("Expected exception");
+		} catch (ServiceUnavailableException e) {
+		}
+
+		// invalid password
+		try {
+			jiraFacade.validateServerAndCredentials(url, credentials.username, "wrongpassword", null, null, null);
+			fail("Expected exception");
+		} catch (AuthenticationException e) {
+		}
+
+		// invalid username
+		try {
+			jiraFacade.validateServerAndCredentials(url, "wrongusername", credentials.password, null, null, null);
+			fail("Expected exception");
+		} catch (AuthenticationException e) {
+		}
 	}
 
 }
