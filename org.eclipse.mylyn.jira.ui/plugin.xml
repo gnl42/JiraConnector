@@ -22,20 +22,6 @@
             class="org.eclipse.mylar.internal.jira.ui.JiraTaskExternalizer"
             id="org.eclipse.mylar.jira.tasklist.externalizer"/>
    </extension>  
-   
-   <extension point="org.eclipse.ui.decorators">
-      <decorator
-            class="org.eclipse.mylar.internal.jira.ui.JiraTaskDecorator"
-            id="org.eclipse.mylar.jira.ui.decorator.task"
-            label="Mylar JIRA Task Decorator"
-            lightweight="true"
-            objectClass="org.eclipse.mylar.tasks.core.ITaskListElement"
-            state="true">
-         <description>
-			Mylar JIRA Task Decorator
-		 </description>
-      </decorator>
-   </extension>
    <!--
    <extension
          point="org.eclipse.ui.editors">

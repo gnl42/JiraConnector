@@ -8,6 +8,7 @@
 
 package org.eclipse.mylar.internal.jira.ui;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +39,23 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	}
 	
 	@Override
+	public ImageDescriptor getTaskKindOverlay(AbstractRepositoryTask repositoryTask) {
+		if (repositoryTask instanceof JiraTask) {
+			JiraTask task = (JiraTask) repositoryTask;
+			if (JiraTask.Kind.BUG.toString().equals(task.getTaskKind())) {
+				return JiraImages.OVERLAY_BUG;
+			} else if (JiraTask.Kind.FEATURE.toString().equals(task.getTaskKind())) {
+				return JiraImages.OVERLAY_FEATURE;
+			} else if (JiraTask.Kind.IMPROVEMENT.toString().equals(task.getTaskKind())) {
+				return JiraImages.OVERLAY_IMPROVEMENT;
+			} else if (JiraTask.Kind.TASK.toString().equals(task.getTaskKind())) {
+				return JiraImages.OVERLAY_TASK;
+			}
+		}
+		return super.getTaskKindOverlay(repositoryTask);
+	}
+	
+	@Override
 	public WizardPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
 		return new JiraQueryPage(repository);
 	} 
@@ -59,6 +77,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
 		return new NewJiraTaskWizard(taskRepository);
 	}
+
 
 	@Override
 	public boolean hasRichEditor() {
