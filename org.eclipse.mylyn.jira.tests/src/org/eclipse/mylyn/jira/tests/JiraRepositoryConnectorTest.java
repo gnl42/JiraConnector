@@ -15,12 +15,19 @@ import java.net.MalformedURLException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.mylar.context.tests.support.MylarTestUtils;
+import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
+import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -32,17 +39,13 @@ import org.eclipse.ui.PlatformUI;
  */
 public class JiraRepositoryConnectorTest extends TestCase {
 
-	private final static String USER = "mylartest";
-
-	private final static String PASSWORD = "mylartest";
-
-	private final static String SERVER_URL = "http://developer.atlassian.com/jira";
-
 	private TaskRepository repository;
 
 	private TaskRepositoryManager manager;
 
-//	private JiraRepositoryConnector connector;
+	private JiraRepositoryConnector connector;
+
+	private JiraServer server;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -50,6 +53,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		manager = TasksUiPlugin.getRepositoryManager();
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		
+		JiraServerFacade.getDefault().clearServers();
+		
+		init();
 	}
 
 	@Override
@@ -60,22 +67,23 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	protected void init() {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
-		repository = new TaskRepository(kind, SERVER_URL);
-		repository.setAuthenticationCredentials(USER, PASSWORD);
+		repository = new TaskRepository(kind, JiraTestConstants.JIRA_381_URL);
+		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
+		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
 		AbstractRepositoryConnector abstractConnector = manager.getRepositoryConnector(kind);
 		assertEquals(abstractConnector.getRepositoryType(), kind);
 
-//		connector = (JiraRepositoryConnector) abstractConnector;
+		connector = (JiraRepositoryConnector) abstractConnector;
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
+
+		server = JiraServerFacade.getDefault().getJiraServer(repository);
 	}
 
 	public void testChangeTaskRepositorySettings() throws MalformedURLException {
-		init();
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-		assertEquals(USER, server.getCurrentUserName());
+		assertEquals(repository.getUserName(), server.getCurrentUserName());
 
 		EditRepositoryWizard wizard = new EditRepositoryWizard(repository);
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -89,4 +97,31 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals("newuser", server.getCurrentUserName());
 	}
 
+	public void testUpdateTask() throws Exception {
+		if (!server.hasDetails()) {
+			server.refreshDetails(new NullProgressMonitor());
+		}
+		
+		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
+		issue = server.createIssue(issue);
+		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
+		assertEquals("testUpdateTask", task.getSummary());
+		assertEquals(false, task.isCompleted());
+		assertNull(task.getDueDate());
+
+		// FIXME need to fix resolve/close issue first: bug 174925
+		
+//		server.resolveIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+//		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+//		assertEquals("testUpdateTask", task.getSummary());
+//		assertEquals(true, task.isCompleted());
+//		assertNotNull(task.getDueDate());
+//		
+//		server.closeIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+//		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+//		assertEquals("testUpdateTask", task.getSummary());
+//		assertEquals(true, task.isCompleted());
+//		assertNotNull(task.getDueDate());
+	}
+		
 }

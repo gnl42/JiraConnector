@@ -53,6 +53,11 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		serverManager = JiraCorePlugin.getDefault().getServerManager();
 	}
 
+	/* For testing. */
+	public void clearServers() {
+		serverManager.removeAllServers();
+	}
+	
 	/**
 	 * Lazily creates server.
 	 * 
@@ -106,6 +111,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	public synchronized void repositoryAdded(TaskRepository repository) {
 		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
+			assert serverManager.getServer(getServerHost(repository)) == null;
 			getJiraServer(repository);
 		}
 	}

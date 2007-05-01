@@ -44,6 +44,7 @@ import org.eclipse.mylar.internal.jira.core.service.InsufficientPermissionExcept
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.ui.JiraTask.PriorityLevel;
+import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -163,7 +164,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(),
 					taskId, issue.getKey());
-			hit.setCompleted(isCompleted(issue));
+			hit.setCompleted(isCompleted(issue.getStatus()));
 			// XXX: HACK, need to map jira priority to tasklist priorities
 			hit.setPriority(Task.PriorityLevel.P3.toString());
 			try {
@@ -350,7 +351,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				task.setSummary(issue.getSummary());
 			}
 		}
-		if (isCompleted(issue)) {
+		if (isCompleted(issue.getStatus())) {
 			task.setCompleted(true);
 			task.setCompletionDate(issue.getUpdated());
 		} else {
@@ -379,8 +380,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return repositoryUrl + JiraRepositoryConnector.ISSUE_URL_PREFIX + key;
 	}
 
-	private static boolean isCompleted(Issue issue) {
-		return issue.getStatus() != null && (issue.getStatus().isClosed() || issue.getStatus().isResolved());
+	private static boolean isCompleted(org.eclipse.mylar.internal.jira.core.model.Status status) {
+		return status != null && (status.isClosed() || status.isResolved());
 	}
 
 	public static JiraTask createTask(String repositoryUrl, String taskId, String key, String description) {
@@ -416,8 +417,21 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 			jiraTask.setPriority(priority);
 			
-			// TODO: Completed, Completion Date 
-			
+			JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+			for (org.eclipse.mylar.internal.jira.core.model.Status status : server.getStatuses()) {
+				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
+					if (isCompleted(status)) {
+						AbstractAttributeFactory factory = getTaskDataHandler().getAttributeFactory(repository.getUrl(), repository.getKind(), Task.DEFAULT_TASK_KIND);
+						String dateString = taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
+						jiraTask.setCompletionDate(factory.getDateForAttributeType(RepositoryTaskAttribute.DATE_MODIFIED, dateString));
+						jiraTask.setCompleted(true);
+					} else {
+						jiraTask.setCompletionDate(null);
+						jiraTask.setCompleted(false);
+					}
+					break;
+				}
+			}
 		} else {
 			MylarStatusHandler.log("Unable to update data for task of type " + repositoryTask.getClass().getName(),
 					this);

@@ -214,7 +214,7 @@ public class JiraWebIssueService {
 
 				if (resolution != null) {
 					post.addParameter("resolution", resolution.getId());
-					if (fixVersions.length == 0) {
+					if (fixVersions == null || fixVersions.length == 0) {
 						post.addParameter("fixVersions", "-1");
 					} else {
 						for (int i = 0; i < fixVersions.length; i++) {

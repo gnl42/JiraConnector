@@ -188,7 +188,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		// VISIBLE FIELDS (order added = order in layout)
 
 		data.setAttributeValue(RepositoryTaskAttribute.PRODUCT, jiraIssue.getProject().getName());
-		data.setAttributeValue(RepositoryTaskAttribute.PRIORITY, jiraIssue.getPriority().getName());
+		if (jiraIssue.getPriority() != null) {
+			data.setAttributeValue(RepositoryTaskAttribute.PRIORITY, jiraIssue.getPriority().getName());
+		}
 		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, jiraIssue.getType().getName());
 		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, convertHtml(jiraIssue.getEnvironment()));
 

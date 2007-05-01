@@ -239,4 +239,10 @@ public class ServerManager {
 			baseFile.delete();
 		}
 	}
+
+
+	public void removeAllServers() {
+		serverByName.clear();
+	}
+	
 }
