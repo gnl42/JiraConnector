@@ -6,3 +6,4 @@
 1178085869630	Rename type 'AuthenticationException'
 1178087619692	Rename type 'InsufficientPermissionException'
 1178087668381	Rename type 'ServiceUnavailableException'
+1178137891771	Rename method 'getIssue'
