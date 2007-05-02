@@ -22,7 +22,7 @@ import javax.naming.ServiceUnavailableException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -137,7 +137,7 @@ public class JiraCorePlugin extends Plugin {
 	}
 
 	public static IStatus toStatus(Throwable e) {
-		if (e instanceof AuthenticationException) {
+		if (e instanceof JiraAuthenticationException) {
 			return new Status(Status.ERROR, ID, Status.OK, "The supplied credentials are invalid", e);
 		} else if (e instanceof ServiceUnavailableException) {	
 			return new Status(Status.ERROR, ID, Status.OK, e.getMessage(), e);
