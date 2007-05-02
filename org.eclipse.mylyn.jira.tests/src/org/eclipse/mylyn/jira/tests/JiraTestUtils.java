@@ -25,7 +25,8 @@ public class JiraTestUtils {
 		issue.setProject(server.getProjects()[0]);
 		issue.setType(server.getIssueTypes()[0]);
 		issue.setSummary(summary);
-
+		issue.setAssignee(server.getUserName());
+		
 		return server.createIssue(issue);
 	}
 

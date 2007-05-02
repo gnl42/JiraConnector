@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2004 - 2006 Mylar committers and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package org.eclipse.mylar.jira.tests;
 
 import java.net.Proxy;
@@ -14,6 +22,9 @@ import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcServer;
 
+/**
+ * @author Steffen Pingel
+ */
 public class JiraRpcServerTest extends TestCase {
 
 	private AbstractJiraServer server;
@@ -23,15 +34,15 @@ public class JiraRpcServerTest extends TestCase {
 		super.setUp();
 
 		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
-		server = new JiraRpcServer("server", JiraTestConstants.JIRA_381_URL, false,
-				credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
+		server = new JiraRpcServer("server", JiraTestConstants.JIRA_381_URL, false, credentials.username,
+				credentials.password, Proxy.NO_PROXY, null, null);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void testLogin() throws Exception {
 		server.login();
@@ -59,16 +70,16 @@ public class JiraRpcServerTest extends TestCase {
 		server.startIssue(issue);
 	}
 
-//	public void testResolveIssue() {
-//		fail("Not yet implemented");
-//	}
+// public void testResolveIssue() {
+// fail("Not yet implemented");
+// }
 //
-//	public void testCloseIssue() {
-//		fail("Not yet implemented");
-//	}
+// public void testCloseIssue() {
+// fail("Not yet implemented");
+// }
 //
-//	public void testReopenIssue() {
-//		fail("Not yet implemented");
-//	}
+// public void testReopenIssue() {
+// fail("Not yet implemented");
+// }
 
 }
