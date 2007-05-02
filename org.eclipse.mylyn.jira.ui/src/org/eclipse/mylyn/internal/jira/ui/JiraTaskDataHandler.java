@@ -325,9 +325,11 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository
 							.getUserName());
 				} else if (org.eclipse.mylar.internal.jira.core.model.Status.STARTED_ID.equals(operation.getKnobName())) {
-					jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
+					// FIXME update attributes and comment
+					jiraServer.startIssue(issue);
 				} else if (org.eclipse.mylar.internal.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
-					jiraServer.startIssue(issue, taskData.getNewComment(), repository.getUserName());
+					// FIXME update attributes and comment
+					jiraServer.startIssue(issue);
 				} else if (org.eclipse.mylar.internal.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
 					String value = operation.getOptionValue(operation.getOptionSelection());
 					jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData

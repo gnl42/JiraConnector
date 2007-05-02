@@ -15,7 +15,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public interface JiraWebSessionCallback {
 

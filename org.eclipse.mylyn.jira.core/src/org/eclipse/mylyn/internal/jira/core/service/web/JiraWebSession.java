@@ -23,7 +23,6 @@ import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 
-// TODO Clean up this implementation. It is really dodgey
 /**
  * @author Brock Janiczak
  * @author Steffen Pingel
@@ -54,7 +53,6 @@ public class JiraWebSession {
 
 		login(client);
 		try {
-			// client.getState().getCookies()[0].setSecure(false);
 			callback.execute(client, server);
 		} finally {
 			logout(client);
@@ -66,8 +64,8 @@ public class JiraWebSession {
 		for (int i = 0; i < MAX_REDIRECTS; i++) {
 			PostMethod login = new PostMethod(url); //$NON-NLS-1$
 			login.setFollowRedirects(false);
-			login.addParameter("os_username", server.getCurrentUserName()); //$NON-NLS-1$
-			login.addParameter("os_password", server.getCurrentUserPassword()); //$NON-NLS-1$
+			login.addParameter("os_username", server.getUserName()); //$NON-NLS-1$
+			login.addParameter("os_password", server.getPassword()); //$NON-NLS-1$
 			login.addParameter("os_destination", "/success"); //$NON-NLS-1$
 
 			try {

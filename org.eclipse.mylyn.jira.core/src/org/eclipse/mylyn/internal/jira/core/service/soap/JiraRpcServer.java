@@ -14,7 +14,11 @@ package org.eclipse.mylar.internal.jira.core.service.soap;
 import java.io.File;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
+
+import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.AxisFault;
 import org.apache.axis.configuration.FileProvider;
@@ -26,6 +30,7 @@ import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.Project;
+import org.eclipse.mylar.internal.jira.core.model.Query;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.model.Status;
@@ -34,10 +39,11 @@ import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
+import org.eclipse.mylar.internal.jira.core.model.filter.SmartQuery;
+import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
 import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.InsufficientPermissionException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.core.service.JiraService;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebIssueService;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssJiraFilterService;
@@ -62,14 +68,17 @@ import org.w3c.dom.Element;
 /**
  * @author Brock Janiczak
  */
-public class SoapJiraService implements JiraService {
+public class JiraRpcServer extends AbstractJiraServer {
+	
+	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2";
+
 	/**
-	 * Default session timeout for a jira instance. The default value is 10
+	 * Default session timeout for a JIRA instance. The default value is 10
 	 * minutes.
 	 */
 	private static final long DEFAULT_SESSION_TIMEOUT = 1000L * 60L * 10L;
 
-	private JiraSoapService jirasoapserviceV2 = null;
+	private JiraSoapService jiraSoapService = null;
 
 	private JiraWebIssueService issueService = null;
 
@@ -77,28 +86,35 @@ public class SoapJiraService implements JiraService {
 
 	private LoginToken loginToken;
 
-	public SoapJiraService(JiraServer server) {
-		try {
-			// JiraSoapServiceServiceLocator s = new
-			// JiraSoapServiceServiceLocator();
-			GZipJiraSoapServiceServiceLocator s = new GZipJiraSoapServiceServiceLocator(new FileProvider(this
-					.getClass().getClassLoader().getResourceAsStream("client-config.wsdd")));
-			s.setHttpUser(server.getHttpUser());
-			s.setHttpPassword(server.getHttpPassword());
-			s.setProxy(server.getProxy());
-			s.setCompression(server.useCompression());
-			jirasoapserviceV2 = s.getJirasoapserviceV2(new URL(server.getBaseURL() + "/rpc/soap/jirasoapservice-v2")); //$NON-NLS-1$
-			filterService = new RssJiraFilterService(server);
-			issueService = new JiraWebIssueService(server);
+	public JiraRpcServer(String name, String baseURL, boolean useCompression, String username, String password,
+			Proxy proxy, String httpUser, String httpPassword) {
+		super(name, baseURL, useCompression, username, password, proxy, httpUser, httpPassword);
 
-			if (server.getCurrentUserName() == null) {
-				loginToken = new AnonymousLoginToken();
-			} else {
-				loginToken = new StandardLoginToken(server.getCurrentUserName(), server.getCurrentUserPassword(),
-						DEFAULT_SESSION_TIMEOUT);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		GZipJiraSoapServiceServiceLocator locator = new GZipJiraSoapServiceServiceLocator(new FileProvider(this
+				.getClass().getClassLoader().getResourceAsStream("client-config.wsdd")));
+		locator.setHttpUser(httpUser);
+		locator.setHttpPassword(httpPassword);
+		locator.setProxy(proxy);
+		locator.setCompression(useCompression);
+		// FIXME propagate exceptions
+		try {
+			jiraSoapService = locator.getJirasoapserviceV2(new URL(baseURL + SOAP_SERVICE_URL));
+		} catch (ServiceException e) {
+			throw new RuntimeException(new JiraException(e));
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+		if (jiraSoapService == null) {
+			throw new RuntimeException(new JiraException("Initialization of JIRA Soap service failed"));
+		}
+
+		filterService = new RssJiraFilterService(this);
+		issueService = new JiraWebIssueService(this);
+
+		if (username == null) {
+			loginToken = new AnonymousLoginToken();
+		} else {
+			loginToken = new StandardLoginToken(username, password, DEFAULT_SESSION_TIMEOUT);
 		}
 	}
 
@@ -107,17 +123,17 @@ public class SoapJiraService implements JiraService {
 		return call(new RemoteRunnable<User>() {
 			@Override
 			public User run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getUser(loginToken.getCurrentValue(), username));
+				return Converter.convert(jiraSoapService.getUser(loginToken.getCurrentValue(), username));
 			}
 		});
 	}
 
-	public Component[] getComponents(final String projectKey) throws InsufficientPermissionException,
+	public Component[] getComponentsRemote(final String projectKey) throws InsufficientPermissionException,
 			AuthenticationException, ServiceUnavailableException {
 		return call(new RemoteRunnable<Component[]>() {
 			@Override
 			public Component[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getComponents(loginToken.getCurrentValue(), projectKey));
+				return Converter.convert(jiraSoapService.getComponents(loginToken.getCurrentValue(), projectKey));
 			}
 		});
 	}
@@ -132,16 +148,16 @@ public class SoapJiraService implements JiraService {
 		return call(new RemoteRunnable<Group>() {
 			@Override
 			public Group run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getGroup(loginToken.getCurrentValue(), name));
+				return Converter.convert(jiraSoapService.getGroup(loginToken.getCurrentValue(), name));
 			}
 		});
 	}
 
-	public ServerInfo getServerInfo() throws ServiceUnavailableException {
+	public ServerInfo getServerInfoRemote() throws ServiceUnavailableException {
 		return call(new RemoteRunnable<ServerInfo>() {
 			@Override
 			public ServerInfo run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getServerInfo(loginToken.getCurrentValue()));
+				return Converter.convert(jiraSoapService.getServerInfo(loginToken.getCurrentValue()));
 			}
 		});
 	}
@@ -156,107 +172,108 @@ public class SoapJiraService implements JiraService {
 		return issueService.createIssue(issue);
 	}
 
-	public Project[] getProjects() throws InsufficientPermissionException, AuthenticationException,
+	public Project[] getProjectsRemote() throws InsufficientPermissionException, AuthenticationException,
 			ServiceUnavailableException {
 		return call(new RemoteRunnable<Project[]>() {
 			@Override
 			public Project[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getProjects(loginToken.getCurrentValue()));
+				return Converter.convert(jiraSoapService.getProjects(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Project[] getProjectsNoSchemes() throws InsufficientPermissionException, AuthenticationException,
+	public Project[] getProjectsRemoteNoSchemes() throws InsufficientPermissionException, AuthenticationException,
 			ServiceUnavailableException {
 		return call(new RemoteRunnable<Project[]>() {
 			@Override
 			public Project[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getProjectsNoSchemes(loginToken.getCurrentValue()));
+				return Converter.convert(jiraSoapService.getProjectsNoSchemes(loginToken.getCurrentValue()));
 			}
-		});		
+		});
 	}
 
-	public Status[] getStatuses() throws InsufficientPermissionException, AuthenticationException,
+	public Status[] getStatusesRemote() throws InsufficientPermissionException, AuthenticationException,
 			ServiceUnavailableException {
 		return call(new RemoteRunnable<Status[]>() {
 			@Override
 			public Status[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getStatuses(loginToken.getCurrentValue()));
-			}
-		});		
-	}
-
-	public IssueType[] getIssueTypes() throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
-		return call(new RemoteRunnable<IssueType[]>() {
-			@Override
-			public IssueType[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getIssueTypes(loginToken.getCurrentValue()));
+				return Converter.convert(jiraSoapService.getStatuses(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public IssueType[] getSubTaskIssueTypes() throws InsufficientPermissionException, AuthenticationException,
+	public IssueType[] getIssueTypesRemote() throws InsufficientPermissionException, AuthenticationException,
 			ServiceUnavailableException {
 		return call(new RemoteRunnable<IssueType[]>() {
 			@Override
 			public IssueType[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getSubTaskIssueTypes(loginToken.getCurrentValue()));
+				return Converter.convert(jiraSoapService.getIssueTypes(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Priority[] getPriorities() throws InsufficientPermissionException, AuthenticationException,
+	public IssueType[] getSubTaskIssueTypesRemote() throws InsufficientPermissionException, AuthenticationException,
+			ServiceUnavailableException {
+		return call(new RemoteRunnable<IssueType[]>() {
+			@Override
+			public IssueType[] run() throws java.rmi.RemoteException {
+				return Converter.convert(jiraSoapService.getSubTaskIssueTypes(loginToken.getCurrentValue()));
+			}
+		});
+	}
+
+	public Priority[] getPrioritiesRemote() throws InsufficientPermissionException, AuthenticationException,
 			ServiceUnavailableException {
 		return call(new RemoteRunnable<Priority[]>() {
 			@Override
 			public Priority[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getPriorities(loginToken.getCurrentValue()));
+				return Converter.convert(jiraSoapService.getPriorities(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Resolution[] getResolutions() throws InsufficientPermissionException, AuthenticationException,
+	public Resolution[] getResolutionsRemote() throws InsufficientPermissionException, AuthenticationException,
 			ServiceUnavailableException {
 		return call(new RemoteRunnable<Resolution[]>() {
 			@Override
 			public Resolution[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getResolutions(loginToken.getCurrentValue()));
+				return Converter.convert(jiraSoapService.getResolutions(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Comment[] getComments(String issueKey) {
+	public Comment[] getCommentsRemote(String issueKey) {
 		return call(new RemoteRunnable<Comment[]>() {
 			@Override
 			public Comment[] run() throws java.rmi.RemoteException {
 				// TODO implement
-				//return Converter.convert(jirasoapserviceV2.getComments(loginToken.getCurrentValue(), issueKey));
+				// return
+				// Converter.convert(jirasoapserviceV2.getComments(loginToken.getCurrentValue(),
+				// issueKey));
 				return null;
 			}
 		});
 	}
 
-	public Version[] getVersions(final String componentKey) throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public Version[] getVersionsRemote(final String componentKey) throws InsufficientPermissionException,
+			AuthenticationException, ServiceUnavailableException {
 		return call(new RemoteRunnable<Version[]>() {
 			@Override
 			public Version[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getVersions(loginToken.getCurrentValue(), componentKey));
+				return Converter.convert(jiraSoapService.getVersions(loginToken.getCurrentValue(), componentKey));
 			}
 		});
 	}
 
-	public boolean logout() throws ServiceUnavailableException {
+	public void logout() {
 		loginToken.expire();
-		return true;
 	}
 
-	public NamedFilter[] getSavedFilters() {
+	public NamedFilter[] getNamedFilters() {
 		return call(new RemoteRunnable<NamedFilter[]>() {
 			@Override
 			public NamedFilter[] run() throws java.rmi.RemoteException {
-				return Converter.convert(jirasoapserviceV2.getSavedFilters(loginToken.getCurrentValue()));
+				return Converter.convert(jiraSoapService.getSavedFilters(loginToken.getCurrentValue()));
 			}
 		});
 	}
@@ -302,6 +319,18 @@ public class SoapJiraService implements JiraService {
 		return e.getLocalizedMessage();
 	}
 
+	public void search(Query query, IssueCollector collector) {
+		if (query instanceof SmartQuery) {
+			quickSearch(((SmartQuery) query).getKeywords(), collector);
+		} else if (query instanceof FilterDefinition) {
+			findIssues((FilterDefinition) query, collector);
+		} else if (query instanceof NamedFilter) {
+			executeNamedFilter((NamedFilter) query, collector);
+		} else {
+			throw new IllegalArgumentException("Unknown query type: " + query.getClass());
+		}
+	}
+
 	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector) {
 		filterService.findIssues(filterDefinition, collector);
 	}
@@ -336,12 +365,12 @@ public class SoapJiraService implements JiraService {
 		issueService.advanceIssueWorkflow(issue, action);
 	}
 
-	public void startIssue(Issue issue, String comment, String user) {
-		issueService.startIssue(issue, comment, user);
+	public void startIssue(Issue issue) {
+		issueService.startIssue(issue);
 	}
 
-	public void stopIssue(Issue issue, String comment, String user) {
-		issueService.stopIssue(issue, comment, user);
+	public void stopIssue(Issue issue) {
+		issueService.stopIssue(issue);
 	}
 
 	public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
@@ -382,8 +411,8 @@ public class SoapJiraService implements JiraService {
 		issueService.unvoteIssue(issue);
 	}
 
-	private <T> T call(RemoteRunnable<T> runnable, boolean retry) throws AuthenticationException, InsufficientPermissionException,
-			ServiceUnavailableException {
+	private <T> T call(RemoteRunnable<T> runnable, boolean retry) throws AuthenticationException,
+			InsufficientPermissionException, ServiceUnavailableException {
 		// retry in case login token is expired
 		for (int i = 0; i < 2; i++) {
 			try {
@@ -392,7 +421,7 @@ public class SoapJiraService implements JiraService {
 				throw new InsufficientPermissionException(e.getMessage());
 			} catch (RemoteAuthenticationException e) {
 				if (!retry || i > 0) {
-					throw new AuthenticationException(e.getMessage());					
+					throw new AuthenticationException(e.getMessage());
 				}
 				loginToken.expire();
 			} catch (RemoteException e) {
@@ -405,10 +434,10 @@ public class SoapJiraService implements JiraService {
 	}
 
 	private <T> T call(RemoteRunnable<T> runnable) throws AuthenticationException, InsufficientPermissionException,
-	ServiceUnavailableException {
+			ServiceUnavailableException {
 		return call(runnable, true);
 	}
-		
+
 	private static interface LoginToken {
 		/**
 		 * Gets the current value of the login token. If the token has expired a
@@ -460,7 +489,7 @@ public class SoapJiraService implements JiraService {
 				this.token = call(new RemoteRunnable<String>() {
 					@Override
 					public String run() throws java.rmi.RemoteException {
-						return jirasoapserviceV2.login(username, password);
+						return jiraSoapService.login(username, password);
 					}
 				}, false);
 
@@ -473,7 +502,7 @@ public class SoapJiraService implements JiraService {
 		public synchronized void expire() {
 			if (token != null) {
 				try {
-					jirasoapserviceV2.logout(this.token);
+					jiraSoapService.logout(this.token);
 				} catch (java.rmi.RemoteException e) {
 					// ignore
 				}

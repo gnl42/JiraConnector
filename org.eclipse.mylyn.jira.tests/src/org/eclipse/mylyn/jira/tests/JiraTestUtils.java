@@ -1,5 +1,6 @@
 package org.eclipse.mylar.jira.tests;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
@@ -17,11 +18,21 @@ public class JiraTestUtils {
 	}
 
 	public static Issue createIssue(JiraServer server, String summary) {
+		refreshDetails(server);
+		
 		Issue issue = new Issue();
 		issue.setProject(server.getProjects()[0]);
 		issue.setType(server.getIssueTypes()[0]);
 		issue.setSummary(summary);
-		return issue;
+
+		return server.createIssue(issue);
+	}
+
+	
+	public static void refreshDetails(JiraServer server) {
+		if (server.getProjects().length == 0) {
+			server.refreshDetails(new NullProgressMonitor());
+		}
 	}
 	
 }

@@ -277,11 +277,11 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void startIssue(Issue issue, String comment, String user) {
+	public void startIssue(Issue issue) {
 		advanceIssueWorkflow(issue, "4");
 	}
 
-	public void stopIssue(Issue issue, String comment, String user) {
+	public void stopIssue(Issue issue) {
 		advanceIssueWorkflow(issue, "301");
 	}
 
@@ -424,8 +424,8 @@ public class JiraWebIssueService {
 					parts.add(idPart);
 					parts.add(commentLevelPart);
 
-					post.setRequestEntity(new MultipartRequestEntity(parts.toArray(new Part[parts.size()]),
-							post.getParams()));
+					post.setRequestEntity(new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), post
+							.getParams()));
 
 					client.executeMethod(post);
 					// Expect a 302 response here as it can redirect to the
@@ -508,7 +508,7 @@ public class JiraWebIssueService {
 					post.addParameter("assignee", issue.getAssignee());
 				}
 
-				post.addParameter("reporter", server.getCurrentUserName());
+				post.addParameter("reporter", server.getUserName());
 
 				post.addParameter("environment", issue.getEnvironment() != null ? issue.getEnvironment() : "");
 				post.addParameter("description", issue.getDescription() != null ? issue.getDescription() : "");
@@ -589,7 +589,7 @@ public class JiraWebIssueService {
 	}
 
 	private void voteUnvoteIssue(final Issue issue, final boolean vote) {
-		if (!issue.canUserVote(this.server.getCurrentUserName())) {
+		if (!issue.canUserVote(this.server.getUserName())) {
 			return;
 		}
 
@@ -637,11 +637,12 @@ public class JiraWebIssueService {
 		case JiraServer.ASSIGNEE_NONE:
 			return ""; //$NON-NLS-1$
 		case JiraServer.ASSIGNEE_SELF:
-			return server.getCurrentUserName();
+			return server.getUserName();
 		case JiraServer.ASSIGNEE_USER:
 			return user;
 		default:
 			return user;
 		}
 	}
+
 }

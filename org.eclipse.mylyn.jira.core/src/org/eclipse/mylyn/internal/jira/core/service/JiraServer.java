@@ -28,6 +28,10 @@ import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 
 /**
+ * This interface exposes the full set of services available from a Jira
+ * installation. It provides a unified inferface for the SOAP and Web/RSS
+ * services available.
+ * 
  * TODO this class needs to be populated using the SOAP or JAX-RPC interfaces.
  * Once this is done it should be cached on disk somewhere so we don't have to
  * query the server each time a client loads. It should be possible to reload
@@ -42,42 +46,45 @@ import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
  * @author Steffen Pingel
  */
 public interface JiraServer {
+	
+	String CHARSET = "UTF-8";
+	
 	/**
 	 * Assign to the default user
 	 */
-	public static final int ASSIGNEE_DEFAULT = 1;
+	int ASSIGNEE_DEFAULT = 1;
 
 	/**
 	 * Leave the assignee field as is (this does not apply when performing an
 	 * assign to action)
 	 */
-	public static final int ASSIGNEE_CURRENT = 2;
+	int ASSIGNEE_CURRENT = 2;
 
 	/**
 	 * Assign to nobody
 	 */
-	public static final int ASSIGNEE_NONE = 3;
+	int ASSIGNEE_NONE = 3;
 
 	/**
 	 * Assign to a specific user. To get the name of the assignee call
 	 * {@link #getAssignee()}
 	 */
-	public static final int ASSIGNEE_USER = 4;
+	int ASSIGNEE_USER = 4;
 
 	/**
 	 * Assign to the current user
 	 */
-	public static final int ASSIGNEE_SELF = 5;
+	int ASSIGNEE_SELF = 5;
 
-	public abstract boolean useCompression();
+	boolean useCompression();
 
-	public abstract String getName();
+	String getName();
 
-	public abstract String getBaseURL();
+	String getBaseURL();
 
-	public abstract String getCurrentUserName();
+	String getUserName();
 
-	public abstract String getCurrentUserPassword();
+	String getPassword();
 
 	/**
 	 * Force a login to the remote repository.
@@ -87,41 +94,41 @@ public interface JiraServer {
 	 *             you need to check if the credentials are valid, call
 	 *             {@link org.eclipse.mylar.internal.jira.core.ServerManager#testConnection(String, String, String)}
 	 */
-	public abstract void login();
+	void login();
 
 	/**
 	 * Force the current session to be closed. This method should only be called
 	 * during application shutdown and then only out of courtesy to the server.
 	 * Jira will automatically expire sessions after a set amount of time.
 	 */
-	public abstract void logout();
+	void logout();
 
-	public abstract Project getProjectById(String id);
+	Project getProjectById(String id);
 
-	public abstract Project getProject(String key);
+	Project getProject(String key);
 
-	public abstract Project[] getProjects();
+	Project[] getProjects();
 
-	public abstract Priority getPriorityById(String id);
+	Priority getPriorityById(String id);
 
-	public abstract Priority[] getPriorities();
+	Priority[] getPriorities();
 
-	public abstract IssueType getIssueTypeById(String id);
+	IssueType getIssueTypeById(String id);
 
-	public abstract IssueType[] getIssueTypes();
+	IssueType[] getIssueTypes();
 
-	public abstract Status getStatusById(String id);
+	Status getStatusById(String id);
 
-	public abstract Status[] getStatuses();
+	Status[] getStatuses();
 
-	public abstract Resolution getResolutionById(String id);
+	Resolution getResolutionById(String id);
 
-	public abstract Resolution[] getResolutions();
+	Resolution[] getResolutions();
 
 	// disabled since these methods will not return correct results
-//	public abstract User getUserByName(String name);
+//	User getUserByName(String name);
 //
-//	public abstract User[] getUsers();
+//	User[] getUsers();
 
 	// disabled deprecated API
 //	/**
@@ -134,7 +141,7 @@ public interface JiraServer {
 //	 * @param collector
 //	 *            Colelctor that will process the matching issues
 //	 */
-//	public abstract void quickSearch(String searchString, IssueCollector collector);
+//	void quickSearch(String searchString, IssueCollector collector);
 //
 //	/**
 //	 * Finds issues given a user defined query string
@@ -145,7 +152,7 @@ public interface JiraServer {
 //	 * @param collector
 //	 *            Reciever for the matching issues
 //	 */
-//	public abstract void findIssues(FilterDefinition filter, IssueCollector collector);
+//	void findIssues(FilterDefinition filter, IssueCollector collector);
 //
 //	/**
 //	 * @deprecated Use {@link #search(Query, IssueCollector) instead
@@ -154,7 +161,7 @@ public interface JiraServer {
 //	 * @param collector
 //	 *            Reciever for the matching issues
 //	 */
-//	public abstract void executeNamedFilter(NamedFilter filter, IssueCollector collector);
+//	void executeNamedFilter(NamedFilter filter, IssueCollector collector);
 
 	/**
 	 * Retrieve an issue using its unique key
@@ -164,7 +171,7 @@ public interface JiraServer {
 	 * @return Matching issue or <code>null</code> if no matching issue could
 	 *         be found
 	 */
-	public abstract Issue getIssue(String issueKey);
+	Issue getIssue(String issueKey);
 
 	/**
 	 * @param query
@@ -172,9 +179,9 @@ public interface JiraServer {
 	 * @param collector
 	 *            Reciever for the matching issues
 	 */
-	public abstract void search(Query query, IssueCollector collector);
+	void search(Query query, IssueCollector collector);
 
-	public abstract ServerInfo getServerInfo();
+	ServerInfo getServerInfo();
 
 	/**
 	 * Retrieve all locally defined filter definitions. These filters are not
@@ -182,11 +189,11 @@ public interface JiraServer {
 	 * 
 	 * @return List of all locally defined filters for this server
 	 */
-//	public abstract FilterDefinition[] getLocalFilters();
+//	FilterDefinition[] getLocalFilters();
 //
-//	public abstract void addLocalFilter(FilterDefinition filter);
+//	void addLocalFilter(FilterDefinition filter);
 //
-//	public abstract void removeLocalFilter(String filterName);
+//	void removeLocalFilter(String filterName);
 
 	/**
 	 * Retrieves all filters that are stored and run on the server. The client
@@ -195,29 +202,29 @@ public interface JiraServer {
 	 * 
 	 * @return List of all filters taht are stored and executed on the server
 	 */
-	public abstract NamedFilter[] getNamedFilters();
+	NamedFilter[] getNamedFilters();
 
-	public abstract void addCommentToIssue(Issue issue, String comment);
+	void addCommentToIssue(Issue issue, String comment);
 
-	public abstract void updateIssue(Issue issue, String comment);
+	void updateIssue(Issue issue, String comment);
 
-	public abstract void assignIssueTo(Issue issue, int assigneeType, String user, String comment);
+	void assignIssueTo(Issue issue, int assigneeType, String user, String comment);
 
-	public abstract void startIssue(Issue issue, String comment, String user);
+	void startIssue(Issue issue);
 
-	public abstract void stopIssue(Issue issue, String comment, String user);
+	void stopIssue(Issue issue);
 
-	public abstract void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
+	void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
 			int assigneeType, String user);
 
-	public abstract void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
+	void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
 			int assigneeType, String user);
 
-	public abstract void reopenIssue(Issue issue, String comment, int assigneeType, String user);
+	void reopenIssue(Issue issue, String comment, int assigneeType, String user);
 
-	public abstract void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType);
+	void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType);
 
-	public abstract void attachFile(Issue issue, String comment, File file, String contentType);
+	void attachFile(Issue issue, String comment, File file, String contentType);
 
 	/**
 	 * Creates an issue with the details specified in <code>issue</code>. The
@@ -245,7 +252,7 @@ public interface JiraServer {
 	 * @return A fully populated {@link org.eclipse.mylar.internal.jira.core.model.Issue}
 	 *         containing the details of the new issue
 	 */
-	public abstract Issue createIssue(Issue issue);
+	Issue createIssue(Issue issue);
 
 	/**
 	 * Begin watching <code>issue</code>. Nothing will happen if the user is
@@ -254,7 +261,7 @@ public interface JiraServer {
 	 * @param issue
 	 *            Issue to begin watching
 	 */
-	public abstract void watchIssue(Issue issue);
+	void watchIssue(Issue issue);
 
 	/**
 	 * Stop watching <code>issue</code>. Nothing will happen if the user is
@@ -263,7 +270,7 @@ public interface JiraServer {
 	 * @param issue
 	 *            Issue to stop watching
 	 */
-	public abstract void unwatchIssue(Issue issue);
+	void unwatchIssue(Issue issue);
 
 	/**
 	 * Vote for <code>issue</code>. Issues can only be voted on if the issue
@@ -275,7 +282,7 @@ public interface JiraServer {
 	 * @param issue
 	 *            Issue to vote for
 	 */
-	public abstract void voteIssue(Issue issue);
+	void voteIssue(Issue issue);
 
 	/**
 	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the
@@ -287,25 +294,25 @@ public interface JiraServer {
 	 * @param issue
 	 *            Issue to remove vote from
 	 */
-	public abstract void unvoteIssue(Issue issue);
+	void unvoteIssue(Issue issue);
 
 	/**
 	 * Refresh any cached information with the latest values from the remote
 	 * server. This operation may take a long time to complete and should not be
 	 * called from a UI thread.
 	 */
-	public abstract void refreshDetails(IProgressMonitor monitor);
+	void refreshDetails(IProgressMonitor monitor);
 
-	public abstract void refreshServerInfo(IProgressMonitor monitor);
+	void refreshServerInfo(IProgressMonitor monitor);
 
-	public abstract boolean hasDetails();
+	boolean hasDetails();
 	
-	public abstract Proxy getProxy();
+	Proxy getProxy();
 
-	public abstract String getHttpUser();
+	String getHttpUser();
 
-	public abstract String getHttpPassword();
+	String getHttpPassword();
 	
-//	public abstract void setProxy(Proxy proxy);
+//	void setProxy(Proxy proxy);
 	
 }

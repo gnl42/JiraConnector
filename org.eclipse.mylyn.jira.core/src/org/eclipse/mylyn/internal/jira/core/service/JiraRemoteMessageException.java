@@ -9,27 +9,28 @@
 package org.eclipse.mylar.internal.jira.core.service;
 
 /**
- * Indicates an error during repository access.
+ * Indicates that an error page was displayed by the remote repository.
  * 
  * @author Steffen Pingel
  */
-public class JiraException extends Exception {
+public class JiraRemoteMessageException extends JiraRemoteException {
 
-	private static final long serialVersionUID = -4354184850277873071L;
+	private static final long serialVersionUID = 4622602207502097037L;
 
-	public JiraException() {
-	}
+	private String htmlMessage;
 
-	public JiraException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public JiraException(String message) {
+	public JiraRemoteMessageException(String message, String htmlMessage) {
 		super(message);
+
+		this.htmlMessage = htmlMessage;
 	}
 
-	public JiraException(Throwable cause) {
-		super(cause);
+	public JiraRemoteMessageException(String htmlMessage) {
+		this.htmlMessage = htmlMessage;
+	}
+
+	public String getHtmlMessage() {
+		return htmlMessage;
 	}
 
 }

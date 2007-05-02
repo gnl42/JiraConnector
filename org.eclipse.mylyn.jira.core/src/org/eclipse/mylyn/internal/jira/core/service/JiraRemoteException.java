@@ -9,26 +9,28 @@
 package org.eclipse.mylar.internal.jira.core.service;
 
 /**
- * Indicates an error during repository access.
+ * Indicates that an exception on the repository side has been encountered while
+ * processing the request.
  * 
  * @author Steffen Pingel
  */
-public class JiraException extends Exception {
+public class JiraRemoteException extends JiraException {
 
-	private static final long serialVersionUID = -4354184850277873071L;
 
-	public JiraException() {
+	private static final long serialVersionUID = -2218183365629101150L;
+
+	public JiraRemoteException() {
 	}
 
-	public JiraException(String message, Throwable cause) {
+	public JiraRemoteException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public JiraException(String message) {
+	public JiraRemoteException(String message) {
 		super(message);
 	}
 
-	public JiraException(Throwable cause) {
+	public JiraRemoteException(Throwable cause) {
 		super(cause);
 	}
 

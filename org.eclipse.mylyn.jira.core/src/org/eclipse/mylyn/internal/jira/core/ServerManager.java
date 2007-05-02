@@ -29,11 +29,12 @@ import java.util.Map;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
 import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
-import org.eclipse.mylar.internal.jira.core.service.CachedRpcJiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraServerData;
 import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
+import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcServer;
 
 /**
  * Note: This class is not thread safe.
@@ -45,7 +46,7 @@ public class ServerManager {
 
 	private final File cacheLocation;
 
-	private Map<String, CachedRpcJiraServer> serverByName = new HashMap<String, CachedRpcJiraServer>();
+	private Map<String, AbstractJiraServer> serverByName = new HashMap<String, AbstractJiraServer>();
 
 	private Map<String, JiraServerData> serverDataByName = new HashMap<String, JiraServerData>();
 
@@ -83,7 +84,7 @@ public class ServerManager {
 	}
 
 	protected void stop() {
-		for (CachedRpcJiraServer server : serverByName.values()) {
+		for (AbstractJiraServer server : serverByName.values()) {
 			ObjectOutputStream out = null;
 			try {
 				File cacheDir = new File(cacheLocation, server.getName());
@@ -138,13 +139,13 @@ public class ServerManager {
 		return serverByName.values().toArray(new JiraServer[serverByName.size()]);
 	}
 
-	private CachedRpcJiraServer createServer(String name, String baseUrl, boolean useCompression, String username,
+	private AbstractJiraServer createServer(String name, String baseUrl, boolean useCompression, String username,
 			String password, Proxy proxy, String httpUser, String httpPassword) {
 		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 		}
 
-		CachedRpcJiraServer server = new CachedRpcJiraServer(name, baseUrl, useCompression, username, password, proxy,
+		JiraRpcServer server = new JiraRpcServer(name, baseUrl, useCompression, username, password, proxy,
 				httpUser, httpPassword);
 		return server;
 	}
@@ -155,7 +156,7 @@ public class ServerManager {
 			throw new RuntimeException("A server with that name already exists");
 		}
 		
-		CachedRpcJiraServer server = createServer(name, baseUrl, useCompression, username, password, proxy, httpUser, httpPassword);
+		AbstractJiraServer server = createServer(name, baseUrl, useCompression, username, password, proxy, httpUser, httpPassword);
 		JiraServerData data = serverDataByName.get(name);
 		if (data != null) {
 			server.setData(data);

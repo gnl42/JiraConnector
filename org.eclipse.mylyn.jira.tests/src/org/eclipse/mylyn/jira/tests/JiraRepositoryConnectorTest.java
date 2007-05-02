@@ -83,7 +83,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testChangeTaskRepositorySettings() throws MalformedURLException {
-		assertEquals(repository.getUserName(), server.getCurrentUserName());
+		assertEquals(repository.getUserName(), server.getUserName());
 
 		EditRepositoryWizard wizard = new EditRepositoryWizard(repository);
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -94,7 +94,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(wizard.performFinish());
 
 		server = JiraServerFacade.getDefault().getJiraServer(repository);
-		assertEquals("newuser", server.getCurrentUserName());
+		assertEquals("newuser", server.getUserName());
 	}
 
 	public void testUpdateTask() throws Exception {
@@ -103,7 +103,6 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		}
 		
 		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
-		issue = server.createIssue(issue);
 		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(false, task.isCompleted());

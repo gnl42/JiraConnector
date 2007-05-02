@@ -11,26 +11,19 @@
 
 package org.eclipse.mylar.internal.jira.core.service;
 
-import java.io.File;
 import java.net.Proxy;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
+import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
-import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.model.Query;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.model.Status;
 import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylar.internal.jira.core.model.filter.SmartQuery;
-import org.eclipse.mylar.internal.jira.core.service.soap.SoapJiraService;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change
@@ -41,11 +34,9 @@ import org.eclipse.mylar.internal.jira.core.service.soap.SoapJiraService;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public class CachedRpcJiraServer implements JiraServer {
+public abstract class AbstractJiraServer implements JiraServer {
 
 	private volatile JiraServerData data;
-
-	private final JiraService serviceDelegate;
 
 	private final String name;
 	
@@ -63,7 +54,7 @@ public class CachedRpcJiraServer implements JiraServer {
 
 	private final String httpPassword;
 
-	public CachedRpcJiraServer(String name, String baseURL, boolean useCompression, String username, String password,
+	public AbstractJiraServer(String name, String baseURL, boolean useCompression, String username, String password,
 			Proxy proxy, String httpUser, String httpPassword) {
 		this.name = name;
 		this.baseURL = baseURL;
@@ -76,8 +67,6 @@ public class CachedRpcJiraServer implements JiraServer {
 		this.httpPassword = httpPassword;
 
 		this.data = new JiraServerData();
-
-		this.serviceDelegate = new SoapJiraService(this);
 	}
 
 	public synchronized void refreshDetails(IProgressMonitor monitor) {
@@ -127,43 +116,23 @@ public class CachedRpcJiraServer implements JiraServer {
 		return name;
 	}
 
-	public void login() {
-		serviceDelegate.login();
-	}
-
-	public void logout() {
-		serviceDelegate.logout();
-	}
-
-	// public void setBaseURL(String baseURL) {
-	// this.baseURL = baseURL;
-	// }
-
 	public String getBaseURL() {
 		return baseURL;
 	}
 
-	// public void setCurrentUserName(String username) {
-	// this.username = username;
-	// }
-
-	public String getCurrentUserName() {
+	public String getUserName() {
 		return this.username;
 	}
 
-	// public void setCurrentPassword(String password) {
-	// this.password = password;
-	// }
-
-	public String getCurrentUserPassword() {
+	public String getPassword() {
 		return this.password;
 	}
 
 	private void initializeProjects(JiraServerData data) {
 		if (data.serverInfo.getVersion().compareTo("3.4") >= 0) {
-			data.projects = this.serviceDelegate.getProjectsNoSchemes();
+			data.projects = getProjectsRemoteNoSchemes();
 		} else {
-			data.projects = this.serviceDelegate.getProjects();
+			data.projects = getProjectsRemote();
 		}
 
 		data.projectsById = new HashMap<String, Project>(data.projects.length);
@@ -171,13 +140,21 @@ public class CachedRpcJiraServer implements JiraServer {
 
 		for (int i = 0; i < data.projects.length; i++) {
 			Project project = data.projects[i];
-			project.setComponents(this.serviceDelegate.getComponents(project.getKey()));
-			project.setVersions(this.serviceDelegate.getVersions(project.getKey()));
+			project.setComponents(getComponentsRemote(project.getKey()));
+			project.setVersions(getVersionsRemote(project.getKey()));
 
 			data.projectsById.put(project.getId(), project);
 			data.projectsByKey.put(project.getKey(), project);
 		}
 	}
+
+	public abstract Project[] getProjectsRemote();
+	
+	public abstract Project[] getProjectsRemoteNoSchemes();
+
+	public abstract Version[] getVersionsRemote(String key);
+
+	public abstract Component[] getComponentsRemote(String key);
 
 	public Project getProjectById(String id) {
 		Project project = data.projectsById.get(id);
@@ -200,13 +177,15 @@ public class CachedRpcJiraServer implements JiraServer {
 	}
 
 	private void initializePriorities(JiraServerData data) {
-		data.priorities = this.serviceDelegate.getPriorities();
+		data.priorities = getPrioritiesRemote();
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
 		for (int i = 0; i < data.priorities.length; i++) {
 			Priority priority = data.priorities[i];
 			data.prioritiesById.put(priority.getId(), priority);
 		}
 	}
+
+	public abstract Priority[] getPrioritiesRemote();
 
 	public Priority getPriorityById(String id) {
 		Priority priority = data.prioritiesById.get(id);
@@ -221,12 +200,12 @@ public class CachedRpcJiraServer implements JiraServer {
 	}
 
 	private void initializeIssueTypes(JiraServerData data) {
-		IssueType[] issueTypes = this.serviceDelegate.getIssueTypes();
+		IssueType[] issueTypes = getIssueTypesRemote();
 		IssueType[] subTaskIssueTypes; 
 		if (data.serverInfo.getVersion().compareTo("3.2") < 0) {
 			subTaskIssueTypes = new IssueType[0];
 		} else {
-			subTaskIssueTypes = this.serviceDelegate.getSubTaskIssueTypes();
+			subTaskIssueTypes = getSubTaskIssueTypesRemote();
 		}
 
 		data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length + subTaskIssueTypes.length);
@@ -246,6 +225,10 @@ public class CachedRpcJiraServer implements JiraServer {
 		System.arraycopy(subTaskIssueTypes, 0, data.issueTypes, issueTypes.length, subTaskIssueTypes.length);
 	}
 
+	public abstract IssueType[] getIssueTypesRemote();
+	
+	public abstract IssueType[] getSubTaskIssueTypesRemote();
+
 	public IssueType getIssueTypeById(String id) {
 		IssueType issueType = data.issueTypesById.get(id);
 		if (issueType != null) {
@@ -259,13 +242,15 @@ public class CachedRpcJiraServer implements JiraServer {
 	}
 
 	private void initializeStatuses(JiraServerData data) {
-		data.statuses = this.serviceDelegate.getStatuses();
+		data.statuses = getStatusesRemote();
 		data.statusesById = new HashMap<String, Status>(data.statuses.length);
 		for (int i = 0; i < data.statuses.length; i++) {
 			Status status = data.statuses[i];
 			data.statusesById.put(status.getId(), status);
 		}
 	}
+
+	public abstract Status[] getStatusesRemote();
 
 	public Status getStatusById(String id) {
 		Status status = data.statusesById.get(id);
@@ -280,13 +265,15 @@ public class CachedRpcJiraServer implements JiraServer {
 	}
 
 	private void initializeResolutions(JiraServerData data) {
-		data.resolutions = this.serviceDelegate.getResolutions();
+		data.resolutions = getResolutionsRemote();
 		data.resolutionsById = new HashMap<String, Resolution>(data.resolutions.length);
 		for (int i = 0; i < data.resolutions.length; i++) {
 			Resolution resolution = data.resolutions[i];
 			data.resolutionsById.put(resolution.getId(), resolution);
 		}
 	}
+
+	public abstract Resolution[] getResolutionsRemote();
 
 	public Resolution getResolutionById(String id) {
 		Resolution resolution = data.resolutionsById.get(id);
@@ -300,55 +287,14 @@ public class CachedRpcJiraServer implements JiraServer {
 		return data.resolutions;
 	}
 
-	// private void initializeGroups(JiraServerData data) {
-	// // TODO will this group exist everywhere?
-	// data.groups = new Group[] { this.serviceDelegate.getGroup("jira-users")
-	// };
-	// ArrayList<User> allUsers = new ArrayList<User>();
-	// for (int i = 0; i < data.groups[0].getUsers().length; i++) {
-	// User user = data.groups[0].getUsers()[i];
-	// data.usersByName.put(user.getName(), user);
-	// allUsers.add(user);
-	// }
-	// data.users = allUsers.toArray(new User[allUsers.size()]);
-	// }
-	//
-	// public Group[] getGroups() {
-	// return data.groups;
-	// }
-	//
-	// public User getUserByName(String name) {
-	// return data.usersByName.get(name);
-	// }
-	//
-	// public User[] getUsers() {
-	// return data.users;
-	// }
-
 	private void initializeServerInfo(JiraServerData data) {
-		data.serverInfo = this.serviceDelegate.getServerInfo();
-	}
-
-	public Issue getIssue(String issueKey) {
-		return serviceDelegate.getIssue(issueKey);
-	}
-
-	public void search(Query query, IssueCollector collector) {
-		if (query instanceof SmartQuery) {
-			serviceDelegate.quickSearch(((SmartQuery) query).getKeywords(), collector);
-		} else if (query instanceof FilterDefinition) {
-			serviceDelegate.findIssues((FilterDefinition) query, collector);
-		} else if (query instanceof NamedFilter) {
-			serviceDelegate.executeNamedFilter((NamedFilter) query, collector);
-		} else {
-			throw new IllegalArgumentException("Unknown query type: " + query.getClass());
-		}
+		data.serverInfo = getServerInfo();
 	}
 
 	public ServerInfo getServerInfo() {
 		ServerInfo info = data.serverInfo;
 		if (info == null) {
-			info = this.serviceDelegate.getServerInfo();
+			info = getServerInfoRemote();
 		}
 		data.serverInfo = info;
 		return info;
@@ -367,80 +313,11 @@ public class CachedRpcJiraServer implements JiraServer {
 	// FilterDefinition[data.localFilters.size()]);
 	// }
 
-	public NamedFilter[] getNamedFilters() {
-		NamedFilter[] namedFilters = this.serviceDelegate.getSavedFilters();
-		// for (int i = 0; i < namedFilters.length; i++) {
-		// NamedFilter namedFilter = namedFilters[i];
-		// }
-
-		return namedFilters;
-	}
-
-	public void addCommentToIssue(Issue issue, String comment) {
-		serviceDelegate.addCommentToIssue(issue, comment);
-	}
-
-	public void updateIssue(Issue issue, String comment) {
-		serviceDelegate.updateIssue(issue, comment);
-	}
-
-	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) {
-		serviceDelegate.assignIssueTo(issue, assigneeType, user, comment);
-	}
-
-	public void startIssue(Issue issue, String comment, String user) {
-		serviceDelegate.startIssue(issue, comment, user);
-	}
-
-	public void stopIssue(Issue issue, String comment, String user) {
-		serviceDelegate.stopIssue(issue, comment, user);
-	}
-
-	public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user) {
-		serviceDelegate.resolveIssue(issue, resolution, fixVersions, comment, assigneeType, user);
-	}
-
-	public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
-			String user) {
-		serviceDelegate.closeIssue(issue, resolution, fixVersions, comment, assigneeType, user);
-	}
-
-	public void reopenIssue(Issue issue, String comment, int assigneeType, String user) {
-		serviceDelegate.reopenIssue(issue, comment, assigneeType, user);
-	}
-
-	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) {
-		serviceDelegate.attachFile(issue, comment, filename, contents, contentType);
-	}
-
-	public void attachFile(Issue issue, String comment, File file, String contentType) {
-		serviceDelegate.attachFile(issue, comment, file, contentType);
-	}
-
-	public Issue createIssue(Issue issue) {
-		return serviceDelegate.createIssue(issue);
-	}
-
-	public void watchIssue(Issue issue) {
-		serviceDelegate.watchIssue(issue);
-	}
-
-	public void unwatchIssue(Issue issue) {
-		serviceDelegate.unwatchIssue(issue);
-	}
-
-	public void voteIssue(Issue issue) {
-		serviceDelegate.voteIssue(issue);
-	}
-
-	public void unvoteIssue(Issue issue) {
-		serviceDelegate.unvoteIssue(issue);
-	}
+	public abstract ServerInfo getServerInfoRemote();
 
 	public boolean equals(Object obj) {
-		if (obj instanceof CachedRpcJiraServer)  {
-			return getName().equals(((CachedRpcJiraServer) obj).getName());
+		if (obj instanceof AbstractJiraServer)  {
+			return getName().equals(((AbstractJiraServer) obj).getName());
 		}
 		return false;
 	}
