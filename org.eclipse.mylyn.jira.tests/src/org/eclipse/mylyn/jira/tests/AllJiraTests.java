@@ -31,6 +31,7 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraFilterTest.class);
 		suite.addTestSuite(JiraTaskArchiveTest.class);
 		suite.addTestSuite(JiraRepositoryConnectorTest.class);
+		suite.addTestSuite(JiraRpcServerTest.class);
 		// $JUnit-END$
 		return suite;
 	}

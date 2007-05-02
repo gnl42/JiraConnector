@@ -26,11 +26,33 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 	}
 
 	public JiraRemoteMessageException(String htmlMessage) {
+		super(getTitle(htmlMessage));
+		
 		this.htmlMessage = htmlMessage;
+	}
+
+	private static String getTitle(String text) {
+		int start = text.indexOf("<strong>");
+		if (start != -1) {
+			int stop = text.indexOf("</strong>", start + 8);
+			if (stop != -1) {
+				return text.substring(start + 8, stop);
+			}
+		}
+		return null;
 	}
 
 	public String getHtmlMessage() {
 		return htmlMessage;
 	}
 
+	@Override
+	public String toString() {
+		if (getMessage() != null) {
+			return getMessage() + " (" + getHtmlMessage() + ")";
+		} else {
+			return getHtmlMessage();
+		}
+	}
+	
 }

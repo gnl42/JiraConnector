@@ -11,18 +11,25 @@
 
 package org.eclipse.mylar.internal.jira.core.service.web;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.text.html.HTML.Tag;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -32,12 +39,16 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartBase;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.eclipse.mylar.core.net.HtmlStreamTokenizer;
+import org.eclipse.mylar.core.net.HtmlTag;
+import org.eclipse.mylar.core.net.HtmlStreamTokenizer.Token;
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
+import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
 
@@ -254,25 +265,23 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) {
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/WorkflowUIDispatcher.jspa?");
+				rssUrlBuffer.append("id=").append(issue.getId());
 				rssUrlBuffer.append("&action=").append(action);
-				rssUrlBuffer.append("&id=").append(issue.getId());
-				GetMethod get = new GetMethod(rssUrlBuffer.toString());
-
+				GetMethod method = new GetMethod(rssUrlBuffer.toString());
+				method.setFollowRedirects(false);
 				try {
-					client.executeMethod(get);
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					int result = client.executeMethod(method);
+					if (result != HttpStatus.SC_TEMPORARY_REDIRECT) {
+						handleErrorMessage(method);
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new JiraException(e);
 				} finally {
-					get.releaseConnection();
+					method.releaseConnection();
 				}
-
 			}
 
 		});
@@ -639,6 +648,51 @@ public class JiraWebIssueService {
 		default:
 			return user;
 		}
+	}
+
+	private void handleErrorMessage(HttpMethodBase method) throws IOException, JiraException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(),
+				JiraServer.CHARSET));
+		try {
+			HtmlStreamTokenizer tokenizer = new HtmlStreamTokenizer(reader, null);
+			for (Token token = tokenizer.nextToken(); token.getType() != Token.EOF; token = tokenizer.nextToken()) {
+				if (token.getType() == Token.TAG) {
+					HtmlTag tag = (HtmlTag) token.getValue();
+					if (tag.getTagType() == HtmlTag.Type.DIV && tag.getAttribute("class") != null
+							&& tag.getAttribute("class").startsWith("infoBox")) {
+						throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
+					}
+				}
+			}
+		} catch (ParseException e) {
+			throw new JiraRemoteMessageException(method.getResponseBodyAsString());
+		} finally {
+			reader.close();
+		}
+	}
+
+	private String getContent(HtmlStreamTokenizer tokenizer, Tag closingTag) throws IOException, ParseException {
+		StringBuffer sb = new StringBuffer();
+		int count = 0;
+		for (Token token = tokenizer.nextToken(); token.getType() != Token.EOF; token = tokenizer.nextToken()) {
+			if (token.getType() == Token.TAG) {
+				HtmlTag tag = (HtmlTag) token.getValue();
+				if (tag.getTagType() == closingTag) {
+					if (tag.isEndTag()) {
+						if (count == 0) {
+							break;
+						} else {
+							count--;
+						}
+					} else {
+						count++;
+					}
+				}
+			}
+
+			sb.append(token.toString());
+		}
+		return sb.toString();
 	}
 
 }

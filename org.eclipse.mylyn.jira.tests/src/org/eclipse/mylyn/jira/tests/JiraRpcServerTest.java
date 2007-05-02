@@ -10,6 +10,8 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
+import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcServer;
 
 public class JiraRpcServerTest extends TestCase {
@@ -38,16 +40,25 @@ public class JiraRpcServerTest extends TestCase {
 		server.refreshDetails(new NullProgressMonitor());
 	}
 
-	public void testStartIssue() throws Exception {
-		Issue issue = JiraTestUtils.createIssue(server, "testStartIssue");
+	public void testStartStopIssue() throws Exception {
+		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
 		server.startIssue(issue);
-		// no way to tell if issue was actually started		
+		try {
+			server.startIssue(issue);
+			fail("Expected JiraRemoteMessageException");
+		} catch (JiraRemoteMessageException e) {
+			assertEquals("Workflow Action Invalid", e.getMessage());
+		}
+		server.stopIssue(issue);
+		try {
+			server.stopIssue(issue);
+			fail("Expected JiraRemoteMessageException");
+		} catch (JiraException e) {
+			assertEquals("Workflow Action Invalid", e.getMessage());
+		}
+		server.startIssue(issue);
 	}
 
-//	public void testStopIssue() {
-//		fail("Not yet implemented");
-//	}
-//
 //	public void testResolveIssue() {
 //		fail("Not yet implemented");
 //	}
