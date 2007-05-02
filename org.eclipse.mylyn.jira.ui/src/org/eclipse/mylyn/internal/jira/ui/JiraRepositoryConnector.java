@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylar.core.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
@@ -39,10 +40,9 @@ import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.Order;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
-import org.eclipse.mylar.internal.jira.core.service.InsufficientPermissionException;
+import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.ui.JiraTask.PriorityLevel;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -126,7 +126,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
 				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(jiraServer), collector);
 			}
-		} catch (AuthenticationException ex) {
+		} catch (JiraAuthenticationException ex) {
 			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
 					"Unable to login to the repository. Check credentials", ex);
 		} catch (Throwable t) {
@@ -226,12 +226,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			// jiraServer.getServerInfo();
 			// Will get ALL issues that have changed since lastSyncDate
 			jiraServer.search(changedFilter, collector);
-		} catch (AuthenticationException ex) {
-			throw createCoreException(ex, "Authentication Error: " + jiraServer.getBaseURL());
-		} catch (InsufficientPermissionException ex) {
-			throw createCoreException(ex, "Insufficient Permissions: " + jiraServer.getBaseURL());
-		} catch (ServiceUnavailableException ex) {
-			throw createCoreException(ex, "Service Unavailable: " + jiraServer.getBaseURL());
+		} catch (JiraException e) {
+			throw new CoreException(JiraCorePlugin.toStatus(e));
 		}
 
 		for (Issue issue : issues) {
@@ -257,11 +253,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public String getLastSyncTimestamp(TaskRepository repository, Set<AbstractRepositoryTask> changedTasks) {
 		// XXX to late for JIRA to calcualate the timestamp: bug 176934
 		return repository.getSyncTimeStamp();
-	}
-
-	private CoreException createCoreException(Exception ex, String msg) {
-		return new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
-				TasksUiPlugin.PLUGIN_ID, IStatus.OK, msg, ex));
 	}
 
 	@Override
@@ -445,7 +436,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
-		JiraServerFacade.getDefault().refreshServerSettings(repository, monitor);
+		try {
+			JiraServerFacade.getDefault().refreshServerSettings(repository, monitor);
+		} catch (JiraException e) {
+			throw new CoreException(JiraCorePlugin.toStatus(e));
+		}
 	}
 
 	@Override

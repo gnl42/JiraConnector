@@ -30,10 +30,11 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
-import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraServerData;
-import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
+import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcServer;
 
 /**
@@ -118,13 +119,13 @@ public class ServerManager {
 	 * @param password
 	 *            Password to connect with
 	 * @return Short string describing the server information
-	 * @throws AuthenticationException
+	 * @throws JiraAuthenticationException
 	 *             URL was valid but username and password were incorrect
-	 * @throws ServiceUnavailableException
+	 * @throws JiraServiceUnavailableException
 	 *             URL was not valid
 	 */
 	public ServerInfo testConnection(String baseUrl, String username, String password, Proxy proxy, String httpUser,
-			String httpPassword) throws AuthenticationException, ServiceUnavailableException {
+			String httpPassword) throws JiraException {
 		JiraServer server = createServer("Connection Test", baseUrl, false, username, password, proxy, httpUser,
 				httpPassword);
 		server.refreshServerInfo(new NullProgressMonitor());

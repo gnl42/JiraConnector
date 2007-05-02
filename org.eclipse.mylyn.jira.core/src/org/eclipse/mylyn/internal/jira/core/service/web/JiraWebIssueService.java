@@ -37,6 +37,7 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
 
@@ -55,7 +56,7 @@ public class JiraWebIssueService {
 		this.server = server;
 	}
 
-	public void addCommentToIssue(final Issue issue, final String comment) {
+	public void addCommentToIssue(final Issue issue, final String comment) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -86,7 +87,7 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void updateIssue(final Issue issue, final String comment) {
+	public void updateIssue(final Issue issue, final String comment) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -164,7 +165,7 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void assignIssueTo(final Issue issue, final int assigneeType, final String user, final String comment) {
+	public void assignIssueTo(final Issue issue, final int assigneeType, final String user, final String comment) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -201,7 +202,7 @@ public class JiraWebIssueService {
 	}
 
 	public void advanceIssueWorkflow(final Issue issue, final String action, final Resolution resolution,
-			final Version[] fixVersions, final String comment, final int assigneeType, final String user) {
+			final Version[] fixVersions, final String comment, final int assigneeType, final String user) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -249,7 +250,7 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void advanceIssueWorkflow(final Issue issue, final String action) {
+	public void advanceIssueWorkflow(final Issue issue, final String action) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -277,20 +278,20 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void startIssue(Issue issue) {
+	public void startIssue(Issue issue) throws JiraException {
 		advanceIssueWorkflow(issue, "4");
 	}
 
-	public void stopIssue(Issue issue) {
+	public void stopIssue(Issue issue) throws JiraException {
 		advanceIssueWorkflow(issue, "301");
 	}
 
 	public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user) {
+			int assigneeType, String user) throws JiraException {
 		advanceIssueWorkflow(issue, "5", resolution, fixVersions, comment, assigneeType, user);
 	}
 
-	public void reopenIssue(Issue issue, String comment, int assigneeType, String user) {
+	public void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException {
 		if (issue.getStatus().isResolved() || issue.getStatus().isClosed()) {
 			advanceIssueWorkflow(issue, "3", null, null, comment, assigneeType, user);
 		} else {
@@ -299,7 +300,7 @@ public class JiraWebIssueService {
 	}
 
 	public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
-			String user) {
+			String user) throws JiraException {
 		if (issue.getStatus().isResolved()) {
 			advanceIssueWorkflow(issue, "701", resolution, fixVersions, comment, assigneeType, user);
 		} else {
@@ -308,7 +309,7 @@ public class JiraWebIssueService {
 	}
 
 	public void attachFile(final Issue issue, final String comment, final String filename, final byte[] contents,
-			final String contentType) {
+			final String contentType) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -376,7 +377,7 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void attachFile(final Issue issue, final String comment, final File file, final String contentType) {
+	public void attachFile(final Issue issue, final String comment, final File file, final String contentType) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -446,7 +447,7 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public Issue createIssue(final Issue issue) {
+	public Issue createIssue(final Issue issue) throws JiraException {
 		final String[] location = new String[1];
 		final Issue[] result = new Issue[1];
 
@@ -458,7 +459,7 @@ public class JiraWebIssueService {
 			 * 
 			 * @see org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback#execute(org.apache.commons.httpclient.HttpClient,org.eclipse.mylar.internal.jira.core.service.JiraServer)
 			 */
-			public void execute(HttpClient client, JiraServer server) {
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(server.getBaseURL());
 				attachFileURLBuffer.append("/secure/CreateIssueDetails.jspa");
 
@@ -523,11 +524,6 @@ public class JiraWebIssueService {
 
 						SingleIssueCollector collector = new SingleIssueCollector();
 						new RssFeedProcessorCallback(true, collector) {
-							/*
-							 * (non-Javadoc)
-							 * 
-							 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback#getRssUrl()
-							 */
 							protected String getRssUrl() {
 								return location[0];
 							}
@@ -552,7 +548,7 @@ public class JiraWebIssueService {
 		return result[0];
 	}
 
-	private void watchUnwatchIssue(final Issue issue, final boolean watch) {
+	private void watchUnwatchIssue(final Issue issue, final boolean watch) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -580,15 +576,15 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void watchIssue(final Issue issue) {
+	public void watchIssue(final Issue issue) throws JiraException {
 		watchUnwatchIssue(issue, true);
 	}
 
-	public void unwatchIssue(final Issue issue) {
+	public void unwatchIssue(final Issue issue) throws JiraException {
 		watchUnwatchIssue(issue, false);
 	}
 
-	private void voteUnvoteIssue(final Issue issue, final boolean vote) {
+	private void voteUnvoteIssue(final Issue issue, final boolean vote) throws JiraException {
 		if (!issue.canUserVote(this.server.getUserName())) {
 			return;
 		}
@@ -620,11 +616,11 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void voteIssue(final Issue issue) {
+	public void voteIssue(final Issue issue) throws JiraException {
 		voteUnvoteIssue(issue, true);
 	}
 
-	public void unvoteIssue(final Issue issue) {
+	public void unvoteIssue(final Issue issue) throws JiraException {
 		voteUnvoteIssue(issue, false);
 	}
 

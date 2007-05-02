@@ -11,17 +11,19 @@
 
 package org.eclipse.mylar.internal.jira.core.service.web.rss;
 
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 
 /**
  * @author Brock Janiczak
  */
 public class RssJiraFilterConverterFactory {
+	
 	private static final RssFilterConverter filterConverter = new RssFilterConverter();
 
 	private static final RssFilterConverter jira33FilterConverter = new Jira33RssFilterConverter();
 
-	public static RssFilterConverter getConverter(JiraServer server) {
+	public static RssFilterConverter getConverter(JiraServer server) throws JiraException {
 		if (server.getServerInfo().getVersion().compareTo("3.3") >= 0) { //$NON-NLS-1$
 			return jira33FilterConverter;
 		} else {

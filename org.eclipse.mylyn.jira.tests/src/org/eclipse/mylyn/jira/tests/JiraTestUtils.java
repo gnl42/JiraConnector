@@ -3,6 +3,7 @@ package org.eclipse.mylar.jira.tests;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 
 public class JiraTestUtils {
@@ -17,7 +18,7 @@ public class JiraTestUtils {
 		return resolutions[0];
 	}
 
-	public static Issue createIssue(JiraServer server, String summary) {
+	public static Issue createIssue(JiraServer server, String summary) throws JiraException {
 		refreshDetails(server);
 		
 		Issue issue = new Issue();
@@ -29,7 +30,7 @@ public class JiraTestUtils {
 	}
 
 	
-	public static void refreshDetails(JiraServer server) {
+	public static void refreshDetails(JiraServer server) throws JiraException {
 		if (server.getProjects().length == 0) {
 			server.refreshDetails(new NullProgressMonitor());
 		}

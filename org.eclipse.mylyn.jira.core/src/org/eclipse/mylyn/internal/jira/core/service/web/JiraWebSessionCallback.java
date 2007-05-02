@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira.core.service.web;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 
 /**
@@ -19,5 +20,6 @@ import org.eclipse.mylar.internal.jira.core.service.JiraServer;
  */
 public interface JiraWebSessionCallback {
 
-	public abstract void execute(HttpClient client, JiraServer server);
+	public abstract void execute(HttpClient client, JiraServer server) throws JiraException;
+	
 }

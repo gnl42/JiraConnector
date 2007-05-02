@@ -69,7 +69,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		this.data = new JiraServerData();
 	}
 
-	public synchronized void refreshDetails(IProgressMonitor monitor) {
+	public synchronized void refreshDetails(IProgressMonitor monitor)  throws JiraException {
 		// use UNKNOWN since some of the update operations block for a long time
 		monitor.beginTask("Updating repository configuration", IProgressMonitor.UNKNOWN);
 
@@ -94,7 +94,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		monitor.done();
 	}
 
-	public synchronized void refreshServerInfo(IProgressMonitor monitor) {
+	public synchronized void refreshServerInfo(IProgressMonitor monitor) throws JiraException {
 		monitor.beginTask("Getting server information", 1);
 		
 		initializeServerInfo(data);
@@ -128,7 +128,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return this.password;
 	}
 
-	private void initializeProjects(JiraServerData data) {
+	private void initializeProjects(JiraServerData data) throws JiraException {
 		if (data.serverInfo.getVersion().compareTo("3.4") >= 0) {
 			data.projects = getProjectsRemoteNoSchemes();
 		} else {
@@ -148,13 +148,13 @@ public abstract class AbstractJiraServer implements JiraServer {
 		}
 	}
 
-	public abstract Project[] getProjectsRemote();
+	public abstract Project[] getProjectsRemote() throws JiraException;
 	
-	public abstract Project[] getProjectsRemoteNoSchemes();
+	public abstract Project[] getProjectsRemoteNoSchemes() throws JiraException;
 
-	public abstract Version[] getVersionsRemote(String key);
+	public abstract Version[] getVersionsRemote(String key) throws JiraException;
 
-	public abstract Component[] getComponentsRemote(String key);
+	public abstract Component[] getComponentsRemote(String key) throws JiraException;
 
 	public Project getProjectById(String id) {
 		Project project = data.projectsById.get(id);
@@ -176,7 +176,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.projects;
 	}
 
-	private void initializePriorities(JiraServerData data) {
+	private void initializePriorities(JiraServerData data) throws JiraException {
 		data.priorities = getPrioritiesRemote();
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
 		for (int i = 0; i < data.priorities.length; i++) {
@@ -185,7 +185,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		}
 	}
 
-	public abstract Priority[] getPrioritiesRemote();
+	public abstract Priority[] getPrioritiesRemote() throws JiraException;
 
 	public Priority getPriorityById(String id) {
 		Priority priority = data.prioritiesById.get(id);
@@ -199,7 +199,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.priorities;
 	}
 
-	private void initializeIssueTypes(JiraServerData data) {
+	private void initializeIssueTypes(JiraServerData data) throws JiraException {
 		IssueType[] issueTypes = getIssueTypesRemote();
 		IssueType[] subTaskIssueTypes; 
 		if (data.serverInfo.getVersion().compareTo("3.2") < 0) {
@@ -225,9 +225,9 @@ public abstract class AbstractJiraServer implements JiraServer {
 		System.arraycopy(subTaskIssueTypes, 0, data.issueTypes, issueTypes.length, subTaskIssueTypes.length);
 	}
 
-	public abstract IssueType[] getIssueTypesRemote();
+	public abstract IssueType[] getIssueTypesRemote() throws JiraException;
 	
-	public abstract IssueType[] getSubTaskIssueTypesRemote();
+	public abstract IssueType[] getSubTaskIssueTypesRemote() throws JiraException;
 
 	public IssueType getIssueTypeById(String id) {
 		IssueType issueType = data.issueTypesById.get(id);
@@ -241,7 +241,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.issueTypes;
 	}
 
-	private void initializeStatuses(JiraServerData data) {
+	private void initializeStatuses(JiraServerData data) throws JiraException {
 		data.statuses = getStatusesRemote();
 		data.statusesById = new HashMap<String, Status>(data.statuses.length);
 		for (int i = 0; i < data.statuses.length; i++) {
@@ -250,7 +250,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		}
 	}
 
-	public abstract Status[] getStatusesRemote();
+	public abstract Status[] getStatusesRemote() throws JiraException;
 
 	public Status getStatusById(String id) {
 		Status status = data.statusesById.get(id);
@@ -264,7 +264,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.statuses;
 	}
 
-	private void initializeResolutions(JiraServerData data) {
+	private void initializeResolutions(JiraServerData data) throws JiraException {
 		data.resolutions = getResolutionsRemote();
 		data.resolutionsById = new HashMap<String, Resolution>(data.resolutions.length);
 		for (int i = 0; i < data.resolutions.length; i++) {
@@ -273,7 +273,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		}
 	}
 
-	public abstract Resolution[] getResolutionsRemote();
+	public abstract Resolution[] getResolutionsRemote() throws JiraException;
 
 	public Resolution getResolutionById(String id) {
 		Resolution resolution = data.resolutionsById.get(id);
@@ -287,11 +287,11 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.resolutions;
 	}
 
-	private void initializeServerInfo(JiraServerData data) {
+	private void initializeServerInfo(JiraServerData data) throws JiraException {
 		data.serverInfo = getServerInfo();
 	}
 
-	public ServerInfo getServerInfo() {
+	public ServerInfo getServerInfo() throws JiraException {
 		ServerInfo info = data.serverInfo;
 		if (info == null) {
 			info = getServerInfoRemote();
@@ -313,7 +313,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 	// FilterDefinition[data.localFilters.size()]);
 	// }
 
-	public abstract ServerInfo getServerInfoRemote();
+	public abstract ServerInfo getServerInfoRemote() throws JiraException;
 
 	public boolean equals(Object obj) {
 		if (obj instanceof AbstractJiraServer)  {

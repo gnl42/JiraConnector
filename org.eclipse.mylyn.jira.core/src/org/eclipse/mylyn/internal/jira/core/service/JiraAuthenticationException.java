@@ -12,11 +12,15 @@
 package org.eclipse.mylar.internal.jira.core.service;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
+ * @author Steffen Pingel
  */
-@SuppressWarnings("serial")
-public class InsufficientPermissionException extends RuntimeException {
-	public InsufficientPermissionException(String message) {
+public class JiraAuthenticationException extends JiraException {
+
+	private static final long serialVersionUID = 8723151254362915272L;
+
+	public JiraAuthenticationException(String message) {
 		super(message);
 	}
+	
 }

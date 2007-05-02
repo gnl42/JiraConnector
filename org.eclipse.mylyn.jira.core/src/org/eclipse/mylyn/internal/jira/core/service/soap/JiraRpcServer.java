@@ -41,10 +41,10 @@ import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylar.internal.jira.core.model.filter.SmartQuery;
 import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
-import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
-import org.eclipse.mylar.internal.jira.core.service.InsufficientPermissionException;
+import org.eclipse.mylar.internal.jira.core.service.JiraInsufficientPermissionException;
+import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
+import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebIssueService;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssJiraFilterService;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapService;
@@ -118,134 +118,124 @@ public class JiraRpcServer extends AbstractJiraServer {
 		}
 	}
 
-	public User getUser(final String username) throws AuthenticationException, InsufficientPermissionException,
-			ServiceUnavailableException {
+	public User getUser(final String username) throws JiraException {
 		return call(new RemoteRunnable<User>() {
 			@Override
-			public User run() throws java.rmi.RemoteException {
+			public User run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getUser(loginToken.getCurrentValue(), username));
 			}
 		});
 	}
 
-	public Component[] getComponentsRemote(final String projectKey) throws InsufficientPermissionException,
-			AuthenticationException, ServiceUnavailableException {
+	public Component[] getComponentsRemote(final String projectKey) throws JiraException {
 		return call(new RemoteRunnable<Component[]>() {
 			@Override
-			public Component[] run() throws java.rmi.RemoteException {
+			public Component[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getComponents(loginToken.getCurrentValue(), projectKey));
 			}
 		});
 	}
 
-	public void login() throws AuthenticationException, ServiceUnavailableException {
+	public void login() throws JiraException {
 		loginToken.expire();
 		loginToken.getCurrentValue();
 	}
 
-	public Group getGroup(final String name) throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public Group getGroup(final String name) throws JiraException {
 		return call(new RemoteRunnable<Group>() {
 			@Override
-			public Group run() throws java.rmi.RemoteException {
+			public Group run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getGroup(loginToken.getCurrentValue(), name));
 			}
 		});
 	}
 
-	public ServerInfo getServerInfoRemote() throws ServiceUnavailableException {
+	public ServerInfo getServerInfoRemote() throws JiraException {
 		return call(new RemoteRunnable<ServerInfo>() {
 			@Override
-			public ServerInfo run() throws java.rmi.RemoteException {
+			public ServerInfo run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getServerInfo(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Issue getIssue(String issueKey) {
+	public Issue getIssue(String issueKey) throws JiraException {
 		SingleIssueCollector collector = new SingleIssueCollector();
 		filterService.quickSearch(issueKey, collector);
 		return collector.getIssue();
 	}
 
-	public Issue createIssue(Issue issue) {
+	public Issue createIssue(Issue issue) throws JiraException {
 		return issueService.createIssue(issue);
 	}
 
-	public Project[] getProjectsRemote() throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public Project[] getProjectsRemote() throws JiraException {
 		return call(new RemoteRunnable<Project[]>() {
 			@Override
-			public Project[] run() throws java.rmi.RemoteException {
+			public Project[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getProjects(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Project[] getProjectsRemoteNoSchemes() throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public Project[] getProjectsRemoteNoSchemes() throws JiraException {
 		return call(new RemoteRunnable<Project[]>() {
 			@Override
-			public Project[] run() throws java.rmi.RemoteException {
+			public Project[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getProjectsNoSchemes(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Status[] getStatusesRemote() throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public Status[] getStatusesRemote() throws JiraException {
 		return call(new RemoteRunnable<Status[]>() {
 			@Override
-			public Status[] run() throws java.rmi.RemoteException {
+			public Status[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getStatuses(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public IssueType[] getIssueTypesRemote() throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public IssueType[] getIssueTypesRemote() throws JiraException {
 		return call(new RemoteRunnable<IssueType[]>() {
 			@Override
-			public IssueType[] run() throws java.rmi.RemoteException {
+			public IssueType[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getIssueTypes(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public IssueType[] getSubTaskIssueTypesRemote() throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public IssueType[] getSubTaskIssueTypesRemote() throws JiraException {
 		return call(new RemoteRunnable<IssueType[]>() {
 			@Override
-			public IssueType[] run() throws java.rmi.RemoteException {
+			public IssueType[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getSubTaskIssueTypes(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Priority[] getPrioritiesRemote() throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public Priority[] getPrioritiesRemote() throws JiraException {
 		return call(new RemoteRunnable<Priority[]>() {
 			@Override
-			public Priority[] run() throws java.rmi.RemoteException {
+			public Priority[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getPriorities(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Resolution[] getResolutionsRemote() throws InsufficientPermissionException, AuthenticationException,
-			ServiceUnavailableException {
+	public Resolution[] getResolutionsRemote() throws JiraException {
 		return call(new RemoteRunnable<Resolution[]>() {
 			@Override
-			public Resolution[] run() throws java.rmi.RemoteException {
+			public Resolution[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getResolutions(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
-	public Comment[] getCommentsRemote(String issueKey) {
+	public Comment[] getCommentsRemote(String issueKey) throws JiraException {
 		return call(new RemoteRunnable<Comment[]>() {
 			@Override
-			public Comment[] run() throws java.rmi.RemoteException {
+			public Comment[] run() throws java.rmi.RemoteException, JiraException {
 				// TODO implement
 				// return
 				// Converter.convert(jirasoapserviceV2.getComments(loginToken.getCurrentValue(),
@@ -255,11 +245,10 @@ public class JiraRpcServer extends AbstractJiraServer {
 		});
 	}
 
-	public Version[] getVersionsRemote(final String componentKey) throws InsufficientPermissionException,
-			AuthenticationException, ServiceUnavailableException {
+	public Version[] getVersionsRemote(final String componentKey) throws JiraException {
 		return call(new RemoteRunnable<Version[]>() {
 			@Override
-			public Version[] run() throws java.rmi.RemoteException {
+			public Version[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getVersions(loginToken.getCurrentValue(), componentKey));
 			}
 		});
@@ -269,10 +258,10 @@ public class JiraRpcServer extends AbstractJiraServer {
 		loginToken.expire();
 	}
 
-	public NamedFilter[] getNamedFilters() {
+	public NamedFilter[] getNamedFilters() throws JiraException {
 		return call(new RemoteRunnable<NamedFilter[]>() {
 			@Override
-			public NamedFilter[] run() throws java.rmi.RemoteException {
+			public NamedFilter[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(jiraSoapService.getSavedFilters(loginToken.getCurrentValue()));
 			}
 		});
@@ -319,7 +308,7 @@ public class JiraRpcServer extends AbstractJiraServer {
 		return e.getLocalizedMessage();
 	}
 
-	public void search(Query query, IssueCollector collector) {
+	public void search(Query query, IssueCollector collector) throws JiraException {
 		if (query instanceof SmartQuery) {
 			quickSearch(((SmartQuery) query).getKeywords(), collector);
 		} else if (query instanceof FilterDefinition) {
@@ -331,121 +320,120 @@ public class JiraRpcServer extends AbstractJiraServer {
 		}
 	}
 
-	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector) {
+	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector) throws JiraException {
 		filterService.findIssues(filterDefinition, collector);
 	}
 
-	public void executeNamedFilter(NamedFilter filter, IssueCollector collector) {
+	public void executeNamedFilter(NamedFilter filter, IssueCollector collector) throws JiraException {
 		filterService.executeNamedFilter(filter, collector);
 	}
 
-	public void quickSearch(String searchString, IssueCollector collector) {
+	public void quickSearch(String searchString, IssueCollector collector) throws JiraException {
 		filterService.quickSearch(searchString, collector);
 
 	}
 
-	public void addCommentToIssue(Issue issue, String comment) {
+	public void addCommentToIssue(Issue issue, String comment) throws JiraException {
 		issueService.addCommentToIssue(issue, comment);
 	}
 
-	public void updateIssue(Issue issue, String comment) {
+	public void updateIssue(Issue issue, String comment) throws JiraException {
 		issueService.updateIssue(issue, comment);
 	}
 
-	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) {
+	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException {
 		issueService.assignIssueTo(issue, assigneeType, user, comment);
 	}
 
 	public void advanceIssueWorkflow(Issue issue, String action, Resolution resolution, Version[] fixVersions,
-			String comment, int assigneeType, String user) {
+			String comment, int assigneeType, String user) throws JiraException {
 		issueService.advanceIssueWorkflow(issue, action, resolution, fixVersions, comment, assigneeType, user);
 	}
 
-	public void advanceIssueWorkflow(Issue issue, String action) {
+	public void advanceIssueWorkflow(Issue issue, String action) throws JiraException {
 		issueService.advanceIssueWorkflow(issue, action);
 	}
 
-	public void startIssue(Issue issue) {
+	public void startIssue(Issue issue) throws JiraException {
 		issueService.startIssue(issue);
 	}
 
-	public void stopIssue(Issue issue) {
+	public void stopIssue(Issue issue) throws JiraException {
 		issueService.stopIssue(issue);
 	}
 
 	public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user) {
+			int assigneeType, String user) throws JiraException {
 		issueService.resolveIssue(issue, resolution, fixVersions, comment, assigneeType, user);
 	}
 
-	public void reopenIssue(Issue issue, String comment, int assigneeType, String user) {
+	public void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException {
 		issueService.reopenIssue(issue, comment, assigneeType, user);
 	}
 
 	public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
-			String user) {
+			String user) throws JiraException {
 		issueService.closeIssue(issue, resolution, fixVersions, comment, assigneeType, user);
 	}
 
-	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) {
+	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException {
 		issueService.attachFile(issue, comment, filename, contents, contentType);
 	}
 
-	public void attachFile(Issue issue, String comment, File file, String contentType) {
+	public void attachFile(Issue issue, String comment, File file, String contentType) throws JiraException {
 		issueService.attachFile(issue, comment, file, contentType);
 	}
 
-	public void watchIssue(Issue issue) {
+	public void watchIssue(Issue issue) throws JiraException {
 		issueService.watchIssue(issue);
 	}
 
-	public void unwatchIssue(Issue issue) {
+	public void unwatchIssue(Issue issue) throws JiraException {
 		issueService.unwatchIssue(issue);
 	}
 
-	public void voteIssue(Issue issue) {
+	public void voteIssue(Issue issue) throws JiraException {
 		issueService.voteIssue(issue);
 	}
 
-	public void unvoteIssue(Issue issue) {
+	public void unvoteIssue(Issue issue) throws JiraException {
 		issueService.unvoteIssue(issue);
 	}
 
-	private <T> T call(RemoteRunnable<T> runnable, boolean retry) throws AuthenticationException,
-			InsufficientPermissionException, ServiceUnavailableException {
+	private <T> T call(RemoteRunnable<T> runnable, boolean retry) throws JiraException {
 		// retry in case login token is expired
 		for (int i = 0; i < 2; i++) {
 			try {
 				return runnable.run();
 			} catch (RemotePermissionException e) {
-				throw new InsufficientPermissionException(e.getMessage());
+				throw new JiraInsufficientPermissionException(e.getMessage());
 			} catch (RemoteAuthenticationException e) {
 				if (!retry || i > 0) {
-					throw new AuthenticationException(e.getMessage());
+					throw new JiraAuthenticationException(e.getMessage());
 				}
 				loginToken.expire();
 			} catch (RemoteException e) {
-				throw new ServiceUnavailableException(e.getMessage());
+				throw new JiraServiceUnavailableException(e.getMessage());
 			} catch (java.rmi.RemoteException e) {
-				throw new ServiceUnavailableException(unwrapRemoteException(e));
+				throw new JiraServiceUnavailableException(unwrapRemoteException(e));
 			}
 		}
 		throw new RuntimeException("Invalid section of code reached");
 	}
 
-	private <T> T call(RemoteRunnable<T> runnable) throws AuthenticationException, InsufficientPermissionException,
-			ServiceUnavailableException {
+	private <T> T call(RemoteRunnable<T> runnable) throws JiraException {
 		return call(runnable, true);
 	}
 
 	private static interface LoginToken {
+
 		/**
 		 * Gets the current value of the login token. If the token has expired a
 		 * new one may be requested.
 		 * 
-		 * @return Current login token
+		 * @return current login token
 		 */
-		public String getCurrentValue();
+		public String getCurrentValue() throws JiraException;
 
 		/**
 		 * Manually expire the current session token
@@ -482,13 +470,13 @@ public class JiraRpcServer extends AbstractJiraServer {
 			this.lastAccessed = -1L;
 		}
 
-		public synchronized String getCurrentValue() {
+		public synchronized String getCurrentValue() throws JiraException {
 			if ((System.currentTimeMillis() - lastAccessed) >= timeout || token == null) {
 				expire();
 
 				this.token = call(new RemoteRunnable<String>() {
 					@Override
-					public String run() throws java.rmi.RemoteException {
+					public String run() throws java.rmi.RemoteException, JiraException {
 						return jiraSoapService.login(username, password);
 					}
 				}, false);
@@ -540,7 +528,7 @@ public class JiraRpcServer extends AbstractJiraServer {
 
 	private abstract class RemoteRunnable<T> {
 
-		public abstract T run() throws java.rmi.RemoteException;
+		public abstract T run() throws java.rmi.RemoteException, JiraException;
 
 	}
 

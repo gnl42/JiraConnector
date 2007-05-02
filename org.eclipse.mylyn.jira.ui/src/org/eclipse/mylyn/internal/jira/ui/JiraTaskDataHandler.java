@@ -25,6 +25,7 @@ import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Status;
 import org.eclipse.mylar.internal.jira.core.model.Version;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
@@ -55,23 +56,27 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId) throws CoreException {
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-		if (!server.hasDetails()) {
-			server.refreshDetails(new NullProgressMonitor());
+		try {
+			JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+			if (!server.hasDetails()) {
+				server.refreshDetails(new NullProgressMonitor());
+			}
+			Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
+			if (jiraIssue == null) {
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "JIRA ticket not found: " + taskId, null));
+			}
+			RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
+					.getUrl(), jiraIssue.getId(), Task.DEFAULT_TASK_KIND);
+			initializeTaskData(data, server, jiraIssue.getProject());
+			updateTaskData(data, jiraIssue, server);
+			addOperations(repository, jiraIssue, data);
+			return data;
+		} catch (JiraException e) {
+			throw new CoreException(JiraCorePlugin.toStatus(e));
 		}
-		Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
-		if (jiraIssue == null) {
-			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "JIRA ticket not found: " + taskId, null));
-		}
-		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
-				.getUrl(), jiraIssue.getId(), Task.DEFAULT_TASK_KIND);
-		initializeTaskData(data, server, jiraIssue.getProject());
-		updateTaskData(data, jiraIssue, server);
-		addOperations(repository, jiraIssue, data);
-		return data;
 	}
 
-	private Issue getJiraIssue(JiraServer server, String taskId, String repositoryUrl) throws CoreException {
+	private Issue getJiraIssue(JiraServer server, String taskId, String repositoryUrl) throws CoreException, JiraException {
 		try {
 			int id = Integer.parseInt(taskId);
 			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
@@ -300,45 +305,49 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					JiraCorePlugin.ID, org.eclipse.core.runtime.Status.ERROR, "Unable to produce Jira Server", null));
 		}
 
-		Issue issue = JiraRepositoryConnector.buildJiraIssue(taskData, jiraServer);
-		if (taskData.isNew()) {
-			issue = jiraServer.createIssue(issue);
-			if (issue == null ){
-				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "Could not create ticket.", null));
-			}
-			// this is severly broken: should return id instead
-			return issue.getKey();
-		} else {
-			RepositoryOperation operation = taskData.getSelectedOperation();
-			if (operation != null) {
-				if ("leave".equals(operation.getKnobName()) || "reassign".equals(operation.getKnobName())) {
-					if (!issue.getStatus().isClosed()) {
-						jiraServer.updateIssue(issue, taskData.getNewComment());
-					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
-						jiraServer.addCommentToIssue(issue, taskData.getNewComment());
-					}
-				} else if (org.eclipse.mylar.internal.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
-					String value = operation.getOptionValue(operation.getOptionSelection());
-					jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
-							.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
-				} else if (org.eclipse.mylar.internal.jira.core.model.Status.REOPENED_ID.equals(operation.getKnobName())) {
-					jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository
-							.getUserName());
-				} else if (org.eclipse.mylar.internal.jira.core.model.Status.STARTED_ID.equals(operation.getKnobName())) {
-					// FIXME update attributes and comment
-					jiraServer.startIssue(issue);
-				} else if (org.eclipse.mylar.internal.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
-					// FIXME update attributes and comment
-					jiraServer.startIssue(issue);
-				} else if (org.eclipse.mylar.internal.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
-					String value = operation.getOptionValue(operation.getOptionSelection());
-					jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
-							.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+		try {
+			Issue issue = JiraRepositoryConnector.buildJiraIssue(taskData, jiraServer);
+			if (taskData.isNew()) {
+				issue = jiraServer.createIssue(issue);
+				if (issue == null ){
+					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "Could not create ticket.", null));
 				}
+				// this is severly broken: should return id instead
+				return issue.getKey();
 			} else {
-				jiraServer.updateIssue(issue, taskData.getNewComment());
+				RepositoryOperation operation = taskData.getSelectedOperation();
+				if (operation != null) {
+					if ("leave".equals(operation.getKnobName()) || "reassign".equals(operation.getKnobName())) {
+						if (!issue.getStatus().isClosed()) {
+							jiraServer.updateIssue(issue, taskData.getNewComment());
+						} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
+							jiraServer.addCommentToIssue(issue, taskData.getNewComment());
+						}
+					} else if (org.eclipse.mylar.internal.jira.core.model.Status.RESOLVED_ID.equals(operation.getKnobName())) {
+						String value = operation.getOptionValue(operation.getOptionSelection());
+						jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
+								.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+					} else if (org.eclipse.mylar.internal.jira.core.model.Status.REOPENED_ID.equals(operation.getKnobName())) {
+						jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository
+								.getUserName());
+					} else if (org.eclipse.mylar.internal.jira.core.model.Status.STARTED_ID.equals(operation.getKnobName())) {
+						// FIXME update attributes and comment
+						jiraServer.startIssue(issue);
+					} else if (org.eclipse.mylar.internal.jira.core.model.Status.OPEN_ID.equals(operation.getKnobName())) {
+						// FIXME update attributes and comment
+						jiraServer.startIssue(issue);
+					} else if (org.eclipse.mylar.internal.jira.core.model.Status.CLOSED_ID.equals(operation.getKnobName())) {
+						String value = operation.getOptionValue(operation.getOptionSelection());
+						jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(), taskData
+								.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+					}
+				} else {
+					jiraServer.updateIssue(issue, taskData.getNewComment());
+				}
+				return "";
 			}
-			return "";
+		} catch (JiraException e) {
+			throw new CoreException(JiraCorePlugin.toStatus(e));
 		}
 	}
 

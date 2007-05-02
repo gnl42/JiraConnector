@@ -94,7 +94,7 @@ public interface JiraServer {
 	 *             you need to check if the credentials are valid, call
 	 *             {@link org.eclipse.mylar.internal.jira.core.ServerManager#testConnection(String, String, String)}
 	 */
-	void login();
+	void login() throws JiraException;
 
 	/**
 	 * Force the current session to be closed. This method should only be called
@@ -171,7 +171,7 @@ public interface JiraServer {
 	 * @return Matching issue or <code>null</code> if no matching issue could
 	 *         be found
 	 */
-	Issue getIssue(String issueKey);
+	Issue getIssue(String issueKey) throws JiraException;
 
 	/**
 	 * @param query
@@ -179,9 +179,9 @@ public interface JiraServer {
 	 * @param collector
 	 *            Reciever for the matching issues
 	 */
-	void search(Query query, IssueCollector collector);
+	void search(Query query, IssueCollector collector) throws JiraException;
 
-	ServerInfo getServerInfo();
+	ServerInfo getServerInfo() throws JiraException;
 
 	/**
 	 * Retrieve all locally defined filter definitions. These filters are not
@@ -202,29 +202,29 @@ public interface JiraServer {
 	 * 
 	 * @return List of all filters taht are stored and executed on the server
 	 */
-	NamedFilter[] getNamedFilters();
+	NamedFilter[] getNamedFilters() throws JiraException;
 
-	void addCommentToIssue(Issue issue, String comment);
+	void addCommentToIssue(Issue issue, String comment) throws JiraException;
 
-	void updateIssue(Issue issue, String comment);
+	void updateIssue(Issue issue, String comment) throws JiraException;
 
-	void assignIssueTo(Issue issue, int assigneeType, String user, String comment);
+	void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException;
 
-	void startIssue(Issue issue);
+	void startIssue(Issue issue) throws JiraException;
 
-	void stopIssue(Issue issue);
+	void stopIssue(Issue issue) throws JiraException;
 
 	void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user);
+			int assigneeType, String user) throws JiraException;
 
 	void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user);
+			int assigneeType, String user) throws JiraException;
 
-	void reopenIssue(Issue issue, String comment, int assigneeType, String user);
+	void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException;
 
-	void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType);
+	void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException;
 
-	void attachFile(Issue issue, String comment, File file, String contentType);
+	void attachFile(Issue issue, String comment, File file, String contentType) throws JiraException;
 
 	/**
 	 * Creates an issue with the details specified in <code>issue</code>. The
@@ -252,7 +252,7 @@ public interface JiraServer {
 	 * @return A fully populated {@link org.eclipse.mylar.internal.jira.core.model.Issue}
 	 *         containing the details of the new issue
 	 */
-	Issue createIssue(Issue issue);
+	Issue createIssue(Issue issue) throws JiraException;
 
 	/**
 	 * Begin watching <code>issue</code>. Nothing will happen if the user is
@@ -261,7 +261,7 @@ public interface JiraServer {
 	 * @param issue
 	 *            Issue to begin watching
 	 */
-	void watchIssue(Issue issue);
+	void watchIssue(Issue issue) throws JiraException;
 
 	/**
 	 * Stop watching <code>issue</code>. Nothing will happen if the user is
@@ -270,7 +270,7 @@ public interface JiraServer {
 	 * @param issue
 	 *            Issue to stop watching
 	 */
-	void unwatchIssue(Issue issue);
+	void unwatchIssue(Issue issue) throws JiraException;
 
 	/**
 	 * Vote for <code>issue</code>. Issues can only be voted on if the issue
@@ -282,7 +282,7 @@ public interface JiraServer {
 	 * @param issue
 	 *            Issue to vote for
 	 */
-	void voteIssue(Issue issue);
+	void voteIssue(Issue issue) throws JiraException;
 
 	/**
 	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the
@@ -294,16 +294,16 @@ public interface JiraServer {
 	 * @param issue
 	 *            Issue to remove vote from
 	 */
-	void unvoteIssue(Issue issue);
+	void unvoteIssue(Issue issue) throws JiraException;
 
 	/**
 	 * Refresh any cached information with the latest values from the remote
 	 * server. This operation may take a long time to complete and should not be
 	 * called from a UI thread.
 	 */
-	void refreshDetails(IProgressMonitor monitor);
+	void refreshDetails(IProgressMonitor monitor) throws JiraException;
 
-	void refreshServerInfo(IProgressMonitor monitor);
+	void refreshServerInfo(IProgressMonitor monitor) throws JiraException;
 
 	boolean hasDetails();
 	

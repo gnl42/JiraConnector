@@ -20,10 +20,10 @@ import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.ServerManager;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
+import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylar.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -79,8 +79,6 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 						repository.getHttpUser(), repository.getHttpPassword());
 			}
 			return server;
-		} catch (ServiceUnavailableException sue) {
-			throw sue;
 		} catch (RuntimeException e) {
 			MylarStatusHandler.log("Error connecting to Jira Server", this);
 			throw e;
@@ -133,7 +131,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * Forces a reset of the {@link JiraServer} object and updates the
 	 * repository configuration.
 	 */
-	public void refreshServerSettings(TaskRepository repository, IProgressMonitor monitor) {
+	public void refreshServerSettings(TaskRepository repository, IProgressMonitor monitor) throws JiraException {
 		JiraServer server = getJiraServer(repository);
 		server.refreshDetails(monitor);
 	}
@@ -177,11 +175,11 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * TODO: refactor
 	 */
 	public static void handleConnectionException(Exception e) {
-		if (e instanceof ServiceUnavailableException) {
+		if (e instanceof JiraServiceUnavailableException) {
 			MylarStatusHandler.fail(e, "Jira Connection Failure.\n\n"
 					+ "Please check your network connection and Jira server settings in the Task Repositories view.",
 					true);
-		} else if (e instanceof AuthenticationException) {
+		} else if (e instanceof JiraAuthenticationException) {
 			MylarStatusHandler.fail(e, "Jira Authentication Failed.\n\n"
 					+ "Please check your Jira username and password in the Task Repositories view", true);
 		} else if (e instanceof RuntimeException) {

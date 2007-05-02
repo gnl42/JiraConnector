@@ -17,11 +17,10 @@ import java.net.URLEncoder;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebSession;
 
-// TODO there is a mutual dependency on between this and the jira server
-// I don't think there is any way to avoid it though
 /**
  * @author Brock Janiczak
  */
@@ -36,25 +35,14 @@ public class RssJiraFilterService {
 		this.useGZipCompression = server.useCompression();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gbst.jira.core.service.JiraFilterService#findIssues(com.gbst.jira.core.filter.FilterDefinition,
-	 *      com.gbst.jira.core.filter.IssueCollector)
-	 */
-	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector) {
+	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector) throws JiraException {
 		// TODO make the callback a full class and pass in the filter and
 		// collector
 		JiraWebSession session = new JiraWebSession(server);
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback#getRssUrl()
-			 */
-			protected String getRssUrl() {
+			protected String getRssUrl() throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&reset=true&");
 
@@ -69,23 +57,12 @@ public class RssJiraFilterService {
 		});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gbst.jira.core.service.JiraFilterService#executeNamedFilter(com.gbst.jira.core.model.NamedFilter,
-	 *      com.gbst.jira.core.model.filter.IssueCollector)
-	 */
-	public void executeNamedFilter(final NamedFilter filter, final IssueCollector collector) {
+	public void executeNamedFilter(final NamedFilter filter, final IssueCollector collector) throws JiraException {
 		JiraWebSession session = new JiraWebSession(server);
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback#getRssUrl()
-			 */
-			protected String getRssUrl() {
+			protected String getRssUrl() throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				if (server.getServerInfo().getVersion().compareTo("3.7") >= 0) {
 					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append(
@@ -105,22 +82,11 @@ public class RssJiraFilterService {
 		});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.mylar.internal.jira.core.service.JiraFilterService#quickSearch(java.lang.String,
-	 *      org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector)
-	 */
-	public void quickSearch(final String searchString, final IssueCollector collector) {
+	public void quickSearch(final String searchString, final IssueCollector collector) throws JiraException {
 		JiraWebSession session = new JiraWebSession(server);
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback#getRssUrl()
-			 */
 			protected String getRssUrl() {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/QuickSearch.jspa?view=rss&decorator=none&reset=true&");

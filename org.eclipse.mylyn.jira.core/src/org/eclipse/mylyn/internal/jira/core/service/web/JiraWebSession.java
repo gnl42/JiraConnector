@@ -19,9 +19,10 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.mylar.core.net.WebClientUtil;
-import org.eclipse.mylar.internal.jira.core.service.AuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.core.service.ServiceUnavailableException;
+import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 
 /**
  * @author Brock Janiczak
@@ -45,7 +46,7 @@ public class JiraWebSession {
 		baseUrl = urlBuffer.toString();
 	}
 
-	public void doInSession(JiraWebSessionCallback callback) {
+	public void doInSession(JiraWebSessionCallback callback) throws JiraException {
 		HttpClient client = new HttpClient();
 
 		WebClientUtil.setupHttpClient(client, server.getProxy(), baseUrl, server.getHttpUser(), server
@@ -59,7 +60,7 @@ public class JiraWebSession {
 		}
 	}
 
-	private void login(HttpClient client) {
+	private void login(HttpClient client) throws JiraException {
 		String url = baseUrl + "login.jsp";
 		for (int i = 0; i < MAX_REDIRECTS; i++) {
 			PostMethod login = new PostMethod(url); //$NON-NLS-1$
@@ -71,7 +72,7 @@ public class JiraWebSession {
 			try {
 				int statusCode = client.executeMethod(login);
 				if (statusCode == HttpStatus.SC_OK) {
-					throw new AuthenticationException("Login failed.");
+					throw new JiraAuthenticationException("Login failed.");
 				} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
 					Header locationHeader = login.getResponseHeader("location");
 					if (locationHeader != null) {
@@ -82,21 +83,21 @@ public class JiraWebSession {
 							url = locationHeader.getValue();
 						}
 					} else {
-						throw new ServiceUnavailableException("Invalid redirect, missing location");
+						throw new JiraServiceUnavailableException("Invalid redirect, missing location");
 					}
 				} else {
-					throw new ServiceUnavailableException("Unexpected status code on login: " + statusCode);
+					throw new JiraServiceUnavailableException("Unexpected status code on login: " + statusCode);
 				}
 			} catch (IOException e) {
-				throw new ServiceUnavailableException(e);
+				throw new JiraServiceUnavailableException(e);
 			} finally {
 				login.releaseConnection();
 			}
 		}
-		throw new ServiceUnavailableException("Exceeded maximum number of allowed redirects on login");
+		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects on login");
 	}
 	
-	private void logout(HttpClient client) {
+	private void logout(HttpClient client) throws JiraException {
 		GetMethod logout = new GetMethod(baseUrl + "logout"); //$NON-NLS-1$
 		logout.setFollowRedirects(false);
 

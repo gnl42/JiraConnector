@@ -65,7 +65,7 @@ public class JiraFilterTest extends TestCase {
 		super.tearDown();
 	}
 	
-	public void testJiraFilterRefresh() {
+	public void testJiraFilterRefresh() throws Exception {
 		NamedFilter[] filters = jiraFacade.getJiraServer(repository).getNamedFilters();
 		assertTrue(filters.length > 0);
 		JiraRepositoryQuery jFilter = new JiraRepositoryQuery(repository.getUrl(), filters[0], TasksUiPlugin.getTaskListManager().getTaskList());

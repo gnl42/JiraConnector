@@ -23,6 +23,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.mylar.internal.jira.core.DebugManager;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback;
 
@@ -30,6 +31,7 @@ import org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback;
  * @author	Brock Janiczak
  */
 public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback {
+
 	private static final boolean RSS_DEBUG_ENABLED = DebugManager.isDebugEnabled()
 			&& DebugManager.isDebugOptionEnabled("rss"); //$NON-NLS-1$
 
@@ -42,13 +44,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 		this.collector = collector;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback#execute(org.apache.commons.httpclient.HttpClient,
-	 *      org.eclipse.mylar.internal.jira.core.service.JiraServer)
-	 */
-	public final void execute(HttpClient client, JiraServer server) {
+	public final void execute(HttpClient client, JiraServer server) throws JiraException {
 		String rssUrl = getRssUrl();
 		GetMethod rssRequest = new GetMethod(rssUrl);
 		// If there is only a single match Jira will redirect to the issue
@@ -160,7 +156,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 	 * 
 	 * @return The URL of the RSS feed to be processed
 	 */
-	protected abstract String getRssUrl();
+	protected abstract String getRssUrl() throws JiraException;
 
 	/**
 	 * Determines if the response of <code>method</code> was GZip encoded

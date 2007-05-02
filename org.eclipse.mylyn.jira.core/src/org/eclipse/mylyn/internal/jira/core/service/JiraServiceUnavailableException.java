@@ -12,12 +12,19 @@
 package org.eclipse.mylar.internal.jira.core.service;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
+ * @author Steffen Pingel
  */
-@SuppressWarnings("serial")
-public class AuthenticationException extends RuntimeException {
+public class JiraServiceUnavailableException extends JiraException {
+	
+	private static final long serialVersionUID = -6648244599873827934L;
 
-	public AuthenticationException(String message) {
+	public JiraServiceUnavailableException(String message) {
 		super(message);
 	}
+
+	public JiraServiceUnavailableException(Throwable cause) {
+		super(cause);
+	}
+
 }

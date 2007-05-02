@@ -13,16 +13,14 @@ package org.eclipse.mylar.internal.jira.core.service;
 
 /**
  * @author Brock Janiczak
+ * @author Steffen Pingel
  */
-@SuppressWarnings("serial")
-public class ServiceUnavailableException extends RuntimeException {
+public class JiraInsufficientPermissionException extends JiraException {
 	
-	public ServiceUnavailableException(String message) {
+	private static final long serialVersionUID = 8122623908757665154L;
+
+	public JiraInsufficientPermissionException(String message) {
 		super(message);
 	}
-
-	public ServiceUnavailableException(Throwable cause) {
-		super(cause);
-	}
-
+	
 }
