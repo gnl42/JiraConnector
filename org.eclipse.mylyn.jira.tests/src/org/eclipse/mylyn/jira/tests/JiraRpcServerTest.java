@@ -82,4 +82,23 @@ public class JiraRpcServerTest extends TestCase {
 // fail("Not yet implemented");
 // }
 
+	public void testGetIdFromKey() throws Exception {
+		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
+		String key = server.getKeyFromId(issue.getId());
+		assertEquals(issue.getKey(), key);
+
+		try {
+			key = server.getKeyFromId("invalid");
+			fail("Expected JiraException, got: " + key);
+		} catch (JiraException e) {
+		}
+
+		try {
+			key = server.getKeyFromId("1");
+			fail("Expected JiraException, got: " + key);
+		} catch (JiraException e) {
+		}
+
+	}
+	
 }

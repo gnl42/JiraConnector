@@ -82,12 +82,14 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
 			if (task instanceof JiraTask) {
 				JiraTask jiraTask = (JiraTask) task;
-				return server.getIssue(jiraTask.getTaskKey());
+				return server.getIssueByKey(jiraTask.getTaskKey());
+			} else {
+				return server.getIssueById(taskId);
 			}
 		} catch (NumberFormatException e) {
-			return server.getIssue(taskId);
+			return server.getIssueByKey(taskId);
 		}
-		throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "JIRA ticket not found: " + taskId, null));
+		//throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK, "JIRA ticket not found: " + taskId, null));
 	}
 
 	@SuppressWarnings("deprecation")

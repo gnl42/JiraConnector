@@ -49,6 +49,7 @@ import org.eclipse.mylar.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebIssueService;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssJiraFilterService;
+import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapService;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.wsdl.soap.RemoteException;
@@ -174,12 +175,27 @@ public class JiraRpcServer extends AbstractJiraServer {
 		});
 	}
 
-	public Issue getIssue(String issueKey) throws JiraException {
+	public Issue getIssueByKey(String issueKey) throws JiraException {
 		SingleIssueCollector collector = new SingleIssueCollector();
 		filterService.quickSearch(issueKey, collector);
 		return collector.getIssue();
 	}
 
+	public Issue getIssueById(String issueId) throws JiraException {
+		String issueKey = getKeyFromId(issueId);
+		return getIssueByKey(issueKey);
+	}
+
+	public String getKeyFromId(final String issueId) throws JiraException {
+		return call(new RemoteRunnable<String>() {
+			@Override
+			public String run() throws java.rmi.RemoteException, JiraException {
+				RemoteIssue issue = getSoapService().getIssueById(loginToken.getCurrentValue(), issueId);
+				return (issue != null) ? issue.getKey() : null; 
+			}
+		});
+	}
+	
 	public Issue createIssue(Issue issue) throws JiraException {
 		return issueService.createIssue(issue);
 	}

@@ -171,8 +171,26 @@ public interface JiraServer {
 	 * @return Matching issue or <code>null</code> if no matching issue could
 	 *         be found
 	 */
-	Issue getIssue(String issueKey) throws JiraException;
+	Issue getIssueByKey(String issueKey) throws JiraException;
 
+	/**
+	 * Retrieve an issue using its unique id
+	 * 
+	 * @param issueKey
+	 *            Unique id of the issue to find
+	 * @return Matching issue or <code>null</code> if no matching issue could
+	 *         be found
+	 */
+	Issue getIssueById(String issue) throws JiraException;
+
+	/**
+	 * Returns the corresponding key for <code>issueId</code>.
+	 * 
+	 * @param issueId unique id of the issue
+	 * @return corresponding key or <code>null</code> if the id was not found 
+	 */
+	String getKeyFromId(final String issueId) throws JiraException;
+		
 	/**
 	 * @param query
 	 *            Query to be executed
