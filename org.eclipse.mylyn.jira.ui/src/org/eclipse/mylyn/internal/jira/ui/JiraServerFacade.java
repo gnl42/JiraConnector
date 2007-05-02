@@ -65,24 +65,19 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 *      String)
 	 */
 	public synchronized JiraServer getJiraServer(TaskRepository repository) {
-		try {
-			String serverHostname = getServerHost(repository);
-			JiraServer server = serverManager.getServer(serverHostname);
-			if (server == null) {
-				String userName = repository.getUserName();
-				String password = repository.getPassword();
-				server = serverManager.addServer(serverHostname, repository.getUrl(), //
-						Boolean.parseBoolean(repository.getProperty(JiraRepositoryConnector.COMPRESSION_KEY)), //
-						userName == null ? "" : userName, //
-						password == null ? "" : password, //
-						repository.getProxy(), //
-						repository.getHttpUser(), repository.getHttpPassword());
-			}
-			return server;
-		} catch (RuntimeException e) {
-			MylarStatusHandler.log("Error connecting to Jira Server", this);
-			throw e;
+		String serverHostname = getServerHost(repository);
+		JiraServer server = serverManager.getServer(serverHostname);
+		if (server == null) {
+			String userName = repository.getUserName();
+			String password = repository.getPassword();
+			server = serverManager.addServer(serverHostname, repository.getUrl(), //
+					Boolean.parseBoolean(repository.getProperty(JiraRepositoryConnector.COMPRESSION_KEY)), //
+					userName == null ? "" : userName, //
+							password == null ? "" : password, //
+									repository.getProxy(), //
+									repository.getHttpUser(), repository.getHttpPassword());
 		}
+		return server;
 	}
 
 	public synchronized static JiraServerFacade getDefault() {

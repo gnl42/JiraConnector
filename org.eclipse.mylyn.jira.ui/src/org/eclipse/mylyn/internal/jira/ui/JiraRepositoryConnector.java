@@ -200,9 +200,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// traffic
 		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
 		JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-		if (jiraServer == null) {
-			return tasks;
-		}
 
 		long mil = lastSyncDate.getTime();
 		long now = Calendar.getInstance().getTimeInMillis();
@@ -310,25 +307,24 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public String[] getTaskIdsFromComment(TaskRepository repository, String comment) {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
-		if (server != null) {
-			// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
-			StringBuffer sb = new StringBuffer("(");
-			String sep = "";
-			for (Project project : server.getProjects()) {
-				sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)");
-				sep = "|";
-			}
-			sb.append(")(?:\\D|\\z)");
 
-			Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-			Matcher m = p.matcher(comment);
-			if (m.find()) {
-				HashSet<String> ids = new HashSet<String>();
-				do {
-					ids.add(m.group(1));
-				} while (m.find());
-				return ids.toArray(new String[ids.size()]);
-			}
+		// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
+		StringBuffer sb = new StringBuffer("(");
+		String sep = "";
+		for (Project project : server.getProjects()) {
+			sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)");
+			sep = "|";
+		}
+		sb.append(")(?:\\D|\\z)");
+
+		Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+		Matcher m = p.matcher(comment);
+		if (m.find()) {
+			HashSet<String> ids = new HashSet<String>();
+			do {
+				ids.add(m.group(1));
+			} while (m.find());
+			return ids.toArray(new String[ids.size()]);
 		}
 
 		return super.getTaskIdsFromComment(repository, comment);

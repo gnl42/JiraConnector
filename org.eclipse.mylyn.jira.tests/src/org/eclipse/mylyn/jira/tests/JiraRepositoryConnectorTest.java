@@ -11,8 +11,6 @@
 
 package org.eclipse.mylar.jira.tests;
 
-import java.net.MalformedURLException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -64,7 +62,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		super.tearDown();
 	}
 
-	protected void init() {
+	protected void init() throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
 		repository = new TaskRepository(kind, JiraTestConstants.JIRA_381_URL);
@@ -82,7 +80,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		server = JiraServerFacade.getDefault().getJiraServer(repository);
 	}
 
-	public void testChangeTaskRepositorySettings() throws MalformedURLException {
+	public void testChangeTaskRepositorySettings() throws Exception {
 		assertEquals(repository.getUserName(), server.getUserName());
 
 		EditRepositoryWizard wizard = new EditRepositoryWizard(repository);
