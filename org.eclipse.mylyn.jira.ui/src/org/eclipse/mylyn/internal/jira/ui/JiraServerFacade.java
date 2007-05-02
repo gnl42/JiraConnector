@@ -133,17 +133,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * Forces a reset of the {@link JiraServer} object and updates the
 	 * repository configuration.
 	 */
-	public synchronized void refreshServerSettings(TaskRepository repository, IProgressMonitor monitor) {
-		// XXX disabled because this breaks objects holding a reference to the
-		// same server
-		// XXX this block of code is a work around: bug 164543, bug 167697
-		// String serverHostname = getServerHost(repository);
-		// JiraServer server = serverManager.getServer(serverHostname);
-		// if (server != null) {
-		// server.logout();
-		// serverManager.removeServer(server);
-		// }
-
+	public void refreshServerSettings(TaskRepository repository, IProgressMonitor monitor) {
 		JiraServer server = getJiraServer(repository);
 		server.refreshDetails(monitor);
 	}
