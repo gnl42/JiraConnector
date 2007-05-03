@@ -32,6 +32,10 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 	}
 
 	private static String getTitle(String text) {
+		if (text == null) {
+			return null;
+		}
+		
 		int start = text.indexOf("<strong>");
 		if (start != -1) {
 			int stop = text.indexOf("</strong>", start + 8);

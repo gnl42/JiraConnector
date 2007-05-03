@@ -17,9 +17,12 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
+import org.eclipse.mylar.internal.jira.core.model.Resolution;
+import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
+import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcServer;
 
 /**
@@ -70,17 +73,40 @@ public class JiraRpcServerTest extends TestCase {
 		server.startIssue(issue);
 	}
 
-// public void testResolveIssue() {
-// fail("Not yet implemented");
-// }
-//
-// public void testCloseIssue() {
-// fail("Not yet implemented");
-// }
-//
-// public void testReopenIssue() {
-// fail("Not yet implemented");
-// }
+	public void testResolveCloseReopenIssue() throws Exception {
+		Resolution resolution = JiraTestUtils.getFixedResolution(server);
+		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
+
+		server.resolveIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+		issue = server.getIssueById(issue.getId());
+		assertTrue(issue.getStatus().isResolved());
+		try {
+			server.resolveIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+			fail("Expected JiraRemoteMessageException");
+		} catch (JiraRemoteMessageException e) {
+			assertEquals("Workflow Action Invalid", e.getMessage());
+		}
+		
+		server.closeIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+		issue = server.getIssueById(issue.getId());
+		assertTrue(issue.getStatus().isClosed());
+		try {
+			server.resolveIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+			fail("Expected JiraRemoteMessageException");
+		} catch (JiraRemoteMessageException e) {
+			assertEquals("Workflow Action Invalid", e.getMessage());
+		}
+		try {
+			server.closeIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+			fail("Expected JiraRemoteMessageException");
+		} catch (JiraException e) {
+			assertEquals("Workflow Action Invalid", e.getMessage());
+		}
+
+		server.reopenIssue(issue, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+		issue = server.getIssueById(issue.getId());
+		assertTrue(issue.getStatus().isReopened());
+	}
 
 	public void testGetIdFromKey() throws Exception {
 		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
@@ -100,5 +126,15 @@ public class JiraRpcServerTest extends TestCase {
 		}
 
 	}
-	
+
+	public void testReassign() throws Exception {
+		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
+		issue.setAssignee("nonexistantuser");
+		try {
+			server.updateIssue(issue, "comment");
+			fail("Expected JiraException");
+		} catch (JiraException e) {
+		}
+	}
+
 }

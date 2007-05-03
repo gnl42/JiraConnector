@@ -102,7 +102,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) {
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/EditIssue.jspa");
 
@@ -110,7 +110,9 @@ public class JiraWebIssueService {
 				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 				post.addParameter("summary", issue.getSummary());
 				post.addParameter("issuetype", issue.getType().getId());
-				post.addParameter("priority", issue.getPriority().getId());
+				if (issue.getPriority() != null) {
+					post.addParameter("priority", issue.getPriority().getId());
+				}
 				if (issue.getDue() != null) {
 					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT, Locale.US).format(issue.getDue()));
 				} else {
@@ -160,17 +162,15 @@ public class JiraWebIssueService {
 				post.addParameter("id", issue.getId());
 
 				try {
-					client.executeMethod(post);
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					int result = client.executeMethod(post);
+					if (result != HttpStatus.SC_TEMPORARY_REDIRECT) {
+						handleErrorMessage(post);
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
-
 			}
 
 		});
@@ -180,7 +180,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) {
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/AssignIssue.jspa");
 
@@ -196,17 +196,15 @@ public class JiraWebIssueService {
 				post.addParameter("id", issue.getId());
 
 				try {
-					client.executeMethod(post);
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					int result = client.executeMethod(post);
+					if (result != HttpStatus.SC_TEMPORARY_REDIRECT) {
+						handleErrorMessage(post);
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
-
 			}
 
 		});
@@ -217,13 +215,13 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) {
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/CommentAssignIssue.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
 				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-
+				
 				if (resolution != null) {
 					post.addParameter("resolution", resolution.getId());
 					if (fixVersions == null || fixVersions.length == 0) {
@@ -245,19 +243,16 @@ public class JiraWebIssueService {
 				post.addParameter("id", issue.getId());
 
 				try {
-					client.executeMethod(post);
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					int result = client.executeMethod(post);
+					if (result != HttpStatus.SC_TEMPORARY_REDIRECT) {
+						handleErrorMessage(post);
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
-
 			}
-
 		});
 	}
 
@@ -654,18 +649,35 @@ public class JiraWebIssueService {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(),
 				JiraServer.CHARSET));
 		try {
+			StringBuilder sb = new StringBuilder();
 			HtmlStreamTokenizer tokenizer = new HtmlStreamTokenizer(reader, null);
 			for (Token token = tokenizer.nextToken(); token.getType() != Token.EOF; token = tokenizer.nextToken()) {
 				if (token.getType() == Token.TAG) {
 					HtmlTag tag = (HtmlTag) token.getValue();
-					if (tag.getTagType() == HtmlTag.Type.DIV && tag.getAttribute("class") != null
-							&& tag.getAttribute("class").startsWith("infoBox")) {
-						throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
+
+					String classValue = tag.getAttribute("class");
+					if (classValue != null) {
+						if (tag.getTagType() == HtmlTag.Type.DIV) {
+							if (classValue.startsWith("infoBox")) {
+								throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
+							} else if (classValue.startsWith("errorArea")) {
+								throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
+							}
+						} else if (tag.getTagType() == HtmlTag.Type.SPAN) {
+							if (classValue.startsWith("errMsg")) {
+								sb.append(getContent(tokenizer, HtmlTag.Type.SPAN));
+							}
+						}
 					}
+
 				}
 			}
+			if (sb.length() == 0) {
+				sb.append("No details available");
+			}
+			throw new JiraRemoteMessageException("An error has occured: " + sb.toString(), "");
 		} catch (ParseException e) {
-			throw new JiraRemoteMessageException(method.getResponseBodyAsString());
+			throw new JiraRemoteMessageException("An error has occured.", "");
 		} finally {
 			reader.close();
 		}

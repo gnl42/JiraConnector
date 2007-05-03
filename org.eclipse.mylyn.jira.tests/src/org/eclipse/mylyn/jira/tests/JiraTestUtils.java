@@ -8,7 +8,9 @@ import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 
 public class JiraTestUtils {
 
-	public static Resolution getFixedResolution(JiraServer server) {
+	public static Resolution getFixedResolution(JiraServer server) throws JiraException {
+		refreshDetails(server);
+		
 		Resolution[] resolutions = server.getResolutions();
 		for (Resolution resolution : resolutions) {
 			if (Resolution.FIXED_ID.equals(resolution.getId())) {
