@@ -78,8 +78,6 @@ public interface JiraServer {
 
 	boolean useCompression();
 
-	String getName();
-
 	String getBaseURL();
 
 	String getUserName();

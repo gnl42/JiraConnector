@@ -38,9 +38,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 
 	private volatile JiraServerData data;
 
-	private final String name;
-	
-	private final String baseURL;
+	private final String baseUrl;
 
 	private final String username;
 
@@ -54,10 +52,13 @@ public abstract class AbstractJiraServer implements JiraServer {
 
 	private final String httpPassword;
 
-	public AbstractJiraServer(String name, String baseURL, boolean useCompression, String username, String password,
+	public AbstractJiraServer(String baseUrl, boolean useCompression, String username, String password,
 			Proxy proxy, String httpUser, String httpPassword) {
-		this.name = name;
-		this.baseURL = baseURL;
+		if (baseUrl == null) {
+			throw new IllegalArgumentException("baseURL may not be null");
+		}
+		
+		this.baseUrl = baseUrl;
 		this.useCompression = useCompression;
 		this.username = username;
 		this.password = password;
@@ -112,12 +113,8 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.lastUpdate != 0;
 	}
 	
-	public String getName() {
-		return name;
-	}
-
 	public String getBaseURL() {
-		return baseURL;
+		return baseUrl;
 	}
 
 	public String getUserName() {
@@ -317,17 +314,17 @@ public abstract class AbstractJiraServer implements JiraServer {
 
 	public boolean equals(Object obj) {
 		if (obj instanceof AbstractJiraServer)  {
-			return getName().equals(((AbstractJiraServer) obj).getName());
+			return getBaseURL().equals(((AbstractJiraServer) obj).getBaseURL());
 		}
 		return false;
 	}
 
 	public int hashCode() {
-		return getName().hashCode();
+		return getBaseURL().hashCode();
 	}
 
 	public String toString() {
-		return getName();
+		return getBaseURL();
 	}
 
 	public String getHttpPassword() {

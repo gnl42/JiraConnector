@@ -91,9 +91,9 @@ public class JiraRpcServer extends AbstractJiraServer {
 
 	private LoginToken loginToken;
 
-	public JiraRpcServer(String name, String baseURL, boolean useCompression, String username, String password,
+	public JiraRpcServer(String baseURL, boolean useCompression, String username, String password,
 			Proxy proxy, String httpUser, String httpPassword) {
-		super(name, baseURL, useCompression, username, password, proxy, httpUser, httpPassword);
+		super(baseURL, useCompression, username, password, proxy, httpUser, httpPassword);
 
 		filterService = new RssJiraFilterService(this);
 		issueService = new JiraWebIssueService(this);

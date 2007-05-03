@@ -11,9 +11,7 @@
 
 package org.eclipse.mylar.internal.jira.ui;
 
-import java.net.MalformedURLException;
 import java.net.Proxy;
-import java.net.URL;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylar.core.MylarStatusHandler;
@@ -57,7 +55,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	public void clearServers() {
 		serverManager.removeAllServers();
 	}
-	
+
 	/**
 	 * Lazily creates server.
 	 * 
@@ -65,17 +63,16 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 *      String)
 	 */
 	public synchronized JiraServer getJiraServer(TaskRepository repository) {
-		String serverHostname = getServerHost(repository);
-		JiraServer server = serverManager.getServer(serverHostname);
+		JiraServer server = serverManager.getServer(repository.getUrl());
 		if (server == null) {
 			String userName = repository.getUserName();
 			String password = repository.getPassword();
-			server = serverManager.addServer(serverHostname, repository.getUrl(), //
+			server = serverManager.addServer(repository.getUrl(), //
 					Boolean.parseBoolean(repository.getProperty(JiraRepositoryConnector.COMPRESSION_KEY)), //
 					userName == null ? "" : userName, //
-							password == null ? "" : password, //
-									repository.getProxy(), //
-									repository.getHttpUser(), repository.getHttpPassword());
+					password == null ? "" : password, //
+					repository.getProxy(), //
+					repository.getHttpUser(), repository.getHttpPassword());
 		}
 		return server;
 	}
@@ -104,15 +101,14 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	public synchronized void repositoryAdded(TaskRepository repository) {
 		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
-			assert serverManager.getServer(getServerHost(repository)) == null;
+			assert serverManager.getServer(repository.getUrl()) == null;
 			getJiraServer(repository);
 		}
 	}
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
 		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
-			String serverHostname = getServerHost(repository);
-			JiraServer server = serverManager.getServer(serverHostname);
+			JiraServer server = serverManager.getServer(repository.getUrl());
 			removeServer(server);
 		}
 	}
@@ -158,15 +154,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		}
 	}
 
-	private static String getServerHost(TaskRepository repository) {
-		try {
-			return new URL(repository.getUrl()).getHost();
-		} catch (MalformedURLException ex) {
-			throw new RuntimeException("Invalid url " + repository.getUrl(), ex);
-		}
-	}
-
-	/**
+	/*
 	 * TODO: refactor
 	 */
 	public static void handleConnectionException(Exception e) {
