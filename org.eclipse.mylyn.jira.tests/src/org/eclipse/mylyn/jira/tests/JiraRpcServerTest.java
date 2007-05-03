@@ -32,12 +32,9 @@ public class JiraRpcServerTest extends TestCase {
 
 	private AbstractJiraServer server;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
-		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
-		server = new JiraRpcServer("server", JiraTestConstants.JIRA_381_URL, false, credentials.username,
+	protected void init(String url, PrivilegeLevel level) throws Exception {
+		Credentials credentials = MylarTestUtils.readCredentials(level);
+		server = new JiraRpcServer("server", url, false, credentials.username,
 				credentials.password, Proxy.NO_PROXY, null, null);
 	}
 
@@ -46,15 +43,30 @@ public class JiraRpcServerTest extends TestCase {
 		super.tearDown();
 	}
 
+	public void testLogin381() throws Exception {
+		login(JiraTestConstants.JIRA_381_URL);
+	}
+
 	@SuppressWarnings("deprecation")
-	public void testLogin() throws Exception {
+	private void login(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+		
 		server.login();
 		server.logout();
 		// should automatically login
 		server.refreshDetails(new NullProgressMonitor());
+		
+		init(url, PrivilegeLevel.GUEST);
+		server.login();
 	}
-
+	
 	public void testStartStopIssue() throws Exception {
+		startStopIssue(JiraTestConstants.JIRA_381_URL);
+	}
+	
+	private void startStopIssue(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+		
 		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
 		server.startIssue(issue);
 		try {
@@ -74,6 +86,12 @@ public class JiraRpcServerTest extends TestCase {
 	}
 
 	public void testResolveCloseReopenIssue() throws Exception {
+		resolveCloseReopenIssue(JiraTestConstants.JIRA_381_URL);
+	}
+	
+	private void resolveCloseReopenIssue(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+
 		Resolution resolution = JiraTestUtils.getFixedResolution(server);
 		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
 
@@ -109,7 +127,13 @@ public class JiraRpcServerTest extends TestCase {
 	}
 
 	public void testGetIdFromKey() throws Exception {
-		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
+		getIdFromKey(JiraTestConstants.JIRA_381_URL);
+	}
+	
+	private void getIdFromKey(String url) throws Exception {
+		init(url, PrivilegeLevel.GUEST);
+
+		Issue issue = JiraTestUtils.createIssue(server, "getIdFromKey");
 		String key = server.getKeyFromId(issue.getId());
 		assertEquals(issue.getKey(), key);
 
@@ -128,7 +152,15 @@ public class JiraRpcServerTest extends TestCase {
 	}
 
 	public void testReassign() throws Exception {
-		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
+		reassign(JiraTestConstants.JIRA_381_URL);
+	}
+	
+	private void reassign(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+		// TODO add more cases and test
+		// server.assignIssueTo(issue, assigneeType, user, comment)
+		
+		Issue issue = JiraTestUtils.createIssue(server, "testReassign");
 		issue.setAssignee("nonexistantuser");
 		try {
 			server.updateIssue(issue, "comment");

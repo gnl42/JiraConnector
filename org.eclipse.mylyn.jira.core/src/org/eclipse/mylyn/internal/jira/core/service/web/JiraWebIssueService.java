@@ -163,7 +163,7 @@ public class JiraWebIssueService {
 
 				try {
 					int result = client.executeMethod(post);
-					if (result != HttpStatus.SC_TEMPORARY_REDIRECT) {
+					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
 						handleErrorMessage(post);
 					}
 				} catch (IOException e) {
@@ -197,7 +197,7 @@ public class JiraWebIssueService {
 
 				try {
 					int result = client.executeMethod(post);
-					if (result != HttpStatus.SC_TEMPORARY_REDIRECT) {
+					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
 						handleErrorMessage(post);
 					}
 				} catch (IOException e) {
@@ -244,7 +244,7 @@ public class JiraWebIssueService {
 
 				try {
 					int result = client.executeMethod(post);
-					if (result != HttpStatus.SC_TEMPORARY_REDIRECT) {
+					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
 						handleErrorMessage(post);
 					}
 				} catch (IOException e) {
@@ -269,7 +269,7 @@ public class JiraWebIssueService {
 				method.setFollowRedirects(false);
 				try {
 					int result = client.executeMethod(method);
-					if (result != HttpStatus.SC_TEMPORARY_REDIRECT) {
+					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
 						handleErrorMessage(method);
 					}
 				} catch (IOException e) {
