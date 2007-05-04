@@ -69,7 +69,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					.getUrl(), jiraIssue.getId(), Task.DEFAULT_TASK_KIND);
 			initializeTaskData(data, server, jiraIssue.getProject());
 			updateTaskData(data, jiraIssue, server);
-			addOperations(repository, jiraIssue, data);
+			addOperations(data, jiraIssue, server);
 			return data;
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(e));
@@ -247,7 +247,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 	}
 	
-	private void addOperations(TaskRepository repository, Issue issue, RepositoryTaskData data) {
+	private void addOperations(RepositoryTaskData data, Issue issue, JiraServer server) {
 		Status status = issue.getStatus();
 
 		RepositoryOperation opLeave = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
@@ -259,23 +259,15 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 		RepositoryOperation opResolve = new RepositoryOperation(Status.RESOLVED_ID, "Resolve");
 		opResolve.setUpOptions("resolution");
-		opResolve.addOption("Fixed", Resolution.FIXED_ID);
-		opResolve.addOption("Won't Fix", Resolution.WONT_FIX_ID);
-		opResolve.addOption("Duplicate", Resolution.DUPLICATE_ID);
-		opResolve.addOption("Incomplete", Resolution.INCOMPLETE_ID);
-		opResolve.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
+		addResolutions(server, opResolve);
 
 		RepositoryOperation opClose = new RepositoryOperation(Status.CLOSED_ID, "Close");
 		opClose.setUpOptions("resolution");
-		opClose.addOption("Fixed", Resolution.FIXED_ID);
-		opClose.addOption("Won't Fix", Resolution.WONT_FIX_ID);
-		opClose.addOption("Duplicate", Resolution.DUPLICATE_ID);
-		opClose.addOption("Incomplete", Resolution.INCOMPLETE_ID);
-		opClose.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
+		addResolutions(server, opClose);
 
 		RepositoryOperation reassignOperation = new RepositoryOperation("reassign", "Reassign to");
 		reassignOperation.setInputName("assignee");
-		reassignOperation.setInputValue(repository.getUserName());
+		reassignOperation.setInputValue(server.getUserName());
 
 		opLeave.setChecked(true);
 		data.addOperation(opLeave);
@@ -297,6 +289,25 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			data.addOperation(reassignOperation);
 		} else if (status.getId().equals(Status.CLOSED_ID)) {
 			data.addOperation(opReopen);
+		}
+	}
+
+	private void addResolutions(JiraServer server, RepositoryOperation operation) {
+		Resolution[] resolutions = server.getResolutions();
+		if (resolutions.length > 0) {
+			for (Resolution resolution : resolutions) {
+				operation.addOption(resolution.getName(), resolution.getId());
+				if (Resolution.FIXED_ID.equals(resolution.getId())) {
+					operation.setOptionSelection(resolution.getName());
+				}
+			}
+		} else {
+			operation.addOption("Fixed", Resolution.FIXED_ID);
+			operation.addOption("Won't Fix", Resolution.WONT_FIX_ID);
+			operation.addOption("Duplicate", Resolution.DUPLICATE_ID);
+			operation.addOption("Incomplete", Resolution.INCOMPLETE_ID);
+			operation.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
+			operation.setOptionSelection("Fixed");
 		}
 	}
 
