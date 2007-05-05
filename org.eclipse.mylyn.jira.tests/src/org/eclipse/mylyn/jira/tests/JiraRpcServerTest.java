@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Version;
@@ -152,13 +153,47 @@ public class JiraRpcServerTest extends TestCase {
 
 	private void reassign(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
-		// TODO add more cases and test
-		// server.assignIssueTo(issue, assigneeType, user, comment)
 
 		Issue issue = JiraTestUtils.createIssue(server, "testReassign");
 		issue.setAssignee("nonexistantuser");
 		try {
 			server.updateIssue(issue, "comment");
+			fail("Expected JiraException");
+		} catch (JiraRemoteMessageException e) {
+			assertEquals("User 'nonexistantuser' cannot be assigned issues.", e.getMessage());
+		}
+
+		try {
+			server.assignIssueTo(issue, JiraServer.ASSIGNEE_NONE, "", "");
+			fail("Expected JiraException");
+		} catch (JiraRemoteMessageException e) {
+			assertEquals("Issues must be assigned.", e.getMessage());
+		}
+
+		try {
+			server.assignIssueTo(issue, JiraServer.ASSIGNEE_SELF, "", "");
+		} catch (JiraRemoteMessageException e) {
+			assertEquals("Issue already assigned to Test User 1 (" + server.getUserName() + ").", e.getMessage());
+		}
+		
+		String guestUsername = MylarTestUtils.readCredentials(PrivilegeLevel.GUEST).username;
+		try {
+			server.assignIssueTo(issue, JiraServer.ASSIGNEE_USER, guestUsername, "");
+		} catch (JiraRemoteMessageException e) {
+			assertEquals("User 'guest@mylar.eclipse.org' cannot be assigned issues.", e.getMessage());
+		}
+
+		server.assignIssueTo(issue, JiraServer.ASSIGNEE_DEFAULT, "", "");
+		issue = server.getIssueById(issue.getId());
+		assertEquals("admin@mylar.eclipse.org", issue.getAssignee());
+
+		server.assignIssueTo(issue, JiraServer.ASSIGNEE_SELF, "", "");
+		issue = server.getIssueById(issue.getId());
+		assertEquals(server.getUserName(), issue.getAssignee());
+
+		init(url, PrivilegeLevel.GUEST);
+		try {
+			server.assignIssueTo(issue, JiraServer.ASSIGNEE_SELF, "", "");
 			fail("Expected JiraException");
 		} catch (JiraException e) {
 		}
@@ -168,13 +203,46 @@ public class JiraRpcServerTest extends TestCase {
 		findIssues(JiraTestConstants.JIRA_381_URL);
 	}
 
-	private void findIssues(String url) throws Exception{
+	private void findIssues(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
-		
+
 		JiraTestUtils.refreshDetails(server);
 		FilterDefinition filter = new FilterDefinition();
 		MockIssueCollector collector = new MockIssueCollector();
 		server.search(filter, collector);
 		assertTrue(collector.done);
 	}
+
+	public void testAddComment() throws Exception {
+		addComment(JiraTestConstants.JIRA_381_URL);
+	}
+
+	private void addComment(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+
+		Issue issue = JiraTestUtils.createIssue(server, "testAddComment");
+		server.addCommentToIssue(issue, "comment 1");
+		issue = server.getIssueById(issue.getId());
+		Comment comment = getComment(issue, "comment 1");
+		assertNotNull(comment);
+		assertEquals(server.getUserName(), comment.getAuthor());
+		
+		init(url, PrivilegeLevel.GUEST);
+		JiraTestUtils.refreshDetails(server);
+		server.addCommentToIssue(issue, "comment guest");
+		issue = server.getIssueById(issue.getId());
+		comment = getComment(issue, "comment guest");
+		assertNotNull(comment);
+		assertEquals(server.getUserName(), comment.getAuthor());
+	}
+
+	private Comment getComment(Issue issue, String text) {
+		for (Comment comment : issue.getComments()) {
+			if (text.equals(comment.getComment())) {
+				return comment;
+			}
+		}
+		return null;
+	}
+
 }

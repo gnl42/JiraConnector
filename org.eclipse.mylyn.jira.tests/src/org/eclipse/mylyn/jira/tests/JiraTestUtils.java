@@ -33,7 +33,7 @@ public class JiraTestUtils {
 	}
 
 	public static void refreshDetails(JiraServer server) throws JiraException {
-		if (server.getProjects().length == 0) {
+		if (!server.hasDetails()) {
 			server.refreshDetails(new NullProgressMonitor());
 		}
 	}

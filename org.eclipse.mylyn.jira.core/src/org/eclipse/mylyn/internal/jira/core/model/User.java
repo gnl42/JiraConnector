@@ -13,9 +13,10 @@ package org.eclipse.mylar.internal.jira.core.model;
 import java.io.Serializable;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class User implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	private String name;
@@ -48,11 +49,6 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return this.name + "(" + this.fullName + ")";
 	}

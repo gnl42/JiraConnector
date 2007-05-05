@@ -52,10 +52,15 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 
 	@Override
 	public String toString() {
-		if (getMessage() != null) {
-			return getMessage() + " (" + getHtmlMessage() + ")";
+		String message = getMessage();
+		if (message != null) {
+			if (htmlMessage != null) {
+				return message + " (" + htmlMessage + ")";
+			} else {
+				return message;
+			}
 		} else {
-			return getHtmlMessage();
+			return htmlMessage;
 		}
 	}
 	

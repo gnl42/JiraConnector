@@ -315,11 +315,6 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback#execute(org.apache.commons.httpclient.HttpClient,org.eclipse.mylar.internal.jira.core.service.JiraServer)
-			 */
 			public void execute(HttpClient client, JiraServer server) {
 				StringBuffer attachFileURLBuffer = new StringBuffer(server.getBaseURL());
 				attachFileURLBuffer.append("/secure/AttachFile.jspa");
@@ -673,9 +668,9 @@ public class JiraWebIssueService {
 			if (sb.length() == 0) {
 				sb.append("No details available");
 			}
-			throw new JiraRemoteMessageException("An error has occured: " + sb.toString(), "");
+			throw new JiraRemoteMessageException(sb.toString(), null);
 		} catch (ParseException e) {
-			throw new JiraRemoteMessageException("An error has occured.", "");
+			throw new JiraRemoteMessageException("An error has occured.", null);
 		} finally {
 			reader.close();
 		}

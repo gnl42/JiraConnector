@@ -491,7 +491,7 @@ public class RssContentHandler extends DefaultHandler {
 				String projectKey = key.substring(0, key.indexOf('-'));
 				Project project = server.getProjectByKey(projectKey);
 				if (project == null) {
-					throw new SAXException("No project with key " + projectKey + " found");
+					throw new SAXException("No project with key '" + projectKey + "' found");
 				}
 				currentIssue.setProject(project);
 			} else if (SUMMARY.equals(localName)) {
