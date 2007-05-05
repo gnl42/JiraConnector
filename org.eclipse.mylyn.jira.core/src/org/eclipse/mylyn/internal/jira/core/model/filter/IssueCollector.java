@@ -44,16 +44,6 @@ public interface IssueCollector {
 	public void done();
 
 	/**
-	 * Record exception for any error
-	 */
-	public void setException(Exception e);
-
-	/**
-	 * Returns recorded exception
-	 */
-	public Exception getException();
-
-	/**
 	 * If the server only supports inefficient mechanisims for getting issues
 	 * the user can choose to limit the number of matches. This is only used as
 	 * a hint.

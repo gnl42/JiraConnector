@@ -41,7 +41,6 @@ import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.Order;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.ui.JiraTask.PriorityLevel;
@@ -139,31 +138,16 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						"Invalid query type: " + repositoryQuery.getClass(), null);				
 			}
 			server.search(filter, collector);
-		} catch (JiraAuthenticationException ex) {
+		} catch (JiraException e) {
+			//return JiraCorePlugin.toStatus(e);
+			String msg = e.getMessage();
+			if (msg == null) {
+				msg = e.toString();
+			}
 			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
-					"Unable to login to the repository. Check credentials", ex);
-		} catch (Throwable t) {
-			// TODO need to refactor this to use better checked exceptions and
-			// only log severe cases
-			String msg = t.getMessage();
-			if (msg == null) {
-				msg = t.toString();
-			}
-			Status status = new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
-					"Unable to retrieve query results from " + repositoryQuery.getRepositoryUrl() + "\n" + msg, t);
-			MylarStatusHandler.log(status);
-			return status;
+					"Unable to retrieve query results from " + repositoryQuery.getRepositoryUrl() + "\n" + msg, e);
 		}
-		// TODO: work-around no other way of determining failure
-		Exception ex = collector.getException();
-		if (ex != null) {
-			String msg = ex.getMessage();
-			if (msg == null) {
-				msg = ex.toString();
-			}
-			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
-					"Unable to retrieve query results from " + repositoryQuery.getRepositoryUrl() + "\n" + msg, ex);
-		}
+		
 		for (Issue issue : issues) {
 			String taskId = issue.getId();
 			// String handleIdentifier =
@@ -178,7 +162,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(),
 					taskId, issue.getKey());
 			hit.setCompleted(isCompleted(issue.getStatus()));
-			// XXX: HACK, need to map jira priority to tasklist priorities
+			// XXX: HACK, need to map JIRA priority to task list priorities
 			hit.setPriority(Task.PriorityLevel.P3.toString());
 			try {
 				resultCollector.accept(hit);

@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -36,7 +37,7 @@ class RssReader {
 		this.collector = collector;
 	}
 
-	public void readRssFeed(InputStream feed) {
+	public void readRssFeed(InputStream feed) throws JiraException {
 		try {
 			// TODO this only seems to work in J2SE 5.0
 			// XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -50,11 +51,11 @@ class RssReader {
 		} catch (ParseCancelledException e) {
 			// User requested this action, so don't log anything
 		} catch (SAXException e) {
-			collector.setException(e);
+			throw new JiraException("Error parsing server response", e);
 		} catch (ParserConfigurationException e) {
-			collector.setException(e);
+			throw new JiraException("Error parsing server response", e);
 		} catch (IOException e) {
-			collector.setException(e);
+			throw new JiraException("Error parsing server response", e);
 		}
 	}
 }

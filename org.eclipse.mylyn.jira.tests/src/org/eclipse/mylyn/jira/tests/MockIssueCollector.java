@@ -17,8 +17,6 @@ public class MockIssueCollector implements IssueCollector {
 
 	boolean started;
 
-	Exception exception;
-
 	public void collectIssue(Issue issue) {
 		issues.add(issue);
 	}
@@ -27,20 +25,12 @@ public class MockIssueCollector implements IssueCollector {
 		done = true;
 	}
 
-	public Exception getException() {
-		return exception;
-	}
-
 	public int getMaxHits() {
 		return 5000;
 	}
 
 	public boolean isCancelled() {
 		return false;
-	}
-
-	public void setException(Exception e) {
-		this.exception = e;
 	}
 
 	public void start() {

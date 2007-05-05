@@ -28,8 +28,6 @@ class JiraIssueCollector implements IssueCollector {
 
 	private boolean done = false;
 
-	private Exception exception;
-
 	private int maxHits;
 
 	JiraIssueCollector(IProgressMonitor monitor, List<Issue> issues, int maxHits) {
@@ -55,14 +53,6 @@ class JiraIssueCollector implements IssueCollector {
 
 	public boolean isDone() {
 		return done;
-	}
-
-	public Exception getException() {
-		return exception;
-	}
-
-	public void setException(Exception e) {
-		this.exception = e;
 	}
 
 	public int getMaxHits() {

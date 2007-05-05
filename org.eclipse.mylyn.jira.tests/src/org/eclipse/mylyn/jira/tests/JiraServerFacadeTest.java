@@ -16,116 +16,46 @@ import junit.framework.TestCase;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
  * @author Wesley Coelho (initial integration patch)
+ * @author Steffen Pingel
  */
 public class JiraServerFacadeTest extends TestCase {
 
-	private final static String USER = "mylartest";
-
-	private final static String PASSWORD = "mylartest";
-
-	private final static String SERVER_URL = "http://developer.atlassian.com/jira";
-
 	private JiraServerFacade jiraFacade = null;
-
-	private TaskRepository repository = null;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, SERVER_URL);
-		repository.setAuthenticationCredentials(USER, PASSWORD);
-		TasksUiPlugin.getRepositoryManager().addRepository(repository,
-				TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		
 		jiraFacade = JiraServerFacade.getDefault();
+		
+		TasksUiPlugin.getTaskListManager().resetTaskList();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraUiPlugin.REPOSITORY_KIND);
-		assertNotNull(client);
-		// client.clearArchive();
-		// MylarTaskListPlugin.getTaskListManager().getTaskList().clearArchive();
-		// MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
-		TasksUiPlugin.getTaskListManager().resetTaskList();
-		TasksUiPlugin.getRepositoryManager().removeRepository(repository,
-				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		jiraFacade.logOutFromAll();
-		super.tearDown();
-	}
-
-	public void testLogin() throws Exception {
-		// This connects and logs into the default Jira repository
-		jiraFacade.getJiraServer(repository);
-
-		// Tests connection using the currently specified credentials
-		jiraFacade.validateServerAndCredentials(SERVER_URL, USER, PASSWORD, null, null, null);
 	}
 
 	public void testLogin381() throws Exception {
 		validate(JiraTestConstants.JIRA_381_URL);
 	}
 
-	public void testFilterDownload() throws Exception {
-		JiraServer jiraServer = jiraFacade.getJiraServer(repository);
-		NamedFilter[] filters = jiraServer.getNamedFilters();
-		assertTrue(filters.length > 0);
-	}
+	public void testChangeCredentials() throws Exception {
+		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
+		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_381_URL);
+		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		TasksUiPlugin.getRepositoryManager().addRepository(repository,
+				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-	public void testFilterResults() throws Exception {
-		JiraServer jiraServer = jiraFacade.getJiraServer(repository);
-		NamedFilter[] filters = jiraServer.getNamedFilters();
-		assertTrue(filters.length > 0);
-
-		jiraServer.search(filters[0], new IssueCollector() {
-
-			private boolean issueCollected = false;
-
-			public void start() {
-			}
-
-			public void collectIssue(Issue issue) {
-				issueCollected = true;
-			}
-
-			public boolean isCancelled() {
-				return false;
-			}
-
-			public void done() {
-				if (!issueCollected) {
-					fail("No Issues were collected");
-				}
-			}
-
-			public Exception getException() {
-				return null;
-			}
-
-			public void setException(Exception e) {
-			}
-
-			public int getMaxHits() {
-				return Integer.MAX_VALUE;
-			}
-		});
-	}
-
-	public void testServerInfoChange() throws Exception {
 		repository.setAuthenticationCredentials("Bogus User", "Bogus Password");
 		jiraFacade.repositoryRemoved(repository);
 
@@ -138,8 +68,8 @@ public class JiraServerFacadeTest extends TestCase {
 		}
 		assertTrue(failedOnBogusUser);
 
-		// Check that it works after putting the right password in
-		repository.setAuthenticationCredentials(USER, PASSWORD);
+		// check that it works after putting the right password in
+		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		jiraFacade.repositoryRemoved(repository);
 		jiraFacade.getJiraServer(repository).getNamedFilters();
 	}

@@ -175,7 +175,6 @@ public class JiraRpcServerTest extends TestCase {
 		FilterDefinition filter = new FilterDefinition();
 		MockIssueCollector collector = new MockIssueCollector();
 		server.search(filter, collector);
-		assertNull(collector.exception);
 		assertTrue(collector.done);
 	}
 }

@@ -28,7 +28,9 @@ public class VersionFilter implements Filter, Serializable {
 	private final boolean releasedVersions;
 
 	public VersionFilter(Version[] versions) {
-		assert (versions != null);
+		if (versions == null) {
+			throw new IllegalArgumentException();
+		}
 
 		this.versions = versions;
 		this.unreleasedVersions = false;

@@ -344,7 +344,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		// TODO
 		VersionFilter fixForVersionFilter = filter.getFixForVersionFilter();
 		if (fixForVersionFilter != null) {
-			for ( Version fixVersion : fixForVersionFilter.getVersions()) {
+			for (Version fixVersion : fixForVersionFilter.getVersions()) {
 				addParameter(sb, FIXFOR_KEY, fixVersion.getId());
 			}
 		}
