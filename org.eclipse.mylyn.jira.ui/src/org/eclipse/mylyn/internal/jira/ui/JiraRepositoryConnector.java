@@ -43,7 +43,6 @@ import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.ui.JiraTask.PriorityLevel;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
@@ -57,6 +56,7 @@ import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.Task;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.core.Task.PriorityLevel;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
@@ -162,8 +162,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(),
 					taskId, issue.getKey());
 			hit.setCompleted(isCompleted(issue.getStatus()));
-			// XXX: HACK, need to map JIRA priority to task list priorities
-			hit.setPriority(Task.PriorityLevel.P3.toString());
+			hit.setPriority(getMylarPriority(issue.getPriority()).toString());
 			try {
 				resultCollector.accept(hit);
 			} catch (CoreException e) {
@@ -342,19 +341,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task.setCompleted(false);
 			task.setCompletionDate(null);
 		}
-
-		if (issue.getPriority() != null) {
+		if (issue.getType() != null) {
 			task.setKind(issue.getType().getName());
-
-			PriorityLevel priorityLevel = JiraTask.PriorityLevel.fromPriority(issue.getPriority());
-			if (priorityLevel != null) {
-				task.setPriority(priorityLevel.toString());
-			}
-			// else {
-			// MylarStatusHandler.log("unrecognized priority: " +
-			// issue.getPriority().getDescription(), null);
-			// }
 		}
+		task.setPriority(getMylarPriority(issue.getPriority()).toString());
+
 		if (notifyOfChange) {
 			TasksUiPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
 		}
@@ -395,13 +386,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));			
 			jiraTask.setTaskKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
 			jiraTask.setTaskUrl(getTaskUrl(repository.getUrl(), repositoryTask.getTaskKey()));
-			String priority = JiraTask.PriorityLevel.TRIVIAL.toString();
-			if (taskData.getAttribute(RepositoryTaskAttribute.PRIORITY) != null) {
-				priority = taskData.getAttribute(RepositoryTaskAttribute.PRIORITY).getValue();
-			}
-			jiraTask.setPriority(priority);
-			
+
 			JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+			jiraTask.setPriority(getMylarPriority(server, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
 			for (org.eclipse.mylar.internal.jira.core.model.Status status : server.getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
@@ -420,6 +407,35 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			MylarStatusHandler.log("Unable to update data for task of type " + repositoryTask.getClass().getName(),
 					this);
 		}
+	}
+
+	private static PriorityLevel getMylarPriority(JiraServer server, String jiraPriority) {
+		if (jiraPriority != null) {
+			for (Priority priority : server.getPriorities()) {
+				if (jiraPriority.equals(priority.getName())) {
+					return getMylarPriority(priority);
+				}
+			}
+		}
+		return PriorityLevel.getDefault();
+	}
+	
+	public static PriorityLevel getMylarPriority(Priority jiraPriority) {
+		if (jiraPriority != null) {
+			String priorityId = jiraPriority.getId();
+			if (Priority.BLOCKER_ID.equals(priorityId)) {
+				return PriorityLevel.P1;
+			} else if (Priority.CRITICAL_ID.equals(priorityId)) {
+				return PriorityLevel.P2;
+			} else if (Priority.MAJOR_ID.equals(priorityId)) {
+				return PriorityLevel.P3;
+			} else if (Priority.MINOR_ID.equals(priorityId)) {
+				return PriorityLevel.P4;
+			} else if (Priority.TRIVIAL_ID.equals(priorityId)) {
+				return PriorityLevel.P5;
+			}
+		}
+		return PriorityLevel.getDefault();
 	}
 
 	@Override

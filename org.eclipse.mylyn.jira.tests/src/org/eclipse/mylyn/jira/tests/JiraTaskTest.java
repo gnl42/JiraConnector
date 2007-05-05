@@ -14,7 +14,8 @@ package org.eclipse.mylar.jira.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.ui.JiraTask;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
+import org.eclipse.mylar.tasks.core.Task.PriorityLevel;
 
 /**
  * @author Mik Kersten
@@ -24,7 +25,7 @@ public class JiraTaskTest extends TestCase {
 	public void testPriorityMapping() {
 		Priority priority = new Priority();
 		priority.setId("1");
-		assertEquals("P1", JiraTask.PriorityLevel.fromPriority(priority).toString());
+		assertEquals(PriorityLevel.P1, JiraRepositoryConnector.getMylarPriority(priority));
 	}
 	
 }

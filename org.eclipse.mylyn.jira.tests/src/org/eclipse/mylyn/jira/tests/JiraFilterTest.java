@@ -22,6 +22,7 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
+import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
@@ -38,6 +39,7 @@ import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.QueryHitCollector;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
+import org.eclipse.mylar.tasks.core.Task.PriorityLevel;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
@@ -121,7 +123,9 @@ public class JiraFilterTest extends TestCase {
 		String summary = "testCustomQuery" + System.currentTimeMillis();
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		Issue issue = JiraTestUtils.createIssue(server, summary);
-
+		issue.setPriority(server.getPriorityById(Priority.BLOCKER_ID));
+		server.updateIssue(issue, "comment");
+		
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 
@@ -133,6 +137,7 @@ public class JiraFilterTest extends TestCase {
 		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
 		assertEquals(1, hitCollector.results.size());
 		assertEquals(issue.getSummary(), hitCollector.results.get(0).getSummary());
+		assertEquals(PriorityLevel.P1.toString(), hitCollector.results.get(0).getPriority());
 	}
 
 	public void testCustomQueryWithoutRepositoryConfiguraton() throws Exception {

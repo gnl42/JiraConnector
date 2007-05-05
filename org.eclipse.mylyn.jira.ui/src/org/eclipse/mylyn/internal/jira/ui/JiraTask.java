@@ -11,12 +11,12 @@
 
 package org.eclipse.mylar.internal.jira.ui;
 
-import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 
 /**
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
+ * @author Steffen Pingel
  */
 public class JiraTask extends AbstractRepositoryTask {
 
@@ -24,48 +24,6 @@ public class JiraTask extends AbstractRepositoryTask {
 	
 	private String key = null;
 	
-	public enum PriorityLevel {
-		BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL;
-
-		@Override
-		public String toString() {
-			switch (this) {
-			case BLOCKER:
-				return "P1";
-			case CRITICAL:
-				return "P2";
-			case MAJOR:
-				return "P3";
-			case MINOR:
-				return "P4";
-			case TRIVIAL:
-				return "P5";
-			default:
-				return "P5";
-			}
-		}
-
-		public static PriorityLevel fromPriority(Priority priority) {
-			if (priority == null) {
-				return null;
-			}
-			String priorityId = priority.getId();
-			if (priorityId == null)
-				return null;
-			if (priorityId.equals("1"))
-				return BLOCKER;
-			if (priorityId.equals("2"))
-				return CRITICAL;
-			if (priorityId.equals("3"))
-				return MAJOR;
-			if (priorityId.equals("4"))
-				return MINOR;
-			if (priorityId.equals("5"))
-				return TRIVIAL;
-			return null;
-		}
-	}
-
 	public enum Kind {
 		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE;
 
