@@ -22,8 +22,6 @@ public class Project implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final Project MISSING_PROJECT = createMissingProject();
-
 	private String id;
 
 	private String name;
@@ -173,23 +171,6 @@ public class Project implements Serializable {
 		return this.versions;
 	}
 
-	public static Project createMissingProject() {
-		Project project = new Project();
-		project.setDescription("Unknown");
-		project.setId("Unknown");
-		project.setKey("UNKNOWN");
-		project.setId("-1");
-		project.setVersions(new Version[0]);
-		project.setComponents(new Component[0]);
-
-		return project;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -202,21 +183,12 @@ public class Project implements Serializable {
 		return this.name.equals(that.name);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	public int hashCode() {
 		return name.hashCode();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return this.name;
 	}
+	
 }
