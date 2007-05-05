@@ -114,15 +114,13 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
-	public FilterDefinition getFilterDefinition(JiraServer jiraServer) {
-//		if (filter == null && jiraServer != null) {
-			FilterDefinition filter = createFilter(jiraServer, getUrl());
-			filter.setName(getSummary());
-//		}
+	public FilterDefinition getFilterDefinition(JiraServer jiraServer, boolean validate) {
+		FilterDefinition filter = createFilter(jiraServer, getUrl(), validate);
+		filter.setName(getSummary());
 		return filter;
 	}
 
-	private FilterDefinition createFilter(JiraServer jiraServer, String url) {
+	private FilterDefinition createFilter(JiraServer jiraServer, String url, boolean validate) {
 		FilterDefinition filter = new FilterDefinition();
 
 		int n = url.indexOf('?');
@@ -152,6 +150,15 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		List<String> projectIds = getIds(params, PROJECT_KEY);
 		for (String projectId : projectIds) {
 			Project project = jiraServer.getProjectById(projectId);
+			if (project == null) {
+				if (validate) {
+					// safeguard
+					throw new InvalidJiraQueryException();
+				} else {
+					continue;
+				}
+			}
+			
 			filter.setProjectFilter(new ProjectFilter(project));
 
 			List<String> componentIds = getIds(params, COMPONENT_KEY);
@@ -201,8 +208,10 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		List<IssueType> issueTypes = new ArrayList<IssueType>();
 		for (String typeId : typeIds) {
 			IssueType issueType = jiraServer.getIssueTypeById(typeId);
-			if(!IssueType.MISSING_ISSUE_TYPE.equals(issueType)) {
+			if (issueType != null) {
 				issueTypes.add(issueType);
+			} else if (validate) {
+				throw new InvalidJiraQueryException();
 			}
 		}
 		if(!issueTypes.isEmpty()) {
@@ -213,8 +222,10 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		List<Status> statuses = new ArrayList<Status>();
 		for (String statusId : statusIds) {
 			Status status = jiraServer.getStatusById(statusId);
-			if(!Status.MISSING_STATUS.equals(status)) {
+			if (status != null) {
 				statuses.add(status);
+			} else if (validate) {
+				throw new InvalidJiraQueryException();
 			}
 		}
 		if(!statuses.isEmpty()) {
@@ -225,8 +236,10 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		List<Resolution> resolutions = new ArrayList<Resolution>();
 		for (String resolutionId : resolutionIds) {
 			Resolution resolution = jiraServer.getResolutionById(resolutionId);
-			if(!Resolution.UNKNOWN_RESOLUTION.equals(resolution)) {
+			if (resolution != null) {
 				resolutions.add(resolution);
+			} else if (validate) {
+				throw new InvalidJiraQueryException();
 			}
 		}
 		if(!resolutionIds.isEmpty()) {

@@ -35,6 +35,7 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.Project;
+import org.eclipse.mylar.internal.jira.core.model.Query;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.Order;
@@ -119,15 +120,27 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// TODO: Get rid of JiraIssueCollector and pass IQueryHitCollector
 
 		try {
-			JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
-
+			JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+			Query filter;
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
-				jiraServer.search(((JiraRepositoryQuery) repositoryQuery).getNamedFilter(), collector);
+				filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
-				jiraServer.search(((JiraCustomQuery) repositoryQuery).getFilterDefinition(jiraServer), collector);
+				if (!server.hasDetails()) {
+					server.refreshDetails(monitor);
+				}
+				try {
+					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(server, true);
+				} catch (InvalidJiraQueryException e) {
+					return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
+							"The query parameters do not match the repository configuration, please check the query properties.", null);
+				}
+			} else {
+				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
+						"Invalid query type: " + repositoryQuery.getClass(), null);				
 			}
+			server.search(filter, collector);
 		} catch (JiraAuthenticationException ex) {
-			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
+			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
 					"Unable to login to the repository. Check credentials", ex);
 		} catch (Throwable t) {
 			// TODO need to refactor this to use better checked exceptions and

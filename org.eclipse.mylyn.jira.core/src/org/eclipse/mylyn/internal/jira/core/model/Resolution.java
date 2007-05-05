@@ -20,8 +20,6 @@ public class Resolution implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final Resolution UNKNOWN_RESOLUTION = createMissingResolution();
-
 	public static final String FIXED_ID = "1"; //$NON-NLS-1$
 
 	public static final String WONT_FIX_ID = "2"; //$NON-NLS-1$
@@ -72,19 +70,6 @@ public class Resolution implements Serializable {
 		this.name = name;
 	}
 
-	public static Resolution createMissingResolution() {
-		Resolution resolution = new Resolution();
-		resolution.setId("-1");
-		resolution.setName("Unknown");
-		resolution.setDescription("Unknown");
-		return resolution;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -97,20 +82,10 @@ public class Resolution implements Serializable {
 		return this.id.equals(that.id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	public int hashCode() {
 		return id.hashCode();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return name;
 	}

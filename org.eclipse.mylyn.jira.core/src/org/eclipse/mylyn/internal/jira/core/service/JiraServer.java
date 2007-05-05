@@ -103,7 +103,7 @@ public interface JiraServer {
 
 	Project getProjectById(String id);
 
-	Project getProject(String key);
+	Project getProjectByKey(String key);
 
 	Project[] getProjects();
 

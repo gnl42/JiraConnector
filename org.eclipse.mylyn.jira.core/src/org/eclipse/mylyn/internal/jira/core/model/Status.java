@@ -19,8 +19,6 @@ import java.io.Serializable;
 public class Status implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public static final Status MISSING_STATUS = createMissingStatus();
-
 	public static final String OPEN_ID = "1"; //$NON-NLS-1$
 
 	public static final String ASSIGNED_ID = "2"; //$NON-NLS-1$
@@ -89,19 +87,6 @@ public class Status implements Serializable {
 		return CLOSED_ID.equals(id);
 	}
 
-	public static final Status createMissingStatus() {
-		Status status = new Status();
-		status.setId("-1");
-		status.setDescription("Unknown");
-		status.setName("Unknown");
-		return status;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -114,20 +99,10 @@ public class Status implements Serializable {
 		return this.id.equals(that.id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	public int hashCode() {
 		return id.hashCode();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return this.name;
 	}

@@ -11,13 +11,16 @@
 
 package org.eclipse.mylar.internal.jira.core.service.web.rss;
 
+import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
@@ -46,7 +49,11 @@ class RssReader {
 			collector.done();
 		} catch (ParseCancelledException e) {
 			// User requested this action, so don't log anything
-		} catch (Exception e) {
+		} catch (SAXException e) {
+			collector.setException(e);
+		} catch (ParserConfigurationException e) {
+			collector.setException(e);
+		} catch (IOException e) {
 			collector.setException(e);
 		}
 	}

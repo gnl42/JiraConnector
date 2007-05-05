@@ -32,7 +32,6 @@ public class JiraTestUtils {
 		return server.createIssue(issue);
 	}
 
-	
 	public static void refreshDetails(JiraServer server) throws JiraException {
 		if (server.getProjects().length == 0) {
 			server.refreshDetails(new NullProgressMonitor());

@@ -169,7 +169,7 @@ public class JiraCustomQueryTest extends TestCase {
 		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl, taskRepository
 				.getCharacterEncoding(), taskList);
 
-		FilterDefinition filter2 = customQuery2.getFilterDefinition(jiraServer);
+		FilterDefinition filter2 = customQuery2.getFilterDefinition(jiraServer, true);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();
 		assertEquals(project.getId(), projectFilter2.getProject().getId());

@@ -19,6 +19,7 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Version;
+import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
@@ -35,11 +36,6 @@ public class JiraRpcServerTest extends TestCase {
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = MylarTestUtils.readCredentials(level);
 		server = new JiraRpcServer(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	public void testLogin381() throws Exception {
@@ -168,4 +164,18 @@ public class JiraRpcServerTest extends TestCase {
 		}
 	}
 
+	public void testFindIssues() throws Exception {
+		findIssues(JiraTestConstants.JIRA_381_URL);
+	}
+
+	private void findIssues(String url) throws Exception{
+		init(url, PrivilegeLevel.USER);
+		
+		JiraTestUtils.refreshDetails(server);
+		FilterDefinition filter = new FilterDefinition();
+		MockIssueCollector collector = new MockIssueCollector();
+		server.search(filter, collector);
+		assertNull(collector.exception);
+		assertTrue(collector.done);
+	}
 }

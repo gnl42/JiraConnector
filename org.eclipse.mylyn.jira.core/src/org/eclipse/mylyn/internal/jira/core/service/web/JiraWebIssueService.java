@@ -71,7 +71,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) {
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/AddComment.jspa");
 
@@ -82,17 +82,15 @@ public class JiraWebIssueService {
 				post.addParameter("id", issue.getId());
 
 				try {
-					client.executeMethod(post);
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					int result = client.executeMethod(post);
+					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
+						handleErrorMessage(post);
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
-
 			}
 
 		});

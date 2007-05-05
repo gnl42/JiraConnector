@@ -208,7 +208,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		this.repository = repository;
 		this.server = JiraServerFacade.getDefault().getJiraServer(repository);
 		if (query != null) {
-			this.workingCopy = query.getFilterDefinition(server);
+			this.workingCopy = query.getFilterDefinition(server, false);
 		} else {
 			this.workingCopy = new FilterDefinition();
 		}
@@ -1491,7 +1491,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getUrl(), repository
 				.getCharacterEncoding(), TasksUiPlugin.getTaskListManager().getTaskList());
-		workingCopy = query.getFilterDefinition(server);
+		workingCopy = query.getFilterDefinition(server, false);
 		return true;
 	}
 

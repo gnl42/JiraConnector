@@ -221,8 +221,10 @@ public class ServerManager {
 		}
 	}
 
-	public void removeAllServers() {
-		//serverDataByUrl.clear();
+	public void removeAllServers(boolean clearData) {
+		if (clearData) {
+			serverDataByUrl.clear();
+		}
 		serverByUrl.clear();
 	}
 	

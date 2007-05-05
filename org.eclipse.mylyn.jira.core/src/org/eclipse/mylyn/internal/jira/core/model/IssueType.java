@@ -19,8 +19,6 @@ import java.io.Serializable;
 public class IssueType implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public static final IssueType MISSING_ISSUE_TYPE = createMissingIssueType();
-
 	public static final String BUG_ID = "1";
 
 	public static final String NEW_FEATURE_ID = "2";
@@ -69,19 +67,6 @@ public class IssueType implements Serializable {
 		this.name = name;
 	}
 
-	public static IssueType createMissingIssueType() {
-		IssueType issueType = new IssueType();
-		issueType.setId("-1");
-		issueType.setName("Unknown");
-		issueType.setDescription("Unknown");
-		return issueType;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -94,20 +79,10 @@ public class IssueType implements Serializable {
 		return this.id.equals(that.id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	public int hashCode() {
 		return id.hashCode();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return this.name;
 	}

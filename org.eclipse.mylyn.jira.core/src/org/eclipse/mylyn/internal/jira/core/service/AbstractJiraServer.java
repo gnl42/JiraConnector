@@ -154,19 +154,11 @@ public abstract class AbstractJiraServer implements JiraServer {
 	public abstract Component[] getComponentsRemote(String key) throws JiraException;
 
 	public Project getProjectById(String id) {
-		Project project = data.projectsById.get(id);
-		if (project != null) {
-			return project;
-		}
-		return Project.MISSING_PROJECT;
+		return data.projectsById.get(id);
 	}
 
-	public Project getProject(String key) {
-		Project project = data.projectsByKey.get(key);
-		if (project != null) {
-			return project;
-		}
-		return Project.MISSING_PROJECT;
+	public Project getProjectByKey(String key) {
+		return data.projectsByKey.get(key);
 	}
 
 	public Project[] getProjects() {
@@ -185,11 +177,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 	public abstract Priority[] getPrioritiesRemote() throws JiraException;
 
 	public Priority getPriorityById(String id) {
-		Priority priority = data.prioritiesById.get(id);
-		if (priority != null) {
-			return priority;
-		}
-		return Priority.MISSING_PRIORITY;
+		return data.prioritiesById.get(id);
 	}
 
 	public Priority[] getPriorities() {
@@ -227,11 +215,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 	public abstract IssueType[] getSubTaskIssueTypesRemote() throws JiraException;
 
 	public IssueType getIssueTypeById(String id) {
-		IssueType issueType = data.issueTypesById.get(id);
-		if (issueType != null) {
-			return issueType;
-		}
-		return IssueType.MISSING_ISSUE_TYPE;
+		return data.issueTypesById.get(id);
 	}
 
 	public IssueType[] getIssueTypes() {
@@ -250,11 +234,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 	public abstract Status[] getStatusesRemote() throws JiraException;
 
 	public Status getStatusById(String id) {
-		Status status = data.statusesById.get(id);
-		if (status != null) {
-			return status;
-		}
-		return Status.MISSING_STATUS;
+		return data.statusesById.get(id);
 	}
 
 	public Status[] getStatuses() {
@@ -273,11 +253,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 	public abstract Resolution[] getResolutionsRemote() throws JiraException;
 
 	public Resolution getResolutionById(String id) {
-		Resolution resolution = data.resolutionsById.get(id);
-		if (resolution != null) {
-			return resolution;
-		}
-		return Resolution.UNKNOWN_RESOLUTION;
+		return data.resolutionsById.get(id);
 	}
 
 	public Resolution[] getResolutions() {

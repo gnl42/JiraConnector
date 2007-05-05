@@ -53,7 +53,12 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	/* For testing. */
 	public void clearServers() {
-		serverManager.removeAllServers();
+		serverManager.removeAllServers(false);
+	}
+
+	/* For testing. */
+	public void clearServersAndConfigurationData() {
+		serverManager.removeAllServers(true);
 	}
 
 	/**

@@ -20,6 +20,7 @@ import java.util.Locale;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
+import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
@@ -264,7 +265,7 @@ public class RssContentHandler extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		currentElementText.setLength(0);
 		if (collector.isCancelled()) {
-			throw new ParseCancelledException("User cancelled operation");
+			throw new ParseCancelledException("User canceled operation");
 		}
 
 		switch (state) {
@@ -487,7 +488,12 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setKey(key);
 				currentIssue.setUrl(server.getBaseURL() + "/browse/" + key);
 				// TODO super dodgey to assume the project from the issue key
-				currentIssue.setProject(server.getProject(key.substring(0, key.indexOf('-'))));
+				String projectKey = key.substring(0, key.indexOf('-'));
+				Project project = server.getProjectByKey(projectKey);
+				if (project == null) {
+					throw new SAXException("No project with key " + projectKey + " found");
+				}
+				currentIssue.setProject(project);
 			} else if (SUMMARY.equals(localName)) {
 				currentIssue.setSummary(currentElementText.toString());
 			} else if (CREATED.equals(localName)) {
@@ -495,10 +501,19 @@ public class RssContentHandler extends DefaultHandler {
 			} else if (UPDATED.equals(localName)) {
 				currentIssue.setUpdated(convertToDate(currentElementText.toString()));
 			} else if (VERSION.equals(localName)) {
+				if (currentIssue.getProject() == null) {
+					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+				}
 				currentReportedVersions.add(currentIssue.getProject().getVersion(currentElementText.toString()));
 			} else if (FIX_VERSION.equals(localName)) {
+				if (currentIssue.getProject() == null) {
+					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+				}
 				currentFixVersions.add(currentIssue.getProject().getVersion(currentElementText.toString()));
 			} else if (COMPONENT.equals(localName)) {
+				if (currentIssue.getProject() == null) {
+					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+				}
 				currentComponents.add(currentIssue.getProject().getComponent(currentElementText.toString()));
 			} else if (DUE.equals(localName)) {
 				currentIssue.setDue(convertToDate(currentElementText.toString()));

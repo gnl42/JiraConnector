@@ -20,8 +20,6 @@ public class Priority implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final Priority MISSING_PRIORITY = createMissingPriority();
-
 	public static final String BLOCKER_ID = "1"; //$NON-NLS-1$
 
 	public static final String CRITICAL_ID = "2"; //$NON-NLS-1$
@@ -82,20 +80,6 @@ public class Priority implements Serializable {
 		this.name = name;
 	}
 
-	public static Priority createMissingPriority() {
-		Priority priority = new Priority();
-		priority.setId("-1");
-		priority.setColour("#000000");
-		priority.setName("Unknown");
-		priority.setDescription("Unknown");
-		return priority;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -108,20 +92,10 @@ public class Priority implements Serializable {
 		return this.id.equals(that.id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	public int hashCode() {
 		return id.hashCode();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return this.name;
 	}
