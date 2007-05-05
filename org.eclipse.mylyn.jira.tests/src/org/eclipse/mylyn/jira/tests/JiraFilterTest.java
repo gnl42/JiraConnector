@@ -59,7 +59,16 @@ public class JiraFilterTest extends TestCase {
 	protected void setUp() throws Exception {
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 
+		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		JiraServerFacade.getDefault().clearServers();
+		
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
+
+		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+				JiraUiPlugin.REPOSITORY_KIND);
+		connector = (JiraRepositoryConnector) abstractConnector;
+		
+		repository = null;
 	}
 
 	@Override
@@ -67,21 +76,19 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
-		String kind = JiraUiPlugin.REPOSITORY_KIND;
 		Credentials credentials = MylarTestUtils.readCredentials(level);
 
-		repository = new TaskRepository(kind, JiraTestConstants.JIRA_381_URL);
+		if (repository != null) {
+			TasksUiPlugin.getRepositoryManager().removeRepository(repository,
+					TasksUiPlugin.getDefault().getRepositoriesFilePath());			
+		}
+		
+		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_381_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		repository.setCharacterEncoding(JiraServer.CHARSET);
 
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
-
-		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				kind);
-		assertEquals(abstractConnector.getRepositoryType(), kind);
-
-		connector = (JiraRepositoryConnector) abstractConnector;
 	}
 
 	public void testJiraFilterRefresh() throws Exception {
@@ -101,7 +108,7 @@ public class JiraFilterTest extends TestCase {
 
 		NamedFilter filter = filters[0];
 		assertEquals("My Issues", filter.getName());
-		
+
 		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter, taskList);
 		taskList.addQuery(query);
 		assertTrue(query.getHits().size() == 0);
@@ -125,7 +132,7 @@ public class JiraFilterTest extends TestCase {
 		Issue issue = JiraTestUtils.createIssue(server, summary);
 		issue.setPriority(server.getPriorityById(Priority.BLOCKER_ID));
 		server.updateIssue(issue, "comment");
-		
+
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 
@@ -172,7 +179,7 @@ public class JiraFilterTest extends TestCase {
 		assertEquals(1, hitCollector.results.size());
 		assertEquals(issue2.getSummary(), hitCollector.results.get(0).getSummary());
 	}
-	
+
 	private class MockQueryHitCollector extends QueryHitCollector {
 
 		public List<AbstractQueryHit> results = new ArrayList<AbstractQueryHit>();
@@ -186,7 +193,6 @@ public class JiraFilterTest extends TestCase {
 			results.add(hit);
 		}
 	}
-
 
 	// TODO: reneable
 // public void testJiraTaskRegistryIntegration() {

@@ -46,7 +46,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	private static JiraServerFacade instance = null;
 
-	public JiraServerFacade() {
+	private JiraServerFacade() {
 		TasksUiPlugin.getRepositoryManager().addListener(this);
 		serverManager = JiraCorePlugin.getDefault().getServerManager();
 	}

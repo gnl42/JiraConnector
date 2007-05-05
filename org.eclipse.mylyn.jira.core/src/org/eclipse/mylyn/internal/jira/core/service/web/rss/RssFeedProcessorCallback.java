@@ -21,19 +21,16 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.eclipse.mylar.internal.jira.core.DebugManager;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback {
-
-	private static final boolean RSS_DEBUG_ENABLED = DebugManager.isDebugEnabled()
-			&& DebugManager.isDebugOptionEnabled("rss"); //$NON-NLS-1$
 
 	private final boolean useGZipCompression;
 
@@ -47,24 +44,23 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 	public final void execute(HttpClient client, JiraServer server) throws JiraException {
 		String rssUrl = getRssUrl();
 		GetMethod rssRequest = new GetMethod(rssUrl);
-		// If there is only a single match Jira will redirect to the issue
+		// If there is only a single match JIRA will redirect to the issue
 		// browser
 		rssRequest.setFollowRedirects(true);
 
 		// Tell the server we would like the response GZipped. This does not
 		// guarantee it will be done
 		if (useGZipCompression) {
-			rssRequest.setRequestHeader("Accept-Encoding", "gzip"); //$NON-NLS-1$ //$NON-NLS-2$
+			rssRequest.setRequestHeader("Accept-Encoding", "gzip"); //$NON-NLS-1$
 		}
 
 		try {
 			if (collector.isCancelled()) {
 				return;
 			}
-			long start = System.currentTimeMillis();
 			client.executeMethod(rssRequest);
 
-			// Jira 3.4 can redirect straight to the issue browser, but not with
+			// JIRA 3.4 can redirect straight to the issue browser, but not with
 			// the RSS view type
 			if (!isXMLOrRSS(rssRequest)) {
 				rssRequest = new GetMethod(rssRequest.getURI().getURI());
@@ -80,63 +76,18 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 
 			boolean isResponseGZipped = isResponseGZipped(rssRequest);
 
-			// Wrap the physical and logical input streams so we can see how
-			// much data is being processed
-			if (RSS_DEBUG_ENABLED) {
-				InputStream firstStream = null;
+			InputStream rssFeed = null;
+			try {
+				rssFeed = isResponseGZipped ? new GZIPInputStream(rssRequest.getResponseBodyAsStream()) : rssRequest
+						.getResponseBodyAsStream();
+				new RssReader(server, collector).readRssFeed(rssFeed);
+			} finally {
 				try {
-					CountingInputStream phyStreamCounter = new CountingInputStream(rssRequest.getResponseBodyAsStream());
-					CountingInputStream logStreamCounter = new CountingInputStream(
-							isResponseGZipped ? (InputStream) new GZIPInputStream(phyStreamCounter)
-									: (InputStream) phyStreamCounter);
-					firstStream = logStreamCounter;
-
-					new RssReader(server, collector).readRssFeed(logStreamCounter);
-					long end = System.currentTimeMillis();
-					long delta = end - start;
-					long bytesProcessed = logStreamCounter.getTotalByesRead();
-					long bytesRead = phyStreamCounter.getTotalByesRead();
-
-					if (delta == 0) {
-						delta = 10L;
+					if (rssFeed != null) {
+						rssFeed.close();
 					}
-
-					StringBuffer logMessage = new StringBuffer();
-					logMessage.append("URL: ").append(rssUrl).append('\n');
-					logMessage.append("Processed: ").append(bytesProcessed / 1024L).append(" kb");
-					logMessage.append(" at ").append(bytesProcessed / (end - start) * 1000F / 1024F).append(" kb/s");
-					logMessage.append(" in ").append((float) (end - start) / 1000F).append(" second(s)").append('\n');
-
-					if (isResponseGZipped) {
-						logMessage.append("Compression ratio of ").append(
-								(1.0f - ((float) phyStreamCounter.getTotalByesRead() / (float) logStreamCounter
-										.getTotalByesRead())) * 100F).append(" percent");
-						logMessage.append(" (").append(bytesRead / 1024L).append(" kb read").append(")");
-					}
-					DebugManager.log(logMessage.toString(), null);
-				} finally {
-					if (firstStream != null) {
-						try {
-							firstStream.close();
-						} catch (IOException e1) {
-							// Do nothing
-						}
-					}
-				}
-			} else {
-				InputStream rssFeed = null;
-				try {
-					rssFeed = isResponseGZipped ? new GZIPInputStream(rssRequest.getResponseBodyAsStream())
-							: rssRequest.getResponseBodyAsStream();
-					new RssReader(server, collector).readRssFeed(rssFeed);
-				} finally {
-					try {
-						if (rssFeed != null) {
-							rssFeed.close();
-						}
-					} catch (IOException e) {
-						// Do nothing
-					}
+				} catch (IOException e) {
+					// Do nothing
 				}
 			}
 		} catch (HttpException e) {
