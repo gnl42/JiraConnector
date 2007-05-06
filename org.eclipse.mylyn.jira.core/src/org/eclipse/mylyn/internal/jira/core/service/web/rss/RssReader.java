@@ -25,9 +25,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 class RssReader {
+	
 	private final JiraServer server;
 
 	private final IssueCollector collector;
@@ -37,7 +39,7 @@ class RssReader {
 		this.collector = collector;
 	}
 
-	public void readRssFeed(InputStream feed) throws JiraException {
+	public void readRssFeed(InputStream feed) throws JiraException, IOException {
 		try {
 			// TODO this only seems to work in J2SE 5.0
 			// XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -51,11 +53,9 @@ class RssReader {
 		} catch (ParseCancelledException e) {
 			// User requested this action, so don't log anything
 		} catch (SAXException e) {
-			throw new JiraException("Error parsing server response", e);
+			throw new JiraException("Error parsing server response: " + e.getMessage(), e);
 		} catch (ParserConfigurationException e) {
-			throw new JiraException("Error parsing server response", e);
-		} catch (IOException e) {
-			throw new JiraException("Error parsing server response", e);
+			throw new JiraException("Internal error parsing server response", e);
 		}
 	}
 }

@@ -55,6 +55,8 @@ public class JiraWebSession {
 		login(client);
 		try {
 			callback.execute(client, server);
+		} catch (IOException e) {
+			throw new JiraException(e);
 		} finally {
 			logout(client);
 		}

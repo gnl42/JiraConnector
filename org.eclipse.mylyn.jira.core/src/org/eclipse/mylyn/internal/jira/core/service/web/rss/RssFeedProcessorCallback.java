@@ -41,7 +41,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 		this.collector = collector;
 	}
 
-	public final void execute(HttpClient client, JiraServer server) throws JiraException {
+	public final void execute(HttpClient client, JiraServer server) throws JiraException, IOException {
 		String rssUrl = getRssUrl();
 		GetMethod rssRequest = new GetMethod(rssUrl);
 		// If there is only a single match JIRA will redirect to the issue
@@ -90,10 +90,6 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 					// Do nothing
 				}
 			}
-		} catch (HttpException e) {
-			throw new JiraException(e);
-		} catch (IOException e) {
-
 		} finally {
 			rssRequest.releaseConnection();
 		}
