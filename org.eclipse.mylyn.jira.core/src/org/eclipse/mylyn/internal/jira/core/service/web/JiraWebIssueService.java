@@ -27,7 +27,6 @@ import javax.swing.text.html.HTML.Tag;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -48,6 +47,7 @@ import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
+import org.eclipse.mylar.internal.jira.core.service.JiraRemoteException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
@@ -84,7 +84,7 @@ public class JiraWebIssueService {
 				try {
 					int result = client.executeMethod(post);
 					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
-						handleErrorMessage(post);
+						handleErrorMessage(post, result);
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);
@@ -162,7 +162,7 @@ public class JiraWebIssueService {
 				try {
 					int result = client.executeMethod(post);
 					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
-						handleErrorMessage(post);
+						handleErrorMessage(post, result);
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);
@@ -196,7 +196,7 @@ public class JiraWebIssueService {
 				try {
 					int result = client.executeMethod(post);
 					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
-						handleErrorMessage(post);
+						handleErrorMessage(post, result);
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);
@@ -243,7 +243,7 @@ public class JiraWebIssueService {
 				try {
 					int result = client.executeMethod(post);
 					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
-						handleErrorMessage(post);
+						handleErrorMessage(post, result);
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);
@@ -268,7 +268,7 @@ public class JiraWebIssueService {
 				try {
 					int result = client.executeMethod(method);
 					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
-						handleErrorMessage(method);
+						handleErrorMessage(method, result);
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);
@@ -312,19 +312,31 @@ public class JiraWebIssueService {
 
 	public void attachFile(final Issue issue, final String comment, final String filename, final byte[] contents,
 			final String contentType) throws JiraException {
+		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)), contentType);
+	}
+	
+	public void attachFile(final Issue issue, final String comment, final File file, final String contentType) throws JiraException {
+		try {
+			attachFile(issue, comment, new FilePart("filename.1", file), contentType);
+		} catch (FileNotFoundException e) {
+			throw new JiraException(e);
+		}
+	}
+
+
+	public void attachFile(final Issue issue, final String comment, final FilePart filePart, 
+			final String contentType) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) {
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(server.getBaseURL());
 				attachFileURLBuffer.append("/secure/AttachFile.jspa");
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
-				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
 				List<PartBase> parts = new ArrayList<PartBase>();
 
-				FilePart filePart = new FilePart("filename.1", new ByteArrayPartSource(filename, contents));
 				StringPart idPart = new StringPart("id", issue.getId());
 				StringPart commentLevelPart = new StringPart("commentLevel", "");
 
@@ -357,89 +369,15 @@ public class JiraWebIssueService {
 						.getParams()));
 
 				try {
-					client.executeMethod(post);
-					// Expect a 302 response here as it can redirect to the
-					// manage attachments screen
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					int result = client.executeMethod(post);
+					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
+						handleErrorMessage(post, result);
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
-
-			}
-		});
-	}
-
-	public void attachFile(final Issue issue, final String comment, final File file, final String contentType) throws JiraException {
-		JiraWebSession s = new JiraWebSession(server);
-		s.doInSession(new JiraWebSessionCallback() {
-
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback#execute(org.apache.commons.httpclient.HttpClient,org.eclipse.mylar.internal.jira.core.service.JiraServer)
-			 */
-			public void execute(HttpClient client, JiraServer server) {
-				StringBuffer attachFileURLBuffer = new StringBuffer(server.getBaseURL());
-				attachFileURLBuffer.append("/secure/AttachFile.jspa");
-
-				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
-				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-
-				try {
-					List<PartBase> parts = new ArrayList<PartBase>();
-
-					FilePart filePart = new FilePart("filename.1", file);
-					StringPart idPart = new StringPart("id", issue.getId());
-					StringPart commentLevelPart = new StringPart("commentLevel", "");
-
-					// The transfer encodings have to be removed for some reason
-					// There is no need to send the content types for the
-					// strings, as they should be in the correct format
-					idPart.setTransferEncoding(null);
-					idPart.setContentType(null);
-
-					if (comment != null) {
-						StringPart commentPart = new StringPart("comment", comment);
-						commentPart.setTransferEncoding(null);
-						commentPart.setContentType(null);
-						parts.add(commentPart);
-					}
-
-					commentLevelPart.setTransferEncoding(null);
-					commentLevelPart.setContentType(null);
-
-					filePart.setTransferEncoding(null);
-					if (contentType != null) {
-						filePart.setContentType(contentType);
-					}
-
-					parts.add(filePart);
-					parts.add(idPart);
-					parts.add(commentLevelPart);
-
-					post.setRequestEntity(new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), post
-							.getParams()));
-
-					client.executeMethod(post);
-					// Expect a 302 response here as it can redirect to the
-					// manage attachments screen
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-					post.releaseConnection();
-				}
-
 			}
 		});
 	}
@@ -451,11 +389,6 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback#execute(org.apache.commons.httpclient.HttpClient,org.eclipse.mylar.internal.jira.core.service.JiraServer)
-			 */
 			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(server.getBaseURL());
 				attachFileURLBuffer.append("/secure/CreateIssueDetails.jspa");
@@ -527,50 +460,15 @@ public class JiraWebIssueService {
 						}.execute(client, server);
 						result[0] = collector.getIssue();
 					}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
-
 			}
 		});
 
 		return result[0];
-	}
-
-	private void watchUnwatchIssue(final Issue issue, final boolean watch) throws JiraException {
-		JiraWebSession s = new JiraWebSession(server);
-		s.doInSession(new JiraWebSessionCallback() {
-
-			public void execute(HttpClient client, JiraServer server) {
-				StringBuffer urlBuffer = new StringBuffer(server.getBaseURL());
-				urlBuffer.append("/browse/").append(issue.getKey());
-				urlBuffer.append("?watch=").append(Boolean.toString(watch));
-
-				HeadMethod head = new HeadMethod(urlBuffer.toString());
-
-				try {
-					client.executeMethod(head);
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-					head.releaseConnection();
-				}
-
-			}
-
-		});
 	}
 
 	public void watchIssue(final Issue issue) throws JiraException {
@@ -581,33 +479,26 @@ public class JiraWebIssueService {
 		watchUnwatchIssue(issue, false);
 	}
 
-	private void voteUnvoteIssue(final Issue issue, final boolean vote) throws JiraException {
-		if (!issue.canUserVote(this.server.getUserName())) {
-			return;
-		}
-
+	private void watchUnwatchIssue(final Issue issue, final boolean watch) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) {
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(server.getBaseURL());
 				urlBuffer.append("/browse/").append(issue.getKey());
-				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote");
+				urlBuffer.append("?watch=").append(Boolean.toString(watch));
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
-
 				try {
-					client.executeMethod(head);
-				} catch (HttpException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					int result = client.executeMethod(head);
+					if (result != HttpStatus.SC_OK) {
+						throw new JiraException("Changing watch status failed. Return code: " + result);
+					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new JiraException(e);
 				} finally {
 					head.releaseConnection();
 				}
-
 			}
 
 		});
@@ -619,6 +510,35 @@ public class JiraWebIssueService {
 
 	public void unvoteIssue(final Issue issue) throws JiraException {
 		voteUnvoteIssue(issue, false);
+	}
+
+	private void voteUnvoteIssue(final Issue issue, final boolean vote) throws JiraException {
+		if (!issue.canUserVote(this.server.getUserName())) {
+			return;
+		}
+
+		JiraWebSession s = new JiraWebSession(server);
+		s.doInSession(new JiraWebSessionCallback() {
+
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
+				StringBuffer urlBuffer = new StringBuffer(server.getBaseURL());
+				urlBuffer.append("/browse/").append(issue.getKey());
+				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote");
+
+				HeadMethod head = new HeadMethod(urlBuffer.toString());
+				try {
+					int result = client.executeMethod(head);
+					if (result != HttpStatus.SC_OK) {
+						throw new JiraException("Changing vote failed. Return code: " + result);
+					}
+				} catch (IOException e) {
+					throw new JiraException(e);
+				} finally {
+					head.releaseConnection();
+				}
+			}
+
+		});
 	}
 
 	private String getAssigneeParam(JiraServer server, Issue issue, int assigneeType, String user) {
@@ -638,7 +558,11 @@ public class JiraWebIssueService {
 		}
 	}
 
-	private void handleErrorMessage(HttpMethodBase method) throws IOException, JiraException {
+	private void handleErrorMessage(HttpMethodBase method, int result) throws IOException, JiraException {
+		if (result == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+			throw new JiraRemoteException("JIRA system error", null);
+		}
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(),
 				JiraServer.CHARSET));
 		try {
@@ -670,7 +594,7 @@ public class JiraWebIssueService {
 			}
 			throw new JiraRemoteMessageException(sb.toString(), null);
 		} catch (ParseException e) {
-			throw new JiraRemoteMessageException("An error has occured.", null);
+			throw new JiraRemoteMessageException("An error has occured: " + result, null);
 		} finally {
 			reader.close();
 		}
