@@ -102,7 +102,7 @@ public class Project implements Serializable {
 				return components[i];
 			}
 		}
-		return Component.createMissingComponent(name);
+		return null;
 	}
 
 	public Component[] getComponents() {
@@ -119,9 +119,7 @@ public class Project implements Serializable {
 				return versions[i];
 			}
 		}
-
-		// Return a dodgy placeholder version
-		return Version.createMissingVersion(name);
+		return null;
 	}
 
 	public void setVersions(Version[] versions) {

@@ -551,17 +551,29 @@ public class RssContentHandler extends DefaultHandler {
 				if (currentIssue.getProject() == null) {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
-				currentReportedVersions.add(currentIssue.getProject().getVersion(currentElementText.toString()));
+				Version version = currentIssue.getProject().getVersion(currentElementText.toString());
+				if (version == null) {
+					throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
+				}
+				currentReportedVersions.add(version);
 			} else if (FIX_VERSION.equals(localName)) {
 				if (currentIssue.getProject() == null) {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
-				currentFixVersions.add(currentIssue.getProject().getVersion(currentElementText.toString()));
+				Version version = currentIssue.getProject().getVersion(currentElementText.toString());
+				if (version == null) {
+					throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
+				}
+				currentFixVersions.add(version);
 			} else if (COMPONENT.equals(localName)) {
 				if (currentIssue.getProject() == null) {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
-				currentComponents.add(currentIssue.getProject().getComponent(currentElementText.toString()));
+				Component component = currentIssue.getProject().getComponent(currentElementText.toString());
+				if (component == null) {
+					throw new SAXException("No component with name '" + currentElementText.toString() + "' found");
+				}
+				currentComponents.add(component);
 			} else if (DUE.equals(localName)) {
 				currentIssue.setDue(convertToDate(currentElementText.toString()));
 			} else if (VOTES.equals(localName)) {

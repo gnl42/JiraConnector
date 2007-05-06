@@ -18,6 +18,7 @@ import java.util.Date;
  * @author	Brock Janiczak
  */
 public class Version implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	private String id;
@@ -80,11 +81,6 @@ public class Version implements Serializable {
 		this.sequence = sequence;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -97,27 +93,12 @@ public class Version implements Serializable {
 		return this.id.equals(that.id);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	public int hashCode() {
 		return id.hashCode();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return name;
 	}
 
-	public static Version createMissingVersion(String name) {
-		Version version = new Version();
-		version.setName(name);
-		return version;
-	}
 }

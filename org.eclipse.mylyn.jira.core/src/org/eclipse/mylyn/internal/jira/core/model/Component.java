@@ -40,20 +40,8 @@ public class Component implements Serializable {
 		this.name = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return this.name;
-	}
-
-	public static Component createMissingComponent(String name) {
-		Component component = new Component();
-		component.setName(name);
-
-		return component;
 	}
 
 }
