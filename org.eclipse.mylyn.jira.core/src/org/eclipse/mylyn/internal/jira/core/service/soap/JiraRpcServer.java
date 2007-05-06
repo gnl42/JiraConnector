@@ -413,8 +413,8 @@ public class JiraRpcServer extends AbstractJiraServer {
 		issueService.attachFile(issue, comment, filename, contents, contentType);
 	}
 
-	public void attachFile(Issue issue, String comment, File file, String contentType) throws JiraException {
-		issueService.attachFile(issue, comment, file, contentType);
+	public void attachFile(Issue issue, String comment, String filename, File file, String contentType) throws JiraException {
+		issueService.attachFile(issue, comment, filename, file, contentType);
 	}
 
 

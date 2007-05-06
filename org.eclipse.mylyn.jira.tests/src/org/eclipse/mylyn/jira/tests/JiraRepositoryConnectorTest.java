@@ -11,10 +11,13 @@
 
 package org.eclipse.mylar.jira.tests;
 
+import java.io.File;
+import java.util.Set;
+
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.mylar.context.core.ContextCorePlugin;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
@@ -26,6 +29,7 @@ import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylar.tasks.core.RepositoryAttachment;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -53,8 +57,6 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		
 		JiraServerFacade.getDefault().clearServers();
-		
-		init();
 	}
 
 	@Override
@@ -62,10 +64,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		super.tearDown();
 	}
 
-	protected void init() throws Exception {
+	protected void init(String url) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
-		repository = new TaskRepository(kind, JiraTestConstants.JIRA_381_URL);
+		repository = new TaskRepository(kind, url);
 		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 
@@ -81,6 +83,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testChangeTaskRepositorySettings() throws Exception {
+		init(JiraTestConstants.JIRA_381_URL);
 		assertEquals(repository.getUserName(), server.getUserName());
 
 		EditRepositoryWizard wizard = new EditRepositoryWizard(repository);
@@ -96,9 +99,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testUpdateTask() throws Exception {
-		if (!server.hasDetails()) {
-			server.refreshDetails(new NullProgressMonitor());
-		}
+		init(JiraTestConstants.JIRA_381_URL);
 		
 		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
 		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
@@ -106,19 +107,41 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(false, task.isCompleted());
 		assertNull(task.getDueDate());
 
-		// FIXME need to fix resolve/close issue first: bug 174925
+		server.resolveIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+		assertEquals("testUpdateTask", task.getSummary());
+		assertEquals(true, task.isCompleted());
+		assertNotNull(task.getCompletionDate());
 		
-//		server.resolveIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
-//		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
-//		assertEquals("testUpdateTask", task.getSummary());
-//		assertEquals(true, task.isCompleted());
-//		assertNotNull(task.getDueDate());
-//		
-//		server.closeIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
-//		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
-//		assertEquals("testUpdateTask", task.getSummary());
-//		assertEquals(true, task.isCompleted());
-//		assertNotNull(task.getDueDate());
+		issue = server.getIssueByKey(issue.getKey());
+		server.closeIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+		assertEquals("testUpdateTask", task.getSummary());
+		assertEquals(true, task.isCompleted());
+		assertNotNull(task.getCompletionDate());
 	}
+
+	
+	public void testAttachContext() throws Exception {
+		init(JiraTestConstants.JIRA_381_URL);
+
+		Issue issue = JiraTestUtils.createIssue(server, "testAttachContext");
+		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
+		assertEquals("testAttachContext", task.getSummary());
+
+		File sourceContextFile = ContextCorePlugin.getContextManager().getFileForContext(task.getHandleIdentifier());
+		JiraTestUtils.writeFile(sourceContextFile, "Mylar".getBytes());
+		sourceContextFile.deleteOnExit();
+
+		assertTrue(connector.attachContext(repository, task, ""));
 		
+		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+
+		Set<RepositoryAttachment> contextAttachments = connector.getContextAttachments(repository, task);
+		assertEquals(1, contextAttachments.size());
+		
+		RepositoryAttachment attachment = contextAttachments.iterator().next();
+		assertTrue(connector.retrieveContext(repository, task, attachment, System.getProperty("java.io.tmpdir")));
+	}
+	
 }

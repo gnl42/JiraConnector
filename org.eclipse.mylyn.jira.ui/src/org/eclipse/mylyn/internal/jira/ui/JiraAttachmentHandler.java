@@ -21,6 +21,7 @@ import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.IAttachmentHandler;
 import org.eclipse.mylar.tasks.core.MylarStatus;
@@ -32,6 +33,8 @@ import org.eclipse.mylar.tasks.core.TaskRepository;
  * @author Steffen Pingel
  */
 public class JiraAttachmentHandler implements IAttachmentHandler {
+
+	public final static String CONTEXT_ATTACHEMNT_FILENAME = "mylar-context.zip";
 
 	public JiraAttachmentHandler() {
 	}
@@ -57,10 +60,15 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 	}
 
 	public void uploadAttachment(TaskRepository repository, AbstractRepositoryTask task, String comment, String description, File file, String contentType, boolean isPatch) throws CoreException {
+		String filename	= file.getName(); 
+		if (AbstractRepositoryConnector.MYLAR_CONTEXT_DESCRIPTION.equals(description)) {
+			filename = CONTEXT_ATTACHEMNT_FILENAME;
+		}
+		
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		try {
 			Issue issue = server.getIssueByKey(task.getTaskKey());
-			server.attachFile(issue, comment, file, contentType);
+			server.attachFile(issue, comment, filename, file, contentType);
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(e));
 		}

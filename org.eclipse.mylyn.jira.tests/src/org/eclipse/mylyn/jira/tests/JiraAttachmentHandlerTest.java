@@ -12,10 +12,6 @@
 package org.eclipse.mylar.jira.tests;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import junit.framework.TestCase;
 
@@ -96,12 +92,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		
 		File file = File.createTempFile("attachment", null);
 		file.deleteOnExit();
-		OutputStream out = new FileOutputStream(file);
-		try {
-			out.write("Mylar".getBytes());
-		} finally {
-			out.close();
-		}
+		JiraTestUtils.writeFile(file, "Mylar".getBytes());
 		
 		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
 		attachmentHandler.uploadAttachment(repository, task, "", "", file, "text/plain", false);
@@ -116,13 +107,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		file.delete();
 		attachmentHandler.downloadAttachment(repository, taskData.getAttachments().get(0), file);
 		assertTrue(file.exists());
-		data = new byte[5];
-		InputStream in = new FileInputStream(file);
-		try {
-			in.read(data);
-		} finally {
-			in.close();
-		}
+		data = JiraTestUtils.readFile(file);
 		assertEquals("Mylar", new String(data));
 	}
 

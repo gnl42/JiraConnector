@@ -261,7 +261,7 @@ public class JiraRpcServerTest extends TestCase {
 		Issue issue = JiraTestUtils.createIssue(server, "testAttachFile");
 		// test attaching an empty file
 		try {
-			server.attachFile(issue, "", file, "application/binary");
+			server.attachFile(issue, "", file.getName(), file, "application/binary");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}

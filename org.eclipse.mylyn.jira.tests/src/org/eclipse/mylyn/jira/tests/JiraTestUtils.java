@@ -1,5 +1,12 @@
 package org.eclipse.mylar.jira.tests;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
@@ -36,6 +43,30 @@ public class JiraTestUtils {
 		if (!server.hasDetails()) {
 			server.refreshDetails(new NullProgressMonitor());
 		}
+	}
+
+	public static byte[] readFile(File file) throws IOException {
+		if (file.length() > 10000000) {
+			throw new IOException("File too big: " + file.getAbsolutePath() + ", size: " + file.length());
+		}
+		
+		byte[] data = new byte[(int) file.length()];
+		InputStream in = new FileInputStream(file);
+		try {
+			in.read(data);
+		} finally {
+			in.close();
+		}
+		return data;
+	}
+	
+	public static void writeFile(File file, byte[] data) throws IOException {
+		OutputStream out = new FileOutputStream(file);
+		try {
+			out.write(data);
+		} finally {
+			out.close();
+		}		
 	}
 	
 }

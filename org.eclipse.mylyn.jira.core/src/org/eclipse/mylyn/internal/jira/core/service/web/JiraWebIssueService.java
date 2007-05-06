@@ -36,6 +36,7 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.FilePartSource;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartBase;
@@ -321,10 +322,11 @@ public class JiraWebIssueService {
 		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)), contentType);
 	}
 
-	public void attachFile(final Issue issue, final String comment, final File file, final String contentType)
+	public void attachFile(final Issue issue, final String comment, final String filename, final File file, final String contentType)
 			throws JiraException {
 		try {
-			attachFile(issue, comment, new FilePart("filename.1", file), contentType);
+			FilePartSource partSource = new FilePartSource(filename, file);
+			attachFile(issue, comment, new FilePart("filename.1", partSource), contentType);
 		} catch (FileNotFoundException e) {
 			throw new JiraException(e);
 		}
@@ -366,7 +368,6 @@ public class JiraWebIssueService {
 				if (contentType != null) {
 					filePart.setContentType(contentType);
 				}
-
 				parts.add(filePart);
 				parts.add(idPart);
 				parts.add(commentLevelPart);

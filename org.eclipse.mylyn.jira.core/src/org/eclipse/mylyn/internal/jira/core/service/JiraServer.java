@@ -241,7 +241,7 @@ public interface JiraServer {
 
 	void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException;
 
-	void attachFile(Issue issue, String comment, File file, String contentType) throws JiraException;
+	void attachFile(Issue issue, String comment, String filename, File file, String contentType) throws JiraException;
 
 	byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException;
 	
