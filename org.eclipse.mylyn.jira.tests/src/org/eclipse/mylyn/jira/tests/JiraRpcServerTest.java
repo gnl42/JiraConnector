@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
@@ -247,7 +248,7 @@ public class JiraRpcServerTest extends TestCase {
 		return null;
 	}
 
-	public void testAttachmentFile() throws Exception {
+	public void testAttachFile() throws Exception {
 		attachFile(JiraTestConstants.JIRA_381_URL);
 	}
 
@@ -258,13 +259,29 @@ public class JiraRpcServerTest extends TestCase {
 		file.deleteOnExit();
 
 		Issue issue = JiraTestUtils.createIssue(server, "testAttachFile");
-		// test attaching emtpy file
+		// test attaching an empty file
 		try {
 			server.attachFile(issue, "", file, "application/binary");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
-		server.attachFile(issue, "", "my.filename", new byte[] { 'M', 'y', 'l', 'a', 'r' }, "application/binary");
+		
+		server.attachFile(issue, "", "my.filename.1", new byte[] { 'M', 'y', 'l', 'a', 'r' }, "application/binary");
+		issue = server.getIssueByKey(issue.getKey());
+		Attachment attachment = getAttachment(issue, "my.filename.1");
+		assertNotNull(attachment);
+		assertEquals(server.getUserName(), attachment.getAuthor());
+		assertEquals(5, attachment.getSize());
+		assertNotNull(attachment.getCreated());
+	}
+
+	private Attachment getAttachment(Issue issue, String filename) {
+		for (Attachment attachment : issue.getAttachments()) {
+			if (filename.equals(attachment.getName())) {
+				return attachment;
+			}
+		}
+		return null;
 	}
 
 	public void testCreateIssue() throws Exception {

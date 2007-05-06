@@ -73,6 +73,8 @@ public class Issue implements Serializable {
 
 	private String url;
 
+	private Attachment[] attachments;
+
 	public String getId() {
 		return id;
 	}
@@ -293,27 +295,24 @@ public class Issue implements Serializable {
 		return this.hasVote;
 	}
 
-	/**
-	 * @return the url
-	 */
 	public String getUrl() {
 		return this.url;
 	}
 
-	/**
-	 * @param url
-	 *            the url to set
-	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		return this.key + " " + this.summary;
+	}
+
+
+	public Attachment[] getAttachments() {
+		return attachments;
+	}
+	
+	public void setAttachments(Attachment[] attachments) {
+		this.attachments = attachments;
 	}
 }

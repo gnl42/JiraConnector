@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
@@ -76,6 +77,10 @@ public class RssContentHandler extends DefaultHandler {
 	private static final String USERNAME_ATTR = "username"; //$NON-NLS-1$
 
 	private static final String SECONDS_ATTR = "seconds"; //$NON-NLS-1$
+
+	private static final String NAME_ATTR = "name"; //$NON-NLS-1$
+	
+	private static final String SIZE_ATTR = "size"; //$NON-NLS-1$
 
 	private static final String RSS = "rss"; //$NON-NLS-1$
 
@@ -188,6 +193,8 @@ public class RssContentHandler extends DefaultHandler {
 	private static final int IN_INWARDS_ISSUE_LINK = 12;
 
 	private static final int IN_OUTWARDS_ISSUE_LINK = 13;
+	
+	private static final int IN_ATTACHMENTS = 14;
 
 	int state = START;
 
@@ -213,6 +220,18 @@ public class RssContentHandler extends DefaultHandler {
 
 	private ArrayList<Component> currentComponents = new ArrayList<Component>();
 
+	private ArrayList<Attachment> currentAttachments = new ArrayList<Attachment>();
+
+	private String attachmentId;
+
+	private String attachmentName;
+
+	private long attachmentSize;
+
+	private String attachmentAuthor;
+
+	private Date attachmentCreated;
+	
 	/**
 	 * Creates a new RSS reader that will create issues from the RSS information
 	 * by querying the local Jira Server for any missing information. Issues
@@ -317,6 +336,8 @@ public class RssContentHandler extends DefaultHandler {
 				state = IN_ISSUE_LINKS;
 			} else if (CUSTOM_FIELDS.equals(localName)) {
 				state = IN_CUSTOM_FIELDS;
+			} else if (ATTACHMENTS.equals(localName)) {
+				state = IN_ATTACHMENTS;
 			}
 
 			break;
@@ -387,6 +408,21 @@ public class RssContentHandler extends DefaultHandler {
 			break;
 		case IN_CUSTOM_FIELD_VALUES:
 			break;
+		case IN_ATTACHMENTS:
+			if (ATTACHMENT.equals(localName)) {
+				attachmentId = attributes.getValue(ID_ATTR);
+				attachmentName = attributes.getValue(NAME_ATTR);
+				attachmentSize = Long.parseLong(attributes.getValue(SIZE_ATTR));
+				attachmentAuthor = attributes.getValue(AUTHOR_ATTR);
+				try {
+					attachmentCreated = new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(attributes
+							.getValue(CREATED_ATTR));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			break;
 		}
 	}
 
@@ -398,6 +434,15 @@ public class RssContentHandler extends DefaultHandler {
 	 */
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		switch (state) {
+		case IN_ATTACHMENTS:
+			if (ATTACHMENTS.equals(localName)) {
+				state = IN_ITEM;
+			} else if (ATTACHMENT.equals(localName)) {
+				Attachment attachment = new Attachment(attachmentId, attachmentName, attachmentSize, attachmentAuthor, attachmentCreated);
+				currentAttachments.add(attachment);
+			}
+			break;
+
 		case IN_CUSTOM_FIELD_VALUES:
 			if (CUSTOM_FIELD_VALUES.equals(localName)) {
 				state = IN_CUSTOM_FIELD;
@@ -468,8 +513,10 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setComponents(currentComponents.toArray(new Component[currentComponents
 						.size()]));
 				currentIssue.setComments(currentComments.toArray(new Comment[currentComments.size()]));
+				currentIssue.setAttachments(currentAttachments.toArray(new Attachment[currentAttachments.size()]));
 				collector.collectIssue(currentIssue);
 				currentIssue = null;
+				currentAttachments.clear();
 				currentComments.clear();
 				currentFixVersions.clear();
 				currentReportedVersions.clear();
