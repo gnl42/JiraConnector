@@ -15,6 +15,7 @@ import java.io.File;
 import java.net.Proxy;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
@@ -242,6 +243,10 @@ public interface JiraServer {
 
 	void attachFile(Issue issue, String comment, File file, String contentType) throws JiraException;
 
+	byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException;
+	
+	void retrieveFile(Issue issue, Attachment attachment, File file) throws JiraException;
+	
 	/**
 	 * Creates an issue with the details specified in <code>issue</code>. The
 	 * following fields are mandatory:

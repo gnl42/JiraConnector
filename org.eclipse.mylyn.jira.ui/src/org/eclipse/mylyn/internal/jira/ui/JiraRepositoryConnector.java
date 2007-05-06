@@ -73,6 +73,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private JiraTaskDataHandler offlineHandler;
 
+	private JiraAttachmentHandler attachmentHandler;
+	
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
@@ -82,6 +84,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public JiraRepositoryConnector() {
 		offlineHandler = new JiraTaskDataHandler(this);
+		attachmentHandler = new JiraAttachmentHandler();
 	}
 
 	@Override
@@ -96,8 +99,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IAttachmentHandler getAttachmentHandler() {
-		// not implemented
-		return null;
+		return attachmentHandler;
 	}
 
 	@Override

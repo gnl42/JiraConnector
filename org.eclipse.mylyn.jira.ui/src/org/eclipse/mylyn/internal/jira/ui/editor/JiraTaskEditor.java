@@ -34,13 +34,13 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
-		super.showAttachments = false;
+//		super.showAttachments = false;
 	}
 
-	@Override
-	protected void addAttachContextButton(Composite buttonComposite, ITask task) {
-		// disabled
-	}
+//	@Override
+//	protected void addAttachContextButton(Composite buttonComposite, ITask task) {
+//		// disabled
+//	}
 
 	@Override
 	protected void addSelfToCC(Composite composite) {

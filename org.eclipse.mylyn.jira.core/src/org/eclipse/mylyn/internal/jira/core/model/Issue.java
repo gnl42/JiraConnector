@@ -15,7 +15,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 public class Issue implements Serializable {
 
@@ -73,7 +74,7 @@ public class Issue implements Serializable {
 
 	private String url;
 
-	private Attachment[] attachments;
+	private Attachment[] attachments = new Attachment[0];
 
 	public String getId() {
 		return id;
@@ -307,12 +308,21 @@ public class Issue implements Serializable {
 		return this.key + " " + this.summary;
 	}
 
-
 	public Attachment[] getAttachments() {
 		return attachments;
 	}
-	
+
 	public void setAttachments(Attachment[] attachments) {
 		this.attachments = attachments;
 	}
+
+	public Attachment getAttachmentById(String id) {
+		for (int i = 0; i < this.attachments.length; i++) {
+			if (attachments[i].getId().equals(id)) {
+				return attachments[i];
+			}
+		}
+		return null;
+	}
+
 }

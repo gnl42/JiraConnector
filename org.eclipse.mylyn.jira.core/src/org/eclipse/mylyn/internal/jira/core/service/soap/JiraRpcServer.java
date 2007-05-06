@@ -24,6 +24,7 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.AxisFault;
 import org.apache.axis.configuration.FileProvider;
+import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.Group;
@@ -70,6 +71,7 @@ import org.w3c.dom.Element;
 // installation
 /**
  * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 public class JiraRpcServer extends AbstractJiraServer {
 	
@@ -413,6 +415,17 @@ public class JiraRpcServer extends AbstractJiraServer {
 
 	public void attachFile(Issue issue, String comment, File file, String contentType) throws JiraException {
 		issueService.attachFile(issue, comment, file, contentType);
+	}
+
+
+	public byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException {
+		byte[] result = new byte[(int) attachment.getSize()];
+		issueService.retrieveFile(issue, attachment, result);
+		return result;
+	}
+
+	public void retrieveFile(Issue issue, Attachment attachment, File file) throws JiraException {
+		issueService.retrieveFile(issue, attachment, file);
 	}
 
 	public void watchIssue(Issue issue) throws JiraException {

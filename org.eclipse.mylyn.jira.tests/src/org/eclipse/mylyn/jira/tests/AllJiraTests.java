@@ -14,9 +14,9 @@ package org.eclipse.mylar.jira.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 /**
  * @author Wesley Coelho (initial integration patch)
+ * @author Steffen Pingel
  */
 public class AllJiraTests {
 
@@ -32,7 +32,9 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraTaskArchiveTest.class);
 		suite.addTestSuite(JiraRepositoryConnectorTest.class);
 		suite.addTestSuite(JiraRpcServerTest.class);
+		suite.addTestSuite(JiraAttachmentHandlerTest.class);
 		// $JUnit-END$
 		return suite;
 	}
+
 }

@@ -59,6 +59,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 /**
  * @author	Brock Janiczak
+ * @author Steffen Pingel
  */
 public class RssContentHandler extends DefaultHandler {
 

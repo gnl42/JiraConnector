@@ -14,8 +14,10 @@ package org.eclipse.mylar.internal.jira.core.service.web;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,6 +43,7 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.eclipse.mylar.core.net.HtmlStreamTokenizer;
 import org.eclipse.mylar.core.net.HtmlTag;
 import org.eclipse.mylar.core.net.HtmlStreamTokenizer.Token;
+import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
@@ -56,6 +59,7 @@ import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCall
  * TODO look at creation Operation classes to perform each of these actions
  * 
  * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 public class JiraWebIssueService {
 
@@ -174,7 +178,8 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void assignIssueTo(final Issue issue, final int assigneeType, final String user, final String comment) throws JiraException {
+	public void assignIssueTo(final Issue issue, final int assigneeType, final String user, final String comment)
+			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -209,7 +214,8 @@ public class JiraWebIssueService {
 	}
 
 	public void advanceIssueWorkflow(final Issue issue, final String action, final Resolution resolution,
-			final Version[] fixVersions, final String comment, final int assigneeType, final String user) throws JiraException {
+			final Version[] fixVersions, final String comment, final int assigneeType, final String user)
+			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -219,7 +225,7 @@ public class JiraWebIssueService {
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
 				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-				
+
 				if (resolution != null) {
 					post.addParameter("resolution", resolution.getId());
 					if (fixVersions == null || fixVersions.length == 0) {
@@ -314,8 +320,9 @@ public class JiraWebIssueService {
 			final String contentType) throws JiraException {
 		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)), contentType);
 	}
-	
-	public void attachFile(final Issue issue, final String comment, final File file, final String contentType) throws JiraException {
+
+	public void attachFile(final Issue issue, final String comment, final File file, final String contentType)
+			throws JiraException {
 		try {
 			attachFile(issue, comment, new FilePart("filename.1", file), contentType);
 		} catch (FileNotFoundException e) {
@@ -323,9 +330,8 @@ public class JiraWebIssueService {
 		}
 	}
 
-
-	public void attachFile(final Issue issue, final String comment, final FilePart filePart, 
-			final String contentType) throws JiraException {
+	public void attachFile(final Issue issue, final String comment, final FilePart filePart, final String contentType)
+			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -379,6 +385,73 @@ public class JiraWebIssueService {
 					post.releaseConnection();
 				}
 			}
+		});
+	}
+
+	public void retrieveFile(final Issue issue, final Attachment attachment, final byte[] attachmentData) throws JiraException {
+		JiraWebSession s = new JiraWebSession(server);
+		s.doInSession(new JiraWebSessionCallback() {
+
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
+				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
+				rssUrlBuffer.append("/secure/attachment/");
+				rssUrlBuffer.append(attachment.getId());
+				rssUrlBuffer.append("/");
+				rssUrlBuffer.append(attachment.getName());
+
+				GetMethod get = new GetMethod(rssUrlBuffer.toString());
+				try {
+					int result = client.executeMethod(get);
+					if (result != HttpStatus.SC_OK) {
+						handleErrorMessage(get, result);
+					} else {
+						byte[] data = get.getResponseBody();
+						if (data.length != attachmentData.length) {
+							throw new IOException("Unexpected attachment size (got " + data.length + ", expected " + attachmentData.length + ")");
+						}
+						System.arraycopy(data, 0, attachmentData, 0, attachmentData.length);
+					}
+				} catch (IOException e) {
+					throw new JiraException(e);
+				} finally {
+					get.releaseConnection();
+				}
+			}
+
+		});
+	}
+
+	public void retrieveFile(final Issue issue, final Attachment attachment, final File file) throws JiraException {
+		JiraWebSession s = new JiraWebSession(server);
+		s.doInSession(new JiraWebSessionCallback() {
+
+			public void execute(HttpClient client, JiraServer server) throws JiraException {
+				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
+				rssUrlBuffer.append("/secure/attachment/");
+				rssUrlBuffer.append(attachment.getId());
+				rssUrlBuffer.append("/");
+				rssUrlBuffer.append(attachment.getName());
+
+				GetMethod get = new GetMethod(rssUrlBuffer.toString());
+				try {
+					int result = client.executeMethod(get);
+					if (result != HttpStatus.SC_OK) {
+						handleErrorMessage(get, result);
+					} else {
+						OutputStream out = new FileOutputStream(file);
+						try {
+							out.write(get.getResponseBody());
+						} finally {
+							out.close();
+						}
+					}
+				} catch (IOException e) {
+					throw new JiraException(e);
+				} finally {
+					get.releaseConnection();
+				}
+			}
+
 		});
 	}
 
@@ -562,7 +635,7 @@ public class JiraWebIssueService {
 		if (result == HttpStatus.SC_SERVICE_UNAVAILABLE) {
 			throw new JiraRemoteException("JIRA system error", null);
 		}
-		
+
 		BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(),
 				JiraServer.CHARSET));
 		try {
@@ -623,5 +696,6 @@ public class JiraWebIssueService {
 		}
 		return sb.toString();
 	}
+
 
 }
