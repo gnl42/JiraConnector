@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
+import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 
 /**
  * @author Mik Kersten
@@ -51,6 +52,9 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	@Override
 	public String mapCommonAttributeKey(String key) {
+		if (RepositoryTaskAttribute.TASK_KEY.equals(key)) {
+			return ATTRIBUTE_ISSUE_KEY;
+		}
 		return key;
 	}
 
