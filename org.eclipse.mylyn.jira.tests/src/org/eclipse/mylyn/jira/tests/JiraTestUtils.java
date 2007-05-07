@@ -7,14 +7,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import junit.framework.AssertionFailedError;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
+import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 
 public class JiraTestUtils {
 
+	public static String PROJECT1 = "PRONE";
+	
 	public static Resolution getFixedResolution(JiraServer server) throws JiraException {
 		refreshDetails(server);
 		
@@ -31,7 +36,7 @@ public class JiraTestUtils {
 		refreshDetails(server);
 		
 		Issue issue = new Issue();
-		issue.setProject(server.getProjects()[0]);
+		issue.setProject(getProject1(server));
 		issue.setType(server.getIssueTypes()[0]);
 		issue.setSummary(summary);
 		issue.setAssignee(server.getUserName());
@@ -45,6 +50,14 @@ public class JiraTestUtils {
 		}
 	}
 
+	public static Project getProject1(JiraServer server) {
+		Project project = server.getProjectByKey(PROJECT1);
+		if (project == null) {
+			throw new AssertionFailedError("Project '" + PROJECT1 + "' not found");
+		}
+		return project;
+	}
+	
 	public static byte[] readFile(File file) throws IOException {
 		if (file.length() > 10000000) {
 			throw new IOException("File too big: " + file.getAbsolutePath() + ", size: " + file.length());

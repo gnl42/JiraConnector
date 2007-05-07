@@ -158,6 +158,7 @@ public class JiraFilterTest extends TestCase {
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
 		JiraTestUtils.createIssue(server, summary + " 1");
 		Issue issue2 = JiraTestUtils.createIssue(server, summary + " 2");
+		assertTrue(issue2.getProject().getComponents().length > 0);
 		issue2.setComponents(issue2.getProject().getComponents());
 		server.updateIssue(issue2, "comment");
 
