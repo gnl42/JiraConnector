@@ -24,7 +24,7 @@ import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.IAttachmentHandler;
-import org.eclipse.mylar.tasks.core.MylarStatus;
+import org.eclipse.mylar.tasks.core.IMylarStatusConstants;
 import org.eclipse.mylar.tasks.core.RepositoryAttachment;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -42,11 +42,11 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 	public void downloadAttachment(TaskRepository repository, RepositoryAttachment attachment, File file) throws CoreException {
 		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
 		if (id == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, MylarStatus.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
 		}
 		String key = attachment.getTaskId();
 		if (key == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, MylarStatus.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
 		}
 		
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
@@ -93,11 +93,11 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 	public byte[] getAttachmentData(TaskRepository repository, RepositoryAttachment attachment) throws CoreException {
 		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
 		if (id == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, MylarStatus.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
 		}
 		String key = attachment.getTaskId();
 		if (key == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, MylarStatus.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
 		}
 		
 		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
