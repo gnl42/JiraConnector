@@ -381,7 +381,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return new JiraTask(repositoryUrl, id, summary, true);
 	}
 
-	public void updateTaskFromTaskData(TaskRepository repository, AbstractRepositoryTask repositoryTask, RepositoryTaskData taskData) {
+	public void updateTaskFromTaskData(TaskRepository repository, AbstractRepositoryTask repositoryTask, RepositoryTaskData taskData, boolean retrieveSubTasks) {
 		if (repositoryTask instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) repositoryTask;			
 			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
