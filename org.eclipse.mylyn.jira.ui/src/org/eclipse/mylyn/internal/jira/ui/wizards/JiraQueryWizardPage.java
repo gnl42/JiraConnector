@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -181,7 +181,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 			protected IStatus run(final IProgressMonitor monitor) {
 				try {
 					monitor.beginTask("Downloading list of filters", IProgressMonitor.UNKNOWN);
-					JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+					JiraClient jiraServer = JiraClientFacade.getDefault().getJiraClient(repository);
 					filters = jiraServer.getNamedFilters();
 					monitor.done();
 
@@ -196,7 +196,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 						}
 					});
 				} catch (Exception e) {
-					JiraServerFacade.handleConnectionException(e);
+					JiraClientFacade.handleConnectionException(e);
 					return Status.CANCEL_STATUS;
 				}
 				return Status.OK_STATUS;

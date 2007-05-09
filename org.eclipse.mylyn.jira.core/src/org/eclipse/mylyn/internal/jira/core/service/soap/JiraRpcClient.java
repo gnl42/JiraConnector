@@ -73,7 +73,7 @@ import org.w3c.dom.Element;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public class JiraRpcServer extends AbstractJiraServer {
+public class JiraRpcClient extends AbstractJiraServer {
 	
 	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2";
 
@@ -93,7 +93,7 @@ public class JiraRpcServer extends AbstractJiraServer {
 
 	private LoginToken loginToken;
 
-	public JiraRpcServer(String baseURL, boolean useCompression, String username, String password,
+	public JiraRpcClient(String baseURL, boolean useCompression, String username, String password,
 			Proxy proxy, String httpUser, String httpPassword) {
 		super(baseURL, useCompression, username, password, proxy, httpUser, httpPassword);
 

@@ -22,9 +22,9 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
-import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -47,7 +47,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 	private JiraRepositoryConnector connector;
 
-	private JiraServer server;
+	private JiraClient server;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -56,7 +56,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		manager = TasksUiPlugin.getRepositoryManager();
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		
-		JiraServerFacade.getDefault().clearServers();
+		JiraClientFacade.getDefault().clearClients();
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		connector = (JiraRepositoryConnector) abstractConnector;
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 
-		server = JiraServerFacade.getDefault().getJiraServer(repository);
+		server = JiraClientFacade.getDefault().getJiraClient(repository);
 	}
 
 	public void testChangeTaskRepositorySettings() throws Exception {
@@ -94,7 +94,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		wizard.getSettingsPage().setUserId("newuser");
 		assertTrue(wizard.performFinish());
 
-		server = JiraServerFacade.getDefault().getJiraServer(repository);
+		server = JiraClientFacade.getDefault().getJiraClient(repository);
 		assertEquals("newuser", server.getUserName());
 	}
 
@@ -107,14 +107,14 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(false, task.isCompleted());
 		assertNull(task.getDueDate());
 
-		server.resolveIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+		server.resolveIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(true, task.isCompleted());
 		assertNotNull(task.getCompletionDate());
 		
 		issue = server.getIssueByKey(issue.getKey());
-		server.closeIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+		server.closeIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(true, task.isCompleted());

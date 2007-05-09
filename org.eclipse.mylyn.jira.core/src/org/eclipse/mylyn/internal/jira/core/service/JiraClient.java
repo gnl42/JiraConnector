@@ -46,7 +46,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public interface JiraServer {
+public interface JiraClient {
 	
 	String CHARSET = "UTF-8";
 	
@@ -91,7 +91,7 @@ public interface JiraServer {
 	 * @deprecated There is no need to call this method as all services should
 	 *             automatically login when the session is about to expire. If
 	 *             you need to check if the credentials are valid, call
-	 *             {@link org.eclipse.mylar.internal.jira.core.ServerManager#testConnection(String, String, String)}
+	 *             {@link org.eclipse.mylar.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
 	 */
 	void login() throws JiraException;
 

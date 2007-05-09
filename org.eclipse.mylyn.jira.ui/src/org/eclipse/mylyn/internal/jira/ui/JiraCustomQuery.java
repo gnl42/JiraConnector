@@ -46,7 +46,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskList;
 
@@ -114,13 +114,13 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
-	public FilterDefinition getFilterDefinition(JiraServer jiraServer, boolean validate) {
+	public FilterDefinition getFilterDefinition(JiraClient jiraServer, boolean validate) {
 		FilterDefinition filter = createFilter(jiraServer, getUrl(), validate);
 		filter.setName(getSummary());
 		return filter;
 	}
 
-	private FilterDefinition createFilter(JiraServer jiraServer, String url, boolean validate) {
+	private FilterDefinition createFilter(JiraClient jiraServer, String url, boolean validate) {
 		FilterDefinition filter = new FilterDefinition();
 
 		int n = url.indexOf('?');

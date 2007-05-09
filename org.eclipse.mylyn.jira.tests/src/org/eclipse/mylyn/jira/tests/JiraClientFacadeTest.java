@@ -18,7 +18,7 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -27,15 +27,15 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
-public class JiraServerFacadeTest extends TestCase {
+public class JiraClientFacadeTest extends TestCase {
 
-	private JiraServerFacade jiraFacade = null;
+	private JiraClientFacade jiraFacade = null;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		jiraFacade = JiraServerFacade.getDefault();
+		jiraFacade = JiraClientFacade.getDefault();
 		
 		TasksUiPlugin.getTaskListManager().resetTaskList();
 	}
@@ -62,7 +62,7 @@ public class JiraServerFacadeTest extends TestCase {
 		boolean failedOnBogusUser = false;
 
 		try {
-			jiraFacade.getJiraServer(repository).getNamedFilters();
+			jiraFacade.getJiraClient(repository).getNamedFilters();
 		} catch (Exception e) {
 			failedOnBogusUser = true;
 		}
@@ -71,7 +71,7 @@ public class JiraServerFacadeTest extends TestCase {
 		// check that it works after putting the right password in
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		jiraFacade.repositoryRemoved(repository);
-		jiraFacade.getJiraServer(repository).getNamedFilters();
+		jiraFacade.getJiraClient(repository).getNamedFilters();
 	}
 
 	protected void validate(String url) throws Exception {

@@ -16,9 +16,9 @@ import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.JiraAttributeFactory;
-import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.TasksUiImages;
@@ -77,7 +77,7 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory , JiraUiPlugin.REPOSITORY_KIND,
 				taskRepository.getUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId(), Task.DEFAULT_TASK_KIND);
 		taskData.setNew(true);
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(taskRepository);
+		JiraClient server = JiraClientFacade.getDefault().getJiraClient(taskRepository);
 		Project project = projectPage.getSelectedProject();
 		taskDataHandler.initializeTaskData(taskData, server, project);
 		taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());

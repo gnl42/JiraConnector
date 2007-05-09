@@ -22,7 +22,6 @@ import java.io.ObjectOutputStream;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +30,11 @@ import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.core.service.JiraServerData;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcServer;
+import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcClient;
 
 /**
  * Note: This class is not thread safe.
@@ -43,7 +42,7 @@ import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcServer;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public class ServerManager {
+public class JiraClientManager {
 
 	public static final String CONFIGURATION_DATA_FILENAME = "repositoryConfigurations";
 	
@@ -52,13 +51,13 @@ public class ServerManager {
 	/** The directory that contains the repository configuration data. */
 	private final File cacheLocation;
 
-	private Map<String, AbstractJiraServer> serverByUrl = new HashMap<String, AbstractJiraServer>();
+	private Map<String, AbstractJiraServer> clientByUrl = new HashMap<String, AbstractJiraServer>();
 
-	private Map<String, JiraServerData> serverDataByUrl = new HashMap<String, JiraServerData>();
+	private Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
 
-	private List<JiraServerListener> listeners = new ArrayList<JiraServerListener>();
+	private List<JiraClientListener> listeners = new ArrayList<JiraClientListener>();
 
-	public ServerManager(File cacheLocation) {
+	public JiraClientManager(File cacheLocation) {
 		this.cacheLocation = cacheLocation;
 	}
 
@@ -85,8 +84,8 @@ public class ServerManager {
 				int count = in.readInt();
 				for (int i = 0; i < count; i++) {
 					String url = (String) in.readObject();
-					JiraServerData data = (JiraServerData) in.readObject();
-					serverDataByUrl.put(url, data);					
+					JiraClientData data = (JiraClientData) in.readObject();
+					clientDataByUrl.put(url, data);					
 				}
 			} catch (Throwable e) {
 				MylarStatusHandler.log("Reset JIRA repository configuration cache due to format update", false);
@@ -105,18 +104,18 @@ public class ServerManager {
 		File file = new File(cacheLocation, CONFIGURATION_DATA_FILENAME);
 
 		// update data map from servers
-		for (String url : serverByUrl.keySet()) {
-			serverDataByUrl.put(url, serverByUrl.get(url).getData());	
+		for (String url : clientByUrl.keySet()) {
+			clientDataByUrl.put(url, clientByUrl.get(url).getData());	
 		}
 
 		ObjectOutputStream out = null;
 		try {
 			out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
 			out.writeInt(CONFIGURATION_DATA_VERSION);
-			out.writeInt(serverDataByUrl.size());
-			for (String url : serverDataByUrl.keySet()) {
+			out.writeInt(clientDataByUrl.size());
+			for (String url : clientDataByUrl.keySet()) {
 				out.writeObject(url);
-				out.writeObject(serverDataByUrl.get(url));	
+				out.writeObject(clientDataByUrl.get(url));	
 			}
 		} catch (Throwable e) {
 			MylarStatusHandler.fail(e, "Error writing JIRA repository configuration cache", false);
@@ -149,18 +148,18 @@ public class ServerManager {
 	 */
 	public ServerInfo testConnection(String baseUrl, String username, String password, Proxy proxy, String httpUser,
 			String httpPassword) throws JiraException {
-		JiraServer server = createServer(baseUrl, false, username, password, proxy, httpUser,
+		JiraClient server = createServer(baseUrl, false, username, password, proxy, httpUser,
 				httpPassword);
 		server.refreshServerInfo(new NullProgressMonitor());
 		return server.getServerInfo();
 	}
 
-	public JiraServer getServer(String url) {
-		return serverByUrl.get(url);
+	public JiraClient getClient(String url) {
+		return clientByUrl.get(url);
 	}
 
-	public JiraServer[] getAllServers() {
-		return serverByUrl.values().toArray(new JiraServer[serverByUrl.size()]);
+	public JiraClient[] getAllClients() {
+		return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
 	}
 
 	private AbstractJiraServer createServer(String baseUrl, boolean useCompression, String username,
@@ -169,63 +168,61 @@ public class ServerManager {
 			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 		}
 
-		JiraRpcServer server = new JiraRpcServer(baseUrl, useCompression, username, password, proxy,
+		JiraRpcClient server = new JiraRpcClient(baseUrl, useCompression, username, password, proxy,
 				httpUser, httpPassword);
 		return server;
 	}
 
-	public JiraServer addServer(String baseUrl, boolean useCompression, String username,
+	public JiraClient addClient(String baseUrl, boolean useCompression, String username,
 			String password, Proxy proxy, String httpUser, String httpPassword) {
-		if (serverByUrl.containsKey(baseUrl)) {
+		if (clientByUrl.containsKey(baseUrl)) {
 			throw new RuntimeException("A server with that name already exists");
 		}
 		
 		AbstractJiraServer server = createServer(baseUrl, useCompression, username, password, proxy, httpUser, httpPassword);
-		JiraServerData data = serverDataByUrl.get(baseUrl);
+		JiraClientData data = clientDataByUrl.get(baseUrl);
 		if (data != null) {
 			server.setData(data);
 		}
-		serverByUrl.put(baseUrl, server);
+		clientByUrl.put(baseUrl, server);
 		
-		fireServerAddded(server);
+		fireClientAddded(server);
 		
 		return server;
 	}
 
-	public void removeServer(JiraServer server) {
-		serverDataByUrl.remove(server.getBaseURL());
-		serverByUrl.remove(server.getBaseURL());
+	public void removeClient(JiraClient server) {
+		clientDataByUrl.remove(server.getBaseURL());
+		clientByUrl.remove(server.getBaseURL());
 
-		fireServerRemoved(server);
+		fireClientRemoved(server);
 	}
 
-	public void addServerListener(JiraServerListener listener) {
+	public void addClientListener(JiraClientListener listener) {
 		listeners.add(listener);
 	}
 
-	public void removeServerListener(JiraServerListener listener) {
+	public void removeClientListener(JiraClientListener listener) {
 		listeners.remove(listener);
 	}
 
-	private void fireServerRemoved(JiraServer server) {
-		for (Iterator<JiraServerListener> iListeners = listeners.iterator(); iListeners.hasNext();) {
-			JiraServerListener listener = iListeners.next();
-			listener.serverRemoved(server);
+	private void fireClientRemoved(JiraClient server) {
+		for (JiraClientListener listener : listeners) {
+			listener.clientRemoved(server);
 		}
 	}
 
-	private void fireServerAddded(JiraServer server) {
-		for (Iterator<JiraServerListener> iListeners = listeners.iterator(); iListeners.hasNext();) {
-			JiraServerListener listener = iListeners.next();
-			listener.serverAdded(server);
+	private void fireClientAddded(JiraClient server) {
+		for (JiraClientListener listener : listeners) {
+			listener.clientAdded(server);
 		}
 	}
 
-	public void removeAllServers(boolean clearData) {
+	public void removeAllClients(boolean clearData) {
 		if (clearData) {
-			serverDataByUrl.clear();
+			clientDataByUrl.clear();
 		}
-		serverByUrl.clear();
+		clientByUrl.clear();
 	}
 	
 }

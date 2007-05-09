@@ -26,12 +26,12 @@ public class AllJiraTests {
 		// $JUnit-BEGIN$
 		suite.addTestSuite(JiraCustomQueryTest.class);
 		suite.addTestSuite(JiraTaskTest.class);
-		suite.addTestSuite(JiraServerFacadeTest.class);
+		suite.addTestSuite(JiraClientFacadeTest.class);
 		suite.addTestSuite(JiraTaskExternalizationTest.class);
 		suite.addTestSuite(JiraFilterTest.class);
 		suite.addTestSuite(JiraTaskArchiveTest.class);
 		suite.addTestSuite(JiraRepositoryConnectorTest.class);
-		suite.addTestSuite(JiraRpcServerTest.class);
+		suite.addTestSuite(JiraRpcClientTest.class);
 		suite.addTestSuite(JiraAttachmentHandlerTest.class);
 		// $JUnit-END$
 		return suite;

@@ -26,8 +26,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
@@ -152,7 +152,7 @@ public class JiraProjectPage extends WizardPage {
 	}
 
 	private void updateProjectsFromRepository(final boolean force) {
-		final JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		final JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		if (!server.hasDetails() || force) {
 			final AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager()
 			.getRepositoryConnector(repository.getKind());

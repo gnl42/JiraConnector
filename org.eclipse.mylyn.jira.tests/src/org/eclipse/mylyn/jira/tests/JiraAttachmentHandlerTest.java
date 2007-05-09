@@ -19,9 +19,9 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
-import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
@@ -41,14 +41,14 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 	private IAttachmentHandler attachmentHandler;
 
-	private JiraServer server;
+	private JiraClient server;
 
 	@Override
 	protected void setUp() throws Exception {
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 
 		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		JiraServerFacade.getDefault().clearServers();
+		JiraClientFacade.getDefault().clearClients();
 		
 		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);
@@ -72,12 +72,12 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_381_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
-		repository.setCharacterEncoding(JiraServer.CHARSET);
+		repository.setCharacterEncoding(JiraClient.CHARSET);
 
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		
-		server = JiraServerFacade.getDefault().getJiraServer(repository);
+		server = JiraClientFacade.getDefault().getJiraClient(repository);
 		JiraTestUtils.refreshDetails(server);
 	}
 

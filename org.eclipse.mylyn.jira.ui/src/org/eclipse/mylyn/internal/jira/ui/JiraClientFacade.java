@@ -13,14 +13,13 @@ package org.eclipse.mylar.internal.jira.ui;
 
 import java.net.Proxy;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylar.core.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.core.JiraClientManager;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylar.internal.jira.core.ServerManager;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylar.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -36,29 +35,29 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
-public class JiraServerFacade implements ITaskRepositoryListener {
+public class JiraClientFacade implements ITaskRepositoryListener {
 
 	public final static String MIN_VERSION = "3.3.3";
 
 	public final static int MIN_BUILD_NUMBER = 99;
 
-	private ServerManager serverManager = null;
+	private JiraClientManager clientManager = null;
 
-	private static JiraServerFacade instance = null;
+	private static JiraClientFacade instance = null;
 
-	private JiraServerFacade() {
+	private JiraClientFacade() {
 		TasksUiPlugin.getRepositoryManager().addListener(this);
-		serverManager = JiraCorePlugin.getDefault().getServerManager();
+		clientManager = JiraCorePlugin.getDefault().getServerManager();
 	}
 
 	/* For testing. */
-	public void clearServers() {
-		serverManager.removeAllServers(false);
+	public void clearClients() {
+		clientManager.removeAllClients(false);
 	}
 
 	/* For testing. */
-	public void clearServersAndConfigurationData() {
-		serverManager.removeAllServers(true);
+	public void clearClientsAndConfigurationData() {
+		clientManager.removeAllClients(true);
 	}
 
 	/**
@@ -67,12 +66,12 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 * @see #validateServerAndCredentials(String, String, String, Proxy, String,
 	 *      String)
 	 */
-	public synchronized JiraServer getJiraServer(TaskRepository repository) {
-		JiraServer server = serverManager.getServer(repository.getUrl());
+	public synchronized JiraClient getJiraClient(TaskRepository repository) {
+		JiraClient server = clientManager.getClient(repository.getUrl());
 		if (server == null) {
 			String userName = repository.getUserName();
 			String password = repository.getPassword();
-			server = serverManager.addServer(repository.getUrl(), //
+			server = clientManager.addClient(repository.getUrl(), //
 					Boolean.parseBoolean(repository.getProperty(JiraRepositoryConnector.COMPRESSION_KEY)), //
 					userName == null ? "" : userName, //
 					password == null ? "" : password, //
@@ -82,16 +81,16 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		return server;
 	}
 
-	public synchronized static JiraServerFacade getDefault() {
+	public synchronized static JiraClientFacade getDefault() {
 		if (instance == null) {
-			instance = new JiraServerFacade();
+			instance = new JiraClientFacade();
 		}
 		return instance;
 	}
 
 	public synchronized void logOutFromAll() {
 		try {
-			JiraServer[] allServers = serverManager.getAllServers();
+			JiraClient[] allServers = clientManager.getAllClients();
 			for (int i = 0; i < allServers.length; i++) {
 				allServers[i].logout();
 			}
@@ -106,14 +105,14 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 
 	public synchronized void repositoryAdded(TaskRepository repository) {
 		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
-			assert serverManager.getServer(repository.getUrl()) == null;
-			getJiraServer(repository);
+			assert clientManager.getClient(repository.getUrl()) == null;
+			getJiraClient(repository);
 		}
 	}
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
 		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
-			JiraServer server = serverManager.getServer(repository.getUrl());
+			JiraClient server = clientManager.getClient(repository.getUrl());
 			removeServer(server);
 		}
 	}
@@ -123,19 +122,10 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 		repositoryAdded(repository);
 	}
 
-	/**
-	 * Forces a reset of the {@link JiraServer} object and updates the
-	 * repository configuration.
-	 */
-	public void refreshServerSettings(TaskRepository repository, IProgressMonitor monitor) throws JiraException {
-		JiraServer server = getJiraServer(repository);
-		server.refreshDetails(monitor);
-	}
-
-	private synchronized void removeServer(JiraServer server) {
+	private synchronized void removeServer(JiraClient server) {
 		if (server != null) {
 			server.logout();
-			serverManager.removeServer(server);
+			clientManager.removeClient(server);
 		}
 	}
 
@@ -153,7 +143,7 @@ public class JiraServerFacade implements ITaskRepositoryListener {
 	 */
 	public void validateServerAndCredentials(String serverUrl, String user, String password, Proxy proxy,
 			String httpUser, String httpPassword) throws JiraException {
-		ServerInfo info = serverManager.testConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
+		ServerInfo info = clientManager.testConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
 		if (MIN_VERSION.compareTo(info.getVersion()) > 0) {
 			throw new JiraException("Mylar requires JIRA version " + MIN_VERSION + " or later");
 		}

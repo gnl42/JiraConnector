@@ -20,7 +20,7 @@ import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.IAttachmentHandler;
@@ -49,7 +49,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
 		}
 		
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		try {
 			Issue issue = server.getIssueByKey(key);
 			Attachment jiraAttachment = issue.getAttachmentById(id);
@@ -65,7 +65,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 			filename = CONTEXT_ATTACHEMNT_FILENAME;
 		}
 		
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		try {
 			Issue issue = server.getIssueByKey(task.getTaskKey());
 			server.attachFile(issue, comment, filename, file, contentType);
@@ -100,7 +100,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
 		}
 		
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		try {
 			Issue issue = server.getIssueByKey(key);
 			Attachment jiraAttachment = issue.getAttachmentById(id);

@@ -57,9 +57,9 @@ import org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
@@ -151,7 +151,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	final Placeholder ANY_PRIORITY = new Placeholder("Any");
 
-	private final JiraServer server;
+	private final JiraClient server;
 
 	private ListViewer project;
 
@@ -206,7 +206,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	public JiraQueryPage(TaskRepository repository, JiraCustomQuery query) {
 		super(TITLE_PAGE);
 		this.repository = repository;
-		this.server = JiraServerFacade.getDefault().getJiraServer(repository);
+		this.server = JiraClientFacade.getDefault().getJiraClient(repository);
 		if (query != null) {
 			this.workingCopy = query.getFilterDefinition(server, false);
 		} else {
@@ -1347,7 +1347,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				JiraServer server = (JiraServer) inputElement;
+				JiraClient server = (JiraClient) inputElement;
 				Object[] elements = new Object[server.getProjects().length + 1];
 				elements[0] = new Placeholder("All Projects");
 				System.arraycopy(server.getProjects(), 0, elements, 1, server.getProjects().length);
@@ -1366,7 +1366,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				JiraServer server = (JiraServer) inputElement;
+				JiraClient server = (JiraClient) inputElement;
 				Object[] elements = new Object[server.getIssueTypes().length + 1];
 				elements[0] = ANY_ISSUE_TYPE;
 				System.arraycopy(server.getIssueTypes(), 0, elements, 1, server.getIssueTypes().length);
@@ -1385,7 +1385,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				JiraServer server = (JiraServer) inputElement;
+				JiraClient server = (JiraClient) inputElement;
 				Object[] elements = new Object[server.getStatuses().length + 1];
 				elements[0] = ANY_STATUS;
 				System.arraycopy(server.getStatuses(), 0, elements, 1, server.getStatuses().length);
@@ -1404,7 +1404,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				JiraServer server = (JiraServer) inputElement;
+				JiraClient server = (JiraClient) inputElement;
 				Object[] elements = new Object[server.getResolutions().length + 2];
 				elements[0] = ANY_RESOLUTION;
 				elements[1] = UNRESOLVED;
@@ -1424,7 +1424,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				JiraServer server = (JiraServer) inputElement;
+				JiraClient server = (JiraClient) inputElement;
 				Object[] elements = new Object[server.getPriorities().length + 1];
 				elements[0] = ANY_PRIORITY;
 				System.arraycopy(server.getPriorities(), 0, elements, 1, server.getPriorities().length);

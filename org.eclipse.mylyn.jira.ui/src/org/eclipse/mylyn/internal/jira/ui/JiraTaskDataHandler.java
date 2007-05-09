@@ -27,7 +27,7 @@ import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Status;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -58,7 +58,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId) throws CoreException {
 		try {
-			JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+			JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 			if (!server.hasDetails()) {
 				server.refreshDetails(new NullProgressMonitor());
 			}
@@ -78,7 +78,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 	}
 
-	private Issue getJiraIssue(JiraServer server, String taskId, String repositoryUrl) throws CoreException,
+	private Issue getJiraIssue(JiraClient server, String taskId, String repositoryUrl) throws CoreException,
 			JiraException {
 		try {
 			int id = Integer.parseInt(taskId);
@@ -98,7 +98,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void initializeTaskData(RepositoryTaskData data, JiraServer server, Project project) {
+	public void initializeTaskData(RepositoryTaskData data, JiraClient server, Project project) {
 		data.removeAllAttributes();
 
 		RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.DATE_CREATION,
@@ -176,7 +176,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraServer server) {
+	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) {
 		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, jiraIssue.getCreated().toGMTString());
 		data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, convertHtml(jiraIssue.getSummary()));
 		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, convertHtml(jiraIssue.getDescription()));
@@ -271,7 +271,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 	}
 
-	private void addOperations(RepositoryTaskData data, Issue issue, JiraServer server) {
+	private void addOperations(RepositoryTaskData data, Issue issue, JiraClient server) {
 		Status status = issue.getStatus();
 
 		RepositoryOperation opLeave = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
@@ -316,7 +316,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 	}
 
-	private void addResolutions(JiraServer server, RepositoryOperation operation) {
+	private void addResolutions(JiraClient server, RepositoryOperation operation) {
 		Resolution[] resolutions = server.getResolutions();
 		if (resolutions.length > 0) {
 			for (Resolution resolution : resolutions) {
@@ -336,7 +336,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 	public String postTaskData(TaskRepository repository, RepositoryTaskData taskData) throws CoreException {
-		final JiraServer jiraServer = JiraServerFacade.getDefault().getJiraServer(repository);
+		final JiraClient jiraServer = JiraClientFacade.getDefault().getJiraClient(repository);
 		if (jiraServer == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
 					JiraCorePlugin.ID, org.eclipse.core.runtime.Status.ERROR, "Unable to produce Jira Server", null));
@@ -365,10 +365,10 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 							.getKnobName())) {
 						String value = operation.getOptionValue(operation.getOptionSelection());
 						jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
-								taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+								taskData.getNewComment(), JiraClient.ASSIGNEE_CURRENT, repository.getUserName());
 					} else if (org.eclipse.mylar.internal.jira.core.model.Status.REOPENED_ID.equals(operation
 							.getKnobName())) {
-						jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository
+						jiraServer.reopenIssue(issue, taskData.getNewComment(), JiraClient.ASSIGNEE_CURRENT, repository
 								.getUserName());
 					} else if (org.eclipse.mylar.internal.jira.core.model.Status.STARTED_ID.equals(operation
 							.getKnobName())) {
@@ -382,7 +382,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 							.getKnobName())) {
 						String value = operation.getOptionValue(operation.getOptionSelection());
 						jiraServer.closeIssue(issue, jiraServer.getResolutionById(value), issue.getFixVersions(),
-								taskData.getNewComment(), JiraServer.ASSIGNEE_CURRENT, repository.getUserName());
+								taskData.getNewComment(), JiraClient.ASSIGNEE_CURRENT, repository.getUserName());
 					}
 				} else {
 					jiraServer.updateIssue(issue, taskData.getNewComment());

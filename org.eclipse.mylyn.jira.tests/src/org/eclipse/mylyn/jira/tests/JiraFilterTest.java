@@ -27,12 +27,12 @@ import org.eclipse.mylar.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.ProjectFilter;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraQueryHit;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.ui.JiraServerFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -60,7 +60,7 @@ public class JiraFilterTest extends TestCase {
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 
 		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		JiraServerFacade.getDefault().clearServers();
+		JiraClientFacade.getDefault().clearClients();
 		
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
 
@@ -85,7 +85,7 @@ public class JiraFilterTest extends TestCase {
 		
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_381_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
-		repository.setCharacterEncoding(JiraServer.CHARSET);
+		repository.setCharacterEncoding(JiraClient.CHARSET);
 
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
@@ -98,7 +98,7 @@ public class JiraFilterTest extends TestCase {
 	private void filterRefresh(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		Issue issue = JiraTestUtils.createIssue(server, "testFilterRefresh");
 		issue.setAssignee(server.getUserName());
 		server.updateIssue(issue, "comment");
@@ -128,7 +128,7 @@ public class JiraFilterTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		String summary = "testCustomQuery" + System.currentTimeMillis();
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		Issue issue = JiraTestUtils.createIssue(server, summary);
 		issue.setPriority(server.getPriorityById(Priority.BLOCKER_ID));
 		server.updateIssue(issue, "comment");
@@ -155,7 +155,7 @@ public class JiraFilterTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		String summary = "testCustomQueryWithoutRepositoryConfiguraton" + System.currentTimeMillis();
-		JiraServer server = JiraServerFacade.getDefault().getJiraServer(repository);
+		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		JiraTestUtils.createIssue(server, summary + " 1");
 		Issue issue2 = JiraTestUtils.createIssue(server, summary + " 2");
 		assertTrue(issue2.getProject().getComponents().length > 0);
@@ -175,7 +175,7 @@ public class JiraFilterTest extends TestCase {
 		assertEquals(issue2.getSummary(), hitCollector.results.get(0).getSummary());
 
 		hitCollector.results.clear();
-		JiraServerFacade.getDefault().clearServersAndConfigurationData();
+		JiraClientFacade.getDefault().clearClientsAndConfigurationData();
 		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
 		assertEquals(1, hitCollector.results.size());
 		assertEquals(issue2.getSummary(), hitCollector.results.get(0).getSummary());

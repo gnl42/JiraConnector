@@ -26,7 +26,7 @@ import org.eclipse.mylar.internal.jira.core.model.User;
  * 
  * @author Steffen Pingel
  */
-public class JiraServerData implements Serializable {
+public class JiraClientData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

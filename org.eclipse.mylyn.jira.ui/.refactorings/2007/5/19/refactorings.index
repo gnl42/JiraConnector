@@ -1,0 +1,5 @@
+1178668626503	Rename type 'JiraServerFacade'
+1178668823727	Rename method 'clearServers'
+1178668831972	Rename method 'clearServersAndConfigurationData'
+1178668840527	Rename method 'getJiraServer'
+1178668853933	Rename field 'serverManager'

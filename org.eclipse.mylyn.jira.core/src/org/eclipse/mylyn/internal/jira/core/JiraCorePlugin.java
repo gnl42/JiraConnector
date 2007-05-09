@@ -37,7 +37,7 @@ public class JiraCorePlugin extends Plugin {
 	// Resource bundle.
 	private ResourceBundle resourceBundle;
 
-	private ServerManager serverManager;
+	private JiraClientManager serverManager;
 
 	/**
 	 * The constructor.
@@ -59,7 +59,7 @@ public class JiraCorePlugin extends Plugin {
 		Logger logger = Logger.getLogger("org.apache.axis.utils.JavaUtils");
 		logger.setLevel(Level.SEVERE);
 
-		serverManager = new ServerManager(serverCache);
+		serverManager = new JiraClientManager(serverCache);
 		serverManager.start();
 	}
 
@@ -102,7 +102,7 @@ public class JiraCorePlugin extends Plugin {
 		return plugin;
 	}
 
-	public ServerManager getServerManager() {
+	public JiraClientManager getServerManager() {
 		return serverManager;
 	}
 

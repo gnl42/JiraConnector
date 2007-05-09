@@ -14,13 +14,13 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 
 public class JiraTestUtils {
 
 	public static String PROJECT1 = "PRONE";
 	
-	public static Resolution getFixedResolution(JiraServer server) throws JiraException {
+	public static Resolution getFixedResolution(JiraClient server) throws JiraException {
 		refreshDetails(server);
 		
 		Resolution[] resolutions = server.getResolutions();
@@ -32,7 +32,7 @@ public class JiraTestUtils {
 		return resolutions[0];
 	}
 
-	public static Issue createIssue(JiraServer server, String summary) throws JiraException {
+	public static Issue createIssue(JiraClient server, String summary) throws JiraException {
 		refreshDetails(server);
 		
 		Issue issue = new Issue();
@@ -44,13 +44,13 @@ public class JiraTestUtils {
 		return server.createIssue(issue);
 	}
 
-	public static void refreshDetails(JiraServer server) throws JiraException {
+	public static void refreshDetails(JiraClient server) throws JiraException {
 		if (!server.hasDetails()) {
 			server.refreshDetails(new NullProgressMonitor());
 		}
 	}
 
-	public static Project getProject1(JiraServer server) {
+	public static Project getProject1(JiraClient server) {
 		Project project = server.getProjectByKey(PROJECT1);
 		if (project == null) {
 			throw new AssertionFailedError("Project '" + PROJECT1 + "' not found");

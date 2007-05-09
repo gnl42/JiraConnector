@@ -11,14 +11,14 @@
 
 package org.eclipse.mylar.internal.jira.core;
 
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 
 /**
  * @author	Brock Janiczak
  */
-public interface JiraServerListener {
+public interface JiraClientListener {
 
-	public abstract void serverAdded(JiraServer server);
+	public abstract void clientAdded(JiraClient server);
 
-	public abstract void serverRemoved(JiraServer server);
+	public abstract void clientRemoved(JiraClient server);
 }

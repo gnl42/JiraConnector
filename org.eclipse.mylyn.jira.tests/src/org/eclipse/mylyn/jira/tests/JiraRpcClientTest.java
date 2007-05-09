@@ -26,21 +26,21 @@ import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
-import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcClient;
 
 /**
  * @author Steffen Pingel
  */
-public class JiraRpcServerTest extends TestCase {
+public class JiraRpcClientTest extends TestCase {
 
-	private AbstractJiraServer server;
+	private AbstractJiraServer client;
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = MylarTestUtils.readCredentials(level);
-		server = new JiraRpcServer(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
+		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
 		
-		JiraTestUtils.refreshDetails(server);
+		JiraTestUtils.refreshDetails(client);
 	}
 
 	public void testLogin381() throws Exception {
@@ -51,13 +51,13 @@ public class JiraRpcServerTest extends TestCase {
 	private void login(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		server.login();
-		server.logout();
+		client.login();
+		client.logout();
 		// should automatically login
-		server.refreshDetails(new NullProgressMonitor());
+		client.refreshDetails(new NullProgressMonitor());
 
 		init(url, PrivilegeLevel.GUEST);
-		server.login();
+		client.login();
 	}
 
 	public void testStartStopIssue() throws Exception {
@@ -67,22 +67,22 @@ public class JiraRpcServerTest extends TestCase {
 	private void startStopIssue(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
-		server.startIssue(issue);
+		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
+		client.startIssue(issue);
 		try {
-			server.startIssue(issue);
+			client.startIssue(issue);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
-		server.stopIssue(issue);
+		client.stopIssue(issue);
 		try {
-			server.stopIssue(issue);
+			client.stopIssue(issue);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
-		server.startIssue(issue);
+		client.startIssue(issue);
 	}
 
 	public void testResolveCloseReopenIssue() throws Exception {
@@ -92,37 +92,37 @@ public class JiraRpcServerTest extends TestCase {
 	private void resolveCloseReopenIssue(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Resolution resolution = JiraTestUtils.getFixedResolution(server);
-		Issue issue = JiraTestUtils.createIssue(server, "testStartStopIssue");
+		Resolution resolution = JiraTestUtils.getFixedResolution(client);
+		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
 
-		server.resolveIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
-		issue = server.getIssueByKey(issue.getKey());
+		client.resolveIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+		issue = client.getIssueByKey(issue.getKey());
 		assertTrue(issue.getStatus().isResolved());
 		try {
-			server.resolveIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+			client.resolveIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
 
-		server.closeIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
-		issue = server.getIssueByKey(issue.getKey());
+		client.closeIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+		issue = client.getIssueByKey(issue.getKey());
 		assertTrue(issue.getStatus().isClosed());
 		try {
-			server.resolveIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+			client.resolveIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
 		try {
-			server.closeIssue(issue, resolution, new Version[0], "comment", JiraServer.ASSIGNEE_DEFAULT, "");
+			client.closeIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
 
-		server.reopenIssue(issue, "comment", JiraServer.ASSIGNEE_DEFAULT, "");
-		issue = server.getIssueByKey(issue.getKey());
+		client.reopenIssue(issue, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+		issue = client.getIssueByKey(issue.getKey());
 		assertTrue(issue.getStatus().isReopened());
 	}
 
@@ -133,18 +133,18 @@ public class JiraRpcServerTest extends TestCase {
 	private void getIdFromKey(String url) throws Exception {
 		init(url, PrivilegeLevel.GUEST);
 
-		Issue issue = JiraTestUtils.createIssue(server, "getIdFromKey");
-		String key = server.getKeyFromId(issue.getId());
+		Issue issue = JiraTestUtils.createIssue(client, "getIdFromKey");
+		String key = client.getKeyFromId(issue.getId());
 		assertEquals(issue.getKey(), key);
 
 		try {
-			key = server.getKeyFromId("invalid");
+			key = client.getKeyFromId("invalid");
 			fail("Expected JiraException, got: " + key);
 		} catch (JiraException e) {
 		}
 
 		try {
-			key = server.getKeyFromId("1");
+			key = client.getKeyFromId("1");
 			fail("Expected JiraException, got: " + key);
 		} catch (JiraException e) {
 		}
@@ -158,46 +158,46 @@ public class JiraRpcServerTest extends TestCase {
 	private void reassign(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Issue issue = JiraTestUtils.createIssue(server, "testReassign");
+		Issue issue = JiraTestUtils.createIssue(client, "testReassign");
 		issue.setAssignee("nonexistantuser");
 		try {
-			server.updateIssue(issue, "comment");
+			client.updateIssue(issue, "comment");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("User 'nonexistantuser' cannot be assigned issues.", e.getMessage());
 		}
 
 		try {
-			server.assignIssueTo(issue, JiraServer.ASSIGNEE_NONE, "", "");
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_NONE, "", "");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Issues must be assigned.", e.getMessage());
 		}
 
 		try {
-			server.assignIssueTo(issue, JiraServer.ASSIGNEE_SELF, "", "");
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("Issue already assigned to Test User 1 (" + server.getUserName() + ").", e.getMessage());
+			assertEquals("Issue already assigned to Test User 1 (" + client.getUserName() + ").", e.getMessage());
 		}
 
 		String guestUsername = MylarTestUtils.readCredentials(PrivilegeLevel.GUEST).username;
 		try {
-			server.assignIssueTo(issue, JiraServer.ASSIGNEE_USER, guestUsername, "");
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("User 'guest@mylar.eclipse.org' cannot be assigned issues.", e.getMessage());
 		}
 
-		server.assignIssueTo(issue, JiraServer.ASSIGNEE_DEFAULT, "", "");
-		issue = server.getIssueByKey(issue.getKey());
+		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "");
+		issue = client.getIssueByKey(issue.getKey());
 		assertEquals("admin@mylar.eclipse.org", issue.getAssignee());
 
-		server.assignIssueTo(issue, JiraServer.ASSIGNEE_SELF, "", "");
-		issue = server.getIssueByKey(issue.getKey());
-		assertEquals(server.getUserName(), issue.getAssignee());
+		client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
+		issue = client.getIssueByKey(issue.getKey());
+		assertEquals(client.getUserName(), issue.getAssignee());
 
 		init(url, PrivilegeLevel.GUEST);
 		try {
-			server.assignIssueTo(issue, JiraServer.ASSIGNEE_SELF, "", "");
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
 			fail("Expected JiraException");
 		} catch (JiraException e) {
 		}
@@ -212,7 +212,7 @@ public class JiraRpcServerTest extends TestCase {
 
 		FilterDefinition filter = new FilterDefinition();
 		MockIssueCollector collector = new MockIssueCollector();
-		server.search(filter, collector);
+		client.search(filter, collector);
 		assertTrue(collector.done);
 	}
 
@@ -223,20 +223,20 @@ public class JiraRpcServerTest extends TestCase {
 	private void addComment(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Issue issue = JiraTestUtils.createIssue(server, "testAddComment");
-		server.addCommentToIssue(issue, "comment 1");
-		issue = server.getIssueByKey(issue.getKey());
+		Issue issue = JiraTestUtils.createIssue(client, "testAddComment");
+		client.addCommentToIssue(issue, "comment 1");
+		issue = client.getIssueByKey(issue.getKey());
 		Comment comment = getComment(issue, "comment 1");
 		assertNotNull(comment);
-		assertEquals(server.getUserName(), comment.getAuthor());
+		assertEquals(client.getUserName(), comment.getAuthor());
 
 		init(url, PrivilegeLevel.GUEST);
 
-		server.addCommentToIssue(issue, "comment guest");
-		issue = server.getIssueByKey(issue.getKey());
+		client.addCommentToIssue(issue, "comment guest");
+		issue = client.getIssueByKey(issue.getKey());
 		comment = getComment(issue, "comment guest");
 		assertNotNull(comment);
-		assertEquals(server.getUserName(), comment.getAuthor());
+		assertEquals(client.getUserName(), comment.getAuthor());
 	}
 
 	private Comment getComment(Issue issue, String text) {
@@ -258,19 +258,19 @@ public class JiraRpcServerTest extends TestCase {
 		File file = File.createTempFile("mylar", null);
 		file.deleteOnExit();
 
-		Issue issue = JiraTestUtils.createIssue(server, "testAttachFile");
+		Issue issue = JiraTestUtils.createIssue(client, "testAttachFile");
 		// test attaching an empty file
 		try {
-			server.attachFile(issue, "", file.getName(), file, "application/binary");
+			client.attachFile(issue, "", file.getName(), file, "application/binary");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
 		
-		server.attachFile(issue, "", "my.filename.1", new byte[] { 'M', 'y', 'l', 'a', 'r' }, "application/binary");
-		issue = server.getIssueByKey(issue.getKey());
+		client.attachFile(issue, "", "my.filename.1", new byte[] { 'M', 'y', 'l', 'a', 'r' }, "application/binary");
+		issue = client.getIssueByKey(issue.getKey());
 		Attachment attachment = getAttachment(issue, "my.filename.1");
 		assertNotNull(attachment);
-		assertEquals(server.getUserName(), attachment.getAuthor());
+		assertEquals(client.getUserName(), attachment.getAuthor());
 		assertEquals(5, attachment.getSize());
 		assertNotNull(attachment.getCreated());
 	}
@@ -292,29 +292,29 @@ public class JiraRpcServerTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = new Issue();
-		issue.setProject(server.getProjects()[0]);
-		issue.setType(server.getIssueTypes()[0]);
+		issue.setProject(client.getProjects()[0]);
+		issue.setType(client.getIssueTypes()[0]);
 		issue.setSummary("testCreateIssue");
-		issue.setAssignee(server.getUserName());
+		issue.setAssignee(client.getUserName());
 
-		Issue createdIssue = server.createIssue(issue);
+		Issue createdIssue = client.createIssue(issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
 		assertEquals(issue.getType(), createdIssue.getType());
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
 		assertEquals(issue.getAssignee(), createdIssue.getAssignee());
-		assertEquals(server.getUserName(), createdIssue.getReporter());
+		assertEquals(client.getUserName(), createdIssue.getReporter());
 		// TODO why are these null?
 		// assertNotNull(issue.getCreated());
 		// assertNotNull(issue.getUpdated());
 
 		init(url, PrivilegeLevel.GUEST);
 		
-		createdIssue = server.createIssue(issue);
+		createdIssue = client.createIssue(issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
 		assertEquals(issue.getType(), createdIssue.getType());
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
 		assertEquals("admin@mylar.eclipse.org", createdIssue.getAssignee());
-		assertEquals(server.getUserName(), createdIssue.getReporter());
+		assertEquals(client.getUserName(), createdIssue.getReporter());
 	}
 
 	public void testUpdateIssue() throws Exception {
@@ -325,21 +325,21 @@ public class JiraRpcServerTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = new Issue();
-		issue.setProject(server.getProjects()[0]);
-		issue.setType(server.getIssueTypes()[0]);
+		issue.setProject(client.getProjects()[0]);
+		issue.setType(client.getIssueTypes()[0]);
 		issue.setSummary("testUpdateIssue");
-		issue.setAssignee(server.getUserName());
+		issue.setAssignee(client.getUserName());
 
-		issue = server.createIssue(issue);
+		issue = client.createIssue(issue);
 		issue.setSummary("testUpdateIssueChanged");
-		server.updateIssue(issue, "");
-		issue = server.getIssueByKey(issue.getKey());
+		client.updateIssue(issue, "");
+		issue = client.getIssueByKey(issue.getKey());
 		assertEquals("testUpdateIssueChanged", issue.getSummary());
 		assertNotNull(issue.getUpdated());
 		
 		init(url, PrivilegeLevel.GUEST);
 		try {
-			server.updateIssue(issue, "");
+			client.updateIssue(issue, "");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
@@ -347,10 +347,10 @@ public class JiraRpcServerTest extends TestCase {
 		init(url, PrivilegeLevel.GUEST);
 		
 		issue.setSummary("testUpdateIssueGuest");
-		issue = server.createIssue(issue);
+		issue = client.createIssue(issue);
 		issue.setSummary("testUpdateIssueGuestChanged");
 		try {
-			server.updateIssue(issue, "");
+			client.updateIssue(issue, "");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
@@ -363,18 +363,18 @@ public class JiraRpcServerTest extends TestCase {
 	private void watchUnwatchIssue(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Issue issue = JiraTestUtils.createIssue(server, "testWatchUnwatch");
+		Issue issue = JiraTestUtils.createIssue(client, "testWatchUnwatch");
 		assertFalse(issue.isWatched());
-		server.watchIssue(issue);
-		issue = server.getIssueByKey(issue.getKey());
+		client.watchIssue(issue);
+		issue = client.getIssueByKey(issue.getKey());
 		// flag is never set
 //		assertTrue(issue.isWatched());
 
-		server.unwatchIssue(issue);
-		issue = server.getIssueByKey(issue.getKey());
+		client.unwatchIssue(issue);
+		issue = client.getIssueByKey(issue.getKey());
 		assertFalse(issue.isWatched());
-		server.unwatchIssue(issue);
-		issue = server.getIssueByKey(issue.getKey());
+		client.unwatchIssue(issue);
+		issue = client.getIssueByKey(issue.getKey());
 		assertFalse(issue.isWatched());
 	}
 

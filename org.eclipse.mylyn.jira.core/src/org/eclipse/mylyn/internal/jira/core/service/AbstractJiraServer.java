@@ -27,16 +27,16 @@ import org.eclipse.mylar.internal.jira.core.model.Version;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change
- * during the session. This server uses a {@link JiraServerData} object to
+ * during the session. This server uses a {@link JiraClientData} object to
  * persist the repository configuration. It has life-cycle methods to allow data
  * in the cache to be reloaded.
  * 
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public abstract class AbstractJiraServer implements JiraServer {
+public abstract class AbstractJiraServer implements JiraClient {
 
-	private volatile JiraServerData data;
+	private volatile JiraClientData data;
 
 	private final String baseUrl;
 
@@ -67,14 +67,14 @@ public abstract class AbstractJiraServer implements JiraServer {
 		this.httpUser = httpUser;
 		this.httpPassword = httpPassword;
 
-		this.data = new JiraServerData();
+		this.data = new JiraClientData();
 	}
 
 	public synchronized void refreshDetails(IProgressMonitor monitor)  throws JiraException {
 		// use UNKNOWN since some of the update operations block for a long time
 		monitor.beginTask("Updating repository configuration", IProgressMonitor.UNKNOWN);
 
-		JiraServerData newData = new JiraServerData();
+		JiraClientData newData = new JiraClientData();
 
 		initializeServerInfo(newData);
 		advance(monitor, 1);
@@ -125,7 +125,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return this.password;
 	}
 
-	private void initializeProjects(JiraServerData data) throws JiraException {
+	private void initializeProjects(JiraClientData data) throws JiraException {
 		if (data.serverInfo.getVersion().compareTo("3.4") >= 0) {
 			data.projects = getProjectsRemoteNoSchemes();
 		} else {
@@ -165,7 +165,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.projects;
 	}
 
-	private void initializePriorities(JiraServerData data) throws JiraException {
+	private void initializePriorities(JiraClientData data) throws JiraException {
 		data.priorities = getPrioritiesRemote();
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
 		for (int i = 0; i < data.priorities.length; i++) {
@@ -184,7 +184,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.priorities;
 	}
 
-	private void initializeIssueTypes(JiraServerData data) throws JiraException {
+	private void initializeIssueTypes(JiraClientData data) throws JiraException {
 		IssueType[] issueTypes = getIssueTypesRemote();
 		IssueType[] subTaskIssueTypes; 
 		if (data.serverInfo.getVersion().compareTo("3.2") < 0) {
@@ -222,7 +222,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.issueTypes;
 	}
 
-	private void initializeStatuses(JiraServerData data) throws JiraException {
+	private void initializeStatuses(JiraClientData data) throws JiraException {
 		data.statuses = getStatusesRemote();
 		data.statusesById = new HashMap<String, Status>(data.statuses.length);
 		for (int i = 0; i < data.statuses.length; i++) {
@@ -241,7 +241,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.statuses;
 	}
 
-	private void initializeResolutions(JiraServerData data) throws JiraException {
+	private void initializeResolutions(JiraClientData data) throws JiraException {
 		data.resolutions = getResolutionsRemote();
 		data.resolutionsById = new HashMap<String, Resolution>(data.resolutions.length);
 		for (int i = 0; i < data.resolutions.length; i++) {
@@ -260,7 +260,7 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return data.resolutions;
 	}
 
-	private void initializeServerInfo(JiraServerData data) throws JiraException {
+	private void initializeServerInfo(JiraClientData data) throws JiraException {
 		data.serverInfo = getServerInfo();
 	}
 
@@ -319,11 +319,11 @@ public abstract class AbstractJiraServer implements JiraServer {
 		return useCompression;
 	}
 
-	public void setData(JiraServerData data) {
+	public void setData(JiraClientData data) {
 		this.data = data;
 	}
 	
-	public JiraServerData getData() {
+	public JiraClientData getData() {
 		return data;
 	}
 	
