@@ -21,7 +21,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.mylar.core.net.WebClientUtil;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 
 /**
@@ -32,11 +32,11 @@ public class JiraWebSession {
 
 	private static final int MAX_REDIRECTS = 3;
 
-	private final JiraServer server;
+	private final JiraClient server;
 
 	private String baseUrl;
 
-	public JiraWebSession(JiraServer server) {
+	public JiraWebSession(JiraClient server) {
 		this.server = server;
 		// TODO this canonization is duplicated
 		StringBuffer urlBuffer = new StringBuffer(server.getBaseURL());

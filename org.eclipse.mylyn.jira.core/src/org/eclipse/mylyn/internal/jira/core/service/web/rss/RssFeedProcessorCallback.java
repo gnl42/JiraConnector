@@ -23,7 +23,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebSessionCallback;
 
 /**
@@ -41,7 +41,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 		this.collector = collector;
 	}
 
-	public final void execute(HttpClient client, JiraServer server) throws JiraException, IOException {
+	public final void execute(HttpClient client, JiraClient server) throws JiraException, IOException {
 		String rssUrl = getRssUrl();
 		GetMethod rssRequest = new GetMethod(rssUrl);
 		// If there is only a single match JIRA will redirect to the issue

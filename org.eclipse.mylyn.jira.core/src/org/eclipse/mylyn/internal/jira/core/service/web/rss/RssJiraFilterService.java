@@ -18,7 +18,7 @@ import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.web.JiraWebSession;
 
 /**
@@ -26,11 +26,11 @@ import org.eclipse.mylar.internal.jira.core.service.web.JiraWebSession;
  */
 public class RssJiraFilterService {
 
-	private final JiraServer server;
+	private final JiraClient server;
 
 	private final boolean useGZipCompression;
 
-	public RssJiraFilterService(JiraServer server) {
+	public RssJiraFilterService(JiraClient server) {
 		this.server = server;
 		this.useGZipCompression = server.useCompression();
 	}

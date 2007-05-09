@@ -19,7 +19,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -30,11 +30,11 @@ import org.xml.sax.XMLReader;
  */
 class RssReader {
 	
-	private final JiraServer server;
+	private final JiraClient server;
 
 	private final IssueCollector collector;
 
-	public RssReader(JiraServer server, IssueCollector collector) {
+	public RssReader(JiraClient server, IssueCollector collector) {
 		this.server = server;
 		this.collector = collector;
 	}

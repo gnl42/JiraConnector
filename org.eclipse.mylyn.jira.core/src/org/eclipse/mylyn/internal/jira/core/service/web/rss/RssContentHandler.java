@@ -24,7 +24,7 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -201,7 +201,7 @@ public class RssContentHandler extends DefaultHandler {
 
 	private StringBuffer currentElementText;
 
-	private final JiraServer server;
+	private final JiraClient server;
 
 	private final IssueCollector collector;
 
@@ -246,7 +246,7 @@ public class RssContentHandler extends DefaultHandler {
 	 *            Collecter that will be processing the issues as they are read
 	 *            from the RSS feed.
 	 */
-	public RssContentHandler(JiraServer server, IssueCollector collector) {
+	public RssContentHandler(JiraClient server, IssueCollector collector) {
 		this.server = server;
 		this.collector = collector;
 	}

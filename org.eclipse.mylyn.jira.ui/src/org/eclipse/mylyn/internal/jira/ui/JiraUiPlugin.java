@@ -45,7 +45,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		INSTANCE = null;
-		JiraServerFacade.getDefault().logOutFromAll();
+		JiraClientFacade.getDefault().logOutFromAll();
 	}
 
 	public static JiraUiPlugin getDefault() {

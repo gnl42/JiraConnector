@@ -36,7 +36,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.SpecificUserFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.TaskList;
@@ -142,8 +142,8 @@ public class JiraCustomQueryTest extends TestCase {
 
 		String queryUrl = customQuery.getUrl();
 
-		JiraServer jiraServer = (JiraServer) Proxy.newProxyInstance(getClass().getClassLoader(),
-				new Class[] {JiraServer.class},
+		JiraClient jiraServer = (JiraClient) Proxy.newProxyInstance(getClass().getClassLoader(),
+				new Class[] {JiraClient.class},
 				new InvocationHandler() {
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 						String name = method.getName();

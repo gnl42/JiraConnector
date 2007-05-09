@@ -53,7 +53,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServer;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
 
 /**
@@ -66,9 +66,9 @@ public class JiraWebIssueService {
 
 	private static final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
 
-	private final JiraServer server;
+	private final JiraClient server;
 
-	public JiraWebIssueService(JiraServer server) {
+	public JiraWebIssueService(JiraClient server) {
 		this.server = server;
 	}
 
@@ -76,7 +76,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/AddComment.jspa");
 
@@ -105,7 +105,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/EditIssue.jspa");
 
@@ -184,7 +184,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/AssignIssue.jspa");
 
@@ -220,7 +220,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/CommentAssignIssue.jspa");
 
@@ -265,7 +265,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/WorkflowUIDispatcher.jspa?");
 				rssUrlBuffer.append("id=").append(issue.getId());
@@ -337,7 +337,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(server.getBaseURL());
 				attachFileURLBuffer.append("/secure/AttachFile.jspa");
 
@@ -393,7 +393,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
@@ -426,7 +426,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
@@ -463,7 +463,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(server.getBaseURL());
 				attachFileURLBuffer.append("/secure/CreateIssueDetails.jspa");
 
@@ -557,7 +557,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(server.getBaseURL());
 				urlBuffer.append("/browse/").append(issue.getKey());
 				urlBuffer.append("?watch=").append(Boolean.toString(watch));
@@ -594,7 +594,7 @@ public class JiraWebIssueService {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraServer server) throws JiraException {
+			public void execute(HttpClient client, JiraClient server) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(server.getBaseURL());
 				urlBuffer.append("/browse/").append(issue.getKey());
 				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote");
@@ -615,17 +615,17 @@ public class JiraWebIssueService {
 		});
 	}
 
-	private String getAssigneeParam(JiraServer server, Issue issue, int assigneeType, String user) {
+	private String getAssigneeParam(JiraClient server, Issue issue, int assigneeType, String user) {
 		switch (assigneeType) {
-		case JiraServer.ASSIGNEE_CURRENT:
+		case JiraClient.ASSIGNEE_CURRENT:
 			return issue.getAssignee();
-		case JiraServer.ASSIGNEE_DEFAULT:
+		case JiraClient.ASSIGNEE_DEFAULT:
 			return "-1"; //$NON-NLS-1$
-		case JiraServer.ASSIGNEE_NONE:
+		case JiraClient.ASSIGNEE_NONE:
 			return ""; //$NON-NLS-1$
-		case JiraServer.ASSIGNEE_SELF:
+		case JiraClient.ASSIGNEE_SELF:
 			return server.getUserName();
-		case JiraServer.ASSIGNEE_USER:
+		case JiraClient.ASSIGNEE_USER:
 			return user;
 		default:
 			return user;
@@ -638,7 +638,7 @@ public class JiraWebIssueService {
 		}
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(),
-				JiraServer.CHARSET));
+				JiraClient.CHARSET));
 		try {
 			StringBuilder sb = new StringBuilder();
 			HtmlStreamTokenizer tokenizer = new HtmlStreamTokenizer(reader, null);
