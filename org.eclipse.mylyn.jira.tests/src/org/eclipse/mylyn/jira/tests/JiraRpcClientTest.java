@@ -23,10 +23,10 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
+import org.eclipse.mylar.internal.jira.core.service.AbstractJiraClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcClient;
 
 /**
@@ -34,7 +34,7 @@ import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcClient;
  */
 public class JiraRpcClientTest extends TestCase {
 
-	private AbstractJiraServer client;
+	private AbstractJiraClient client;
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = MylarTestUtils.readCredentials(level);
