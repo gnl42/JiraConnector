@@ -13,3 +13,7 @@
 1178669011610	Rename method 'addServerListener'
 1178669023105	Rename method 'removeServerListener'
 1178669086303	Rename method 'removeAllServers'
+1178760468052	Change method 'execute'
+1178760602263	Change method 'getRssUrl'
+1178760734533	Rename type 'AbstractJiraServer'
+1178760925057	Rename method 'getBaseURL'

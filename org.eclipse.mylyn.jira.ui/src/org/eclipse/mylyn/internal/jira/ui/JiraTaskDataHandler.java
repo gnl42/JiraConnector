@@ -232,7 +232,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			RepositoryAttachment taskAttachment = new RepositoryAttachment(attributeFactory);
 			taskAttachment.setCreator(attachment.getAuthor());
 			taskAttachment.setRepositoryKind(JiraUiPlugin.REPOSITORY_KIND);
-			taskAttachment.setRepositoryUrl(server.getBaseURL());
+			taskAttachment.setRepositoryUrl(server.getBaseUrl());
 			taskAttachment.setTaskId(jiraIssue.getKey());
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID, attachment.getId());
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_FILENAME, attachment.getName());
@@ -244,7 +244,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_OWNER, attachment.getAuthor());
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE, attachment.getCreated()
 					.toString());
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_URL, server.getBaseURL()
+			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_URL, server.getBaseUrl()
 					+ "/secure/attachment/" + attachment.getId() + "/" + attachment.getName());
 			data.addAttachment(taskAttachment);
 		}

@@ -39,7 +39,7 @@ class RssReader {
 		this.collector = collector;
 	}
 
-	public void readRssFeed(InputStream feed) throws JiraException, IOException {
+	public void readRssFeed(InputStream feed, String baseUrl) throws JiraException, IOException {
 		try {
 			// TODO this only seems to work in J2SE 5.0
 			// XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -47,7 +47,7 @@ class RssReader {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XMLReader reader = factory.newSAXParser().getXMLReader();
-			reader.setContentHandler(new RssContentHandler(server, collector));
+			reader.setContentHandler(new RssContentHandler(server, collector, baseUrl));
 			reader.parse(new InputSource(feed));
 			collector.done();
 		} catch (ParseCancelledException e) {

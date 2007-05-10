@@ -43,7 +43,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylar.internal.jira.core.model.filter.SmartQuery;
-import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
+import org.eclipse.mylar.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraInsufficientPermissionException;
@@ -73,7 +73,7 @@ import org.w3c.dom.Element;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public class JiraRpcClient extends AbstractJiraServer {
+public class JiraRpcClient extends AbstractJiraClient {
 	
 	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2";
 
@@ -119,7 +119,7 @@ public class JiraRpcClient extends AbstractJiraServer {
 				locator.setCompression(useCompression());
 
 				try {
-					soapService = locator.getJirasoapserviceV2(new URL(getBaseURL() + SOAP_SERVICE_URL));
+					soapService = locator.getJirasoapserviceV2(new URL(getBaseUrl() + SOAP_SERVICE_URL));
 				} catch (ServiceException e) {
 					throw new JiraException(e);
 				} catch (MalformedURLException e) {

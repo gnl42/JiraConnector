@@ -28,7 +28,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylar.internal.jira.core.service.AbstractJiraServer;
+import org.eclipse.mylar.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraClientData;
@@ -51,7 +51,7 @@ public class JiraClientManager {
 	/** The directory that contains the repository configuration data. */
 	private final File cacheLocation;
 
-	private Map<String, AbstractJiraServer> clientByUrl = new HashMap<String, AbstractJiraServer>();
+	private Map<String, AbstractJiraClient> clientByUrl = new HashMap<String, AbstractJiraClient>();
 
 	private Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
 
@@ -162,7 +162,7 @@ public class JiraClientManager {
 		return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
 	}
 
-	private AbstractJiraServer createServer(String baseUrl, boolean useCompression, String username,
+	private AbstractJiraClient createServer(String baseUrl, boolean useCompression, String username,
 			String password, Proxy proxy, String httpUser, String httpPassword) {
 		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -179,7 +179,7 @@ public class JiraClientManager {
 			throw new RuntimeException("A server with that name already exists");
 		}
 		
-		AbstractJiraServer server = createServer(baseUrl, useCompression, username, password, proxy, httpUser, httpPassword);
+		AbstractJiraClient server = createServer(baseUrl, useCompression, username, password, proxy, httpUser, httpPassword);
 		JiraClientData data = clientDataByUrl.get(baseUrl);
 		if (data != null) {
 			server.setData(data);
@@ -192,8 +192,8 @@ public class JiraClientManager {
 	}
 
 	public void removeClient(JiraClient server) {
-		clientDataByUrl.remove(server.getBaseURL());
-		clientByUrl.remove(server.getBaseURL());
+		clientDataByUrl.remove(server.getBaseUrl());
+		clientByUrl.remove(server.getBaseUrl());
 
 		fireClientRemoved(server);
 	}

@@ -16,12 +16,13 @@ import java.io.IOException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.mylar.core.net.WebClientUtil;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 
 /**
@@ -38,12 +39,7 @@ public class JiraWebSession {
 
 	public JiraWebSession(JiraClient server) {
 		this.server = server;
-		// TODO this canonization is duplicated
-		StringBuffer urlBuffer = new StringBuffer(server.getBaseURL());
-		if (urlBuffer.charAt(urlBuffer.length() - 1) != '/') {
-			urlBuffer.append('/');
-		}
-		baseUrl = urlBuffer.toString();
+		this.baseUrl = server.getBaseUrl();
 	}
 
 	public void doInSession(JiraWebSessionCallback callback) throws JiraException {
@@ -54,7 +50,7 @@ public class JiraWebSession {
 
 		login(client);
 		try {
-			callback.execute(client, server);
+			callback.execute(client, server, baseUrl);
 		} catch (IOException e) {
 			throw new JiraException(e);
 		} finally {
@@ -62,11 +58,16 @@ public class JiraWebSession {
 		}
 	}
 
+	protected String getBaseURL() {
+		return baseUrl;
+	}
+
 	private void login(HttpClient client) throws JiraException {
-		String url = baseUrl + "login.jsp";
+		String url = baseUrl + "/login.jsp";
 		for (int i = 0; i < MAX_REDIRECTS; i++) {
 			PostMethod login = new PostMethod(url); //$NON-NLS-1$
 			login.setFollowRedirects(false);
+			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 			login.addParameter("os_username", server.getUserName()); //$NON-NLS-1$
 			login.addParameter("os_password", server.getPassword()); //$NON-NLS-1$
 			login.addParameter("os_destination", "/success"); //$NON-NLS-1$
@@ -78,11 +79,10 @@ public class JiraWebSession {
 				} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
 					Header locationHeader = login.getResponseHeader("location");
 					if (locationHeader != null) {
-						if (locationHeader.getValue().endsWith("/success")) {
+						url = locationHeader.getValue();
+						if (url.endsWith("/success")) {
+							baseUrl = url.substring(0, url.lastIndexOf("/success"));
 							return;
-						}
-						else {
-							url = locationHeader.getValue();
 						}
 					} else {
 						throw new JiraServiceUnavailableException("Invalid redirect, missing location");
@@ -100,7 +100,7 @@ public class JiraWebSession {
 	}
 	
 	private void logout(HttpClient client) throws JiraException {
-		GetMethod logout = new GetMethod(baseUrl + "logout"); //$NON-NLS-1$
+		GetMethod logout = new GetMethod(baseUrl + "/logout"); //$NON-NLS-1$
 		logout.setFollowRedirects(false);
 
 		try {

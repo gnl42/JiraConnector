@@ -41,8 +41,8 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 		this.collector = collector;
 	}
 
-	public final void execute(HttpClient client, JiraClient server) throws JiraException, IOException {
-		String rssUrl = getRssUrl();
+	public final void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException, IOException {
+		String rssUrl = getRssUrl(baseUrl);
 		GetMethod rssRequest = new GetMethod(rssUrl);
 		// If there is only a single match JIRA will redirect to the issue
 		// browser
@@ -80,7 +80,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 			try {
 				rssFeed = isResponseGZipped ? new GZIPInputStream(rssRequest.getResponseBodyAsStream()) : rssRequest
 						.getResponseBodyAsStream();
-				new RssReader(server, collector).readRssFeed(rssFeed);
+				new RssReader(server, collector).readRssFeed(rssFeed, baseUrl);
 			} finally {
 				try {
 					if (rssFeed != null) {
@@ -98,10 +98,11 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 	/**
 	 * Determines the URL of the RSS being processed. This URL will typically be
 	 * generated from a filter definition
-	 * 
+	 *
+	 * @param baseUrl the base URL of the repository
 	 * @return The URL of the RSS feed to be processed
 	 */
-	protected abstract String getRssUrl() throws JiraException;
+	protected abstract String getRssUrl(String baseUrl) throws JiraException;
 
 	/**
 	 * Determines if the response of <code>method</code> was GZip encoded

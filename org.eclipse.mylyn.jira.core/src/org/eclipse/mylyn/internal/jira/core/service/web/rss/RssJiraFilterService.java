@@ -42,8 +42,8 @@ public class RssJiraFilterService {
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
-			protected String getRssUrl() throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
+			protected String getRssUrl(String baseUrl) throws JiraException {
+				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&reset=true&");
 
 				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
@@ -62,8 +62,8 @@ public class RssJiraFilterService {
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
-			protected String getRssUrl() throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
+			protected String getRssUrl(String baseUrl) throws JiraException {
+				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				if (server.getServerInfo().getVersion().compareTo("3.7") >= 0) {
 					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append(
 							"/SearchRequest-").append(filter.getId()).append(".xml");
@@ -87,8 +87,8 @@ public class RssJiraFilterService {
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
-			protected String getRssUrl() {
-				StringBuffer rssUrlBuffer = new StringBuffer(server.getBaseURL());
+			protected String getRssUrl(String baseUrl) {
+				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/QuickSearch.jspa?view=rss&decorator=none&reset=true&");
 
 				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {

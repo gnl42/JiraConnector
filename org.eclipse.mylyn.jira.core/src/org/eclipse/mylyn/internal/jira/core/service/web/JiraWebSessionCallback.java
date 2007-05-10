@@ -18,10 +18,10 @@ import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 
 /**
- * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 public interface JiraWebSessionCallback {
 
-	public abstract void execute(HttpClient client, JiraClient server) throws JiraException, IOException;
+	public abstract void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException, IOException;
 	
 }

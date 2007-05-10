@@ -201,7 +201,7 @@ public class RssContentHandler extends DefaultHandler {
 
 	private StringBuffer currentElementText;
 
-	private final JiraClient server;
+	private final JiraClient client;
 
 	private final IssueCollector collector;
 
@@ -239,34 +239,25 @@ public class RssContentHandler extends DefaultHandler {
 	 * will be published to <code>collector</code> as they are read from the
 	 * stream.
 	 * 
-	 * @param server
+	 * @param client
 	 *            Jira server we are listing the issues of. This can either be a
 	 *            locally cached jira server or a connection to a live instance.
 	 * @param collector
 	 *            Collecter that will be processing the issues as they are read
 	 *            from the RSS feed.
+	 * @param baseUrl the base URL of the repository
 	 */
-	public RssContentHandler(JiraClient server, IssueCollector collector) {
-		this.server = server;
+	public RssContentHandler(JiraClient client, IssueCollector collector, String baseUrl) {
+		this.client = client;
 		this.collector = collector;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.xml.sax.helpers.DefaultHandler#startDocument()
-	 */
 	public void startDocument() throws SAXException {
 		state = START;
 		currentElementText = new StringBuffer(256);
 		collector.start();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.xml.sax.helpers.DefaultHandler#endDocument()
-	 */
 	public void endDocument() throws SAXException {
 		if (state != START) {
 			// System.err.println("Document ended abnormally");
@@ -276,12 +267,6 @@ public class RssContentHandler extends DefaultHandler {
 		currentElementText = null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
-	 *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
-	 */
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		currentElementText.setLength(0);
 		if (collector.isCancelled()) {
@@ -309,11 +294,11 @@ public class RssContentHandler extends DefaultHandler {
 			if (KEY.equals(localName)) {
 				currentIssue.setId(attributes.getValue(ID_ATTR));
 			} else if (TYPE.equals(localName)) {
-				currentIssue.setType(server.getIssueTypeById(attributes.getValue(ID_ATTR)));
+				currentIssue.setType(client.getIssueTypeById(attributes.getValue(ID_ATTR)));
 			} else if (PRIORITY.equals(localName)) {
-				currentIssue.setPriority(server.getPriorityById(attributes.getValue(ID_ATTR)));
+				currentIssue.setPriority(client.getPriorityById(attributes.getValue(ID_ATTR)));
 			} else if (STATUS.equals(localName)) {
-				currentIssue.setStatus(server.getStatusById(attributes.getValue(ID_ATTR)));
+				currentIssue.setStatus(client.getStatusById(attributes.getValue(ID_ATTR)));
 			} else if (ASSIGNEE.equals(localName)) {
 				String assigneeName = attributes.getValue(USERNAME_ATTR);
 				currentIssue.setAssignee(assigneeName);
@@ -322,7 +307,7 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setReporter(reporterName);
 			} else if (RESOLUTION.equals(localName)) {
 				String resolutionId = attributes.getValue(ID_ATTR);
-				currentIssue.setResolution(resolutionId != null ? server.getResolutionById(resolutionId) : null);
+				currentIssue.setResolution(resolutionId != null ? client.getResolutionById(resolutionId) : null);
 			} else if (ORIGINAL_ESTIMATE.equals(localName)) {
 				currentIssue.setInitialEstimate(Long.parseLong(attributes.getValue(SECONDS_ATTR)));
 			} else if (CURRENT_ESTIMATE.equals(localName)) {
@@ -534,10 +519,10 @@ public class RssContentHandler extends DefaultHandler {
 			} else if (KEY.equals(localName)) {
 				String key = currentElementText.toString();
 				currentIssue.setKey(key);
-				currentIssue.setUrl(server.getBaseURL() + "/browse/" + key);
+				currentIssue.setUrl(client.getBaseUrl() + "/browse/" + key);
 				// TODO super dodgey to assume the project from the issue key
 				String projectKey = key.substring(0, key.indexOf('-'));
-				Project project = server.getProjectByKey(projectKey);
+				Project project = client.getProjectByKey(projectKey);
 				if (project == null) {
 					throw new SAXException("No project with key '" + projectKey + "' found");
 				}
@@ -625,11 +610,6 @@ public class RssContentHandler extends DefaultHandler {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
-	 */
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		currentElementText.append(ch, start, length);
 	}

@@ -34,7 +34,7 @@ import org.eclipse.mylar.internal.jira.core.model.Version;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public abstract class AbstractJiraServer implements JiraClient {
+public abstract class AbstractJiraClient implements JiraClient {
 
 	private volatile JiraClientData data;
 
@@ -52,7 +52,7 @@ public abstract class AbstractJiraServer implements JiraClient {
 
 	private final String httpPassword;
 
-	public AbstractJiraServer(String baseUrl, boolean useCompression, String username, String password,
+	public AbstractJiraClient(String baseUrl, boolean useCompression, String username, String password,
 			Proxy proxy, String httpUser, String httpPassword) {
 		if (baseUrl == null) {
 			throw new IllegalArgumentException("baseURL may not be null");
@@ -113,7 +113,7 @@ public abstract class AbstractJiraServer implements JiraClient {
 		return data.lastUpdate != 0;
 	}
 	
-	public String getBaseURL() {
+	public String getBaseUrl() {
 		return baseUrl;
 	}
 
@@ -289,18 +289,18 @@ public abstract class AbstractJiraServer implements JiraClient {
 	public abstract ServerInfo getServerInfoRemote() throws JiraException;
 
 	public boolean equals(Object obj) {
-		if (obj instanceof AbstractJiraServer)  {
-			return getBaseURL().equals(((AbstractJiraServer) obj).getBaseURL());
+		if (obj instanceof AbstractJiraClient)  {
+			return getBaseUrl().equals(((AbstractJiraClient) obj).getBaseUrl());
 		}
 		return false;
 	}
 
 	public int hashCode() {
-		return getBaseURL().hashCode();
+		return getBaseUrl().hashCode();
 	}
 
 	public String toString() {
-		return getBaseURL();
+		return getBaseUrl();
 	}
 
 	public String getHttpPassword() {
