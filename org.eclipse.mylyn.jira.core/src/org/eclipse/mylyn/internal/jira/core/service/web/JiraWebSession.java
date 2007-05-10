@@ -81,8 +81,13 @@ public class JiraWebSession {
 					if (locationHeader != null) {
 						url = locationHeader.getValue();
 						if (url.endsWith("/success")) {
-							baseUrl = url.substring(0, url.lastIndexOf("/success"));
-							return;
+							String newBaseUrl = url.substring(0, url.lastIndexOf("/success"));
+							if (baseUrl.equals(newBaseUrl)) {
+								return;
+							} else {
+								// need to login to make sure HttpClient picks up the session cookie
+								baseUrl = newBaseUrl;
+							}
 						}
 					} else {
 						throw new JiraServiceUnavailableException("Invalid redirect, missing location");
