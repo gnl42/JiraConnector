@@ -55,7 +55,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 			Attachment jiraAttachment = issue.getAttachmentById(id);
 			server.retrieveFile(issue, jiraAttachment, file);
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(e));
+			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 	}
 
@@ -70,7 +70,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 			Issue issue = server.getIssueByKey(task.getTaskKey());
 			server.attachFile(issue, comment, filename, file, contentType);
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(e));
+			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 	}
 
@@ -106,7 +106,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 			Attachment jiraAttachment = issue.getAttachmentById(id);
 			return server.retrieveFile(issue, jiraAttachment);
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(e));
+			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 	}
 	

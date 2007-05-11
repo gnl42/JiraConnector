@@ -640,7 +640,8 @@ public class JiraWebIssueService {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(),
 				JiraClient.CHARSET));
 		try {
-			StringBuilder sb = new StringBuilder();
+			StringBuilder page = new StringBuilder();
+			StringBuilder msg = new StringBuilder();
 			HtmlStreamTokenizer tokenizer = new HtmlStreamTokenizer(reader, null);
 			for (Token token = tokenizer.nextToken(); token.getType() != Token.EOF; token = tokenizer.nextToken()) {
 				if (token.getType() == Token.TAG) {
@@ -656,19 +657,20 @@ public class JiraWebIssueService {
 							}
 						} else if (tag.getTagType() == HtmlTag.Type.SPAN) {
 							if (classValue.startsWith("errMsg")) {
-								sb.append(getContent(tokenizer, HtmlTag.Type.SPAN));
+								msg.append(getContent(tokenizer, HtmlTag.Type.SPAN));
 							}
 						}
 					}
-
 				}
+				page.append(token.toString());
 			}
-			if (sb.length() == 0) {
-				sb.append("No details available");
+			if (msg.length() == 0) {
+				throw new JiraRemoteMessageException(page.toString());
+			} else {
+				throw new JiraRemoteMessageException(msg.toString());
 			}
-			throw new JiraRemoteMessageException(sb.toString(), null);
 		} catch (ParseException e) {
-			throw new JiraRemoteMessageException("An error has occured: " + result, null);
+			throw new JiraRemoteMessageException("An error has while parsing JIRA response: " + result);
 		} finally {
 			reader.close();
 		}

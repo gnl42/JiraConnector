@@ -74,7 +74,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			addOperations(data, jiraIssue, server);
 			return data;
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(e));
+			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 	}
 
@@ -390,7 +390,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				return "";
 			}
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(e));
+			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 	}
 

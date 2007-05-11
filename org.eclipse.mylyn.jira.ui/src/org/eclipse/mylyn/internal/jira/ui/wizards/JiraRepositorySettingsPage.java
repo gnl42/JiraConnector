@@ -134,7 +134,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 						repository.getUserName(), repository.getPassword(), repository.getProxy(),
 						repository.getHttpUser(), repository.getHttpPassword());
 			} catch (Exception e) {
-				throw new CoreException(JiraCorePlugin.toStatus(e));
+				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 			}
 
 			setStatus(new Status(IStatus.OK, JiraUiPlugin.PLUGIN_ID, IStatus.OK,

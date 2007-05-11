@@ -141,13 +141,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 			client.search(filter, collector);
 		} catch (JiraException e) {
-			//return JiraCorePlugin.toStatus(e);
-			String msg = e.getMessage();
-			if (msg == null) {
-				msg = e.toString();
-			}
-			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
-					"Unable to retrieve query results from " + repositoryQuery.getRepositoryUrl() + "\n" + msg, e);
+			return JiraCorePlugin.toStatus(repository, e);
 		}
 		
 		for (Issue issue : issues) {
@@ -165,12 +159,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					taskId, issue.getKey());
 			hit.setCompleted(isCompleted(issue.getStatus()));
 			hit.setPriority(getMylarPriority(issue.getPriority()).toString());
-			try {
-				resultCollector.accept(hit);
-			} catch (CoreException e) {
-				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, IStatus.ERROR,
-						"Error while retrieving results from: " + repositoryQuery.getRepositoryUrl(), e);
-			}
+			resultCollector.accept(hit);
 		}
 		return Status.OK_STATUS;
 	}
@@ -222,7 +211,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			// Will get ALL issues that have changed since lastSyncDate
 			client.search(changedFilter, collector);
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(e));
+			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 
 		for (Issue issue : issues) {
@@ -451,7 +440,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 			client.refreshDetails(monitor);
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(e));
+			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 	}
 

@@ -113,7 +113,7 @@ public class JiraFilterTest extends TestCase {
 		taskList.addQuery(query);
 		assertTrue(query.getHits().size() == 0);
 
-		TasksUiPlugin.getSynchronizationManager().synchronize(connector, query, null);
+		TasksUiPlugin.getSynchronizationManager().synchronize(connector, query, null, false);
 
 		assertTrue(query.getHits().size() > 0);
 		JiraQueryHit hit = (JiraQueryHit) query.getHits().iterator().next();

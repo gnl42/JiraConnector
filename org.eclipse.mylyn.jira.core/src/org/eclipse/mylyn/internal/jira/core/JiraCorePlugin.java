@@ -21,12 +21,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylar.tasks.core.IMylarStatusConstants;
+import org.eclipse.mylar.tasks.core.MylarStatus;
+import org.eclipse.mylar.tasks.core.RepositoryStatus;
+import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.osgi.framework.BundleContext;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class JiraCorePlugin extends Plugin {
 	public static final String ID = "org.eclipse.mylar.internal.jira.core"; //$NON-NLS-1$
@@ -63,23 +68,25 @@ public class JiraCorePlugin extends Plugin {
 		serverManager.start();
 	}
 
-//	/**
-//	 * @return
-//	 */
-//	private PasswordPrompter getPasswordPrompter() {
-//		return new PasswordPrompter() {
+// /**
+// * @return
+// */
+// private PasswordPrompter getPasswordPrompter() {
+// return new PasswordPrompter() {
 //
-//			public String getPassword(URL baseURL, String username) {
-//				Map<?, ?> authenticationInfo = Platform.getAuthorizationInfo(baseURL, "jira", "");
-//				// String username = (String)
-//				// authenticationInfo.get("com.gbst.jira.core.username");
-//				// //$NON-NLS-1$
-//				String password = (String) authenticationInfo.get("com.gbst.jira.core.password"); //$NON-NLS-1$
-//				return password;
-//			}
+// public String getPassword(URL baseURL, String username) {
+// Map<?, ?> authenticationInfo = Platform.getAuthorizationInfo(baseURL, "jira",
+// "");
+// // String username = (String)
+// // authenticationInfo.get("com.gbst.jira.core.username");
+// // //$NON-NLS-1$
+// String password = (String)
+// authenticationInfo.get("com.gbst.jira.core.password"); //$NON-NLS-1$
+// return password;
+// }
 //
-//		};
-//	}
+// };
+// }
 
 	/**
 	 * This method is called when the plug-in is stopped
@@ -136,21 +143,19 @@ public class JiraCorePlugin extends Plugin {
 		getDefault().getLog().log(new Status(severity, ID, -1, message, e));
 	}
 
-	public static IStatus toStatus(Throwable e) {
+	public static IStatus toStatus(TaskRepository repository, Throwable e) {
+		String url = repository.getUrl();
 		if (e instanceof JiraAuthenticationException) {
-			return new Status(Status.ERROR, ID, Status.OK, "The supplied credentials are invalid", e);
-		} else if (e instanceof JiraServiceUnavailableException) {	
-			return new Status(Status.ERROR, ID, Status.OK, e.getMessage(), e);
+			return RepositoryStatus.createLoginError(url, ID);
+		} else if (e instanceof JiraServiceUnavailableException) {
+			return new RepositoryStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.REPOSITORY_ERROR, e.getMessage(), null);
 		} else if (e instanceof JiraRemoteMessageException) {
-			String msg = e.getMessage();
-			if (msg == null) {
-				msg = ((JiraRemoteMessageException)e).getHtmlMessage();
-			}
-			return new Status(Status.ERROR, ID, Status.OK, msg, e);
-		} else if (e instanceof Exception) {	
-			return new Status(Status.ERROR, ID, Status.OK, e.getMessage(), e);
+			return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.REPOSITORY_ERROR, e
+					.getMessage(), ((JiraRemoteMessageException) e).getHtmlMessage());
+		} else if (e instanceof JiraException) {
+			return new RepositoryStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.REPOSITORY_ERROR, e.getMessage(), e);
 		} else {
-			return new Status(Status.ERROR, ID, Status.OK, "Unexpected error", e);
+			return MylarStatus.createInternalError(ID, "Unexpected error", e);
 		}
 	}
 
