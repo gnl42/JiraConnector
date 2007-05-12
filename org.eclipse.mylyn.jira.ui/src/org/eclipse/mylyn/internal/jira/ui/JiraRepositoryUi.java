@@ -8,6 +8,9 @@
 
 package org.eclipse.mylar.internal.jira.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
@@ -22,6 +25,7 @@ import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraTaskWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylar.tasks.core.ITaskListElement;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
@@ -43,6 +47,30 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	public String getTaskKindLabel(RepositoryTaskData taskData) {
 		return "Issue";
 	}
+	
+	@Override
+	public List<ITaskListElement> getLegendItems() {
+		List<ITaskListElement> legendItems = new ArrayList<ITaskListElement>();
+		
+		JiraTask bug = new JiraTask("", "bug", "Bug", false);
+		bug.setKind(JiraTask.Kind.BUG.toString());
+		legendItems.add(bug);
+
+		JiraTask feature = new JiraTask("", "feature", "Feature", false);
+		feature.setKind(JiraTask.Kind.FEATURE.toString());
+		legendItems.add(feature);
+
+		JiraTask improvement = new JiraTask("", "improvement", "Improvement", false);
+		improvement.setKind(JiraTask.Kind.IMPROVEMENT.toString());
+		legendItems.add(improvement);
+
+		JiraTask task = new JiraTask("", "task", "Task", false);
+		task.setKind(JiraTask.Kind.TASK.toString());
+		legendItems.add(task);
+		
+		return legendItems;
+	}
+
 	
 	@Override
 	public ImageDescriptor getTaskKindOverlay(AbstractRepositoryTask repositoryTask) {
