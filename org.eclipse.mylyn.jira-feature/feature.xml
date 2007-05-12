@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.mylar.jira_feature"
       label="Mylar Connector: Jira"
-      version="2.0.0.v20070511-1630"
+      version="2.0.0.v20070511-2000"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
@@ -219,21 +219,21 @@ litigation.
    </url>
 
    <requires>
-      <import feature="org.eclipse.mylar_feature" version="2.0.0.v20070413-1700" match="greaterOrEqual"/>
+      <import feature="org.eclipse.mylar_feature" version="2.0.0.v20070511-2000" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.eclipse.mylar.jira.ui"
          download-size="0"
          install-size="0"
-         version="2.0.0.v20070511-1630"
+         version="2.0.0.v20070511-2000"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylar.jira.core"
          download-size="0"
          install-size="0"
-         version="2.0.0.v20070511-1630"
+         version="2.0.0.v20070511-2000"
          unpack="false"/>
 
 </feature>
