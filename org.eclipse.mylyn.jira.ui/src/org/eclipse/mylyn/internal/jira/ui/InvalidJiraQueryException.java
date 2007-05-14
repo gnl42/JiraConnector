@@ -14,5 +14,9 @@ package org.eclipse.mylar.internal.jira.ui;
 public class InvalidJiraQueryException extends RuntimeException {
 
 	private static final long serialVersionUID = -9151805689314153246L;
+	
+	public InvalidJiraQueryException(String string) {
+		super(string);
+	}
 
 }

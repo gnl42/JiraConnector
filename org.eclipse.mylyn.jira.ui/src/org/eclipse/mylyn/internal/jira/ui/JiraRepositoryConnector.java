@@ -133,7 +133,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
 				} catch (InvalidJiraQueryException e) {
 					return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
-							"The query parameters do not match the repository configuration, please check the query properties.", null);
+							"The query parameters do not match the repository configuration, please check the query properties; " + e.getMessage(), null);
 				}
 			} else {
 				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,

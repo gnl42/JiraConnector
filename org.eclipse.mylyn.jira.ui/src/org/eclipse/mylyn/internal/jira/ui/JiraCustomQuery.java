@@ -153,7 +153,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			if (project == null) {
 				if (validate) {
 					// safeguard
-					throw new InvalidJiraQueryException();
+					throw new InvalidJiraQueryException("Unknown project " + projectId);
 				} else {
 					continue;
 				}
@@ -211,7 +211,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			if (issueType != null) {
 				issueTypes.add(issueType);
 			} else if (validate) {
-				throw new InvalidJiraQueryException();
+				throw new InvalidJiraQueryException("Unknown type " + typeId);
 			}
 		}
 		if(!issueTypes.isEmpty()) {
@@ -225,7 +225,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			if (status != null) {
 				statuses.add(status);
 			} else if (validate) {
-				throw new InvalidJiraQueryException();
+				throw new InvalidJiraQueryException("Unknown status " + statusId);
 			}
 		}
 		if(!statuses.isEmpty()) {
@@ -239,7 +239,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			if (resolution != null) {
 				resolutions.add(resolution);
 			} else if (validate) {
-				throw new InvalidJiraQueryException();
+				throw new InvalidJiraQueryException("Unknown resolution " + resolutionId);
 			}
 		}
 		if(!resolutionIds.isEmpty()) {
