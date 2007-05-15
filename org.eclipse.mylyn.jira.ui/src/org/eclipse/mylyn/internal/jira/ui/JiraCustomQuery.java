@@ -234,16 +234,23 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 		List<String> resolutionIds = getIds(params, RESOLUTION_KEY);
 		List<Resolution> resolutions = new ArrayList<Resolution>();
+		boolean unresolved = false;
 		for (String resolutionId : resolutionIds) {
-			Resolution resolution = jiraServer.getResolutionById(resolutionId);
-			if (resolution != null) {
-				resolutions.add(resolution);
-			} else if (validate) {
-				throw new InvalidJiraQueryException("Unknown resolution " + resolutionId);
+			if (!"-1".equals(resolutionId)) {
+				Resolution resolution = jiraServer.getResolutionById(resolutionId);
+				if (resolution != null) {
+					resolutions.add(resolution);
+				} else if (validate) {
+					throw new InvalidJiraQueryException("Unknown resolution " + resolutionId);
+				}
+			} else {
+				unresolved = true;
 			}
 		}
 		if(!resolutionIds.isEmpty()) {
 			filter.setResolutionFilter(new ResolutionFilter(resolutions.toArray(new Resolution[resolutions.size()])));
+		} else if (unresolved) {
+			filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
 		}
 
 		List<String> queries = getIds(params, QUERY_KEY);
