@@ -37,6 +37,7 @@ import org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.ui.InvalidJiraQueryException;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.TaskList;
@@ -44,6 +45,7 @@ import org.eclipse.mylar.tasks.core.TaskRepository;
 
 /**
  * @author Eugene Kuleshov
+ * @author Steffen Pingel
  */
 public class JiraCustomQueryTest extends TestCase {
 
@@ -235,4 +237,29 @@ public class JiraCustomQueryTest extends TestCase {
 		assertEquals(32, ((DateRangeFilter) dueDateFilter2).getToDate().getTime());
 	}
 
+	public void testGetFilterDefinitionUnresolvedResolution() {
+		String repositoryUrl = JiraTestConstants.JIRA_381_URL;
+
+		FilterDefinition filter = new FilterDefinition();
+		filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
+		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET, null);
+		MockJiraClient client = new MockJiraClient(repositoryUrl);
+		filter = customQuery.getFilterDefinition(client, true);
+		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
+		assertNotNull(resolutionFilter);
+		assertTrue(resolutionFilter.isUnresolved());
+		
+		filter = new FilterDefinition();
+		Resolution[] resolutions = new Resolution[1];
+		resolutions[0] = new Resolution();
+		resolutions[0].setId("123");
+ 		resolutionFilter = new ResolutionFilter(resolutions);
+		filter.setResolutionFilter(resolutionFilter);
+		customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET, null);
+		try {
+			filter = customQuery.getFilterDefinition(client, true);
+			fail("Expected InvalidJiraQueryException, got: " + filter);
+		} catch (InvalidJiraQueryException e) {
+		}
+	}
 }
