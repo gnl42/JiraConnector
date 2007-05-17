@@ -70,7 +70,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 					TasksUiPlugin.getDefault().getRepositoriesFilePath());			
 		}
 		
-		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_381_URL);
+		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		repository.setCharacterEncoding(JiraClient.CHARSET);
 
@@ -82,7 +82,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 	}
 
 	public void testAttachFile() throws Exception {
-		attachFile(JiraTestConstants.JIRA_381_URL);
+		attachFile(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void attachFile(String url) throws Exception {

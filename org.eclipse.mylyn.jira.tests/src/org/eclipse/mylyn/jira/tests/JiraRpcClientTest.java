@@ -44,7 +44,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testLogin381() throws Exception {
-		login(JiraTestConstants.JIRA_381_URL);
+		login(JiraTestConstants.JIRA_39_URL);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -61,7 +61,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testStartStopIssue() throws Exception {
-		startStopIssue(JiraTestConstants.JIRA_381_URL);
+		startStopIssue(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void startStopIssue(String url) throws Exception {
@@ -86,7 +86,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testResolveCloseReopenIssue() throws Exception {
-		resolveCloseReopenIssue(JiraTestConstants.JIRA_381_URL);
+		resolveCloseReopenIssue(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void resolveCloseReopenIssue(String url) throws Exception {
@@ -127,7 +127,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testGetIdFromKey() throws Exception {
-		getIdFromKey(JiraTestConstants.JIRA_381_URL);
+		getIdFromKey(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void getIdFromKey(String url) throws Exception {
@@ -152,7 +152,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testReassign() throws Exception {
-		reassign(JiraTestConstants.JIRA_381_URL);
+		reassign(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void reassign(String url) throws Exception {
@@ -204,7 +204,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testFindIssues() throws Exception {
-		findIssues(JiraTestConstants.JIRA_381_URL);
+		findIssues(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void findIssues(String url) throws Exception {
@@ -217,7 +217,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testAddComment() throws Exception {
-		addComment(JiraTestConstants.JIRA_381_URL);
+		addComment(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void addComment(String url) throws Exception {
@@ -249,7 +249,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testAttachFile() throws Exception {
-		attachFile(JiraTestConstants.JIRA_381_URL);
+		attachFile(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void attachFile(String url) throws Exception {
@@ -285,7 +285,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testCreateIssue() throws Exception {
-		createIssue(JiraTestConstants.JIRA_381_URL);
+		createIssue(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void createIssue(String url) throws Exception {
@@ -318,7 +318,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testUpdateIssue() throws Exception {
-		updateIssue(JiraTestConstants.JIRA_381_URL);
+		updateIssue(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void updateIssue(String url) throws Exception {
@@ -357,7 +357,7 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testWatchUnwatchIssue() throws Exception {
-		watchUnwatchIssue(JiraTestConstants.JIRA_381_URL);
+		watchUnwatchIssue(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void watchUnwatchIssue(String url) throws Exception {

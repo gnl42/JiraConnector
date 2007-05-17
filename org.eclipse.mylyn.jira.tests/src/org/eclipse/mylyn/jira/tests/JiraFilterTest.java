@@ -83,7 +83,7 @@ public class JiraFilterTest extends TestCase {
 					TasksUiPlugin.getDefault().getRepositoriesFilePath());			
 		}
 		
-		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_381_URL);
+		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		repository.setCharacterEncoding(JiraClient.CHARSET);
 
@@ -92,7 +92,7 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testJiraFilterRefresh() throws Exception {
-		filterRefresh(JiraTestConstants.JIRA_381_URL);
+		filterRefresh(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void filterRefresh(String url) throws Exception {
@@ -121,7 +121,7 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testCustomQuery() throws Exception {
-		customQuery(JiraTestConstants.JIRA_381_URL);
+		customQuery(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void customQuery(String url) throws Exception {
@@ -148,7 +148,7 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testCustomQueryWithoutRepositoryConfiguraton() throws Exception {
-		customQueryWithoutRepositoryConfiguraton(JiraTestConstants.JIRA_381_URL);
+		customQueryWithoutRepositoryConfiguraton(JiraTestConstants.JIRA_39_URL);
 	}
 
 	private void customQueryWithoutRepositoryConfiguraton(String url) throws Exception {

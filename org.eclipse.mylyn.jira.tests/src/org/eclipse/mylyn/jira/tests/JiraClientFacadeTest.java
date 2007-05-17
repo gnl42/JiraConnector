@@ -45,13 +45,13 @@ public class JiraClientFacadeTest extends TestCase {
 		jiraFacade.logOutFromAll();
 	}
 
-	public void testLogin381() throws Exception {
-		validate(JiraTestConstants.JIRA_381_URL);
+	public void testLogin39() throws Exception {
+		validate(JiraTestConstants.JIRA_39_URL);
 	}
 
 	public void testChangeCredentials() throws Exception {
 		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
-		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_381_URL);
+		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());

@@ -238,7 +238,7 @@ public class JiraCustomQueryTest extends TestCase {
 	}
 
 	public void testGetFilterDefinitionUnresolvedResolution() {
-		String repositoryUrl = JiraTestConstants.JIRA_381_URL;
+		String repositoryUrl = JiraTestConstants.JIRA_39_URL;
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));

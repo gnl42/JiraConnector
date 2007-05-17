@@ -83,7 +83,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testChangeTaskRepositorySettings() throws Exception {
-		init(JiraTestConstants.JIRA_381_URL);
+		init(JiraTestConstants.JIRA_39_URL);
 		assertEquals(repository.getUserName(), server.getUserName());
 
 		EditRepositoryWizard wizard = new EditRepositoryWizard(repository);
@@ -99,7 +99,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testUpdateTask() throws Exception {
-		init(JiraTestConstants.JIRA_381_URL);
+		init(JiraTestConstants.JIRA_39_URL);
 		
 		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
 		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
@@ -123,7 +123,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 	
 	public void testAttachContext() throws Exception {
-		init(JiraTestConstants.JIRA_381_URL);
+		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.createIssue(server, "testAttachContext");
 		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
