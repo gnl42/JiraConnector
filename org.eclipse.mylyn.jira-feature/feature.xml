@@ -2,13 +2,12 @@
 <feature
       id="org.eclipse.mylar.jira_feature"
       label="Mylar Connector: Jira"
-      version="2.0.0.v20070515-1500"
+      version="2.0.0.v20070518-0100"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylar">
 
    <description>
       JIRA client integrated with Eclipse and Mylar, can be used standalone.
-NOTE: depends on the org.tigris.jira.core feature from http://jira-dashboard.tigris.org/update
    </description>
 
    <copyright>
@@ -219,21 +218,21 @@ litigation.
    </url>
 
    <requires>
-      <import feature="org.eclipse.mylar_feature" version="2.0.0.v20070514-1800" match="greaterOrEqual"/>
+      <import feature="org.eclipse.mylar_feature" version="2.0.0.v20070513-1500" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.eclipse.mylar.jira.ui"
          download-size="0"
          install-size="0"
-         version="2.0.0.v20070515-1500"
+         version="2.0.0.v20070518-0100"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylar.jira.core"
          download-size="0"
          install-size="0"
-         version="2.0.0.v20070515-1500"
+         version="2.0.0.v20070518-0100"
          unpack="false"/>
 
 </feature>
