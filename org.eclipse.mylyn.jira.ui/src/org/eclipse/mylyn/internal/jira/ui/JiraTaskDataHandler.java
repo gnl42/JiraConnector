@@ -264,6 +264,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		try {
 			char[] chars = new char[text.length()];
 			int len = html2TextReader.read(chars, 0, text.length());
+			if (len == -1) {
+				return "";
+			}
 			return new String(chars, 0, len);
 		} catch (IOException e) {
 			return text;
