@@ -336,6 +336,7 @@ public class JiraRpcClientTest extends TestCase {
 		issue = client.createIssue(issue);
 		issue = client.getIssueByKey(issue.getKey());
 		assertEquals(description, JiraTaskDataHandler.convertHtml(issue.getDescription()));
+		issue.setDescription(JiraTaskDataHandler.convertHtml(issue.getDescription()));
 		
 		issue.setDescription(JiraTaskDataHandler.convertHtml(issue.getDescription()));
 		client.updateIssue(issue, "");
