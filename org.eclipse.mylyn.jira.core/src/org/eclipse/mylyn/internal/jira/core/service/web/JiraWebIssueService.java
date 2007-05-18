@@ -670,7 +670,7 @@ public class JiraWebIssueService {
 				throw new JiraRemoteMessageException(msg.toString());
 			}
 		} catch (ParseException e) {
-			throw new JiraRemoteMessageException("An error has while parsing JIRA response: " + result);
+			throw new JiraRemoteMessageException("An error has while parsing JIRA response: " + result, "");
 		} finally {
 			reader.close();
 		}

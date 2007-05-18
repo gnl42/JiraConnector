@@ -28,6 +28,7 @@ import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcClient;
+import org.eclipse.mylar.internal.jira.ui.JiraTaskDataHandler;
 
 /**
  * @author Steffen Pingel
@@ -164,27 +165,27 @@ public class JiraRpcClientTest extends TestCase {
 			client.updateIssue(issue, "comment");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("User 'nonexistantuser' cannot be assigned issues.", e.getMessage());
+			assertEquals("User 'nonexistantuser' cannot be assigned issues.", e.getHtmlMessage());
 		}
 
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_NONE, "", "");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("Issues must be assigned.", e.getMessage());
+			assertEquals("Issues must be assigned.", e.getHtmlMessage());
 		}
 
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("Issue already assigned to Test User 1 (" + client.getUserName() + ").", e.getMessage());
+			assertEquals("Issue already assigned to Test User 1 (" + client.getUserName() + ").", e.getHtmlMessage());
 		}
 
 		String guestUsername = MylarTestUtils.readCredentials(PrivilegeLevel.GUEST).username;
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "");
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("User 'guest@mylar.eclipse.org' cannot be assigned issues.", e.getMessage());
+			assertEquals("User 'guest@mylar.eclipse.org' cannot be assigned issues.", e.getHtmlMessage());
 		}
 
 		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "");
@@ -315,6 +316,30 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
 		assertEquals("admin@mylar.eclipse.org", createdIssue.getAssignee());
 		assertEquals(client.getUserName(), createdIssue.getReporter());
+	}
+
+	public void testGetIssueLeadingSpacesInDescription() throws Exception {
+		getIssueLeadingSpacesInDescripton(JiraTestConstants.JIRA_39_URL);
+	}
+
+	private void getIssueLeadingSpacesInDescripton(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+
+		Issue issue = new Issue();
+		issue.setProject(client.getProjects()[0]);
+		issue.setType(client.getIssueTypes()[0]);
+		issue.setSummary("testCreateIssue");
+		String description = "  leading spaces\n  more spaces";
+		issue.setDescription(description);
+		issue.setAssignee(client.getUserName());
+
+		issue = client.createIssue(issue);
+		issue = client.getIssueByKey(issue.getKey());
+		assertEquals(description, JiraTaskDataHandler.convertHtml(issue.getDescription()));
+		
+		client.updateIssue(issue, "");
+		issue = client.getIssueByKey(issue.getKey());
+		assertEquals(description, JiraTaskDataHandler.convertHtml(issue.getDescription()));
 	}
 
 	public void testUpdateIssue() throws Exception {

@@ -255,8 +255,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;
 	}
 
-	@SuppressWarnings("restriction")
-	private String convertHtml(String text) {
+	public static String convertHtml(String text) {
 		if (text == null || text.length() == 0) {
 			return "";
 		}
@@ -265,7 +264,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		try {
 			char[] chars = new char[text.length()];
 			int len = html2TextReader.read(chars, 0, text.length());
-			return new String(chars, 0, len).trim();
+			return new String(chars, 0, len);
 		} catch (IOException e) {
 			return text;
 		}

@@ -412,12 +412,6 @@ public class RssContentHandler extends DefaultHandler {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String,
-	 *      java.lang.String, java.lang.String)
-	 */
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		switch (state) {
 		case IN_ATTACHMENTS:
@@ -586,10 +580,6 @@ public class RssContentHandler extends DefaultHandler {
 			} else if (ACTUAL.equals(localName)) {
 
 			} else if (SUBTASKS.equals(localName)) {
-
-			} else if (ATTACHMENTS.equals(localName)) {
-			
-			} else if (ATTACHMENT.equals(localName)) {
 
 			} else {
 				//System.err.println("Unknown Issue attribute: " + localName);

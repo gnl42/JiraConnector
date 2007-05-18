@@ -106,12 +106,12 @@ public class HTML2TextReader extends SubstitutionTextReader {
 
 	protected void startPreformattedText() {
 		fIsPreformattedText= true;
-		setSkipWhitespace(false);
+		//setSkipWhitespace(false);
 	}
 
 	protected void stopPreformattedText() {
 		fIsPreformattedText= false;
-		setSkipWhitespace(true);
+		//setSkipWhitespace(true);
 	}
 
 	protected void stopBold() {
@@ -138,6 +138,8 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return processEntity();
 		else if (fIsPreformattedText)
 			return processPreformattedText(c);
+		else if (c == '\n')
+			return EMPTY_STRING;
 
 		return null;
 	}

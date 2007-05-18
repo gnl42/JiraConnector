@@ -36,7 +36,7 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
 	/**
 	 * Tells whether white space characters are skipped.
 	 */
-	private boolean fSkipWhiteSpace= true;
+	private boolean fSkipWhiteSpace= false;
 
 	private boolean fReadFromBuffer;
 	private StringBuffer fBuffer;
