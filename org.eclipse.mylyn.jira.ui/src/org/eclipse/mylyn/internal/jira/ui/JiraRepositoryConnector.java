@@ -179,6 +179,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		try {
 			lastSyncDate = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
 		} catch (ParseException e) {
+			MylarStatusHandler.log(e, "Error while parsing repository sync timestamp " + dateString);
 			return tasks;
 		}
 

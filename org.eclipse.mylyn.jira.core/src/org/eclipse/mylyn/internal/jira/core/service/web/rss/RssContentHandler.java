@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
@@ -331,13 +332,7 @@ public class RssContentHandler extends DefaultHandler {
 			if (COMMENT.equals(localName)) {
 				commentAuthor = attributes.getValue(AUTHOR_ATTR);
 				commentLevel = attributes.getValue(LEVEL_ATTR);
-				try {
-					commentDate = new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(attributes
-							.getValue(CREATED_ATTR));
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				commentDate = convertToDate(attributes.getValue(CREATED_ATTR));
 			}
 			break;
 		case IN_ISSUE_LINKS:
@@ -400,13 +395,7 @@ public class RssContentHandler extends DefaultHandler {
 				attachmentName = attributes.getValue(NAME_ATTR);
 				attachmentSize = Long.parseLong(attributes.getValue(SIZE_ATTR));
 				attachmentAuthor = attributes.getValue(AUTHOR_ATTR);
-				try {
-					attachmentCreated = new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(attributes
-							.getValue(CREATED_ATTR));
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				attachmentCreated = convertToDate(attributes.getValue(CREATED_ATTR));
 			}
 			break;
 		}
@@ -605,17 +594,14 @@ public class RssContentHandler extends DefaultHandler {
 	}
 
 	private static Date convertToDate(String value) {
-		if (value == null) {
-			return null;
-		}
-
-		if (value.length() == 0) {
+		if (value == null || value.length() == 0) { 
 			return null;
 		}
 
 		try {
 			return new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(value);
 		} catch (ParseException e) {
+			MylarStatusHandler.log(e, "Error while parsing date string " + value);
 			return null;
 		}
 	}
