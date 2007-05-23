@@ -10,6 +10,9 @@ package org.eclipse.mylar.internal.jira.ui;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,8 +29,8 @@ import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Status;
 import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -175,9 +178,8 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, attribute);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) {
-		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, jiraIssue.getCreated().toGMTString());
+		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, dateToString(jiraIssue.getCreated()));
 		data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, convertHtml(jiraIssue.getSummary()));
 		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, convertHtml(jiraIssue.getDescription()));
 		data.setAttributeValue(RepositoryTaskAttribute.STATUS, convertHtml(jiraIssue.getStatus().getName()));
@@ -186,7 +188,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				.getResolution().getName());
 		data.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
 		data.setAttributeValue(RepositoryTaskAttribute.USER_REPORTER, jiraIssue.getReporter());
-		data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, jiraIssue.getUpdated().toGMTString());
+		data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, dateToString(jiraIssue.getUpdated()));
 		for (Component component : jiraIssue.getComponents()) {
 			data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, component.getName());
 		}
@@ -222,7 +224,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_TEXT, attribute);
 
 			attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.COMMENT_DATE, "Text: ", true);
-			attribute.setValue(comment.getCreated().toGMTString());
+			attribute.setValue(dateToString(comment.getCreated()));
 			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_DATE, attribute);
 
 			data.addComment(taskComment);
@@ -242,14 +244,17 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, attachment.getName());
 			}
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_OWNER, attachment.getAuthor());
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE, attachment.getCreated()
-					.toString());
+			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE, dateToString(attachment.getCreated()));
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_URL, server.getBaseUrl()
 					+ "/secure/attachment/" + attachment.getId() + "/" + attachment.getName());
 			data.addAttachment(taskAttachment);
 		}
 	}
 
+	private String dateToString(Date date) {
+		return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(date);
+	}
+	
 	private String getAssignee(Issue jiraIssue) {
 		String assignee = jiraIssue.getAssignee();
 		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;

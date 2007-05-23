@@ -75,7 +75,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 			// return parsedDate;
 			return new SimpleDateFormat(JIRA_DATE_FORMAT, Locale.US).parse(dateString);
 		} catch (Exception e) {
-			MylarStatusHandler.log(e, "Error while parsing date field");
+			MylarStatusHandler.log(e, "Error while date for attribute " + attributeKey + ": " + dateString);
 			return null;
 		}
 	}
