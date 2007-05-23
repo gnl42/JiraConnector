@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +42,8 @@ import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.Order;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
@@ -164,45 +165,42 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return Status.OK_STATUS;
 	}
 
-	@SuppressWarnings("deprecation")
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
 			Set<AbstractRepositoryTask> tasks) throws CoreException {
 
-		Set<AbstractRepositoryTask> changedTasks = new HashSet<AbstractRepositoryTask>();
-
 		String dateString = repository.getSyncTimeStamp();
-		if (dateString == null) {
-			dateString = "";
+		Date lastSyncDate = convertDate(dateString);
+		if (lastSyncDate == null) {
+			for (AbstractRepositoryTask task : tasks) {
+				Date date = convertDate(task.getLastSyncDateStamp());
+				if (lastSyncDate == null || (date != null && date.before(lastSyncDate))) {
+					lastSyncDate = date;
+				}
+			}
 		}
-
-		Date lastSyncDate;
-		try {
-			lastSyncDate = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
-		} catch (ParseException e) {
-			MylarStatusHandler.log(e, "Error while parsing repository sync timestamp " + dateString);
+		if (lastSyncDate == null) {
 			return tasks;
 		}
-
-		final List<Issue> issues = new ArrayList<Issue>();
-		// if the maximum is unlimited this will can create crazy amounts of
-		// traffic
-		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
-		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 
 		long mil = lastSyncDate.getTime();
 		long now = Calendar.getInstance().getTimeInMillis();
 		if (now - mil <= 0) {
-			// return empty set
-			return changedTasks;
+			return Collections.emptySet();
 		}
 		long minutes = -1 * ((now - mil) / (1000 * 60));
-		if (minutes == 0)
-			return changedTasks;
+		if (minutes == 0) {
+			return Collections.emptySet();
+		}
 
 		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
 		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, minutes));
 		changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
 
+		final List<Issue> issues = new ArrayList<Issue>();
+		// unlimited maxHits can create crazy amounts of traffic
+		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
+		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+		
 		// TODO: Need some way to further scope this query
 
 		try {
@@ -215,6 +213,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 
+		Set<AbstractRepositoryTask> changedTasks = new HashSet<AbstractRepositoryTask>();
 		for (Issue issue : issues) {
 			// String handle =
 			// AbstractRepositoryTask.getHandle(repository.getUrl(),
@@ -229,9 +228,22 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		}
 
-		repository.setSyncTimeStamp(lastSyncDate.toGMTString());
+		repository.setSyncTimeStamp( // 
+				new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(lastSyncDate));
 
 		return changedTasks;
+	}
+
+	private Date convertDate(String dateString) {
+		if (dateString == null || dateString.length() == 0) {
+			return null;
+		}
+		try {
+			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
+		} catch (ParseException e) {
+			MylarStatusHandler.log(e, "Error while parsing date string " + dateString);
+		}
+		return null;
 	}
 
 	@Override
