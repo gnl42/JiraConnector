@@ -17,6 +17,7 @@ import java.util.Date;
 /**
  * @author Brock Janiczak
  * @author Steffen Pingel
+ * @author Eugene Kuleshov
  */
 public class Issue implements Serializable {
 
@@ -75,6 +76,8 @@ public class Issue implements Serializable {
 	private String url;
 
 	private Attachment[] attachments = new Attachment[0];
+
+	private CustomField[] customFields = new CustomField[0];
 
 	public String getId() {
 		return id;
@@ -325,4 +328,21 @@ public class Issue implements Serializable {
 		return null;
 	}
 
+	public void setCustomFields(CustomField[] customFields) {
+		this.customFields = customFields;
+	}
+	
+	public CustomField[] getCustomFields() {
+		return customFields;
+	}
+
+	public CustomField getCustomFieldById(String fieldId) {
+		for (CustomField field : getCustomFields()) {
+			if(fieldId.equals(field.getId())) {
+				return field;
+			}
+		}
+		return null;
+	}
+	
 }

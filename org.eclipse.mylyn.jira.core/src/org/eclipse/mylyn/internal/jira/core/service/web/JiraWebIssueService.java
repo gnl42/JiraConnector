@@ -46,6 +46,7 @@ import org.eclipse.mylar.core.net.HtmlTag;
 import org.eclipse.mylar.core.net.HtmlStreamTokenizer.Token;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
+import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Version;
@@ -163,6 +164,13 @@ public class JiraWebIssueService {
 				}
 				post.addParameter("commentLevel", "");
 				post.addParameter("id", issue.getId());
+				
+				// custom fields
+				for (CustomField customField : issue.getCustomFields()) {
+					for (String value : customField.getValues()) {
+						post.addParameter(customField.getId(), value);
+					}
+				}
 
 				try {
 					int result = client.executeMethod(post);

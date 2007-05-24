@@ -12,6 +12,7 @@
 package org.eclipse.mylar.jira.tests;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -21,10 +22,11 @@ import org.eclipse.mylar.context.core.ContextCorePlugin;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -107,11 +109,37 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(false, task.isCompleted());
 		assertNull(task.getDueDate());
 
+		String issueKey = issue.getKey();
+		
+		String fieldId = "customfield_10011";
+		String fieldName = "Free Text";
+
+		issue = server.getIssueByKey(issueKey);
+		issue.setCustomFields(new CustomField[] { new CustomField(fieldId, //
+				"com.atlassian.jira.plugin.system.customfieldtypes:textfield", // 
+				fieldName, Collections.singletonList("foo")) });
+		server.updateIssue(issue, "add comment");
+
+		issue = server.getIssueByKey(issueKey);
+		CustomField customField = issue.getCustomFieldById(fieldId);
+		assertNotNull("Expecting to see custom field " + fieldName, customField);
+		assertEquals(fieldName, customField.getName());
+		assertEquals(1, customField.getValues().size());
+		assertEquals("foo", customField.getValues().get(0));
+		
+		issue = server.getIssueByKey(issueKey);
 		server.resolveIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(true, task.isCompleted());
 		assertNotNull(task.getCompletionDate());
+
+		issue = server.getIssueByKey(issueKey);
+		customField = issue.getCustomFieldById(fieldId);
+		assertNotNull("Expecting to see custom field " + fieldName, customField);
+		assertEquals(fieldName, customField.getName());
+		assertEquals(1, customField.getValues().size());
+		assertEquals("foo", customField.getValues().get(0));
 		
 		issue = server.getIssueByKey(issue.getKey());
 		server.closeIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
@@ -121,7 +149,6 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertNotNull(task.getCompletionDate());
 	}
 
-	
 	public void testAttachContext() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 

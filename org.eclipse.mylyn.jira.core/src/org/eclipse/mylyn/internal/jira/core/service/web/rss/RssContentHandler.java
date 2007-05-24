@@ -21,6 +21,7 @@ import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
+import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Version;
@@ -30,37 +31,91 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-// TODO need a way to convert from custom values into typed values.
-// Need to know what the valid types are:
-/*
+/**
+ * From the wiki:
+ * 
+ * <ul>
+ * <li>Cascading Select - Multiple select lists where the options for the
+ * second select list dynamically updates based on the value of the first</li>
+ * <li>Date Picker - Input field allowing input with a date picker and
+ * enforcing valid dates</li>
+ * <li>Free Text Field (unlimited text) - Multiple line text-area enabling
+ * entry of longer text strings</li>
+ * <li>Multi Checkboxes Checkboxes allowing multiple values to be selected</li>
+ * <li>Multi Select - Select list permitting multiple values to be selected</li>
+ * <li>Number Field Input field storing and validating numeric (floating point)
+ * values</li>
+ * <li>Project Picker - Select list displaying the projects viewable by the
+ * user in the system</li>
+ * <li>Radio Buttons - Radio buttons ensuring only one value can be selected</li>
+ * <li>Select List - Single select list with a configurable list of options</li>
+ * <li>Text Field - Basic single line input field to allow simple text input of
+ * less than 255 characters</li>
+ * <li>URL Field - Input field that validates a valid URL</li>
+ * <li>User Picker - Choose a user from the user base via a popup picker
+ * window.</li>
+ * <li>Version Picker - Select list with the all versions related to the
+ * current project of the issue</li>
+ * </ul>
+ * 
+ * The processing of custom fields might need to be done using extension points
+ * to handle custom UI
+ * 
+ * <p>
+ * TODO need a way to convert from custom values into typed values
+ * 
+ * <p>
+ * com.atlassian.jira.plugin.system.customfieldtypes:textfield
+ * com.atlassian.jira.plugin.system.customfieldtypes:textarea
+ * 
+ * com.atlassian.jira.plugin.system.customfieldtypes:select
+ * com.atlassian.jira.plugin.system.customfieldtypes:multiselect
  * com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect
  * com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes
- * com.atlassian.jira.plugin.system.customfieldtypes:select
- * com.atlassian.jira.plugin.system.customfieldtypes:textfield
  * com.atlassian.jira.plugin.system.customfieldtypes:datepicker
+ * com.atlassian.jira.plugin.system.customfieldtypes:datetime
+ * com.atlassian.jira.plugin.system.customfieldtypes:version
+ * com.atlassian.jira.plugin.system.customfieldtypes:multiversion
+ * com.atlassian.jira.plugin.system.customfieldtypes:userpicker
+ * com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker
+ * com.atlassian.jira.plugin.system.customfieldtypes:grouppicker
+ * com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker
+ * com.atlassian.jira.plugin.system.customfieldtypes:float
+ * com.atlassian.jira.plugin.system.customfieldtypes:project
+ * com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons
+ * com.atlassian.jira.plugin.system.customfieldtypes:url
+ * com.atlassian.jira.plugin.system.customfieldtypes:readonlyfield
  * 
- * from the wiki: Cascading Select Multiple select lists where the options for
- * the second select list dynamically updates based on the value of the first
- * Date Picker Input field allowing input with a date picker and enforcing valid
- * dates Free Text Field (unlimited text) Multiple line text-area enabling entry
- * of longer text strings Multi Checkboxes Checkboxes allowing multiple values
- * to be selected Multi Select Select list permitting multiple values to be
- * selected Number Field Input field storing and validating numeric (floating
- * point) values Project Picker Select list displaying the projects viewable by
- * the user in the system Radio Buttons Radio buttons ensuring only one value
- * can be selected Select List Single select list with a configurable list of
- * options Text Field Basic single line input field to allow simple text input
- * of less than 255 characters URL Field Input field that validates a valid URL
- * User Picker Choose a user from the user base via a popup picker window.
- * Version Picker Select list with the all versions related to the current
- * project of the issue
+ * <p>
+ * TODO probably need to filter out the following field types (and maybe others from JIRA Toolkit)
  * 
- * The processing of custom fields should really be done using extension points
- * They should be UI plugins since only 'string' values are stored.
- */
-/**
- * @author	Brock Janiczak
+ * <p>
+ * com.atlassian.jira.toolkit:assigneedomain
+ * com.atlassian.jira.toolkit:attachments 
+ * com.atlassian.jira.toolkit:comments
+ * com.atlassian.jira.toolkit:dayslastcommented
+ * com.atlassian.jira.toolkit:lastusercommented
+ * com.atlassian.jira.toolkit:message
+ * com.atlassian.jira.toolkit:multikeyfield
+ * com.atlassian.jira.toolkit:multiproject
+ * com.atlassian.jira.toolkit:originalestimate
+ * com.atlassian.jira.toolkit:participants
+ * com.atlassian.jira.toolkit:reporterdomain
+ * com.atlassian.jira.toolkit:resolveddate
+ * com.atlassian.jira.toolkit:supporttools
+ * com.atlassian.jira.toolkit:userproperty
+ * com.atlassian.jira.toolkit:velocitymessage
+ * com.atlassian.jira.toolkit:velocityviewmessage
+ * com.atlassian.jira.toolkit:viewmessage
+ * 
+ * com.atlassian.jira.ext.charting:firstresponsedate
+ * 
+ * @see http://www.atlassian.com/software/jira/docs/latest/customfields/overview.html
+ * @see http://confluence.atlassian.com/display/JIRAEXT/JIRA+Toolkit
+ * 
+ * @author Brock Janiczak
  * @author Steffen Pingel
+ * @author Eugene Kuleshov
  */
 public class RssContentHandler extends DefaultHandler {
 
@@ -152,7 +207,7 @@ public class RssContentHandler extends DefaultHandler {
 
 	private static final String CUSTOM_FIELD_VALUES = "customfieldvalues"; //$NON-NLS-1$
 
-//	private static final String CUSTOM_FIELD_VALUE = "customfieldvalue"; //$NON-NLS-1$
+	private static final String CUSTOM_FIELD_VALUE = "customfieldvalue"; //$NON-NLS-1$
 
 	private static final String ISSUE_LINKS = "issuelinks"; //$NON-NLS-1$
 
@@ -198,6 +253,10 @@ public class RssContentHandler extends DefaultHandler {
 	
 	private static final int IN_ATTACHMENTS = 14;
 
+	private static final int IN_CUSTOM_FIELD_NAME = 15;
+
+	private static final int IN_CUSTOM_FIELD_VALUE = 16;
+
 	int state = START;
 
 	private StringBuffer currentElementText;
@@ -223,6 +282,16 @@ public class RssContentHandler extends DefaultHandler {
 	private ArrayList<Component> currentComponents = new ArrayList<Component>();
 
 	private ArrayList<Attachment> currentAttachments = new ArrayList<Attachment>();
+
+	private ArrayList<CustomField> currentCustomFields = new ArrayList<CustomField>();
+	
+	private String customFieldId;
+	
+	private String customFieldKey;
+
+	private String customFieldName;
+
+	private ArrayList<String> customFieldValues = new ArrayList<String>();
 
 	private String attachmentId;
 
@@ -373,22 +442,25 @@ public class RssContentHandler extends DefaultHandler {
 
 		case IN_CUSTOM_FIELDS:
 			if (CUSTOM_FIELD.equals(localName)) {
-				// TODO read id and key
-				attributes.getValue(ID_ATTR);
-				attributes.getValue(KEY_ATTR);
-
+				customFieldId = attributes.getValue(ID_ATTR);
+				customFieldKey = attributes.getValue(KEY_ATTR);
 				state = IN_CUSTOM_FIELD;
 			}
 			break;
 		case IN_CUSTOM_FIELD:
 			if (CUSTOM_FIELD_NAME.equals(localName)) {
-
+				state = IN_CUSTOM_FIELD_NAME;
 			} else if (CUSTOM_FIELD_VALUES.equals(localName)) {
 				state = IN_CUSTOM_FIELD_VALUES;
 			}
 			break;
+			
 		case IN_CUSTOM_FIELD_VALUES:
+			if(CUSTOM_FIELD_VALUE.equals(localName)) {
+				state = IN_CUSTOM_FIELD_VALUE; 
+			}
 			break;
+			
 		case IN_ATTACHMENTS:
 			if (ATTACHMENT.equals(localName)) {
 				attachmentId = attributes.getValue(ID_ATTR);
@@ -412,13 +484,33 @@ public class RssContentHandler extends DefaultHandler {
 			}
 			break;
 
+		case IN_CUSTOM_FIELD_VALUE:
+			if(CUSTOM_FIELD_VALUE.equals(localName)) {
+				customFieldValues.add(currentElementText.toString());
+				state = IN_CUSTOM_FIELD_VALUES;
+			}
+			break;
 		case IN_CUSTOM_FIELD_VALUES:
 			if (CUSTOM_FIELD_VALUES.equals(localName)) {
+				if(customFieldValues.size()==0) {
+					customFieldValues.add(currentElementText.toString());
+				}
+				state = IN_CUSTOM_FIELD;
+			}
+			break;
+		case IN_CUSTOM_FIELD_NAME:
+			if (CUSTOM_FIELD_NAME.equals(localName)) {
+				customFieldName = currentElementText.toString();
 				state = IN_CUSTOM_FIELD;
 			}
 			break;
 		case IN_CUSTOM_FIELD:
 			if (CUSTOM_FIELD.equals(localName)) {
+				currentCustomFields.add(new CustomField(customFieldId, customFieldKey, customFieldName, customFieldValues));
+				customFieldId = null;
+				customFieldKey = null;
+				customFieldName = null;
+				customFieldValues.clear();
 				state = IN_CUSTOM_FIELDS;
 			}
 			break;
@@ -483,8 +575,10 @@ public class RssContentHandler extends DefaultHandler {
 						.size()]));
 				currentIssue.setComments(currentComments.toArray(new Comment[currentComments.size()]));
 				currentIssue.setAttachments(currentAttachments.toArray(new Attachment[currentAttachments.size()]));
+				currentIssue.setCustomFields(currentCustomFields.toArray(new CustomField[currentCustomFields.size()]));
 				collector.collectIssue(currentIssue);
 				currentIssue = null;
+				currentCustomFields.clear();
 				currentAttachments.clear();
 				currentComments.clear();
 				currentFixVersions.clear();

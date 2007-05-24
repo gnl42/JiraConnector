@@ -32,8 +32,10 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_FIXVERSIONS = "attribute.jira.fixversions";
 	public static final String ATTRIBUTE_AFFECTSVERSIONS = "attribute.jira.affectsversions";
 	public static final String ATTRIBUTE_ESTIMATE = "attribute.jira.estimate";
+	public static final String ATTRIBUTE_CUSTOM_PREFIX = "attribute.jira.custom::";
 
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
+
 
 	@Override
 	public boolean getIsHidden(String key) {

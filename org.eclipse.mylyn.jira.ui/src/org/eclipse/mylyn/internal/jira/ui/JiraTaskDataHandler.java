@@ -11,6 +11,7 @@ package org.eclipse.mylar.internal.jira.ui;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -18,10 +19,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
+import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
@@ -249,12 +252,23 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					+ "/secure/attachment/" + attachment.getId() + "/" + attachment.getName());
 			data.addAttachment(taskAttachment);
 		}
+		
+		for (CustomField field : jiraIssue.getCustomFields()) {
+			String id = JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX + field.getId();
+			// TODO make hidden for now
+			RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(id, field.getName(), true);
+			attribute.putMetaDataValue("key", field.getKey());
+			for (String value : field.getValues()) {
+				attribute.addValue(value);
+			}
+			data.addAttribute(id, attribute);
+		}
 	}
 
 	private String dateToString(Date date) {
 		return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(date);
 	}
-	
+
 	private String getAssignee(Issue jiraIssue) {
 		String assignee = jiraIssue.getAssignee();
 		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;
@@ -350,7 +364,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 
 		try {
-			Issue issue = JiraRepositoryConnector.buildJiraIssue(taskData, jiraServer);
+			Issue issue = buildJiraIssue(taskData, jiraServer);
 			if (taskData.isNew()) {
 				issue = jiraServer.createIssue(issue);
 				if (issue == null) {
@@ -410,5 +424,104 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	public AbstractAttributeFactory getAttributeFactory(String repositoryUrl, String repositoryKind, String taskKind) {
 		// we don't care about the repository information right now
 		return attributeFactory;
+	}
+
+	public Issue buildJiraIssue(RepositoryTaskData taskData, JiraClient client) {
+		Issue issue = new Issue();
+		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
+		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
+		for (org.eclipse.mylar.internal.jira.core.model.Project project : client.getProjects()) {
+			if (project.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT))) {
+				issue.setProject(project);
+				break;
+			}
+		}
+		// issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));
+	
+		for (IssueType type : client.getIssueTypes()) {
+			if (type.getName().equals(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE))) {
+				issue.setType(type);
+				break;
+			}
+		}
+		for (org.eclipse.mylar.internal.jira.core.model.Status status : client.getStatuses()) {
+			if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
+				issue.setStatus(status);
+				break;
+			}
+		}
+		ArrayList<Component> components = new ArrayList<Component>();
+		RepositoryTaskAttribute attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+		for (String compStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
+			if (attrib.getOptionParameter(compStr) != null) {
+				Component comp = new Component();
+				comp.setId(attrib.getOptionParameter(compStr));
+				comp.setName(compStr);
+				components.add(comp);
+			} else {
+				MylarStatusHandler.fail(null, "Error setting component for JIRA issue. Component id is null: "
+						+ compStr, false);
+			}
+		}
+		issue.setComponents(components.toArray(new Component[components.size()]));
+	
+		ArrayList<Version> fixversions = new ArrayList<Version>();
+		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+		for (String fixStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
+			if (attrib.getOptionParameter(fixStr) != null) {
+				Version version = new Version();
+				version.setId(attrib.getOptionParameter(fixStr));
+				version.setName(fixStr);
+				fixversions.add(version);
+			} else {
+				MylarStatusHandler.fail(null,
+						"Error setting fix version for JIRA issue. Version id is null: " + fixStr, false);
+			}
+		}
+		issue.setFixVersions(fixversions.toArray(new Version[fixversions.size()]));
+	
+		ArrayList<Version> affectsversions = new ArrayList<Version>();
+		attrib = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+		for (String fixStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {
+			if (attrib.getOptionParameter(fixStr) != null) {
+				Version version = new Version();
+				version.setId(attrib.getOptionParameter(fixStr));
+				version.setName(fixStr);
+				affectsversions.add(version);
+			} else {
+				MylarStatusHandler.fail(null, "Error setting affects version for JIRA issue. Version id is null: "
+						+ fixStr, false);
+			}
+		}
+		issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));
+		issue.setReporter(taskData.getAttributeValue(RepositoryTaskAttribute.USER_REPORTER));
+		String assignee;
+		RepositoryOperation operation = taskData.getSelectedOperation();
+		if (operation != null && "reassign".equals(operation.getKnobName())) {
+			assignee = operation.getInputValue();
+		} else {
+			assignee = taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED);
+		}
+		issue.setAssignee(JiraRepositoryConnector.getAssigneeFromAttribute(assignee));
+		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
+		issue.setId(taskData.getId());
+		issue.setKey(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY));
+		for (Priority priority : client.getPriorities()) {
+			if (priority.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY))) {
+				issue.setPriority(priority);
+				break;
+			}
+		}
+		
+		ArrayList<CustomField> customFields = new ArrayList<CustomField>();
+		for (RepositoryTaskAttribute attr : taskData.getAttributes()) {
+			if (attr.getID().startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
+				String id = attr.getID().substring(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX.length());
+				customFields.add(new CustomField(id, attr.getMetaDataValue("key"), attr.getName(), attr.getValues()));
+			}
+		}
+		issue.setCustomFields(customFields.toArray(new CustomField[customFields.size()]));
+		
+		return issue;
 	}
 }
