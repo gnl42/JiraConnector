@@ -13,6 +13,7 @@ import java.util.Arrays;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylar.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylar.tasks.core.ITask;
+import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.editors.AbstractRepositoryTaskEditor;
@@ -55,7 +56,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	@Override
 	protected void createCustomAttributeLayout(Composite composite) {
 		Label label = toolkit.createLabel(composite, "Components:");
-		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
+		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
 
 		final List componentsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
 		componentsList.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
@@ -85,7 +86,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		}
 
 		label = toolkit.createLabel(composite, "Fix Versions:");
-		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
+		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
 		final List versionsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
 		versionsList.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		versionsList.setFont(TEXT_FONT);
@@ -114,7 +115,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		}
 
 		label = toolkit.createLabel(composite, "Affects Versions:");
-		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(label);
+		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
 		final List affectsVersionsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
 		affectsVersionsList.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		affectsVersionsList.setFont(TEXT_FONT);
@@ -273,6 +274,28 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		}
 
 		return super.getActivityUrl();
+	}
+	
+	@Override
+	protected boolean hasContentAssist(RepositoryTaskAttribute attribute) {
+		String id = attribute.getID();
+		if(id.startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
+			String key = attribute.getMetaDataValue("key");
+			// TODO need more robust detection
+			if("com.atlassian.jira.plugin.system.customfieldtypes:userpicker".equals(key)) {
+				return true;
+			}
+		}
+		
+		return super.hasContentAssist(attribute);
+	}
+	
+	@Override
+	protected boolean hasContentAssist(RepositoryOperation repositoryOperation) {
+		if("assignee".equals(repositoryOperation.getInputName())) {
+			return true;
+		}
+		return super.hasContentAssist(repositoryOperation);
 	}
 	
 }
