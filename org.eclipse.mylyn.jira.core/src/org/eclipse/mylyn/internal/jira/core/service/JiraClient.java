@@ -27,6 +27,8 @@ import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.model.Status;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylar.tasks.core.RepositoryOperation;
+import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 
 /**
  * This interface exposes the full set of services available from a Jira
@@ -189,7 +191,25 @@ public interface JiraClient {
 	 * @return corresponding key or <code>null</code> if the id was not found 
 	 */
 	String getKeyFromId(final String issueId) throws JiraException;
-		
+	
+	/**
+	 * Returns available operations for <code>issueKey</code> 
+	 * 
+	 * @param issueKey
+	 *            Unique key of the issue to find
+	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>. 
+	 */
+	RepositoryOperation[] getAvailableOperations(final String issueKey) throws JiraException;
+	
+	/**
+	 * Returns editable attributes for <code>issueKey</code> 
+	 * 
+	 * @param issueKey
+	 *            Unique key of the issue to find
+	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>. 
+	 */
+	RepositoryTaskAttribute[] getEditableAttributes(final String issueKey) throws JiraException;
+	
 	/**
 	 * @param query
 	 *            Query to be executed

@@ -9,9 +9,20 @@
 package org.eclipse.mylar.internal.jira.ui.editor;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.mylar.core.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.ui.JiraAttributeFactory;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
@@ -24,14 +35,20 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Mik Kersten
  * @author Rob Elves
  */
 public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
+
+	private Composite attributesComposite;
+	private Composite buttonComposite;
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
@@ -51,6 +68,108 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	@Override
 	protected void addCCList(Composite attributesComposite) {
 		// disabled
+	}
+
+	@Override
+	protected void createAttributeLayout(Composite attributesComposite) {
+		this.attributesComposite = attributesComposite;
+		if(isTaskParametersSynchronized()) {
+			super.createAttributeLayout(attributesComposite);
+		}
+	}
+	
+	@Override
+	protected void addRadioButtons(Composite buttonComposite) {
+		this.buttonComposite = buttonComposite;
+		if(isTaskParametersSynchronized()) {
+			super.addRadioButtons(buttonComposite);
+		}
+	}
+	
+	@Override
+	protected void addActionButtons(Composite buttonComposite) {
+		if(isTaskParametersSynchronized()) {
+			super.addActionButtons(buttonComposite);
+		}
+	}
+	
+	@Override
+	protected void createFormContent(IManagedForm managedForm) {
+		super.createFormContent(managedForm);
+
+		if(!isTaskParametersSynchronized()) {
+			final String taskKey = taskData.getTaskKey();
+			new Job("Retrieving data for task " + taskKey) {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+
+					JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
+
+//					RepositoryOperation[] availableOperations;
+//					try {
+//						availableOperations = server.getAvailableOperations(taskKey);
+//						for (int i = 0; i < availableOperations.length; i++) {
+//							RepositoryOperation operation = availableOperations[i];
+//							System.err.println("#### " + operation.getKnobName() + " : " + operation.getOperationName());
+//						}
+//					} catch (JiraException e) {
+//						MylarStatusHandler.log(e, "Can't retrieve avaialble operations for " + taskKey);
+//					}
+
+					AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(getRepositoryTask());
+					AbstractAttributeFactory attributeFactory = connector.getTaskDataHandler().getAttributeFactory(taskData);
+					
+					try {
+						HashSet<String> editableKeys = new HashSet<String>();
+						RepositoryTaskAttribute[] editableAttributes = server.getEditableAttributes(taskKey);
+						if(editableAttributes!=null) {
+							for (RepositoryTaskAttribute attribute : editableAttributes) {
+								editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getID()));
+							}
+						}
+
+						for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
+							boolean editable = editableKeys.contains(attribute.getID().toLowerCase());
+							// System.err.println(" " + attribute.getID() + " : " + attribute.getName() + " : " + editable);
+							attribute.setReadOnly(!editable);
+							if (editable && !attributeFactory.getIsHidden(attribute.getID())) {
+								attribute.setHidden(false);
+							}
+						}
+
+					} catch (JiraException e) {
+						MylarStatusHandler.log(e, "Can't retrieve editable fields for " + taskKey);
+					}
+					
+					// TODO attribute need to be persisted and cleaned up after any submission/update
+					taskData.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_EDITOR_SYNC, "true");
+					
+					// TODO update operations and editable fields
+					// ArrayList<RepositoryOperation> oldOperations = new ArrayList<RepositoryOperation>(taskData.getOperations());
+					// taskData.getOperations().clear();
+					
+					// move into status listener?
+					new UIJob(getName()) {
+						public IStatus runInUIThread(IProgressMonitor monitor) {
+							JiraTaskEditor.super.createAttributeLayout(attributesComposite);
+							JiraTaskEditor.super.addRadioButtons(buttonComposite);
+							JiraTaskEditor.super.addActionButtons(buttonComposite);
+							
+							((ScrolledForm) JiraTaskEditor.super.getControl()).reflow(true);
+
+							return Status.OK_STATUS;
+						}
+					}.schedule();
+					
+					return Status.OK_STATUS;
+				}
+				
+			}.schedule();
+		}
+	}
+
+	private boolean isTaskParametersSynchronized() {
+		return taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_EDITOR_SYNC) != null;
 	}
 	
 	@Override

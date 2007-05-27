@@ -17,6 +17,8 @@ import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
+import org.eclipse.mylar.tasks.core.RepositoryOperation;
+import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 
 public class MockJiraClient extends AbstractJiraClient {
 
@@ -154,6 +156,14 @@ public class MockJiraClient extends AbstractJiraClient {
 	}
 
 	public void watchIssue(Issue issue) throws JiraException {
+	}
+
+	public RepositoryOperation[] getAvailableOperations(String issueKey) throws JiraException {
+		return null;
+	}
+
+	public RepositoryTaskAttribute[] getEditableAttributes(String issueKey) throws JiraException {
+		return null;
 	}
 
 }

@@ -430,7 +430,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		return getAttributeFactory(taskData.getRepositoryUrl(), taskData.getRepositoryKind(), taskData.getTaskKind());
 	}
 
-	public Issue buildJiraIssue(RepositoryTaskData taskData, JiraClient client) {
+	private Issue buildJiraIssue(RepositoryTaskData taskData, JiraClient client) {
 		Issue issue = new Issue();
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));

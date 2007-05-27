@@ -32,13 +32,20 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_FIXVERSIONS = "attribute.jira.fixversions";
 	public static final String ATTRIBUTE_AFFECTSVERSIONS = "attribute.jira.affectsversions";
 	public static final String ATTRIBUTE_ESTIMATE = "attribute.jira.estimate";
+	
 	public static final String ATTRIBUTE_CUSTOM_PREFIX = "attribute.jira.custom::";
+
+	public static final String ATTRIBUTE_EDITOR_SYNC = "attribute.jira.editorsync";
 
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
 
 
 	@Override
 	public boolean getIsHidden(String key) {
+		if (ATTRIBUTE_EDITOR_SYNC.equals(key) || RepositoryTaskAttribute.COMMENT_NEW.equals(key)
+				|| RepositoryTaskAttribute.SUMMARY.equals(key) || RepositoryTaskAttribute.DESCRIPTION.equals(key)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -54,9 +61,34 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	@Override
 	public String mapCommonAttributeKey(String key) {
-		if (RepositoryTaskAttribute.TASK_KEY.equals(key)) {
+		if("summary".equals(key)) {
+			return RepositoryTaskAttribute.SUMMARY;
+		} else if("description".equals(key)) {
+			return RepositoryTaskAttribute.DESCRIPTION;
+		} else if (RepositoryTaskAttribute.TASK_KEY.equals(key)) {
 			return ATTRIBUTE_ISSUE_KEY;
+		} else if("priority".equals(key)) {
+			return RepositoryTaskAttribute.PRIORITY;
+		} else if("resolution".equals(key)) {
+			return RepositoryTaskAttribute.RESOLUTION;
+		} else if("assignee".equals(key)) {
+			return RepositoryTaskAttribute.USER_ASSIGNED;
+		} else if("environment".equals(key)) {
+			return ATTRIBUTE_ENVIRONMENT;
+		} else if("issuetype".equals(key)) {
+			return ATTRIBUTE_TYPE;
+		} else if("components".equals(key)) {
+			return ATTRIBUTE_COMPONENTS;
+		} else if("versions".equals(key)) {
+			return ATTRIBUTE_AFFECTSVERSIONS;
+		} else if("fixVersions".equals(key)) {
+			return ATTRIBUTE_FIXVERSIONS;
+		} else if("timetracking".equals(key)) {
+			return ATTRIBUTE_ESTIMATE;
+		} else if(key.startsWith("customfield")) {
+			return ATTRIBUTE_CUSTOM_PREFIX + key;
 		}
+		
 		return key;
 	}
 
