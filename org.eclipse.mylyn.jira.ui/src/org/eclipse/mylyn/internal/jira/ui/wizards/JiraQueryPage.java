@@ -865,9 +865,9 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		if (workingCopy.getProjectFilter() != null) {
-			project.setSelection(new StructuredSelection(workingCopy.getProjectFilter().getProject()));
+			project.setSelection(new StructuredSelection(workingCopy.getProjectFilter().getProject()), true);
 		} else {
-			project.setSelection(new StructuredSelection(new Placeholder("All Projects")));
+			project.setSelection(new StructuredSelection(new Placeholder("All Projects")), true);
 		}
 
 		if (workingCopy.getFixForVersionFilter() != null) {
@@ -875,34 +875,34 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				fixFor.setSelection(new StructuredSelection(new Object[] { NO_FIX_VERSION }));
 			} else if (workingCopy.getFixForVersionFilter().isReleasedVersions()
 					&& workingCopy.getFixForVersionFilter().isUnreleasedVersions()) {
-				fixFor.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }));
+				fixFor.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }), true);
 			} else if (workingCopy.getFixForVersionFilter().isReleasedVersions()) {
-				fixFor.setSelection(new StructuredSelection(RELEASED_VERSION));
+				fixFor.setSelection(new StructuredSelection(RELEASED_VERSION), true);
 			} else if (workingCopy.getFixForVersionFilter().isUnreleasedVersions()) {
-				fixFor.setSelection(new StructuredSelection(UNRELEASED_VERSION));
+				fixFor.setSelection(new StructuredSelection(UNRELEASED_VERSION), true);
 			} else {
-				fixFor.setSelection(new StructuredSelection(workingCopy.getFixForVersionFilter().getVersions()));
+				fixFor.setSelection(new StructuredSelection(workingCopy.getFixForVersionFilter().getVersions()), true);
 			}
 		} else {
-			fixFor.setSelection(new StructuredSelection(ANY_FIX_VERSION));
+			fixFor.setSelection(new StructuredSelection(ANY_FIX_VERSION), true);
 		}
 
 		if (workingCopy.getReportedInVersionFilter() != null) {
 			if (workingCopy.getReportedInVersionFilter().hasNoVersion()) {
-				reportedIn.setSelection(new StructuredSelection(new Object[] { NO_REPORTED_VERSION }));
+				reportedIn.setSelection(new StructuredSelection(new Object[] { NO_REPORTED_VERSION }), true);
 			} else if (workingCopy.getReportedInVersionFilter().isReleasedVersions()
 					&& workingCopy.getReportedInVersionFilter().isUnreleasedVersions()) {
-				reportedIn.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }));
+				reportedIn.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }), true);
 			} else if (workingCopy.getReportedInVersionFilter().isReleasedVersions()) {
-				reportedIn.setSelection(new StructuredSelection(RELEASED_VERSION));
+				reportedIn.setSelection(new StructuredSelection(RELEASED_VERSION), true);
 			} else if (workingCopy.getReportedInVersionFilter().isUnreleasedVersions()) {
-				reportedIn.setSelection(new StructuredSelection(UNRELEASED_VERSION));
+				reportedIn.setSelection(new StructuredSelection(UNRELEASED_VERSION), true);
 			} else {
 				reportedIn
-						.setSelection(new StructuredSelection(workingCopy.getReportedInVersionFilter().getVersions()));
+						.setSelection(new StructuredSelection(workingCopy.getReportedInVersionFilter().getVersions()), true);
 			}
 		} else {
-			reportedIn.setSelection(new StructuredSelection(ANY_REPORTED_VERSION));
+			reportedIn.setSelection(new StructuredSelection(ANY_REPORTED_VERSION), true);
 		}
 
 		if (workingCopy.getContentFilter() != null) {
@@ -915,20 +915,20 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		if (workingCopy.getComponentFilter() != null) {
 			if (workingCopy.getComponentFilter().hasNoComponent()) {
-				components.setSelection(new StructuredSelection(NO_COMPONENT));
+				components.setSelection(new StructuredSelection(NO_COMPONENT), true);
 			} else {
-				components.setSelection(new StructuredSelection(workingCopy.getComponentFilter().getComponents()));
+				components.setSelection(new StructuredSelection(workingCopy.getComponentFilter().getComponents()), true);
 			}
 		} else {
-			components.setSelection(new StructuredSelection(ANY_COMPONENT));
+			components.setSelection(new StructuredSelection(ANY_COMPONENT), true);
 		}
 
 		// attributes
 
 		if (workingCopy.getIssueTypeFilter() != null) {
-			issueType.setSelection(new StructuredSelection(workingCopy.getIssueTypeFilter().getIsueTypes()));
+			issueType.setSelection(new StructuredSelection(workingCopy.getIssueTypeFilter().getIsueTypes()), true);
 		} else {
-			issueType.setSelection(new StructuredSelection(ANY_ISSUE_TYPE));
+			issueType.setSelection(new StructuredSelection(ANY_ISSUE_TYPE), true);
 		}
 
 		if (workingCopy.getReportedByFilter() != null) {
@@ -966,26 +966,26 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		if (workingCopy.getStatusFilter() != null) {
-			status.setSelection(new StructuredSelection(workingCopy.getStatusFilter().getStatuses()));
+			status.setSelection(new StructuredSelection(workingCopy.getStatusFilter().getStatuses()), true);
 		} else {
-			status.setSelection(new StructuredSelection(ANY_STATUS));
+			status.setSelection(new StructuredSelection(ANY_STATUS), true);
 		}
 
 		if (workingCopy.getResolutionFilter() != null) {
 			Resolution[] resolutions = workingCopy.getResolutionFilter().getResolutions();
 			if (resolutions.length == 0) {
-				resolution.setSelection(new StructuredSelection(UNRESOLVED));
+				resolution.setSelection(new StructuredSelection(UNRESOLVED), true);
 			} else {
-				resolution.setSelection(new StructuredSelection(resolutions));
+				resolution.setSelection(new StructuredSelection(resolutions), true);
 			}
 		} else {
-			resolution.setSelection(new StructuredSelection(ANY_RESOLUTION));
+			resolution.setSelection(new StructuredSelection(ANY_RESOLUTION), true);
 		}
 
 		if (workingCopy.getPriorityFilter() != null) {
-			priority.setSelection(new StructuredSelection(workingCopy.getPriorityFilter().getPriorities()));
+			priority.setSelection(new StructuredSelection(workingCopy.getPriorityFilter().getPriorities()), true);
 		} else {
-			priority.setSelection(new StructuredSelection(ANY_PRIORITY));
+			priority.setSelection(new StructuredSelection(ANY_PRIORITY), true);
 		}
 
 		setDateRange(workingCopy.getCreatedDateFilter(), createdStartDatePicker, createdEndDatePicker);
