@@ -122,30 +122,37 @@ public class JiraWebIssueService {
 				} else {
 					post.addParameter("duedate", "");
 				}
+				
 				Component[] components = issue.getComponents();
-				if (components.length == 0) {
-					post.addParameter("components", "-1");
-				} else {
-					for (int i = 0; i < components.length; i++) {
-						post.addParameter("components", components[i].getId());
+				if (components != null) {
+					if (components.length == 0) {
+						post.addParameter("components", "-1");
+					} else {
+						for (int i = 0; i < components.length; i++) {
+							post.addParameter("components", components[i].getId());
+						}
 					}
 				}
 
 				Version[] versions = issue.getReportedVersions();
-				if (versions.length == 0) {
-					post.addParameter("versions", "-1");
-				} else {
-					for (int i = 0; i < versions.length; i++) {
-						post.addParameter("versions", versions[i].getId());
+				if (versions != null) {
+					if (versions.length == 0) {
+						post.addParameter("versions", "-1");
+					} else {
+						for (int i = 0; i < versions.length; i++) {
+							post.addParameter("versions", versions[i].getId());
+						}
 					}
 				}
 
 				Version[] fixVersions = issue.getFixVersions();
-				if (fixVersions.length == 0) {
-					post.addParameter("fixVersions", "-1");
-				} else {
-					for (int i = 0; i < fixVersions.length; i++) {
-						post.addParameter("fixVersions", fixVersions[i].getId());
+				if (fixVersions != null) {
+					if (fixVersions.length == 0) {
+						post.addParameter("fixVersions", "-1");
+					} else {
+						for (int i = 0; i < fixVersions.length; i++) {
+							post.addParameter("fixVersions", fixVersions[i].getId());
+						}
 					}
 				}
 

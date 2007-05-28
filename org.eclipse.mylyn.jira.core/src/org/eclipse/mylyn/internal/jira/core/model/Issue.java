@@ -51,11 +51,11 @@ public class Issue implements Serializable {
 
 	private Date updated;
 
-	private Version[] reportedVersions = new Version[0];
+	private Version[] reportedVersions = null;
 
-	private Version[] fixVersions = new Version[0];
+	private Version[] fixVersions = null;
 
-	private Component[] components = new Component[0];
+	private Component[] components = null;
 
 	private Date due;
 

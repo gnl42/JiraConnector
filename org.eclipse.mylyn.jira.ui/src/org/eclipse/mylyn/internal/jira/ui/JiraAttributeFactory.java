@@ -39,6 +39,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
 
+	public static final String TYPE_KEY = "type";
 
 	@Override
 	public boolean getIsHidden(String key) {

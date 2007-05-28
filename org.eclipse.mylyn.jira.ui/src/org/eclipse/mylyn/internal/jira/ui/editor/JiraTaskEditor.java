@@ -9,18 +9,25 @@
 package org.eclipse.mylar.internal.jira.ui.editor;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.TextViewer;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraFieldType;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.ITask;
@@ -29,12 +36,19 @@ import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -44,6 +58,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Mik Kersten
  * @author Rob Elves
+ * @author Eugene Kuleshov
  */
 public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
@@ -52,7 +67,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
-//		super.showAttachments = false;
 	}
 
 //	@Override
@@ -73,9 +87,18 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	@Override
 	protected void createAttributeLayout(Composite attributesComposite) {
 		this.attributesComposite = attributesComposite;
-		if(isTaskParametersSynchronized()) {
-			super.createAttributeLayout(attributesComposite);
-		}
+		// removing common attributes section
+
+		// XXX remove this when patch for AbstractRepositoryTaskEditor is committed 
+		GridLayout attributesLayout = new GridLayout();
+		attributesLayout.numColumns = 4;
+		attributesLayout.horizontalSpacing = 5;
+		attributesLayout.verticalSpacing = 4;
+		attributesComposite.setLayout(attributesLayout);
+		GridData attributesData = new GridData(GridData.FILL_BOTH);
+		attributesData.horizontalSpan = 1;
+		attributesData.grabExcessVerticalSpace = false;
+		attributesComposite.setLayoutData(attributesData);
 	}
 	
 	@Override
@@ -119,6 +142,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 					AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(getRepositoryTask());
 					AbstractAttributeFactory attributeFactory = connector.getTaskDataHandler().getAttributeFactory(taskData);
 					
+					Set<RepositoryTaskAttribute> updated = new HashSet<RepositoryTaskAttribute>();
+					
 					try {
 						HashSet<String> editableKeys = new HashSet<String>();
 						RepositoryTaskAttribute[] editableAttributes = server.getEditableAttributes(taskKey);
@@ -128,21 +153,48 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							}
 						}
 
+						System.err.println(taskData.getTaskKey());
 						for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 							boolean editable = editableKeys.contains(attribute.getID().toLowerCase());
-							// System.err.println(" " + attribute.getID() + " : " + attribute.getName() + " : " + editable);
+							System.err.println("  " + attribute.getID() + " : " + attribute.getName() + " : " + editable);
 							attribute.setReadOnly(!editable);
 							if (editable && !attributeFactory.getIsHidden(attribute.getID())) {
 								attribute.setHidden(false);
 							}
+							
+							// make attributes read-only if can't find editing options
+							JiraFieldType type = JiraFieldType.valueByKey(attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY));
+							Collection<String> options = attribute.getOptions();
+							if (type.equals(JiraFieldType.SELECT)
+									&& (options == null || options.isEmpty() || attribute.isReadOnly())) {
+								attribute.setReadOnly(true);
+							} else if (type.equals(JiraFieldType.MULTISELECT) && (options == null || options.isEmpty())) {
+								attribute.setReadOnly(true);
+							}
+							
+							updated.add(attribute);
 						}
-
+						
 					} catch (JiraException e) {
 						MylarStatusHandler.log(e, "Can't retrieve editable fields for " + taskKey);
 					}
 					
+					
+					RepositoryTaskAttribute editorSyncAttribute = new RepositoryTaskAttribute( //
+							JiraAttributeFactory.ATTRIBUTE_EDITOR_SYNC, "editor sync", true);
+					editorSyncAttribute.setValue("true");
+					taskData.addAttribute(JiraAttributeFactory.ATTRIBUTE_EDITOR_SYNC, editorSyncAttribute);
+					updated.add(editorSyncAttribute);
+
 					// TODO attribute need to be persisted and cleaned up after any submission/update
-					taskData.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_EDITOR_SYNC, "true");
+					
+					// this wont work because it change synchronization state and mark attributes as changed
+					// TasksUiPlugin.getSynchronizationManager().saveOutgoing(repositoryTask, changedAttributes);
+
+					// this doesn't work either because it mark all attributes as changed
+					// if (getRepositoryTask() != null) {
+					// 	TasksUiPlugin.getDefault().getTaskDataManager().saveEdits(getRepositoryTask().getHandleIdentifier(), updated);
+					// }
 					
 					// TODO update operations and editable fields
 					// ArrayList<RepositoryOperation> oldOperations = new ArrayList<RepositoryOperation>(taskData.getOperations());
@@ -151,13 +203,27 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 					// move into status listener?
 					new UIJob(getName()) {
 						public IStatus runInUIThread(IProgressMonitor monitor) {
-							JiraTaskEditor.super.createAttributeLayout(attributesComposite);
-							JiraTaskEditor.super.addRadioButtons(buttonComposite);
-							JiraTaskEditor.super.addActionButtons(buttonComposite);
+							// createAttributeLayout();
+							createCustomAttributeLayout();
+							
+							createActionsLayout();
 							
 							((ScrolledForm) JiraTaskEditor.super.getControl()).reflow(true);
 
 							return Status.OK_STATUS;
+						}
+
+						private void createActionsLayout() {
+							JiraTaskEditor.super.addRadioButtons(buttonComposite);
+							JiraTaskEditor.super.addActionButtons(buttonComposite);
+						}
+
+						private void createAttributeLayout() {
+							JiraTaskEditor.super.createAttributeLayout(attributesComposite);
+						}
+
+						private void createCustomAttributeLayout() {
+							JiraTaskEditor.this.createCustomAttributeLayout(attributesComposite);
 						}
 					}.schedule();
 					
@@ -173,95 +239,203 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	}
 	
 	@Override
-	protected void createCustomAttributeLayout(Composite composite) {
-		Label label = toolkit.createLabel(composite, "Components:");
-		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
-
-		final List componentsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
-		componentsList.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-		componentsList.setFont(TEXT_FONT);
-		GridData compTextData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		compTextData.horizontalSpan = 1;
-		compTextData.widthHint = 125;
-		compTextData.heightHint = 40;
-		componentsList.setLayoutData(compTextData);
-		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
-		if (attribute != null && !attribute.getOptions().isEmpty()) {
-			componentsList.setItems(attribute.getOptions().toArray(new String[1]));
-			for (String compStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
-				componentsList.select(componentsList.indexOf(compStr));
+	protected void createCustomAttributeLayout(Composite attributesComposite) {
+		if(!isTaskParametersSynchronized()) {
+			return;
+		}
+		
+		int numColumns = ((GridLayout) attributesComposite.getLayout()).numColumns;
+		int currentCol = 1;
+		
+		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
+			if (attribute.isHidden()) {
+				continue;
 			}
-			componentsList.addSelectionListener(new SelectionAdapter() {
+			
+			JiraFieldType type = JiraFieldType.valueByKey(attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY));
+			Collection<String> options = attribute.getOptions();
+			if (type.equals(JiraFieldType.SELECT) && (options == null || options.isEmpty() || attribute.isReadOnly())) {
+				type = JiraFieldType.TEXTFIELD;
+			} else if (type.equals(JiraFieldType.MULTISELECT) && (options == null || options.isEmpty())) {
+				type = JiraFieldType.TEXTFIELD;
+			}
+			
+			switch (type) {
+			    case TEXTAREA:
+			    	// all text areas go to the bottom
+					break;
+				case SELECT: 
+				{
+					Label label = createLabel(attributesComposite, attribute);
+					GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
+					
+					CCombo combo = new CCombo(attributesComposite, SWT.FLAT | SWT.READ_ONLY);
+					toolkit.adapt(combo, true, true);
+					combo.setFont(TEXT_FONT);
+					combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					RepositoryTaskAttribute attribute = taskData
-							.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
-					attribute.clearValues();
-					attribute.setValues(Arrays.asList(componentsList.getSelection()));
-					attributeChanged(attribute);
+					GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
+					data.horizontalSpan = 1;
+					data.widthHint = 140;
+					data.horizontalIndent = HORZ_INDENT;
+					combo.setLayoutData(data);
+
+					if (attribute.getOptions() != null) {
+						for (String val : attribute.getOptions()) {
+							combo.add(val);
+						}
+					}
+
+					String value = checkText(attribute.getValue());
+					if (combo.indexOf(value) != -1) {
+						combo.select(combo.indexOf(value));
+					}
+					combo.addSelectionListener(new ComboSelectionListener(combo));
+					comboListenerMap.put(combo, attribute);
+
+					if (hasChanged(attribute)) {
+						combo.setBackground(backgroundIncoming);
+					}
+					
+					currentCol += 2;
+					break;
 				}
-			});
+				case MULTISELECT: 
+				{
+					Label label = createLabel(attributesComposite, attribute);
+					GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
+
+					final List list = new List(attributesComposite, SWT.FLAT | SWT.MULTI | SWT.V_SCROLL);
+					toolkit.adapt(list, true, true);
+					list.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+					list.setFont(TEXT_FONT);
+
+					GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
+					data.horizontalSpan = 1;
+					data.widthHint = 125;
+					data.heightHint = 45;
+					data.horizontalIndent = HORZ_INDENT;
+					list.setLayoutData(data);
+
+					if (!attribute.getOptions().isEmpty()) {
+						list.setItems(attribute.getOptions().toArray(new String[1]));
+						for (String value : attribute.getValues()) {
+							list.select(list.indexOf(value));
+						}
+						final RepositoryTaskAttribute attr = attribute;
+						list.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								attr.clearValues();
+								attr.setValues(Arrays.asList(list.getSelection()));
+								attributeChanged(attr);
+							}
+						});
+						list.showSelection();
+					}
+					
+					if (hasChanged(attribute)) {
+						list.setBackground(backgroundIncoming);
+					}
+					
+					currentCol += 2;
+					break;
+				}
+
+				// TEXTFIELD and everything else 
+				default:
+				{
+					Label label = createLabel(attributesComposite, attribute);
+					GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
+					
+					int style = attribute.isReadOnly() ? SWT.READ_ONLY : 0;
+					Text text = createTextField(attributesComposite, attribute, SWT.FLAT | style);
+
+					GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
+					data.horizontalSpan = 1;
+					data.widthHint = 135;
+					data.horizontalIndent = HORZ_INDENT;
+					text.setLayoutData(data);
+					
+					if (hasContentAssist(attribute)) {
+						ContentAssistCommandAdapter adapter = applyContentAssist(text,
+								createContentProposalProvider(attribute));
+						
+						ILabelProvider propsalLabelProvider = createProposalLabelProvider(attribute);
+						if(propsalLabelProvider != null){
+							adapter.setLabelProvider(propsalLabelProvider);
+						}
+						adapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+					}
+					
+					if (hasChanged(attribute)) {
+						text.setBackground(backgroundIncoming);
+					}
+
+					currentCol += 2;
+				}
+			}
+			
+			if (currentCol > numColumns) {
+				currentCol -= numColumns;
+			}
 		}
 
-		label = toolkit.createLabel(composite, "Fix Versions:");
-		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
-		final List versionsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
-		versionsList.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-		versionsList.setFont(TEXT_FONT);
-		GridData versionsTextData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		versionsTextData.horizontalSpan = 1;
-		versionsTextData.widthHint = 125;
-		versionsTextData.heightHint = 40;
-		versionsList.setLayoutData(versionsTextData);
-		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
-		if (attribute != null && !attribute.getOptions().isEmpty()) {
-			versionsList.setItems(attribute.getOptions().toArray(new String[1]));
-			for (String versionStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
-				versionsList.select(versionsList.indexOf(versionStr));
+		if (currentCol > 1) {
+			while (currentCol <= numColumns) {
+				toolkit.createLabel(attributesComposite, "");
+				currentCol++;
 			}
-			versionsList.addSelectionListener(new SelectionAdapter() {
-
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					RepositoryTaskAttribute attribute = taskData
-							.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
-					attribute.clearValues();
-					attribute.setValues(Arrays.asList(versionsList.getSelection()));
-					attributeChanged(attribute);
-				}
-			});
 		}
 
-		label = toolkit.createLabel(composite, "Affects Versions:");
-		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
-		final List affectsVersionsList = new List(composite, SWT.MULTI | SWT.V_SCROLL);
-		affectsVersionsList.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
-		affectsVersionsList.setFont(TEXT_FONT);
-		GridData affectsVersionsTextData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		affectsVersionsTextData.horizontalSpan = 1;
-		affectsVersionsTextData.widthHint = 125;
-		affectsVersionsTextData.heightHint = 40;
-		affectsVersionsTextData.verticalIndent = 3;
-		affectsVersionsList.setLayoutData(affectsVersionsTextData);
-		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
-		if (attribute != null && !attribute.getOptions().isEmpty()) {
-			affectsVersionsList.setItems(attribute.getOptions().toArray(new String[1]));
-			for (String versionStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {
-				affectsVersionsList.select(affectsVersionsList.indexOf(versionStr));
+		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
+			if (attribute.isHidden() || !JiraFieldType.TEXTAREA.getKey().equals(attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY))) {
+				continue;
 			}
-			affectsVersionsList.addSelectionListener(new SelectionAdapter() {
 
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					RepositoryTaskAttribute attribute = taskData
-							.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
-					attribute.clearValues();
-					attribute.setValues(Arrays.asList(affectsVersionsList.getSelection()));
-					attributeChanged(attribute);
-				}
-			});
-		}
+			Label label = createLabel(attributesComposite, attribute);
+			GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
+
+			int style = attribute.isReadOnly() ? SWT.READ_ONLY : 0;
+
+			// TextViewer viewer = addTextEditor(repository, attributesComposite, attribute.getValue(), true, SWT.FLAT | SWT.BORDER | SWT.MULTI | SWT.WRAP | style);
+			TextViewer viewer = new TextViewer(attributesComposite, SWT.FLAT | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | style);
+			viewer.setDocument(new Document(attribute.getValue()));
+			
+			final StyledText text = viewer.getTextWidget();
+			text.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+
+			// GridDataFactory.fillDefaults().span(3, 1).hint(300, 40).applyTo(text);
+			GridData data = new GridData(SWT.LEFT, SWT.TOP, true, false);
+			data.horizontalSpan = 3;
+			data.widthHint = 380;
+			data.heightHint = 55;
+			data.horizontalIndent = HORZ_INDENT;
+			text.setLayoutData(data);
+			
+			toolkit.adapt(text, true, true);
+			
+			if(attribute.isReadOnly()) {
+				viewer.setEditable(false);
+			} else {
+				viewer.setEditable(true);
+				text.setData(attribute);
+				text.addModifyListener(new ModifyListener() {
+					public void modifyText(ModifyEvent e) {
+						String newValue = text.getText();
+						RepositoryTaskAttribute attribute = (RepositoryTaskAttribute) text.getData();
+						attribute.setValue(newValue);
+						attributeChanged(attribute);
+					}
+				});				
+			}
+			
+			if (hasChanged(attribute)) {
+				text.setBackground(backgroundIncoming);
+			}
+		}		
+		
+		toolkit.paintBordersFor(attributesComposite);
 	}
 
 //	@Override
@@ -375,9 +549,9 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 //		submitJob.schedule();
 //	}
 
+
 	@Override
 	protected void validateInput() {
-		// TODO Auto-generated method stub
 	}
 
 	protected String getActivityUrl() {
@@ -399,7 +573,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	protected boolean hasContentAssist(RepositoryTaskAttribute attribute) {
 		String id = attribute.getID();
 		if(id.startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
-			String key = attribute.getMetaDataValue("key");
+			String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
 			// TODO need more robust detection
 			if("com.atlassian.jira.plugin.system.customfieldtypes:userpicker".equals(key)) {
 				return true;

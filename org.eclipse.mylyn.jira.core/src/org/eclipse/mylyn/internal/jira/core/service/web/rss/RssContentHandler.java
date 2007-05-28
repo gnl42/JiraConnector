@@ -275,11 +275,11 @@ public class RssContentHandler extends DefaultHandler {
 
 	private ArrayList<Comment> currentComments = new ArrayList<Comment>();
 
-	private ArrayList<Version> currentFixVersions = new ArrayList<Version>();
+	private ArrayList<Version> currentFixVersions = null;
 
-	private ArrayList<Version> currentReportedVersions = new ArrayList<Version>();
+	private ArrayList<Version> currentReportedVersions = null;
 
-	private ArrayList<Component> currentComponents = new ArrayList<Component>();
+	private ArrayList<Component> currentComponents = null;
 
 	private ArrayList<Attachment> currentAttachments = new ArrayList<Attachment>();
 
@@ -567,12 +567,16 @@ public class RssContentHandler extends DefaultHandler {
 			if (CHANNEL.equals(localName)) {
 				state = LOOKING_FOR_CHANNEL;
 			} else if (ITEM.equals(localName)) {
-				currentIssue.setReportedVersions(currentReportedVersions
-						.toArray(new Version[currentReportedVersions.size()]));
-				currentIssue.setFixVersions(currentFixVersions.toArray(new Version[currentFixVersions
-						.size()]));
-				currentIssue.setComponents(currentComponents.toArray(new Component[currentComponents
-						.size()]));
+				if (currentReportedVersions != null) {
+					currentIssue.setReportedVersions(currentReportedVersions
+							.toArray(new Version[currentReportedVersions.size()]));
+				}
+				if (currentFixVersions != null) {
+					currentIssue.setFixVersions(currentFixVersions.toArray(new Version[currentFixVersions.size()]));
+				}
+				if (currentComponents != null) {
+					currentIssue.setComponents(currentComponents.toArray(new Component[currentComponents.size()]));
+				}
 				currentIssue.setComments(currentComments.toArray(new Comment[currentComments.size()]));
 				currentIssue.setAttachments(currentAttachments.toArray(new Attachment[currentAttachments.size()]));
 				currentIssue.setCustomFields(currentCustomFields.toArray(new CustomField[currentCustomFields.size()]));
@@ -581,9 +585,9 @@ public class RssContentHandler extends DefaultHandler {
 				currentCustomFields.clear();
 				currentAttachments.clear();
 				currentComments.clear();
-				currentFixVersions.clear();
-				currentReportedVersions.clear();
-				currentComponents.clear();
+				currentFixVersions = null;
+				currentReportedVersions = null;
+				currentComponents = null;
 				state = LOOKING_FOR_ITEM;
 			} else if (TITLE.equals(localName)) {
 
@@ -618,6 +622,9 @@ public class RssContentHandler extends DefaultHandler {
 				if (version == null) {
 					throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
 				}
+				if (currentReportedVersions == null) {
+					currentReportedVersions = new ArrayList<Version>();
+				}
 				currentReportedVersions.add(version);
 			} else if (FIX_VERSION.equals(localName)) {
 				if (currentIssue.getProject() == null) {
@@ -627,6 +634,9 @@ public class RssContentHandler extends DefaultHandler {
 				if (version == null) {
 					throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
 				}
+				if (currentFixVersions == null) {
+					currentFixVersions = new ArrayList<Version>();
+				}
 				currentFixVersions.add(version);
 			} else if (COMPONENT.equals(localName)) {
 				if (currentIssue.getProject() == null) {
@@ -635,6 +645,9 @@ public class RssContentHandler extends DefaultHandler {
 				Component component = currentIssue.getProject().getComponent(currentElementText.toString());
 				if (component == null) {
 					throw new SAXException("No component with name '" + currentElementText.toString() + "' found");
+				}
+				if (currentComponents == null) {
+					currentComponents = new ArrayList<Component>();
 				}
 				currentComponents.add(component);
 			} else if (DUE.equals(localName)) {
