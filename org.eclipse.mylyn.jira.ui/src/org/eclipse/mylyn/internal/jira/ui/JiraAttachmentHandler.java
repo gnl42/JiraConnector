@@ -14,6 +14,7 @@ package org.eclipse.mylar.internal.jira.ui;
 import java.io.File;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
@@ -39,7 +40,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 	public JiraAttachmentHandler() {
 	}
 
-	public void downloadAttachment(TaskRepository repository, RepositoryAttachment attachment, File file) throws CoreException {
+	public void downloadAttachment(TaskRepository repository, RepositoryAttachment attachment, File file, IProgressMonitor monitor) throws CoreException {
 		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
 		if (id == null) {
 			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
@@ -59,7 +60,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 		}
 	}
 
-	public void uploadAttachment(TaskRepository repository, AbstractRepositoryTask task, String comment, String description, File file, String contentType, boolean isPatch) throws CoreException {
+	public void uploadAttachment(TaskRepository repository, AbstractRepositoryTask task, String comment, String description, File file, String contentType, boolean isPatch, IProgressMonitor monitor) throws CoreException {
 		String filename	= file.getName(); 
 		if (AbstractRepositoryConnector.MYLAR_CONTEXT_DESCRIPTION.equals(description)) {
 			filename = CONTEXT_ATTACHEMNT_FILENAME;

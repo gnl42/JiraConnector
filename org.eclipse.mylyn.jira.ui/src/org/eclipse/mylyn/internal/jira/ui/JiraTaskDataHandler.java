@@ -81,7 +81,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	public JiraTaskDataHandler(JiraRepositoryConnector connector) {
 	}
 
-	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId) throws CoreException {
+	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor) throws CoreException {
 		try {
 			JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 			if (!server.hasDetails()) {
@@ -397,7 +397,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 	}
 
-	public String postTaskData(TaskRepository repository, RepositoryTaskData taskData) throws CoreException {
+	public String postTaskData(TaskRepository repository, RepositoryTaskData taskData, IProgressMonitor monitor) throws CoreException {
 		final JiraClient jiraServer = JiraClientFacade.getDefault().getJiraClient(repository);
 		if (jiraServer == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,

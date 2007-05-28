@@ -17,6 +17,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylar.context.core.ContextCorePlugin;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils;
@@ -104,7 +105,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 		
 		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
-		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
+		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(false, task.isCompleted());
 		assertNull(task.getDueDate());
@@ -153,14 +154,14 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.createIssue(server, "testAttachContext");
-		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
+		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testAttachContext", task.getSummary());
 
 		File sourceContextFile = ContextCorePlugin.getContextManager().getFileForContext(task.getHandleIdentifier());
 		JiraTestUtils.writeFile(sourceContextFile, "Mylar".getBytes());
 		sourceContextFile.deleteOnExit();
 
-		assertTrue(connector.attachContext(repository, task, ""));
+		assertTrue(connector.attachContext(repository, task, "", new NullProgressMonitor()));
 		
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 
@@ -168,7 +169,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(1, contextAttachments.size());
 		
 		RepositoryAttachment attachment = contextAttachments.iterator().next();
-		assertTrue(connector.retrieveContext(repository, task, attachment, System.getProperty("java.io.tmpdir")));
+		assertTrue(connector.retrieveContext(repository, task, attachment, System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
 	}
 	
 }

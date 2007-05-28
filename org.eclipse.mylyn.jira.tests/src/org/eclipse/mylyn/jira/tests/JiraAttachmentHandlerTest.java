@@ -15,6 +15,7 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
@@ -94,8 +95,8 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		file.deleteOnExit();
 		JiraTestUtils.writeFile(file, "Mylar".getBytes());
 		
-		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey());
-		attachmentHandler.uploadAttachment(repository, task, "", "", file, "text/plain", false);
+		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
+		attachmentHandler.uploadAttachment(repository, task, "", "", file, "text/plain", false, new NullProgressMonitor());
 		
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 		RepositoryTaskData taskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(task.getHandleIdentifier());
@@ -105,7 +106,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		assertEquals("Mylar", new String(data));
 		
 		file.delete();
-		attachmentHandler.downloadAttachment(repository, taskData.getAttachments().get(0), file);
+		attachmentHandler.downloadAttachment(repository, taskData.getAttachments().get(0), file, new NullProgressMonitor());
 		assertTrue(file.exists());
 		data = JiraTestUtils.readFile(file);
 		assertEquals("Mylar", new String(data));

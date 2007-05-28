@@ -254,27 +254,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateTaskFromRepository(TaskRepository repository, AbstractRepositoryTask repositoryTask) {
-		// final TaskRepository repository =
-		// TasksUiPlugin.getRepositoryManager().getRepository(
-		// repositoryTask.getRepositoryKind(),
-		// repositoryTask.getRepositoryUrl());
-		// if (repository != null && repositoryTask instanceof JiraTask) {
-		// final JiraTask jiraTask = (JiraTask) repositoryTask;
-		// final JiraServer client =
-		// JiraServerFacade.getDefault().getJiraServer(repository);
-		// if (client != null) {
-		// final Issue issue = client.getIssue(jiraTask.getKey());
-		// if (issue != null) {
-		// // TODO: may not need to update details here
-		// PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-		// public void run() {
-		// updateTaskDetails(repository.getUrl(), jiraTask, issue, true);
-		// }
-		// });
-		// }
-		// }
-		// }
+	public void updateTaskFromRepository(TaskRepository repository, AbstractRepositoryTask repositoryTask, IProgressMonitor monitor) {
 	}
 
 	@Override
