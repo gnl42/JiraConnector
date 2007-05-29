@@ -28,6 +28,7 @@ import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraFieldType;
+import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.ITask;
@@ -142,7 +143,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 // }
 
 					AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager()
-							.getRepositoryConnector(getRepositoryTask());
+							.getRepositoryConnector(JiraUiPlugin.REPOSITORY_KIND);
 					AbstractAttributeFactory attributeFactory = connector.getTaskDataHandler().getAttributeFactory(
 							taskData);
 
