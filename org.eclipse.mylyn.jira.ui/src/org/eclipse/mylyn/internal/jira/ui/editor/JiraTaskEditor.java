@@ -218,9 +218,9 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							JiraTaskEditor.super.addActionButtons(buttonComposite);
 						}
 
-						private void createAttributeLayout() {
-							JiraTaskEditor.super.createAttributeLayout(attributesComposite);
-						}
+//						private void createAttributeLayout() {
+//							JiraTaskEditor.super.createAttributeLayout(attributesComposite);
+//						}
 
 						private void createCustomAttributeLayout() {
 							JiraTaskEditor.this.createCustomAttributeLayout(attributesComposite);
