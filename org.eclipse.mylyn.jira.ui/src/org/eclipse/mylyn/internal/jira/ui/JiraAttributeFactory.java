@@ -26,6 +26,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_TYPE = "attribute.jira.type";
 	
 	public static final String ATTRIBUTE_ISSUE_KEY = "attribute.jira.issue_key";
+	public static final String ATTRIBUTE_ISSUE_PARENT_KEY = "attribute.jira.issue_parent_key";
 
 	public static final String ATTRIBUTE_ENVIRONMENT = "attribute.jira.environment";
 	public static final String ATTRIBUTE_COMPONENTS = "attribute.jira.components";
@@ -40,6 +41,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
 
 	public static final String TYPE_KEY = "type";
+
 
 	@Override
 	public boolean getIsHidden(String key) {

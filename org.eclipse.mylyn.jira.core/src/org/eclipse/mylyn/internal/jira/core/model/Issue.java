@@ -27,6 +27,10 @@ public class Issue implements Serializable {
 
 	private String key;
 
+	private String parentId;
+	
+	private String parentKey;
+	
 	private String summary;
 
 	private String environment;
@@ -87,6 +91,30 @@ public class Issue implements Serializable {
 		this.id = id;
 	}
 
+	public String getKey() {
+		return this.key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+	
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+	
+	public String getParentKey() {
+		return parentKey;
+	}
+	
+	public void setParentKey(String parentKey) {
+		this.parentKey = parentKey;
+	}
+	
 	public String getAssignee() {
 		return this.assigneeName;
 	}
@@ -133,14 +161,6 @@ public class Issue implements Serializable {
 
 	public void setFixVersions(Version[] fixVersions) {
 		this.fixVersions = fixVersions;
-	}
-
-	public String getKey() {
-		return this.key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
 	}
 
 	public Priority getPriority() {

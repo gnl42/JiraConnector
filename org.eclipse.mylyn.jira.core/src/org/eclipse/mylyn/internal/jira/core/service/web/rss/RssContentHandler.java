@@ -191,6 +191,8 @@ public class RssContentHandler extends DefaultHandler {
 
 	private static final String KEY = "key"; //$NON-NLS-1$
 
+	private static final String PARENT = "parent"; //$NON-NLS-1$
+	
 	private static final String ENVIRONMENT = "environment"; //$NON-NLS-1$
 
 	private static final String DESCRIPTION = "description"; //$NON-NLS-1$
@@ -363,6 +365,8 @@ public class RssContentHandler extends DefaultHandler {
 		case IN_ITEM:
 			if (KEY.equals(localName)) {
 				currentIssue.setId(attributes.getValue(ID_ATTR));
+			} else if (PARENT.equals(localName)) {
+				currentIssue.setParentId(attributes.getValue(ID_ATTR));
 			} else if (TYPE.equals(localName)) {
 				currentIssue.setType(client.getIssueTypeById(attributes.getValue(ID_ATTR)));
 			} else if (PRIORITY.equals(localName)) {
@@ -608,6 +612,8 @@ public class RssContentHandler extends DefaultHandler {
 					throw new SAXException("No project with key '" + projectKey + "' found");
 				}
 				currentIssue.setProject(project);
+			} else if (PARENT.equals(localName)) {
+				currentIssue.setParentKey(currentElementText.toString());
 			} else if (SUMMARY.equals(localName)) {
 				currentIssue.setSummary(currentElementText.toString());
 			} else if (CREATED.equals(localName)) {

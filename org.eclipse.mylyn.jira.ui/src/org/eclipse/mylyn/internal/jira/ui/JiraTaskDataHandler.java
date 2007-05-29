@@ -148,6 +148,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			types.addOption(type.getName(), type.getId());
 		}
 		
+		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, "Parent: ", false);
+		data.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY).setReadOnly(true);
+		
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE, "Estimate: ", false);
 		
 		RepositoryTaskAttribute components = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "Components: ", false);
@@ -179,6 +182,16 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	}
 
 	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) {
+		String parentKey = jiraIssue.getParentKey();
+		if(parentKey!=null) {
+			RepositoryTaskAttribute parentAttribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, "Parent:", false);
+			parentAttribute.setValue(parentKey);
+			parentAttribute.setReadOnly(true);
+			data.addAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentAttribute);
+		} else {
+			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+		}
+		
 		updateAttribute(data, RepositoryTaskAttribute.DATE_CREATION, dateToString(jiraIssue.getCreated()));
 		updateAttribute(data, RepositoryTaskAttribute.SUMMARY, convertHtml(jiraIssue.getSummary()));
 		updateAttribute(data, RepositoryTaskAttribute.DESCRIPTION, convertHtml(jiraIssue.getDescription()));
@@ -246,7 +259,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			attribute.setReadOnly(true);
 			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_TEXT, attribute);
 
-			attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.COMMENT_DATE, "Text: ", true);
+			attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.COMMENT_DATE, "Date: ", true);
 			attribute.setValue(dateToString(comment.getCreated()));
 			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_DATE, attribute);
 
