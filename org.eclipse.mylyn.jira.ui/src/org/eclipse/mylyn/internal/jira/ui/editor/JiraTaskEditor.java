@@ -10,27 +10,14 @@ package org.eclipse.mylar.internal.jira.ui.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.mylar.core.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.ui.JiraAttributeFactory;
-import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraFieldType;
-import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.ITask;
 import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
@@ -53,8 +40,6 @@ import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Mik Kersten
@@ -62,10 +47,6 @@ import org.eclipse.ui.progress.UIJob;
  * @author Eugene Kuleshov
  */
 public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
-
-	private Composite attributesComposite;
-
-	private Composite buttonComposite;
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
@@ -83,163 +64,26 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	@Override
 	protected void createAttributeLayout(Composite attributesComposite) {
-		this.attributesComposite = attributesComposite;
 		// removing common attributes section
-
-		// XXX remove this when patch for AbstractRepositoryTaskEditor is committed
-		GridLayout attributesLayout = new GridLayout();
-		attributesLayout.numColumns = 4;
-		attributesLayout.horizontalSpacing = 5;
-		attributesLayout.verticalSpacing = 4;
-		attributesComposite.setLayout(attributesLayout);
-		GridData attributesData = new GridData(GridData.FILL_BOTH);
-		attributesData.horizontalSpan = 1;
-		attributesData.grabExcessVerticalSpace = false;
-		attributesComposite.setLayoutData(attributesData);
 	}
 
 	@Override
 	protected void addRadioButtons(Composite buttonComposite) {
-		this.buttonComposite = buttonComposite;
-		if (isTaskParametersSynchronized()) {
-			super.addRadioButtons(buttonComposite);
-		}
+		super.addRadioButtons(buttonComposite);
 	}
 
 	@Override
 	protected void addActionButtons(Composite buttonComposite) {
-		if (isTaskParametersSynchronized()) {
 			super.addActionButtons(buttonComposite);
-		}
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
 		super.createFormContent(managedForm);
-
-		if (taskData == null) {
-			return;
-		}
-
-		if (!isTaskParametersSynchronized()) {
-			final String taskKey = taskData.getTaskKey();
-			new Job("Retrieving data for task " + taskKey) {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-
-					JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
-
-// RepositoryOperation[] availableOperations;
-// try {
-// availableOperations = server.getAvailableOperations(taskKey);
-// for (int i = 0; i < availableOperations.length; i++) {
-// RepositoryOperation operation = availableOperations[i];
-// System.err.println("#### " + operation.getKnobName() + " : " +
-// operation.getOperationName());
-// }
-// } catch (JiraException e) {
-// MylarStatusHandler.log(e, "Can't retrieve avaialble operations for " +
-// taskKey);
-// }
-
-					AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager()
-							.getRepositoryConnector(JiraUiPlugin.REPOSITORY_KIND);
-					AbstractAttributeFactory attributeFactory = connector.getTaskDataHandler().getAttributeFactory(
-							taskData);
-
-					Set<RepositoryTaskAttribute> updated = new HashSet<RepositoryTaskAttribute>();
-
-					try {
-						HashSet<String> editableKeys = new HashSet<String>();
-						RepositoryTaskAttribute[] editableAttributes = server.getEditableAttributes(taskKey);
-						if (editableAttributes != null) {
-							for (RepositoryTaskAttribute attribute : editableAttributes) {
-								editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getID()));
-							}
-						}
-
-						// System.err.println(taskData.getTaskKey());
-						for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
-							boolean editable = editableKeys.contains(attribute.getID().toLowerCase());
-							// System.err.println("  " + attribute.getID() + " : " + attribute.getName() + " : " + editable);
-							attribute.setReadOnly(!editable);
-							if (editable && !attributeFactory.getIsHidden(attribute.getID())) {
-								attribute.setHidden(false);
-							}
-
-							// make attributes read-only if can't find editing options
-							JiraFieldType type = JiraFieldType.valueByKey(attribute
-									.getMetaDataValue(JiraAttributeFactory.TYPE_KEY));
-							Collection<String> options = attribute.getOptions();
-							if (type.equals(JiraFieldType.SELECT)
-									&& (options == null || options.isEmpty() || attribute.isReadOnly())) {
-								attribute.setReadOnly(true);
-							} else if (type.equals(JiraFieldType.MULTISELECT) && (options == null || options.isEmpty())) {
-								attribute.setReadOnly(true);
-							}
-
-							updated.add(attribute);
-						}
-
-					} catch (JiraException e) {
-						MylarStatusHandler.log(e, "Can't retrieve editable fields for " + taskKey);
-					}
-
-					RepositoryTaskAttribute editorSyncAttribute = new RepositoryTaskAttribute( //
-							JiraAttributeFactory.ATTRIBUTE_EDITOR_SYNC, "editor sync", true);
-					editorSyncAttribute.setValue("true");
-					taskData.addAttribute(JiraAttributeFactory.ATTRIBUTE_EDITOR_SYNC, editorSyncAttribute);
-					updated.add(editorSyncAttribute);
-
-					// TODO attribute need to be persisted and cleaned up after any submission/update
-
-					// this wont work because it change synchronization state and mark attributes as changed
-					// TasksUiPlugin.getSynchronizationManager().saveOutgoing(repositoryTask, changedAttributes);
-
-					// this doesn't work either because it mark all attributes as changed
-					// if (getRepositoryTask() != null) {
-					//   TasksUiPlugin.getDefault().getTaskDataManager().saveEdits(getRepositoryTask().getHandleIdentifier(), updated);
-					// }
-
-					// TODO update operations and editable fields
-					// ArrayList<RepositoryOperation> oldOperations = new ArrayList<RepositoryOperation>(taskData.getOperations());
-					// taskData.getOperations().clear();
-
-					// move into status listener?
-					new UIJob(getName()) {
-						public IStatus runInUIThread(IProgressMonitor monitor) {
-							// createAttributeLayout();
-							JiraTaskEditor.this.createCustomAttributeLayout(attributesComposite);
-
-							JiraTaskEditor.super.addRadioButtons(buttonComposite);
-							JiraTaskEditor.super.addActionButtons(buttonComposite);
-
-							((ScrolledForm) JiraTaskEditor.super.getControl()).reflow(true);
-
-							return Status.OK_STATUS;
-						}
-					}.schedule();
-
-					return Status.OK_STATUS;
-				}
-
-			}.schedule();
-		}
-	}
-
-	private boolean isTaskParametersSynchronized() {
-		if (taskData != null) {
-			return taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_EDITOR_SYNC) != null;
-		}
-		return true;
 	}
 
 	@Override
 	protected void createCustomAttributeLayout(Composite attributesComposite) {
-		if (!isTaskParametersSynchronized()) {
-			return;
-		}
-
 		int numColumns = ((GridLayout) attributesComposite.getLayout()).numColumns;
 		int currentCol = 1;
 

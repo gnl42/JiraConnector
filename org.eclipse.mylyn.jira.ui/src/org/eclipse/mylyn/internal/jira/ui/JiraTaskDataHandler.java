@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
@@ -125,50 +127,50 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	public void initializeTaskData(RepositoryTaskData data, JiraClient server, Project project) {
 		data.removeAllAttributes();
 
-		addAttribute(data, RepositoryTaskAttribute.DATE_CREATION, "Created: ", true);
+		addAttribute(data, RepositoryTaskAttribute.DATE_CREATION, "Created:", true);
 		addAttribute(data, RepositoryTaskAttribute.SUMMARY, "Summary: ", true);
-		addAttribute(data, RepositoryTaskAttribute.DESCRIPTION, "Description: ", true);
+		addAttribute(data, RepositoryTaskAttribute.DESCRIPTION, "Description:", true);
 		addAttribute(data, RepositoryTaskAttribute.STATUS, "Status: ", true);
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY, "Issue ID: ", true);
-		addAttribute(data, RepositoryTaskAttribute.RESOLUTION, "Resolution: ", true);
-		addAttribute(data, RepositoryTaskAttribute.USER_ASSIGNED, "Assigned to: ", true);
-		addAttribute(data, RepositoryTaskAttribute.USER_REPORTER, "Reported by: ", true);
-		addAttribute(data, RepositoryTaskAttribute.DATE_MODIFIED, "Date modified: ", true);
+		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_KEY, "Issue ID:", true);
+		addAttribute(data, RepositoryTaskAttribute.RESOLUTION, "Resolution:", true);
+		addAttribute(data, RepositoryTaskAttribute.USER_ASSIGNED, "Assigned to:", true);
+		addAttribute(data, RepositoryTaskAttribute.USER_REPORTER, "Reported by:", true);
+		addAttribute(data, RepositoryTaskAttribute.DATE_MODIFIED, "Date modified:", true);
 		
-		RepositoryTaskAttribute product = addAttribute(data, RepositoryTaskAttribute.PRODUCT, "Project: ", false);
+		RepositoryTaskAttribute product = addAttribute(data, RepositoryTaskAttribute.PRODUCT, "Project:", false);
 		product.setReadOnly(true);
 		
-		RepositoryTaskAttribute priorities = addAttribute(data, RepositoryTaskAttribute.PRIORITY, "Priority: ", false);
+		RepositoryTaskAttribute priorities = addAttribute(data, RepositoryTaskAttribute.PRIORITY, "Priority:", false);
 		for (Priority priority : server.getPriorities()) {
 			priorities.addOption(priority.getName(), priority.getId());
 		}
 		
-		RepositoryTaskAttribute types = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE, "Type: ", false);
+		RepositoryTaskAttribute types = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE, "Type:", false);
 		for (IssueType type : server.getIssueTypes()) {
 			types.addOption(type.getName(), type.getId());
 		}
 		
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, "Parent: ", false);
+		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, "Parent:", false);
 		data.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY).setReadOnly(true);
 		
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE, "Estimate: ", false);
+		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE, "Estimate:", false);
 		
-		RepositoryTaskAttribute components = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "Components: ", false);
+		RepositoryTaskAttribute components = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "Components:", false);
 		for (Component component : project.getComponents()) {
 			components.addOption(component.getName(), component.getId());
 		}
 
-		RepositoryTaskAttribute fixVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, "Fix Versions: ", false);
+		RepositoryTaskAttribute fixVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, "Fix Versions:", false);
 		for (Version version : project.getVersions()) {
 			fixVersions.addOption(version.getName(), version.getId());
 		}
 
-		RepositoryTaskAttribute affectsVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, "Affects Versions: ", false);
+		RepositoryTaskAttribute affectsVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, "Affects Versions:", false);
 		for (Version version : project.getVersions()) {
 			affectsVersions.addOption(version.getName(), version.getId());
 		}
 
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "Environment: ", false);
+		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "Environment:", false);
 	}
 
 	private RepositoryTaskAttribute addAttribute(RepositoryTaskData data, String key, String name, boolean isHidden) {
@@ -181,7 +183,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		return attribute;
 	}
 
-	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) {
+	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) throws JiraException {
 		String parentKey = jiraIssue.getParentKey();
 		if(parentKey!=null) {
 			RepositoryTaskAttribute parentAttribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, "Parent:", false);
@@ -220,7 +222,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, component.getName());
 			}
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+			if(!data.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS).hasOptions()) {
+				data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+			}
 		}
 
 		if (jiraIssue.getReportedVersions() != null) {
@@ -229,7 +233,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, version.getName());
 			}
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+			if(!data.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS).hasOptions()) {
+				data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+			}
 		}
 
 		if (jiraIssue.getFixVersions() != null) {
@@ -238,7 +244,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, version.getName());
 			}
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+			if(!data.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS).hasOptions()) {
+				data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+			}
 		}
 		
 		if(jiraIssue.getEnvironment()!=null) {
@@ -301,6 +309,38 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			}
 			data.addAttribute(id, attribute);
 		}
+		
+		HashSet<String> editableKeys = new HashSet<String>();
+		RepositoryTaskAttribute[] editableAttributes = server.getEditableAttributes(jiraIssue.getKey());
+		if (editableAttributes != null) {
+			for (RepositoryTaskAttribute attribute : editableAttributes) {
+				editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getID()));
+			}
+		}
+		
+		// System.err.println(data.getTaskKey());
+		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
+			boolean editable = editableKeys.contains(attribute.getID().toLowerCase());
+			// System.err.println("  " + attribute.getID() + " : " + attribute.getName() + " : " + editable);
+			attribute.setReadOnly(!editable);
+			if (editable && !attributeFactory.getIsHidden(attribute.getID())) {
+				attribute.setHidden(false);
+			}
+
+			// make attributes read-only if can't find editing options
+			JiraFieldType type = JiraFieldType.valueByKey(attribute
+					.getMetaDataValue(JiraAttributeFactory.TYPE_KEY));
+			Collection<String> options = attribute.getOptions();
+			if (type.equals(JiraFieldType.SELECT)
+					&& (options == null || options.isEmpty() || attribute.isReadOnly())) {
+				attribute.setReadOnly(true);
+			} else if (type.equals(JiraFieldType.MULTISELECT) && (options == null || options.isEmpty())) {
+				attribute.setReadOnly(true);
+			}
+
+			// updated.add(attribute);
+		}
+		
 	}
 
 	private void updateAttribute(RepositoryTaskData data, String key, String value) {
