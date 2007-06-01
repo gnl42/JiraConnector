@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO need mapping statuses -> actions -> fields
+ * TODO need mapping statuses -> fields
+ *
  * @author	Brock Janiczak
  */
 public class Project implements Serializable {
@@ -39,7 +42,7 @@ public class Project implements Serializable {
 	private Component[] components;
 
 	private Version[] versions;
-
+	
 	public String getDescription() {
 		return this.description;
 	}

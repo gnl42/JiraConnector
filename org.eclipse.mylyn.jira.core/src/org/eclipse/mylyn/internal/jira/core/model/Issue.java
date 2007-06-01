@@ -13,6 +13,7 @@ package org.eclipse.mylar.internal.jira.core.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Brock Janiczak
@@ -362,6 +363,38 @@ public class Issue implements Serializable {
 				return field;
 			}
 		}
+		return null;
+	}
+
+	public String[] getFieldValues(String field) {
+		if("resolution".equals(field)) {
+			if(resolution!=null) {
+				return new String[] {resolution.getId()};
+			}
+		} else if("fixVersions".equals(field)) {
+			if(fixVersions!=null) {
+				String[] res = new String[fixVersions.length];
+				for (int i = 0; i < fixVersions.length; i++) {
+					res[i] = fixVersions[i].getId();
+				}
+				return res;
+			}
+		} else if("assignee".equals(field)) {
+			return new String[] {assigneeName};
+		} 
+
+	    // TODO add other fields
+		
+		if(field.startsWith("customfield_")) {
+			for (int i = 0; i < customFields.length; i++) {
+				CustomField customField = customFields[i];
+				if(customField.getId().equals(field)) {
+					List<String> values = customField.getValues();
+					return values.toArray(new String[values.size()]);
+				}
+			}
+		}
+				
 		return null;
 	}
 	

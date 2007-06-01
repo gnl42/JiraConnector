@@ -51,10 +51,10 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
+import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteException;
 import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
 
 /**
@@ -175,7 +175,7 @@ public class JiraWebIssueService {
 				// custom fields
 				for (CustomField customField : issue.getCustomFields()) {
 					for (String value : customField.getValues()) {
-						post.addParameter(customField.getId(), value);
+						post.addParameter(customField.getId(), value==null ? "" : value);
 					}
 				}
 
@@ -236,10 +236,7 @@ public class JiraWebIssueService {
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
-				rssUrlBuffer.append("/secure/CommentAssignIssue.jspa");
-
-				PostMethod post = new PostMethod(rssUrlBuffer.toString());
+				PostMethod post = new PostMethod("/secure/CommentAssignIssue.jspa");
 				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
 				if (resolution != null) {
@@ -276,17 +273,77 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void advanceIssueWorkflow(final Issue issue, final String action) throws JiraException {
+	public void advanceIssueWorkflow(final Issue issue, final String action, final String comment, final String[] fields)
+			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
-
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
-				rssUrlBuffer.append("/secure/WorkflowUIDispatcher.jspa?");
-				rssUrlBuffer.append("id=").append(issue.getId());
-				rssUrlBuffer.append("&action=").append(action);
-				GetMethod method = new GetMethod(rssUrlBuffer.toString());
-				method.setFollowRedirects(false);
+/*
+				StringBuffer buffer = new StringBuffer(baseUrl);
+				buffer.append("/secure/WorkflowUIDispatcher.jspa?");
+				buffer.append("id=").append(issue.getId());
+				buffer.append("&action=").append(action);
+				
+				for (Map.Entry<String, String[]> e : params.entrySet()) {
+					String[] values = e.getValue();
+					if(values==null) {
+						buffer.append('&').append(e.getKey()).append('=');
+					} else {
+						for (String value : values) {
+							buffer.append('&').append(e.getKey()).append('=').append(value);
+						}
+					}
+				}
+
+				GetMethod method = new GetMethod(buffer.toString());
+				method.setFollowRedirects(true);
+
+				//////////////////
+				
+				if (resolution != null) {
+					post.addParameter("resolution", resolution.getId());
+					if (fixVersions == null || fixVersions.length == 0) {
+						post.addParameter("fixVersions", "-1");
+					} else {
+						for (int i = 0; i < fixVersions.length; i++) {
+							post.addParameter("fixVersions", fixVersions[i].getId());
+						}
+					}
+				}
+				
+				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user));
+				
+*/				
+				PostMethod method = new PostMethod("/secure/CommentAssignIssue.jspa");
+				method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+
+				method.addParameter("id", issue.getId());
+				method.addParameter("action", action);
+				method.addParameter("assignee", issue.getAssignee());
+
+				if (comment != null) {
+					method.addParameter("comment", comment);
+				}
+				method.addParameter("commentLevel", "");
+				
+//				method.addParameter("fixVersions", "-1");
+//				for (CustomField field : issue.getCustomFields()) {
+//					for (String value : field.getValues()) {
+//						method.addParameter(field.getId(), value);
+//					}
+//				}
+
+				for (String field : fields) {
+					String[] values = issue.getFieldValues(field);
+					if(values==null) {
+						method.addParameter(field, "");
+					} else {
+						for (String value : values) {
+							method.addParameter(field, value);
+						}
+					}
+				}
+				
 				try {
 					int result = client.executeMethod(method);
 					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
@@ -298,39 +355,38 @@ public class JiraWebIssueService {
 					method.releaseConnection();
 				}
 			}
-
 		});
 	}
 
-	public void startIssue(Issue issue) throws JiraException {
-		advanceIssueWorkflow(issue, "4");
-	}
-
-	public void stopIssue(Issue issue) throws JiraException {
-		advanceIssueWorkflow(issue, "301");
-	}
-
-	public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user) throws JiraException {
-		advanceIssueWorkflow(issue, "5", resolution, fixVersions, comment, assigneeType, user);
-	}
-
-	public void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException {
-		if (issue.getStatus().isResolved() || issue.getStatus().isClosed()) {
-			advanceIssueWorkflow(issue, "3", null, null, comment, assigneeType, user);
-		} else {
-			advanceIssueWorkflow(issue, "6", null, null, comment, assigneeType, user);
-		}
-	}
-
-	public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
-			String user) throws JiraException {
-		if (issue.getStatus().isResolved()) {
-			advanceIssueWorkflow(issue, "701", resolution, fixVersions, comment, assigneeType, user);
-		} else {
-			advanceIssueWorkflow(issue, "2", resolution, fixVersions, comment, assigneeType, user);
-		}
-	}
+//	public void startIssue(Issue issue) throws JiraException {
+//		advanceIssueWorkflow(issue, "4", Collections.<String, String[]>emptyMap());
+//	}
+//
+//	public void stopIssue(Issue issue) throws JiraException {
+//		advanceIssueWorkflow(issue, "301", Collections.<String, String[]>emptyMap());
+//	}
+//
+//	public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
+//			int assigneeType, String user) throws JiraException {
+//		advanceIssueWorkflow(issue, "5", resolution, fixVersions, comment, assigneeType, user);
+//	}
+//
+//	public void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException {
+//		if (issue.getStatus().isResolved() || issue.getStatus().isClosed()) {
+//			advanceIssueWorkflow(issue, "3", null, null, comment, assigneeType, user);
+//		} else {
+//			advanceIssueWorkflow(issue, "6", null, null, comment, assigneeType, user);
+//		}
+//	}
+//
+//	public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
+//			String user) throws JiraException {
+//		if (issue.getStatus().isResolved()) {
+//			advanceIssueWorkflow(issue, "701", resolution, fixVersions, comment, assigneeType, user);
+//		} else {
+//			advanceIssueWorkflow(issue, "2", resolution, fixVersions, comment, assigneeType, user);
+//		}
+//	}
 
 	public void attachFile(final Issue issue, final String comment, final String filename, final byte[] contents,
 			final String contentType) throws JiraException {

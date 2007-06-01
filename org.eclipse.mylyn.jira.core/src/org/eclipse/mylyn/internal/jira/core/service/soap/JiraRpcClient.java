@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.Collections;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -27,6 +28,7 @@ import org.apache.axis.configuration.FileProvider;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
+import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Group;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
@@ -64,6 +66,7 @@ import org.w3c.dom.Element;
 // This class does not represent the data in a JIRA installation. It is merely
 // a helper to get any data that is missing in the cached JiraInstallation
 // object
+
 // TODO do we want the ability to have a non cached JiraInstallation? Might be
 // good
 // if they had an RMI interface
@@ -197,6 +200,7 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
+    // TODO need to cache those
     public RepositoryOperation[] getAvailableOperations(final String taskKey) throws JiraException {
         return call(new RemoteRunnable<RepositoryOperation[]>() {
             public RepositoryOperation[] run() throws java.rmi.RemoteException, JiraException {
@@ -209,22 +213,33 @@ public class JiraRpcClient extends AbstractJiraClient {
                 RepositoryOperation[] operations = new RepositoryOperation[actions.length];
                 for (int i = 0; i < actions.length; i++) {
                     RemoteNamedObject action = actions[i];
-                    operations[i] = new RepositoryOperation(action.getId(), action.getName());
-
-                    // TODO retrieve fields required for action
-//                    RemoteField[] fields = getSoapService().getFieldsForAction(loginToken.getCurrentValue(), //
-//                            taskKey, action.getId());
-//                    for (int j = 0; j < fields.length; j++) {
-//                        RemoteField field = fields[j];
-//                        System.err.println("  " + field.getId() + " : " + field.getName());
-//                    }
+        			operations[i] = new RepositoryOperation(action.getId(), action.getName());
                 }
                 return operations;
             }
-
         });
     }
 
+    // TODO need to cache those
+    public String[] getActionFields(final String taskKey, final String actionId) throws JiraException {
+        return call(new RemoteRunnable<String[]>() {
+            public String[] run() throws java.rmi.RemoteException, JiraException {
+                RemoteField[] remoteFields = getSoapService().getFieldsForAction(loginToken.getCurrentValue(),
+                		taskKey, actionId);
+                if (remoteFields == null) {
+                    return new String[0];
+                }
+
+                String[] fields = new String[remoteFields.length];
+                for (int i = 0; i < remoteFields.length; i++) {
+                	fields[i] = remoteFields[i].getId();
+                }
+                return fields;
+            }
+        });
+    }
+
+    // TODO need to cache those
     public RepositoryTaskAttribute[] getEditableAttributes(final String taskKey) throws JiraException {
         return call(new RemoteRunnable<RepositoryTaskAttribute[]>() {
             public RepositoryTaskAttribute[] run() throws java.rmi.RemoteException, JiraException {
@@ -243,6 +258,21 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
+    // TODO need to cache those
+    public CustomField[] getCustomAttributes() throws JiraException {
+        return call(new RemoteRunnable<CustomField[]>() {
+            public CustomField[] run() throws java.rmi.RemoteException, JiraException {
+                RemoteField[] remoteFields = getSoapService().getCustomFields(loginToken.getCurrentValue());
+                CustomField[] fields = new CustomField[remoteFields.length];
+                for (int i = 0; i < remoteFields.length; i++) {
+					RemoteField remoteField = remoteFields[i];
+					fields[i] = new CustomField(remoteField.getId(), null, remoteField.getName(), Collections.<String>emptyList());
+				}
+                return fields;
+            }
+        });
+    }
+    
     public Issue createIssue(Issue issue) throws JiraException {
         return issueService.createIssue(issue);
     }
@@ -418,31 +448,32 @@ public class JiraRpcClient extends AbstractJiraClient {
         issueService.advanceIssueWorkflow(issue, action, resolution, fixVersions, comment, assigneeType, user);
     }
 
-    public void advanceIssueWorkflow(Issue issue, String action) throws JiraException {
-        issueService.advanceIssueWorkflow(issue, action);
+    public void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException {
+		String[] fields = getActionFields(issue.getKey(), action);
+		issueService.advanceIssueWorkflow(issue, action, comment, fields);
     }
 
-    public void startIssue(Issue issue) throws JiraException {
-        issueService.startIssue(issue);
-    }
-
-    public void stopIssue(Issue issue) throws JiraException {
-        issueService.stopIssue(issue);
-    }
-
-    public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-            int assigneeType, String user) throws JiraException {
-        issueService.resolveIssue(issue, resolution, fixVersions, comment, assigneeType, user);
-    }
-
-    public void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException {
-        issueService.reopenIssue(issue, comment, assigneeType, user);
-    }
-
-    public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
-            String user) throws JiraException {
-        issueService.closeIssue(issue, resolution, fixVersions, comment, assigneeType, user);
-    }
+//    public void startIssue(Issue issue) throws JiraException {
+//        issueService.startIssue(issue);
+//    }
+//
+//    public void stopIssue(Issue issue) throws JiraException {
+//        issueService.stopIssue(issue);
+//    }
+//
+//    public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
+//            int assigneeType, String user) throws JiraException {
+//        issueService.resolveIssue(issue, resolution, fixVersions, comment, assigneeType, user);
+//    }
+//
+//    public void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException {
+//        issueService.reopenIssue(issue, comment, assigneeType, user);
+//    }
+//
+//    public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
+//            String user) throws JiraException {
+//        issueService.closeIssue(issue, resolution, fixVersions, comment, assigneeType, user);
+//    }
 
     public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException {
         issueService.attachFile(issue, comment, filename, contents, contentType);

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Mylar project committers - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.mylar.jira.tests;
 
 import java.io.File;
@@ -6,15 +17,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import junit.framework.AssertionFailedError;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.tasks.core.RepositoryOperation;
 
 public class JiraTestUtils {
 
@@ -31,6 +45,32 @@ public class JiraTestUtils {
 		}
 		return resolutions[0];
 	}
+	
+	public static String getOperation(JiraClient server, String issueKey, String name) throws JiraException {
+		refreshDetails(server);
+		
+		RepositoryOperation[] operations = server.getAvailableOperations(issueKey);
+		for (RepositoryOperation operation : operations) {
+			if (operation.getOperationName().toLowerCase().startsWith(name)) {
+				return operation.getKnobName();
+			}
+		}
+		
+		throw new AssertionFailedError("Unable to find operation " + name +" in " + Arrays.asList(operations));
+	}
+	
+	public static String getCustomField(JiraClient server, String name) throws JiraException {
+		refreshDetails(server);
+		
+		CustomField[] fields = server.getCustomAttributes();
+		for (CustomField field : fields) {
+			if (field.getName().toLowerCase().startsWith(name.toLowerCase())) {
+				return field.getId();
+			}
+		}
+		return null;
+	}
+	
 
 	public static Issue createIssue(JiraClient server, String summary) throws JiraException {
 		refreshDetails(server);
@@ -81,5 +121,5 @@ public class JiraTestUtils {
 			out.close();
 		}		
 	}
-	
+
 }

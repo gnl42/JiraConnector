@@ -69,21 +69,27 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
-		client.startIssue(issue);
+
+		String startOperation = JiraTestUtils.getOperation(client, issue.getKey(), "start");
+		
+		client.advanceIssueWorkflow(issue, startOperation, null);
 		try {
-			client.startIssue(issue);
+			client.advanceIssueWorkflow(issue, startOperation, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
-		client.stopIssue(issue);
+		
+		String stopOperation = JiraTestUtils.getOperation(client, issue.getKey(), "stop");
+
+		client.advanceIssueWorkflow(issue, stopOperation, null);
 		try {
-			client.stopIssue(issue);
+			client.advanceIssueWorkflow(issue, stopOperation, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
-		client.startIssue(issue);
+		client.advanceIssueWorkflow(issue, startOperation, null);
 	}
 
 	public void testResolveCloseReopenIssue() throws Exception {
@@ -95,34 +101,45 @@ public class JiraRpcClientTest extends TestCase {
 
 		Resolution resolution = JiraTestUtils.getFixedResolution(client);
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
+		issue.setResolution(resolution);
+		issue.setFixVersions(new Version[0]);
+		
+		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
+		String closeOperation = JiraTestUtils.getOperation(client, issue.getKey(), "close");
 
-		client.resolveIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
+
 		issue = client.getIssueByKey(issue.getKey());
 		assertTrue(issue.getStatus().isResolved());
+		
 		try {
-			client.resolveIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+			client.advanceIssueWorkflow(issue, resolveOperation, "comment");
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
 
-		client.closeIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+		client.advanceIssueWorkflow(issue, closeOperation, "comment");
 		issue = client.getIssueByKey(issue.getKey());
 		assertTrue(issue.getStatus().isClosed());
+
 		try {
-			client.resolveIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+			client.advanceIssueWorkflow(issue, resolveOperation, "comment");
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
+		
 		try {
-			client.closeIssue(issue, resolution, new Version[0], "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+			client.advanceIssueWorkflow(issue, closeOperation, "comment");
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
 
-		client.reopenIssue(issue, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+		String reopenOperation = JiraTestUtils.getOperation(client, issue.getKey(), "reopen");
+
+		client.advanceIssueWorkflow(issue, reopenOperation, "comment");
 		issue = client.getIssueByKey(issue.getKey());
 		assertTrue(issue.getStatus().isReopened());
 	}

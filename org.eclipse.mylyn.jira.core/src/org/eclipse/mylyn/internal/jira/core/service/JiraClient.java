@@ -16,6 +16,7 @@ import java.net.Proxy;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
+import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
@@ -25,7 +26,6 @@ import org.eclipse.mylar.internal.jira.core.model.Query;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.tasks.core.RepositoryOperation;
 import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
@@ -193,13 +193,25 @@ public interface JiraClient {
 	String getKeyFromId(final String issueId) throws JiraException;
 	
 	/**
-	 * Returns available operations for <code>issueKey</code> 
+	 * Returns available operations for <code>issueKey</code>
 	 * 
 	 * @param issueKey
 	 *            Unique key of the issue to find
-	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>. 
+	 * @return corresponding array of <code>RepositoryOperation</code> objects
+	 *         or <code>null</code>.
 	 */
 	RepositoryOperation[] getAvailableOperations(final String issueKey) throws JiraException;
+	
+	/**
+	 * Returns fields for given action id
+	 * 
+	 * @param issueKey
+	 *            Unique key of the issue to find
+	 * @param actionId
+	 *            Unique id for action to get fields for
+	 * @return array of field ids for given actionId
+	 */
+	String[] getActionFields(final String issueKey, final String actionId) throws JiraException;
 	
 	/**
 	 * Returns editable attributes for <code>issueKey</code> 
@@ -210,6 +222,8 @@ public interface JiraClient {
 	 */
 	RepositoryTaskAttribute[] getEditableAttributes(final String issueKey) throws JiraException;
 	
+    CustomField[] getCustomAttributes() throws JiraException;
+
 	/**
 	 * @param query
 	 *            Query to be executed
@@ -247,17 +261,24 @@ public interface JiraClient {
 
 	void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException;
 
-	void startIssue(Issue issue) throws JiraException;
+    void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException;
 
-	void stopIssue(Issue issue) throws JiraException;
-
-	void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user) throws JiraException;
-
-	void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user) throws JiraException;
-
-	void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException;
+//    @Deprecated
+//	void startIssue(Issue issue) throws JiraException;
+//
+//    @Deprecated
+//	void stopIssue(Issue issue) throws JiraException;
+//
+//    @Deprecated
+//	void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
+//			int assigneeType, String user) throws JiraException;
+//
+//	@Deprecated
+//	void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
+//			int assigneeType, String user) throws JiraException;
+//
+//	@Deprecated
+//	void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException;
 
 	void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException;
 

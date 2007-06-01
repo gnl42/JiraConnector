@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
+import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.IssueType;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
@@ -90,10 +91,6 @@ public class MockJiraClient extends AbstractJiraClient {
 			throws JiraException {
 	}
 
-	public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
-			String user) throws JiraException {
-	}
-
 	public Issue createIssue(Issue issue) throws JiraException {
 		return null;
 	}
@@ -120,13 +117,6 @@ public class MockJiraClient extends AbstractJiraClient {
 	public void logout() {
 	}
 
-	public void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException {
-	}
-
-	public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-			int assigneeType, String user) throws JiraException {
-	}
-
 	public byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException {
 		return null;
 	}
@@ -135,12 +125,6 @@ public class MockJiraClient extends AbstractJiraClient {
 	}
 
 	public void search(Query query, IssueCollector collector) throws JiraException {
-	}
-
-	public void startIssue(Issue issue) throws JiraException {
-	}
-
-	public void stopIssue(Issue issue) throws JiraException {
 	}
 
 	public void unvoteIssue(Issue issue) throws JiraException {
@@ -164,6 +148,17 @@ public class MockJiraClient extends AbstractJiraClient {
 
 	public RepositoryTaskAttribute[] getEditableAttributes(String issueKey) throws JiraException {
 		return null;
+	}
+
+	public String[] getActionFields(String issueKey, String actionId) throws JiraException {
+		return null;
+	}
+	
+	public CustomField[] getCustomAttributes() throws JiraException {
+		return null;
+	}
+	
+	public void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException {
 	}
 
 }

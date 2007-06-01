@@ -302,14 +302,11 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	@Override
 	protected boolean hasContentAssist(RepositoryTaskAttribute attribute) {
-		String id = attribute.getID();
-		if (id.startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
-			String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
+		String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
 			// TODO need more robust detection
-			if ("com.atlassian.jira.plugin.system.customfieldtypes:userpicker".equals(key)) {
+			if (JiraFieldType.USERPICKER.getKey().equals(key)) {
 				return true;
 			}
-		}
 
 		return super.hasContentAssist(attribute);
 	}
