@@ -148,7 +148,7 @@ public class JiraCorePlugin extends Plugin {
 		if (e instanceof JiraAuthenticationException) {
 			return RepositoryStatus.createLoginError(url, ID);
 		} else if (e instanceof JiraServiceUnavailableException) {
-			return new RepositoryStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.REPOSITORY_ERROR, e.getMessage(), null);
+			return new RepositoryStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.IO_ERROR, e.getMessage(), e);
 		} else if (e instanceof JiraRemoteMessageException) {
 			return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.REPOSITORY_ERROR, e
 					.getMessage(), ((JiraRemoteMessageException) e).getHtmlMessage());

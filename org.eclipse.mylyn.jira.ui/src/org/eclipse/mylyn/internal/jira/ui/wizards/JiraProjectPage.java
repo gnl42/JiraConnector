@@ -12,25 +12,27 @@ package org.eclipse.mylar.internal.jira.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,6 +40,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
@@ -45,6 +48,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
  * Implements a wizard page for selecting a JIRA project.
  * 
  * @author Steffen Pingel
+ * @author Eugene Kuleshov
  */
 public class JiraProjectPage extends WizardPage {
 
@@ -126,6 +130,16 @@ public class JiraProjectPage extends WizardPage {
 			}
 
 		});
+		
+		projectTreeViewer.addOpenListener(new IOpenListener() {
+			public void open(OpenEvent event) {
+				if (getWizard().canFinish()) {
+					if (getWizard().performFinish()) {
+						((WizardDialog) getContainer()).close();
+					}
+				}
+			}
+		});
 
 		Button updateButton = new Button(composite, SWT.LEFT | SWT.PUSH);
 		updateButton.setText(LABEL_UPDATE);
@@ -152,40 +166,44 @@ public class JiraProjectPage extends WizardPage {
 	}
 
 	private void updateProjectsFromRepository(final boolean force) {
-		final JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
-		if (!server.hasDetails() || force) {
-			final AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager()
-			.getRepositoryConnector(repository.getKind());
+		final JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+		if (!client.hasDetails() || force) {
 			try {
 				getContainer().run(true, false, new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
-						try { 
-							try {
-								connector.updateAttributes(repository, monitor);
-							} catch (CoreException e) {
-								throw new InvocationTargetException(e);
-							}
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+						try {
+							JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+							client.refreshDetails(monitor);
+						} catch (JiraException e) {
+							showWarning(NLS.bind( //
+									"Error updating attributes: {0}\n"
+											+ "Please check repository settings in the Task Repositories view.", //
+									e.getMessage()));
+						} catch (Exception e) {
+							String msg = NLS.bind( //
+									"Error updating attributes: {0}\n"
+											+ "Please check repository settings in the Task Repositories view.", //
+									e.getMessage());
+							showWarning(msg);
+							MylarStatusHandler.fail(e, msg, false);
 						} finally {
 							monitor.done();
 						}
 					}
+					private void showWarning(final String msg) {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								JiraProjectPage.this.setErrorMessage(msg);
+							}
+						});
+					}
 				});
-			} catch (InvocationTargetException e) {
-				if (e.getCause() instanceof CoreException) {
-					MylarStatusHandler.displayStatus("Error updating project list", ((CoreException) e.getCause())
-							.getStatus());
-				} else {
-					MylarStatusHandler.fail(e, "Error updating project list", true);
-				}
-				return;
-			} catch (InterruptedException ex) {
-				// canceled
+			} catch (Exception e) {
 				return;
 			}
 		}
 		
-		projectTree.getViewer().setInput(server.getProjects());
+		projectTree.getViewer().setInput(client.getProjects());
 	}
 
 	public Project getSelectedProject() {

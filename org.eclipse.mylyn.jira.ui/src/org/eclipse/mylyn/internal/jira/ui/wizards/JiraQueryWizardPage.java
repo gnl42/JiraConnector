@@ -185,14 +185,13 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		Job job = new Job(JOB_LABEL) {
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
+				monitor.beginTask("Downloading list of filters", IProgressMonitor.UNKNOWN);
 				NamedFilter[] loadedFilters = new NamedFilter[0];
 				IStatus status = Status.OK_STATUS;
 				try {
-					monitor.beginTask("Downloading list of filters", IProgressMonitor.UNKNOWN);
 					JiraClient jiraServer = JiraClientFacade.getDefault().getJiraClient(repository);
 					loadedFilters = jiraServer.getNamedFilters();
 					filters = loadedFilters; 
-					monitor.done();
 
 				} catch (JiraException e) {
 					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR, JiraCorePlugin.ID,
@@ -207,6 +206,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 					return Status.CANCEL_STATUS;
 				} finally {
 					showFilters(loadedFilters, status);
+					monitor.done();
 				}
 				return status; 
 			}
