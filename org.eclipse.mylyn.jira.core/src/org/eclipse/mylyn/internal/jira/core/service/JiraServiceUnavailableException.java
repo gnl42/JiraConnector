@@ -20,7 +20,7 @@ public class JiraServiceUnavailableException extends JiraException {
 	private static final long serialVersionUID = -6648244599873827934L;
 
 	public JiraServiceUnavailableException(String message) {
-		super(message);
+		super(message==null ? "Service unavailable" : message);
 	}
 
 	public JiraServiceUnavailableException(Throwable cause) {

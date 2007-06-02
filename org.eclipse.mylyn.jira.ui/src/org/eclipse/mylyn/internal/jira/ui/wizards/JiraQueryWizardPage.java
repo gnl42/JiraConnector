@@ -17,12 +17,16 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.mylar.core.MylarStatusHandler;
+import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylar.tasks.core.RepositoryStatus;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.search.AbstractRepositoryQueryPage;
@@ -107,7 +111,9 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean selection = buttonSaved.getSelection();
-				filterList.setEnabled(selection);
+				if(filters!=null) {
+					filterList.setEnabled(selection);
+				}
 				updateButton.setEnabled(selection);
 				setPageComplete(selection);
 			}
@@ -179,34 +185,55 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		Job job = new Job(JOB_LABEL) {
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
+				NamedFilter[] loadedFilters = new NamedFilter[0];
+				IStatus status = Status.OK_STATUS;
 				try {
 					monitor.beginTask("Downloading list of filters", IProgressMonitor.UNKNOWN);
 					JiraClient jiraServer = JiraClientFacade.getDefault().getJiraClient(repository);
-					filters = jiraServer.getNamedFilters();
+					loadedFilters = jiraServer.getNamedFilters();
+					filters = loadedFilters; 
 					monitor.done();
 
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							if (!filterList.isDisposed()) {
-								displayFilters(filters);
-							}
-							if (!updateButton.isDisposed() && !buttonSaved.isDisposed()) {
-								updateButton.setEnabled(buttonSaved.getSelection());
-							}
-						}
-					});
-				} catch (Exception e) {
-					JiraClientFacade.handleConnectionException(e);
+				} catch (JiraException e) {
+					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR, JiraCorePlugin.ID,
+							"Could not download saved filters: " + e.getMessage() + "\n"
+									+ "Please check repository settings in the Task Repositories view");
 					return Status.CANCEL_STATUS;
+				} catch (Exception e) {
+					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR, JiraCorePlugin.ID,
+							"Could not download saved filters from Jira repository.\n"
+									+ "Please check repository settings in the Task Repositories view");
+					MylarStatusHandler.log(e, status.getMessage());
+					return Status.CANCEL_STATUS;
+				} finally {
+					showFilters(loadedFilters, status);
 				}
-				return Status.OK_STATUS;
+				return status; 
+			}
+
+			private void showFilters(final NamedFilter[] loadedFilters, final IStatus status) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						if (!filterList.isDisposed()) {
+							displayFilters(loadedFilters, status);
+						}
+						if (!updateButton.isDisposed() && !buttonSaved.isDisposed()) {
+							updateButton.setEnabled(buttonSaved.getSelection());
+						}
+					}
+				});
 			}
 		};
 		job.schedule();
 	}
 
-	/** Called by the download job when the filters have been downloaded */
-	public void displayFilters(NamedFilter[] filters) {
+	/** Called by the download job when the filters have been downloaded 
+	 * @param status */
+	public void displayFilters(NamedFilter[] filters, IStatus status) {
+		if(!status.isOK()) {
+			setMessage(status.getMessage(), IMessageProvider.ERROR);
+		}
+		
 		filterList.removeAll();
 
 		if (filters.length == 0) {
@@ -214,8 +241,10 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 			filterList.add("No filters found");
 			filterList.deselectAll();
 
-			setMessage("No saved filters found. Please create filters using JIRA web interface or"
-					+ " follow to the next page to create custom query.", IMessageProvider.WARNING);
+			if(status.isOK()) {
+				setMessage("No saved filters found. Please create filters using JIRA web interface or"
+						+ " follow to the next page to create custom query.", IMessageProvider.WARNING);
+			}
 			setPageComplete(false);
 			return;
 		}
@@ -236,7 +265,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		filterList.select(n);
 		filterList.showSelection();
 		filterList.setEnabled(buttonSaved.getSelection());
-		setPageComplete(true);
+		setPageComplete(status.isOK());
 	}
 
 	/** Returns the filter selected by the user or null on failure */

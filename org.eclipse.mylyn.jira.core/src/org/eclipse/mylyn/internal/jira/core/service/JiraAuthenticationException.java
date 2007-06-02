@@ -20,7 +20,7 @@ public class JiraAuthenticationException extends JiraException {
 	private static final long serialVersionUID = 8723151254362915272L;
 
 	public JiraAuthenticationException(String message) {
-		super(message);
+		super(message==null ? "Invalid user name or password" : message);
 	}
 	
 }

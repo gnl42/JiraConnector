@@ -17,7 +17,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -58,19 +57,18 @@ import org.eclipse.mylar.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.DatePicker;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.search.AbstractRepositoryQueryPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -238,11 +236,9 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			title = new Text(c, SWT.BORDER);
 			title.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
 			title.addModifyListener(new ModifyListener() {
-
 				public void modifyText(ModifyEvent e) {
 					validatePage();
 				}
-
 			});
 		}
 
@@ -301,7 +297,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 			ISelectionChangedListener selectionChangeListener = new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent event) {
-					validatePage();
+					// validatePage();
 				}
 			};
 
@@ -438,12 +434,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		// TODO put content assist here and a label describing what is
 		// available
 
-		queryString.addFocusListener(new FocusAdapter() {
-
-			public void focusLost(FocusEvent e) {
-				validatePage();
+		queryString.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validatePage();
 			}
-
 		});
 
 		Label lblFields = new Label(c, SWT.NONE);
@@ -453,7 +447,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		{
 			SelectionAdapter selectionAdapter = new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					validatePage();
+					// validatePage();
 				}
 			};
 
@@ -515,11 +509,9 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			reporter.setEnabled(false);
 
 			reporter.addModifyListener(new ModifyListener() {
-
 				public void modifyText(ModifyEvent e) {
-					validatePage();
+					// validatePage();
 				}
-
 			});
 		}
 
@@ -556,7 +548,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			});
 
 			assigneeType.addSelectionChangedListener(new ISelectionChangedListener() {
-
 				public void selectionChanged(SelectionChangedEvent event) {
 					Object selection = ((IStructuredSelection) event.getSelection()).getFirstElement();
 					if (SPECIFIC_USER_ASSIGNEE.equals(selection) || SPECIFIC_GROUP_ASSIGNEE.equals(selection)) {
@@ -565,9 +556,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 						assignee.setEnabled(false);
 						assignee.setText(""); //$NON-NLS-1$
 					}
-					validatePage();
+					// validatePage();
 				}
-
 			});
 
 			assigneeType.setInput(server);
@@ -576,11 +566,9 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			assignee.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 			assignee.setEnabled(false);
 			assignee.addModifyListener(new ModifyListener() {
-
 				public void modifyText(ModifyEvent e) {
-					validatePage();
+					// validatePage();
 				}
-
 			});
 		}
 
@@ -761,7 +749,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				}
 				return new Object[] { ANY_REPORTED_VERSION };
 			}
-
 		});
 		fixFor.setLabelProvider(new VersionLabelProvider());
 		fixFor.setInput(null);
@@ -775,19 +762,15 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		project.getControl().setLayoutData(gridData);
 
 		project.setLabelProvider(new LabelProvider() {
-
 			public String getText(Object element) {
 				if (element instanceof Placeholder) {
 					return ((Placeholder) element).getText();
 				}
-
 				return ((Project) element).getName();
 			}
-
 		});
 
 		project.addSelectionChangedListener(new ISelectionChangedListener() {
-
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = ((IStructuredSelection) event.getSelection());
 				Project selectedProject = null;
@@ -796,9 +779,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				}
 
 				updateCurrentProject(selectedProject);
-				validatePage();
+				// validatePage();
 			}
-
 		});
 	}
 
@@ -823,23 +805,25 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	}
 
-	// public boolean isPageComplete() {
-	// if (namedQuery && name != null && name.getText().length() == 0) {
-	// return false;
-	// } else {
-	// return true;
-	// }
-	// }
-
 	@Override
 	public boolean isPageComplete() {
-		return super.isPageComplete();
+		// XXX workaround for bad implementation of AbstractRepositoryQueryPage.isPageComplete()
+		String errorMessage = getErrorMessage();
+		boolean isPageComplete = super.isPageComplete();
+		if(errorMessage!=null) {
+			setErrorMessage(errorMessage);
+		}
+		return isPageComplete;
 	}
 
 	void validatePage() {
-		// causes exception in WizardDialog
-		// getContainer().updateButtons();
-		setPageComplete(isPageComplete());
+		if (title != null && !title.getText().equals("")) {
+			setErrorMessage(null);
+			setPageComplete(true);
+		} else {
+			setErrorMessage("Query title is mandatory");
+			setPageComplete(false);
+		}
 	}
 
 	private void loadDefaults() {
@@ -857,10 +841,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	}
 
 	private void loadFromWorkingCopy() {
-		if (title != null && workingCopy.getName() != null) {
-			title.setText(workingCopy.getName());
-		}
-
 		if (workingCopy.getDescription() != null) {
 		}
 
@@ -1300,16 +1280,33 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private void updateAttributesFromRepository(final boolean force) {
 		if (!server.hasDetails() || force) {
-			final AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-					repository.getKind());
 			try {
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+						JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 						try {
-							connector.updateAttributes(repository, monitor);
-						} catch (CoreException e) {
-							throw new InvocationTargetException(e);
+							client.refreshDetails(monitor);
+						} catch (JiraException e) {
+							showWarning(NLS.bind( //
+									"Error updating attributes: {0}\n"
+											+ "Please check repository settings in the Task Repositories view.", //
+									e.getMessage()));
+						} catch (Exception e) {
+							String msg = NLS.bind( //
+									"Error updating attributes: {0}\n"
+											+ "Please check repository settings in the Task Repositories view.", //
+									e.getMessage());
+							showWarning(msg);
+							MylarStatusHandler.fail(e, msg, false);
 						}
+					}
+
+					private void showWarning(final String msg) {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								JiraQueryPage.this.setErrorMessage(msg);
+							}
+						});
 					}
 				};
 
@@ -1322,12 +1319,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 					service.run(true, true, runnable);
 				}
 			} catch (InvocationTargetException e) {
-				if (e.getCause() instanceof CoreException) {
-					MylarStatusHandler.displayStatus("Error updating attributes", ((CoreException) e.getCause())
-							.getStatus());
-				} else {
-					MylarStatusHandler.fail(e, "Error updating attributes", true);
-				}
 				return;
 			} catch (InterruptedException e) {
 				return;
@@ -1469,6 +1460,11 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		if (inSearchContainer()) {
 			restoreWidgetValues();
 		}
+
+		if (title != null && workingCopy.getName() != null) {
+			title.setText(workingCopy.getName());
+		}
+
 		loadFromWorkingCopy();
 	}
 

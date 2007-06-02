@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -385,21 +386,23 @@ public class JiraRpcClient extends AbstractJiraClient {
                 int responseCode = Integer.parseInt(httpErrorElement.getFirstChild().getTextContent());
                 switch (responseCode) {
                 case HttpURLConnection.HTTP_INTERNAL_ERROR:
-                    return "Internal Server Error.  Please contact your Jira administrator.";
+                    return "Internal Server Error. Please contact your Jira administrator.";
                 case HttpURLConnection.HTTP_UNAVAILABLE:
-                    return "Jira RPC interface is not enabled.  Please contact your Jira administrator.";
+                    return "Jira RPC interface is not enabled. Please contact your Jira administrator.";
                 case HttpURLConnection.HTTP_NOT_FOUND:
-                    return "Web service endpoint not found.  Please check the URL.";
+                    return "Web service endpoint not found.";
                 case HttpURLConnection.HTTP_MOVED_PERM:
-                    return "The location of the Jira server has moved.  Please check the URL.";
+                    return "The location of the Jira server has moved.";
                 }
             }
         }
 
         if (e.getCause() != null) {
             Throwable cause = e.getCause();
-            if (cause instanceof ConnectException) {
-                return "Unable to connect to server.  Please check the URL.";
+            if (cause instanceof UnknownHostException) {
+            	return "Unknown host.";
+            } else if (cause instanceof ConnectException) {
+                return "Unable to connect to server.";
             }
             return e.getCause().getLocalizedMessage();
         }
