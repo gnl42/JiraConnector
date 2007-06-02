@@ -37,6 +37,7 @@ import org.eclipse.mylar.internal.jira.core.model.Status;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
+import org.eclipse.mylar.internal.jira.core.service.JiraInsufficientPermissionException;
 import org.eclipse.mylar.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
@@ -271,13 +272,17 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		
 		// TODO move into server configuration and populate lazily
 		HashSet<String> editableKeys = new HashSet<String>();
-		RepositoryTaskAttribute[] editableAttributes = server.getEditableAttributes(jiraIssue.getKey());
-		if (editableAttributes != null) {
-			// System.err.println(data.getTaskKey());
-			for (RepositoryTaskAttribute attribute : editableAttributes) {
-				// System.err.println("  " + attribute.getID() + " : " + attribute.getName());
-				editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getID()));
+		try {
+			RepositoryTaskAttribute[] editableAttributes = server.getEditableAttributes(jiraIssue.getKey());
+			if (editableAttributes != null) {
+				// System.err.println(data.getTaskKey());
+				for (RepositoryTaskAttribute attribute : editableAttributes) {
+					// System.err.println("  " + attribute.getID() + " : " + attribute.getName());
+					editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getID()));
+				}
 			}
+		} catch(JiraInsufficientPermissionException ex) {
+			// ignore
 		}
 		
 		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
@@ -352,7 +357,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		RepositoryOperation[] availableOperations = server.getAvailableOperations(issue.getKey());
 		for (RepositoryOperation operation : availableOperations) {
 			String[] fields = server.getActionFields(issue.getKey(), operation.getKnobName());
-			System.err.println(issue.getKey() + " : "+ operation.getKnobName() + " " + operation.getOperationName() + " : " + Arrays.asList(fields));
+			// System.err.println(issue.getKey() + " : "+ operation.getKnobName() + " " + operation.getOperationName() + " : " + Arrays.asList(fields));
 			for (String field : fields) {
 				if(RepositoryTaskAttribute.RESOLUTION.equals(attributeFactory.mapCommonAttributeKey(field))) {
 					operation.setUpOptions("resolve");
