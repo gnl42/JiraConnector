@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -34,6 +33,7 @@ import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Resolution;
 import org.eclipse.mylar.internal.jira.core.model.Status;
+import org.eclipse.mylar.internal.jira.core.model.Subtask;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
@@ -159,9 +159,19 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) throws JiraException {
 		String parentKey = jiraIssue.getParentKey();
 		if(parentKey!=null) {
-			data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentKey);
+			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentKey);
 		} else {
 			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+		}
+		
+		Subtask[] subtasks = jiraIssue.getSubtasks();
+		if(subtasks!=null && subtasks.length>0) {
+			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS);
+			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS);
+			for (Subtask subtask : subtasks) {
+				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, subtask.getIssueId());
+				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, subtask.getIssueKey());
+			}
 		}
 		
 		data.addAttributeValue(RepositoryTaskAttribute.DATE_CREATION, dateToString(jiraIssue.getCreated()));

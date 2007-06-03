@@ -35,6 +35,7 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Query;
+import org.eclipse.mylar.internal.jira.core.model.Subtask;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.Order;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter;
@@ -150,8 +151,32 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			// task = createTask(issue, handleIdentifier);
 			// }
 			if (task instanceof JiraTask) {
-				updateTaskDetails(repository.getUrl(), (JiraTask) task, issue, false);
+				JiraTask repositoryTask = (JiraTask) task;
+				updateTaskDetails(repository.getUrl(), repositoryTask, issue, false);
+				
+				// subtasks (have this info right in the query results)
+				repositoryTask.dropSubTasks();
+				Subtask[] subtasks = issue.getSubtasks();
+				if(subtasks!=null) {
+					for (Subtask subtask : subtasks) {
+						String id = subtask.getIssueId();
+						ITask subTask = taskList.getTask(repository.getUrl(), id);
+						if (subTask == null) {
+							if (!id.trim().equals(repositoryTask.getTaskId()) && !"".equals(id)) {
+								try {
+									subTask = createTaskFromExistingId(repository, id, false, new NullProgressMonitor());
+								} catch (CoreException e) {
+									// ignore
+								}
+							}
+						}
+						if (subTask != null) {
+							repositoryTask.addSubTask(subTask);
+						}
+					}
+				}
 			}
+
 			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(),
 					taskId, issue.getKey());
 			hit.setCompleted(isCompleted(issue.getStatus()));
@@ -361,7 +386,26 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public void updateTaskFromTaskData(TaskRepository repository, AbstractRepositoryTask repositoryTask, RepositoryTaskData taskData, boolean retrieveSubTasks) {
 		if (repositoryTask instanceof JiraTask) {
-			JiraTask jiraTask = (JiraTask) repositoryTask;			
+			JiraTask jiraTask = (JiraTask) repositoryTask;
+
+			// subtasks
+			repositoryTask.dropSubTasks();
+			for (String subId : getSubTaskIds(taskData)) {
+				ITask subTask = taskList.getTask(repository.getUrl(), subId);
+				if (subTask == null && retrieveSubTasks) {
+					if (!subId.trim().equals(taskData.getId()) && !subId.equals("")) {
+						try {
+							subTask = createTaskFromExistingId(repository, subId, false, new NullProgressMonitor());
+						} catch (CoreException e) {
+							// ignore
+						}
+					}
+				}
+				if (subTask != null) {
+					repositoryTask.addSubTask(subTask);
+				}
+			}
+
 			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));			
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
@@ -387,6 +431,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			MylarStatusHandler.log("Unable to update data for task of type " + repositoryTask.getClass().getName(),
 					this);
 		}
+	}
+
+	private List<String> getSubTaskIds(RepositoryTaskData taskData) {
+		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttribute.SUBTASK_IDS.getId());
+		if (attribute != null) {
+			return attribute.getValues();
+		}
+		return Collections.emptyList();
 	}
 
 	private static PriorityLevel getMylarPriority(JiraClient client, String jiraPriority) {

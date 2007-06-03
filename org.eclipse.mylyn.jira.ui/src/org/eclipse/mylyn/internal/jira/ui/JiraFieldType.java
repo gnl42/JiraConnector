@@ -57,7 +57,10 @@ public enum JiraFieldType {
 	 VELOCITYVIEWMESSAGE("com.atlassian.jira.toolkit:velocityviewmessage"),
 	 VIEWMESSAGE("com.atlassian.jira.toolkit:viewmessage"), 
 
-	 UNKNOWN(null);
+	 ISSUELINK("org.mylar.jira.issuelink"), // field that has link to a single issue
+	 ISSUELINKS("org.mylar.jira.issuelinks"), // field that has list of links to issues
+
+	 UNKNOWN(null); 
 
 	 private String key;
 

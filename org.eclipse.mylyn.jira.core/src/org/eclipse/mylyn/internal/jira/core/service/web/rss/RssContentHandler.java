@@ -24,6 +24,7 @@ import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.CustomField;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Project;
+import org.eclipse.mylar.internal.jira.core.model.Subtask;
 import org.eclipse.mylar.internal.jira.core.model.Version;
 import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
@@ -158,6 +159,8 @@ public class RssContentHandler extends DefaultHandler {
 	private static final String ACTUAL = "timespent"; //$NON-NLS-1$
 
 	private static final String SUBTASKS = "subtasks"; //$NON-NLS-1$
+
+	private static final String SUBTASK = "subtask"; //$NON-NLS-1$
 	
 	private static final String ATTACHMENTS = "attachments"; //$NON-NLS-1$
 
@@ -259,6 +262,8 @@ public class RssContentHandler extends DefaultHandler {
 
 	private static final int IN_CUSTOM_FIELD_VALUE = 16;
 
+	private static final int IN_SUBTASKS = 17;
+
 	int state = START;
 
 	private StringBuffer currentElementText;
@@ -286,6 +291,10 @@ public class RssContentHandler extends DefaultHandler {
 	private ArrayList<Attachment> currentAttachments = new ArrayList<Attachment>();
 
 	private ArrayList<CustomField> currentCustomFields = new ArrayList<CustomField>();
+
+	private String currentSubtaskId;
+
+	private ArrayList<Subtask> currentSubtasks = new ArrayList<Subtask>();
 	
 	private String customFieldId;
 	
@@ -394,6 +403,8 @@ public class RssContentHandler extends DefaultHandler {
 				state = IN_COMMENTS;
 			} else if (ISSUE_LINKS.equals(localName)) {
 				state = IN_ISSUE_LINKS;
+			} else if (SUBTASKS.equals(localName)) {
+				state = IN_SUBTASKS;
 			} else if (CUSTOM_FIELDS.equals(localName)) {
 				state = IN_CUSTOM_FIELDS;
 			} else if (ATTACHMENTS.equals(localName)) {
@@ -474,11 +485,22 @@ public class RssContentHandler extends DefaultHandler {
 				attachmentCreated = convertToDate(attributes.getValue(CREATED_ATTR));
 			}
 			break;
+		case IN_SUBTASKS:
+			if(SUBTASK.equals(localName)) {
+				currentSubtaskId = attributes.getValue(ID_ATTR);
+			}
 		}
 	}
 
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		switch (state) {
+		case IN_SUBTASKS:
+			if(SUBTASK.equals(localName)) {
+				currentSubtasks.add(new Subtask(currentSubtaskId, currentElementText.toString()));
+			}else if(SUBTASKS.equals(localName)) {
+				state = IN_ITEM;
+			}
+			break;
 		case IN_ATTACHMENTS:
 			if (ATTACHMENTS.equals(localName)) {
 				state = IN_ITEM;
@@ -584,6 +606,7 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setComments(currentComments.toArray(new Comment[currentComments.size()]));
 				currentIssue.setAttachments(currentAttachments.toArray(new Attachment[currentAttachments.size()]));
 				currentIssue.setCustomFields(currentCustomFields.toArray(new CustomField[currentCustomFields.size()]));
+				currentIssue.setSubtasks(currentSubtasks.toArray(new Subtask[currentSubtasks.size()]));
 				collector.collectIssue(currentIssue);
 				currentIssue = null;
 				currentCustomFields.clear();
@@ -680,8 +703,6 @@ public class RssContentHandler extends DefaultHandler {
 			} else if (CURRENT_ESTIMATE.equals(localName)) {
 
 			} else if (ACTUAL.equals(localName)) {
-
-			} else if (SUBTASKS.equals(localName)) {
 
 			} else {
 				//System.err.println("Unknown Issue attribute: " + localName);

@@ -22,7 +22,7 @@ public enum JiraAttribute {
 	RESOLUTION(RepositoryTaskAttribute.RESOLUTION, JiraFieldType.SELECT, "Resolution:", true, false, "resolution"),
 
 	DATE_CREATION(RepositoryTaskAttribute.DATE_CREATION, JiraFieldType.TEXTFIELD, "Created:"),
-	DATE_MODIFIED(RepositoryTaskAttribute.DATE_MODIFIED, JiraFieldType.TEXTFIELD, "Date modified:"),
+	DATE_MODIFIED(RepositoryTaskAttribute.DATE_MODIFIED, JiraFieldType.TEXTFIELD, "Modified:"),
 
 	USER_ASSIGNED(RepositoryTaskAttribute.USER_ASSIGNED, JiraFieldType.USERPICKER, "Assigned to:", true, true, "assignee"),
 	USER_REPORTER(RepositoryTaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, "Reported by:"),
@@ -31,7 +31,7 @@ public enum JiraAttribute {
 	PRIORITY(RepositoryTaskAttribute.PRIORITY, JiraFieldType.SELECT, "Priority:", false, false, "priority"),
 
 	TYPE(JiraAttributeFactory.ATTRIBUTE_TYPE, JiraFieldType.SELECT, "Type:", false, false, "issuetype"),
-	PARENT_KEY(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.TEXTFIELD, "Parent:", false, true),
+	PARENT_KEY(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.ISSUELINK, "Parent:", false, true),
 
 	COMPONENTS(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, JiraFieldType.MULTISELECT, "Components:", false, false, "components"),
 	AFFECTSVERSIONS(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT, "Affects Versions:", false, false, "versions"),
@@ -46,7 +46,10 @@ public enum JiraAttribute {
 	COMMENT_TEXT(RepositoryTaskAttribute.COMMENT_TEXT, JiraFieldType.TEXTAREA, "Comment:"),
 	COMMENT_DATE(RepositoryTaskAttribute.COMMENT_DATE, JiraFieldType.TEXTAREA, "Date:"),
 
-	UNKNOWN(null, JiraFieldType.UNKNOWN, "unknown:", true, true);
+	SUBTASK_IDS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, "Subtask ids:", true, true),
+	SUBTASK_KEYS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Sub-Tasks:", false, true),
+
+	UNKNOWN(null, JiraFieldType.UNKNOWN, "unknown:", true, true); 
 	
 	private final String id;
 	private final String name;

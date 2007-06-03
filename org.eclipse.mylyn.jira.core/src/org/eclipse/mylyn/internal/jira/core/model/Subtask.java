@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Brock Janiczak - initial API and implementation
+ *    Eugene Kuleshov - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylar.internal.jira.core.model;
@@ -14,32 +14,20 @@ package org.eclipse.mylar.internal.jira.core.model;
 import java.io.Serializable;
 
 /**
- * @author	Brock Janiczak
+ * TODO merge with IssueLink?
+ * 
  * @author Eugene Kuleshov
  */
-public class IssueLink implements Serializable {
+public class Subtask implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String issueId;
 	
 	private final String issueKey;
 
-	private final String linkTypeId;
-
-	private final String linkName;
-	
-	private final String inwardDescription;
-
-	private final String outwardDescription;
-
-	public IssueLink(String issueId, String issueKey, String linkTypeId, //
-			String linkName, String inwardDescription, String outwardDescription) {
+	public Subtask(String issueId, String issueKey) {
 		this.issueId = issueId;
 		this.issueKey = issueKey;
-		this.linkTypeId = linkTypeId;
-		this.linkName = linkName;
-		this.inwardDescription = inwardDescription;
-		this.outwardDescription = outwardDescription;
 	}
 
 	public String getIssueId() {
@@ -48,22 +36,6 @@ public class IssueLink implements Serializable {
 	
 	public String getIssueKey() {
 		return this.issueKey;
-	}
-
-	public String getLinkTypeId() {
-		return this.linkTypeId;
-	}
-
-	public String getLinkName() {
-		return linkName;
-	}
-	
-	public String getInwardDescription() {
-		return inwardDescription;
-	}
-	
-	public String getOutwardDescription() {
-		return outwardDescription;
 	}
 
 }

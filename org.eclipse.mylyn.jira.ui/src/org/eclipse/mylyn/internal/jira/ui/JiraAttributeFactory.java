@@ -33,6 +33,9 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_AFFECTSVERSIONS = "attribute.jira.affectsversions";
 	public static final String ATTRIBUTE_ESTIMATE = "attribute.jira.estimate";
 	
+	public static final String ATTRIBUTE_SUBTASK_IDS = "attribute.jira.subtask_ids";
+	public static final String ATTRIBUTE_SUBTASK_KEYS = "attribute.jira.subtask_keys";
+	
 	public static final String ATTRIBUTE_CUSTOM_PREFIX = "attribute.jira.custom::";
 
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";

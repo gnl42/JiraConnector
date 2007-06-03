@@ -84,6 +84,8 @@ public class Issue implements Serializable {
 
 	private CustomField[] customFields = new CustomField[0];
 
+	private Subtask[] subtasks = new Subtask[0];
+
 	public String getId() {
 		return id;
 	}
@@ -364,6 +366,14 @@ public class Issue implements Serializable {
 			}
 		}
 		return null;
+	}
+	
+	public Subtask[] getSubtasks() {
+		return subtasks;
+	}
+	
+	public void setSubtasks(Subtask[] subtasks) {
+		this.subtasks = subtasks;
 	}
 
 	public String[] getFieldValues(String field) {

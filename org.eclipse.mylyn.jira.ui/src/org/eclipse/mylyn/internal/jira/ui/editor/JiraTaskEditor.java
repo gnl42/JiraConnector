@@ -101,6 +101,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			}
 
 			switch (type) {
+			case ISSUELINKS:
 			case TEXTAREA:
 				// all text areas go to the bottom
 				break;
@@ -180,7 +181,29 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				break;
 			}
 
-				// TEXTFIELD and everything else
+			case ISSUELINK: {
+				Label label = createLabel(attributesComposite, attribute);
+				GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
+
+				TextViewer viewer = addTextViewer(repository, attributesComposite, attribute.getValue(), SWT.FLAT | SWT.READ_ONLY);
+				
+				StyledText text = viewer.getTextWidget();
+
+				GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
+				data.horizontalSpan = 1;
+				data.widthHint = 135;
+				data.horizontalIndent = HORZ_INDENT;
+				text.setLayoutData(data);
+
+				if (hasChanged(attribute)) {
+					text.setBackground(backgroundIncoming);
+				}
+
+				currentCol += 2;
+				break;
+			}
+			
+			// TEXTFIELD and everything else
 			default: {
 				Label label = createLabel(attributesComposite, attribute);
 				GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
@@ -225,6 +248,42 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			}
 		}
 
+		// subtasks
+		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
+			if (attribute.isHidden()
+					|| !JiraFieldType.ISSUELINKS.getKey().equals(
+							attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY))) {
+				continue;
+			}
+			
+			Label label = createLabel(attributesComposite, attribute);
+			GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
+
+			StringBuilder sb = new StringBuilder();
+			String sep = "";
+			for (String key : attribute.getValues()) {
+				sb.append(sep).append(key);
+				sep = ", ";
+			}
+			TextViewer viewer = addTextViewer(repository, attributesComposite, sb.toString(), SWT.FLAT | SWT.MULTI | SWT.READ_ONLY);
+			
+			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false);
+			data.horizontalSpan = 3;
+			data.widthHint = 380;
+			data.heightHint = 20;
+			data.horizontalIndent = HORZ_INDENT;
+
+			StyledText text = viewer.getTextWidget();
+			text.setLayoutData(data);
+
+			toolkit.adapt(text, true, true);
+
+			if (hasChanged(attribute)) {
+				text.setBackground(backgroundIncoming);
+			}
+		}
+		
+		// text areas
 		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()
 					|| !JiraFieldType.TEXTAREA.getKey().equals(
@@ -245,11 +304,10 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			viewer.setDocument(new Document(attribute.getValue()));
 
 			final StyledText text = viewer.getTextWidget();
-			text.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 
 			// GridDataFactory.fillDefaults().span(3, 1).hint(300,
 			// 40).applyTo(text);
-			GridData data = new GridData(SWT.LEFT, SWT.TOP, true, false);
+			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false);
 			data.horizontalSpan = 3;
 			data.widthHint = 380;
 			data.heightHint = 55;
@@ -262,6 +320,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				viewer.setEditable(false);
 			} else {
 				viewer.setEditable(true);
+				text.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 				text.setData(attribute);
 				text.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent e) {
