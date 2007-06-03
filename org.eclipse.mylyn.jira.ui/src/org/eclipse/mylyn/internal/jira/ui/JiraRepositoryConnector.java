@@ -308,24 +308,26 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public String[] getTaskIdsFromComment(TaskRepository repository, String comment) {
 		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+		Project[] projects = client.getProjects();
+		if (projects != null && projects.length > 0) {
+			// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
+			StringBuffer sb = new StringBuffer("(");
+			String sep = "";
+			for (Project project : projects) {
+				sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)");
+				sep = "|";
+			}
+			sb.append(")(?:\\D|\\z)");
 
-		// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
-		StringBuffer sb = new StringBuffer("(");
-		String sep = "";
-		for (Project project : client.getProjects()) {
-			sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)");
-			sep = "|";
-		}
-		sb.append(")(?:\\D|\\z)");
-
-		Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-		Matcher m = p.matcher(comment);
-		if (m.find()) {
-			HashSet<String> ids = new HashSet<String>();
-			do {
-				ids.add(m.group(1));
-			} while (m.find());
-			return ids.toArray(new String[ids.size()]);
+			Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+			Matcher m = p.matcher(comment);
+			if (m.find()) {
+				HashSet<String> ids = new HashSet<String>();
+				do {
+					ids.add(m.group(1));
+				} while (m.find());
+				return ids.toArray(new String[ids.size()]);
+			}
 		}
 
 		return super.getTaskIdsFromComment(repository, comment);
