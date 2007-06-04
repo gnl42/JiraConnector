@@ -33,6 +33,7 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraRepositoryConnectorTest.class);
 		suite.addTestSuite(JiraRpcClientTest.class);
 		suite.addTestSuite(JiraAttachmentHandlerTest.class);
+		suite.addTestSuite(JiraTaskDataHandlerTest.class);
 		// $JUnit-END$
 		return suite;
 	}
