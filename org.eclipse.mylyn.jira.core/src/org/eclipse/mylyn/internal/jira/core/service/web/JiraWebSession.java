@@ -93,25 +93,24 @@ public class JiraWebSession {
 				int statusCode = client.executeMethod(login);
 				if (statusCode == HttpStatus.SC_OK) {
 					throw new JiraAuthenticationException("Login failed.");
-				} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
-					Header locationHeader = login.getResponseHeader("location");
-					redirects.add(new RedirectInfo(url, login.getResponseHeaders(), login.getResponseBodyAsString()));
-					if (locationHeader != null) {
-						url = locationHeader.getValue();
-						if (url.endsWith("/success")) {
-							String newBaseUrl = url.substring(0, url.lastIndexOf("/success"));
-							if (baseUrl.equals(newBaseUrl)) {
-								return;
-							} else {
-								// need to login to make sure HttpClient picks up the session cookie
-								baseUrl = newBaseUrl;
-							}
-						}
-					} else {
-						throw new JiraServiceUnavailableException("Invalid redirect, missing location");
-					}
-				} else {
+				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY) {
 					throw new JiraServiceUnavailableException("Unexpected status code on login: " + statusCode);
+				}
+				
+				Header locationHeader = login.getResponseHeader("location");
+				redirects.add(new RedirectInfo(url, login.getResponseHeaders(), login.getResponseBodyAsString()));
+				if (locationHeader == null) {
+					throw new JiraServiceUnavailableException("Invalid redirect, missing location");
+				}
+				url = locationHeader.getValue();
+				if (url.endsWith("/success")) {
+					String newBaseUrl = url.substring(0, url.lastIndexOf("/success"));
+					if (baseUrl.equals(newBaseUrl)) {
+						return;
+					} else {
+						// need to login to make sure HttpClient picks up the session cookie
+						baseUrl = newBaseUrl;
+					}
 				}
 			} catch (IOException e) {
 				throw new JiraServiceUnavailableException(e);
