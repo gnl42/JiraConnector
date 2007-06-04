@@ -609,6 +609,7 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setSubtasks(currentSubtasks.toArray(new Subtask[currentSubtasks.size()]));
 				collector.collectIssue(currentIssue);
 				currentIssue = null;
+				currentSubtasks.clear();
 				currentCustomFields.clear();
 				currentAttachments.clear();
 				currentComments.clear();
