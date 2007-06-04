@@ -237,7 +237,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			// XXX ugly because AbstractRepositoryTaskEditor is using USER_OWNER instead of COMMENT_AUTHOR
 			taskComment.addAttribute(RepositoryTaskAttribute.USER_OWNER, createAttribute(comment.getAuthor()));
 			
-			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, comment.getComment());
+			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, convertHtml(comment.getComment()));
 			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, dateToString(comment.getCreated()));
 			data.addComment(taskComment);
 		}
