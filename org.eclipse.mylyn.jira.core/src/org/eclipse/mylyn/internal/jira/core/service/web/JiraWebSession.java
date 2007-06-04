@@ -110,6 +110,7 @@ public class JiraWebSession {
 					} else {
 						// need to login to make sure HttpClient picks up the session cookie
 						baseUrl = newBaseUrl;
+						url = newBaseUrl + "/login.jsp";
 					}
 				}
 			} catch (IOException e) {
@@ -121,12 +122,13 @@ public class JiraWebSession {
 		
 		StringBuilder sb = new StringBuilder("Login redirects\n");
 		for (RedirectInfo info : redirects) {
+			sb.append("Requested URL: ");
 			sb.append(info.url).append("\n");
 			for (Header header : info.responseHeaders) {
 				sb.append("  ").append(header.toExternalForm()).append("\n");
 			}
 			sb.append(info.responseBody);
-			sb.append("-----------");
+			sb.append("-----------\n");
 		}
 		JiraCorePlugin.log(IStatus.INFO, sb.toString(), null);
 		
