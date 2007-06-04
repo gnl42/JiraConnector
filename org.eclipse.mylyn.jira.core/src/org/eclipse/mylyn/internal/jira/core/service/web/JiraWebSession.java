@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira.core.service.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -19,7 +20,9 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylar.core.net.WebClientUtil;
+import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.core.service.JiraException;
@@ -63,6 +66,20 @@ public class JiraWebSession {
 	}
 
 	private void login(HttpClient client) throws JiraException {
+		class RedirectInfo {
+			final String url;
+			final Header[] responseHeaders;
+			final String responseBody;
+
+			public RedirectInfo(String url, Header[] responseHeaders, String responseBody) {
+				this.url = url;
+				this.responseHeaders = responseHeaders;
+				this.responseBody = responseBody;
+			}
+		}
+		
+		ArrayList<RedirectInfo> redirects = new ArrayList<RedirectInfo>();
+		
 		String url = baseUrl + "/login.jsp";
 		for (int i = 0; i < MAX_REDIRECTS; i++) {
 			PostMethod login = new PostMethod(url); //$NON-NLS-1$
@@ -78,6 +95,7 @@ public class JiraWebSession {
 					throw new JiraAuthenticationException("Login failed.");
 				} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
 					Header locationHeader = login.getResponseHeader("location");
+					redirects.add(new RedirectInfo(url, login.getResponseHeaders(), login.getResponseBodyAsString()));
 					if (locationHeader != null) {
 						url = locationHeader.getValue();
 						if (url.endsWith("/success")) {
@@ -101,6 +119,18 @@ public class JiraWebSession {
 				login.releaseConnection();
 			}
 		}
+		
+		StringBuilder sb = new StringBuilder("Login redirects\n");
+		for (RedirectInfo info : redirects) {
+			sb.append(info.url).append("\n");
+			for (Header header : info.responseHeaders) {
+				sb.append("  ").append(header.toExternalForm()).append("\n");
+			}
+			sb.append(info.responseBody);
+			sb.append("-----------");
+		}
+		JiraCorePlugin.log(IStatus.INFO, sb.toString(), null);
+		
 		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects on login");
 	}
 	
