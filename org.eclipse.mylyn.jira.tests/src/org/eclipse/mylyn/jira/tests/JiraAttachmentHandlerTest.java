@@ -12,6 +12,8 @@
 package org.eclipse.mylar.jira.tests;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
@@ -21,11 +23,12 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylar.tasks.core.FileAttachment;
 import org.eclipse.mylar.tasks.core.IAttachmentHandler;
 import org.eclipse.mylar.tasks.core.RepositoryTaskData;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -50,12 +53,12 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		JiraClientFacade.getDefault().clearClients();
-		
+
 		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);
 		connector = (JiraRepositoryConnector) abstractConnector;
 		attachmentHandler = connector.getAttachmentHandler();
-		
+
 		repository = null;
 	}
 
@@ -68,16 +71,16 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 		if (repository != null) {
 			TasksUiPlugin.getRepositoryManager().removeRepository(repository,
-					TasksUiPlugin.getDefault().getRepositoriesFilePath());			
+					TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		}
-		
+
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		repository.setCharacterEncoding(JiraClient.CHARSET);
 
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		
+
 		server = JiraClientFacade.getDefault().getJiraClient(repository);
 		JiraTestUtils.refreshDetails(server);
 	}
@@ -90,25 +93,38 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(server, "testAttachFile");
-		
+
 		File file = File.createTempFile("attachment", null);
 		file.deleteOnExit();
 		JiraTestUtils.writeFile(file, "Mylar".getBytes());
-		
-		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
-		attachmentHandler.uploadAttachment(repository, task, "", "", file, "text/plain", false, new NullProgressMonitor());
-		
+
+		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey(),
+				new NullProgressMonitor());
+		FileAttachment attachment = new FileAttachment(file);
+		attachment.setContentType("text/plain");
+		attachmentHandler.uploadAttachment(repository, task, attachment, "", new NullProgressMonitor());
+
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
-		RepositoryTaskData taskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(task.getHandleIdentifier());
+		RepositoryTaskData taskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(
+				task.getHandleIdentifier());
 		assertEquals(1, taskData.getAttachments().size());
-		
-		byte[] data = attachmentHandler.getAttachmentData(repository, taskData.getAttachments().get(0));
-		assertEquals("Mylar", new String(data));
-		
+
+		InputStream in = attachmentHandler.getAttachmentAsStream(repository, taskData.getAttachments().get(0),
+				new NullProgressMonitor());
+		try {
+			byte[] data = new byte[5];
+			in.read(data);
+			assertEquals("Mylar", new String(data));
+		} finally {
+			in.close();
+		}
+
 		file.delete();
-		attachmentHandler.downloadAttachment(repository, taskData.getAttachments().get(0), file, new NullProgressMonitor());
+
+		attachmentHandler.downloadAttachment(repository, taskData.getAttachments().get(0), new FileOutputStream(file),
+				new NullProgressMonitor());
 		assertTrue(file.exists());
-		data = JiraTestUtils.readFile(file);
+		byte[] data = JiraTestUtils.readFile(file);
 		assertEquals("Mylar", new String(data));
 	}
 

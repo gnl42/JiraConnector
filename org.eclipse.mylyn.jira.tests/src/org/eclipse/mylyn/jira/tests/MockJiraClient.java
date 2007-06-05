@@ -1,7 +1,9 @@
 package org.eclipse.mylar.jira.tests;
 
 import java.io.File;
+import java.io.OutputStream;
 
+import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
 import org.eclipse.mylar.internal.jira.core.model.CustomField;
@@ -121,9 +123,9 @@ public class MockJiraClient extends AbstractJiraClient {
 		return null;
 	}
 
-	public void retrieveFile(Issue issue, Attachment attachment, File file) throws JiraException {
+	public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
 	}
-
+	
 	public void search(Query query, IssueCollector collector) throws JiraException {
 	}
 
@@ -159,6 +161,9 @@ public class MockJiraClient extends AbstractJiraClient {
 	}
 	
 	public void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException {
+	}
+
+	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
 	}
 
 }

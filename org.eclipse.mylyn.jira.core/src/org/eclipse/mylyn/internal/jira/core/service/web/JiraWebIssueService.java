@@ -14,7 +14,6 @@ package org.eclipse.mylar.internal.jira.core.service.web;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -40,6 +39,7 @@ import org.apache.commons.httpclient.methods.multipart.FilePartSource;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartBase;
+import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.eclipse.mylar.core.net.HtmlStreamTokenizer;
 import org.eclipse.mylar.core.net.HtmlTag;
@@ -388,6 +388,11 @@ public class JiraWebIssueService {
 //		}
 //	}
 
+	public void attachFile(final Issue issue, final String comment, final PartSource partSource,
+			final String contentType) throws JiraException {
+		attachFile(issue, comment, new FilePart("filename.1", partSource), contentType);
+	}
+
 	public void attachFile(final Issue issue, final String comment, final String filename, final byte[] contents,
 			final String contentType) throws JiraException {
 		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)), contentType);
@@ -493,7 +498,7 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void retrieveFile(final Issue issue, final Attachment attachment, final File file) throws JiraException {
+	public void retrieveFile(final Issue issue, final Attachment attachment, final OutputStream out) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -510,12 +515,7 @@ public class JiraWebIssueService {
 					if (result != HttpStatus.SC_OK) {
 						handleErrorMessage(get, result);
 					} else {
-						OutputStream out = new FileOutputStream(file);
-						try {
-							out.write(get.getResponseBody());
-						} finally {
-							out.close();
-						}
+						out.write(get.getResponseBody());
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);

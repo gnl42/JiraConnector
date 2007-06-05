@@ -12,8 +12,10 @@
 package org.eclipse.mylar.internal.jira.core.service;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.net.Proxy;
 
+import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.CustomField;
@@ -280,13 +282,15 @@ public interface JiraClient {
 //	@Deprecated
 //	void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException;
 
-	void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException;
+    void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException; 
+
+    void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException;
 
 	void attachFile(Issue issue, String comment, String filename, File file, String contentType) throws JiraException;
 
 	byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException;
 	
-	void retrieveFile(Issue issue, Attachment attachment, File file) throws JiraException;
+	void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException;
 	
 	/**
 	 * Creates an issue with the details specified in <code>issue</code>. The

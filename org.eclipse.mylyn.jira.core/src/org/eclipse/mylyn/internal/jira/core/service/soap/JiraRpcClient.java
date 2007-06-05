@@ -12,6 +12,7 @@
 package org.eclipse.mylar.internal.jira.core.service.soap;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -26,6 +27,7 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.AxisFault;
 import org.apache.axis.configuration.FileProvider;
+import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.mylar.internal.jira.core.model.Attachment;
 import org.eclipse.mylar.internal.jira.core.model.Comment;
 import org.eclipse.mylar.internal.jira.core.model.Component;
@@ -478,6 +480,10 @@ public class JiraRpcClient extends AbstractJiraClient {
 //        issueService.closeIssue(issue, resolution, fixVersions, comment, assigneeType, user);
 //    }
 
+    public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
+        issueService.attachFile(issue, comment, partSource, contentType);
+    }
+
     public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException {
         issueService.attachFile(issue, comment, filename, contents, contentType);
     }
@@ -493,8 +499,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         return result;
     }
 
-    public void retrieveFile(Issue issue, Attachment attachment, File file) throws JiraException {
-        issueService.retrieveFile(issue, attachment, file);
+    public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
+        issueService.retrieveFile(issue, attachment, out);
     }
 
     public void watchIssue(Issue issue) throws JiraException {
