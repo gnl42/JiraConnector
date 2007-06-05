@@ -82,7 +82,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		AbstractRepositoryConnector connector = manager.getRepositoryConnector(kind);
+		connector = manager.getRepositoryConnector(kind);
 		assertEquals(connector.getRepositoryType(), kind);
 
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);

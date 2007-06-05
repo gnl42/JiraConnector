@@ -11,9 +11,6 @@
 
 package org.eclipse.mylar.jira.tests;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -28,18 +25,17 @@ import org.eclipse.mylar.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.ui.JiraQueryHit;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
-import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylar.internal.jira.ui.JiraTask;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylar.tasks.core.QueryHitCollector;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.core.Task.PriorityLevel;
+import org.eclipse.mylar.tasks.ui.TaskFactory;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 
 /**
@@ -116,7 +112,7 @@ public class JiraFilterTest extends TestCase {
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, query, null, false);
 
 		assertTrue(query.getHits().size() > 0);
-		JiraQueryHit hit = (JiraQueryHit) query.getHits().iterator().next();
+		JiraTask hit = (JiraTask) query.getHits().iterator().next();
 		assertTrue(hit.getSummary().length() > 0);
 	}
 
@@ -139,12 +135,12 @@ public class JiraFilterTest extends TestCase {
 		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding(),
 				taskList);
 
-		MockQueryHitCollector hitCollector = new MockQueryHitCollector(taskList);
+		QueryHitCollector hitCollector = new QueryHitCollector(taskList, new TaskFactory(repository));
 
-		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
-		assertEquals(1, hitCollector.results.size());
-		assertEquals(issue.getSummary(), hitCollector.results.get(0).getSummary());
-		assertEquals(PriorityLevel.P1.toString(), hitCollector.results.get(0).getPriority());
+		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector, false);
+		assertEquals(1, hitCollector.getTaskHits().size());
+		assertEquals(issue.getSummary(), hitCollector.getTaskHits().iterator().next().getSummary());
+		//assertEquals(PriorityLevel.P1.toString(), hitCollector.getTaskDataHits().iterator().next().getPriority());
 	}
 
 	public void testCustomQueryWithoutRepositoryConfiguraton() throws Exception {
@@ -169,31 +165,31 @@ public class JiraFilterTest extends TestCase {
 
 		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding(),
 				taskList);
-		MockQueryHitCollector hitCollector = new MockQueryHitCollector(taskList);
-		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
-		assertEquals(1, hitCollector.results.size());
-		assertEquals(issue2.getSummary(), hitCollector.results.get(0).getSummary());
+		QueryHitCollector hitCollector = new QueryHitCollector(taskList, new TaskFactory(repository));
+		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector, false);
+		assertEquals(1, hitCollector.getTaskHits().size());
+		assertEquals(issue2.getSummary(), hitCollector.getTaskHits().iterator().next().getSummary());
 
-		hitCollector.results.clear();
+		hitCollector.clear();
 		JiraClientFacade.getDefault().clearClientsAndConfigurationData();
-		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
-		assertEquals(1, hitCollector.results.size());
-		assertEquals(issue2.getSummary(), hitCollector.results.get(0).getSummary());
+		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector, false);
+		assertEquals(1, hitCollector.getTaskHits().size());
+		assertEquals(issue2.getSummary(), hitCollector.getTaskHits().iterator().next().getSummary());
 	}
 
-	private class MockQueryHitCollector extends QueryHitCollector {
-
-		public List<AbstractQueryHit> results = new ArrayList<AbstractQueryHit>();
-
-		private MockQueryHitCollector(TaskList tasklist) {
-			super(tasklist);
-		}
-
-		@Override
-		public void addMatch(AbstractQueryHit hit) {
-			results.add(hit);
-		}
-	}
+//	private class MockQueryHitCollector extends QueryHitCollector {
+//
+//		public List<AbstractQueryHit> results = new ArrayList<AbstractQueryHit>();
+//
+//		private MockQueryHitCollector(TaskList tasklist) {
+//			super(tasklist);
+//		}
+//
+//		@Override
+//		public void addMatch(AbstractQueryHit hit) {
+//			results.add(hit);
+//		}
+//	}
 
 	// TODO: reneable
 // public void testJiraTaskRegistryIntegration() {

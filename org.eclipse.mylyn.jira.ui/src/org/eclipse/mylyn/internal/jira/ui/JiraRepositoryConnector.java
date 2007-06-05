@@ -72,7 +72,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	private JiraTaskDataHandler offlineHandler;
 
 	private JiraAttachmentHandler attachmentHandler;
-	
+
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
@@ -112,14 +112,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
-			IProgressMonitor monitor, QueryHitCollector resultCollector) {
+			IProgressMonitor monitor, QueryHitCollector resultCollector, boolean forced) {
 		final List<Issue> issues = new ArrayList<Issue>();
 		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS);
-
+		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 		// TODO: Get rid of JiraIssueCollector and pass IQueryHitCollector
 
 		try {
-			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 			Query filter;
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
@@ -131,17 +130,18 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
 				} catch (InvalidJiraQueryException e) {
 					return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
-							"The query parameters do not match the repository configuration, please check the query properties; " + e.getMessage(), null);
+							"The query parameters do not match the repository configuration, please check the query properties; "
+									+ e.getMessage(), null);
 				}
 			} else {
-				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
-						"Invalid query type: " + repositoryQuery.getClass(), null);				
+				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0, "Invalid query type: "
+						+ repositoryQuery.getClass(), null);
 			}
 			client.search(filter, collector);
 		} catch (JiraException e) {
 			return JiraCorePlugin.toStatus(repository, e);
 		}
-		
+
 		for (Issue issue : issues) {
 			String taskId = issue.getId();
 			// String handleIdentifier =
@@ -153,11 +153,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (task instanceof JiraTask) {
 				JiraTask repositoryTask = (JiraTask) task;
 				updateTaskDetails(repository.getUrl(), repositoryTask, issue, false);
-				
+
 				// subtasks (have this info right in the query results)
 				repositoryTask.dropSubTasks();
 				Subtask[] subtasks = issue.getSubtasks();
-				if(subtasks!=null) {
+				if (subtasks != null) {
 					for (Subtask subtask : subtasks) {
 						String id = subtask.getIssueId();
 						ITask subTask = taskList.getTask(repository.getUrl(), id);
@@ -175,13 +175,23 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						}
 					}
 				}
+				resultCollector.accept((AbstractRepositoryTask) task);
+			} else {
+
+				JiraAttributeFactory attributeFactory = new JiraAttributeFactory();
+				RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
+						repository.getUrl(), issue.getId(), Task.DEFAULT_TASK_KIND);
+
+				offlineHandler.initializeTaskData(data, client, issue.getProject());
+				try {
+					offlineHandler.updateTaskData(data, issue, client);
+					offlineHandler.addOperations(data, issue, client);
+				} catch (JiraException e) {
+					return JiraCorePlugin.toStatus(repository, e);
+				}
+				resultCollector.accept(data);
 			}
 
-			JiraQueryHit hit = new JiraQueryHit(taskList, issue.getSummary(), repositoryQuery.getRepositoryUrl(),
-					taskId, issue.getKey());
-			hit.setCompleted(isCompleted(issue.getStatus()));
-			hit.setPriority(getMylarPriority(issue.getPriority()).toString());
-			resultCollector.accept(hit);
 		}
 		return Status.OK_STATUS;
 	}
@@ -221,7 +231,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// unlimited maxHits can create crazy amounts of traffic
 		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
 		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
-		
+
 		// TODO: Need some way to further scope this query
 
 		try {
@@ -279,7 +289,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateTaskFromRepository(TaskRepository repository, AbstractRepositoryTask repositoryTask, IProgressMonitor monitor) {
+	public void updateTaskFromRepository(TaskRepository repository, AbstractRepositoryTask repositoryTask,
+			IProgressMonitor monitor) {
 	}
 
 	@Override
@@ -382,11 +393,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return task;
 	}
 
-	protected AbstractRepositoryTask makeTask(String repositoryUrl, String id, String summary) {
+	public AbstractRepositoryTask createTask(String repositoryUrl, String id, String summary) {
 		return new JiraTask(repositoryUrl, id, summary, true);
 	}
 
-	public void updateTaskFromTaskData(TaskRepository repository, AbstractRepositoryTask repositoryTask, RepositoryTaskData taskData, boolean retrieveSubTasks) {
+	public void updateTaskFromTaskData(TaskRepository repository, AbstractRepositoryTask repositoryTask,
+			RepositoryTaskData taskData, boolean retrieveSubTasks) {
 		if (repositoryTask instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) repositoryTask;
 
@@ -409,18 +421,21 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 
 			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
-			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));			
+			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
 			jiraTask.setTaskUrl(getTaskUrl(repository.getUrl(), repositoryTask.getTaskKey()));
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
-			jiraTask.setPriority(getMylarPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
+			jiraTask.setPriority(getMylarPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY))
+					.toString());
 			for (org.eclipse.mylar.internal.jira.core.model.Status status : client.getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
-						AbstractAttributeFactory factory = getTaskDataHandler().getAttributeFactory(repository.getUrl(), repository.getKind(), Task.DEFAULT_TASK_KIND);
+						AbstractAttributeFactory factory = getTaskDataHandler().getAttributeFactory(
+								repository.getUrl(), repository.getKind(), Task.DEFAULT_TASK_KIND);
 						String dateString = taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
-						jiraTask.setCompletionDate(factory.getDateForAttributeType(RepositoryTaskAttribute.DATE_MODIFIED, dateString));
+						jiraTask.setCompletionDate(factory.getDateForAttributeType(
+								RepositoryTaskAttribute.DATE_MODIFIED, dateString));
 						jiraTask.setCompleted(true);
 					} else {
 						jiraTask.setCompletionDate(null);
@@ -453,7 +468,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		return PriorityLevel.getDefault();
 	}
-	
+
 	public static PriorityLevel getMylarPriority(Priority jiraPriority) {
 		if (jiraPriority != null) {
 			String priorityId = jiraPriority.getId();

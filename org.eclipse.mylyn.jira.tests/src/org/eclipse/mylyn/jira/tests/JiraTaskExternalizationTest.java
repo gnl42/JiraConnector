@@ -20,7 +20,6 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
-import org.eclipse.mylar.internal.jira.ui.JiraQueryHit;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraTask;
@@ -173,12 +172,10 @@ public class JiraTaskExternalizationTest extends TestCase {
 		taskList.addTask(jiraTask);
 		JiraRepositoryConnector.updateTaskDetails(repository.getUrl(), jiraTask, jiraIssue, true);
 		TasksUiPlugin.getTaskListManager().getTaskList().addTask(jiraTask);
-		JiraQueryHit jiraHit = new JiraQueryHit(taskList, jiraTask.getSummary(), repository.getUrl(), "123", jiraTask.getTaskKey());
-		jiraHit.setCorrespondingTask(jiraTask);
-		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
-		jiraRepositoryQuery.addHit(jiraHit);
+		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
+		jiraRepositoryQuery.addHit(jiraTask);
 		TasksUiPlugin.getTaskListManager().getTaskList().addQuery(jiraRepositoryQuery);
-		assertNotNull(taskList.getTask(jiraHit.getHandleIdentifier()));
+		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
 
 		manager.saveTaskList();
 		manager.resetTaskList();
@@ -198,14 +195,13 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 		assertTrue(savedFilter.getHits().size() > 0);
 
-		JiraQueryHit savedHit = (JiraQueryHit) savedFilter.getHits().iterator().next();
-		JiraTask jTask = (JiraTask) savedHit.getCorrespondingTask();
+		JiraTask savedHit = (JiraTask) savedFilter.getHits().iterator().next();
 		
-		assertEquals(jiraIssue.getKey(), jTask.getTaskKey());
-		assertEquals(jiraIssue.getSummary(), jTask.getSummary());
+		assertEquals(jiraIssue.getKey(), savedHit.getTaskKey());
+		assertEquals(jiraIssue.getSummary(), savedHit.getSummary());
 		
-		String handle = RepositoryTaskHandleUtil.getHandle(jiraHit.getRepositoryUrl(), "123");
-		assertEquals(handle, jTask.getHandleIdentifier());
+		String handle = RepositoryTaskHandleUtil.getHandle(savedHit.getRepositoryUrl(), "123");
+		assertEquals(handle, savedHit.getHandleIdentifier());
 		
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);  

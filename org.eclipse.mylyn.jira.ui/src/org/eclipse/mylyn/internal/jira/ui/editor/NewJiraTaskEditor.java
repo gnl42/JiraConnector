@@ -11,6 +11,7 @@ package org.eclipse.mylar.internal.jira.ui.editor;
 import org.eclipse.mylar.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
+import org.eclipse.mylar.tasks.ui.TaskFactory;
 import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.editors.AbstractNewRepositoryTaskEditor;
 import org.eclipse.mylar.tasks.ui.search.SearchHitCollector;
@@ -35,7 +36,7 @@ public class NewJiraTaskEditor extends AbstractNewRepositoryTaskEditor {
 				TasksUiPlugin.getTaskListManager().getTaskList());
 
 		SearchHitCollector collector = new SearchHitCollector(TasksUiPlugin.getTaskListManager().getTaskList(),
-				repository, query);
+				repository, query, new TaskFactory(repository));
 		return collector;
 	}
 

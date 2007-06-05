@@ -17,12 +17,11 @@ import java.io.ObjectInputStream;
 import org.eclipse.mylar.core.MylarStatusHandler;
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylar.tasks.core.AbstractQueryHit;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylar.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylar.tasks.core.DelegatingTaskExternalizer;
 import org.eclipse.mylar.tasks.core.ITask;
-import org.eclipse.mylar.tasks.core.ITaskListExternalizer;
 import org.eclipse.mylar.tasks.core.TaskExternalizationException;
 import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
@@ -43,7 +42,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	private static final String KEY_JIRA_CATEGORY = "JiraQuery" + KEY_CATEGORY;
 
-	private static final String KEY_JIRA_QUERY_HIT = KEY_JIRA + KEY_QUERY_HIT;
+//	private static final String KEY_JIRA_QUERY_HIT = KEY_JIRA + KEY_QUERY_HIT;
 
 	private static final String KEY_JIRA_QUERY = KEY_JIRA + KEY_QUERY;
 
@@ -66,17 +65,18 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return node.getNodeName().equals(KEY_JIRA_QUERY) || node.getNodeName().equals(KEY_JIRA_CUSTOM);
 	}
 
-	@Override
-	public boolean canCreateElementFor(AbstractQueryHit queryHit) {
-		return queryHit instanceof JiraQueryHit;
-	}
+// @Override
+// public boolean canCreateElementFor(AbstractRepositoryTask queryHit) {
+// return queryHit instanceof JiraQueryHit;
+// }
 
-	@Override
-	public Element createQueryHitElement(AbstractQueryHit queryHit, Document doc, Element parent) {
-		Element node = super.createQueryHitElement(queryHit, doc, parent);
-		node.setAttribute(KEY_KEY, ((JiraQueryHit) queryHit).getKey());
-		return node;
-	}
+// @Override
+// public Element createQueryHitElement(AbstractRepositoryTask queryHit,
+// Document doc, Element parent) {
+// Element node = super.createQueryHitElement(queryHit, doc, parent);
+// node.setAttribute(KEY_KEY, ((JiraTask) queryHit).getKey());
+// return node;
+// }
 
 	@Override
 	public boolean canCreateElementFor(AbstractRepositoryQuery category) {
@@ -119,7 +119,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
 			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, taskList);
 		}
-		
+
 		return query;
 	}
 
@@ -129,7 +129,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		Element node = doc.createElement(queryTagName);
 
 		node.setAttribute(KEY_NAME, query.getSummary());
-//		node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
+// node.setAttribute(KEY_QUERY_MAX_HITS, query.getMaxHits() + "");
 		node.setAttribute(KEY_QUERY_STRING, query.getUrl());
 		node.setAttribute(KEY_REPOSITORY_URL, query.getRepositoryUrl());
 
@@ -149,17 +149,9 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			node.setAttribute(KEY_FILTER_CUSTOM_URL, customQuery.getUrl());
 		}
 
-		for (AbstractQueryHit hit : query.getHits()) {
+		for (AbstractRepositoryTask hit : query.getHits()) {
 			try {
-				Element element = null;
-				for (ITaskListExternalizer externalizer : super.getDelegateExternalizers()) {
-					if (externalizer.canCreateElementFor(hit)) {
-						element = externalizer.createQueryHitElement(hit, doc, node);
-					}
-				}
-				if (element == null) {
-					createQueryHitElement(hit, doc, node);
-				}
+				createQueryHitElement(hit, doc, node);
 			} catch (Exception e) {
 				MylarStatusHandler.log(e, e.getMessage());
 			}
@@ -212,21 +204,21 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return task;
 	}
 
-	@Override
-	public boolean canReadQueryHit(Node node) {
-		return node.getNodeName().equals(getQueryHitTagName());
-	}
+//	@Override
+//	public boolean canReadQueryHit(Node node) {
+//		return node.getNodeName().equals(getQueryHitTagName());
+//	}
 
-	@Override
-	public AbstractQueryHit createQueryHit(String repositoryUrl, String taskId, String summary, Element element,
-			TaskList taskList, AbstractRepositoryQuery query) throws TaskExternalizationException {
-		String key = "";
-		if (element.hasAttribute(KEY_KEY)) {
-			key = element.getAttribute(KEY_KEY);
-		}
-
-		return new JiraQueryHit(taskList, summary, repositoryUrl, taskId, key);
-	}
+//	@Override
+//	public AbstractRepositoryTask createQueryHit(String repositoryUrl, String taskId, String summary, Element element,
+//			TaskList taskList, AbstractRepositoryQuery query) throws TaskExternalizationException {
+//		String key = "";
+//		if (element.hasAttribute(KEY_KEY)) {
+//			key = element.getAttribute(KEY_KEY);
+//		}
+//
+//		return new JiraQueryHit(taskList, summary, repositoryUrl, taskId, key);
+//	}
 
 	@Override
 	public String getQueryTagNameForElement(AbstractRepositoryQuery query) {
@@ -243,8 +235,8 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 		return KEY_JIRA_CATEGORY;
 	}
 
-	@Override
-	public String getQueryHitTagName() {
-		return KEY_JIRA_QUERY_HIT;
-	}
+//	@Override
+//	public String getQueryHitTagName() {
+//		return KEY_JIRA_QUERY_HIT;
+//	}
 }

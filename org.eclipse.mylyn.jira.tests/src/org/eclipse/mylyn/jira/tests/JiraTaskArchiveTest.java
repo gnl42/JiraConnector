@@ -40,6 +40,7 @@ public class JiraTaskArchiveTest extends TestCase {
 //		jiraRepository.setAuthenticationCredentials(USER, PASSWORD);
 //		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
 //		jiraFacade = JiraServerFacade.getDefault();
+		TasksUiPlugin.getTaskListManager().resetTaskList();
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
 	}
 
@@ -60,14 +61,14 @@ public class JiraTaskArchiveTest extends TestCase {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
-
+		assertEquals(0, taskList.getArchiveContainer().getChildren().size());
 		JiraTask task1 = new JiraTask("repo", HANDLE1, LABEL, true);
 		JiraTask task2 = new JiraTask("repo", HANDLE1, LABEL, true);
 
 		taskList.addTask(task1);
 		taskList.addTask(task2);
 
-		assertTrue(taskList.getArchiveContainer().getChildren().size() == 1);
+		assertEquals(1, taskList.getArchiveContainer().getChildren().size());
 		assertEquals(taskList.getTask("repo-" + HANDLE1), task1);
 	}
 }

@@ -156,7 +156,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		return data.getAttribute(key); 
 	}
 
-	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) throws JiraException {
+	public void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) throws JiraException {
 		String parentKey = jiraIssue.getParentKey();
 		if(parentKey!=null) {
 			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentKey);
@@ -349,7 +349,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 	}
 
-	private void addOperations(RepositoryTaskData data, Issue issue, JiraClient server) throws JiraException {
+	public void addOperations(RepositoryTaskData data, Issue issue, JiraClient server) throws JiraException {
 		Status status = issue.getStatus();
 
 		RepositoryOperation leaveOperation = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
