@@ -35,7 +35,6 @@ import org.eclipse.mylar.internal.jira.core.model.Issue;
 import org.eclipse.mylar.internal.jira.core.model.Priority;
 import org.eclipse.mylar.internal.jira.core.model.Project;
 import org.eclipse.mylar.internal.jira.core.model.Query;
-import org.eclipse.mylar.internal.jira.core.model.Subtask;
 import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylar.internal.jira.core.model.filter.Order;
 import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter;
@@ -134,64 +133,24 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 									+ e.getMessage(), null);
 				}
 			} else {
-				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0, "Invalid query type: "
-						+ repositoryQuery.getClass(), null);
+				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0, //
+						"Invalid query type: " + repositoryQuery.getClass(), null);
 			}
 			client.search(filter, collector);
 		} catch (JiraException e) {
 			return JiraCorePlugin.toStatus(repository, e);
 		}
 
-		for (Issue issue : issues) {
-			String taskId = issue.getId();
-			// String handleIdentifier =
-			// AbstractRepositoryTask.getHandle(repository.getUrl(), taskId);
-			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(), taskId);
-			// if (!(task instanceof JiraTask)) {
-			// task = createTask(issue, handleIdentifier);
-			// }
-			if (task instanceof JiraTask) {
-				JiraTask repositoryTask = (JiraTask) task;
-				updateTaskDetails(repository.getUrl(), repositoryTask, issue, false);
+		try {
+			int n = 0;
+			for (Issue issue : issues) {
+				if(monitor.isCanceled()) return Status.CANCEL_STATUS; 
 
-				// subtasks (have this info right in the query results)
-				repositoryTask.dropSubTasks();
-				Subtask[] subtasks = issue.getSubtasks();
-				if (subtasks != null) {
-					for (Subtask subtask : subtasks) {
-						String id = subtask.getIssueId();
-						ITask subTask = taskList.getTask(repository.getUrl(), id);
-						if (subTask == null) {
-							if (!id.trim().equals(repositoryTask.getTaskId()) && !"".equals(id)) {
-								try {
-									subTask = createTaskFromExistingId(repository, id, false, new NullProgressMonitor());
-								} catch (CoreException e) {
-									// ignore
-								}
-							}
-						}
-						if (subTask != null) {
-							repositoryTask.addSubTask(subTask);
-						}
-					}
-				}
-				resultCollector.accept((AbstractRepositoryTask) task);
-			} else {
-
-				JiraAttributeFactory attributeFactory = new JiraAttributeFactory();
-				RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
-						repository.getUrl(), issue.getId(), Task.DEFAULT_TASK_KIND);
-
-				offlineHandler.initializeTaskData(data, client, issue.getProject());
-				try {
-					offlineHandler.updateTaskData(data, issue, client);
-					offlineHandler.addOperations(data, issue, client);
-				} catch (JiraException e) {
-					return JiraCorePlugin.toStatus(repository, e);
-				}
-				resultCollector.accept(data);
+				monitor.subTask(n++ + "/" + issues.size() +" " + issue.getKey() + " " + issue.getSummary());
+				resultCollector.accept(offlineHandler.createTaskData(repository, client, issue));
 			}
-
+		} catch (JiraException e) {
+			return JiraCorePlugin.toStatus(repository, e);
 		}
 		return Status.OK_STATUS;
 	}
@@ -375,22 +334,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static boolean isCompleted(org.eclipse.mylar.internal.jira.core.model.Status status) {
 		return status != null && (status.isClosed() || status.isResolved());
-	}
-
-	public static JiraTask createTask(String repositoryUrl, String taskId, String key, String description) {
-		JiraTask task;
-		// String handle = AbstractRepositoryTask.getHandle(repositoryUrl,
-		// taskId);
-		ITask existingTask = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
-		if (existingTask instanceof JiraTask) {
-			task = (JiraTask) existingTask;
-		} else {
-			task = new JiraTask(repositoryUrl, taskId, description, true);
-			task.setTaskKey(key);// issue.getKey());
-			task.setTaskUrl(getTaskUrl(repositoryUrl, key));
-			TasksUiPlugin.getTaskListManager().getTaskList().addTask(task);
-		}
-		return task;
 	}
 
 	public AbstractRepositoryTask createTask(String repositoryUrl, String id, String summary) {

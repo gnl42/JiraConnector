@@ -319,7 +319,7 @@ public class JiraWebIssueService {
 
 				method.addParameter("id", issue.getId());
 				method.addParameter("action", action);
-				method.addParameter("assignee", issue.getAssignee());
+				// method.addParameter("assignee", issue.getAssignee());
 
 				if (comment != null) {
 					method.addParameter("comment", comment);
@@ -336,7 +336,7 @@ public class JiraWebIssueService {
 				for (String field : fields) {
 					String[] values = issue.getFieldValues(field);
 					if(values==null) {
-						method.addParameter(field, "");
+						// method.addParameter(field, "");
 					} else {
 						for (String value : values) {
 							method.addParameter(field, value);

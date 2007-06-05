@@ -12,6 +12,8 @@
 package org.eclipse.mylar.internal.jira.core.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -406,6 +408,39 @@ public class Issue implements Serializable {
 		}
 				
 		return null;
+	}
+
+  // TODO refactor RSS parser to use this call
+	public void setValue(String field, String value) {
+		if("resolution".equals(field)) {
+			if(value!=null) {
+				resolution = new Resolution();
+				resolution.setId(value);
+			}
+		} else if("assignee".equals(field)) {
+			assigneeName = value;
+
+		// TODO add other fields
+		} else if(field.startsWith("customfield_")) {
+			boolean found = false;
+			
+			for (int i = 0; i < customFields.length; i++) {
+				CustomField customField = customFields[i];
+				if(customField.getId().equals(field)) {
+					customFields[i] = new CustomField(customField.getId(), 
+							customField.getKey(), customField.getKey(), Collections.singletonList(value));
+					found = true;
+					break;
+				}
+				
+			}
+			
+			if(!found) {
+				List<CustomField> list = Arrays.asList(customFields);
+				list.add(new CustomField(field, "", "", Collections.singletonList(value)));
+				customFields = list.toArray(new CustomField[list.size()]);
+			}
+		}
 	}
 	
 }

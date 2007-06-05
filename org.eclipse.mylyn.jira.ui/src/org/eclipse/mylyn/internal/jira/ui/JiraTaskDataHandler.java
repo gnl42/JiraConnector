@@ -60,6 +60,8 @@ import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
  */
 public class JiraTaskDataHandler implements ITaskDataHandler {
 
+	private static final String REASSIGN_OPERATION = "reassign";
+	private static final String LEAVE_OPERATION = "leave";
 	private static final JiraAttributeFactory attributeFactory = new JiraAttributeFactory();
 
 	public JiraTaskDataHandler(JiraRepositoryConnector connector) {
@@ -72,20 +74,25 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				server.refreshDetails(new NullProgressMonitor());
 			}
 			Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
-			if (jiraIssue == null) {
-				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
-						IStatus.OK, "JIRA ticket not found: " + taskId, null));
+			if (jiraIssue != null) {
+				return createTaskData(repository, server, jiraIssue);
 			}
+			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
+					IStatus.OK, "JIRA ticket not found: " + taskId, null));
 			
-			RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
-					.getUrl(), jiraIssue.getId(), Task.DEFAULT_TASK_KIND);
-			initializeTaskData(data, server, jiraIssue.getProject());
-			updateTaskData(data, jiraIssue, server);
-			addOperations(data, jiraIssue, server);
-			return data;
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
+	}
+
+	protected RepositoryTaskData createTaskData(TaskRepository repository, JiraClient server, Issue jiraIssue)
+			throws JiraException {
+		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
+				.getUrl(), jiraIssue.getId(), Task.DEFAULT_TASK_KIND);
+		initializeTaskData(data, server, jiraIssue.getProject());
+		updateTaskData(data, jiraIssue, server);
+		addOperations(data, jiraIssue, server);
+		return data;
 	}
 
 	private Issue getJiraIssue(JiraClient server, String taskId, String repositoryUrl) throws CoreException,
@@ -352,14 +359,15 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	public void addOperations(RepositoryTaskData data, Issue issue, JiraClient server) throws JiraException {
 		Status status = issue.getStatus();
 
-		RepositoryOperation leaveOperation = new RepositoryOperation("leave", "Leave as " + issue.getStatus().getName());
+		RepositoryOperation leaveOperation = new RepositoryOperation(LEAVE_OPERATION, "Leave as " + issue.getStatus().getName());
 		leaveOperation.setChecked(true);
 		data.addOperation(leaveOperation);
 
 		// TODO need more accurate status matching
-		if (status.getId().equals(Status.OPEN_ID) || status.getId().equals(Status.STARTED_ID)) {
-			RepositoryOperation reassignOperation = new RepositoryOperation("reassign", "Reassign to");
-			reassignOperation.setInputName("assignee");
+		if (status.getId().equals(Status.OPEN_ID) || status.getId().equals(Status.STARTED_ID)
+				|| status.getId().equals(Status.REOPENED_ID)) {
+			RepositoryOperation reassignOperation = new RepositoryOperation(REASSIGN_OPERATION, "Reassign to");
+			reassignOperation.setInputName(JiraAttribute.USER_ASSIGNED.getParamName());
 			reassignOperation.setInputValue(server.getUserName());
 			data.addOperation(reassignOperation);
 		}
@@ -367,10 +375,10 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		RepositoryOperation[] availableOperations = server.getAvailableOperations(issue.getKey());
 		for (RepositoryOperation operation : availableOperations) {
 			String[] fields = server.getActionFields(issue.getKey(), operation.getKnobName());
-			// System.err.println(issue.getKey() + " : "+ operation.getKnobName() + " " + operation.getOperationName() + " : " + Arrays.asList(fields));
 			for (String field : fields) {
 				if(RepositoryTaskAttribute.RESOLUTION.equals(attributeFactory.mapCommonAttributeKey(field))) {
-					operation.setUpOptions("resolve");
+					operation.setInputName(field);
+					operation.setUpOptions(field);
 					addResolutions(server, operation);
 				}
 				// TODO handle other action fields
@@ -413,34 +421,33 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
 							IStatus.OK, "Could not create ticket.", null));
 				}
-				// this is severly broken: should return id instead
+				// this is severely broken: should return id instead
 				return issue.getKey();
 			} else {
 				RepositoryOperation operation = taskData.getSelectedOperation();
 				if (operation == null) {
 					jiraServer.updateIssue(issue, taskData.getNewComment());
 				} else {
-					if ("leave".equals(operation.getKnobName()) || "reassign".equals(operation.getKnobName())) {
+					String inputName = operation.getInputName();
+					if(inputName!=null) {
+						String value;
+						if(operation.hasOptions()) {
+							value = operation.getOptionValue(operation.getOptionSelection());
+						} else {
+							value = operation.getInputValue();
+						}
+						if(value!=null) {
+							issue.setValue(inputName, value);
+						}
+					}
+						
+					if (LEAVE_OPERATION.equals(operation.getKnobName()) || REASSIGN_OPERATION.equals(operation.getKnobName())) {
 						if (!issue.getStatus().isClosed()) {
 							jiraServer.updateIssue(issue, taskData.getNewComment());
 						} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
 							jiraServer.addCommentToIssue(issue, taskData.getNewComment());
 						}
 					} else {
-
-//						Map<String, String[]> params = new HashMap<String, String[]>();
-//						String[] fields = jiraServer.getActionFields(issue.getKey(), action);
-//						
-//						for (String field : fields) {
-//							RepositoryTaskAttribute attribute = taskData.getAttribute(attributeFactory.mapCommonAttributeKey(field));
-//							if(attribute!=null) {
-//								List<String> values = attribute.getValues();
-//								if(values!=null) {
-//									params.put(field, values.toArray(new String[values.size()]));
-//								}
-//							}
-//						}
-						
 						jiraServer.advanceIssueWorkflow(issue, operation.getKnobName(), taskData.getNewComment());
 					}
 /*						
@@ -573,7 +580,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		
 		RepositoryOperation operation = taskData.getSelectedOperation();
 		String assignee;
-		if (operation != null && "reassign".equals(operation.getKnobName())) {
+		if (operation != null && REASSIGN_OPERATION.equals(operation.getKnobName())) {
 			assignee = operation.getInputValue();
 		} else {
 			assignee = taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED);
