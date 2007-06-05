@@ -236,7 +236,7 @@ public class JiraWebIssueService {
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
-				PostMethod post = new PostMethod("/secure/CommentAssignIssue.jspa");
+				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
 				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
 				if (resolution != null) {
@@ -314,7 +314,7 @@ public class JiraWebIssueService {
 				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user));
 				
 */				
-				PostMethod method = new PostMethod("/secure/CommentAssignIssue.jspa");
+				PostMethod method = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
 				method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
 				method.addParameter("id", issue.getId());
