@@ -112,32 +112,32 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
 			IProgressMonitor monitor, QueryHitCollector resultCollector, boolean forced) {
-		IStatus queryStatus = Status.OK_STATUS;
-		final List<Issue> issues = new ArrayList<Issue>();
-		JiraIssueCollector collector = new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS);
 		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
-		// TODO: Get rid of JiraIssueCollector and pass IQueryHitCollector
 
-		try {
-			Query filter;
-			if (repositoryQuery instanceof JiraRepositoryQuery) {
-				filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
-			} else if (repositoryQuery instanceof JiraCustomQuery) {
+		Query filter;
+		if (repositoryQuery instanceof JiraRepositoryQuery) {
+			filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
+		} else if (repositoryQuery instanceof JiraCustomQuery) {
+			try {
 				if (!client.hasDetails()) {
 					client.refreshDetails(monitor);
 				}
-				try {
-					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
-				} catch (InvalidJiraQueryException e) {
-					return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
-							"The query parameters do not match the repository configuration, please check the query properties; "
-									+ e.getMessage(), null);
-				}
-			} else {
-				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0, //
-						"Invalid query type: " + repositoryQuery.getClass(), null);
+				filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
+			} catch (JiraException e) {
+				return JiraCorePlugin.toStatus(repository, e);
+			} catch (InvalidJiraQueryException e) {
+				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
+						"The query parameters do not match the repository configuration, please check the query properties; "
+								+ e.getMessage(), null);
 			}
-			client.search(filter, collector);
+		} else {
+			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0, //
+					"Invalid query type: " + repositoryQuery.getClass(), null);
+		}
+
+		List<Issue> issues = new ArrayList<Issue>();
+		try {
+			client.search(filter, new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS));
 		} catch (JiraException e) {
 			return JiraCorePlugin.toStatus(repository, e);
 		}
@@ -150,12 +150,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				monitor.subTask(n++ + "/" + issues.size() +" " + issue.getKey() + " " + issue.getSummary());
 				resultCollector.accept(offlineHandler.createTaskData(repository, client, issue));
 			}
+			return Status.OK_STATUS;
 		} catch (JiraException e) {
 			return JiraCorePlugin.toStatus(repository, e);
 		} catch (CoreException e) {
-			queryStatus = e.getStatus();
+			return e.getStatus();
 		}
-		return queryStatus;
 	}
 
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,

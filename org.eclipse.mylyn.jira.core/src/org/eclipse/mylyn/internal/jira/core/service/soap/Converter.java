@@ -234,6 +234,7 @@ class Converter {
 			filter.setName(savedFilter.getName());
 			filter.setAuthor(savedFilter.getAuthor());
 			filter.setDescription(savedFilter.getDescription());
+			filter.setProject(savedFilter.getProject());
 
 			namedFilters[i] = filter;
 		}
