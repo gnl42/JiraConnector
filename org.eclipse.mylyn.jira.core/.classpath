@@ -14,8 +14,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib-axis/axis-1.3.jar"/>
 	<classpathentry kind="lib" path="lib-axis/commons-discovery-0.2.jar"/>
-	<classpathentry kind="lib" path="lib-axis/jaxrpc.jar"/>
-	<classpathentry kind="lib" path="lib-axis/saaj.jar"/>
 	<classpathentry kind="lib" path="lib-axis/wsdl4j-1.5.1.jar"/>
+	<classpathentry kind="lib" path="lib-axis/jaxrpc-1.1.jar"/>
+	<classpathentry kind="lib" path="lib-axis/saaj-1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

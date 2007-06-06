@@ -21,7 +21,7 @@ Export-Package: org.eclipse.mylar.internal.jira.core,
 Bundle-ClassPath: .,
  lib-axis/axis-1.3.jar,
  lib-axis/commons-discovery-0.2.jar,
- lib-axis/jaxrpc.jar,
- lib-axis/saaj.jar,
+ lib-axis/jaxrpc-1.1.jar,
+ lib-axis/saaj-1.2.jar,
  lib-axis/wsdl4j-1.5.1.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
