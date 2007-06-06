@@ -340,7 +340,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public AbstractRepositoryTask createTask(String repositoryUrl, String id, String summary) {
-		return new JiraTask(repositoryUrl, id, summary, true);
+		JiraTask jiraTask = new JiraTask(repositoryUrl, id, summary);
+		jiraTask.setCreationDate(new Date());
+		return jiraTask;
 	}
 
 	public void updateTaskFromTaskData(TaskRepository repository, AbstractRepositoryTask repositoryTask,

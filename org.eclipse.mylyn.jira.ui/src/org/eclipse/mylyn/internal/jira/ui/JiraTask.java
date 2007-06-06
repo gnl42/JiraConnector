@@ -49,8 +49,8 @@ public class JiraTask extends AbstractRepositoryTask {
 	/**
 	 * The handle is also the task's Jira url
 	 */
-	public JiraTask(String repositoryUrl, String id, String label, boolean newTask) {
-		super(repositoryUrl, id, label, newTask);
+	public JiraTask(String repositoryUrl, String id, String label) {
+		super(repositoryUrl, id, label);
 	}
 
 	@Override

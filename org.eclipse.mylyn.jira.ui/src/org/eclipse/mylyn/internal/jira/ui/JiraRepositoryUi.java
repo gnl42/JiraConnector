@@ -52,19 +52,19 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	public List<ITaskListElement> getLegendItems() {
 		List<ITaskListElement> legendItems = new ArrayList<ITaskListElement>();
 		
-		JiraTask bug = new JiraTask("", "bug", "Bug", false);
+		JiraTask bug = new JiraTask("", "bug", "Bug");
 		bug.setKind(JiraTask.Kind.BUG.toString());
 		legendItems.add(bug);
 
-		JiraTask feature = new JiraTask("", "feature", "Feature", false);
+		JiraTask feature = new JiraTask("", "feature", "Feature");
 		feature.setKind(JiraTask.Kind.FEATURE.toString());
 		legendItems.add(feature);
 
-		JiraTask improvement = new JiraTask("", "improvement", "Improvement", false);
+		JiraTask improvement = new JiraTask("", "improvement", "Improvement");
 		improvement.setKind(JiraTask.Kind.IMPROVEMENT.toString());
 		legendItems.add(improvement);
 
-		JiraTask task = new JiraTask("", "task", "Task", false);
+		JiraTask task = new JiraTask("", "task", "Task");
 		task.setKind(JiraTask.Kind.TASK.toString());
 		legendItems.add(task);
 		

@@ -62,8 +62,8 @@ public class JiraTaskArchiveTest extends TestCase {
 				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 		assertEquals(0, taskList.getArchiveContainer().getChildren().size());
-		JiraTask task1 = new JiraTask("repo", HANDLE1, LABEL, true);
-		JiraTask task2 = new JiraTask("repo", HANDLE1, LABEL, true);
+		JiraTask task1 = new JiraTask("repo", HANDLE1, LABEL);
+		JiraTask task2 = new JiraTask("repo", HANDLE1, LABEL);
 
 		taskList.addTask(task1);
 		taskList.addTask(task2);

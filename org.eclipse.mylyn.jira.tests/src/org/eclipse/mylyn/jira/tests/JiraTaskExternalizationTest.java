@@ -120,7 +120,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	}
 	
 	public void testCompletionSave() {
-		JiraTask jiraTask = new JiraTask(SERVER_URL, TEST_TASK, TEST_LABEL, true);
+		JiraTask jiraTask = new JiraTask(SERVER_URL, TEST_TASK, TEST_LABEL);
 		jiraTask.setCompleted(true);
 		manager.getTaskList().moveToRoot(jiraTask);
 
@@ -132,7 +132,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	}
 
 	public void testJiraTaskSave() {
-		JiraTask jiraTask = new JiraTask(SERVER_URL+"testSave", TEST_TASK, TEST_LABEL, true);
+		JiraTask jiraTask = new JiraTask(SERVER_URL+"testSave", TEST_TASK, TEST_LABEL);
 		String testUrl = "http://foo";
 		jiraTask.setTaskUrl(testUrl);
 		manager.getTaskList().moveToRoot(jiraTask);
@@ -168,7 +168,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraIssue.setKey(ISSUE_KEY);
 		jiraIssue.setDescription(ISSUE_DESCRIPTION);
 		jiraIssue.setSummary(ISSUE_SUMMARY);
-		JiraTask jiraTask = new JiraTask(SERVER_URL, ""+123, ISSUE_DESCRIPTION, true);
+		JiraTask jiraTask = new JiraTask(SERVER_URL, ""+123, ISSUE_DESCRIPTION);
 		taskList.addTask(jiraTask);
 		JiraRepositoryConnector.updateTaskDetails(repository.getUrl(), jiraTask, jiraIssue, true);
 		TasksUiPlugin.getTaskListManager().getTaskList().addTask(jiraTask);

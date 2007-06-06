@@ -193,7 +193,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	@Override
 	public ITask createTask(String repositoryUrl, String taskId, String summary, Element element, TaskList taskList,
 			AbstractTaskContainer category, ITask parent) throws TaskExternalizationException {
-		JiraTask task = new JiraTask(repositoryUrl, taskId, summary, false);
+		JiraTask task = new JiraTask(repositoryUrl, taskId, summary);
 
 		if (element.hasAttribute(KEY_KEY)) {
 			String key = element.getAttribute(KEY_KEY);
