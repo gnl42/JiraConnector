@@ -67,14 +67,27 @@ public class JiraWebSession {
 
 	private void login(HttpClient client) throws JiraException {
 		class RedirectInfo {
+			final int statusCode;
 			final String url;
 			final Header[] responseHeaders;
 			final String responseBody;
 
-			public RedirectInfo(String url, Header[] responseHeaders, String responseBody) {
+			public RedirectInfo(String url, int statusCode, Header[] responseHeaders, String responseBody) {
 				this.url = url;
+				this.statusCode = statusCode;
 				this.responseHeaders = responseHeaders;
 				this.responseBody = responseBody;
+			}
+			
+			public String toString() {
+				StringBuilder sb = new StringBuilder("Request: ");
+				sb.append(statusCode).append(' ').append(url).append('\n');
+				for (Header header : responseHeaders) {
+					sb.append("  ").append(header.toExternalForm()).append('\n');
+				}
+				sb.append(responseBody);
+				sb.append("-----------\n");
+				return sb.toString();
 			}
 		}
 		
@@ -93,12 +106,13 @@ public class JiraWebSession {
 				int statusCode = client.executeMethod(login);
 				if (statusCode == HttpStatus.SC_OK) {
 					throw new JiraAuthenticationException("Login failed.");
-				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY) {
+				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
+						&& statusCode != HttpStatus.SC_MOVED_PERMANENTLY) {
 					throw new JiraServiceUnavailableException("Unexpected status code on login: " + statusCode);
 				}
 				
 				Header locationHeader = login.getResponseHeader("location");
-				redirects.add(new RedirectInfo(url, login.getResponseHeaders(), login.getResponseBodyAsString()));
+				redirects.add(new RedirectInfo(url, statusCode, login.getResponseHeaders(), login.getResponseBodyAsString()));
 				if (locationHeader == null) {
 					throw new JiraServiceUnavailableException("Invalid redirect, missing location");
 				}
@@ -120,15 +134,9 @@ public class JiraWebSession {
 			}
 		}
 		
-		StringBuilder sb = new StringBuilder("Login redirects\n");
+		StringBuilder sb = new StringBuilder("Login redirects:\n");
 		for (RedirectInfo info : redirects) {
-			sb.append("Requested URL: ");
-			sb.append(info.url).append("\n");
-			for (Header header : info.responseHeaders) {
-				sb.append("  ").append(header.toExternalForm()).append("\n");
-			}
-			sb.append(info.responseBody);
-			sb.append("-----------\n");
+			sb.append(info.toString());
 		}
 		JiraCorePlugin.log(IStatus.INFO, sb.toString(), null);
 		
