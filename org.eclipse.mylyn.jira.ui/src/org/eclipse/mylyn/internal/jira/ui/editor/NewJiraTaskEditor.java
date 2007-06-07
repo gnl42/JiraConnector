@@ -27,7 +27,8 @@ public class NewJiraTaskEditor extends AbstractNewRepositoryTaskEditor {
 	}
 
 	@Override
-	public SearchHitCollector getDuplicateSearchCollector(String searchString) {
+	public SearchHitCollector getDuplicateSearchCollector(String name) {
+		String searchString = AbstractNewRepositoryTaskEditor.getStackTraceFromDescription(taskData.getDescription());
 		ContentFilter contentFilter = new ContentFilter(searchString, false, true, false, true);
 
 		FilterDefinition filter = new FilterDefinition();
