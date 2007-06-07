@@ -159,7 +159,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
-			Set<AbstractRepositoryTask> tasks) throws CoreException {
+			Set<AbstractRepositoryTask> tasks, IProgressMonitor monitor) throws CoreException {
 
 		String dateString = repository.getSyncTimeStamp();
 		Date lastSyncDate = convertDate(dateString);
