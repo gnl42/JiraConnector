@@ -28,7 +28,6 @@ import org.eclipse.mylar.internal.jira.ui.JiraRepositoryQuery;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.RepositoryStatus;
 import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -279,8 +278,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 	@Override
 	public AbstractRepositoryQuery getQuery() {
 		if (buttonSaved.getSelection()) {
-			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter(), TasksUiPlugin.getTaskListManager()
-					.getTaskList());
+			return new JiraRepositoryQuery(repository.getUrl(), getSelectedFilter());
 		}
 
 		if (filterSummaryPage != null) {

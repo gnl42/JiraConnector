@@ -13,7 +13,6 @@ package org.eclipse.mylar.internal.jira.ui;
 
 import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylar.tasks.core.TaskList;
 
 /**
  * A JiraRepositoryQuery represents a server-side query for Jira repository.
@@ -24,8 +23,8 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 
 	protected NamedFilter filter = null;
 
-	public JiraRepositoryQuery(String repositoryUrl, NamedFilter filter, TaskList taskList) {
-		super(filter.getName(), taskList);
+	public JiraRepositoryQuery(String repositoryUrl, NamedFilter filter) {
+		super(filter.getName());
 		this.filter = filter;
 		super.repositoryUrl = repositoryUrl;
 		setUrl(repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&requestId=" + filter.getId());

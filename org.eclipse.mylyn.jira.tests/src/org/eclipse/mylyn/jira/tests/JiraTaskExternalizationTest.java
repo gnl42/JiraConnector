@@ -86,7 +86,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testNamedFilterNotRenamed() {
 		NamedFilter filter = new NamedFilter();
 		filter.setName("f-name");
-		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter, TasksUiPlugin.getTaskListManager().getTaskList());
+		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter);
 		taskList.addQuery(query);
 		query.setDescription("q-name");
 
@@ -104,7 +104,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testCustomQueryRename() {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setName("f-name");
-		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding(), TasksUiPlugin.getTaskListManager().getTaskList());
+		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
 		taskList.addQuery(query);
 		query.setDescription("q-name");
 
@@ -160,8 +160,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		namedFilter.setName("Test Filter");
 		namedFilter.setId("123456");
 		namedFilter.setDescription("Test Filter Description");
-		JiraRepositoryQuery jiraRepositoryQuery = new JiraRepositoryQuery(repository.getUrl(), namedFilter,
-				TasksUiPlugin.getTaskListManager().getTaskList());
+		JiraRepositoryQuery jiraRepositoryQuery = new JiraRepositoryQuery(repository.getUrl(), namedFilter);
 		String filterUrl = jiraRepositoryQuery.getUrl();
 
 		Issue jiraIssue = new Issue();
@@ -173,8 +172,9 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraRepositoryConnector.updateTaskDetails(repository.getUrl(), jiraTask, jiraIssue, true);
 		TasksUiPlugin.getTaskListManager().getTaskList().addTask(jiraTask);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
-		jiraRepositoryQuery.addHit(jiraTask);
+		
 		TasksUiPlugin.getTaskListManager().getTaskList().addQuery(jiraRepositoryQuery);
+		TasksUiPlugin.getTaskListManager().getTaskList().addTask(jiraTask, jiraRepositoryQuery);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
 
 		manager.saveTaskList();

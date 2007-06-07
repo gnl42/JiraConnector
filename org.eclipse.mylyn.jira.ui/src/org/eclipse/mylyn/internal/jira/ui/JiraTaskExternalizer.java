@@ -106,18 +106,18 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
 			query = new JiraCustomQuery(repositoryUrl, filter, TasksUiPlugin.getRepositoryManager().getRepository(
-					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding(), taskList);
+					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding());
 		} else if (customUrl != null && customUrl.length() > 0) {
 			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
 			query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl, repository
-					.getCharacterEncoding(), taskList);
+					.getCharacterEncoding());
 
 		} else {
 			NamedFilter namedFilter = new NamedFilter();
 			namedFilter.setId(element.getAttribute(KEY_FILTER_ID));
 			namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
-			query = new JiraRepositoryQuery(repositoryUrl, namedFilter, taskList);
+			query = new JiraRepositoryQuery(repositoryUrl, namedFilter);
 		}
 
 		return query;

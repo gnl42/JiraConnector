@@ -48,7 +48,6 @@ import org.eclipse.mylar.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylar.tasks.core.TaskList;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.
@@ -96,15 +95,15 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	private String encoding;
 
 
-	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, String encoding, TaskList taskList) {
-		super(filter.getName(), taskList);
+	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, String encoding) {
+		super(filter.getName());
 		this.repositoryUrl = repositoryUrl;
 		this.encoding = encoding;
 		this.url = repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
 	}
 
-	public JiraCustomQuery(String name, String queryUrl, String repositoryUrl, String encoding, TaskList taskList) {
-		super(name, taskList);
+	public JiraCustomQuery(String name, String queryUrl, String repositoryUrl, String encoding) {
+		super(name);
 		this.repositoryUrl = repositoryUrl;
 		this.url = queryUrl;
 		this.encoding = encoding;

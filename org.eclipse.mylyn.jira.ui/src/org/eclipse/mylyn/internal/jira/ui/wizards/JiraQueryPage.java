@@ -64,7 +64,6 @@ import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 import org.eclipse.mylar.tasks.ui.DatePicker;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylar.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -1486,7 +1485,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getUrl(), repository
-				.getCharacterEncoding(), TasksUiPlugin.getTaskListManager().getTaskList());
+				.getCharacterEncoding());
 		workingCopy = query.getFilterDefinition(server, false);
 		return true;
 	}
@@ -1591,8 +1590,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		this.applyChanges();
 
 		String url = repository.getUrl();
-		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding(),
-				TasksUiPlugin.getTaskListManager().getTaskList());
+		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding());
 		return query;
 	}
 }

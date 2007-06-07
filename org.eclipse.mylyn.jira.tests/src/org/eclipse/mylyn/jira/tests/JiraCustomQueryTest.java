@@ -40,7 +40,6 @@ import org.eclipse.mylar.internal.jira.core.service.JiraClient;
 import org.eclipse.mylar.internal.jira.ui.InvalidJiraQueryException;
 import org.eclipse.mylar.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylar.tasks.core.TaskList;
 import org.eclipse.mylar.tasks.core.TaskRepository;
 
 /**
@@ -135,12 +134,10 @@ public class JiraCustomQueryTest extends TestCase {
 		filter.setUpdatedDateFilter(new DateRangeFilter(new Date(20), new Date(22)));
 		filter.setDueDateFilter(new DateRangeFilter(new Date(30), new Date(32)));
 
-		TaskList taskList = new TaskList();
-
 		TaskRepository taskRepository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
 
-		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskRepository.getCharacterEncoding(), taskList);
+		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskRepository.getCharacterEncoding());
 
 		String queryUrl = customQuery.getUrl();
 
@@ -169,7 +166,7 @@ public class JiraCustomQueryTest extends TestCase {
 				});
 
 		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl, taskRepository
-				.getCharacterEncoding(), taskList);
+				.getCharacterEncoding());
 
 		FilterDefinition filter2 = customQuery2.getFilterDefinition(jiraServer, true);
 
@@ -242,7 +239,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
-		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET, null);
+		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET);
 		MockJiraClient client = new MockJiraClient(repositoryUrl);
 		filter = customQuery.getFilterDefinition(client, true);
 		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
@@ -255,7 +252,7 @@ public class JiraCustomQueryTest extends TestCase {
 		resolutions[0].setId("123");
  		resolutionFilter = new ResolutionFilter(resolutions);
 		filter.setResolutionFilter(resolutionFilter);
-		customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET, null);
+		customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET);
 		try {
 			filter = customQuery.getFilterDefinition(client, true);
 			fail("Expected InvalidJiraQueryException, got: " + filter);
