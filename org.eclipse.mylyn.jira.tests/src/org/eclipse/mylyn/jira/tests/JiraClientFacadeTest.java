@@ -17,6 +17,7 @@ import org.eclipse.mylar.context.tests.support.MylarTestUtils;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
 import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
 import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylar.internal.jira.core.service.JiraException;
 import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylar.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylar.internal.jira.ui.JiraUiPlugin;
@@ -59,14 +60,12 @@ public class JiraClientFacadeTest extends TestCase {
 		repository.setAuthenticationCredentials("Bogus User", "Bogus Password");
 		jiraFacade.repositoryRemoved(repository);
 
-		boolean failedOnBogusUser = false;
-
 		try {
 			jiraFacade.getJiraClient(repository).getNamedFilters();
-		} catch (Exception e) {
-			failedOnBogusUser = true;
+			fail("Expected to fail on bogus user");
+		} catch (JiraException e) {
+			// ignore
 		}
-		assertTrue(failedOnBogusUser);
 
 		// check that it works after putting the right password in
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);

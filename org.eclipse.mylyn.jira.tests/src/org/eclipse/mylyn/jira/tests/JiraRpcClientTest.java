@@ -105,7 +105,6 @@ public class JiraRpcClientTest extends TestCase {
 		issue.setFixVersions(new Version[0]);
 		
 		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
-		String closeOperation = JiraTestUtils.getOperation(client, issue.getKey(), "close");
 
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
 
@@ -118,6 +117,9 @@ public class JiraRpcClientTest extends TestCase {
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
+
+		// have to get "close" operation after resolving issue
+		String closeOperation = JiraTestUtils.getOperation(client, issue.getKey(), "close");
 
 		client.advanceIssueWorkflow(issue, closeOperation, "comment");
 		issue = client.getIssueByKey(issue.getKey());

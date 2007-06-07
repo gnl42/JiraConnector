@@ -57,6 +57,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	
 	private JiraClient server;
 
+	private String customFieldId;
+
+	private String customFieldName;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -75,8 +79,16 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	protected void init(String url) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
-		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
+		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.ADMIN);
+		repository = new TaskRepository(kind, url);
+		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		server = JiraClientFacade.getDefault().getJiraClient(repository);
 
+		customFieldName = "Free Text";
+		customFieldId = JiraTestUtils.getCustomField(server, customFieldName);
+		assertNotNull("Unable to find custom field id", customFieldId);
+		
+		credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 
@@ -119,14 +131,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		String issueKey = issue.getKey();
 		
-		String fieldName = "Free Text";
-		String fieldId = JiraTestUtils.getCustomField(server, fieldName);
-		assertNotNull("Unable to find custom field id", fieldId);
-		
 		RepositoryTaskData taskData;
 		
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		taskData.addAttributeValue(fieldId, "foo");
+		taskData.addAttributeValue(customFieldId, "foo");
 		taskData.addAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "add comment");
 		RepositoryOperation leaveOperation = new RepositoryOperation("leave", "");
 		taskData.addOperation(leaveOperation);
@@ -141,7 +149,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 
 		issue = server.getIssueByKey(issueKey);
-		assertCustomField(issue, fieldId, fieldName, "foo");
+		assertCustomField(issue, customFieldId, customFieldName, "foo");
 		
 		{
 			String operation = JiraTestUtils.getOperation(server, issue.getKey(), "resolve");
@@ -169,7 +177,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertNotNull(task.getCompletionDate());
 
 		issue = server.getIssueByKey(issueKey);
-		assertCustomField(issue, fieldId, fieldName, "foo");
+		assertCustomField(issue, customFieldId, customFieldName, "foo");
 		
 		{		
 			String operation = JiraTestUtils.getOperation(server, issue.getKey(), "close");
@@ -197,7 +205,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertNotNull(task.getCompletionDate());
 
 		issue = server.getIssueByKey(issueKey);
-		assertCustomField(issue, fieldId, fieldName, "foo");
+		assertCustomField(issue, customFieldId, customFieldName, "foo");
 	}
 
 	private void assertCustomField(Issue issue, String fieldId, String fieldName, String value) {
