@@ -14,9 +14,9 @@ import java.net.Proxy;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.Credentials;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylyn.context.tests.support.TestUtil;
+import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
+import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
@@ -38,7 +38,7 @@ public class JiraRpcClientTest extends TestCase {
 	private AbstractJiraClient client;
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
-		Credentials credentials = MylarTestUtils.readCredentials(level);
+		Credentials credentials = TestUtil.readCredentials(level);
 		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
 		
 		JiraTestUtils.refreshDetails(client);
@@ -200,7 +200,7 @@ public class JiraRpcClientTest extends TestCase {
 			assertEquals("Issue already assigned to Test User 1 (" + client.getUserName() + ").", e.getHtmlMessage());
 		}
 
-		String guestUsername = MylarTestUtils.readCredentials(PrivilegeLevel.GUEST).username;
+		String guestUsername = TestUtil.readCredentials(PrivilegeLevel.GUEST).username;
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "");
 		} catch (JiraRemoteMessageException e) {

@@ -3,9 +3,9 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.Credentials;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylyn.context.tests.support.TestUtil;
+import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
+import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
@@ -27,7 +27,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	protected void init(String url) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
-		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
+		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);

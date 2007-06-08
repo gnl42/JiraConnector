@@ -18,9 +18,9 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.Credentials;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylyn.context.tests.support.TestUtil;
+import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
+import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
@@ -67,7 +67,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
-		Credentials credentials = MylarTestUtils.readCredentials(level);
+		Credentials credentials = TestUtil.readCredentials(level);
 
 		if (repository != null) {
 			TasksUiPlugin.getRepositoryManager().removeRepository(repository,

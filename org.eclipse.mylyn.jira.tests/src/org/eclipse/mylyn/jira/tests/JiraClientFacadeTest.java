@@ -13,9 +13,9 @@ package org.eclipse.mylyn.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.Credentials;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylyn.context.tests.support.TestUtil;
+import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
+import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
@@ -51,7 +51,7 @@ public class JiraClientFacadeTest extends TestCase {
 	}
 
 	public void testChangeCredentials() throws Exception {
-		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
+		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
@@ -74,7 +74,7 @@ public class JiraClientFacadeTest extends TestCase {
 	}
 
 	protected void validate(String url) throws Exception {
-		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
+		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		
 		// standard connect
 		jiraFacade.validateServerAndCredentials(url, credentials.username, credentials.password, null, null, null);

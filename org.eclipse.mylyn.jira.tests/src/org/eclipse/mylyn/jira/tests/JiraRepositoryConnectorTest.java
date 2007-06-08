@@ -19,9 +19,9 @@ import junit.framework.TestCase;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.context.core.ContextCorePlugin;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.Credentials;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylyn.context.tests.support.TestUtil;
+import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
+import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -79,7 +79,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	protected void init(String url) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
-		Credentials credentials = MylarTestUtils.readCredentials(PrivilegeLevel.ADMIN);
+		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.ADMIN);
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		server = JiraClientFacade.getDefault().getJiraClient(repository);
@@ -88,7 +88,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		customFieldId = JiraTestUtils.getCustomField(server, customFieldName);
 		assertNotNull("Unable to find custom field id", customFieldId);
 		
-		credentials = MylarTestUtils.readCredentials(PrivilegeLevel.USER);
+		credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 

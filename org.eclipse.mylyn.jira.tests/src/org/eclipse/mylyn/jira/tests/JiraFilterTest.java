@@ -14,9 +14,9 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.Credentials;
-import org.eclipse.mylyn.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylyn.context.tests.support.TestUtil;
+import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
+import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -72,7 +72,7 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
-		Credentials credentials = MylarTestUtils.readCredentials(level);
+		Credentials credentials = TestUtil.readCredentials(level);
 
 		if (repository != null) {
 			TasksUiPlugin.getRepositoryManager().removeRepository(repository,
