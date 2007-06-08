@@ -9,36 +9,36 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service.web.rss;
+package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import org.eclipse.mylar.internal.jira.core.model.Component;
-import org.eclipse.mylar.internal.jira.core.model.IssueType;
-import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.model.filter.ComponentFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.ContentFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.CurrentUserFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.DateFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.DateRangeFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.EstimateVsActualFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylar.internal.jira.core.model.filter.IssueTypeFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.NobodyFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.Order;
-import org.eclipse.mylar.internal.jira.core.model.filter.PriorityFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.ProjectFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.ResolutionFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.SpecificUserFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.UserFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.UserInGroupFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.CurrentUserFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.EstimateVsActualFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.jira.core.model.filter.IssueTypeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.NobodyFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.Order;
+import org.eclipse.mylyn.internal.jira.core.model.filter.PriorityFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ResolutionFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.SpecificUserFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 
 /**
  * @author	Brock Janiczak

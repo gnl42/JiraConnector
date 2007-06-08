@@ -9,7 +9,7 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.model.filter;
+package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 /**
  * @author	Brock Janiczak

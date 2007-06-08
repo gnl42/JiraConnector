@@ -9,7 +9,7 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service.web.rss;
+package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 
 import org.xml.sax.SAXException;
 

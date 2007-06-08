@@ -9,7 +9,7 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core;
+package org.eclipse.mylyn.internal.jira.core;
 
 /**
  * @author	Brock Janiczak

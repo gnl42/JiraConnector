@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service;
+package org.eclipse.mylyn.internal.jira.core.service;
 
 /**
  * Indicates an error during repository access.

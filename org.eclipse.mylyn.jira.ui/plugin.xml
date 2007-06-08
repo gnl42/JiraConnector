@@ -3,48 +3,48 @@
 <plugin>
 
    <extension
-         id="org.eclipse.mylar.jira.repository"
+         id="org.eclipse.mylyn.jira.repository"
          name="JIRA Repository"
-         point="org.eclipse.mylar.tasks.ui.repositories">
+         point="org.eclipse.mylyn.tasks.ui.repositories">
 
       <connectorCore
-            class="org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector"
-            id="org.eclipse.mylar.jira.tasklist.repositories"
+            class="org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector"
+            id="org.eclipse.mylyn.jira.tasklist.repositories"
             name="JIRA Repository Connector"
             type="jira"/>
 	  <connectorUi
          brandingIcon="icons/eview16/jira-logo.gif"
-         class="org.eclipse.mylar.internal.jira.ui.JiraRepositoryUi"
+         class="org.eclipse.mylyn.internal.jira.ui.JiraRepositoryUi"
          name="JIRA Repository UI"
          overlayIcon="icons/eview16/overlay-jira.gif"/>
             
       <externalizer 
-            class="org.eclipse.mylar.internal.jira.ui.JiraTaskExternalizer"
-            id="org.eclipse.mylar.jira.tasklist.externalizer"/>
+            class="org.eclipse.mylyn.internal.jira.ui.JiraTaskExternalizer"
+            id="org.eclipse.mylyn.jira.tasklist.externalizer"/>
    </extension>  
    <!--
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.eclipse.mylar.internal.jira.ui.JiraTaskEditor"
+            class="org.eclipse.mylyn.internal.jira.ui.JiraTaskEditor"
             default="false"
-            id="org.eclipse.mylar.jira.task.editor"
+            id="org.eclipse.mylyn.jira.task.editor"
             name="Jira Task Editor"/>
    </extension>
    --> 
    <extension
-         point="org.eclipse.mylar.tasks.ui.editors">
+         point="org.eclipse.mylyn.tasks.ui.editors">
       <editorFactory
-            class="org.eclipse.mylar.internal.jira.ui.editor.JiraTaskEditorFactory"
-            id="org.eclipse.mylar.jira.ui.JiraTaskEditorFactory"/>
+            class="org.eclipse.mylyn.internal.jira.ui.editor.JiraTaskEditorFactory"
+            id="org.eclipse.mylyn.jira.ui.JiraTaskEditorFactory"/>
      <!-- <hyperlinkDetector
-            class="org.eclipse.mylar.internal.jira.ui.JiraTaskHyperlinkDetector"
-            id="org.eclipse.mylar.tasks.hyperlinkdetector.jiratask"/>-->
+            class="org.eclipse.mylyn.internal.jira.ui.JiraTaskHyperlinkDetector"
+            id="org.eclipse.mylyn.tasks.hyperlinkdetector.jiratask"/>-->
             
    </extension>
 
    <extension
-         point="org.eclipse.mylar.tasks.core.templates">
+         point="org.eclipse.mylyn.tasks.core.templates">
       <repository
             addAutomatically="false"
             anonymous="false"
@@ -62,8 +62,8 @@
    <!-- <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
       <hyperlinkDetector            
-            class="org.eclipse.mylar.internal.jira.ui.JiraTaskHyperlinkDetector"
-            id="org.eclipse.mylar.jira.ui.hyperlinkdetector"
+            class="org.eclipse.mylyn.internal.jira.ui.JiraTaskHyperlinkDetector"
+            id="org.eclipse.mylyn.jira.ui.hyperlinkdetector"
             name="Mylar Task - JIRA"
             targetId="org.eclipse.jdt.ui.javaCode">
       </hyperlinkDetector>

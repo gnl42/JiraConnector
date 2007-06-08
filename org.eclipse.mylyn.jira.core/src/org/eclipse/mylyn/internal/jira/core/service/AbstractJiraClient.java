@@ -9,21 +9,21 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service;
+package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.net.Proxy;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.mylar.internal.jira.core.model.Component;
-import org.eclipse.mylar.internal.jira.core.model.IssueType;
-import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change

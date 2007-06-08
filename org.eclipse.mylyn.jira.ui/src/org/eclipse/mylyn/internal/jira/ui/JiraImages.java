@@ -11,7 +11,7 @@
 /*
  * Created on Apr 20, 2004
  */
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.ui;
 
 import java.net.MalformedURLException;
 import java.net.URL;

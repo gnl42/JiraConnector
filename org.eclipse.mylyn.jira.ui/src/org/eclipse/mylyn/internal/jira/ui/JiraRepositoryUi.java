@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.ui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,20 +17,20 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.mylar.internal.jira.ui.wizards.EditJiraQueryWizard;
-import org.eclipse.mylar.internal.jira.ui.wizards.JiraQueryPage;
-import org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage;
-import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraQueryWizard;
-import org.eclipse.mylar.internal.jira.ui.wizards.NewJiraTaskWizard;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryTask;
-import org.eclipse.mylar.tasks.core.ITaskListElement;
-import org.eclipse.mylar.tasks.core.RepositoryTaskData;
-import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.AbstractRepositoryConnectorUi;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylar.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.mylyn.internal.jira.ui.wizards.EditJiraQueryWizard;
+import org.eclipse.mylyn.internal.jira.ui.wizards.JiraQueryPage;
+import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
+import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraQueryWizard;
+import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylyn.tasks.core.ITaskListElement;
+import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
+import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 
 /**
  * @author Mik Kersten

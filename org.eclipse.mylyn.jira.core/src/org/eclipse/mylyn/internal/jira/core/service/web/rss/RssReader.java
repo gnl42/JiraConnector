@@ -9,7 +9,7 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service.web.rss;
+package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,9 +17,9 @@ import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;

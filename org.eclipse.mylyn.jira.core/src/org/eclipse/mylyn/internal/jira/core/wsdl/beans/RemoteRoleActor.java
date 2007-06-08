@@ -5,7 +5,7 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.beans;
+package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class RemoteRoleActor  implements java.io.Serializable {
@@ -15,11 +15,11 @@ public class RemoteRoleActor  implements java.io.Serializable {
 
     private java.lang.String prettyName;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole;
 
     private java.lang.String type;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] users;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] users;
 
     public RemoteRoleActor() {
     }
@@ -28,9 +28,9 @@ public class RemoteRoleActor  implements java.io.Serializable {
            java.lang.String descriptor,
            java.lang.String parameter,
            java.lang.String prettyName,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole,
            java.lang.String type,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] users) {
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] users) {
            this.descriptor = descriptor;
            this.parameter = parameter;
            this.prettyName = prettyName;
@@ -105,7 +105,7 @@ public class RemoteRoleActor  implements java.io.Serializable {
      * 
      * @return projectRole
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProjectRole getProjectRole() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole getProjectRole() {
         return projectRole;
     }
 
@@ -115,7 +115,7 @@ public class RemoteRoleActor  implements java.io.Serializable {
      * 
      * @param projectRole
      */
-    public void setProjectRole(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole) {
+    public void setProjectRole(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole) {
         this.projectRole = projectRole;
     }
 
@@ -145,7 +145,7 @@ public class RemoteRoleActor  implements java.io.Serializable {
      * 
      * @return users
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] getUsers() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] getUsers() {
         return users;
     }
 
@@ -155,7 +155,7 @@ public class RemoteRoleActor  implements java.io.Serializable {
      * 
      * @param users
      */
-    public void setUsers(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] users) {
+    public void setUsers(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] users) {
         this.users = users;
     }
 

@@ -9,7 +9,7 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service;
+package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -17,20 +17,20 @@ import java.net.Proxy;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.mylar.internal.jira.core.model.Attachment;
-import org.eclipse.mylar.internal.jira.core.model.CustomField;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.IssueType;
-import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
-import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.model.Query;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylar.tasks.core.RepositoryOperation;
-import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.internal.jira.core.model.Attachment;
+import org.eclipse.mylyn.internal.jira.core.model.CustomField;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
+import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.Query;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylyn.tasks.core.RepositoryOperation;
+import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
 /**
  * This interface exposes the full set of services available from a Jira
@@ -95,7 +95,7 @@ public interface JiraClient {
 	 * @deprecated There is no need to call this method as all services should
 	 *             automatically login when the session is about to expire. If
 	 *             you need to check if the credentials are valid, call
-	 *             {@link org.eclipse.mylar.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
+	 *             {@link org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
 	 */
 	void login() throws JiraException;
 
@@ -315,7 +315,7 @@ public interface JiraClient {
 	 * 
 	 * @param issue
 	 *            Prototype issue used to create the new issue
-	 * @return A fully populated {@link org.eclipse.mylar.internal.jira.core.model.Issue}
+	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.Issue}
 	 *         containing the details of the new issue
 	 */
 	Issue createIssue(Issue issue) throws JiraException;
@@ -342,7 +342,7 @@ public interface JiraClient {
 	 * Vote for <code>issue</code>. Issues can only be voted on if the issue
 	 * was not raied by the current user and is not resolved. Before calling
 	 * this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylar.internal.jira.core.model.Issue#canUserVote(String)}. If it is
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is
 	 * not valid for the user to vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
@@ -354,7 +354,7 @@ public interface JiraClient {
 	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the
 	 * issue was not raied by the current user and is not resolved. Before
 	 * calling this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylar.internal.jira.core.model.Issue#canUserVote(String)}. If it is
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is
 	 * not valid for the user to vote for an issue this method will do nothing.
 	 * 
 	 * @param issue

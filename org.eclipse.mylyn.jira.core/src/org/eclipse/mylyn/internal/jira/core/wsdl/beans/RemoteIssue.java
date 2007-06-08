@@ -5,21 +5,21 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.beans;
+package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
 @SuppressWarnings({ "unchecked", "serial" })
-public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.beans.AbstractRemoteEntity  implements java.io.Serializable {
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion[] affectsVersions;
+public class RemoteIssue  extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractRemoteEntity  implements java.io.Serializable {
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] affectsVersions;
 
     private java.lang.String assignee;
 
     private java.lang.String[] attachmentNames;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteComponent[] components;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[] components;
 
     private java.util.Calendar created;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteCustomFieldValue[] customFieldValues;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue[] customFieldValues;
 
     private java.lang.String description;
 
@@ -27,7 +27,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
 
     private java.lang.String environment;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion[] fixVersions;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] fixVersions;
 
     private java.lang.String key;
 
@@ -54,16 +54,16 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
 
     public RemoteIssue(
            java.lang.String id,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion[] affectsVersions,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] affectsVersions,
            java.lang.String assignee,
            java.lang.String[] attachmentNames,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteComponent[] components,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[] components,
            java.util.Calendar created,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteCustomFieldValue[] customFieldValues,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue[] customFieldValues,
            java.lang.String description,
            java.util.Calendar duedate,
            java.lang.String environment,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion[] fixVersions,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] fixVersions,
            java.lang.String key,
            java.lang.String priority,
            java.lang.String project,
@@ -104,7 +104,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @return affectsVersions
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion[] getAffectsVersions() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] getAffectsVersions() {
         return affectsVersions;
     }
 
@@ -114,7 +114,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @param affectsVersions
      */
-    public void setAffectsVersions(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion[] affectsVersions) {
+    public void setAffectsVersions(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] affectsVersions) {
         this.affectsVersions = affectsVersions;
     }
 
@@ -164,7 +164,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @return components
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteComponent[] getComponents() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[] getComponents() {
         return components;
     }
 
@@ -174,7 +174,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @param components
      */
-    public void setComponents(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteComponent[] components) {
+    public void setComponents(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[] components) {
         this.components = components;
     }
 
@@ -204,7 +204,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @return customFieldValues
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteCustomFieldValue[] getCustomFieldValues() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue[] getCustomFieldValues() {
         return customFieldValues;
     }
 
@@ -214,7 +214,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @param customFieldValues
      */
-    public void setCustomFieldValues(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteCustomFieldValue[] customFieldValues) {
+    public void setCustomFieldValues(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue[] customFieldValues) {
         this.customFieldValues = customFieldValues;
     }
 
@@ -284,7 +284,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @return fixVersions
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion[] getFixVersions() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] getFixVersions() {
         return fixVersions;
     }
 
@@ -294,7 +294,7 @@ public class RemoteIssue  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @param fixVersions
      */
-    public void setFixVersions(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion[] fixVersions) {
+    public void setFixVersions(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] fixVersions) {
         this.fixVersions = fixVersions;
     }
 

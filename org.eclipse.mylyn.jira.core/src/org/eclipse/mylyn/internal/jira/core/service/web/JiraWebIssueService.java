@@ -9,7 +9,7 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service.web;
+package org.eclipse.mylyn.internal.jira.core.service.web;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,21 +41,21 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartBase;
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
-import org.eclipse.mylar.core.net.HtmlStreamTokenizer;
-import org.eclipse.mylar.core.net.HtmlTag;
-import org.eclipse.mylar.core.net.HtmlStreamTokenizer.Token;
-import org.eclipse.mylar.internal.jira.core.model.Attachment;
-import org.eclipse.mylar.internal.jira.core.model.Component;
-import org.eclipse.mylar.internal.jira.core.model.CustomField;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.model.filter.SingleIssueCollector;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraRemoteException;
-import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylar.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
+import org.eclipse.mylyn.core.net.HtmlStreamTokenizer;
+import org.eclipse.mylyn.core.net.HtmlTag;
+import org.eclipse.mylyn.core.net.HtmlStreamTokenizer.Token;
+import org.eclipse.mylyn.internal.jira.core.model.Attachment;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.CustomField;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
+import org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
 
 /**
  * TODO look at creation Operation classes to perform each of these actions

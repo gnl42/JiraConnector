@@ -9,11 +9,11 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.model.filter;
+package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 
 /**
  * Filter for restricting issues by their resolution. If you are looking for

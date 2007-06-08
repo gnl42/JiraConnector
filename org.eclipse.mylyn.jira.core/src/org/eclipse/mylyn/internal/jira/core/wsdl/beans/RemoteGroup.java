@@ -5,20 +5,20 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.beans;
+package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
 @SuppressWarnings({ "unchecked", "serial" })
-public class RemoteGroup  extends org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteEntity  implements java.io.Serializable {
+public class RemoteGroup  extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity  implements java.io.Serializable {
     private java.lang.String name;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] users;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] users;
 
     public RemoteGroup() {
     }
 
     public RemoteGroup(
            java.lang.String name,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] users) {
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] users) {
         this.name = name;
         this.users = users;
     }
@@ -49,7 +49,7 @@ public class RemoteGroup  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @return users
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] getUsers() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] getUsers() {
         return users;
     }
 
@@ -59,7 +59,7 @@ public class RemoteGroup  extends org.eclipse.mylar.internal.jira.core.wsdl.bean
      * 
      * @param users
      */
-    public void setUsers(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] users) {
+    public void setUsers(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] users) {
         this.users = users;
     }
 

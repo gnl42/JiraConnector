@@ -5,11 +5,11 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.beans;
+package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
 @SuppressWarnings({ "unchecked", "serial" })
-public class RemotePermissionScheme  extends org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme  implements java.io.Serializable {
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermissionMapping[] permissionMappings;
+public class RemotePermissionScheme  extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme  implements java.io.Serializable {
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionMapping[] permissionMappings;
 
     public RemotePermissionScheme() {
     }
@@ -19,7 +19,7 @@ public class RemotePermissionScheme  extends org.eclipse.mylar.internal.jira.cor
            java.lang.Long id,
            java.lang.String name,
            java.lang.String type,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermissionMapping[] permissionMappings) {
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionMapping[] permissionMappings) {
         super(
             description,
             id,
@@ -34,7 +34,7 @@ public class RemotePermissionScheme  extends org.eclipse.mylar.internal.jira.cor
      * 
      * @return permissionMappings
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermissionMapping[] getPermissionMappings() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionMapping[] getPermissionMappings() {
         return permissionMappings;
     }
 
@@ -44,7 +44,7 @@ public class RemotePermissionScheme  extends org.eclipse.mylar.internal.jira.cor
      * 
      * @param permissionMappings
      */
-    public void setPermissionMappings(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermissionMapping[] permissionMappings) {
+    public void setPermissionMappings(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionMapping[] permissionMappings) {
         this.permissionMappings = permissionMappings;
     }
 

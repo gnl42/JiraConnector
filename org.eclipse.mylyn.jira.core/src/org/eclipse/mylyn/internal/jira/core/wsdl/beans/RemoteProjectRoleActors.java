@@ -5,20 +5,20 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.beans;
+package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
 @SuppressWarnings({ "unchecked", "serial" })
-public class RemoteProjectRoleActors  extends org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteRoleActors  implements java.io.Serializable {
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProject project;
+public class RemoteProjectRoleActors  extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteRoleActors  implements java.io.Serializable {
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject project;
 
     public RemoteProjectRoleActors() {
     }
 
     public RemoteProjectRoleActors(
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteRoleActor[] roleActors,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser[] users,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProject project) {
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteRoleActor[] roleActors,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] users,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject project) {
         super(
             projectRole,
             roleActors,
@@ -32,7 +32,7 @@ public class RemoteProjectRoleActors  extends org.eclipse.mylar.internal.jira.co
      * 
      * @return project
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProject getProject() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject getProject() {
         return project;
     }
 
@@ -42,7 +42,7 @@ public class RemoteProjectRoleActors  extends org.eclipse.mylar.internal.jira.co
      * 
      * @param project
      */
-    public void setProject(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProject project) {
+    public void setProject(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject project) {
         this.project = project;
     }
 

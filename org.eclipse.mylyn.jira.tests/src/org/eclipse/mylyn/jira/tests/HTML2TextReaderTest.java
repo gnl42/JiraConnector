@@ -1,11 +1,11 @@
-package org.eclipse.mylar.jira.tests;
+package org.eclipse.mylyn.jira.tests;
 
 import java.io.IOException;
 import java.io.StringReader;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.ui.html.HTML2TextReader;
+import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
 
 public class HTML2TextReaderTest extends TestCase {
 

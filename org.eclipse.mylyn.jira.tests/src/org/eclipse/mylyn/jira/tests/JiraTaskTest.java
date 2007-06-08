@@ -9,13 +9,13 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.jira.tests;
+package org.eclipse.mylyn.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.ui.JiraRepositoryConnector;
-import org.eclipse.mylar.tasks.core.Task.PriorityLevel;
+import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.Task.PriorityLevel;
 
 /**
  * @author Mik Kersten

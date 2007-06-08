@@ -9,11 +9,11 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.model.filter;
+package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import org.eclipse.mylar.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 
 // TODO consider making this abstract and using subclasses to do the typing
 /**

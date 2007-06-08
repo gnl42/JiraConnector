@@ -9,7 +9,7 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service.web.rss;
+package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,17 +17,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import org.eclipse.mylar.core.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.core.model.Attachment;
-import org.eclipse.mylar.internal.jira.core.model.Comment;
-import org.eclipse.mylar.internal.jira.core.model.Component;
-import org.eclipse.mylar.internal.jira.core.model.CustomField;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.model.Subtask;
-import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.core.MylarStatusHandler;
+import org.eclipse.mylyn.internal.jira.core.model.Attachment;
+import org.eclipse.mylyn.internal.jira.core.model.Comment;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.CustomField;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.Subtask;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

@@ -5,10 +5,10 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.soap;
+package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 
 @SuppressWarnings({ "unchecked", "serial" })
-public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Service implements org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapServiceService {
+public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Service implements org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceService {
 
     public JiraSoapServiceServiceLocator() {
     }
@@ -40,7 +40,7 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
         JirasoapserviceV2WSDDServiceName = name;
     }
 
-    public org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapService getJirasoapserviceV2() throws javax.xml.rpc.ServiceException {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService getJirasoapserviceV2() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(JirasoapserviceV2_address);
@@ -51,9 +51,9 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
         return getJirasoapserviceV2(endpoint);
     }
 
-    public org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapService getJirasoapserviceV2(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService getJirasoapserviceV2(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            org.eclipse.mylar.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub _stub = new org.eclipse.mylar.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub(portAddress, this);
+            org.eclipse.mylyn.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub _stub = new org.eclipse.mylyn.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub(portAddress, this);
             _stub.setPortName(getJirasoapserviceV2WSDDServiceName());
             return _stub;
         }
@@ -73,8 +73,8 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapService.class.isAssignableFrom(serviceEndpointInterface)) {
-                org.eclipse.mylar.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub _stub = new org.eclipse.mylar.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub(new java.net.URL(JirasoapserviceV2_address), this);
+            if (org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.eclipse.mylyn.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub _stub = new org.eclipse.mylyn.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub(new java.net.URL(JirasoapserviceV2_address), this);
                 _stub.setPortName(getJirasoapserviceV2WSDDServiceName());
                 return _stub;
             }

@@ -8,7 +8,7 @@
  * Contributors:
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
-package org.eclipse.mylar.internal.jira.core.model;
+package org.eclipse.mylyn.internal.jira.core.model;
 
 import java.io.Serializable;
 

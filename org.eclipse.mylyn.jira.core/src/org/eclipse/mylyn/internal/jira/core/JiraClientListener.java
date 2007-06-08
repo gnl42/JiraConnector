@@ -9,9 +9,9 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core;
+package org.eclipse.mylyn.internal.jira.core;
 
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 
 /**
  * @author	Brock Janiczak

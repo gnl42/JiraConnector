@@ -9,7 +9,7 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.jira.tests;
+package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,13 +22,13 @@ import java.util.Arrays;
 import junit.framework.AssertionFailedError;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylar.internal.jira.core.model.CustomField;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.tasks.core.RepositoryOperation;
+import org.eclipse.mylyn.internal.jira.core.model.CustomField;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 
 public class JiraTestUtils {
 

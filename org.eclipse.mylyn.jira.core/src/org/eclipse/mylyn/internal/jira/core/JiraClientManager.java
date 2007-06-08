@@ -9,7 +9,7 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core;
+package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -26,15 +26,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylar.core.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylar.internal.jira.core.service.AbstractJiraClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraClientData;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcClient;
+import org.eclipse.mylyn.core.MylarStatusHandler;
+import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
 
 /**
  * Note: This class is not thread safe.

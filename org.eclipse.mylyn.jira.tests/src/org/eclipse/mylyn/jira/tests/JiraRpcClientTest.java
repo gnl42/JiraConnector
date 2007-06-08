@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.jira.tests;
+package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
 import java.net.Proxy;
@@ -14,21 +14,21 @@ import java.net.Proxy;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylar.context.tests.support.MylarTestUtils;
-import org.eclipse.mylar.context.tests.support.MylarTestUtils.Credentials;
-import org.eclipse.mylar.context.tests.support.MylarTestUtils.PrivilegeLevel;
-import org.eclipse.mylar.internal.jira.core.model.Attachment;
-import org.eclipse.mylar.internal.jira.core.model.Comment;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylar.internal.jira.core.service.AbstractJiraClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylar.internal.jira.core.service.soap.JiraRpcClient;
-import org.eclipse.mylar.internal.jira.ui.JiraTaskDataHandler;
+import org.eclipse.mylyn.context.tests.support.MylarTestUtils;
+import org.eclipse.mylyn.context.tests.support.MylarTestUtils.Credentials;
+import org.eclipse.mylyn.context.tests.support.MylarTestUtils.PrivilegeLevel;
+import org.eclipse.mylyn.internal.jira.core.model.Attachment;
+import org.eclipse.mylyn.internal.jira.core.model.Comment;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
+import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
+import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 
 /**
  * @author Steffen Pingel

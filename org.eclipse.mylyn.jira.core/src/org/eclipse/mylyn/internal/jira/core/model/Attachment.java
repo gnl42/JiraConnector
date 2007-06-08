@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.model;
+package org.eclipse.mylyn.internal.jira.core.model;
 
 import java.io.Serializable;
 import java.util.Date;

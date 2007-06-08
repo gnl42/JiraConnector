@@ -5,21 +5,21 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.beans;
+package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
 @SuppressWarnings({ "unchecked", "serial" })
-public class RemoteProject  extends org.eclipse.mylar.internal.jira.core.wsdl.beans.AbstractNamedRemoteEntity  implements java.io.Serializable {
+public class RemoteProject  extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractNamedRemoteEntity  implements java.io.Serializable {
     private java.lang.String description;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme issueSecurityScheme;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme issueSecurityScheme;
 
     private java.lang.String key;
 
     private java.lang.String lead;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme notificationScheme;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme notificationScheme;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermissionScheme permissionScheme;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionScheme permissionScheme;
 
     private java.lang.String projectUrl;
 
@@ -32,11 +32,11 @@ public class RemoteProject  extends org.eclipse.mylar.internal.jira.core.wsdl.be
            java.lang.String id,
            java.lang.String name,
            java.lang.String description,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme issueSecurityScheme,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme issueSecurityScheme,
            java.lang.String key,
            java.lang.String lead,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme notificationScheme,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermissionScheme permissionScheme,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme notificationScheme,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionScheme permissionScheme,
            java.lang.String projectUrl,
            java.lang.String url) {
         super(
@@ -78,7 +78,7 @@ public class RemoteProject  extends org.eclipse.mylar.internal.jira.core.wsdl.be
      * 
      * @return issueSecurityScheme
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme getIssueSecurityScheme() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme getIssueSecurityScheme() {
         return issueSecurityScheme;
     }
 
@@ -88,7 +88,7 @@ public class RemoteProject  extends org.eclipse.mylar.internal.jira.core.wsdl.be
      * 
      * @param issueSecurityScheme
      */
-    public void setIssueSecurityScheme(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme issueSecurityScheme) {
+    public void setIssueSecurityScheme(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme issueSecurityScheme) {
         this.issueSecurityScheme = issueSecurityScheme;
     }
 
@@ -138,7 +138,7 @@ public class RemoteProject  extends org.eclipse.mylar.internal.jira.core.wsdl.be
      * 
      * @return notificationScheme
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme getNotificationScheme() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme getNotificationScheme() {
         return notificationScheme;
     }
 
@@ -148,7 +148,7 @@ public class RemoteProject  extends org.eclipse.mylar.internal.jira.core.wsdl.be
      * 
      * @param notificationScheme
      */
-    public void setNotificationScheme(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteScheme notificationScheme) {
+    public void setNotificationScheme(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme notificationScheme) {
         this.notificationScheme = notificationScheme;
     }
 
@@ -158,7 +158,7 @@ public class RemoteProject  extends org.eclipse.mylar.internal.jira.core.wsdl.be
      * 
      * @return permissionScheme
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermissionScheme getPermissionScheme() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionScheme getPermissionScheme() {
         return permissionScheme;
     }
 
@@ -168,7 +168,7 @@ public class RemoteProject  extends org.eclipse.mylar.internal.jira.core.wsdl.be
      * 
      * @param permissionScheme
      */
-    public void setPermissionScheme(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermissionScheme permissionScheme) {
+    public void setPermissionScheme(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionScheme permissionScheme) {
         this.permissionScheme = permissionScheme;
     }
 

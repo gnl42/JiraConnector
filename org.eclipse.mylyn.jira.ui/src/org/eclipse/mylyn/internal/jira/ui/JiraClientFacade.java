@@ -9,21 +9,21 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.ui;
 
 import java.net.Proxy;
 
-import org.eclipse.mylar.core.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.core.JiraClientManager;
-import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylar.internal.jira.core.service.JiraAuthenticationException;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylar.tasks.core.ITaskRepositoryListener;
-import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.core.MylarStatusHandler;
+import org.eclipse.mylyn.internal.jira.core.JiraClientManager;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.tasks.core.ITaskRepositoryListener;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
  * This class acts as a layer of indirection between clients in this project and

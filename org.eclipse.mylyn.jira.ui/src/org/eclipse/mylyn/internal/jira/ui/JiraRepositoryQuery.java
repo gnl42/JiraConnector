@@ -9,10 +9,10 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.ui;
 
-import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 
 /**
  * A JiraRepositoryQuery represents a server-side query for Jira repository.

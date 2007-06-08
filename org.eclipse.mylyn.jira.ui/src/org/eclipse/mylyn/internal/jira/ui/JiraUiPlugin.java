@@ -9,7 +9,7 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
  */
 public class JiraUiPlugin extends AbstractUIPlugin {
 
-	public static final String PLUGIN_ID = "org.eclipse.mylar.jira.ui";
+	public static final String PLUGIN_ID = "org.eclipse.mylyn.jira.ui";
 	
 	private static JiraUiPlugin INSTANCE;
 
@@ -61,7 +61,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.mylar.jira", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.mylyn.jira", path);
 	}
 
 	/* (non-Javadoc)

@@ -9,11 +9,11 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.model.filter;
+package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import org.eclipse.mylar.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
 
 /**
  * Filter to restrict returned issues to a specific project. If a project filter

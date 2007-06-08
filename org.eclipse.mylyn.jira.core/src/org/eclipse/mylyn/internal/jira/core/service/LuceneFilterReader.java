@@ -9,11 +9,11 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service;
+package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.io.StringReader;
 
-import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;

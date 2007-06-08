@@ -9,21 +9,21 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service.web.rss;
+package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.filter.DateFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.DateRangeFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.PriorityFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.ResolutionFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
+import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.PriorityFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ResolutionFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 
 /**
  * @author Brock Janiczak
@@ -34,7 +34,7 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertResolutionFilter(org.eclipse.mylar.internal.jira.core.model.filter.ResolutionFilter)
+	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertResolutionFilter(org.eclipse.mylyn.internal.jira.core.model.filter.ResolutionFilter)
 	 */
 	protected String convertResolutionFilter(ResolutionFilter resolutionFilter) {
 		if (resolutionFilter.isUnresolved()) {
@@ -59,7 +59,7 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertPriorityFilter(org.eclipse.mylar.internal.jira.core.model.filter.PriorityFilter)
+	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertPriorityFilter(org.eclipse.mylyn.internal.jira.core.model.filter.PriorityFilter)
 	 */
 	protected String convertPriorityFilter(PriorityFilter priorityFilter) {
 		Priority[] priorities = priorityFilter.getPriorities();
@@ -80,7 +80,7 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertStatusFilter(org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter)
+	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertStatusFilter(org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter)
 	 */
 	protected String convertStatusFilter(StatusFilter statusFilter) {
 		Status[] statuses = statusFilter.getStatuses();
@@ -101,7 +101,7 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertCreatedDateFilter(org.eclipse.mylar.internal.jira.core.model.filter.DateFilter)
+	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertCreatedDateFilter(org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter)
 	 */
 	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
 		return createDateFilder(createdDateFilter, "created");
@@ -110,7 +110,7 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertUpdatedDateFilter(org.eclipse.mylar.internal.jira.core.model.filter.DateFilter)
+	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertUpdatedDateFilter(org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter)
 	 */
 	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
 		return createDateFilder(updatedDateFilter, "updated");
@@ -119,7 +119,7 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.mylar.internal.jira.core.service.web.rss.RssFilterConverter#convertDueDateFilter(org.eclipse.mylar.internal.jira.core.model.filter.DateFilter)
+	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertDueDateFilter(org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter)
 	 */
 	protected String convertDueDateFilter(DateFilter dueDateFilter) {
 		return createDateFilder(dueDateFilter, "duedate");

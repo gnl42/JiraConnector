@@ -5,7 +5,7 @@
  * by the Apache Axis 1.2RC3 Feb 28, 2005 (10:15:14 EST) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.service.soap;
+package org.eclipse.mylyn.internal.jira.core.service.soap;
 
 import java.net.Proxy;
 import java.util.Hashtable;
@@ -15,7 +15,7 @@ import javax.xml.rpc.Call;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.transport.http.HTTPConstants;
-import org.eclipse.mylar.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
+import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
 
 
 // TODO Tere must be an easier way to set these properties. Shame the Axis doco

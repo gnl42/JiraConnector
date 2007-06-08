@@ -9,32 +9,32 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service.soap;
+package org.eclipse.mylyn.internal.jira.core.service.soap;
 
-import org.eclipse.mylar.internal.jira.core.model.Component;
-import org.eclipse.mylar.internal.jira.core.model.Group;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.IssueType;
-import org.eclipse.mylar.internal.jira.core.model.NamedFilter;
-import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.User;
-import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteComponent;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteFilter;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteGroup;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteIssue;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteIssueType;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePriority;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteProject;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteResolution;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteServerInfo;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteStatus;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteUser;
-import org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteVersion;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.Group;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
+import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.User;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteGroup;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssueType;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePriority;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteResolution;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteStatus;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion;
 
 /**
  * @author	Brock Janiczak

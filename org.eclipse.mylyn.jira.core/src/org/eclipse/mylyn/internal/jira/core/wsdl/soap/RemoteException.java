@@ -5,7 +5,7 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.soap;
+package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 
 @SuppressWarnings({ "unchecked", "unused", "serial" })
 public class RemoteException  extends org.apache.axis.AxisFault  implements java.io.Serializable {

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.ui;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -22,36 +22,36 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylar.core.MylarStatusHandler;
-import org.eclipse.mylar.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylar.internal.jira.core.model.Attachment;
-import org.eclipse.mylar.internal.jira.core.model.Comment;
-import org.eclipse.mylar.internal.jira.core.model.Component;
-import org.eclipse.mylar.internal.jira.core.model.CustomField;
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.IssueType;
-import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.Subtask;
-import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraInsufficientPermissionException;
-import org.eclipse.mylar.internal.jira.ui.html.HTML2TextReader;
-import org.eclipse.mylar.tasks.core.AbstractAttributeFactory;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylar.tasks.core.ITask;
-import org.eclipse.mylar.tasks.core.ITaskDataHandler;
-import org.eclipse.mylar.tasks.core.RepositoryAttachment;
-import org.eclipse.mylar.tasks.core.RepositoryOperation;
-import org.eclipse.mylar.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylar.tasks.core.RepositoryTaskData;
-import org.eclipse.mylar.tasks.core.Task;
-import org.eclipse.mylar.tasks.core.TaskComment;
-import org.eclipse.mylar.tasks.core.TaskRepository;
-import org.eclipse.mylar.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.core.MylarStatusHandler;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.model.Attachment;
+import org.eclipse.mylyn.internal.jira.core.model.Comment;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.CustomField;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.Subtask;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
+import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
+import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
+import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
+import org.eclipse.mylyn.tasks.core.RepositoryOperation;
+import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
+import org.eclipse.mylyn.tasks.core.Task;
+import org.eclipse.mylyn.tasks.core.TaskComment;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
  * @author Mik Kersten
@@ -463,22 +463,22 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					}
 /*
  * if
- * (org.eclipse.mylar.internal.jira.core.model.Status.RESOLVED_ID.equals(operation
+ * (org.eclipse.mylyn.internal.jira.core.model.Status.RESOLVED_ID.equals(operation
  * .getKnobName())) { String value =
  * operation.getOptionValue(operation.getOptionSelection());
  * jiraServer.resolveIssue(issue, jiraServer.getResolutionById(value),
  * issue.getFixVersions(), taskData.getNewComment(),
  * JiraClient.ASSIGNEE_CURRENT, repository.getUserName()); } else if
- * (org.eclipse.mylar.internal.jira.core.model.Status.REOPENED_ID.equals(operation
+ * (org.eclipse.mylyn.internal.jira.core.model.Status.REOPENED_ID.equals(operation
  * .getKnobName())) { jiraServer.reopenIssue(issue, taskData.getNewComment(),
  * JiraClient.ASSIGNEE_CURRENT, repository .getUserName()); } else if
- * (org.eclipse.mylar.internal.jira.core.model.Status.STARTED_ID.equals(operation
+ * (org.eclipse.mylyn.internal.jira.core.model.Status.STARTED_ID.equals(operation
  * .getKnobName())) { // FIXME update attributes and comment
  * jiraServer.startIssue(issue); } else if
- * (org.eclipse.mylar.internal.jira.core.model.Status.OPEN_ID
+ * (org.eclipse.mylyn.internal.jira.core.model.Status.OPEN_ID
  * .equals(operation.getKnobName())) { // FIXME update attributes and comment
  * jiraServer.startIssue(issue); } else if
- * (org.eclipse.mylar.internal.jira.core.model.Status.CLOSED_ID.equals(operation
+ * (org.eclipse.mylyn.internal.jira.core.model.Status.CLOSED_ID.equals(operation
  * .getKnobName())) { String value =
  * operation.getOptionValue(operation.getOptionSelection());
  * jiraServer.closeIssue(issue, jiraServer.getResolutionById(value),
@@ -515,7 +515,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
 
-		for (org.eclipse.mylar.internal.jira.core.model.Project project : client.getProjects()) {
+		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {
 			if (project.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT))) {
 				issue.setProject(project);
 				break;
@@ -530,7 +530,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				break;
 			}
 		}
-		for (org.eclipse.mylar.internal.jira.core.model.Status status : client.getStatuses()) {
+		for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getStatuses()) {
 			if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 				issue.setStatus(status);
 				break;

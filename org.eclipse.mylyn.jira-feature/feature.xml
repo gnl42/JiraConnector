@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.mylar.jira_feature"
+      id="org.eclipse.mylyn.jira_feature"
       label="Mylar Connector: Jira"
       version="2.0.0.v20070607-1200"
       provider-name="Eclipse.org"
-      plugin="org.eclipse.mylar">
+      plugin="org.eclipse.mylyn">
 
    <description>
       JIRA client integrated with Eclipse and Mylar, can be used standalone.
@@ -222,14 +222,14 @@ litigation.
    </requires>
 
    <plugin
-         id="org.eclipse.mylar.jira.ui"
+         id="org.eclipse.mylyn.jira.ui"
          download-size="0"
          install-size="0"
          version="2.0.0.v20070607-1200"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.mylar.jira.core"
+         id="org.eclipse.mylyn.jira.core"
          download-size="0"
          install-size="0"
          version="2.0.0.v20070607-1200"

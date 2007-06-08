@@ -9,11 +9,11 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.model.filter;
+package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import org.eclipse.mylar.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
 
 /**
  * Restricts to issues that have one of the specified components. This filter

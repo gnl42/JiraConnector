@@ -9,13 +9,13 @@
  *    Brock Janiczak - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.core.service.web;
+package org.eclipse.mylyn.internal.jira.core.service.web;
 
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.eclipse.mylar.internal.jira.core.service.JiraException;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 
 /**
  * @author Steffen Pingel

@@ -1,13 +1,13 @@
 /**
  * 
  */
-package org.eclipse.mylar.jira.tests;
+package org.eclipse.mylyn.jira.tests;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.mylar.internal.jira.core.model.Issue;
-import org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 
 public class MockIssueCollector implements IssueCollector {
 

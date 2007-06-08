@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.mylar.internal.jira.ui.html;
+package org.eclipse.mylyn.internal.jira.ui.html;
 
 import java.io.IOException;
 import java.io.PushbackReader;

@@ -1,18 +1,18 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mylar Jira Tests Plug-in
-Bundle-SymbolicName: org.eclipse.mylar.jira.tests
+Bundle-SymbolicName: org.eclipse.mylyn.jira.tests
 Bundle-Version: 0.0.0
 Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  org.eclipse.ui,
- org.eclipse.mylar.jira.core,
- org.eclipse.mylar.tasks.ui,
- org.eclipse.mylar.jira.ui,
- org.eclipse.mylar.tasks.core,
- org.eclipse.mylar.core.tests,
- org.eclipse.mylar.context.core,
+ org.eclipse.mylyn.jira.core,
+ org.eclipse.mylyn.tasks.ui,
+ org.eclipse.mylyn.jira.ui,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.core.tests,
+ org.eclipse.mylyn.context.core,
  org.eclipse.jface.text,
- org.eclipse.mylar
-Export-Package: org.eclipse.mylar.jira.tests
+ org.eclipse.mylyn
+Export-Package: org.eclipse.mylyn.jira.tests
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

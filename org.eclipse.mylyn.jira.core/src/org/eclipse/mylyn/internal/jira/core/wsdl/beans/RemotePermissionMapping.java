@@ -5,20 +5,20 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package org.eclipse.mylar.internal.jira.core.wsdl.beans;
+package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class RemotePermissionMapping  implements java.io.Serializable {
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermission permission;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission;
 
-    private org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities;
+    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities;
 
     public RemotePermissionMapping() {
     }
 
     public RemotePermissionMapping(
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermission permission,
-           org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities) {
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission,
+           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities) {
            this.permission = permission;
            this.remoteEntities = remoteEntities;
     }
@@ -29,7 +29,7 @@ public class RemotePermissionMapping  implements java.io.Serializable {
      * 
      * @return permission
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermission getPermission() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission getPermission() {
         return permission;
     }
 
@@ -39,7 +39,7 @@ public class RemotePermissionMapping  implements java.io.Serializable {
      * 
      * @param permission
      */
-    public void setPermission(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemotePermission permission) {
+    public void setPermission(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission) {
         this.permission = permission;
     }
 
@@ -49,7 +49,7 @@ public class RemotePermissionMapping  implements java.io.Serializable {
      * 
      * @return remoteEntities
      */
-    public org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteEntity[] getRemoteEntities() {
+    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] getRemoteEntities() {
         return remoteEntities;
     }
 
@@ -59,7 +59,7 @@ public class RemotePermissionMapping  implements java.io.Serializable {
      * 
      * @param remoteEntities
      */
-    public void setRemoteEntities(org.eclipse.mylar.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities) {
+    public void setRemoteEntities(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities) {
         this.remoteEntities = remoteEntities;
     }
 

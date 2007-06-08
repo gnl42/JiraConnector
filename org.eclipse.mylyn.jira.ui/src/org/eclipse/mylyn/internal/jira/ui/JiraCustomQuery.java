@@ -9,7 +9,7 @@
  *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylar.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.ui;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -23,31 +23,31 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.eclipse.mylar.internal.jira.core.model.Component;
-import org.eclipse.mylar.internal.jira.core.model.IssueType;
-import org.eclipse.mylar.internal.jira.core.model.Priority;
-import org.eclipse.mylar.internal.jira.core.model.Project;
-import org.eclipse.mylar.internal.jira.core.model.Resolution;
-import org.eclipse.mylar.internal.jira.core.model.Status;
-import org.eclipse.mylar.internal.jira.core.model.Version;
-import org.eclipse.mylar.internal.jira.core.model.filter.ComponentFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.ContentFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.CurrentUserFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.DateFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.DateRangeFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylar.internal.jira.core.model.filter.IssueTypeFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.NobodyFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.PriorityFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.ProjectFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.ResolutionFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.SpecificUserFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.StatusFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.UserFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.UserInGroupFilter;
-import org.eclipse.mylar.internal.jira.core.model.filter.VersionFilter;
-import org.eclipse.mylar.internal.jira.core.service.JiraClient;
-import org.eclipse.mylar.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.CurrentUserFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.jira.core.model.filter.IssueTypeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.NobodyFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.PriorityFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ResolutionFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.SpecificUserFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.
