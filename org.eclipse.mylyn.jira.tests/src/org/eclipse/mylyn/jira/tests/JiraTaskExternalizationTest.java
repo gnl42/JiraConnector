@@ -191,6 +191,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		}
 
 		assertNotNull(savedFilter);
+		if(savedFilter == null) return;
 		assertEquals(savedFilter.getUrl(), filterUrl);
 
 		assertTrue(savedFilter.getHits().size() > 0);
