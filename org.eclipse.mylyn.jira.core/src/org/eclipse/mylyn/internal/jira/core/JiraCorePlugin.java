@@ -24,8 +24,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.tasks.core.IMylarStatusConstants;
-import org.eclipse.mylyn.tasks.core.MylarStatus;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.osgi.framework.BundleContext;
@@ -148,14 +146,14 @@ public class JiraCorePlugin extends Plugin {
 		if (e instanceof JiraAuthenticationException) {
 			return RepositoryStatus.createLoginError(url, ID);
 		} else if (e instanceof JiraServiceUnavailableException) {
-			return new RepositoryStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.IO_ERROR, e.getMessage(), e);
+			return new RepositoryStatus(url, IStatus.ERROR, ID, RepositoryStatus.ERROR_IO, e.getMessage(), e);
 		} else if (e instanceof JiraRemoteMessageException) {
-			return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.REPOSITORY_ERROR, e
+			return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID, RepositoryStatus.ERROR_REPOSITORY, e
 					.getMessage(), ((JiraRemoteMessageException) e).getHtmlMessage());
 		} else if (e instanceof JiraException) {
-			return new RepositoryStatus(url, IStatus.ERROR, ID, IMylarStatusConstants.REPOSITORY_ERROR, e.getMessage(), e);
+			return new RepositoryStatus(url, IStatus.ERROR, ID, RepositoryStatus.ERROR_REPOSITORY, e.getMessage(), e);
 		} else {
-			return MylarStatus.createInternalError(ID, "Unexpected error", e);
+			return RepositoryStatus.createInternalError(ID, "Unexpected error", e);
 		}
 	}
 

@@ -27,9 +27,9 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
-import org.eclipse.mylyn.tasks.core.IMylarStatusConstants;
 import org.eclipse.mylyn.tasks.core.ITaskAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
+import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
@@ -46,11 +46,11 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 	public void downloadAttachment(TaskRepository repository, RepositoryAttachment attachment, OutputStream out, IProgressMonitor monitor) throws CoreException {
 		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
 		if (id == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
 		}
 		String key = attachment.getTaskId();
 		if (key == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
 		}
 		
 		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
