@@ -13,6 +13,7 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.core.tests,
  org.eclipse.mylyn.context.core,
  org.eclipse.jface.text,
- org.eclipse.mylyn
+ org.eclipse.mylyn,
+ org.eclipse.mylyn.web.core
 Export-Package: org.eclipse.mylyn.jira.tests
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
