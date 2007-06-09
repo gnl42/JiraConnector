@@ -6,8 +6,8 @@
   <transport name="http" pivot="java:org.apache.axis.transport.http.CommonsHTTPSender" />
   <transport name="https" pivot="java:org.apache.axis.transport.http.CommonsHTTPSender"/>
 -->
-  <transport name="http" pivot="java:org.eclipse.mylar.internal.jira.core.service.soap.JiraHttpSender" />
-  <transport name="https" pivot="java:org.eclipse.mylar.internal.jira.core.service.soap.JiraHttpSender"/>
+  <transport name="http" pivot="java:org.eclipse.mylyn.internal.jira.core.service.soap.JiraHttpSender" />
+  <transport name="https" pivot="java:org.eclipse.mylyn.internal.jira.core.service.soap.JiraHttpSender"/>
 
   <transport name="local" pivot="java:org.apache.axis.transport.local.LocalSender"/>
 
