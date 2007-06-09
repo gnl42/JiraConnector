@@ -15,7 +15,7 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.transport.http.CommonsHTTPSender;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
-import org.eclipse.mylyn.core.net.WebClientUtil;
+import org.eclipse.mylyn.web.core.WebClientUtil;
 
 @SuppressWarnings("serial")
 public class JiraHttpSender extends CommonsHTTPSender {

@@ -7,7 +7,8 @@ Bundle-Activator: org.eclipse.mylyn.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn,
- org.eclipse.mylyn.tasks.core
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.web.core
 Eclipse-AutoStart: true
 Export-Package: org.eclipse.mylyn.internal.jira.core,
  org.eclipse.mylyn.internal.jira.core.model,

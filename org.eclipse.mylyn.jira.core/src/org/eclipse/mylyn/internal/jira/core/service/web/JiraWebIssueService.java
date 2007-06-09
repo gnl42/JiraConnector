@@ -41,9 +41,6 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartBase;
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
-import org.eclipse.mylyn.core.net.HtmlStreamTokenizer;
-import org.eclipse.mylyn.core.net.HtmlTag;
-import org.eclipse.mylyn.core.net.HtmlStreamTokenizer.Token;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
@@ -56,6 +53,9 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
+import org.eclipse.mylyn.web.core.HtmlStreamTokenizer;
+import org.eclipse.mylyn.web.core.HtmlTag;
+import org.eclipse.mylyn.web.core.HtmlStreamTokenizer.Token;
 
 /**
  * TODO look at creation Operation classes to perform each of these actions
