@@ -145,7 +145,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				});
 
 				if (hasChanged(attribute)) {
-					combo.setBackground(getBackgroundIncoming());
+					combo.setBackground(getColorIncoming());
 				}
 
 				currentCol += 2;
@@ -184,7 +184,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				}
 
 				if (hasChanged(attribute)) {
-					list.setBackground(getBackgroundIncoming());
+					list.setBackground(getColorIncoming());
 				}
 
 				currentCol += 2;
@@ -205,7 +205,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				text.setLayoutData(data);
 
 				if (hasChanged(attribute)) {
-					text.setBackground(getBackgroundIncoming());
+					text.setBackground(getColorIncoming());
 				}
 
 				currentCol += 2;
@@ -237,7 +237,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				}
 
 				if (hasChanged(attribute)) {
-					text.setBackground(getBackgroundIncoming());
+					text.setBackground(getColorIncoming());
 				}
 
 				currentCol += 2;
@@ -286,7 +286,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			getManagedForm().getToolkit().adapt(text, true, true);
 
 			if (hasChanged(attribute)) {
-				text.setBackground(getBackgroundIncoming());
+				text.setBackground(getColorIncoming());
 			}
 			
 			
@@ -341,7 +341,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			}
 
 			if (hasChanged(attribute)) {
-				text.setBackground(getBackgroundIncoming());
+				text.setBackground(getColorIncoming());
 			}
 		}
 
