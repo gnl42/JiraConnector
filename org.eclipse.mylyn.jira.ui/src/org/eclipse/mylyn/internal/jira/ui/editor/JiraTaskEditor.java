@@ -248,7 +248,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			}
 		}
 
-		// subtasks
+		// subtasks and links
 		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()
 					|| !JiraFieldType.ISSUELINKS.getKey().equals(
@@ -265,13 +265,11 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				sb.append(sep).append(key);
 				sep = ", ";
 			}
-			TextViewer viewer = addTextViewer(repository, attributesComposite, sb.toString(), SWT.FLAT | SWT.MULTI | SWT.READ_ONLY);
+			TextViewer viewer = addTextViewer(repository, attributesComposite, sb.toString(), SWT.FLAT | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
 			
-			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false);
-			data.horizontalSpan = 3;
+			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1);
 			data.widthHint = 380;
-			data.heightHint = 20;
-			data.horizontalIndent = HORZ_INDENT;
+			// data.horizontalIndent = HORZ_INDENT;
 
 			StyledText text = viewer.getTextWidget();
 			text.setLayoutData(data);

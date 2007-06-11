@@ -14,7 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Set;
 
@@ -29,6 +31,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -184,6 +187,38 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, subtask.getIssueKey());
 			}
 		}
+		
+		IssueLink[] issueLinks = jiraIssue.getIssueLinks();
+		removeAttributes(data, JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX);
+		if (issueLinks != null && issueLinks.length > 0) {
+			HashMap<String, RepositoryTaskAttribute> links = new HashMap<String, RepositoryTaskAttribute>();
+			for (int i = 0; i < issueLinks.length; i++) {
+				IssueLink link = issueLinks[i];
+				
+				String key;
+				String desc;
+				if (link.getInwardDescription() == null) {
+					key = link.getLinkTypeId() + "outward";
+					desc = link.getOutwardDescription();
+				} else {
+					key = link.getLinkTypeId() + "inward";
+					desc = link.getInwardDescription();
+				}
+				String label = capitalize(desc) + ":";
+				RepositoryTaskAttribute attribute = links.get(key);
+				if(attribute==null) {
+					attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX  + key, label, false);
+					attribute.setReadOnly(true);
+					attribute.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.ISSUELINKS.getKey());
+					links.put(key, attribute);
+				}
+				attribute.addValue(link.getIssueKey());
+			}
+			
+			for (RepositoryTaskAttribute attribute : links.values()) {
+				data.addAttribute(attribute.getID(), attribute);
+			}
+		}
 
 		data.addAttributeValue(RepositoryTaskAttribute.DATE_CREATION, dateToString(jiraIssue.getCreated()));
 		data.addAttributeValue(RepositoryTaskAttribute.SUMMARY, convertHtml(jiraIssue.getSummary()));
@@ -325,6 +360,27 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 				attribute.setReadOnly(true);
 			} else if (JiraFieldType.MULTISELECT.getKey().equals(key) && (options == null || options.isEmpty())) {
 				attribute.setReadOnly(true);
+			}
+		}
+	}
+
+	private String capitalize(String s) {
+		if (s.length() > 1) {
+			char c = s.charAt(0);
+			char uc = Character.toUpperCase(c);
+			if (uc != c) {
+				return uc + s.substring(1);
+			}
+		}
+		return s;
+	}
+
+	private void removeAttributes(RepositoryTaskData data, String prefix) {
+		ListIterator<RepositoryTaskAttribute> it = data.getAttributes().listIterator();
+		while (it.hasNext()) {
+			RepositoryTaskAttribute attribute = (RepositoryTaskAttribute) it.next();
+			if(attribute.getName().startsWith(prefix)) {
+				it.remove();
 			}
 		}
 	}

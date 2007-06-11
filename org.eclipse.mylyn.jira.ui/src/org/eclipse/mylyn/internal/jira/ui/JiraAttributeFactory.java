@@ -37,6 +37,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_SUBTASK_KEYS = "attribute.jira.subtask_keys";
 	
 	public static final String ATTRIBUTE_CUSTOM_PREFIX = "attribute.jira.custom::";
+	public static final String ATTRIBUTE_LINK_PREFIX = "attribute.jira.link::";
 
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
 
@@ -90,6 +91,9 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 			return ATTRIBUTE_ESTIMATE;
 		} 
 			
+		if(key.startsWith("issueLink")) {
+			return ATTRIBUTE_LINK_PREFIX + key;
+		}
 		if(key.startsWith("customfield")) {
 			return ATTRIBUTE_CUSTOM_PREFIX + key;
 		}

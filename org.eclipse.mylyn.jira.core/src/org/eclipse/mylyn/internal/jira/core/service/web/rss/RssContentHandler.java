@@ -23,6 +23,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Subtask;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
@@ -248,14 +249,10 @@ public class RssContentHandler extends DefaultHandler {
 
 	private static final int IN_ISSUE_LINK_TYPE = 9;
 
-	private static final int IN_INWARDS_LINKS = 10;
+	private static final int IN_XWARDS_LINKS = 10;
 
-	private static final int IN_OUTWARDS_LINKS = 11;
+	private static final int IN_XWARDS_ISSUE_LINK = 12;
 
-	private static final int IN_INWARDS_ISSUE_LINK = 12;
-
-	private static final int IN_OUTWARDS_ISSUE_LINK = 13;
-	
 	private static final int IN_ATTACHMENTS = 14;
 
 	private static final int IN_CUSTOM_FIELD_NAME = 15;
@@ -296,6 +293,14 @@ public class RssContentHandler extends DefaultHandler {
 
 	private ArrayList<Subtask> currentSubtasks = new ArrayList<Subtask>();
 	
+	private String currentIssueLinkTypeId;
+	private String currentIssueLinkTypeName;
+	private String currentIssueLinkInwardDescription;
+	private String currentIssueLinkOutwardDescription;
+	private String currentIssueLinkIssueId;
+
+	private ArrayList<IssueLink> currentIssueLinks = new ArrayList<IssueLink>();
+	
 	private String customFieldId;
 	
 	private String customFieldKey;
@@ -313,7 +318,8 @@ public class RssContentHandler extends DefaultHandler {
 	private String attachmentAuthor;
 
 	private Date attachmentCreated;
-	
+
+
 	/**
 	 * Creates a new RSS reader that will create issues from the RSS information
 	 * by querying the local Jira Server for any missing information. Issues
@@ -422,36 +428,28 @@ public class RssContentHandler extends DefaultHandler {
 		case IN_ISSUE_LINKS:
 			if (ISSUE_LINK_TYPE.equals(localName)) {
 				state = IN_ISSUE_LINK_TYPE;
+				currentIssueLinkTypeId = attributes.getValue(ID_ATTR);
 			}
 			break;
 		case IN_ISSUE_LINK_TYPE:
 			if (ISSUE_LINK_NAME.equals(localName)) {
-				// TODO what do we need this for?
+				//
 			} else if (INWARD_LINKS.equals(localName)) {
-				state = IN_INWARDS_LINKS;
+				currentIssueLinkInwardDescription = attributes.getValue(DESCRIPTION);
+				state = IN_XWARDS_LINKS;
 			} else if (OUTWARD_LINKS.equals(localName)) {
-				state = IN_OUTWARDS_LINKS;
+				currentIssueLinkOutwardDescription = attributes.getValue(DESCRIPTION);
+				state = IN_XWARDS_LINKS;
 			}
-
 			break;
-		case IN_INWARDS_LINKS:
+		case IN_XWARDS_LINKS:
 			if (ISSUE_LINK.equals(localName)) {
-				state = IN_INWARDS_ISSUE_LINK;
+				state = IN_XWARDS_ISSUE_LINK;
 			}
 			break;
-		case IN_OUTWARDS_LINKS:
-			if (ISSUE_LINK.equals(localName)) {
-				state = IN_OUTWARDS_ISSUE_LINK;
-			}
-			break;
-		case IN_INWARDS_ISSUE_LINK:
+		case IN_XWARDS_ISSUE_LINK:
 			if (ISSUE_KEY.equals(localName)) {
-				// TODO create the issue link
-			}
-			break;
-		case IN_OUTWARDS_ISSUE_LINK:
-			if (ISSUE_KEY.equals(localName)) {
-				// TODO create the issue link
+				currentIssueLinkIssueId = attributes.getValue(ID_ATTR);
 			}
 			break;
 
@@ -495,9 +493,10 @@ public class RssContentHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		switch (state) {
 		case IN_SUBTASKS:
-			if(SUBTASK.equals(localName)) {
+			if (SUBTASK.equals(localName)) {
 				currentSubtasks.add(new Subtask(currentSubtaskId, currentElementText.toString()));
-			}else if(SUBTASKS.equals(localName)) {
+				currentSubtaskId = null;
+			} else if (SUBTASKS.equals(localName)) {
 				state = IN_ITEM;
 			}
 			break;
@@ -545,33 +544,32 @@ public class RssContentHandler extends DefaultHandler {
 				state = IN_ITEM;
 			}
 			break;
-		case IN_OUTWARDS_ISSUE_LINK:
+
+		case IN_XWARDS_ISSUE_LINK:
 			if (ISSUE_LINK.equals(localName)) {
-				state = IN_OUTWARDS_LINKS;
+				String key = currentElementText.toString().trim();
+				IssueLink link = new IssueLink(currentIssueLinkIssueId, key, currentIssueLinkTypeId,
+						currentIssueLinkTypeName, currentIssueLinkInwardDescription, currentIssueLinkOutwardDescription);
+				currentIssueLinks.add(link);
+				currentIssueLinkIssueId = null;
+				state = IN_XWARDS_LINKS;
 			}
 			break;
 
-		case IN_INWARDS_ISSUE_LINK:
-			if (ISSUE_LINK.equals(localName)) {
-				state = IN_INWARDS_LINKS;
-			}
-			break;
-
-		case IN_OUTWARDS_LINKS:
-			if (OUTWARD_LINKS.equals(localName)) {
+		case IN_XWARDS_LINKS:
+			if (OUTWARD_LINKS.equals(localName) || INWARD_LINKS.equals(localName)) {
 				state = IN_ISSUE_LINK_TYPE;
-			}
-			break;
-
-		case IN_INWARDS_LINKS:
-			if (INWARD_LINKS.equals(localName)) {
-				state = IN_ISSUE_LINK_TYPE;
+				currentIssueLinkOutwardDescription = null;
+				currentIssueLinkInwardDescription = null;
 			}
 			break;
 
 		case IN_ISSUE_LINK_TYPE:
 			if (ISSUE_LINK_TYPE.equals(localName)) {
+				currentIssueLinkTypeName = null;
 				state = IN_ISSUE_LINKS;
+			} else if(ISSUE_LINK_NAME.equals(localName)) {
+				currentIssueLinkTypeName = currentElementText.toString().trim();
 			}
 			break;
 
@@ -580,7 +578,7 @@ public class RssContentHandler extends DefaultHandler {
 				state = IN_ITEM;
 			}
 			break;
-
+			
 		case IN_COMMENTS:
 			if (COMMENTS.equals(localName)) {
 				state = IN_ITEM;
@@ -607,8 +605,10 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setAttachments(currentAttachments.toArray(new Attachment[currentAttachments.size()]));
 				currentIssue.setCustomFields(currentCustomFields.toArray(new CustomField[currentCustomFields.size()]));
 				currentIssue.setSubtasks(currentSubtasks.toArray(new Subtask[currentSubtasks.size()]));
+				currentIssue.setIssueLinks(currentIssueLinks.toArray(new IssueLink[currentIssueLinks.size()]));
 				collector.collectIssue(currentIssue);
 				currentIssue = null;
+				currentIssueLinks.clear();
 				currentSubtasks.clear();
 				currentCustomFields.clear();
 				currentAttachments.clear();

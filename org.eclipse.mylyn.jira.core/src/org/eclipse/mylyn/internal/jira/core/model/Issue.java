@@ -88,6 +88,8 @@ public class Issue implements Serializable {
 
 	private Subtask[] subtasks = new Subtask[0];
 
+	private IssueLink[] issueLinks = new IssueLink[0];
+
 	public String getId() {
 		return id;
 	}
@@ -376,6 +378,14 @@ public class Issue implements Serializable {
 	
 	public void setSubtasks(Subtask[] subtasks) {
 		this.subtasks = subtasks;
+	}
+	
+	public IssueLink[] getIssueLinks() {
+		return issueLinks;
+	}
+	
+	public void setIssueLinks(IssueLink[] issueLinks) {
+		this.issueLinks = issueLinks;
 	}
 
 	public String[] getFieldValues(String field) {
