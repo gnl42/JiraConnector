@@ -87,7 +87,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		int numColumns = ((GridLayout) attributesComposite.getLayout()).numColumns;
 		int currentCol = 1;
 
-		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
+		for (final RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()) {
 				continue;
 			}
@@ -109,15 +109,14 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				Label label = createLabel(attributesComposite, attribute);
 				GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
 
-				CCombo combo = new CCombo(attributesComposite, SWT.FLAT | SWT.READ_ONLY);
-				toolkit.adapt(combo, true, true);
+				final CCombo combo = new CCombo(attributesComposite, SWT.FLAT | SWT.READ_ONLY);
+				getManagedForm().getToolkit().adapt(combo, true, true);
 				combo.setFont(TEXT_FONT);
 				combo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 
 				GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
 				data.horizontalSpan = 1;
 				data.widthHint = 140;
-				data.horizontalIndent = HORZ_INDENT;
 				combo.setLayoutData(data);
 
 				if (attribute.getOptions() != null) {
@@ -126,15 +125,27 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 					}
 				}
 
-				String value = checkText(attribute.getValue());
+				String value = attribute.getValue();
+				if (value == null) {
+					value = "";
+				}
 				if (combo.indexOf(value) != -1) {
 					combo.select(combo.indexOf(value));
 				}
-				combo.addSelectionListener(new ComboSelectionListener(combo));
-				comboListenerMap.put(combo, attribute);
+				combo.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent event) {
+						if (combo.getSelectionIndex() > -1) {
+							String sel = combo.getItem(combo.getSelectionIndex());
+							attribute.setValue(sel);
+							attributeChanged(attribute);
+						}
+
+					}
+				});
 
 				if (hasChanged(attribute)) {
-					combo.setBackground(backgroundIncoming);
+					combo.setBackground(getBackgroundIncoming());
 				}
 
 				currentCol += 2;
@@ -145,7 +156,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
 
 				final List list = new List(attributesComposite, SWT.FLAT | SWT.MULTI | SWT.V_SCROLL);
-				toolkit.adapt(list, true, true);
+				getManagedForm().getToolkit().adapt(list, true, true);
 				list.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 				list.setFont(TEXT_FONT);
 
@@ -153,7 +164,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				data.horizontalSpan = 1;
 				data.widthHint = 125;
 				data.heightHint = 45;
-				data.horizontalIndent = HORZ_INDENT;
 				list.setLayoutData(data);
 
 				if (!attribute.getOptions().isEmpty()) {
@@ -174,7 +184,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				}
 
 				if (hasChanged(attribute)) {
-					list.setBackground(backgroundIncoming);
+					list.setBackground(getBackgroundIncoming());
 				}
 
 				currentCol += 2;
@@ -192,11 +202,10 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
 				data.horizontalSpan = 1;
 				data.widthHint = 135;
-				data.horizontalIndent = HORZ_INDENT;
 				text.setLayoutData(data);
 
 				if (hasChanged(attribute)) {
-					text.setBackground(backgroundIncoming);
+					text.setBackground(getBackgroundIncoming());
 				}
 
 				currentCol += 2;
@@ -214,7 +223,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
 				data.horizontalSpan = 1;
 				data.widthHint = 135;
-				data.horizontalIndent = HORZ_INDENT;
 				text.setLayoutData(data);
 
 				if (hasContentAssist(attribute)) {
@@ -229,7 +237,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				}
 
 				if (hasChanged(attribute)) {
-					text.setBackground(backgroundIncoming);
+					text.setBackground(getBackgroundIncoming());
 				}
 
 				currentCol += 2;
@@ -243,7 +251,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 		if (currentCol > 1) {
 			while (currentCol <= numColumns) {
-				toolkit.createLabel(attributesComposite, "");
+				getManagedForm().getToolkit().createLabel(attributesComposite, "");
 				currentCol++;
 			}
 		}
@@ -267,18 +275,21 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			}
 			TextViewer viewer = addTextViewer(repository, attributesComposite, sb.toString(), SWT.FLAT | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
 			
-			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1);
+			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1);			
+			data.horizontalSpan = 3;
 			data.widthHint = 380;
-			// data.horizontalIndent = HORZ_INDENT;
+			data.heightHint = 20;
 
 			StyledText text = viewer.getTextWidget();
 			text.setLayoutData(data);
 
-			toolkit.adapt(text, true, true);
+			getManagedForm().getToolkit().adapt(text, true, true);
 
 			if (hasChanged(attribute)) {
-				text.setBackground(backgroundIncoming);
+				text.setBackground(getBackgroundIncoming());
 			}
+			
+			
 		}
 		
 		// text areas
@@ -309,10 +320,9 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			data.horizontalSpan = 3;
 			data.widthHint = 380;
 			data.heightHint = 55;
-			data.horizontalIndent = HORZ_INDENT;
 			text.setLayoutData(data);
 
-			toolkit.adapt(text, true, true);
+			getManagedForm().getToolkit().adapt(text, true, true);
 
 			if (attribute.isReadOnly()) {
 				viewer.setEditable(false);
@@ -331,11 +341,11 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			}
 
 			if (hasChanged(attribute)) {
-				text.setBackground(backgroundIncoming);
+				text.setBackground(getBackgroundIncoming());
 			}
 		}
 
-		toolkit.paintBordersFor(attributesComposite);
+		getManagedForm().getToolkit().paintBordersFor(attributesComposite);
 	}
 
 	@Override
