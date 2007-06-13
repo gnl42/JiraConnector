@@ -14,6 +14,6 @@ package org.eclipse.mylyn.jira.tests;
 public class JiraTestConstants {
 
 	public static final String JIRA_39_URL = System.getProperty("jira.server.url",
-			"http://mylar.eclipse.org/jira-enterprise-3.9");
+			"http://mylyn.eclipse.org/jira-enterprise-3.9");
 
 }
