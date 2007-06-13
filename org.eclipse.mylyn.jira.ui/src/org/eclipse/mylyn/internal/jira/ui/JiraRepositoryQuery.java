@@ -39,14 +39,6 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 	public NamedFilter getNamedFilter() {
 		return filter;
 	}
-
-	/**
-	 * Name comes from server.
-	 */
-	@Override
-	public boolean canRename() {
-		return false;
-	}
 }
 
 // public void refreshHits() {
