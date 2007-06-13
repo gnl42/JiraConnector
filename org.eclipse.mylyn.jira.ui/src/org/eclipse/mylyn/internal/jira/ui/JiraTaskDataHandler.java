@@ -45,13 +45,13 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.Task;
 import org.eclipse.mylyn.tasks.core.TaskComment;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
@@ -95,7 +95,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	protected RepositoryTaskData createTaskData(TaskRepository repository, JiraClient server, Issue jiraIssue)
 			throws JiraException {
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
-				.getUrl(), jiraIssue.getId(), Task.DEFAULT_TASK_KIND);
+				.getUrl(), jiraIssue.getId(), AbstractRepositoryTask.DEFAULT_TASK_KIND);
 		initializeTaskData(data, server, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, server);
 		addOperations(data, jiraIssue, server);

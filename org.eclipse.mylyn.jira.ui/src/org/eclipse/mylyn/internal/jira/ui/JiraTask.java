@@ -66,5 +66,11 @@ public class JiraTask extends AbstractRepositoryTask {
 	public void setTaskKey(String key) {
 		this.key = key;
 	}
+
+	@Override
+	public boolean isLocal() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

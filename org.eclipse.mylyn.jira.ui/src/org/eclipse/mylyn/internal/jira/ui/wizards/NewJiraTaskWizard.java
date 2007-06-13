@@ -24,9 +24,9 @@ import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.Task;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
@@ -73,9 +73,9 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 			.getRepositoryConnector(JiraUiPlugin.REPOSITORY_KIND);
 		
 		JiraTaskDataHandler taskDataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
-		AbstractAttributeFactory attributeFactory = taskDataHandler.getAttributeFactory(taskRepository.getUrl(), taskRepository.getKind(), Task.DEFAULT_TASK_KIND);
+		AbstractAttributeFactory attributeFactory = taskDataHandler.getAttributeFactory(taskRepository.getUrl(), taskRepository.getKind(), AbstractRepositoryTask.DEFAULT_TASK_KIND);
 		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory , JiraUiPlugin.REPOSITORY_KIND,
-				taskRepository.getUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId(), Task.DEFAULT_TASK_KIND);
+				taskRepository.getUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId(), AbstractRepositoryTask.DEFAULT_TASK_KIND);
 		taskData.setNew(true);
 		JiraClient server = JiraClientFacade.getDefault().getJiraClient(taskRepository);
 		Project project = projectPage.getSelectedProject();

@@ -41,6 +41,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.tasks.core.LocalRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
@@ -53,7 +54,7 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.Task;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.Task.PriorityLevel;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask.PriorityLevel;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
@@ -380,7 +381,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
 						AbstractAttributeFactory factory = getTaskDataHandler().getAttributeFactory(
-								repository.getUrl(), repository.getKind(), Task.DEFAULT_TASK_KIND);
+								repository.getUrl(), repository.getKind(), AbstractRepositoryTask.DEFAULT_TASK_KIND);
 						String dateString = taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
 						jiraTask.setCompletionDate(factory.getDateForAttributeType(
 								RepositoryTaskAttribute.DATE_MODIFIED, dateString));
