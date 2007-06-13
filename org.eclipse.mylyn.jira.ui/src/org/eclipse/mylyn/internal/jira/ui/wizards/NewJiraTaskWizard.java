@@ -53,7 +53,7 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
 		projectPage = new JiraProjectPage(taskRepository);
 
-		setWindowTitle("New Repository Task");
+		setWindowTitle("New Task");
 		setDefaultPageImageDescriptor(TasksUiImages.BANNER_REPOSITORY);
 
 		setNeedsProgressMonitor(true);
