@@ -45,8 +45,8 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
-import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
@@ -95,7 +95,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	protected RepositoryTaskData createTaskData(TaskRepository repository, JiraClient server, Issue jiraIssue)
 			throws JiraException {
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
-				.getUrl(), jiraIssue.getId(), AbstractRepositoryTask.DEFAULT_TASK_KIND);
+				.getUrl(), jiraIssue.getId(), AbstractTask.DEFAULT_TASK_KIND);
 		initializeTaskData(data, server, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, server);
 		addOperations(data, jiraIssue, server);
@@ -106,7 +106,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			JiraException {
 		try {
 			int id = Integer.parseInt(taskId);
-			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
+			AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
 			if (task instanceof JiraTask) {
 				JiraTask jiraTask = (JiraTask) task;
 				return server.getIssueByKey(jiraTask.getTaskKey());
@@ -280,7 +280,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		for (Comment comment : jiraIssue.getComments()) {
 			TaskComment taskComment = new TaskComment(attributeFactory, x++);
 
-			// XXX ugly because AbstractRepositoryTaskEditor is using USER_OWNER
+			// XXX ugly because AbstractTaskEditor is using USER_OWNER
 			// instead of COMMENT_AUTHOR
 			taskComment.addAttribute(RepositoryTaskAttribute.USER_OWNER, createAttribute(comment.getAuthor()));
 

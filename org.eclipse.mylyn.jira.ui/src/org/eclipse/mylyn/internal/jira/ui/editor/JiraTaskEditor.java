@@ -18,11 +18,11 @@ import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraFieldType;
-import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.tasks.ui.editors.AbstractRepositoryTaskEditor;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StyledText;
@@ -46,7 +46,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Rob Elves
  * @author Eugene Kuleshov
  */
-public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
+public class JiraTaskEditor extends AbstractTaskEditor {
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
@@ -357,7 +357,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			String taskId = taskData.getId();
 			String repositoryUrl = taskData.getRepositoryUrl();
 			if (repositoryUrl != null && taskId != null) {
-				ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
+				AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
 				if (task != null) {
 					return task.getTaskUrl() + "?page=history";
 				}

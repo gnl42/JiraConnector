@@ -44,15 +44,15 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
-import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
 import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask.PriorityLevel;
+import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
@@ -157,13 +157,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
-	public Set<AbstractRepositoryTask> getChangedSinceLastSync(TaskRepository repository,
-			Set<AbstractRepositoryTask> tasks, IProgressMonitor monitor) throws CoreException {
+	public Set<AbstractTask> getChangedSinceLastSync(TaskRepository repository,
+			Set<AbstractTask> tasks, IProgressMonitor monitor) throws CoreException {
 
 		String dateString = repository.getSyncTimeStamp();
 		Date lastSyncDate = convertDate(dateString);
 		if (lastSyncDate == null) {
-			for (AbstractRepositoryTask task : tasks) {
+			for (AbstractTask task : tasks) {
 				Date date = convertDate(task.getLastSyncDateStamp());
 				if (lastSyncDate == null || (date != null && date.before(lastSyncDate))) {
 					lastSyncDate = date;
@@ -205,14 +205,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
 
-		Set<AbstractRepositoryTask> changedTasks = new HashSet<AbstractRepositoryTask>();
+		Set<AbstractTask> changedTasks = new HashSet<AbstractTask>();
 		for (Issue issue : issues) {
 			// String handle =
-			// AbstractRepositoryTask.getHandle(repository.getUrl(),
+			// AbstractTask.getHandle(repository.getUrl(),
 			// issue.getId());
-			ITask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(), issue.getId());
-			if (task instanceof AbstractRepositoryTask) {
-				changedTasks.add((AbstractRepositoryTask) task);
+			AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(), issue.getId());
+			if (task instanceof AbstractTask) {
+				changedTasks.add((AbstractTask) task);
 			}
 
 			if (issue.getUpdated() != null && issue.getUpdated().after(lastSyncDate)) {
@@ -239,7 +239,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public String getLastSyncTimestamp(TaskRepository repository, Set<AbstractRepositoryTask> changedTasks) {
+	public String getLastSyncTimestamp(TaskRepository repository, Set<AbstractTask> changedTasks) {
 		// XXX to late for JIRA to calcualate the timestamp: bug 176934
 		return repository.getSyncTimeStamp();
 	}
@@ -250,7 +250,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateTaskFromRepository(TaskRepository repository, AbstractRepositoryTask repositoryTask,
+	public void updateTaskFromRepository(TaskRepository repository, AbstractTask repositoryTask,
 			IProgressMonitor monitor) {
 	}
 
@@ -338,13 +338,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return status != null && (status.isClosed() || status.isResolved());
 	}
 
-	public AbstractRepositoryTask createTask(String repositoryUrl, String id, String summary) {
+	public AbstractTask createTask(String repositoryUrl, String id, String summary) {
 		JiraTask jiraTask = new JiraTask(repositoryUrl, id, summary);
 		jiraTask.setCreationDate(new Date());
 		return jiraTask;
 	}
 
-	public void updateTaskFromTaskData(TaskRepository repository, AbstractRepositoryTask repositoryTask,
+	public void updateTaskFromTaskData(TaskRepository repository, AbstractTask repositoryTask,
 			RepositoryTaskData taskData) {
 		if (repositoryTask instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) repositoryTask;
@@ -379,7 +379,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
 						AbstractAttributeFactory factory = getTaskDataHandler().getAttributeFactory(
-								repository.getUrl(), repository.getKind(), AbstractRepositoryTask.DEFAULT_TASK_KIND);
+								repository.getUrl(), repository.getKind(), AbstractTask.DEFAULT_TASK_KIND);
 						String dateString = taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
 						jiraTask.setCompletionDate(factory.getDateForAttributeType(
 								RepositoryTaskAttribute.DATE_MODIFIED, dateString));

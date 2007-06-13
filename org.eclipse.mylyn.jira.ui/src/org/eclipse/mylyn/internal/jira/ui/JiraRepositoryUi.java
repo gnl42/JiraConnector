@@ -24,8 +24,8 @@ import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
-import org.eclipse.mylyn.tasks.core.ITaskListElement;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.AbstractTaskListElement;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
@@ -39,7 +39,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
  */
 public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
-	public String getTaskKindLabel(AbstractRepositoryTask repositoryTask) {
+	public String getTaskKindLabel(AbstractTask repositoryTask) {
 		return "Issue";
 	}
 	
@@ -49,8 +49,8 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	}
 	
 	@Override
-	public List<ITaskListElement> getLegendItems() {
-		List<ITaskListElement> legendItems = new ArrayList<ITaskListElement>();
+	public List<AbstractTaskListElement> getLegendItems() {
+		List<AbstractTaskListElement> legendItems = new ArrayList<AbstractTaskListElement>();
 		
 		JiraTask bug = new JiraTask("", "bug", "Bug");
 		bug.setKind(JiraTask.Kind.BUG.toString());
@@ -73,7 +73,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 
 	
 	@Override
-	public ImageDescriptor getTaskKindOverlay(AbstractRepositoryTask repositoryTask) {
+	public ImageDescriptor getTaskKindOverlay(AbstractTask repositoryTask) {
 		if (repositoryTask instanceof JiraTask) {
 			JiraTask task = (JiraTask) repositoryTask;
 			if (JiraTask.Kind.BUG.toString().equals(task.getTaskKind())) {

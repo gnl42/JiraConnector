@@ -11,14 +11,14 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 
 /**
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
-public class JiraTask extends AbstractRepositoryTask {
+public class JiraTask extends AbstractTask {
 
 	public static final String UNASSIGNED_USER = "-1";
 	

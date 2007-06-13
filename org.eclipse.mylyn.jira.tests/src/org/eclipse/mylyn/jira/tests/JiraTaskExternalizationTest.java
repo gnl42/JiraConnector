@@ -27,8 +27,8 @@ import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.TaskList;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.getAllCategories;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TaskListManager;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
@@ -58,7 +58,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	private TaskRepository repository = null;
 
-	private TaskList taskList;
+	private getAllCategories taskList;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -127,7 +127,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		manager.saveTaskList();
 		manager.resetTaskList();
 		manager.readExistingOrCreateNewList();
-		ITask task = manager.getTaskList().getTask(SERVER_URL, TEST_TASK);
+		AbstractTask task = manager.getTaskList().getTask(SERVER_URL, TEST_TASK);
 		assertTrue(task.isCompleted());
 	}
 
@@ -140,11 +140,11 @@ public class JiraTaskExternalizationTest extends TestCase {
 		manager.saveTaskList();
 		manager.resetTaskList();
 		manager.readExistingOrCreateNewList();
-		Collection<ITask> taskSet = manager.getTaskList().getAllTasks();
+		Collection<AbstractTask> taskSet = manager.getTaskList().getAllTasks();
 
 		
 		boolean taskFound = false;
-		for (ITask currTask : taskSet) {
+		for (AbstractTask currTask : taskSet) {
 			if (currTask instanceof JiraTask && ((JiraTask)currTask).getRepositoryUrl().equals(SERVER_URL+"testSave")) {
 				taskFound = true;
 				// Check that the URL of the Jira task is it's handle

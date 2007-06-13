@@ -25,7 +25,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.ITaskAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
@@ -70,7 +70,7 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 		return new ByteArrayInputStream(out.toByteArray());
 	}
 
-	public void uploadAttachment(TaskRepository repository, AbstractRepositoryTask task, ITaskAttachment attachment,
+	public void uploadAttachment(TaskRepository repository, AbstractTask task, ITaskAttachment attachment,
 			String comment, IProgressMonitor monitor) throws CoreException {
 		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		try {
@@ -81,11 +81,11 @@ public class JiraAttachmentHandler implements IAttachmentHandler {
 		}
 	}
 
-	public boolean canDownloadAttachment(TaskRepository repository, AbstractRepositoryTask task) {
+	public boolean canDownloadAttachment(TaskRepository repository, AbstractTask task) {
 		return true;
 	}
 
-	public boolean canUploadAttachment(TaskRepository repository, AbstractRepositoryTask task) {
+	public boolean canUploadAttachment(TaskRepository repository, AbstractTask task) {
 		return true;
 	}
 

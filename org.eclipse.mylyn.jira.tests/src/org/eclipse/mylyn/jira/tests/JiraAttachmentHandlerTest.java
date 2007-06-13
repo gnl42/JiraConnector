@@ -27,7 +27,7 @@ import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.FileAttachment;
 import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
@@ -98,7 +98,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		file.deleteOnExit();
 		JiraTestUtils.writeFile(file, "Mylar".getBytes());
 
-		AbstractRepositoryTask task = connector.createTaskFromExistingId(repository, issue.getKey(),
+		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(),
 				new NullProgressMonitor());
 		FileAttachment attachment = new FileAttachment(file);
 		attachment.setContentType("text/plain");

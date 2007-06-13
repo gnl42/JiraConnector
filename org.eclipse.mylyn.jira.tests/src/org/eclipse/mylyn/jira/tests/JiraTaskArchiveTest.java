@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.mylyn.internal.jira.ui.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylyn.tasks.core.TaskList;
+import org.eclipse.mylyn.tasks.core.getAllCategories;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
@@ -29,7 +29,7 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	private static final String HANDLE1 = "Handle1";
 
-	private TaskList taskList;
+	private getAllCategories taskList;
 
 //	private JiraRepositoryConnector connector = new JiraRepositoryConnector();
 

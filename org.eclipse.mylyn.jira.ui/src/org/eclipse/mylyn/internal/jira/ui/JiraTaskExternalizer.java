@@ -18,12 +18,12 @@ import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryTask;
-import org.eclipse.mylyn.tasks.core.AbstractTaskContainer;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.AbstractTaskListElement;
 import org.eclipse.mylyn.tasks.core.DelegatingTaskExternalizer;
-import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.TaskExternalizationException;
-import org.eclipse.mylyn.tasks.core.TaskList;
+import org.eclipse.mylyn.tasks.core.getAllCategories;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.w3c.dom.Document;
@@ -66,12 +66,12 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 // @Override
-// public boolean canCreateElementFor(AbstractRepositoryTask queryHit) {
+// public boolean canCreateElementFor(AbstractTask queryHit) {
 // return queryHit instanceof JiraQueryHit;
 // }
 
 // @Override
-// public Element createQueryHitElement(AbstractRepositoryTask queryHit,
+// public Element createQueryHitElement(AbstractTask queryHit,
 // Document doc, Element parent) {
 // Element node = super.createQueryHitElement(queryHit, doc, parent);
 // node.setAttribute(KEY_KEY, ((JiraTask) queryHit).getKey());
@@ -84,12 +84,12 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public boolean canCreateElementFor(ITask task) {
+	public boolean canCreateElementFor(AbstractTask task) {
 		return task instanceof JiraTask;
 	}
 
 	@Override
-	public AbstractRepositoryQuery readQuery(Node node, TaskList taskList) throws TaskExternalizationException {
+	public AbstractRepositoryQuery readQuery(Node node, getAllCategories taskList) throws TaskExternalizationException {
 		Element element = (Element) node;
 		String repositoryUrl = element.getAttribute(KEY_REPOSITORY_URL);
 		String custom = element.getAttribute(KEY_FILTER_CUSTOM);
@@ -149,7 +149,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			node.setAttribute(KEY_FILTER_CUSTOM_URL, customQuery.getUrl());
 		}
 
-		for (AbstractRepositoryTask hit : query.getHits()) {
+		for (AbstractTask hit : query.getHits()) {
 			try {
 				createQueryHitElement(hit, doc, node);
 			} catch (Exception e) {
@@ -184,15 +184,15 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 	}
 
 	@Override
-	public Element createTaskElement(ITask task, Document doc, Element parent) {
+	public Element createTaskElement(AbstractTask task, Document doc, Element parent) {
 		Element node = super.createTaskElement(task, doc, parent);
 		node.setAttribute(KEY_KEY, ((JiraTask) task).getTaskKey());
 		return node;
 	}
 
 	@Override
-	public ITask createTask(String repositoryUrl, String taskId, String summary, Element element, TaskList taskList,
-			AbstractTaskContainer category, ITask parent) throws TaskExternalizationException {
+	public AbstractTask createTask(String repositoryUrl, String taskId, String summary, Element element, getAllCategories taskList,
+			AbstractTaskListElement category, AbstractTask parent) throws TaskExternalizationException {
 		JiraTask task = new JiraTask(repositoryUrl, taskId, summary);
 
 		if (element.hasAttribute(KEY_KEY)) {
@@ -210,7 +210,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 //	}
 
 //	@Override
-//	public AbstractRepositoryTask createQueryHit(String repositoryUrl, String taskId, String summary, Element element,
+//	public AbstractTask createQueryHit(String repositoryUrl, String taskId, String summary, Element element,
 //			TaskList taskList, AbstractRepositoryQuery query) throws TaskExternalizationException {
 //		String key = "";
 //		if (element.hasAttribute(KEY_KEY)) {
