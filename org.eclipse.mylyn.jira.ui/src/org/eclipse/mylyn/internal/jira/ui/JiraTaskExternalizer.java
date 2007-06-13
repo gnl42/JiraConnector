@@ -19,7 +19,7 @@ import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.AbstractTaskListElement;
+import org.eclipse.mylyn.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.tasks.core.DelegatingTaskExternalizer;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.TaskExternalizationException;
@@ -192,7 +192,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 
 	@Override
 	public AbstractTask createTask(String repositoryUrl, String taskId, String summary, Element element, TaskList taskList,
-			AbstractTaskListElement category, AbstractTask parent) throws TaskExternalizationException {
+			AbstractTaskContainer category, AbstractTask parent) throws TaskExternalizationException {
 		JiraTask task = new JiraTask(repositoryUrl, taskId, summary);
 
 		if (element.hasAttribute(KEY_KEY)) {
