@@ -95,7 +95,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 	protected RepositoryTaskData createTaskData(TaskRepository repository, JiraClient server, Issue jiraIssue)
 			throws JiraException {
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
-				.getUrl(), jiraIssue.getId(), AbstractTask.DEFAULT_TASK_KIND);
+				.getUrl(), jiraIssue.getId());
 		initializeTaskData(data, server, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, server);
 		addOperations(data, jiraIssue, server);
