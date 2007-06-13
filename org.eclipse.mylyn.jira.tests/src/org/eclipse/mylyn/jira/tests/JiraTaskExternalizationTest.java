@@ -28,7 +28,7 @@ import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.getAllCategories;
+import org.eclipse.mylyn.tasks.core.TaskList;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TaskListManager;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
@@ -58,7 +58,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	private TaskRepository repository = null;
 
-	private getAllCategories taskList;
+	private TaskList taskList;
 
 	@Override
 	protected void setUp() throws Exception {
