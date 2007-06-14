@@ -122,7 +122,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testCompletionSave() {
 		JiraTask jiraTask = new JiraTask(SERVER_URL, TEST_TASK, TEST_LABEL);
 		jiraTask.setCompleted(true);
-		manager.getTaskList().moveToContainer(manager.getTaskList().getDefaultCategory(), jiraTask);
+		manager.getTaskList().moveToContainer(jiraTask, manager.getTaskList().getDefaultCategory());
 
 		manager.saveTaskList();
 		manager.resetTaskList();
@@ -135,7 +135,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraTask jiraTask = new JiraTask(SERVER_URL+"testSave", TEST_TASK, TEST_LABEL);
 		String testUrl = "http://foo";
 		jiraTask.setTaskUrl(testUrl);
-		manager.getTaskList().moveToContainer(manager.getTaskList().getDefaultCategory(), jiraTask);
+		manager.getTaskList().moveToContainer(jiraTask, manager.getTaskList().getDefaultCategory());
 
 		manager.saveTaskList();
 		manager.resetTaskList();
