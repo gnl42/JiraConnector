@@ -46,7 +46,6 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
 import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
@@ -326,7 +325,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		task.setPriority(getMylarPriority(issue.getPriority()).toString());
 
 		if (notifyOfChange) {
-			TasksUiPlugin.getTaskListManager().getTaskList().notifyLocalInfoChanged(task);
+			TasksUiPlugin.getTaskListManager().getTaskList().notifyTaskChanged(task);
 		}
 	}
 
