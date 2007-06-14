@@ -342,7 +342,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		task.setPriority(getMylarPriority(issue.getPriority()).toString());
 
 		if (notifyOfChange) {
-			TasksUiPlugin.getTaskListManager().getTaskList().notifyTaskChanged(task);
+			TasksUiPlugin.getTaskListManager().getTaskList().notifyTaskChanged(task, false);
 		}
 	}
 
