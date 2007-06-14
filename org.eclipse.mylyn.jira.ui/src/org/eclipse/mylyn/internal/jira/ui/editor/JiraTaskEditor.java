@@ -22,7 +22,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditor;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.StyledText;
@@ -46,7 +46,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Rob Elves
  * @author Eugene Kuleshov
  */
-public class JiraTaskEditor extends AbstractTaskEditor {
+public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	public JiraTaskEditor(FormEditor editor) {
 		super(editor);
