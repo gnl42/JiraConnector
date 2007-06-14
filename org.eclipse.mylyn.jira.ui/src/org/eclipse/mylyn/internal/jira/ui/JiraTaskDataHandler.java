@@ -81,7 +81,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			}
 			Issue jiraIssue = getJiraIssue(server, taskId, repository.getUrl());
 			if (jiraIssue != null) {
-				return createTaskData(repository, server, jiraIssue);
+				return createTaskData(repository, server, jiraIssue, null);
 			}
 			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK,
 					"JIRA ticket not found: " + taskId, null));
@@ -91,13 +91,13 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 	}
 
-	protected RepositoryTaskData createTaskData(TaskRepository repository, JiraClient server, Issue jiraIssue)
+	protected RepositoryTaskData createTaskData(TaskRepository repository, JiraClient server, Issue jiraIssue, RepositoryTaskData oldTaskData)
 			throws JiraException {
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND, repository
 				.getUrl(), jiraIssue.getId());
 		initializeTaskData(data, server, jiraIssue.getProject());
-		updateTaskData(data, jiraIssue, server);
-		addOperations(data, jiraIssue, server);
+		updateTaskData(data, jiraIssue, server, oldTaskData);
+		addOperations(data, jiraIssue, server, oldTaskData);
 		return data;
 	}
 
@@ -169,7 +169,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		return data.getAttribute(key);
 	}
 
-	public void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server) throws JiraException {
+	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient server, RepositoryTaskData oldTaskData) throws JiraException {
 		String parentKey = jiraIssue.getParentKey();
 		if (parentKey != null) {
 			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentKey);
@@ -330,18 +330,27 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 		// TODO move into server configuration and populate lazily
 		HashSet<String> editableKeys = new HashSet<String>();
-		try {
-			RepositoryTaskAttribute[] editableAttributes = server.getEditableAttributes(jiraIssue.getKey());
-			if (editableAttributes != null) {
-				// System.err.println(data.getTaskKey());
-				for (RepositoryTaskAttribute attribute : editableAttributes) {
-					// System.err.println(" " + attribute.getID() + " : " +
-					// attribute.getName());
-					editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getID()));
+		if (oldTaskData != null) {
+			// avoid server round-trips
+			for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
+				if (!attribute.isReadOnly()) {
+					editableKeys.add(attribute.getID());
 				}
+			}			
+		} else {
+			try {
+				RepositoryTaskAttribute[] editableAttributes = server.getEditableAttributes(jiraIssue.getKey());
+				if (editableAttributes != null) {
+					// System.err.println(data.getTaskKey());
+					for (RepositoryTaskAttribute attribute : editableAttributes) {
+						// System.err.println(" " + attribute.getID() + " : " +
+						// attribute.getName());
+						editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getID()));
+					}
+				}
+			} catch (JiraInsufficientPermissionException ex) {
+				// ignore
 			}
-		} catch (JiraInsufficientPermissionException ex) {
-			// ignore
 		}
 
 		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
@@ -419,9 +428,17 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 	}
 
-	public void addOperations(RepositoryTaskData data, Issue issue, JiraClient server) throws JiraException {
-		Status status = issue.getStatus();
+	public void addOperations(RepositoryTaskData data, Issue issue, JiraClient server, RepositoryTaskData oldTaskData) throws JiraException {
+		// avoid server round-trips
+		if (oldTaskData != null) {
+			for (RepositoryOperation operation : oldTaskData.getOperations()) {
+				data.addOperation(operation);
+			}
+			return;
+		}
 
+		Status status = issue.getStatus();
+		
 		RepositoryOperation leaveOperation = new RepositoryOperation(LEAVE_OPERATION, "Leave as "
 				+ issue.getStatus().getName());
 		leaveOperation.setChecked(true);

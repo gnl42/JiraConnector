@@ -36,7 +36,7 @@ public class NewJiraTaskEditor extends AbstractNewRepositoryTaskEditor {
 		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
 
 		SearchHitCollector collector = new SearchHitCollector(TasksUiPlugin.getTaskListManager().getTaskList(),
-				repository, query, new TaskFactory(repository));
+				repository, query, new TaskFactory(repository, false, false));
 		return collector;
 	}
 

@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -41,17 +40,20 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
+import org.eclipse.mylyn.tasks.core.ITaskCollector;
 import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
 import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
+import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
@@ -109,56 +111,65 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
-			IProgressMonitor monitor, QueryHitCollector resultCollector, boolean forced) {
-		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+			IProgressMonitor monitor, ITaskCollector resultCollector) {
+		try {
+			monitor.beginTask("Running query", IProgressMonitor.UNKNOWN);
+			
+			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 
-		Query filter;
-		if (repositoryQuery instanceof JiraRepositoryQuery) {
-			filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
-		} else if (repositoryQuery instanceof JiraCustomQuery) {
-			try {
-				if (!client.hasDetails()) {
-					client.refreshDetails(monitor);
+			Query filter;
+			if (repositoryQuery instanceof JiraRepositoryQuery) {
+				filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
+			} else if (repositoryQuery instanceof JiraCustomQuery) {
+				try {
+					if (!client.hasDetails()) {
+						client.refreshDetails(monitor);
+					}
+					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
+				} catch (JiraException e) {
+					return JiraCorePlugin.toStatus(repository, e);
+				} catch (InvalidJiraQueryException e) {
+					return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
+							"The query parameters do not match the repository configuration, please check the query properties; "
+							+ e.getMessage(), null);
 				}
-				filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
+			} else {
+				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0, //
+						"Invalid query type: " + repositoryQuery.getClass(), null);
+			}
+
+			List<Issue> issues = new ArrayList<Issue>();
+			try {
+				client.search(filter, new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS));
 			} catch (JiraException e) {
 				return JiraCorePlugin.toStatus(repository, e);
-			} catch (InvalidJiraQueryException e) {
-				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
-						"The query parameters do not match the repository configuration, please check the query properties; "
-								+ e.getMessage(), null);
 			}
-		} else {
-			return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0, //
-					"Invalid query type: " + repositoryQuery.getClass(), null);
-		}
 
-		List<Issue> issues = new ArrayList<Issue>();
-		try {
-			client.search(filter, new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS));
-		} catch (JiraException e) {
-			return JiraCorePlugin.toStatus(repository, e);
-		}
+			try {
+				int n = 0;
+				for (Issue issue : issues) {
+					if (monitor.isCanceled())
+						return Status.CANCEL_STATUS;
 
-		try {
-			int n = 0;
-			for (Issue issue : issues) {
-				if(monitor.isCanceled()) return Status.CANCEL_STATUS; 
-
-				monitor.subTask(n++ + "/" + issues.size() +" " + issue.getKey() + " " + issue.getSummary());
-				resultCollector.accept(offlineHandler.createTaskData(repository, client, issue));
+					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
+					String handle = RepositoryTaskHandleUtil.getHandle(repository.getUrl(), issue.getId());
+					RepositoryTaskData oldTaskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(handle);
+					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData));
+				}
+				return Status.OK_STATUS;
+			} catch (JiraException e) {
+				return JiraCorePlugin.toStatus(repository, e);
+			} catch (CoreException e) {
+				return e.getStatus();
 			}
-			return Status.OK_STATUS;
-		} catch (JiraException e) {
-			return JiraCorePlugin.toStatus(repository, e);
-		} catch (CoreException e) {
-			return e.getStatus();
+		} finally {
+			monitor.done();
 		}
 	}
 
-	public Set<AbstractTask> getChangedSinceLastSync(TaskRepository repository,
-			Set<AbstractTask> tasks, IProgressMonitor monitor) throws CoreException {
-
+	@Override
+	public boolean markStaleTasks(TaskRepository repository, Set<AbstractTask> tasks,
+			IProgressMonitor monitor) throws CoreException {
 		String dateString = repository.getSyncTimeStamp();
 		Date lastSyncDate = convertDate(dateString);
 		if (lastSyncDate == null) {
@@ -170,59 +181,65 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		}
 		if (lastSyncDate == null) {
-			return tasks;
+			for (AbstractTask task : tasks) {
+				task.setStale(true);
+			}
+			return true;
 		}
 
 		long mil = lastSyncDate.getTime();
 		long now = Calendar.getInstance().getTimeInMillis();
 		if (now - mil <= 0) {
-			return Collections.emptySet();
+			return false;
 		}
 		long minutes = -1 * ((now - mil) / (1000 * 60));
 		if (minutes == 0) {
-			return Collections.emptySet();
+			return false;
 		}
 
 		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
 		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, minutes));
 		changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
-
-		final List<Issue> issues = new ArrayList<Issue>();
-		// unlimited maxHits can create crazy amounts of traffic
-		JiraIssueCollector collector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
-		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
-
 		// TODO: Need some way to further scope this query
 
+		List<Issue> issues = new ArrayList<Issue>();
+		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+		// unlimited maxHits can create crazy amounts of traffic
+		JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
 		try {
-			// XXX: disabled work around
-			// TODO: remove, added to re-open connection, bug 164543
-			// jiraServer.getServerInfo();
-			// Will get ALL issues that have changed since lastSyncDate
-			client.search(changedFilter, collector);
+			client.search(changedFilter, issueCollector);
+
+			if (issues.isEmpty()) {
+				return false; // no hits
+			}
+
+			int n = 0;
+			TaskFactory factory = new TaskFactory(repository);
+			for (Issue issue : issues) {
+				AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(),
+						issue.getId());
+				if (!tasks.contains(task)) {
+					continue;
+				}
+
+				monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
+				String handle = RepositoryTaskHandleUtil.getHandle(repository.getUrl(), issue.getId());
+				RepositoryTaskData oldTaskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(handle);
+				RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData);
+				factory.createTask(taskData, new NullProgressMonitor());
+
+				if (issue.getUpdated() != null && issue.getUpdated().after(lastSyncDate)) {
+					lastSyncDate = issue.getUpdated();
+				}
+			}
+
+			repository.setSyncTimeStamp( // 
+			new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(lastSyncDate));
+
+			return true;
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
-
-		Set<AbstractTask> changedTasks = new HashSet<AbstractTask>();
-		for (Issue issue : issues) {
-			// String handle =
-			// AbstractTask.getHandle(repository.getUrl(),
-			// issue.getId());
-			AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(), issue.getId());
-			if (task instanceof AbstractTask) {
-				changedTasks.add((AbstractTask) task);
-			}
-
-			if (issue.getUpdated() != null && issue.getUpdated().after(lastSyncDate)) {
-				lastSyncDate = issue.getUpdated();
-			}
-		}
-
-		repository.setSyncTimeStamp( // 
-				new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(lastSyncDate));
-
-		return changedTasks;
 	}
 
 	private Date convertDate(String dateString) {
@@ -238,8 +255,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public String getLastSyncTimestamp(TaskRepository repository, Set<AbstractTask> changedTasks) {
-		// XXX to late for JIRA to calcualate the timestamp: bug 176934
+	public String getSynchronizationTimestamp(TaskRepository repository, Set<AbstractTask> changedTasks) {
+		// the timestamp is updated in markStaleTasks()
 		return repository.getSyncTimeStamp();
 	}
 
@@ -372,8 +389,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setTaskUrl(getTaskUrl(repository.getUrl(), repositoryTask.getTaskKey()));
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
-			jiraTask.setPriority(getMylarPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY))
-					.toString());
+			jiraTask.setPriority(getMylarPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
 			for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
