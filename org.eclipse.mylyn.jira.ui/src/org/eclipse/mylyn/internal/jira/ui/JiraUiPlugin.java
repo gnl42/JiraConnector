@@ -28,7 +28,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 
 	public final static String REPOSITORY_KIND = "jira";
 
-	public final static String JIRA_CLIENT_LABEL = "JIRA (supports 3.3.1 and later)";
+	public final static String JIRA_CLIENT_LABEL = "JIRA (supports 3.3.3 and later)";
 
 	public final static String TITLE_MESSAGE_DIALOG = "Mylar JIRA Client";
 
