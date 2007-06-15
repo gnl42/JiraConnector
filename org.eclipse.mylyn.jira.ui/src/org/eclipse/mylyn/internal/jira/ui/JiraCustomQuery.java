@@ -229,6 +229,20 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
 		}
 
+		List<String> priorityIds = getIds(params, PRIORITY_KEY);
+		List<Priority> priorities = new ArrayList<Priority>();
+		for (String priorityId : priorityIds) {
+			Priority priority = jiraServer.getPriorityById(priorityId);
+			if (priority != null) {
+				priorities.add(priority);
+			} else if (validate) {
+				throw new InvalidJiraQueryException("Unknown priority " + priorityId);
+			}
+		}
+		if(!priorities.isEmpty()) {
+			filter.setPriorityFilter(new PriorityFilter(priorities.toArray(new Priority[priorities.size()])));
+		}
+
 		List<String> queries = getIds(params, QUERY_KEY);
 		for (String query : queries) {
 			boolean searchSummary = getIds(params, SUMMARY_KEY).contains("true");
