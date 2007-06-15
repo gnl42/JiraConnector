@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
@@ -43,6 +42,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
 import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -618,7 +618,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					comp.setName(compStr);
 					components.add(comp);
 				} else {
-					MylarStatusHandler.fail(null, "Error setting component for JIRA issue. Component id is null: "
+					StatusManager.fail(null, "Error setting component for JIRA issue. Component id is null: "
 							+ compStr, false);
 				}
 			}
@@ -635,7 +635,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					version.setName(fixStr);
 					fixversions.add(version);
 				} else {
-					MylarStatusHandler.fail(null, "Error setting fix version for JIRA issue. Version id is null: "
+					StatusManager.fail(null, "Error setting fix version for JIRA issue. Version id is null: "
 							+ fixStr, false);
 				}
 			}
@@ -653,7 +653,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					version.setName(fixStr);
 					affectsversions.add(version);
 				} else {
-					MylarStatusHandler.fail(null, "Error setting affects version for JIRA issue. Version id is null: "
+					StatusManager.fail(null, "Error setting affects version for JIRA issue. Version id is null: "
 							+ fixStr, false);
 				}
 			}

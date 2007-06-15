@@ -26,11 +26,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -185,7 +185,7 @@ public class JiraProjectPage extends WizardPage {
 											+ "Please check repository settings in the Task Repositories view.", //
 									e.getMessage());
 							showWarning(msg);
-							MylarStatusHandler.fail(e, msg, false);
+							StatusManager.fail(e, msg, false);
 						} finally {
 							monitor.done();
 						}

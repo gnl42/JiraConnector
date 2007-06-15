@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -25,6 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryQuery;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -201,7 +201,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR, JiraCorePlugin.ID,
 							"Could not download saved filters from Jira repository.\n"
 									+ "Please check repository settings in the Task Repositories view");
-					MylarStatusHandler.log(e, status.getMessage());
+					StatusManager.log(e, status.getMessage());
 					return Status.CANCEL_STATUS;
 				} finally {
 					showFilters(loadedFilters, status);

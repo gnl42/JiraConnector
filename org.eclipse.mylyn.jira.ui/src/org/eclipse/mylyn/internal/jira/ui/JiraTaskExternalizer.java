@@ -14,9 +14,9 @@ package org.eclipse.mylyn.internal.jira.ui;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskContainer;
@@ -152,7 +152,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			try {
 				createQueryHitElement(hit, doc, node);
 			} catch (Exception e) {
-				MylarStatusHandler.log(e, e.getMessage());
+				StatusManager.log(e, e.getMessage());
 			}
 		}
 

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
@@ -29,6 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Subtask;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -736,7 +736,7 @@ public class RssContentHandler extends DefaultHandler {
 		try {
 			return new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(value);
 		} catch (ParseException e) {
-			MylarStatusHandler.log(e, "Error while parsing date string " + value);
+			StatusManager.log(e, "Error while parsing date string " + value);
 			return null;
 		}
 	}

@@ -13,7 +13,6 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import java.net.Proxy;
 
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraClientManager;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
@@ -21,6 +20,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
@@ -154,17 +154,17 @@ public class JiraClientFacade implements ITaskRepositoryListener {
 	 */
 	public static void handleConnectionException(Exception e) {
 		if (e instanceof JiraServiceUnavailableException) {
-			MylarStatusHandler.fail(e, "Jira Connection Failure.\n\n"
+			StatusManager.fail(e, "Jira Connection Failure.\n\n"
 					+ "Please check your network connection and Jira server settings in the Task Repositories view.",
 					true);
 		} else if (e instanceof JiraAuthenticationException) {
-			MylarStatusHandler.fail(e, "Jira Authentication Failed.\n\n"
+			StatusManager.fail(e, "Jira Authentication Failed.\n\n"
 					+ "Please check your Jira username and password in the Task Repositories view", true);
 		} else if (e instanceof RuntimeException) {
-			MylarStatusHandler.fail(e, "No Jira repository found.\n\n"
+			StatusManager.fail(e, "No Jira repository found.\n\n"
 					+ "Please verify that a vaild Jira repository exists in the Task Repositories view", true);
 		} else {
-			MylarStatusHandler.fail(e, "Could not connect to Jira repository.\n\n"
+			StatusManager.fail(e, "Could not connect to Jira repository.\n\n"
 					+ "Please check your credentials in the Task Repositories view", true);
 		}
 	}

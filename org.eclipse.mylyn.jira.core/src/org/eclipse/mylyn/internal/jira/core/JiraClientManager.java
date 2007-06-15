@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
@@ -35,6 +34,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 
 /**
  * Note: This class is not thread safe.
@@ -88,7 +88,7 @@ public class JiraClientManager {
 					clientDataByUrl.put(url, data);					
 				}
 			} catch (Throwable e) {
-				MylarStatusHandler.log("Reset JIRA repository configuration cache due to format update", false);
+				StatusManager.log("Reset JIRA repository configuration cache due to format update", false);
 			} finally {
 				if (in != null) {
 					try {
@@ -118,7 +118,7 @@ public class JiraClientManager {
 				out.writeObject(clientDataByUrl.get(url));	
 			}
 		} catch (Throwable e) {
-			MylarStatusHandler.fail(e, "Error writing JIRA repository configuration cache", false);
+			StatusManager.fail(e, "Error writing JIRA repository configuration cache", false);
 		} finally {
 			if (out != null) {
 				try {

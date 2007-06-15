@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -61,6 +60,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.DatePicker;
@@ -1296,7 +1296,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 											+ "Please check repository settings in the Task Repositories view.", //
 									e.getMessage());
 							showWarning(msg);
-							MylarStatusHandler.fail(e, msg, false);
+							StatusManager.fail(e, msg, false);
 						}
 					}
 

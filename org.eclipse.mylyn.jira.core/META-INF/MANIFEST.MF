@@ -6,7 +6,7 @@ Bundle-Version: 2.0.0.v20070615-0900
 Bundle-Activator: org.eclipse.mylyn.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.mylyn,
+ org.eclipse.mylyn.monitor.core,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.web.core
 Eclipse-AutoStart: true

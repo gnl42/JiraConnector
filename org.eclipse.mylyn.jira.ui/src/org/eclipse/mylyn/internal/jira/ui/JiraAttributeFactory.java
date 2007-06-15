@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.eclipse.mylyn.core.MylarStatusHandler;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
@@ -122,7 +122,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 			// RepositoryTaskAttribute.DATE_CREATION
 			return new SimpleDateFormat(JIRA_DATE_FORMAT, Locale.US).parse(dateString);
 		} catch (Exception e) {
-			MylarStatusHandler.log(e, "Error while date for attribute " + attributeKey + ": " + dateString);
+			StatusManager.log(e, "Error while date for attribute " + attributeKey + ": " + dateString);
 			return null;
 		}
 	}

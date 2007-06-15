@@ -8,9 +8,9 @@
 
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.ui.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
@@ -61,7 +61,7 @@ public class JiraTaskEditorFactory implements ITaskEditorFactory {
 		try {
 			return new RepositoryTaskEditorInput(repository, jiraTask.getHandleIdentifier(), jiraTask.getTaskUrl(), jiraTask.getTaskId());
 		} catch (Exception e) {
-			MylarStatusHandler.fail(e, "Could not create JIRA editor input", true);
+			StatusManager.fail(e, "Could not create JIRA editor input", true);
 		}
 		return null;
 	}

@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.core.MylarStatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -40,6 +39,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
@@ -249,7 +249,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		try {
 			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
 		} catch (ParseException e) {
-			MylarStatusHandler.log(e, "Error while parsing date string " + dateString);
+			StatusManager.log(e, "Error while parsing date string " + dateString);
 		}
 		return null;
 	}
@@ -407,7 +407,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				}
 			}
 		} else {
-			MylarStatusHandler.log("Unable to update data for task of type " + repositoryTask.getClass().getName(),
+			StatusManager.log("Unable to update data for task of type " + repositoryTask.getClass().getName(),
 					this);
 		}
 	}

@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.mylyn.context.core,
- org.eclipse.mylyn,
+ org.eclipse.mylyn.monitor.core,
  org.eclipse.core.resources,
  org.eclipse.mylyn.web.core
 Eclipse-AutoStart: true
