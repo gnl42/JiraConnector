@@ -352,7 +352,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	protected void validateInput() {
 	}
 
-	protected String getActivityUrl() {
+	protected String getHistoryUrl() {
 		if (taskData != null) {
 			String taskId = taskData.getId();
 			String repositoryUrl = taskData.getRepositoryUrl();
@@ -364,7 +364,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			}
 		}
 
-		return super.getActivityUrl();
+		return super.getHistoryUrl();
 	}
 
 	@Override
