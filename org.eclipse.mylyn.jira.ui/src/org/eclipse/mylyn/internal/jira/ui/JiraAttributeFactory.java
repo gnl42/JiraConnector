@@ -46,7 +46,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	@Override
 	public RepositoryTaskAttribute createAttribute(String key) {
 		RepositoryTaskAttribute attribute = super.createAttribute(key);
-		attribute.putMetaDataValue(TYPE_KEY, JiraAttribute.valueById(attribute.getID()).getKey());
+		attribute.putMetaDataValue(TYPE_KEY, JiraAttribute.valueById(attribute.getId()).getKey());
 		return attribute;
 	}
 

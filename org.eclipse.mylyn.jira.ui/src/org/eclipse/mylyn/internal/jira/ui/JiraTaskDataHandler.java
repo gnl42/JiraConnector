@@ -215,7 +215,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			}
 			
 			for (RepositoryTaskAttribute attribute : links.values()) {
-				data.addAttribute(attribute.getID(), attribute);
+				data.addAttribute(attribute.getId(), attribute);
 			}
 		}
 
@@ -325,7 +325,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					attribute.addValue(value);
 				}
 			}
-			data.addAttribute(attribute.getID(), attribute);
+			data.addAttribute(attribute.getId(), attribute);
 		}
 
 		// TODO move into server configuration and populate lazily
@@ -334,7 +334,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			// avoid server round-trips
 			for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
 				if (!attribute.isReadOnly()) {
-					editableKeys.add(attribute.getID());
+					editableKeys.add(attribute.getId());
 				}
 			}			
 		} else {
@@ -345,7 +345,7 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 					for (RepositoryTaskAttribute attribute : editableAttributes) {
 						// System.err.println(" " + attribute.getID() + " : " +
 						// attribute.getName());
-						editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getID()));
+						editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getId()));
 					}
 				}
 			} catch (JiraInsufficientPermissionException ex) {
@@ -354,9 +354,9 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 		}
 
 		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
-			boolean editable = editableKeys.contains(attribute.getID().toLowerCase());
+			boolean editable = editableKeys.contains(attribute.getId().toLowerCase());
 			attribute.setReadOnly(!editable);
-			if (editable && !attributeFactory.getIsHidden(attribute.getID())) {
+			if (editable && !attributeFactory.getIsHidden(attribute.getId())) {
 				attribute.setHidden(false);
 			}
 
@@ -680,8 +680,8 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 
 		ArrayList<CustomField> customFields = new ArrayList<CustomField>();
 		for (RepositoryTaskAttribute attr : taskData.getAttributes()) {
-			if (attr.getID().startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
-				String id = attr.getID().substring(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX.length());
+			if (attr.getId().startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
+				String id = attr.getId().substring(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX.length());
 				customFields.add(new CustomField(id, attr.getMetaDataValue(JiraAttributeFactory.TYPE_KEY), attr
 						.getName(), attr.getValues()));
 			}

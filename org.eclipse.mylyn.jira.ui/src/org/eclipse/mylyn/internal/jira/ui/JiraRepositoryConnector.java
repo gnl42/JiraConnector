@@ -40,7 +40,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
-import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
@@ -152,8 +151,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						return Status.CANCEL_STATUS;
 
 					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-					String handle = RepositoryTaskHandleUtil.getHandle(repository.getUrl(), issue.getId());
-					RepositoryTaskData oldTaskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(handle);
+					RepositoryTaskData oldTaskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(repository.getUrl(), issue.getId());
 					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData));
 				}
 				return Status.OK_STATUS;
@@ -223,8 +221,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				}
 
 				monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-				String handle = RepositoryTaskHandleUtil.getHandle(repository.getUrl(), issue.getId());
-				RepositoryTaskData oldTaskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(handle);
+				RepositoryTaskData oldTaskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(repository.getUrl(), issue.getId());
 				RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData);
 				factory.createTask(taskData, new NullProgressMonitor());
 
