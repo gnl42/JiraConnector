@@ -14,7 +14,7 @@ import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.tasks.ui.editors.ITaskEditorFactory;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorFactory;
 import org.eclipse.mylyn.tasks.ui.editors.RepositoryTaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
@@ -25,7 +25,7 @@ import org.eclipse.ui.IEditorPart;
  * @author Mik Kersten
  * @author Steffen Pingel
  */
-public class JiraTaskEditorFactory implements ITaskEditorFactory {
+public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 
 	public boolean canCreateEditorFor(AbstractTask task) {
 		return task instanceof JiraTask;
