@@ -11,7 +11,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
+import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
@@ -20,7 +20,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	private TaskRepository repository;
 
-	private ITaskDataHandler dataHandler;
+	private AbstractTaskDataHandler dataHandler;
 
 	private JiraClient server;
 

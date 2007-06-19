@@ -30,7 +30,7 @@ import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
+import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
@@ -53,7 +53,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 	private AbstractRepositoryConnector connector;
 
-	private ITaskDataHandler dataHandler;
+	private AbstractTaskDataHandler dataHandler;
 	
 	private JiraClient server;
 

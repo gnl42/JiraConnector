@@ -46,7 +46,7 @@ import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.ITaskDataHandler;
+import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
@@ -61,7 +61,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  */
-public class JiraTaskDataHandler implements ITaskDataHandler {
+public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final String REASSIGN_OPERATION = "reassign";
 
