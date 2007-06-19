@@ -148,7 +148,7 @@ public class JiraTaskExternalizer extends DelegatingTaskExternalizer {
 			node.setAttribute(KEY_FILTER_CUSTOM_URL, customQuery.getUrl());
 		}
 
-		for (AbstractTask hit : query.getHits()) {
+		for (AbstractTask hit : query.getChildren()) {
 			try {
 				createQueryHitElement(hit, doc, node);
 			} catch (Exception e) {

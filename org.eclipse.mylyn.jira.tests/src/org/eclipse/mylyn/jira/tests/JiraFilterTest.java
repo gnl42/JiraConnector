@@ -107,12 +107,12 @@ public class JiraFilterTest extends TestCase {
 
 		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter);
 		taskList.addQuery(query);
-		assertTrue(query.getHits().size() == 0);
+		assertTrue(query.getChildren().size() == 0);
 
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, query, null, false);
 
-		assertTrue(query.getHits().size() > 0);
-		JiraTask hit = (JiraTask) query.getHits().iterator().next();
+		assertTrue(query.getChildren().size() > 0);
+		JiraTask hit = (JiraTask) query.getChildren().iterator().next();
 		assertTrue(hit.getSummary().length() > 0);
 	}
 
