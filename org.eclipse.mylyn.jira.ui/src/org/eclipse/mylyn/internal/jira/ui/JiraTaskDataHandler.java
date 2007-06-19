@@ -301,10 +301,13 @@ public class JiraTaskDataHandler implements ITaskDataHandler {
 			if (JiraAttachmentHandler.CONTEXT_ATTACHEMNT_FILENAME.equals(attachment.getName())) {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
 						AbstractRepositoryConnector.MYLAR_CONTEXT_DESCRIPTION);
+			} else if (JiraAttachmentHandler.CONTEXT_ATTACHEMNT_FILENAME_LEGACY.equals(attachment.getName())) {
+				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
+						AbstractRepositoryConnector.MYLAR_CONTEXT_DESCRIPTION_LEGACY);
 			} else {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, attachment.getName());
 			}
-
+			
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_OWNER, attachment.getAuthor());
 
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE, dateToString(attachment
