@@ -45,9 +45,9 @@ import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.ITaskCollector;
-import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
@@ -407,6 +407,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			StatusManager.log("Unable to update data for task of type " + repositoryTask.getClass().getName(),
 					this);
 		}
+	}
+
+	@Override
+	public boolean updateTaskFromQueryHit(TaskRepository repository, AbstractTask existingTask,
+			AbstractTask newTask) {
+		// updating of tasks is done by TaskFacotory which invokes updateFromTaskData()
+		return false;
 	}
 
 	private static PriorityLevel getMylarPriority(JiraClient client, String jiraPriority) {
