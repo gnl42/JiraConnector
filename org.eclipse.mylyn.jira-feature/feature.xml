@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.mylyn.jira_feature"
-      label="Mylyn Connector: Jira"
+      label="Mylyn Connector: Jira (Incubation)"
       version="2.0.0.v20070619-1930"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylyn">
