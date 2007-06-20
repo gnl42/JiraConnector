@@ -6,12 +6,12 @@
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylyn">
 
-   <description>
-      JIRA client integrated with Eclipse and Mylar, can be used standalone.
+   <description url="http://www.atlassian.com/software/jira">
+      Provides Task List integration, offline support and rich editing for the JIRA issue tracker.
    </description>
 
    <copyright>
-      Copyright (c) 2004 - 2006 Mylar project committers and others.
+      Copyright (c) 2004 - 2007 Mylyn project committers and others.
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
