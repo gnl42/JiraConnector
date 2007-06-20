@@ -281,7 +281,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			// XXX ugly because AbstractTaskEditor is using USER_OWNER
 			// instead of COMMENT_AUTHOR
-			taskComment.addAttribute(RepositoryTaskAttribute.USER_OWNER, createAttribute(comment.getAuthor()));
+			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_AUTHOR, createAuthorAttribute(comment.getAuthor()));
 
 			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, convertHtml(comment.getComment()));
 			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, dateToString(comment.getCreated()));
@@ -396,7 +396,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private RepositoryTaskAttribute createAttribute(String value) {
+	private RepositoryTaskAttribute createAuthorAttribute(String value) {
 		RepositoryTaskAttribute attr = attributeFactory.createAttribute(RepositoryTaskAttribute.COMMENT_AUTHOR);
 		attr.setHidden(true);
 		attr.setReadOnly(true);

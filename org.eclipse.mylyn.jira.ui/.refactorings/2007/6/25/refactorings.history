@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<session version="1.0">
+<refactoring comment="Rename method 'org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler.createAttribute(...)' to 'createAuthorAttribute'&#13;&#10;- Original project: 'org.eclipse.mylyn.jira.ui'&#13;&#10;- Original element: 'org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler.createAttribute(...)'&#13;&#10;- Renamed element: 'org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler.createAuthorAttribute(...)'&#13;&#10;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method 'createAttribute'" flags="589826" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;org.eclipse.mylyn.internal.jira.ui{JiraTaskDataHandler.java[JiraTaskDataHandler~createAttribute~QString;" name="createAuthorAttribute" references="true" stamp="1182377226171" version="1.0"/>
+</session>
