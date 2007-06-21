@@ -18,9 +18,9 @@
          name="JIRA Repository UI"
          overlayIcon="icons/eview16/overlay-jira.gif"/>
             
-      <externalizer 
+      <taskListFactory 
             class="org.eclipse.mylyn.internal.jira.ui.JiraTaskListFactory"
-            id="org.eclipse.mylyn.jira.tasklist.externalizer"/>
+            id="org.eclipse.mylyn.jira.tasklist.factory"/>
    </extension>  
 
    <extension
