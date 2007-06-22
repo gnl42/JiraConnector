@@ -649,37 +649,40 @@ public class RssContentHandler extends DefaultHandler {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
 				Version version = currentIssue.getProject().getVersion(currentElementText.toString());
-				if (version == null) {
-					throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
+				// TODO add better handling of unknown versions
+				if (version != null) {
+					// throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
+					if (currentReportedVersions == null) {
+						currentReportedVersions = new ArrayList<Version>();
+					}
+					currentReportedVersions.add(version);
 				}
-				if (currentReportedVersions == null) {
-					currentReportedVersions = new ArrayList<Version>();
-				}
-				currentReportedVersions.add(version);
 			} else if (FIX_VERSION.equals(localName)) {
 				if (currentIssue.getProject() == null) {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
 				Version version = currentIssue.getProject().getVersion(currentElementText.toString());
-				if (version == null) {
-					throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
+				// TODO add better handling of unknown versions
+				if (version != null) {
+					// throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
+					if (currentFixVersions == null) {
+						currentFixVersions = new ArrayList<Version>();
+					}
+					currentFixVersions.add(version);
 				}
-				if (currentFixVersions == null) {
-					currentFixVersions = new ArrayList<Version>();
-				}
-				currentFixVersions.add(version);
 			} else if (COMPONENT.equals(localName)) {
 				if (currentIssue.getProject() == null) {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
 				Component component = currentIssue.getProject().getComponent(currentElementText.toString());
-				if (component == null) {
-					throw new SAXException("No component with name '" + currentElementText.toString() + "' found");
+				// TODO add better handling of unknown components
+				if (component != null) {
+					// throw new SAXException("No component with name '" + currentElementText.toString() + "' found");
+					if (currentComponents == null) {
+						currentComponents = new ArrayList<Component>();
+					}
+					currentComponents.add(component);
 				}
-				if (currentComponents == null) {
-					currentComponents = new ArrayList<Component>();
-				}
-				currentComponents.add(component);
 			} else if (DUE.equals(localName)) {
 				currentIssue.setDue(convertToDate(currentElementText.toString()));
 			} else if (VOTES.equals(localName)) {
