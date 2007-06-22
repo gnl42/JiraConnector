@@ -217,6 +217,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(),
 						issue.getId());
 				if (!tasks.contains(task)) {
+					++n;
 					continue;
 				}
 
