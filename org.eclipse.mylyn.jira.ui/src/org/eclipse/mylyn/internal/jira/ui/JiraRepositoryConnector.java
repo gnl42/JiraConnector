@@ -41,12 +41,12 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
 import org.eclipse.mylyn.internal.tasks.ui.TaskFactory;
+import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
-import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.ITaskCollector;
 import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
@@ -89,12 +89,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public String getRepositoryType() {
+	public String getConnectorKind() {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
 	@Override
-	public IAttachmentHandler getAttachmentHandler() {
+	public AbstractAttachmentHandler getAttachmentHandler() {
 		return attachmentHandler;
 	}
 
@@ -172,7 +172,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		Date lastSyncDate = convertDate(dateString);
 		if (lastSyncDate == null) {
 			for (AbstractTask task : tasks) {
-				Date date = convertDate(task.getLastSyncDateStamp());
+				Date date = convertDate(task.getLastReadTimeStamp());
 				if (lastSyncDate == null || (date != null && date.before(lastSyncDate))) {
 					lastSyncDate = date;
 				}
@@ -287,7 +287,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public String getTaskWebUrl(String repositoryUrl, String taskId) {
+	public String getTaskUrl(String repositoryUrl, String taskId) {
 		return repositoryUrl + ISSUE_URL_PREFIX + taskId;
 	}
 
@@ -322,7 +322,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
 			task.setTaskKey(issue.getKey());
-			task.setTaskUrl(getTaskUrl(repositoryUrl, issue.getKey()));
+			task.setTaskUrl(getTaskUrlFromKey(repositoryUrl, issue.getKey()));
 			if (issue.getDescription() != null) {
 				task.setSummary(issue.getSummary());
 			}
@@ -335,7 +335,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task.setCompletionDate(null);
 		}
 		if (issue.getType() != null) {
-			task.setKind(issue.getType().getName());
+			task.setTaskKind(issue.getType().getName());
 		}
 		task.setPriority(getMylarPriority(issue.getPriority()).toString());
 
@@ -344,7 +344,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
-	public static String getTaskUrl(String repositoryUrl, String key) {
+	public static String getTaskUrlFromKey(String repositoryUrl, String key) {
 		return repositoryUrl + JiraRepositoryConnector.ISSUE_URL_PREFIX + key;
 	}
 
@@ -384,7 +384,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
-			jiraTask.setTaskUrl(getTaskUrl(repository.getUrl(), repositoryTask.getTaskKey()));
+			jiraTask.setTaskUrl(getTaskUrlFromKey(repository.getUrl(), repositoryTask.getTaskKey()));
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 			jiraTask.setPriority(getMylarPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());

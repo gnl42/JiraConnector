@@ -33,7 +33,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 
 		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(kind);
-		assertEquals(connector.getRepositoryType(), kind);
+		assertEquals(connector.getConnectorKind(), kind);
 
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 

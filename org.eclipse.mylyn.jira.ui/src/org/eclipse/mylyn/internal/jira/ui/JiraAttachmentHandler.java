@@ -25,9 +25,8 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.IAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.ITaskAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
@@ -37,9 +36,9 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 /**
  * @author Steffen Pingel
  */
-public class JiraAttachmentHandler implements IAttachmentHandler {
+public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 
-	public final static String CONTEXT_ATTACHEMNT_FILENAME = AbstractRepositoryConnector.MYLAR_CONTEXT_FILENAME;
+	public final static String CONTEXT_ATTACHEMNT_FILENAME = AbstractAttachmentHandler.MYLAR_CONTEXT_FILENAME;
 
 	public final static String CONTEXT_ATTACHEMNT_FILENAME_LEGACY = "mylar-context.zip";
 	

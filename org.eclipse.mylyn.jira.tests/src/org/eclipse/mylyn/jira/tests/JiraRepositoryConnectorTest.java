@@ -95,7 +95,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
 		connector = manager.getRepositoryConnector(kind);
-		assertEquals(connector.getRepositoryType(), kind);
+		assertEquals(connector.getConnectorKind(), kind);
 
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 
@@ -228,15 +228,15 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraTestUtils.writeFile(sourceContextFile, "Mylar".getBytes());
 		sourceContextFile.deleteOnExit();
 
-		assertTrue(connector.attachContext(repository, task, "", new NullProgressMonitor()));
+		assertTrue(connector.getAttachmentHandler().attachContext(repository, task, "", new NullProgressMonitor()));
 		
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 
-		Set<RepositoryAttachment> contextAttachments = connector.getContextAttachments(repository, task);
+		Set<RepositoryAttachment> contextAttachments = connector.getAttachmentHandler().getContextAttachments(repository, task);
 		assertEquals(1, contextAttachments.size());
 		
 		RepositoryAttachment attachment = contextAttachments.iterator().next();
-		assertTrue(connector.retrieveContext(repository, task, attachment, System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
+		assertTrue(connector.getAttachmentHandler().retrieveContext(repository, task, attachment, System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
 	}
 	
 }

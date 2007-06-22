@@ -53,19 +53,19 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 		List<AbstractTaskContainer> legendItems = new ArrayList<AbstractTaskContainer>();
 		
 		JiraTask bug = new JiraTask("", "bug", "Bug");
-		bug.setKind(JiraTask.Kind.BUG.toString());
+		bug.setTaskKind(JiraTask.Kind.BUG.toString());
 		legendItems.add(bug);
 
 		JiraTask feature = new JiraTask("", "feature", "Feature");
-		feature.setKind(JiraTask.Kind.FEATURE.toString());
+		feature.setTaskKind(JiraTask.Kind.FEATURE.toString());
 		legendItems.add(feature);
 
 		JiraTask improvement = new JiraTask("", "improvement", "Improvement");
-		improvement.setKind(JiraTask.Kind.IMPROVEMENT.toString());
+		improvement.setTaskKind(JiraTask.Kind.IMPROVEMENT.toString());
 		legendItems.add(improvement);
 
 		JiraTask task = new JiraTask("", "task", "Task");
-		task.setKind(JiraTask.Kind.TASK.toString());
+		task.setTaskKind(JiraTask.Kind.TASK.toString());
 		legendItems.add(task);
 		
 		return legendItems;
@@ -157,7 +157,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 			String taskId = taskIds[i];
 			int startRegion = text.indexOf(taskId, startPos);
 			links[i] = new JiraHyperLink(new Region(regionOffset + startRegion, taskId.length()), repository, taskId,
-					connector.getTaskWebUrl(repository.getUrl(), taskId));
+					connector.getTaskUrl(repository.getUrl(), taskId));
 		}
 		return links;
 	}

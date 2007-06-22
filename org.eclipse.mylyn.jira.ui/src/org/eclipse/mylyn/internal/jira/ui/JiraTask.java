@@ -54,7 +54,7 @@ public class JiraTask extends AbstractTask {
 	}
 
 	@Override
-	public String getRepositoryKind() {
+	public String getConnectorKind() {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 

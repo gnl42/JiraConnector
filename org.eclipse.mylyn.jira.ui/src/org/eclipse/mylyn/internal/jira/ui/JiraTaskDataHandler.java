@@ -43,8 +43,8 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
 import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
+import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
@@ -300,10 +300,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			if (JiraAttachmentHandler.CONTEXT_ATTACHEMNT_FILENAME.equals(attachment.getName())) {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
-						AbstractRepositoryConnector.MYLAR_CONTEXT_DESCRIPTION);
+						AbstractAttachmentHandler.MYLAR_CONTEXT_DESCRIPTION);
 			} else if (JiraAttachmentHandler.CONTEXT_ATTACHEMNT_FILENAME_LEGACY.equals(attachment.getName())) {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
-						AbstractRepositoryConnector.MYLAR_CONTEXT_DESCRIPTION_LEGACY);
+						AbstractAttachmentHandler.MYLAR_CONTEXT_DESCRIPTION_LEGACY);
 			} else {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, attachment.getName());
 			}
@@ -359,7 +359,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
 			boolean editable = editableKeys.contains(attribute.getId().toLowerCase());
 			attribute.setReadOnly(!editable);
-			if (editable && !attributeFactory.getIsHidden(attribute.getId())) {
+			if (editable && !attributeFactory.isHidden(attribute.getId())) {
 				attribute.setHidden(false);
 			}
 

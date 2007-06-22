@@ -1,2 +1,3 @@
 1182377226171	Rename method 'createAttribute'
 1182400209302	Rename type 'JiraTaskExternalizer'
+1182551914715	Rename method 'getTaskUrl'

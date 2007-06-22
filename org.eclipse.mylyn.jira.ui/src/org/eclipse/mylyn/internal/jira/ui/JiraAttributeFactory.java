@@ -51,7 +51,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	}
 
 	@Override
-	public boolean getIsHidden(String key) {
+	public boolean isHidden(String key) {
 		return JiraAttribute.valueById(key).isHidden();
 	}
 
