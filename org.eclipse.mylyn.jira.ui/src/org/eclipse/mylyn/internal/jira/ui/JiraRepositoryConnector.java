@@ -128,12 +128,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				} catch (JiraException e) {
 					return JiraCorePlugin.toStatus(repository, e);
 				} catch (InvalidJiraQueryException e) {
-					return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0,
+					return new Status(IStatus.ERROR, TasksUiPlugin.ID_PLUGIN, 0,
 							"The query parameters do not match the repository configuration, please check the query properties; "
 							+ e.getMessage(), null);
 				}
 			} else {
-				return new Status(IStatus.ERROR, TasksUiPlugin.PLUGIN_ID, 0, //
+				return new Status(IStatus.ERROR, TasksUiPlugin.ID_PLUGIN, 0, //
 						"Invalid query type: " + repositoryQuery.getClass(), null);
 			}
 

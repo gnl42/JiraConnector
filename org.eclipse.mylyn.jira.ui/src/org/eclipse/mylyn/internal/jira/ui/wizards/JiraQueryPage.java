@@ -1490,7 +1490,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		return true;
 	}
 
-	public void saveWidgetValues() {
+	public void saveState() {
 		String repoId = "." + repository.getUrl();
 		IDialogSettings settings = getDialogSettings();
 		applyChanges();
@@ -1500,7 +1500,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	@Override
 	public boolean performAction() {
 		if (inSearchContainer()) {
-			saveWidgetValues();
+			saveState();
 		}
 
 		return super.performAction();
