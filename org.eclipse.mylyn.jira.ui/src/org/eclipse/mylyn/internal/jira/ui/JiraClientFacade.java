@@ -104,14 +104,14 @@ public class JiraClientFacade implements ITaskRepositoryListener {
 	}
 
 	public synchronized void repositoryAdded(TaskRepository repository) {
-		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
+		if (repository.getConnectorKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
 			assert clientManager.getClient(repository.getUrl()) == null;
 			getJiraClient(repository);
 		}
 	}
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
-		if (repository.getKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
+		if (repository.getConnectorKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
 			JiraClient server = clientManager.getClient(repository.getUrl());
 			removeServer(server);
 		}

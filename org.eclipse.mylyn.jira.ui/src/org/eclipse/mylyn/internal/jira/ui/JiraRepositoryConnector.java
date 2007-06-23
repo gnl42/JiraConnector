@@ -168,7 +168,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public boolean markStaleTasks(TaskRepository repository, Set<AbstractTask> tasks,
 			IProgressMonitor monitor) throws CoreException {
-		String dateString = repository.getSyncTimeStamp();
+		String dateString = repository.getSynchronizationTimeStamp();
 		Date lastSyncDate = convertDate(dateString);
 		if (lastSyncDate == null) {
 			for (AbstractTask task : tasks) {
@@ -231,7 +231,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				}
 			}
 
-			repository.setSyncTimeStamp( // 
+			repository.setSynchronizationTimeStamp( // 
 			new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(lastSyncDate));
 
 			return true;
@@ -255,7 +255,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public String getSynchronizationTimestamp(TaskRepository repository, Set<AbstractTask> changedTasks) {
 		// the timestamp is updated in markStaleTasks()
-		return repository.getSyncTimeStamp();
+		return repository.getSynchronizationTimeStamp();
 	}
 
 	@Override
@@ -392,7 +392,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
 						AbstractAttributeFactory factory = getTaskDataHandler().getAttributeFactory(
-								repository.getUrl(), repository.getKind(), AbstractTask.DEFAULT_TASK_KIND);
+								repository.getUrl(), repository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
 						String dateString = taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
 						jiraTask.setCompletionDate(factory.getDateForAttributeType(
 								RepositoryTaskAttribute.DATE_MODIFIED, dateString));

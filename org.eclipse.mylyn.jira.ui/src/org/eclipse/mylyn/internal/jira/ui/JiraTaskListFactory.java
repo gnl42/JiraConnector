@@ -18,10 +18,11 @@ import java.util.Set;
 
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
+import org.eclipse.mylyn.internal.tasks.core.TaskExternalizationException;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskListFactory;
-import org.eclipse.mylyn.tasks.core.TaskExternalizationException;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.w3c.dom.Element;
@@ -76,7 +77,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 	}
 
 	@Override
-	public AbstractRepositoryQuery createQuery(String repositoryUrl, String queryString, String label, Element element) throws TaskExternalizationException {
+	public AbstractRepositoryQuery createQuery(String repositoryUrl, String queryString, String label, Element element) {
 		String custom = element.getAttribute(KEY_FILTER_CUSTOM);
 		String customUrl = element.getAttribute(KEY_FILTER_CUSTOM_URL);
 		AbstractRepositoryQuery query;
@@ -84,8 +85,9 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 			// TODO remove this at some point
 			FilterDefinition filter = decodeFilter(custom);
 			if (filter == null) {
-				throw new TaskExternalizationException("Failed to restore custom query "
-						+ element.getAttribute(KEY_FILTER_ID));
+				StatusManager.log("Failed to restore custom query "
+						+ element.getAttribute(KEY_FILTER_ID), this);
+				return null;
 			}
 			filter.setName(element.getAttribute(KEY_FILTER_ID));
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
@@ -147,7 +149,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 	}
 
 	@Override
-	public AbstractTask createTask(String repositoryUrl, String taskId, String summary, Element element) throws TaskExternalizationException {
+	public AbstractTask createTask(String repositoryUrl, String taskId, String summary, Element element) {
 		JiraTask task = new JiraTask(repositoryUrl, taskId, summary);
 
 		if (element.hasAttribute(KEY_KEY)) {

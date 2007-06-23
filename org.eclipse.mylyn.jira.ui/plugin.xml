@@ -14,7 +14,7 @@
             type="jira"/>
 	  <connectorUi
          brandingIcon="icons/eview16/jira-logo.gif"
-         class="org.eclipse.mylyn.internal.jira.ui.JiraRepositoryUi"
+         class="org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi"
          name="JIRA Repository UI"
          overlayIcon="icons/eview16/overlay-jira.gif"/>
             

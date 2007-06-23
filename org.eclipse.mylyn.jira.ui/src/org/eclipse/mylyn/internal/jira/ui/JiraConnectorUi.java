@@ -37,7 +37,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  */
-public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
+public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	public String getTaskKindLabel(AbstractTask repositoryTask) {
 		return "Issue";
@@ -112,14 +112,8 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 		return new NewJiraTaskWizard(taskRepository);
 	}
 
-
 	@Override
-	public boolean hasRichEditor() {
-		return true;
-	}
-
-	@Override
-	public String getRepositoryType() {
+	public String getConnectorKind() {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}
 
@@ -131,7 +125,7 @@ public class JiraRepositoryUi extends AbstractRepositoryConnectorUi {
 	@Override
 	public IHyperlink[] findHyperlinks(TaskRepository repository, String text, int lineOffset, int regionOffset) {
 		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				repository.getKind());
+				repository.getConnectorKind());
 		
 		int startPos = lineOffset;
 		while (startPos > 0) {
