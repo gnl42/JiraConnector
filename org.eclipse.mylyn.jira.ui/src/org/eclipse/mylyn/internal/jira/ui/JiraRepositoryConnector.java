@@ -108,6 +108,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return true;
 	}
 
+	@SuppressWarnings("restriction")
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
 			IProgressMonitor monitor, ITaskCollector resultCollector) {
@@ -165,6 +166,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	@Override
 	public boolean markStaleTasks(TaskRepository repository, Set<AbstractTask> tasks,
 			IProgressMonitor monitor) throws CoreException {
