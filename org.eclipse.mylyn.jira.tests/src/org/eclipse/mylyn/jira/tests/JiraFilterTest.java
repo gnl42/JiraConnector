@@ -120,6 +120,7 @@ public class JiraFilterTest extends TestCase {
 		customQuery(JiraTestConstants.JIRA_39_URL);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void customQuery(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
@@ -146,6 +147,7 @@ public class JiraFilterTest extends TestCase {
 		customQueryWithoutRepositoryConfiguraton(JiraTestConstants.JIRA_39_URL);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void customQueryWithoutRepositoryConfiguraton(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 

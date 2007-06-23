@@ -151,7 +151,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						return Status.CANCEL_STATUS;
 
 					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(repository.getUrl(), issue.getId());
+					RepositoryTaskData oldTaskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(repository.getUrl(), issue.getId());
 					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData));
 				}
 				return Status.OK_STATUS;
@@ -222,7 +222,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				}
 
 				monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-				RepositoryTaskData oldTaskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(repository.getUrl(), issue.getId());
+				RepositoryTaskData oldTaskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(repository.getUrl(), issue.getId());
 				RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData);
 				factory.createTask(taskData, new NullProgressMonitor());
 

@@ -105,7 +105,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		attachmentHandler.uploadAttachment(repository, task, attachment, "", new NullProgressMonitor());
 
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
-		RepositoryTaskData taskData = TasksUiPlugin.getDefault().getTaskDataManager().getNewTaskData(task.getRepositoryUrl(), task.getTaskId());
+		RepositoryTaskData taskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(task.getRepositoryUrl(), task.getTaskId());
 		assertNotNull(taskData);
 		assertEquals(1, taskData.getAttachments().size());
 

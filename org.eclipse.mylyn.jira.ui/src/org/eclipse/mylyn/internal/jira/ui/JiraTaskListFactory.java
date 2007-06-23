@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
-import org.eclipse.mylyn.internal.tasks.core.TaskExternalizationException;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskListFactory;
@@ -112,8 +111,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 
 	@Override
 	public void setAdditionalAttributes(AbstractRepositoryQuery query, Element node) {
-		String queryTagName = getQueryElementName(query);
-
+//		String queryTagName = getQueryElementName(query);
 		if (query instanceof JiraRepositoryQuery) {
 			NamedFilter filter = ((JiraRepositoryQuery) query).getNamedFilter();
 			node.setAttribute(KEY_FILTER_ID, filter.getId());
