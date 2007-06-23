@@ -18,7 +18,7 @@ import java.util.Set;
 
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
+import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskListFactory;
@@ -84,7 +84,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 			// TODO remove this at some point
 			FilterDefinition filter = decodeFilter(custom);
 			if (filter == null) {
-				StatusManager.log("Failed to restore custom query "
+				StatusHandler.log("Failed to restore custom query "
 						+ element.getAttribute(KEY_FILTER_ID), this);
 				return null;
 			}

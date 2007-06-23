@@ -60,7 +60,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
+import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.DatePicker;
@@ -1296,7 +1296,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 											+ "Please check repository settings in the Task Repositories view.", //
 									e.getMessage());
 							showWarning(msg);
-							StatusManager.fail(e, msg, false);
+							StatusHandler.fail(e, msg, false);
 						}
 					}
 

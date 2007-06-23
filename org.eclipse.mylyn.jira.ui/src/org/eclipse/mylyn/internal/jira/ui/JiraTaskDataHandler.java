@@ -42,7 +42,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
 import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
-import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
+import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -621,7 +621,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					comp.setName(compStr);
 					components.add(comp);
 				} else {
-					StatusManager.fail(null, "Error setting component for JIRA issue. Component id is null: "
+					StatusHandler.fail(null, "Error setting component for JIRA issue. Component id is null: "
 							+ compStr, false);
 				}
 			}
@@ -638,7 +638,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					version.setName(fixStr);
 					fixversions.add(version);
 				} else {
-					StatusManager.fail(null, "Error setting fix version for JIRA issue. Version id is null: "
+					StatusHandler.fail(null, "Error setting fix version for JIRA issue. Version id is null: "
 							+ fixStr, false);
 				}
 			}
@@ -656,7 +656,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					version.setName(fixStr);
 					affectsversions.add(version);
 				} else {
-					StatusManager.fail(null, "Error setting affects version for JIRA issue. Version id is null: "
+					StatusHandler.fail(null, "Error setting affects version for JIRA issue. Version id is null: "
 							+ fixStr, false);
 				}
 			}

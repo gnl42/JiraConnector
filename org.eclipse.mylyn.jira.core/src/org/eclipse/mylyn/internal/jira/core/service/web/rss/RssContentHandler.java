@@ -28,7 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Subtask;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
+import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -739,7 +739,7 @@ public class RssContentHandler extends DefaultHandler {
 		try {
 			return new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(value);
 		} catch (ParseException e) {
-			StatusManager.log(e, "Error while parsing date string " + value);
+			StatusHandler.log(e, "Error while parsing date string " + value);
 			return null;
 		}
 	}

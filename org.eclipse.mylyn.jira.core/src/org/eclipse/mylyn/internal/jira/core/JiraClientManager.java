@@ -34,7 +34,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
-import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
+import org.eclipse.mylyn.monitor.core.StatusHandler;
 
 /**
  * Note: This class is not thread safe.
@@ -88,7 +88,7 @@ public class JiraClientManager {
 					clientDataByUrl.put(url, data);					
 				}
 			} catch (Throwable e) {
-				StatusManager.log("Reset JIRA repository configuration cache due to format update", false);
+				StatusHandler.log("Reset JIRA repository configuration cache due to format update", false);
 			} finally {
 				if (in != null) {
 					try {
@@ -118,7 +118,7 @@ public class JiraClientManager {
 				out.writeObject(clientDataByUrl.get(url));	
 			}
 		} catch (Throwable e) {
-			StatusManager.fail(e, "Error writing JIRA repository configuration cache", false);
+			StatusHandler.fail(e, "Error writing JIRA repository configuration cache", false);
 		} finally {
 			if (out != null) {
 				try {

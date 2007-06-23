@@ -30,7 +30,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
-import org.eclipse.mylyn.internal.monitor.core.util.StatusManager;
+import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -185,7 +185,7 @@ public class JiraProjectPage extends WizardPage {
 											+ "Please check repository settings in the Task Repositories view.", //
 									e.getMessage());
 							showWarning(msg);
-							StatusManager.fail(e, msg, false);
+							StatusHandler.fail(e, msg, false);
 						} finally {
 							monitor.done();
 						}
