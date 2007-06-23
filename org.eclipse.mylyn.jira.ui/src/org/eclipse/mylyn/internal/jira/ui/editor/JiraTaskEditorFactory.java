@@ -59,7 +59,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND,
 				jiraTask.getRepositoryUrl());
 		try {
-			return new RepositoryTaskEditorInput(repository, jiraTask.getTaskId(), jiraTask.getTaskUrl());
+			return new RepositoryTaskEditorInput(repository, jiraTask.getTaskId(), jiraTask.getUrl());
 		} catch (Exception e) {
 			StatusManager.fail(e, "Could not create JIRA editor input", true);
 		}

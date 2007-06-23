@@ -88,7 +88,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		filter.setName("f-name");
 		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter);
 		taskList.addQuery(query);
-		query.setDescription("q-name");
+		query.setHandleIdentifier("q-name");
 
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
@@ -106,7 +106,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		filter.setName("f-name");
 		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
 		taskList.addQuery(query);
-		query.setDescription("q-name");
+		query.setHandleIdentifier("q-name");
 
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
@@ -134,7 +134,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testJiraTaskSave() {
 		JiraTask jiraTask = new JiraTask(SERVER_URL+"testSave", TEST_TASK, TEST_LABEL);
 		String testUrl = "http://foo";
-		jiraTask.setTaskUrl(testUrl);
+		jiraTask.setUrl(testUrl);
 		manager.getTaskList().moveToContainer(jiraTask, manager.getTaskList().getDefaultCategory());
 
 		manager.saveTaskList();
@@ -148,7 +148,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 			if (currTask instanceof JiraTask && ((JiraTask)currTask).getRepositoryUrl().equals(SERVER_URL+"testSave")) {
 				taskFound = true;
 				// Check that the URL of the Jira task is it's handle
-				assertEquals(testUrl, currTask.getTaskUrl());
+				assertEquals(testUrl, currTask.getUrl());
 				break;
 			}
 		}

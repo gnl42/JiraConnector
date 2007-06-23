@@ -137,8 +137,8 @@ public class JiraFilterTest extends TestCase {
 		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository));
 
 		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
-		assertEquals(1, hitCollector.getTaskHits().size());
-		assertEquals(issue.getSummary(), hitCollector.getTaskHits().iterator().next().getSummary());
+		assertEquals(1, hitCollector.getTasks().size());
+		assertEquals(issue.getSummary(), hitCollector.getTasks().iterator().next().getSummary());
 		//assertEquals(PriorityLevel.P1.toString(), hitCollector.getTaskDataHits().iterator().next().getPriority());
 	}
 
@@ -165,14 +165,14 @@ public class JiraFilterTest extends TestCase {
 		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
 		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository));
 		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
-		assertEquals(1, hitCollector.getTaskHits().size());
-		assertEquals(issue2.getSummary(), hitCollector.getTaskHits().iterator().next().getSummary());
+		assertEquals(1, hitCollector.getTasks().size());
+		assertEquals(issue2.getSummary(), hitCollector.getTasks().iterator().next().getSummary());
 
 		hitCollector = new QueryHitCollector(new TaskFactory(repository));
 		JiraClientFacade.getDefault().clearClientsAndConfigurationData();
 		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
-		assertEquals(1, hitCollector.getTaskHits().size());
-		assertEquals(issue2.getSummary(), hitCollector.getTaskHits().iterator().next().getSummary());
+		assertEquals(1, hitCollector.getTasks().size());
+		assertEquals(issue2.getSummary(), hitCollector.getTasks().iterator().next().getSummary());
 	}
 
 //	private class MockQueryHitCollector extends QueryHitCollector {

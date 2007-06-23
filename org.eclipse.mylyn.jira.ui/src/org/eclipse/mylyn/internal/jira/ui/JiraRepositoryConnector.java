@@ -322,7 +322,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
 		if (issue.getKey() != null) {
 			task.setTaskKey(issue.getKey());
-			task.setTaskUrl(getTaskUrlFromKey(repositoryUrl, issue.getKey()));
+			task.setUrl(getTaskUrlFromKey(repositoryUrl, issue.getKey()));
 			if (issue.getDescription() != null) {
 				task.setSummary(issue.getSummary());
 			}
@@ -384,7 +384,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
-			jiraTask.setTaskUrl(getTaskUrlFromKey(repository.getUrl(), repositoryTask.getTaskKey()));
+			jiraTask.setUrl(getTaskUrlFromKey(repository.getUrl(), repositoryTask.getTaskKey()));
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 			jiraTask.setPriority(getMylarPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
