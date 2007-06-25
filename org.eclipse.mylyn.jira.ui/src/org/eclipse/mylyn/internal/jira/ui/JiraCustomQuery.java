@@ -110,6 +110,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		this.encoding = encoding;
 	}
 
+	@Override
 	public String getRepositoryKind() {
 		return JiraUiPlugin.REPOSITORY_KIND;
 	}

@@ -218,6 +218,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		this(repository, null);
 	}
 
+	@Override
 	public void createControl(final Composite parent) {
 		Composite c = null;
 
@@ -316,6 +317,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 				issueType.setLabelProvider(new LabelProvider() {
 
+					@Override
 					public String getText(Object element) {
 						if (element instanceof Placeholder) {
 							return ((Placeholder) element).getText();
@@ -345,6 +347,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 				status.setLabelProvider(new LabelProvider() {
 
+					@Override
 					public String getText(Object element) {
 						if (element instanceof Placeholder) {
 							return ((Placeholder) element).getText();
@@ -374,6 +377,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 				resolution.setLabelProvider(new LabelProvider() {
 
+					@Override
 					public String getText(Object element) {
 						if (element instanceof Placeholder) {
 							return ((Placeholder) element).getText();
@@ -403,6 +407,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 				priority.setLabelProvider(new LabelProvider() {
 
+					@Override
 					public String getText(Object element) {
 						if (element instanceof Placeholder) {
 							return ((Placeholder) element).getText();
@@ -445,6 +450,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		{
 			SelectionAdapter selectionAdapter = new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// validatePage();
 				}
@@ -496,6 +502,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			});
 
 			reporterType.setLabelProvider(new LabelProvider() {
+				@Override
 				public String getText(Object element) {
 					return ((Placeholder) element).getText();
 				}
@@ -540,6 +547,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 			assigneeType.setLabelProvider(new LabelProvider() {
 
+				@Override
 				public String getText(Object element) {
 					return ((Placeholder) element).getText();
 				}
@@ -761,6 +769,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		project.getControl().setLayoutData(gridData);
 
 		project.setLabelProvider(new LabelProvider() {
+			@Override
 			public String getText(Object element) {
 				if (element instanceof Placeholder) {
 					return ((Placeholder) element).getText();
@@ -1467,6 +1476,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		loadFromWorkingCopy();
 	}
 
+	@Override
 	public IDialogSettings getDialogSettings() {
 		IDialogSettings settings = JiraUiPlugin.getDefault().getDialogSettings();
 		IDialogSettings dialogSettings = settings.getSection(PAGE_NAME);
@@ -1490,6 +1500,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		return true;
 	}
 
+	@Override
 	public void saveState() {
 		String repoId = "." + repository.getUrl();
 		IDialogSettings settings = getDialogSettings();
@@ -1586,6 +1597,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 	}
 
+	@Override
 	public AbstractRepositoryQuery getQuery() {
 		this.applyChanges();
 
