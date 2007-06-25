@@ -339,12 +339,14 @@ public class RssContentHandler extends DefaultHandler {
 		this.collector = collector;
 	}
 
+	@Override
 	public void startDocument() throws SAXException {
 		state = START;
 		currentElementText = new StringBuffer(256);
 		collector.start();
 	}
 
+	@Override
 	public void endDocument() throws SAXException {
 		if (state != START) {
 			// System.err.println("Document ended abnormally");
@@ -354,6 +356,7 @@ public class RssContentHandler extends DefaultHandler {
 		currentElementText = null;
 	}
 
+	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		currentElementText.setLength(0);
 		if (collector.isCancelled()) {
@@ -490,6 +493,7 @@ public class RssContentHandler extends DefaultHandler {
 		}
 	}
 
+	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		switch (state) {
 		case IN_SUBTASKS:
@@ -727,6 +731,7 @@ public class RssContentHandler extends DefaultHandler {
 		}
 	}
 
+	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		currentElementText.append(ch, start, length);
 	}

@@ -172,6 +172,7 @@ public class Project implements Serializable {
 		return this.versions;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -184,10 +185,12 @@ public class Project implements Serializable {
 		return this.name.equals(that.name);
 	}
 
+	@Override
 	public int hashCode() {
 		return name.hashCode();
 	}
 
+	@Override
 	public String toString() {
 		return this.name;
 	}

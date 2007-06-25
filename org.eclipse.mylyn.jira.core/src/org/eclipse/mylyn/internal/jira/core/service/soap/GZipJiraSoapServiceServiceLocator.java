@@ -48,6 +48,7 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 	 * 
 	 * @see org.apache.axis.client.Service#createCall()
 	 */
+	@Override
 	public Call createCall() throws ServiceException {
 		Call call = super.createCall();
 		// JIRA does not accept compressed SOAP messages: see bug 175915

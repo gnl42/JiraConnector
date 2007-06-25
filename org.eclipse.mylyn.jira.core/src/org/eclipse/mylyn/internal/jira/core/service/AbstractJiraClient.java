@@ -288,6 +288,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 	public abstract ServerInfo getServerInfoRemote() throws JiraException;
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AbstractJiraClient)  {
 			return getBaseUrl().equals(((AbstractJiraClient) obj).getBaseUrl());
@@ -295,10 +296,12 @@ public abstract class AbstractJiraClient implements JiraClient {
 		return false;
 	}
 
+	@Override
 	public int hashCode() {
 		return getBaseUrl().hashCode();
 	}
 
+	@Override
 	public String toString() {
 		return getBaseUrl();
 	}

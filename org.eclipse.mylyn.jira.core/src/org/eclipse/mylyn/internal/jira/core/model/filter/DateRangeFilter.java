@@ -41,6 +41,7 @@ public class DateRangeFilter extends DateFilter {
 	 * 
 	 * @see com.gbst.jira.core.model.filter.DateFilter#copy(com.gbst.jira.core.model.filter.DateFilter)
 	 */
+	@Override
 	DateFilter copy() {
 		return new DateRangeFilter(fromDate, toDate);
 	}

@@ -334,6 +334,7 @@ public class Issue implements Serializable {
 		this.url = url;
 	}
 
+	@Override
 	public String toString() {
 		return this.key + " " + this.summary;
 	}

@@ -79,6 +79,7 @@ public class JiraWebSession {
 				this.responseBody = responseBody;
 			}
 			
+			@Override
 			public String toString() {
 				StringBuilder sb = new StringBuilder("Request: ");
 				sb.append(statusCode).append(' ').append(url).append('\n');
@@ -95,7 +96,7 @@ public class JiraWebSession {
 		
 		String url = baseUrl + "/login.jsp";
 		for (int i = 0; i < MAX_REDIRECTS; i++) {
-			PostMethod login = new PostMethod(url); //$NON-NLS-1$
+			PostMethod login = new PostMethod(url); 
 			login.setFollowRedirects(false);
 			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 			login.addParameter("os_username", server.getUserName()); //$NON-NLS-1$

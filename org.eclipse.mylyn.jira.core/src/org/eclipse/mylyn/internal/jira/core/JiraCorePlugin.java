@@ -53,6 +53,7 @@ public class JiraCorePlugin extends Plugin {
 	/**
 	 * This method is called upon plug-in activation
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		File serverCache = getStateLocation().append("serverCache").toFile(); //$NON-NLS-1$
@@ -89,6 +90,7 @@ public class JiraCorePlugin extends Plugin {
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 

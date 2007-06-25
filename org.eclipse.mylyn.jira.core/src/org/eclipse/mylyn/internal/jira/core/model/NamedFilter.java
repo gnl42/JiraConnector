@@ -74,6 +74,7 @@ public class NamedFilter implements Query, Serializable {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return this.name;
 	}

@@ -22,6 +22,7 @@ public class NobodyFilter extends UserFilter {
 	 * 
 	 * @see com.gbst.jira.core.model.filter.UserFilter#copy()
 	 */
+	@Override
 	UserFilter copy() {
 		return new NobodyFilter();
 	}

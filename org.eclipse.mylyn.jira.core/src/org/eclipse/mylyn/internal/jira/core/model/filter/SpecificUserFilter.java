@@ -32,6 +32,7 @@ public class SpecificUserFilter extends UserFilter {
 	 * 
 	 * @see com.gbst.jira.core.model.filter.UserFilter#copy()
 	 */
+	@Override
 	UserFilter copy() {
 		return new SpecificUserFilter(user);
 	}

@@ -76,6 +76,7 @@ public class Attachment implements Serializable {
 		this.created = created;
 	}
 	
+	@Override
 	public String toString() {
 		return this.name;
 	}

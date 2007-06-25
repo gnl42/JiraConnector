@@ -76,6 +76,7 @@ public class ServerInfo implements Serializable {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return this.baseUrl + " - Jira " + this.edition + " " + this.version + "#" + this.buildNumber + " ("
 				+ DateFormat.getDateInstance(DateFormat.SHORT).format(this.buildDate) + ")";

@@ -67,6 +67,7 @@ public class IssueType implements Serializable {
 		this.name = name;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -79,10 +80,12 @@ public class IssueType implements Serializable {
 		return this.id.equals(that.id);
 	}
 
+	@Override
 	public int hashCode() {
 		return id.hashCode();
 	}
 
+	@Override
 	public String toString() {
 		return this.name;
 	}

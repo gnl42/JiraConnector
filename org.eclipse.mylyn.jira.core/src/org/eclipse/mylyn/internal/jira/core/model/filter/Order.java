@@ -41,6 +41,7 @@ public class Order implements Serializable {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return "order by " + field.toString() + " " + (this.ascending ? "asc" : "desc"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
@@ -85,6 +86,7 @@ public class Order implements Serializable {
 		 * 
 		 * @see java.lang.Object#toString()
 		 */
+		@Override
 		public String toString() {
 			return this.fieldName;
 		}

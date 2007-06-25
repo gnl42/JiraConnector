@@ -97,6 +97,7 @@ public interface JiraClient {
 	 *             you need to check if the credentials are valid, call
 	 *             {@link org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
 	 */
+	@Deprecated
 	void login() throws JiraException;
 
 	/**

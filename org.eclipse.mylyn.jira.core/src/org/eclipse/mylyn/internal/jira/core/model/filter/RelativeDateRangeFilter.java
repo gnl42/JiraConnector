@@ -74,6 +74,7 @@ public class RelativeDateRangeFilter extends DateFilter {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("from "); //$NON-NLS-1$
@@ -96,6 +97,7 @@ public class RelativeDateRangeFilter extends DateFilter {
 	 * 
 	 * @see com.gbst.jira.core.model.filter.DateFilter#copy()
 	 */
+	@Override
 	DateFilter copy() {
 		return new RelativeDateRangeFilter(this.previousRangeType, previousCount, nextRangeType, nextCount);
 	}
@@ -126,6 +128,7 @@ public class RelativeDateRangeFilter extends DateFilter {
 		 * 
 		 * @see java.lang.Object#toString()
 		 */
+		@Override
 		public String toString() {
 			if (HOUR.equals(this)) {
 				return "h"; //$NON-NLS-1$

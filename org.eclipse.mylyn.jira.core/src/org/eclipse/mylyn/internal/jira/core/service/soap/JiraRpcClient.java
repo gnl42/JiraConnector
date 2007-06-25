@@ -154,7 +154,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public Component[] getComponentsRemote(final String projectKey) throws JiraException {
+    @Override
+	public Component[] getComponentsRemote(final String projectKey) throws JiraException {
         return call(new RemoteRunnable<Component[]>() {
             public Component[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getComponents(loginToken.getCurrentValue(), projectKey));
@@ -175,7 +176,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public ServerInfo getServerInfoRemote() throws JiraException {
+    @Override
+	public ServerInfo getServerInfoRemote() throws JiraException {
         return call(new RemoteRunnable<ServerInfo>() {
             public ServerInfo run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getServerInfo(loginToken.getCurrentValue()));
@@ -280,7 +282,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         return issueService.createIssue(issue);
     }
 
-    public Project[] getProjectsRemote() throws JiraException {
+    @Override
+	public Project[] getProjectsRemote() throws JiraException {
         return call(new RemoteRunnable<Project[]>() {
             public Project[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getProjects(loginToken.getCurrentValue()));
@@ -288,7 +291,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public Project[] getProjectsRemoteNoSchemes() throws JiraException {
+    @Override
+	public Project[] getProjectsRemoteNoSchemes() throws JiraException {
         return call(new RemoteRunnable<Project[]>() {
             public Project[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getProjectsNoSchemes(loginToken.getCurrentValue()));
@@ -296,7 +300,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public Status[] getStatusesRemote() throws JiraException {
+    @Override
+	public Status[] getStatusesRemote() throws JiraException {
         return call(new RemoteRunnable<Status[]>() {
             public Status[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getStatuses(loginToken.getCurrentValue()));
@@ -304,7 +309,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public IssueType[] getIssueTypesRemote() throws JiraException {
+    @Override
+	public IssueType[] getIssueTypesRemote() throws JiraException {
         return call(new RemoteRunnable<IssueType[]>() {
             public IssueType[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getIssueTypes(loginToken.getCurrentValue()));
@@ -312,7 +318,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public IssueType[] getSubTaskIssueTypesRemote() throws JiraException {
+    @Override
+	public IssueType[] getSubTaskIssueTypesRemote() throws JiraException {
         return call(new RemoteRunnable<IssueType[]>() {
             public IssueType[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getSubTaskIssueTypes(loginToken.getCurrentValue()));
@@ -320,7 +327,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public Priority[] getPrioritiesRemote() throws JiraException {
+    @Override
+	public Priority[] getPrioritiesRemote() throws JiraException {
         return call(new RemoteRunnable<Priority[]>() {
             public Priority[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getPriorities(loginToken.getCurrentValue()));
@@ -328,7 +336,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public Resolution[] getResolutionsRemote() throws JiraException {
+    @Override
+	public Resolution[] getResolutionsRemote() throws JiraException {
         return call(new RemoteRunnable<Resolution[]>() {
             public Resolution[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getResolutions(loginToken.getCurrentValue()));
@@ -348,7 +357,8 @@ public class JiraRpcClient extends AbstractJiraClient {
         });
     }
 
-    public Version[] getVersionsRemote(final String componentKey) throws JiraException {
+    @Override
+	public Version[] getVersionsRemote(final String componentKey) throws JiraException {
         return call(new RemoteRunnable<Version[]>() {
             public Version[] run() throws java.rmi.RemoteException, JiraException {
                 return Converter.convert(getSoapService().getVersions(loginToken.getCurrentValue(), componentKey));

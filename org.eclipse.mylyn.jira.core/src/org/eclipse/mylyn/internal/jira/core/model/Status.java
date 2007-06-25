@@ -87,6 +87,7 @@ public class Status implements Serializable {
 		return CLOSED_ID.equals(id);
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
@@ -99,10 +100,12 @@ public class Status implements Serializable {
 		return this.id.equals(that.id);
 	}
 
+	@Override
 	public int hashCode() {
 		return id.hashCode();
 	}
 
+	@Override
 	public String toString() {
 		return this.name;
 	}

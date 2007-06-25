@@ -49,7 +49,8 @@ public class RemotePermissionScheme  extends org.eclipse.mylyn.internal.jira.cor
     }
 
     private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
+    @Override
+	public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof RemotePermissionScheme)) return false;
         RemotePermissionScheme other = (RemotePermissionScheme) obj;
         if (obj == null) return false;
@@ -68,7 +69,8 @@ public class RemotePermissionScheme  extends org.eclipse.mylyn.internal.jira.cor
     }
 
     private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
+    @Override
+	public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
         }

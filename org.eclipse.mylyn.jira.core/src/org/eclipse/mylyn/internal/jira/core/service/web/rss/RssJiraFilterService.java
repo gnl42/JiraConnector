@@ -42,6 +42,7 @@ public class RssJiraFilterService {
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
+			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&reset=true&");
@@ -62,6 +63,7 @@ public class RssJiraFilterService {
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
+			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				if (server.getServerInfo().getVersion().compareTo("3.7") >= 0) {
@@ -87,6 +89,7 @@ public class RssJiraFilterService {
 
 		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
 
+			@Override
 			protected String getRssUrl(String baseUrl) {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/QuickSearch.jspa?view=rss&decorator=none&reset=true&");

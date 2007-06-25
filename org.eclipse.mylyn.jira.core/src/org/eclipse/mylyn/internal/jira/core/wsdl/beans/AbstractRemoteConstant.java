@@ -69,7 +69,8 @@ public abstract class AbstractRemoteConstant  extends org.eclipse.mylyn.internal
     }
 
     private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
+    @Override
+	public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof AbstractRemoteConstant)) return false;
         AbstractRemoteConstant other = (AbstractRemoteConstant) obj;
         if (obj == null) return false;
@@ -91,7 +92,8 @@ public abstract class AbstractRemoteConstant  extends org.eclipse.mylyn.internal
     }
 
     private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
+    @Override
+	public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
         }

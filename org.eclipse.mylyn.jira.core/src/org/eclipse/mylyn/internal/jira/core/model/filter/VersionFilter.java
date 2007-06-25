@@ -72,6 +72,7 @@ public class VersionFilter implements Filter, Serializable {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		if (versions == null) {
 			if (isReleasedVersions()) {

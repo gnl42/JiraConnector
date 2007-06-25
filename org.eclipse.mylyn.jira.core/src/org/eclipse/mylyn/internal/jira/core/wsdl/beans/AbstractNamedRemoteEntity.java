@@ -43,7 +43,8 @@ public abstract class AbstractNamedRemoteEntity  extends org.eclipse.mylyn.inter
     }
 
     private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
+	@Override
+	public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof AbstractNamedRemoteEntity)) return false;
         AbstractNamedRemoteEntity other = (AbstractNamedRemoteEntity) obj;
         if (obj == null) return false;
@@ -62,7 +63,8 @@ public abstract class AbstractNamedRemoteEntity  extends org.eclipse.mylyn.inter
     }
 
     private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
+    @Override
+	public synchronized int hashCode() {
         if (__hashCodeCalc) {
             return 0;
         }

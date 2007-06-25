@@ -71,7 +71,8 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
      * If this service has no port for the given interface,
      * then ServiceException is thrown.
      */
-    public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
+    @Override
+	public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
             if (org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService.class.isAssignableFrom(serviceEndpointInterface)) {
                 org.eclipse.mylyn.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub _stub = new org.eclipse.mylyn.internal.jira.core.wsdl.soap.JirasoapserviceV2SoapBindingStub(new java.net.URL(JirasoapserviceV2_address), this);
@@ -90,7 +91,8 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
      * If this service has no port for the given interface,
      * then ServiceException is thrown.
      */
-    public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
+    @Override
+	public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         if (portName == null) {
             return getPort(serviceEndpointInterface);
         }
@@ -105,13 +107,15 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
         }
     }
 
-    public javax.xml.namespace.QName getServiceName() {
+    @Override
+	public javax.xml.namespace.QName getServiceName() {
         return new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "JiraSoapServiceService");
     }
 
     private java.util.HashSet ports = null;
 
-    public java.util.Iterator getPorts() {
+    @Override
+	public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
             ports.add(new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "jirasoapservice-v2"));
