@@ -74,7 +74,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	@Override
 	protected void addActionButtons(Composite buttonComposite) {
-			super.addActionButtons(buttonComposite);
+		super.addActionButtons(buttonComposite);
 	}
 
 	@Override
@@ -195,8 +195,9 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				Label label = createLabel(attributesComposite, attribute);
 				GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
 
-				TextViewer viewer = addTextViewer(repository, attributesComposite, attribute.getValue(), SWT.FLAT | SWT.READ_ONLY);
-				
+				TextViewer viewer = addTextViewer(repository, attributesComposite, attribute.getValue(), SWT.FLAT
+						| SWT.READ_ONLY);
+
 				StyledText text = viewer.getTextWidget();
 
 				GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
@@ -211,8 +212,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				currentCol += 2;
 				break;
 			}
-			
-			// TEXTFIELD and everything else
+
+				// TEXTFIELD and everything else
 			default: {
 				Label label = createLabel(attributesComposite, attribute);
 				GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
@@ -263,7 +264,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 							attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY))) {
 				continue;
 			}
-			
+
 			Label label = createLabel(attributesComposite, attribute);
 			GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(label);
 
@@ -273,9 +274,10 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				sb.append(sep).append(key);
 				sep = ", ";
 			}
-			TextViewer viewer = addTextViewer(repository, attributesComposite, sb.toString(), SWT.FLAT | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP);
-			
-			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1);			
+			TextViewer viewer = addTextViewer(repository, attributesComposite, sb.toString(), SWT.FLAT | SWT.MULTI
+					| SWT.READ_ONLY | SWT.WRAP);
+
+			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1);
 			data.horizontalSpan = 3;
 			data.widthHint = 380;
 			data.heightHint = 20;
@@ -288,10 +290,9 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			if (hasChanged(attribute)) {
 				text.setBackground(getColorIncoming());
 			}
-			
-			
+
 		}
-		
+
 		// text areas
 		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()
@@ -371,10 +372,10 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	@Override
 	protected boolean hasContentAssist(RepositoryTaskAttribute attribute) {
 		String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
-			// TODO need more robust detection
-			if (JiraFieldType.USERPICKER.getKey().equals(key)) {
-				return true;
-			}
+		// TODO need more robust detection
+		if (JiraFieldType.USERPICKER.getKey().equals(key)) {
+			return true;
+		}
 
 		return super.hasContentAssist(attribute);
 	}

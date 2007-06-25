@@ -24,19 +24,25 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	private static final long serialVersionUID = 8000933300692372211L;
 
 	public static final String ATTRIBUTE_TYPE = "attribute.jira.type";
-	
+
 	public static final String ATTRIBUTE_ISSUE_PARENT_KEY = "attribute.jira.issue_parent_key";
 
 	public static final String ATTRIBUTE_ENVIRONMENT = "attribute.jira.environment";
+
 	public static final String ATTRIBUTE_COMPONENTS = "attribute.jira.components";
+
 	public static final String ATTRIBUTE_FIXVERSIONS = "attribute.jira.fixversions";
+
 	public static final String ATTRIBUTE_AFFECTSVERSIONS = "attribute.jira.affectsversions";
+
 	public static final String ATTRIBUTE_ESTIMATE = "attribute.jira.estimate";
-	
+
 	public static final String ATTRIBUTE_SUBTASK_IDS = "attribute.jira.subtask_ids";
+
 	public static final String ATTRIBUTE_SUBTASK_KEYS = "attribute.jira.subtask_keys";
-	
+
 	public static final String ATTRIBUTE_CUSTOM_PREFIX = "attribute.jira.custom::";
+
 	public static final String ATTRIBUTE_LINK_PREFIX = "attribute.jira.link::";
 
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
@@ -67,51 +73,51 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	@Override
 	public String mapCommonAttributeKey(String key) {
-		if("summary".equals(key)) {
+		if ("summary".equals(key)) {
 			return RepositoryTaskAttribute.SUMMARY;
-		} else if("description".equals(key)) {
+		} else if ("description".equals(key)) {
 			return RepositoryTaskAttribute.DESCRIPTION;
-		} else if("priority".equals(key)) {
+		} else if ("priority".equals(key)) {
 			return RepositoryTaskAttribute.PRIORITY;
-		} else if("resolution".equals(key)) {
+		} else if ("resolution".equals(key)) {
 			return RepositoryTaskAttribute.RESOLUTION;
-		} else if("assignee".equals(key)) {
+		} else if ("assignee".equals(key)) {
 			return RepositoryTaskAttribute.USER_ASSIGNED;
-		} else if("environment".equals(key)) {
+		} else if ("environment".equals(key)) {
 			return ATTRIBUTE_ENVIRONMENT;
-		} else if("issuetype".equals(key)) {
+		} else if ("issuetype".equals(key)) {
 			return ATTRIBUTE_TYPE;
-		} else if("components".equals(key)) {
+		} else if ("components".equals(key)) {
 			return ATTRIBUTE_COMPONENTS;
-		} else if("versions".equals(key)) {
+		} else if ("versions".equals(key)) {
 			return ATTRIBUTE_AFFECTSVERSIONS;
-		} else if("fixVersions".equals(key)) {
+		} else if ("fixVersions".equals(key)) {
 			return ATTRIBUTE_FIXVERSIONS;
-		} else if("timetracking".equals(key)) {
+		} else if ("timetracking".equals(key)) {
 			return ATTRIBUTE_ESTIMATE;
-		} 
-			
-		if(key.startsWith("issueLink")) {
+		}
+
+		if (key.startsWith("issueLink")) {
 			return ATTRIBUTE_LINK_PREFIX + key;
 		}
-		if(key.startsWith("customfield")) {
+		if (key.startsWith("customfield")) {
 			return ATTRIBUTE_CUSTOM_PREFIX + key;
 		}
-		
+
 		return key;
 	}
 
 	public String mapAttributeToKey(String key) {
 		JiraAttribute attribute = JiraAttribute.valueById(key);
-		if(!attribute.equals(JiraAttribute.UNKNOWN)) {
+		if (!attribute.equals(JiraAttribute.UNKNOWN)) {
 			return attribute.getParamName();
 		}
-		if(key.startsWith(ATTRIBUTE_CUSTOM_PREFIX)) {
+		if (key.startsWith(ATTRIBUTE_CUSTOM_PREFIX)) {
 			return key.substring(ATTRIBUTE_CUSTOM_PREFIX.length());
 		}
 		return key;
 	}
-	
+
 	@Override
 	public Date getDateForAttributeType(String attributeKey, String dateString) {
 		if (dateString == null || dateString.equals("")) {
@@ -126,5 +132,5 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 			return null;
 		}
 	}
-	
+
 }

@@ -98,14 +98,14 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		file.deleteOnExit();
 		JiraTestUtils.writeFile(file, "Mylar".getBytes());
 
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(),
-				new NullProgressMonitor());
+		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		FileAttachment attachment = new FileAttachment(file);
 		attachment.setContentType("text/plain");
 		attachmentHandler.uploadAttachment(repository, task, attachment, "", new NullProgressMonitor());
 
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
-		RepositoryTaskData taskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(task.getRepositoryUrl(), task.getTaskId());
+		RepositoryTaskData taskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(task.getRepositoryUrl(),
+				task.getTaskId());
 		assertNotNull(taskData);
 		assertEquals(1, taskData.getAttachments().size());
 

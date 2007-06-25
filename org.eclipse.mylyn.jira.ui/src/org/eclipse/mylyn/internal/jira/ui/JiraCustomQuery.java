@@ -51,45 +51,64 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.
- *
+ * 
  * @author Mik Kersten
  * @author Eugene Kuleshov
  */
 public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	private static final String PROJECT_KEY = "pid";
+
 	private static final String COMPONENT_KEY = "component";
+
 	private static final String TYPE_KEY = "type";
+
 	private static final String PRIORITY_KEY = "priority";
+
 	private static final String STATUS_KEY = "status";
+
 	private static final String RESOLUTION_KEY = "resolution";
 
 	private static final String FIXFOR_KEY = "fixfor";
+
 	private static final String VERSION_KEY = "version";
 
 	private static final String QUERY_KEY = "query";
+
 	private static final String ENVIRONMENT_KEY = "environment";
+
 	private static final String BODY_KEY = "body";
+
 	private static final String DESCRIPTION_KEY = "description";
+
 	private static final String SUMMARY_KEY = "summary";
 
 	private static final String ASSIGNEE_KEY = "assignee";
+
 	private static final String REPORTER_KEY = "reporter";
 
 	private static final String CREATED_KEY = "created";
+
 	private static final String UPDATED_KEY = "updated";
+
 	private static final String DUEDATE_KEY = "duedate";
 
 	private static final String ISSUE_SPECIFIC_GROUP = "specificgroup";
+
 	private static final String ISSUE_SPECIFIC_USER = "specificuser";
+
 	private static final String ISSUE_CURRENT_USER = "issue_current_user";
+
 	private static final String ISSUE_NO_REPORTER = "issue_no_reporter";
-	
+
 	private static final String VERSION_NONE = "-1";
+
 	private static final String VERSION_RELEASED = "-2";
+
 	private static final String VERSION_UNRELEASED = "-3";
-	
+
 	private static final String UNRESOLVED = "-1";
+
 	private static final String COMPONENT_NONE = "-1";
 
 	private String encoding;
@@ -125,19 +144,19 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		FilterDefinition filter = new FilterDefinition();
 
 		int n = url.indexOf('?');
-		if(n==-1) {
+		if (n == -1) {
 			return filter;
 		}
 
 		HashMap<String, List<String>> params = new HashMap<String, List<String>>();
-		for (String pair : url.substring(n+1).split("&")) {
+		for (String pair : url.substring(n + 1).split("&")) {
 			String[] tokens = pair.split("=");
 			if (tokens.length > 1) {
 				try {
 					String key = tokens[0];
-					String value = tokens.length==1 ? "" : URLDecoder.decode(tokens[1], encoding);
+					String value = tokens.length == 1 ? "" : URLDecoder.decode(tokens[1], encoding);
 					List<String> values = params.get(key);
-					if(values==null) {
+					if (values == null) {
 						values = new ArrayList<String>();
 						params.put(key, values);
 					}
@@ -159,20 +178,20 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 					continue;
 				}
 			}
-			
+
 			filter.setProjectFilter(new ProjectFilter(project));
 
 			List<String> componentIds = getIds(params, COMPONENT_KEY);
 			List<Component> components = new ArrayList<Component>();
 			for (String componentId : componentIds) {
 				Component[] projectComponents = project.getComponents();
-				for(Component component : projectComponents) {
-					if(component.getId().equals(componentId)) {
+				for (Component component : projectComponents) {
+					if (component.getId().equals(componentId)) {
 						components.add(component);
 					}
 				}
 			}
-			if(!componentIds.isEmpty()) {
+			if (!componentIds.isEmpty()) {
 				filter.setComponentFilter(new ComponentFilter(components.toArray(new Component[components.size()])));
 			}
 
@@ -192,7 +211,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 				throw new InvalidJiraQueryException("Unknown type " + typeId);
 			}
 		}
-		if(!issueTypes.isEmpty()) {
+		if (!issueTypes.isEmpty()) {
 			filter.setIssueTypeFilter(new IssueTypeFilter(issueTypes.toArray(new IssueType[issueTypes.size()])));
 		}
 
@@ -206,7 +225,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 				throw new InvalidJiraQueryException("Unknown status " + statusId);
 			}
 		}
-		if(!statuses.isEmpty()) {
+		if (!statuses.isEmpty()) {
 			filter.setStatusFilter(new StatusFilter(statuses.toArray(new Status[statuses.size()])));
 		}
 
@@ -225,7 +244,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 				unresolved = true;
 			}
 		}
-		if(!resolutionIds.isEmpty()) {
+		if (!resolutionIds.isEmpty()) {
 			filter.setResolutionFilter(new ResolutionFilter(resolutions.toArray(new Resolution[resolutions.size()])));
 		} else if (unresolved) {
 			filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
@@ -241,7 +260,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 				throw new InvalidJiraQueryException("Unknown priority " + priorityId);
 			}
 		}
-		if(!priorities.isEmpty()) {
+		if (!priorities.isEmpty()) {
 			filter.setPriorityFilter(new PriorityFilter(priorities.toArray(new Priority[priorities.size()])));
 		}
 
@@ -251,7 +270,8 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			boolean searchDescription = getIds(params, DESCRIPTION_KEY).contains("true");
 			boolean searchEnvironment = getIds(params, ENVIRONMENT_KEY).contains("true");
 			boolean searchComments = getIds(params, BODY_KEY).contains("true");
-			filter.setContentFilter(new ContentFilter(query, searchSummary, searchDescription, searchEnvironment, searchComments));
+			filter.setContentFilter(new ContentFilter(query, searchSummary, searchDescription, searchEnvironment,
+					searchComments));
 		}
 
 		filter.setReportedByFilter(createUserFilter(params, REPORTER_KEY));
@@ -265,29 +285,29 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	}
 
 	private VersionFilter getVersionFilter(FilterDefinition filter, List<String> fixForIds, Version[] projectVersions) {
-		if(fixForIds.isEmpty()) {
+		if (fixForIds.isEmpty()) {
 			return null;
 		}
-		
+
 		boolean hasReleasedVersions = false;
 		boolean hasUnreleasedVersions = false;
 		List<Version> fixForversions = new ArrayList<Version>();
 		for (String fixForId : fixForIds) {
-			if(fixForId.equals(VERSION_RELEASED)) {
+			if (fixForId.equals(VERSION_RELEASED)) {
 				hasReleasedVersions = true;
-			} else if(fixForId.equals(VERSION_UNRELEASED)) {
+			} else if (fixForId.equals(VERSION_UNRELEASED)) {
 				hasUnreleasedVersions = true;
 			} else {
 				for (Version projectVersion : projectVersions) {
-					if(projectVersion.getId().equals(fixForId)) {
+					if (projectVersion.getId().equals(fixForId)) {
 						fixForversions.add(projectVersion);
 					}
 				}
 			}
 		}
-		if(!fixForversions.isEmpty()) {
+		if (!fixForversions.isEmpty()) {
 			return new VersionFilter(fixForversions.toArray(new Version[fixForversions.size()]));
-		} else if(hasReleasedVersions || hasUnreleasedVersions) {
+		} else if (hasReleasedVersions || hasUnreleasedVersions) {
 			return new VersionFilter(hasReleasedVersions, hasUnreleasedVersions);
 		}
 		return null;
@@ -311,21 +331,21 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			toDate = null;
 		}
 
-		return fromDate==null && toDate==null ? null : new DateRangeFilter(fromDate, toDate);
+		return fromDate == null && toDate == null ? null : new DateRangeFilter(fromDate, toDate);
 	}
 
 	private UserFilter createUserFilter(Map<String, List<String>> params, String key) {
 		String type = getId(params, key + "Select");
-		if(ISSUE_NO_REPORTER.equals(type)) {
+		if (ISSUE_NO_REPORTER.equals(type)) {
 			return new NobodyFilter();
-		} else if(ISSUE_CURRENT_USER.equals(type)) {
+		} else if (ISSUE_CURRENT_USER.equals(type)) {
 			return new CurrentUserFilter();
 		} else {
 			String reporter = getId(params, key);
-			if(reporter!=null) {
-				if(ISSUE_SPECIFIC_USER.equals(type)) {
+			if (reporter != null) {
+				if (ISSUE_SPECIFIC_USER.equals(type)) {
 					return new SpecificUserFilter(reporter);
-				} else if(ISSUE_SPECIFIC_GROUP.equals(type)) {
+				} else if (ISSUE_SPECIFIC_GROUP.equals(type)) {
 					return new UserInGroupFilter(reporter);
 				}
 			}
@@ -340,18 +360,17 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	private List<String> getIds(Map<String, List<String>> params, String key) {
 		List<String> ids = params.get(key);
-		if (ids==null) {
+		if (ids == null) {
 			return Collections.emptyList();
 		}
 		return ids;
 	}
 
-
 	private String getQueryParams(FilterDefinition filter) {
 		StringBuffer sb = new StringBuffer();
 
 		ProjectFilter projectFilter = filter.getProjectFilter();
-		if(projectFilter!=null) {
+		if (projectFilter != null) {
 			Project project = projectFilter.getProject();
 			// TODO all projects
 			addParameter(sb, PROJECT_KEY, project.getId());
@@ -359,8 +378,8 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 		ComponentFilter componentFilter = filter.getComponentFilter();
 		// TODO all components
-		if(componentFilter!=null) {
-			if(componentFilter.hasNoComponent()) {
+		if (componentFilter != null) {
+			if (componentFilter.hasNoComponent()) {
 				addParameter(sb, COMPONENT_KEY, COMPONENT_NONE);
 			} else {
 				for (Component component : componentFilter.getComponents()) {
@@ -372,16 +391,16 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		// TODO
 		VersionFilter fixForVersionFilter = filter.getFixForVersionFilter();
 		if (fixForVersionFilter != null) {
-			if(fixForVersionFilter.hasNoVersion()) {
+			if (fixForVersionFilter.hasNoVersion()) {
 				addParameter(sb, FIXFOR_KEY, VERSION_NONE);
 			}
-			if(fixForVersionFilter.isReleasedVersions()) {
+			if (fixForVersionFilter.isReleasedVersions()) {
 				addParameter(sb, FIXFOR_KEY, VERSION_RELEASED);
 			}
-			if(fixForVersionFilter.isUnreleasedVersions()) {
+			if (fixForVersionFilter.isUnreleasedVersions()) {
 				addParameter(sb, FIXFOR_KEY, VERSION_UNRELEASED);
 			}
-			if(fixForVersionFilter.getVersions()!=null) {
+			if (fixForVersionFilter.getVersions() != null) {
 				for (Version fixVersion : fixForVersionFilter.getVersions()) {
 					addParameter(sb, FIXFOR_KEY, fixVersion.getId());
 				}
@@ -391,16 +410,16 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		// TODO
 		VersionFilter reportedInVersionFilter = filter.getReportedInVersionFilter();
 		if (reportedInVersionFilter != null) {
-			if(reportedInVersionFilter.hasNoVersion()) {
+			if (reportedInVersionFilter.hasNoVersion()) {
 				addParameter(sb, VERSION_KEY, VERSION_NONE);
 			}
-			if(reportedInVersionFilter.isReleasedVersions()) {
+			if (reportedInVersionFilter.isReleasedVersions()) {
 				addParameter(sb, VERSION_KEY, VERSION_RELEASED);
 			}
-			if(reportedInVersionFilter.isUnreleasedVersions()) {
+			if (reportedInVersionFilter.isUnreleasedVersions()) {
 				addParameter(sb, VERSION_KEY, VERSION_UNRELEASED);
 			}
-			if(reportedInVersionFilter.getVersions()!=null) {
+			if (reportedInVersionFilter.getVersions() != null) {
 				for (Version reportedVersion : reportedInVersionFilter.getVersions()) {
 					addParameter(sb, VERSION_KEY, reportedVersion.getId());
 				}
@@ -417,47 +436,47 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 		// TODO
 		StatusFilter statusFilter = filter.getStatusFilter();
-		if(statusFilter!=null) {
-			for ( Status status : statusFilter.getStatuses()) {
+		if (statusFilter != null) {
+			for (Status status : statusFilter.getStatuses()) {
 				addParameter(sb, STATUS_KEY, status.getId());
 			}
 		}
 
 		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
-		if(resolutionFilter!=null) {
+		if (resolutionFilter != null) {
 			Resolution[] resolutions = resolutionFilter.getResolutions();
 			if (resolutions.length == 0) {
-				addParameter(sb, RESOLUTION_KEY, UNRESOLVED);  // Unresolved
+				addParameter(sb, RESOLUTION_KEY, UNRESOLVED); // Unresolved
 			} else {
 				for (Resolution resolution : resolutions) {
 					addParameter(sb, RESOLUTION_KEY, resolution.getId());
 				}
-			}			
+			}
 		}
 
 		PriorityFilter priorityFilter = filter.getPriorityFilter();
-		if(priorityFilter!=null) {
-			for ( Priority priority : priorityFilter.getPriorities()) {
+		if (priorityFilter != null) {
+			for (Priority priority : priorityFilter.getPriorities()) {
 				addParameter(sb, PRIORITY_KEY, priority.getId());
 			}
 		}
 
 		ContentFilter contentFilter = filter.getContentFilter();
-		if(contentFilter!=null) {
+		if (contentFilter != null) {
 			String queryString = contentFilter.getQueryString();
-			if(queryString!=null) {
+			if (queryString != null) {
 				addParameter(sb, QUERY_KEY, queryString);
 			}
-			if(contentFilter.isSearchingSummary()) {
+			if (contentFilter.isSearchingSummary()) {
 				addParameter(sb, SUMMARY_KEY, "true");
 			}
-			if(contentFilter.isSearchingDescription()) {
+			if (contentFilter.isSearchingDescription()) {
 				addParameter(sb, DESCRIPTION_KEY, "true");
 			}
-			if(contentFilter.isSearchingComments()) {
+			if (contentFilter.isSearchingComments()) {
 				addParameter(sb, BODY_KEY, "true");
 			}
-			if(contentFilter.isSearchingEnvironment()) {
+			if (contentFilter.isSearchingEnvironment()) {
 				addParameter(sb, ENVIRONMENT_KEY, "true");
 			}
 		}
@@ -473,7 +492,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	}
 
 	private void addDateFilter(StringBuffer sb, DateFilter filter, String type) {
-		if(filter instanceof DateRangeFilter) {
+		if (filter instanceof DateRangeFilter) {
 			SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US);
 			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
 			addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate()));
@@ -482,14 +501,14 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	}
 
 	private void addUserFilter(StringBuffer sb, UserFilter filter, String type) {
-		if(filter instanceof NobodyFilter) {
+		if (filter instanceof NobodyFilter) {
 			addParameter(sb, type + "Select", ISSUE_NO_REPORTER);
-		} else if(filter instanceof CurrentUserFilter) {
+		} else if (filter instanceof CurrentUserFilter) {
 			addParameter(sb, type + "Select", ISSUE_CURRENT_USER);
-		} else if(filter instanceof SpecificUserFilter) {
+		} else if (filter instanceof SpecificUserFilter) {
 			addParameter(sb, type + "Select", ISSUE_SPECIFIC_USER);
 			addParameter(sb, type, ((SpecificUserFilter) filter).getUser());
-		} else if(filter instanceof UserInGroupFilter) {
+		} else if (filter instanceof UserInGroupFilter) {
 			addParameter(sb, type + "Select", ISSUE_SPECIFIC_GROUP);
 			addParameter(sb, type, ((UserInGroupFilter) filter).getGroup());
 		}
@@ -506,11 +525,11 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	public boolean isSearch() {
 		return search;
 	}
-	
+
 	public void setSearch(boolean search) {
 		this.search = search;
 	}
-	
+
 }
 
 //public void refreshHits() {

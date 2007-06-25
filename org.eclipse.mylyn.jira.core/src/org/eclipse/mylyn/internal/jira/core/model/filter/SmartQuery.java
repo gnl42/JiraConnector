@@ -14,9 +14,8 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 import org.eclipse.mylyn.internal.jira.core.model.Query;
 
 /**
- * Query object that holds the query value that will be passed to the server.
- * TODO Possibly allow the user to construct this object without having to know
- * the syntax
+ * Query object that holds the query value that will be passed to the server. TODO Possibly allow the user to construct
+ * this object without having to know the syntax
  * 
  * @author Brock Janiczak
  */

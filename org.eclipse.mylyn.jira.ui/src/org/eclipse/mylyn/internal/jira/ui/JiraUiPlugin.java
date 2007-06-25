@@ -23,7 +23,7 @@ import org.osgi.framework.BundleContext;
 public class JiraUiPlugin extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "org.eclipse.mylyn.jira.ui";
-	
+
 	private static JiraUiPlugin INSTANCE;
 
 	public final static String REPOSITORY_KIND = "jira";
@@ -53,8 +53,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path.
+	 * Returns an image descriptor for the image file at the given plug-in relative path.
 	 * 
 	 * @param path
 	 *            the path
@@ -71,6 +70,6 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 	protected void initializeImageRegistry(ImageRegistry reg) {
 		reg.put("icons/obj16/comment.gif", getImageDescriptor("icons/obj16/comment.gif"));
 		reg.put("icons/obj16/jira.png", getImageDescriptor("icons/obj16/jira.png"));
-		
+
 	}
 }

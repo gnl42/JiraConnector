@@ -32,7 +32,7 @@ public class HTML2TextReaderTest extends TestCase {
 		int len = html2TextReader.read(chars, 0, text.length());
 		assertEquals(1, len);
 		assertEquals(" ", new String(chars, 0, len));
-		
+
 		text = "&nbsp;";
 		stringReader = new StringReader(text);
 		html2TextReader = new HTML2TextReader(stringReader, null);

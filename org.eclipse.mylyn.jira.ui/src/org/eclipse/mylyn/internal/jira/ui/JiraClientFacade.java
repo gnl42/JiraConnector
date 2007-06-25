@@ -26,10 +26,9 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
- * This class acts as a layer of indirection between clients in this project and
- * the server API implemented by the Jira Dashboard, and also abstracts some
- * Mylar implementation details. It initializes a jiraServer object and serves
- * as the central location to get a reference to it.
+ * This class acts as a layer of indirection between clients in this project and the server API implemented by the Jira
+ * Dashboard, and also abstracts some Mylar implementation details. It initializes a jiraServer object and serves as the
+ * central location to get a reference to it.
  * 
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
@@ -63,8 +62,7 @@ public class JiraClientFacade implements ITaskRepositoryListener {
 	/**
 	 * Lazily creates server.
 	 * 
-	 * @see #validateServerAndCredentials(String, String, String, Proxy, String,
-	 *      String)
+	 * @see #validateServerAndCredentials(String, String, String, Proxy, String, String)
 	 */
 	public synchronized JiraClient getJiraClient(TaskRepository repository) {
 		JiraClient server = clientManager.getClient(repository.getUrl());
@@ -138,8 +136,7 @@ public class JiraClientFacade implements ITaskRepositoryListener {
 	 *            Username
 	 * @param password
 	 *            Password
-	 * @return String describing validation failure or null if the details are
-	 *         valid
+	 * @return String describing validation failure or null if the details are valid
 	 */
 	public void validateServerAndCredentials(String serverUrl, String user, String password, Proxy proxy,
 			String httpUser, String httpPassword) throws JiraException {

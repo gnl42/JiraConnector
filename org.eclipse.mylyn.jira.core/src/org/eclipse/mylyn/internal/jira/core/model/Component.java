@@ -14,7 +14,7 @@ package org.eclipse.mylyn.internal.jira.core.model;
 import java.io.Serializable;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class Component implements Serializable {
 

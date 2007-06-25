@@ -15,10 +15,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Represents an immutable comment that will be attached to an issue. Comments
- * can not be changed once created.
+ * Represents an immutable comment that will be attached to an issue. Comments can not be changed once created.
  * 
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public final class Comment implements Serializable {
 

@@ -21,11 +21,11 @@ public class Attachment implements Serializable {
 	private String id;
 
 	private String name;
-	
+
 	private long size;
-	
+
 	private String author;
-	
+
 	private Date created;
 
 	public Attachment(String id, String name, long size, String author, Date created) {
@@ -55,27 +55,27 @@ public class Attachment implements Serializable {
 	public long getSize() {
 		return size;
 	}
-	
+
 	public void setSize(long size) {
 		this.size = size;
 	}
-	
+
 	public String getAuthor() {
 		return author;
 	}
-	
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-	
+
 	public Date getCreated() {
 		return created;
 	}
-	
+
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.name;

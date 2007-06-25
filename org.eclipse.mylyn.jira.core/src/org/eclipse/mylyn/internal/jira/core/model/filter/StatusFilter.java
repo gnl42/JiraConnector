@@ -16,7 +16,7 @@ import java.io.Serializable;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class StatusFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;

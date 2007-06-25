@@ -14,7 +14,7 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 import java.io.Serializable;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public abstract class UserFilter implements Filter, Serializable {
 	abstract UserFilter copy();

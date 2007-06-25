@@ -43,16 +43,16 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	public String getTaskKindLabel(AbstractTask repositoryTask) {
 		return "Issue";
 	}
-	
+
 	@Override
 	public String getTaskKindLabel(RepositoryTaskData taskData) {
 		return "Issue";
 	}
-	
+
 	@Override
 	public List<AbstractTaskContainer> getLegendItems() {
 		List<AbstractTaskContainer> legendItems = new ArrayList<AbstractTaskContainer>();
-		
+
 		JiraTask bug = new JiraTask("", "bug", "Bug");
 		bug.setTaskKind(JiraTask.Kind.BUG.toString());
 		legendItems.add(bug);
@@ -68,11 +68,10 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		JiraTask task = new JiraTask("", "task", "Task");
 		task.setTaskKind(JiraTask.Kind.TASK.toString());
 		legendItems.add(task);
-		
+
 		return legendItems;
 	}
 
-	
 	@Override
 	public ImageDescriptor getTaskKindOverlay(AbstractTask repositoryTask) {
 		if (repositoryTask instanceof JiraTask) {
@@ -89,11 +88,11 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		}
 		return super.getTaskKindOverlay(repositoryTask);
 	}
-	
+
 	@Override
 	public WizardPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
 		return new JiraQueryPage(repository);
-	} 
+	}
 
 	@Override
 	public AbstractRepositorySettingsPage getSettingsPage() {
@@ -107,7 +106,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		}
 		return new NewJiraQueryWizard(repository);
 	}
-	
+
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
 		return new NewJiraTaskWizard(taskRepository);
@@ -127,7 +126,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	public IHyperlink[] findHyperlinks(TaskRepository repository, String text, int lineOffset, int regionOffset) {
 		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				repository.getConnectorKind());
-		
+
 		int startPos = lineOffset;
 		while (startPos > 0) {
 			char c = text.charAt(startPos);

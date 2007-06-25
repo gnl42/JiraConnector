@@ -12,7 +12,7 @@
 package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class RelativeDateRangeFilter extends DateFilter {
 	private static final long serialVersionUID = 1L;

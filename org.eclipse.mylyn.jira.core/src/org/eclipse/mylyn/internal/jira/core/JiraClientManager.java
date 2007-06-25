@@ -45,9 +45,9 @@ import org.eclipse.mylyn.monitor.core.StatusHandler;
 public class JiraClientManager {
 
 	public static final String CONFIGURATION_DATA_FILENAME = "repositoryConfigurations";
-	
+
 	public static final int CONFIGURATION_DATA_VERSION = 1;
-	
+
 	/** The directory that contains the repository configuration data. */
 	private final File cacheLocation;
 
@@ -85,7 +85,7 @@ public class JiraClientManager {
 				for (int i = 0; i < count; i++) {
 					String url = (String) in.readObject();
 					JiraClientData data = (JiraClientData) in.readObject();
-					clientDataByUrl.put(url, data);					
+					clientDataByUrl.put(url, data);
 				}
 			} catch (Throwable e) {
 				StatusHandler.log("Reset JIRA repository configuration cache due to format update", false);
@@ -105,7 +105,7 @@ public class JiraClientManager {
 
 		// update data map from servers
 		for (String url : clientByUrl.keySet()) {
-			clientDataByUrl.put(url, clientByUrl.get(url).getData());	
+			clientDataByUrl.put(url, clientByUrl.get(url).getData());
 		}
 
 		ObjectOutputStream out = null;
@@ -115,7 +115,7 @@ public class JiraClientManager {
 			out.writeInt(clientDataByUrl.size());
 			for (String url : clientDataByUrl.keySet()) {
 				out.writeObject(url);
-				out.writeObject(clientDataByUrl.get(url));	
+				out.writeObject(clientDataByUrl.get(url));
 			}
 		} catch (Throwable e) {
 			StatusHandler.fail(e, "Error writing JIRA repository configuration cache", false);
@@ -130,9 +130,8 @@ public class JiraClientManager {
 	}
 
 	/**
-	 * Tests the connection to a server. If the URL is invalid ot the username
-	 * and password are invalid this method will return with a exceptions
-	 * carrying the failure reason.
+	 * Tests the connection to a server. If the URL is invalid ot the username and password are invalid this method will
+	 * return with a exceptions carrying the failure reason.
 	 * 
 	 * @param baseUrl
 	 *            Base URL of the jira installation
@@ -148,8 +147,7 @@ public class JiraClientManager {
 	 */
 	public ServerInfo testConnection(String baseUrl, String username, String password, Proxy proxy, String httpUser,
 			String httpPassword) throws JiraException {
-		JiraClient server = createServer(baseUrl, false, username, password, proxy, httpUser,
-				httpPassword);
+		JiraClient server = createServer(baseUrl, false, username, password, proxy, httpUser, httpPassword);
 		server.refreshServerInfo(new NullProgressMonitor());
 		return server.getServerInfo();
 	}
@@ -162,32 +160,33 @@ public class JiraClientManager {
 		return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
 	}
 
-	private AbstractJiraClient createServer(String baseUrl, boolean useCompression, String username,
-			String password, Proxy proxy, String httpUser, String httpPassword) {
+	private AbstractJiraClient createServer(String baseUrl, boolean useCompression, String username, String password,
+			Proxy proxy, String httpUser, String httpPassword) {
 		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 		}
 
-		JiraRpcClient server = new JiraRpcClient(baseUrl, useCompression, username, password, proxy,
-				httpUser, httpPassword);
+		JiraRpcClient server = new JiraRpcClient(baseUrl, useCompression, username, password, proxy, httpUser,
+				httpPassword);
 		return server;
 	}
 
-	public JiraClient addClient(String baseUrl, boolean useCompression, String username,
-			String password, Proxy proxy, String httpUser, String httpPassword) {
+	public JiraClient addClient(String baseUrl, boolean useCompression, String username, String password, Proxy proxy,
+			String httpUser, String httpPassword) {
 		if (clientByUrl.containsKey(baseUrl)) {
 			throw new RuntimeException("A server with that name already exists");
 		}
-		
-		AbstractJiraClient server = createServer(baseUrl, useCompression, username, password, proxy, httpUser, httpPassword);
+
+		AbstractJiraClient server = createServer(baseUrl, useCompression, username, password, proxy, httpUser,
+				httpPassword);
 		JiraClientData data = clientDataByUrl.get(baseUrl);
 		if (data != null) {
 			server.setData(data);
 		}
 		clientByUrl.put(baseUrl, server);
-		
+
 		fireClientAddded(server);
-		
+
 		return server;
 	}
 
@@ -224,5 +223,5 @@ public class JiraClientManager {
 		}
 		clientByUrl.clear();
 	}
-	
+
 }

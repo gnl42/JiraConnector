@@ -130,7 +130,7 @@ public class JiraProjectPage extends WizardPage {
 			}
 
 		});
-		
+
 		projectTreeViewer.addOpenListener(new IOpenListener() {
 			public void open(OpenEvent event) {
 				if (getWizard().canFinish()) {
@@ -190,6 +190,7 @@ public class JiraProjectPage extends WizardPage {
 							monitor.done();
 						}
 					}
+
 					private void showWarning(final String msg) {
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
@@ -202,7 +203,7 @@ public class JiraProjectPage extends WizardPage {
 				return;
 			}
 		}
-		
+
 		projectTree.getViewer().setInput(client.getProjects());
 	}
 

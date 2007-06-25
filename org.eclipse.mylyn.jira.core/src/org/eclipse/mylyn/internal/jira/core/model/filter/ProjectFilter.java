@@ -16,15 +16,14 @@ import java.io.Serializable;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 
 /**
- * Filter to restrict returned issues to a specific project. If a project filter
- * is used you can add project specific filters such as {@link ComponentFilter},
- * {@link ReportedInVersionFilter} and {@link FixForVersionFilter}
+ * Filter to restrict returned issues to a specific project. If a project filter is used you can add project specific
+ * filters such as {@link ComponentFilter}, {@link ReportedInVersionFilter} and {@link FixForVersionFilter}
  * 
  * @see com.gbst.jira.core.model.filter.ComponentFilter
  * @see com.gbst.jira.core.model.filter.ReportedInVersionFilter
  * @see com.gbst.jira.core.model.filter.FixForVersionFilter
- *
- * @author	Brock Janiczak
+ * 
+ * @author Brock Janiczak
  */
 public class ProjectFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;

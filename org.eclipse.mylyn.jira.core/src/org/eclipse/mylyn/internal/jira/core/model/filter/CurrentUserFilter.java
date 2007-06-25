@@ -15,7 +15,7 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 // instance...
 // Either that or we can log in and get a session cookie...
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class CurrentUserFilter extends UserFilter {
 	private static final long serialVersionUID = 1L;

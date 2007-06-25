@@ -27,7 +27,7 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 
 	public JiraRemoteMessageException(String htmlMessage) {
 		super(getTitle(htmlMessage));
-		
+
 		this.htmlMessage = htmlMessage;
 	}
 
@@ -35,7 +35,7 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 		if (text == null) {
 			return null;
 		}
-		
+
 		int start = text.indexOf("<strong>");
 		if (start != -1) {
 			int stop = text.indexOf("</strong>", start + 8);
@@ -63,5 +63,5 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 			return htmlMessage;
 		}
 	}
-	
+
 }

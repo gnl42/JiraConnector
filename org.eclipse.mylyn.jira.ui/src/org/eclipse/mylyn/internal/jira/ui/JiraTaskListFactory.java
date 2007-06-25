@@ -56,7 +56,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 	public String getTaskElementName() {
 		return KEY_JIRA_ISSUE;
 	}
-	
+
 	@Override
 	public Set<String> getQueryElementNames() {
 		Set<String> names = new HashSet<String>();
@@ -84,8 +84,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 			// TODO remove this at some point
 			FilterDefinition filter = decodeFilter(custom);
 			if (filter == null) {
-				StatusHandler.log("Failed to restore custom query "
-						+ element.getAttribute(KEY_FILTER_ID), this);
+				StatusHandler.log("Failed to restore custom query " + element.getAttribute(KEY_FILTER_ID), this);
 				return null;
 			}
 			filter.setName(element.getAttribute(KEY_FILTER_ID));
@@ -96,8 +95,8 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 		} else if (customUrl != null && customUrl.length() > 0) {
 			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
 					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
-			query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl, repository
-					.getCharacterEncoding());
+			query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl,
+					repository.getCharacterEncoding());
 
 		} else {
 			NamedFilter namedFilter = new NamedFilter();
@@ -153,7 +152,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 		if (element.hasAttribute(KEY_KEY)) {
 			String key = element.getAttribute(KEY_KEY);
 			task.setTaskKey(key);
-		} 
+		}
 		return task;
 	}
 

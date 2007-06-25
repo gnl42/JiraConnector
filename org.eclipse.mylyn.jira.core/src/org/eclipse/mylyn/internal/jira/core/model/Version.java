@@ -15,10 +15,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class Version implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private String id;

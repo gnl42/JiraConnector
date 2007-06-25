@@ -33,10 +33,10 @@ import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 public class JiraTestUtils {
 
 	public static String PROJECT1 = "PRONE";
-	
+
 	public static Resolution getFixedResolution(JiraClient server) throws JiraException {
 		refreshDetails(server);
-		
+
 		Resolution[] resolutions = server.getResolutions();
 		for (Resolution resolution : resolutions) {
 			if (Resolution.FIXED_ID.equals(resolution.getId())) {
@@ -45,23 +45,23 @@ public class JiraTestUtils {
 		}
 		return resolutions[0];
 	}
-	
+
 	public static String getOperation(JiraClient server, String issueKey, String name) throws JiraException {
 		refreshDetails(server);
-		
+
 		RepositoryOperation[] operations = server.getAvailableOperations(issueKey);
 		for (RepositoryOperation operation : operations) {
 			if (operation.getOperationName().toLowerCase().startsWith(name)) {
 				return operation.getKnobName();
 			}
 		}
-		
-		throw new AssertionFailedError("Unable to find operation " + name +" in " + Arrays.asList(operations));
+
+		throw new AssertionFailedError("Unable to find operation " + name + " in " + Arrays.asList(operations));
 	}
-	
+
 	public static String getCustomField(JiraClient server, String name) throws JiraException {
 		refreshDetails(server);
-		
+
 		CustomField[] fields = server.getCustomAttributes();
 		for (CustomField field : fields) {
 			if (field.getName().toLowerCase().startsWith(name.toLowerCase())) {
@@ -70,17 +70,16 @@ public class JiraTestUtils {
 		}
 		return null;
 	}
-	
 
 	public static Issue createIssue(JiraClient server, String summary) throws JiraException {
 		refreshDetails(server);
-		
+
 		Issue issue = new Issue();
 		issue.setProject(getProject1(server));
 		issue.setType(server.getIssueTypes()[0]);
 		issue.setSummary(summary);
 		issue.setAssignee(server.getUserName());
-		
+
 		return server.createIssue(issue);
 	}
 
@@ -97,12 +96,12 @@ public class JiraTestUtils {
 		}
 		return project;
 	}
-	
+
 	public static byte[] readFile(File file) throws IOException {
 		if (file.length() > 10000000) {
 			throw new IOException("File too big: " + file.getAbsolutePath() + ", size: " + file.length());
 		}
-		
+
 		byte[] data = new byte[(int) file.length()];
 		InputStream in = new FileInputStream(file);
 		try {
@@ -112,14 +111,14 @@ public class JiraTestUtils {
 		}
 		return data;
 	}
-	
+
 	public static void writeFile(File file, byte[] data) throws IOException {
 		OutputStream out = new FileOutputStream(file);
 		try {
 			out.write(data);
 		} finally {
 			out.close();
-		}		
+		}
 	}
 
 }

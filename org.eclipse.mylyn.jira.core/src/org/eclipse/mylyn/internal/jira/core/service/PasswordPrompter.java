@@ -15,17 +15,16 @@ import java.net.URL;
 
 /**
  * This interface is used as a pluggable way of prompting a user for a password
- *
- * @author	Brock Janiczak
+ * 
+ * @author Brock Janiczak
  */
 public interface PasswordPrompter {
 
 	/**
 	 * Retrieve the password from the user.
 	 * 
-	 * @return Password the user entered or was stored in a cache somewhere or
-	 *         <code>null</code> if the user declined to enter a password or
-	 *         no cached password could be found.
+	 * @return Password the user entered or was stored in a cache somewhere or <code>null</code> if the user declined
+	 *         to enter a password or no cached password could be found.
 	 * @param baseURL
 	 *            Location of the sevured resource being accessed
 	 * @param username

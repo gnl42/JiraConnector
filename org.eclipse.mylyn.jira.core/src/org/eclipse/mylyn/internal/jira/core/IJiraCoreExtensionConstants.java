@@ -12,7 +12,7 @@
 package org.eclipse.mylyn.internal.jira.core;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public interface IJiraCoreExtensionConstants {
 	public static final String SERVICE_PROVIDER_FACTORY = "serviceProviderFactory"; //$NON-NLS-1$

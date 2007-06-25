@@ -22,7 +22,7 @@ public class Subtask implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String issueId;
-	
+
 	private final String issueKey;
 
 	public Subtask(String issueId, String issueKey) {
@@ -33,7 +33,7 @@ public class Subtask implements Serializable {
 	public String getIssueId() {
 		return issueId;
 	}
-	
+
 	public String getIssueKey() {
 		return this.issueKey;
 	}

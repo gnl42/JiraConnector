@@ -14,7 +14,7 @@ package org.eclipse.mylyn.internal.jira.core;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public interface JiraClientListener {
 

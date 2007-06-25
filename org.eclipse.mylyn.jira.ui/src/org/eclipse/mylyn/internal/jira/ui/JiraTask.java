@@ -21,9 +21,9 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 public class JiraTask extends AbstractTask {
 
 	public static final String UNASSIGNED_USER = "-1";
-	
+
 	private String key = null;
-	
+
 	public enum Kind {
 		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE;
 
@@ -72,5 +72,5 @@ public class JiraTask extends AbstractTask {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 }

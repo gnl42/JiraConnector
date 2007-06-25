@@ -69,12 +69,13 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager()
-			.getRepositoryConnector(JiraUiPlugin.REPOSITORY_KIND);
-		
+		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+				JiraUiPlugin.REPOSITORY_KIND);
+
 		JiraTaskDataHandler taskDataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
-		AbstractAttributeFactory attributeFactory = taskDataHandler.getAttributeFactory(taskRepository.getUrl(), taskRepository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
-		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory , JiraUiPlugin.REPOSITORY_KIND,
+		AbstractAttributeFactory attributeFactory = taskDataHandler.getAttributeFactory(taskRepository.getUrl(),
+				taskRepository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
+		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
 				taskRepository.getUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
 		taskData.setNew(true);
 		JiraClient server = JiraClientFacade.getDefault().getJiraClient(taskRepository);
@@ -83,7 +84,7 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
 		intializeToFirst(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE));
 		intializeToFirst(taskData.getAttribute(RepositoryTaskAttribute.PRIORITY));
-		
+
 		NewTaskEditorInput editorInput = new NewTaskEditorInput(taskRepository, taskData);
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		TasksUiUtil.openEditor(editorInput, TaskEditor.ID_EDITOR, page);

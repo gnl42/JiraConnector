@@ -40,8 +40,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 
 /**
- * Wizard page that allows the user to select a named Jira filter they have
- * defined on the server.
+ * Wizard page that allows the user to select a named Jira filter they have defined on the server.
  * 
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
@@ -110,7 +109,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean selection = buttonSaved.getSelection();
-				if(filters!=null) {
+				if (filters != null) {
 					filterList.setEnabled(selection);
 				}
 				updateButton.setEnabled(selection);
@@ -190,7 +189,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 				try {
 					JiraClient jiraServer = JiraClientFacade.getDefault().getJiraClient(repository);
 					loadedFilters = jiraServer.getNamedFilters();
-					filters = loadedFilters; 
+					filters = loadedFilters;
 
 				} catch (JiraException e) {
 					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR, JiraCorePlugin.ID,
@@ -207,7 +206,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 					showFilters(loadedFilters, status);
 					monitor.done();
 				}
-				return status; 
+				return status;
 			}
 
 			private void showFilters(final NamedFilter[] loadedFilters, final IStatus status) {
@@ -226,13 +225,16 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		job.schedule();
 	}
 
-	/** Called by the download job when the filters have been downloaded 
-	 * @param status */
+	/**
+	 * Called by the download job when the filters have been downloaded
+	 * 
+	 * @param status
+	 */
 	public void displayFilters(NamedFilter[] filters, IStatus status) {
-		if(!status.isOK()) {
+		if (!status.isOK()) {
 			setMessage(status.getMessage(), IMessageProvider.ERROR);
 		}
-		
+
 		filterList.removeAll();
 
 		if (filters.length == 0) {
@@ -240,7 +242,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 			filterList.add("No filters found");
 			filterList.deselectAll();
 
-			if(status.isOK()) {
+			if (status.isOK()) {
 				setMessage("No saved filters found. Please create filters using JIRA web interface or"
 						+ " follow to the next page to create custom query.", IMessageProvider.WARNING);
 			}

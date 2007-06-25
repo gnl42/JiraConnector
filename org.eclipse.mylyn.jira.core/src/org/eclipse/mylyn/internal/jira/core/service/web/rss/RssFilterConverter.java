@@ -41,7 +41,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 class RssFilterConverter {
 
@@ -301,7 +301,8 @@ class RssFilterConverter {
 
 		for (int i = 1; i < versions.length; i++) {
 			buffer.append("&") //$NON-NLS-1$
-					.append(param).append("=") //$NON-NLS-1$
+					.append(param)
+					.append("=") //$NON-NLS-1$
 					.append(versions[i].getId());
 		}
 

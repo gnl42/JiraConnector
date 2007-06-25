@@ -17,7 +17,7 @@ import java.io.Serializable;
 // Could discover it while creating issues, but this seems dodgey at best
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class LinkType implements Serializable {
 

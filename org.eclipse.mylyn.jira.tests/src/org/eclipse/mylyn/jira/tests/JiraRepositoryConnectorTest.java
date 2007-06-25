@@ -54,7 +54,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	private AbstractRepositoryConnector connector;
 
 	private AbstractTaskDataHandler dataHandler;
-	
+
 	private JiraClient server;
 
 	private String customFieldId;
@@ -67,7 +67,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		manager = TasksUiPlugin.getRepositoryManager();
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		
+
 		JiraClientFacade.getDefault().clearClients();
 	}
 
@@ -87,7 +87,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		customFieldName = "Free Text";
 		customFieldId = JiraTestUtils.getCustomField(server, customFieldName);
 		assertNotNull("Unable to find custom field id", customFieldId);
-		
+
 		credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
@@ -122,7 +122,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 	public void testUpdateTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
-		
+
 		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
@@ -130,27 +130,27 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertNull(task.getDueDate());
 
 		String issueKey = issue.getKey();
-		
+
 		RepositoryTaskData taskData;
-		
+
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		taskData.addAttributeValue(customFieldId, "foo");
 		taskData.addAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "add comment");
 		RepositoryOperation leaveOperation = new RepositoryOperation("leave", "");
 		taskData.addOperation(leaveOperation);
 		taskData.setSelectedOperation(leaveOperation);
-		
+
 //		issue = server.getIssueByKey(issueKey);
 //		issue.setCustomFields(new CustomField[] { new CustomField(fieldId, //
 //				"com.atlassian.jira.plugin.system.customfieldtypes:textfield", // 
 //				fieldName, Collections.singletonList("foo")) });
 //		server.updateIssue(issue, "add comment");
-		
+
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 
 		issue = server.getIssueByKey(issueKey);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
-		
+
 		{
 			String operation = JiraTestUtils.getOperation(server, issue.getKey(), "resolve");
 			assertNotNull("Unable to find id for resolve operation", operation);
@@ -161,9 +161,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 //			
 //			// server.resolveIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
 //			server.advanceIssueWorkflow(issue, operation, params);
-			
+
 			taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(server).getId());
+			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(server)
+					.getId());
 			taskData.setAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "comment");
 
 			RepositoryOperation resolveOperation = new RepositoryOperation(operation, "resolve");
@@ -178,8 +179,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		issue = server.getIssueByKey(issueKey);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
-		
-		{		
+
+		{
 			String operation = JiraTestUtils.getOperation(server, issue.getKey(), "close");
 			assertNotNull("Unable to find id for close operation", operation);
 
@@ -189,9 +190,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 //			
 //			// server.closeIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
 //			server.advanceIssueWorkflow(issue, operation, params);
-			
+
 			taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(server).getId());
+			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(server)
+					.getId());
 			taskData.setAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "comment");
 
 			RepositoryOperation resolveOperation = new RepositoryOperation(operation, "close");
@@ -229,14 +231,16 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		sourceContextFile.deleteOnExit();
 
 		assertTrue(connector.getAttachmentHandler().attachContext(repository, task, "", new NullProgressMonitor()));
-		
+
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 
-		Set<RepositoryAttachment> contextAttachments = connector.getAttachmentHandler().getContextAttachments(repository, task);
+		Set<RepositoryAttachment> contextAttachments = connector.getAttachmentHandler().getContextAttachments(
+				repository, task);
 		assertEquals(1, contextAttachments.size());
-		
+
 		RepositoryAttachment attachment = contextAttachments.iterator().next();
-		assertTrue(connector.getAttachmentHandler().retrieveContext(repository, task, attachment, System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
+		assertTrue(connector.getAttachmentHandler().retrieveContext(repository, task, attachment,
+				System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
 	}
-	
+
 }

@@ -7,160 +7,148 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings({ "unchecked", "serial" })
-public class RemotePermissionMapping  implements java.io.Serializable {
-    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission;
+@SuppressWarnings( { "unchecked", "serial" })
+public class RemotePermissionMapping implements java.io.Serializable {
+	private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission;
 
-    private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities;
+	private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities;
 
-    public RemotePermissionMapping() {
-    }
+	public RemotePermissionMapping() {
+	}
 
-    public RemotePermissionMapping(
-           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission,
-           org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities) {
-           this.permission = permission;
-           this.remoteEntities = remoteEntities;
-    }
+	public RemotePermissionMapping(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission,
+			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities) {
+		this.permission = permission;
+		this.remoteEntities = remoteEntities;
+	}
 
+	/**
+	 * Gets the permission value for this RemotePermissionMapping.
+	 * 
+	 * @return permission
+	 */
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission getPermission() {
+		return permission;
+	}
 
-    /**
-     * Gets the permission value for this RemotePermissionMapping.
-     * 
-     * @return permission
-     */
-    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission getPermission() {
-        return permission;
-    }
+	/**
+	 * Sets the permission value for this RemotePermissionMapping.
+	 * 
+	 * @param permission
+	 */
+	public void setPermission(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission) {
+		this.permission = permission;
+	}
 
+	/**
+	 * Gets the remoteEntities value for this RemotePermissionMapping.
+	 * 
+	 * @return remoteEntities
+	 */
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] getRemoteEntities() {
+		return remoteEntities;
+	}
 
-    /**
-     * Sets the permission value for this RemotePermissionMapping.
-     * 
-     * @param permission
-     */
-    public void setPermission(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermission permission) {
-        this.permission = permission;
-    }
+	/**
+	 * Sets the remoteEntities value for this RemotePermissionMapping.
+	 * 
+	 * @param remoteEntities
+	 */
+	public void setRemoteEntities(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities) {
+		this.remoteEntities = remoteEntities;
+	}
 
+	private java.lang.Object __equalsCalc = null;
 
-    /**
-     * Gets the remoteEntities value for this RemotePermissionMapping.
-     * 
-     * @return remoteEntities
-     */
-    public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] getRemoteEntities() {
-        return remoteEntities;
-    }
-
-
-    /**
-     * Sets the remoteEntities value for this RemotePermissionMapping.
-     * 
-     * @param remoteEntities
-     */
-    public void setRemoteEntities(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity[] remoteEntities) {
-        this.remoteEntities = remoteEntities;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    @Override
+	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof RemotePermissionMapping)) return false;
-        RemotePermissionMapping other = (RemotePermissionMapping) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.permission==null && other.getPermission()==null) || 
-             (this.permission!=null &&
-              this.permission.equals(other.getPermission()))) &&
-            ((this.remoteEntities==null && other.getRemoteEntities()==null) || 
-             (this.remoteEntities!=null &&
-              java.util.Arrays.equals(this.remoteEntities, other.getRemoteEntities())));
-        __equalsCalc = null;
-        return _equals;
-    }
+		if (!(obj instanceof RemotePermissionMapping))
+			return false;
+		RemotePermissionMapping other = (RemotePermissionMapping) obj;
+		if (obj == null)
+			return false;
+		if (this == obj)
+			return true;
+		if (__equalsCalc != null) {
+			return (__equalsCalc == obj);
+		}
+		__equalsCalc = obj;
+		boolean _equals;
+		_equals = true
+				&& ((this.permission == null && other.getPermission() == null) || (this.permission != null && this.permission.equals(other.getPermission())))
+				&& ((this.remoteEntities == null && other.getRemoteEntities() == null) || (this.remoteEntities != null && java.util.Arrays.equals(
+						this.remoteEntities, other.getRemoteEntities())));
+		__equalsCalc = null;
+		return _equals;
+	}
 
-    private boolean __hashCodeCalc = false;
-    @Override
+	private boolean __hashCodeCalc = false;
+
+	@Override
 	public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getPermission() != null) {
-            _hashCode += getPermission().hashCode();
-        }
-        if (getRemoteEntities() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getRemoteEntities());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getRemoteEntities(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
-                }
-            }
-        }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
+		if (__hashCodeCalc) {
+			return 0;
+		}
+		__hashCodeCalc = true;
+		int _hashCode = 1;
+		if (getPermission() != null) {
+			_hashCode += getPermission().hashCode();
+		}
+		if (getRemoteEntities() != null) {
+			for (int i = 0; i < java.lang.reflect.Array.getLength(getRemoteEntities()); i++) {
+				java.lang.Object obj = java.lang.reflect.Array.get(getRemoteEntities(), i);
+				if (obj != null && !obj.getClass().isArray()) {
+					_hashCode += obj.hashCode();
+				}
+			}
+		}
+		__hashCodeCalc = false;
+		return _hashCode;
+	}
 
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(RemotePermissionMapping.class, true);
+	// Type metadata
+	private static org.apache.axis.description.TypeDesc typeDesc = new org.apache.axis.description.TypeDesc(
+			RemotePermissionMapping.class, true);
 
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemotePermissionMapping"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("permission");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "permission"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemotePermission"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("remoteEntities");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "remoteEntities"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteEntity"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-    }
+	static {
+		typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com",
+				"RemotePermissionMapping"));
+		org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+		elemField.setFieldName("permission");
+		elemField.setXmlName(new javax.xml.namespace.QName("", "permission"));
+		elemField.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com",
+				"RemotePermission"));
+		elemField.setNillable(true);
+		typeDesc.addFieldDesc(elemField);
+		elemField = new org.apache.axis.description.ElementDesc();
+		elemField.setFieldName("remoteEntities");
+		elemField.setXmlName(new javax.xml.namespace.QName("", "remoteEntities"));
+		elemField.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteEntity"));
+		elemField.setNillable(true);
+		typeDesc.addFieldDesc(elemField);
+	}
 
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
+	/**
+	 * Return type metadata object
+	 */
+	public static org.apache.axis.description.TypeDesc getTypeDesc() {
+		return typeDesc;
+	}
 
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
+	/**
+	 * Get Custom Serializer
+	 */
+	public static org.apache.axis.encoding.Serializer getSerializer(java.lang.String mechType,
+			java.lang.Class _javaType, javax.xml.namespace.QName _xmlType) {
+		return new org.apache.axis.encoding.ser.BeanSerializer(_javaType, _xmlType, typeDesc);
+	}
 
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
-    }
+	/**
+	 * Get Custom Deserializer
+	 */
+	public static org.apache.axis.encoding.Deserializer getDeserializer(java.lang.String mechType,
+			java.lang.Class _javaType, javax.xml.namespace.QName _xmlType) {
+		return new org.apache.axis.encoding.ser.BeanDeserializer(_javaType, _xmlType, typeDesc);
+	}
 
 }

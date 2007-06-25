@@ -14,7 +14,7 @@ package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 import org.xml.sax.SAXException;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 class ParseCancelledException extends SAXException {
 

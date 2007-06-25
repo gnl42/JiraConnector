@@ -27,5 +27,5 @@ public class JiraTaskTest extends TestCase {
 		priority.setId("1");
 		assertEquals(PriorityLevel.P1, JiraRepositoryConnector.getMylarPriority(priority));
 	}
-	
+
 }

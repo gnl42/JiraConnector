@@ -19,8 +19,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
- * Wizard that allows the user to select one of their named Jira filters on the
- * server
+ * Wizard that allows the user to select one of their named Jira filters on the server
  * 
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
@@ -29,7 +28,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 public class NewJiraQueryWizard extends Wizard {
 
 	private static final String TITLE = "New JIRA Query";
-	
+
 	private final TaskRepository repository;
 
 	private JiraQueryWizardPage queryPage;
@@ -37,7 +36,7 @@ public class NewJiraQueryWizard extends Wizard {
 	public NewJiraQueryWizard(TaskRepository repository) {
 		this.repository = repository;
 		setNeedsProgressMonitor(true);
-		setWindowTitle(TITLE); 
+		setWindowTitle(TITLE);
 		setDefaultPageImageDescriptor(TasksUiImages.BANNER_REPOSITORY);
 	}
 
@@ -53,22 +52,21 @@ public class NewJiraQueryWizard extends Wizard {
 		AbstractRepositoryQuery query = queryPage.getQuery();
 		if (query != null) {
 			TasksUiPlugin.getTaskListManager().getTaskList().addQuery(query);
-			AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(repository.getConnectorKind());
+			AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+					repository.getConnectorKind());
 			if (connector != null) {
 				TasksUiPlugin.getSynchronizationManager().synchronize(connector, query, null, true);
 			}
-		} 
+		}
 		return true;
 	}
 
-	
-	
 	@Override
 	public boolean canFinish() {
-		if(queryPage.getNextPage() == null) {
+		if (queryPage.getNextPage() == null) {
 			return queryPage.isPageComplete();
 		}
 		return queryPage.getNextPage().isPageComplete();
 	}
-	
+
 }

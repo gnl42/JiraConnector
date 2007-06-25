@@ -14,10 +14,10 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 import java.io.Serializable;
 
 /**
- * This filter will restrict matches to issues that have either a summary,
- * description, environment or comment matching the specified query string.
- *
- * @author	Brock Janiczak
+ * This filter will restrict matches to issues that have either a summary, description, environment or comment matching
+ * the specified query string.
+ * 
+ * @author Brock Janiczak
  */
 public class ContentFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -37,11 +37,9 @@ public class ContentFilter implements Filter, Serializable {
 	 * @param queryString
 	 *            content beindg searched for
 	 * @param searchSummary
-	 *            Search the issue's summary for matches of
-	 *            <code>queryString</code>
+	 *            Search the issue's summary for matches of <code>queryString</code>
 	 * @param searchDescription
-	 *            Search the issue's description for matches of
-	 *            <code>queryString</code>
+	 *            Search the issue's description for matches of <code>queryString</code>
 	 * @param searchEnvironment
 	 *            Search the issue's environment for matches of </code>queryString</code>
 	 * @param searchComments

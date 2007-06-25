@@ -19,11 +19,13 @@ import org.eclipse.mylyn.web.core.WebClientUtil;
 
 @SuppressWarnings("serial")
 public class JiraHttpSender extends CommonsHTTPSender {
-	
+
 	public static final String PROXY = "org.eclipse.mylyn.jira.proxy";
+
 	public static final String HTTP_USER = "org.eclipse.mylyn.jira.httpUser";
+
 	public static final String HTTP_PASSWORD = "org.eclipse.mylyn.jira.httpPassword";
-	
+
 	@Override
 	protected HostConfiguration getHostConfiguration(HttpClient client, MessageContext context, URL url) {
 		Proxy proxy = (Proxy) context.getProperty(PROXY);

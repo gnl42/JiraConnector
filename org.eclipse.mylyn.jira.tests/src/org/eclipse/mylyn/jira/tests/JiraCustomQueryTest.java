@@ -117,7 +117,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setName("filter");
-	    filter.setProjectFilter(new ProjectFilter(project));
+		filter.setProjectFilter(new ProjectFilter(project));
 		filter.setComponentFilter(new ComponentFilter(components));
 		filter.setFixForVersionFilter(new VersionFilter(fixVersions));
 		filter.setReportedInVersionFilter(new VersionFilter(repoVersions));
@@ -142,21 +142,20 @@ public class JiraCustomQueryTest extends TestCase {
 		String queryUrl = customQuery.getUrl();
 
 		JiraClient jiraServer = (JiraClient) Proxy.newProxyInstance(getClass().getClassLoader(),
-				new Class[] {JiraClient.class},
-				new InvocationHandler() {
+				new Class[] { JiraClient.class }, new InvocationHandler() {
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 						String name = method.getName();
-						if("getProjectById".equals(name)) {
+						if ("getProjectById".equals(name)) {
 							return project;
-						} else if("getIssueTypeById".equals(name)) {
+						} else if ("getIssueTypeById".equals(name)) {
 							IssueType issueType = new IssueType();
 							issueType.setId((String) args[0]);
 							return issueType;
-						} else if("getStatusById".equals(name)) {
+						} else if ("getStatusById".equals(name)) {
 							Status status = new Status();
 							status.setId((String) args[0]);
 							return status;
-						} else if("getResolutionById".equals(name)) {
+						} else if ("getResolutionById".equals(name)) {
 							Resolution resolution = new Resolution();
 							resolution.setId((String) args[0]);
 							return resolution;
@@ -165,8 +164,8 @@ public class JiraCustomQueryTest extends TestCase {
 					}
 				});
 
-		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl, taskRepository
-				.getCharacterEncoding());
+		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl,
+				taskRepository.getCharacterEncoding());
 
 		FilterDefinition filter2 = customQuery2.getFilterDefinition(jiraServer, true);
 
@@ -245,12 +244,12 @@ public class JiraCustomQueryTest extends TestCase {
 		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
 		assertNotNull(resolutionFilter);
 		assertTrue(resolutionFilter.isUnresolved());
-		
+
 		filter = new FilterDefinition();
 		Resolution[] resolutions = new Resolution[1];
 		resolutions[0] = new Resolution();
 		resolutions[0].setId("123");
- 		resolutionFilter = new ResolutionFilter(resolutions);
+		resolutionFilter = new ResolutionFilter(resolutions);
 		filter.setResolutionFilter(resolutionFilter);
 		customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET);
 		try {

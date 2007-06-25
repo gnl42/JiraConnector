@@ -38,7 +38,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 			RepositoryTaskEditorInput existingInput = (RepositoryTaskEditorInput) input;
 			return existingInput.getTaskData() != null
 					&& JiraUiPlugin.REPOSITORY_KIND.equals(existingInput.getRepository().getConnectorKind());
-		} 
+		}
 		return false;
 	}
 

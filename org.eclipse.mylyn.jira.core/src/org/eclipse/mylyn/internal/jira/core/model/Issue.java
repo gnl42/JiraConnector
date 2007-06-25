@@ -31,9 +31,9 @@ public class Issue implements Serializable {
 	private String key;
 
 	private String parentId;
-	
+
 	private String parentKey;
-	
+
 	private String summary;
 
 	private String environment;
@@ -109,19 +109,19 @@ public class Issue implements Serializable {
 	public String getParentId() {
 		return parentId;
 	}
-	
+
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
 	}
-	
+
 	public String getParentKey() {
 		return parentKey;
 	}
-	
+
 	public void setParentKey(String parentKey) {
 		this.parentKey = parentKey;
 	}
-	
+
 	public String getAssignee() {
 		return this.assigneeName;
 	}
@@ -300,12 +300,10 @@ public class Issue implements Serializable {
 	}
 
 	/**
-	 * Determines if it is ok for the supplied user to vote on this issue. Users
-	 * can not vote on an issue if the issue is resolved or the user is the
-	 * reporter.
+	 * Determines if it is ok for the supplied user to vote on this issue. Users can not vote on an issue if the issue
+	 * is resolved or the user is the reporter.
 	 * 
-	 * @return <code>true</code> if it is valid for <code>user</code> to
-	 *         vote for the issue
+	 * @return <code>true</code> if it is valid for <code>user</code> to vote for the issue
 	 */
 	public boolean canUserVote(String user) {
 		return (this.getResolution() == null) && !(user.equals(this.getReporter()));
@@ -318,8 +316,7 @@ public class Issue implements Serializable {
 	/**
 	 * Determines if this issue has been voted on by the current user
 	 * 
-	 * @return <code>true</code> if the current user is voting for this issue.
-	 *         <code>false</code> otherwise.
+	 * @return <code>true</code> if the current user is voting for this issue. <code>false</code> otherwise.
 	 */
 	public boolean getHasVote() {
 		// XXX Required new API to work
@@ -359,99 +356,99 @@ public class Issue implements Serializable {
 	public void setCustomFields(CustomField[] customFields) {
 		this.customFields = customFields;
 	}
-	
+
 	public CustomField[] getCustomFields() {
 		return customFields;
 	}
 
 	public CustomField getCustomFieldById(String fieldId) {
 		for (CustomField field : getCustomFields()) {
-			if(fieldId.equals(field.getId())) {
+			if (fieldId.equals(field.getId())) {
 				return field;
 			}
 		}
 		return null;
 	}
-	
+
 	public Subtask[] getSubtasks() {
 		return subtasks;
 	}
-	
+
 	public void setSubtasks(Subtask[] subtasks) {
 		this.subtasks = subtasks;
 	}
-	
+
 	public IssueLink[] getIssueLinks() {
 		return issueLinks;
 	}
-	
+
 	public void setIssueLinks(IssueLink[] issueLinks) {
 		this.issueLinks = issueLinks;
 	}
 
 	public String[] getFieldValues(String field) {
-		if("resolution".equals(field)) {
-			if(resolution!=null) {
-				return new String[] {resolution.getId()};
+		if ("resolution".equals(field)) {
+			if (resolution != null) {
+				return new String[] { resolution.getId() };
 			}
-		} else if("fixVersions".equals(field)) {
-			if(fixVersions!=null) {
+		} else if ("fixVersions".equals(field)) {
+			if (fixVersions != null) {
 				String[] res = new String[fixVersions.length];
 				for (int i = 0; i < fixVersions.length; i++) {
 					res[i] = fixVersions[i].getId();
 				}
 				return res;
 			}
-		} else if("assignee".equals(field)) {
-			return new String[] {assigneeName};
-		} 
+		} else if ("assignee".equals(field)) {
+			return new String[] { assigneeName };
+		}
 
-	    // TODO add other fields
-		
-		if(field.startsWith("customfield_")) {
+		// TODO add other fields
+
+		if (field.startsWith("customfield_")) {
 			for (int i = 0; i < customFields.length; i++) {
 				CustomField customField = customFields[i];
-				if(customField.getId().equals(field)) {
+				if (customField.getId().equals(field)) {
 					List<String> values = customField.getValues();
 					return values.toArray(new String[values.size()]);
 				}
 			}
 		}
-				
+
 		return null;
 	}
 
-  // TODO refactor RSS parser to use this call
+	// TODO refactor RSS parser to use this call
 	public void setValue(String field, String value) {
-		if("resolution".equals(field)) {
-			if(value!=null) {
+		if ("resolution".equals(field)) {
+			if (value != null) {
 				resolution = new Resolution();
 				resolution.setId(value);
 			}
-		} else if("assignee".equals(field)) {
+		} else if ("assignee".equals(field)) {
 			assigneeName = value;
 
-		// TODO add other fields
-		} else if(field.startsWith("customfield_")) {
+			// TODO add other fields
+		} else if (field.startsWith("customfield_")) {
 			boolean found = false;
-			
+
 			for (int i = 0; i < customFields.length; i++) {
 				CustomField customField = customFields[i];
-				if(customField.getId().equals(field)) {
-					customFields[i] = new CustomField(customField.getId(), 
-							customField.getKey(), customField.getKey(), Collections.singletonList(value));
+				if (customField.getId().equals(field)) {
+					customFields[i] = new CustomField(customField.getId(), customField.getKey(), customField.getKey(),
+							Collections.singletonList(value));
 					found = true;
 					break;
 				}
-				
+
 			}
-			
-			if(!found) {
+
+			if (!found) {
 				List<CustomField> list = Arrays.asList(customFields);
 				list.add(new CustomField(field, "", "", Collections.singletonList(value)));
 				customFields = list.toArray(new CustomField[list.size()]);
 			}
 		}
 	}
-	
+
 }

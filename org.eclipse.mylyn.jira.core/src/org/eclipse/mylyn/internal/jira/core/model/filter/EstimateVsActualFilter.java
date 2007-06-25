@@ -15,7 +15,7 @@ import java.io.Serializable;
 
 // Only one is required
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class EstimateVsActualFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;

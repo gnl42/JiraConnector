@@ -17,7 +17,7 @@ import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 
 // TODO consider making this abstract and using subclasses to do the typing
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class IssueTypeFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;

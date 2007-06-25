@@ -17,20 +17,22 @@ import javax.xml.rpc.ServiceException;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
 
-
 // TODO Tere must be an easier way to set these properties. Shame the Axis doco
 // is so bad.
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 @SuppressWarnings("serial")
 public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLocator {
 
 	private Proxy proxy;
+
 	private String httpUser;
+
 	private String httpPassword;
+
 	private boolean compression;
-	
+
 	public GZipJiraSoapServiceServiceLocator() {
 	}
 
@@ -63,7 +65,7 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 		if (proxy != null) {
 			call.setProperty(JiraHttpSender.PROXY, proxy);
 		}
-		
+
 		// Some servers break with a 411 Length Required when chunked encoding
 		// is used
 		Map<String, Boolean> headers = new Hashtable<String, Boolean>();
@@ -99,9 +101,9 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 	public boolean isCompression() {
 		return compression;
 	}
-	
+
 	public void setCompression(boolean compression) {
 		this.compression = compression;
 	}
-	
+
 }

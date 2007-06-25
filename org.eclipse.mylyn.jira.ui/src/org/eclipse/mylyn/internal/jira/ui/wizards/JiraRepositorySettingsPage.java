@@ -34,8 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 /**
- * Wizard page used to specify a JIRA repository address, username, and
- * password.
+ * Wizard page used to specify a JIRA repository address, username, and password.
  * 
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
@@ -109,8 +108,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	@Override
 	public void updateProperties(TaskRepository repository) {
-		repository.setProperty(JiraRepositoryConnector.COMPRESSION_KEY, String
-				.valueOf(compressionButton.getSelection()));
+		repository.setProperty(JiraRepositoryConnector.COMPRESSION_KEY,
+				String.valueOf(compressionButton.getSelection()));
 	}
 
 	private class JiraValidator extends Validator {

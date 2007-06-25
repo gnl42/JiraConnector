@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class LuceneFilterContentHandler extends DefaultHandler {
 

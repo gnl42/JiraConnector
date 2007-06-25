@@ -14,20 +14,20 @@ package org.eclipse.mylyn.internal.jira.core.model;
 import java.io.Serializable;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  * @author Eugene Kuleshov
  */
 public class IssueLink implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String issueId;
-	
+
 	private final String issueKey;
 
 	private final String linkTypeId;
 
 	private final String linkName;
-	
+
 	private final String inwardDescription;
 
 	private final String outwardDescription;
@@ -45,7 +45,7 @@ public class IssueLink implements Serializable {
 	public String getIssueId() {
 		return issueId;
 	}
-	
+
 	public String getIssueKey() {
 		return this.issueKey;
 	}
@@ -57,11 +57,11 @@ public class IssueLink implements Serializable {
 	public String getLinkName() {
 		return linkName;
 	}
-	
+
 	public String getInwardDescription() {
 		return inwardDescription;
 	}
-	
+
 	public String getOutwardDescription() {
 		return outwardDescription;
 	}

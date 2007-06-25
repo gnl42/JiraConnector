@@ -35,9 +35,9 @@ public class JiraClientFacadeTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		
+
 		jiraFacade = JiraClientFacade.getDefault();
-		
+
 		TasksUiPlugin.getTaskListManager().resetTaskList();
 	}
 
@@ -75,13 +75,14 @@ public class JiraClientFacadeTest extends TestCase {
 
 	protected void validate(String url) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		
+
 		// standard connect
 		jiraFacade.validateServerAndCredentials(url, credentials.username, credentials.password, null, null, null);
 
 		// invalid URL		
 		try {
-			jiraFacade.validateServerAndCredentials("http://non.existant/repository", credentials.username, credentials.password, null, null, null);
+			jiraFacade.validateServerAndCredentials("http://non.existant/repository", credentials.username,
+					credentials.password, null, null, null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 		}

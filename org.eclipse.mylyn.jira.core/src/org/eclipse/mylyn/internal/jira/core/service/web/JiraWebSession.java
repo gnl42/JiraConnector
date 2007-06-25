@@ -48,8 +48,8 @@ public class JiraWebSession {
 	public void doInSession(JiraWebSessionCallback callback) throws JiraException {
 		HttpClient client = new HttpClient();
 
-		WebClientUtil.setupHttpClient(client, server.getProxy(), baseUrl, server.getHttpUser(), server
-				.getHttpPassword());
+		WebClientUtil.setupHttpClient(client, server.getProxy(), baseUrl, server.getHttpUser(),
+				server.getHttpPassword());
 
 		login(client);
 		try {
@@ -68,8 +68,11 @@ public class JiraWebSession {
 	private void login(HttpClient client) throws JiraException {
 		class RedirectInfo {
 			final int statusCode;
+
 			final String url;
+
 			final Header[] responseHeaders;
+
 			final String responseBody;
 
 			public RedirectInfo(String url, int statusCode, Header[] responseHeaders, String responseBody) {
@@ -78,7 +81,7 @@ public class JiraWebSession {
 				this.responseHeaders = responseHeaders;
 				this.responseBody = responseBody;
 			}
-			
+
 			@Override
 			public String toString() {
 				StringBuilder sb = new StringBuilder("Request: ");
@@ -91,12 +94,12 @@ public class JiraWebSession {
 				return sb.toString();
 			}
 		}
-		
+
 		ArrayList<RedirectInfo> redirects = new ArrayList<RedirectInfo>();
-		
+
 		String url = baseUrl + "/login.jsp";
 		for (int i = 0; i < MAX_REDIRECTS; i++) {
-			PostMethod login = new PostMethod(url); 
+			PostMethod login = new PostMethod(url);
 			login.setFollowRedirects(false);
 			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 			login.addParameter("os_username", server.getUserName()); //$NON-NLS-1$
@@ -111,9 +114,10 @@ public class JiraWebSession {
 						&& statusCode != HttpStatus.SC_MOVED_PERMANENTLY) {
 					throw new JiraServiceUnavailableException("Unexpected status code on login: " + statusCode);
 				}
-				
+
 				Header locationHeader = login.getResponseHeader("location");
-				redirects.add(new RedirectInfo(url, statusCode, login.getResponseHeaders(), login.getResponseBodyAsString()));
+				redirects.add(new RedirectInfo(url, statusCode, login.getResponseHeaders(),
+						login.getResponseBodyAsString()));
 				if (locationHeader == null) {
 					throw new JiraServiceUnavailableException("Invalid redirect, missing location");
 				}
@@ -134,16 +138,16 @@ public class JiraWebSession {
 				login.releaseConnection();
 			}
 		}
-		
+
 		StringBuilder sb = new StringBuilder("Login redirects:\n");
 		for (RedirectInfo info : redirects) {
 			sb.append(info.toString());
 		}
 		JiraCorePlugin.log(IStatus.INFO, sb.toString(), null);
-		
+
 		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects on login");
 	}
-	
+
 	private void logout(HttpClient client) throws JiraException {
 		GetMethod logout = new GetMethod(baseUrl + "/logout"); //$NON-NLS-1$
 		logout.setFollowRedirects(false);

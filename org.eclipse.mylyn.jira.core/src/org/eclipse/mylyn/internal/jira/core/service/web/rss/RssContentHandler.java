@@ -37,31 +37,23 @@ import org.xml.sax.helpers.DefaultHandler;
  * From the wiki:
  * 
  * <ul>
- * <li>Cascading Select - Multiple select lists where the options for the
- * second select list dynamically updates based on the value of the first</li>
- * <li>Date Picker - Input field allowing input with a date picker and
- * enforcing valid dates</li>
- * <li>Free Text Field (unlimited text) - Multiple line text-area enabling
- * entry of longer text strings</li>
+ * <li>Cascading Select - Multiple select lists where the options for the second select list dynamically updates based
+ * on the value of the first</li>
+ * <li>Date Picker - Input field allowing input with a date picker and enforcing valid dates</li>
+ * <li>Free Text Field (unlimited text) - Multiple line text-area enabling entry of longer text strings</li>
  * <li>Multi Checkboxes Checkboxes allowing multiple values to be selected</li>
  * <li>Multi Select - Select list permitting multiple values to be selected</li>
- * <li>Number Field Input field storing and validating numeric (floating point)
- * values</li>
- * <li>Project Picker - Select list displaying the projects viewable by the
- * user in the system</li>
+ * <li>Number Field Input field storing and validating numeric (floating point) values</li>
+ * <li>Project Picker - Select list displaying the projects viewable by the user in the system</li>
  * <li>Radio Buttons - Radio buttons ensuring only one value can be selected</li>
  * <li>Select List - Single select list with a configurable list of options</li>
- * <li>Text Field - Basic single line input field to allow simple text input of
- * less than 255 characters</li>
+ * <li>Text Field - Basic single line input field to allow simple text input of less than 255 characters</li>
  * <li>URL Field - Input field that validates a valid URL</li>
- * <li>User Picker - Choose a user from the user base via a popup picker
- * window.</li>
- * <li>Version Picker - Select list with the all versions related to the
- * current project of the issue</li>
+ * <li>User Picker - Choose a user from the user base via a popup picker window.</li>
+ * <li>Version Picker - Select list with the all versions related to the current project of the issue</li>
  * </ul>
  * 
- * The processing of custom fields might need to be done using extension points
- * to handle custom UI
+ * The processing of custom fields might need to be done using extension points to handle custom UI
  * 
  * <p>
  * TODO need a way to convert from custom values into typed values
@@ -75,39 +67,27 @@ import org.xml.sax.helpers.DefaultHandler;
  * com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect
  * com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes
  * com.atlassian.jira.plugin.system.customfieldtypes:datepicker
- * com.atlassian.jira.plugin.system.customfieldtypes:datetime
- * com.atlassian.jira.plugin.system.customfieldtypes:version
+ * com.atlassian.jira.plugin.system.customfieldtypes:datetime com.atlassian.jira.plugin.system.customfieldtypes:version
  * com.atlassian.jira.plugin.system.customfieldtypes:multiversion
  * com.atlassian.jira.plugin.system.customfieldtypes:userpicker
  * com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker
  * com.atlassian.jira.plugin.system.customfieldtypes:grouppicker
  * com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker
- * com.atlassian.jira.plugin.system.customfieldtypes:float
- * com.atlassian.jira.plugin.system.customfieldtypes:project
- * com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons
- * com.atlassian.jira.plugin.system.customfieldtypes:url
+ * com.atlassian.jira.plugin.system.customfieldtypes:float com.atlassian.jira.plugin.system.customfieldtypes:project
+ * com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons com.atlassian.jira.plugin.system.customfieldtypes:url
  * com.atlassian.jira.plugin.system.customfieldtypes:readonlyfield
  * 
  * <p>
  * TODO probably need to filter out the following field types (and maybe others from JIRA Toolkit)
  * 
  * <p>
- * com.atlassian.jira.toolkit:assigneedomain
- * com.atlassian.jira.toolkit:attachments 
- * com.atlassian.jira.toolkit:comments
- * com.atlassian.jira.toolkit:dayslastcommented
- * com.atlassian.jira.toolkit:lastusercommented
- * com.atlassian.jira.toolkit:message
- * com.atlassian.jira.toolkit:multikeyfield
- * com.atlassian.jira.toolkit:multiproject
- * com.atlassian.jira.toolkit:originalestimate
- * com.atlassian.jira.toolkit:participants
- * com.atlassian.jira.toolkit:reporterdomain
- * com.atlassian.jira.toolkit:resolveddate
- * com.atlassian.jira.toolkit:supporttools
- * com.atlassian.jira.toolkit:userproperty
- * com.atlassian.jira.toolkit:velocitymessage
- * com.atlassian.jira.toolkit:velocityviewmessage
+ * com.atlassian.jira.toolkit:assigneedomain com.atlassian.jira.toolkit:attachments com.atlassian.jira.toolkit:comments
+ * com.atlassian.jira.toolkit:dayslastcommented com.atlassian.jira.toolkit:lastusercommented
+ * com.atlassian.jira.toolkit:message com.atlassian.jira.toolkit:multikeyfield com.atlassian.jira.toolkit:multiproject
+ * com.atlassian.jira.toolkit:originalestimate com.atlassian.jira.toolkit:participants
+ * com.atlassian.jira.toolkit:reporterdomain com.atlassian.jira.toolkit:resolveddate
+ * com.atlassian.jira.toolkit:supporttools com.atlassian.jira.toolkit:userproperty
+ * com.atlassian.jira.toolkit:velocitymessage com.atlassian.jira.toolkit:velocityviewmessage
  * com.atlassian.jira.toolkit:viewmessage
  * 
  * com.atlassian.jira.ext.charting:firstresponsedate
@@ -122,7 +102,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class RssContentHandler extends DefaultHandler {
 
 	private static final String XML_DATE_FORMAT = "E, dd MMM yyyy HH:mm:ss Z (zz)"; //$NON-NLS-1$
-	
+
 	private static final String CREATED_ATTR = "created"; //$NON-NLS-1$
 
 	private static final String LEVEL_ATTR = "level"; //$NON-NLS-1$
@@ -138,7 +118,7 @@ public class RssContentHandler extends DefaultHandler {
 	private static final String SECONDS_ATTR = "seconds"; //$NON-NLS-1$
 
 	private static final String NAME_ATTR = "name"; //$NON-NLS-1$
-	
+
 	private static final String SIZE_ATTR = "size"; //$NON-NLS-1$
 
 	private static final String RSS = "rss"; //$NON-NLS-1$
@@ -162,11 +142,11 @@ public class RssContentHandler extends DefaultHandler {
 	private static final String SUBTASKS = "subtasks"; //$NON-NLS-1$
 
 	private static final String SUBTASK = "subtask"; //$NON-NLS-1$
-	
+
 	private static final String ATTACHMENTS = "attachments"; //$NON-NLS-1$
 
 	private static final String ATTACHMENT = "attachment"; //$NON-NLS-1$
-	
+
 	private static final String DUE = "due"; //$NON-NLS-1$
 
 	private static final String COMPONENT = "component"; //$NON-NLS-1$
@@ -196,7 +176,7 @@ public class RssContentHandler extends DefaultHandler {
 	private static final String KEY = "key"; //$NON-NLS-1$
 
 	private static final String PARENT = "parent"; //$NON-NLS-1$
-	
+
 	private static final String ENVIRONMENT = "environment"; //$NON-NLS-1$
 
 	private static final String DESCRIPTION = "description"; //$NON-NLS-1$
@@ -292,17 +272,21 @@ public class RssContentHandler extends DefaultHandler {
 	private String currentSubtaskId;
 
 	private ArrayList<Subtask> currentSubtasks = new ArrayList<Subtask>();
-	
+
 	private String currentIssueLinkTypeId;
+
 	private String currentIssueLinkTypeName;
+
 	private String currentIssueLinkInwardDescription;
+
 	private String currentIssueLinkOutwardDescription;
+
 	private String currentIssueLinkIssueId;
 
 	private ArrayList<IssueLink> currentIssueLinks = new ArrayList<IssueLink>();
-	
+
 	private String customFieldId;
-	
+
 	private String customFieldKey;
 
 	private String customFieldName;
@@ -319,20 +303,17 @@ public class RssContentHandler extends DefaultHandler {
 
 	private Date attachmentCreated;
 
-
 	/**
-	 * Creates a new RSS reader that will create issues from the RSS information
-	 * by querying the local Jira Server for any missing information. Issues
-	 * will be published to <code>collector</code> as they are read from the
-	 * stream.
+	 * Creates a new RSS reader that will create issues from the RSS information by querying the local Jira Server for
+	 * any missing information. Issues will be published to <code>collector</code> as they are read from the stream.
 	 * 
 	 * @param client
-	 *            Jira server we are listing the issues of. This can either be a
-	 *            locally cached jira server or a connection to a live instance.
+	 *            Jira server we are listing the issues of. This can either be a locally cached jira server or a
+	 *            connection to a live instance.
 	 * @param collector
-	 *            Collecter that will be processing the issues as they are read
-	 *            from the RSS feed.
-	 * @param baseUrl the base URL of the repository
+	 *            Collecter that will be processing the issues as they are read from the RSS feed.
+	 * @param baseUrl
+	 *            the base URL of the repository
 	 */
 	public RssContentHandler(JiraClient client, IssueCollector collector, String baseUrl) {
 		this.client = client;
@@ -470,13 +451,13 @@ public class RssContentHandler extends DefaultHandler {
 				state = IN_CUSTOM_FIELD_VALUES;
 			}
 			break;
-			
+
 		case IN_CUSTOM_FIELD_VALUES:
-			if(CUSTOM_FIELD_VALUE.equals(localName)) {
-				state = IN_CUSTOM_FIELD_VALUE; 
+			if (CUSTOM_FIELD_VALUE.equals(localName)) {
+				state = IN_CUSTOM_FIELD_VALUE;
 			}
 			break;
-			
+
 		case IN_ATTACHMENTS:
 			if (ATTACHMENT.equals(localName)) {
 				attachmentId = attributes.getValue(ID_ATTR);
@@ -487,7 +468,7 @@ public class RssContentHandler extends DefaultHandler {
 			}
 			break;
 		case IN_SUBTASKS:
-			if(SUBTASK.equals(localName)) {
+			if (SUBTASK.equals(localName)) {
 				currentSubtaskId = attributes.getValue(ID_ATTR);
 			}
 		}
@@ -508,20 +489,21 @@ public class RssContentHandler extends DefaultHandler {
 			if (ATTACHMENTS.equals(localName)) {
 				state = IN_ITEM;
 			} else if (ATTACHMENT.equals(localName)) {
-				Attachment attachment = new Attachment(attachmentId, attachmentName, attachmentSize, attachmentAuthor, attachmentCreated);
+				Attachment attachment = new Attachment(attachmentId, attachmentName, attachmentSize, attachmentAuthor,
+						attachmentCreated);
 				currentAttachments.add(attachment);
 			}
 			break;
 
 		case IN_CUSTOM_FIELD_VALUE:
-			if(CUSTOM_FIELD_VALUE.equals(localName)) {
+			if (CUSTOM_FIELD_VALUE.equals(localName)) {
 				customFieldValues.add(currentElementText.toString());
 				state = IN_CUSTOM_FIELD_VALUES;
 			}
 			break;
 		case IN_CUSTOM_FIELD_VALUES:
 			if (CUSTOM_FIELD_VALUES.equals(localName)) {
-				if(customFieldValues.size()==0) {
+				if (customFieldValues.size() == 0) {
 					customFieldValues.add(currentElementText.toString());
 				}
 				state = IN_CUSTOM_FIELD;
@@ -535,7 +517,8 @@ public class RssContentHandler extends DefaultHandler {
 			break;
 		case IN_CUSTOM_FIELD:
 			if (CUSTOM_FIELD.equals(localName)) {
-				currentCustomFields.add(new CustomField(customFieldId, customFieldKey, customFieldName, customFieldValues));
+				currentCustomFields.add(new CustomField(customFieldId, customFieldKey, customFieldName,
+						customFieldValues));
 				customFieldId = null;
 				customFieldKey = null;
 				customFieldName = null;
@@ -572,7 +555,7 @@ public class RssContentHandler extends DefaultHandler {
 			if (ISSUE_LINK_TYPE.equals(localName)) {
 				currentIssueLinkTypeName = null;
 				state = IN_ISSUE_LINKS;
-			} else if(ISSUE_LINK_NAME.equals(localName)) {
+			} else if (ISSUE_LINK_NAME.equals(localName)) {
 				currentIssueLinkTypeName = currentElementText.toString().trim();
 			}
 			break;
@@ -582,7 +565,7 @@ public class RssContentHandler extends DefaultHandler {
 				state = IN_ITEM;
 			}
 			break;
-			
+
 		case IN_COMMENTS:
 			if (COMMENTS.equals(localName)) {
 				state = IN_ITEM;
@@ -596,8 +579,7 @@ public class RssContentHandler extends DefaultHandler {
 				state = LOOKING_FOR_CHANNEL;
 			} else if (ITEM.equals(localName)) {
 				if (currentReportedVersions != null) {
-					currentIssue.setReportedVersions(currentReportedVersions
-							.toArray(new Version[currentReportedVersions.size()]));
+					currentIssue.setReportedVersions(currentReportedVersions.toArray(new Version[currentReportedVersions.size()]));
 				}
 				if (currentFixVersions != null) {
 					currentIssue.setFixVersions(currentFixVersions.toArray(new Version[currentFixVersions.size()]));
@@ -737,7 +719,7 @@ public class RssContentHandler extends DefaultHandler {
 	}
 
 	private static Date convertToDate(String value) {
-		if (value == null || value.length() == 0) { 
+		if (value == null || value.length() == 0) {
 			return null;
 		}
 

@@ -8,9 +8,11 @@
 package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 
 public interface JiraSoapServiceService extends javax.xml.rpc.Service {
-    public java.lang.String getJirasoapserviceV2Address();
+	public java.lang.String getJirasoapserviceV2Address();
 
-    public org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService getJirasoapserviceV2() throws javax.xml.rpc.ServiceException;
+	public org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService getJirasoapserviceV2()
+			throws javax.xml.rpc.ServiceException;
 
-    public org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService getJirasoapserviceV2(java.net.URL portAddress) throws javax.xml.rpc.ServiceException;
+	public org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService getJirasoapserviceV2(java.net.URL portAddress)
+			throws javax.xml.rpc.ServiceException;
 }

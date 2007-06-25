@@ -24,7 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Query;
  * remove the filter super class
  */
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class FilterDefinition implements Query, Serializable {
 	private static final long serialVersionUID = 1L;

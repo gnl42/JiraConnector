@@ -15,7 +15,7 @@ import java.io.Serializable;
 
 // TODO i have no idea what this is suposed to look like
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class CustomFieldFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;

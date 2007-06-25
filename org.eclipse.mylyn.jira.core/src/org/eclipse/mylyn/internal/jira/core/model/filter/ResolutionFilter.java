@@ -16,11 +16,10 @@ import java.io.Serializable;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 
 /**
- * Filter for restricting issues by their resolution. If you are looking for
- * unresolved issues, don't specify and resolutions. If you want all issues
- * regardless of their resolution omit this filter.
- *
- * @author	Brock Janiczak
+ * Filter for restricting issues by their resolution. If you are looking for unresolved issues, don't specify and
+ * resolutions. If you want all issues regardless of their resolution omit this filter.
+ * 
+ * @author Brock Janiczak
  */
 public class ResolutionFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;

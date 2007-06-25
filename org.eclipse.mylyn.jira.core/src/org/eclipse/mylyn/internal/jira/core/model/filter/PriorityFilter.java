@@ -16,7 +16,7 @@ import java.io.Serializable;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class PriorityFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;

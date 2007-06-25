@@ -125,7 +125,7 @@ public class MockJiraClient extends AbstractJiraClient {
 
 	public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
 	}
-	
+
 	public void search(Query query, IssueCollector collector) throws JiraException {
 	}
 
@@ -155,11 +155,11 @@ public class MockJiraClient extends AbstractJiraClient {
 	public String[] getActionFields(String issueKey, String actionId) throws JiraException {
 		return null;
 	}
-	
+
 	public CustomField[] getCustomAttributes() throws JiraException {
 		return null;
 	}
-	
+
 	public void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException {
 	}
 

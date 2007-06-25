@@ -26,10 +26,9 @@ import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 
 /**
- * JIRA server implementation that caches information that is unlikely to change
- * during the session. This server uses a {@link JiraClientData} object to
- * persist the repository configuration. It has life-cycle methods to allow data
- * in the cache to be reloaded.
+ * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a
+ * {@link JiraClientData} object to persist the repository configuration. It has life-cycle methods to allow data in the
+ * cache to be reloaded.
  * 
  * @author Brock Janiczak
  * @author Steffen Pingel
@@ -52,12 +51,12 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 	private final String httpPassword;
 
-	public AbstractJiraClient(String baseUrl, boolean useCompression, String username, String password,
-			Proxy proxy, String httpUser, String httpPassword) {
+	public AbstractJiraClient(String baseUrl, boolean useCompression, String username, String password, Proxy proxy,
+			String httpUser, String httpPassword) {
 		if (baseUrl == null) {
 			throw new IllegalArgumentException("baseURL may not be null");
 		}
-		
+
 		this.baseUrl = baseUrl;
 		this.useCompression = useCompression;
 		this.username = username;
@@ -70,7 +69,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 		this.data = new JiraClientData();
 	}
 
-	public synchronized void refreshDetails(IProgressMonitor monitor)  throws JiraException {
+	public synchronized void refreshDetails(IProgressMonitor monitor) throws JiraException {
 		// use UNKNOWN since some of the update operations block for a long time
 		monitor.beginTask("Updating repository configuration", IProgressMonitor.UNKNOWN);
 
@@ -91,28 +90,28 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 		newData.lastUpdate = System.currentTimeMillis();
 		this.data = newData;
-		
+
 		monitor.done();
 	}
 
 	public synchronized void refreshServerInfo(IProgressMonitor monitor) throws JiraException {
 		monitor.beginTask("Getting server information", 1);
-		
+
 		initializeServerInfo(data);
-		advance(monitor, 1);		
+		advance(monitor, 1);
 	}
-	
+
 	private void advance(IProgressMonitor monitor, int worked) {
 		monitor.worked(1);
 		if (monitor.isCanceled()) {
 			throw new OperationCanceledException();
 		}
 	}
-	
+
 	public boolean hasDetails() {
 		return data.lastUpdate != 0;
 	}
-	
+
 	public String getBaseUrl() {
 		return baseUrl;
 	}
@@ -146,7 +145,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	}
 
 	public abstract Project[] getProjectsRemote() throws JiraException;
-	
+
 	public abstract Project[] getProjectsRemoteNoSchemes() throws JiraException;
 
 	public abstract Version[] getVersionsRemote(String key) throws JiraException;
@@ -186,7 +185,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 	private void initializeIssueTypes(JiraClientData data) throws JiraException {
 		IssueType[] issueTypes = getIssueTypesRemote();
-		IssueType[] subTaskIssueTypes; 
+		IssueType[] subTaskIssueTypes;
 		if (data.serverInfo.getVersion().compareTo("3.2") < 0) {
 			subTaskIssueTypes = new IssueType[0];
 		} else {
@@ -211,7 +210,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	}
 
 	public abstract IssueType[] getIssueTypesRemote() throws JiraException;
-	
+
 	public abstract IssueType[] getSubTaskIssueTypesRemote() throws JiraException;
 
 	public IssueType getIssueTypeById(String id) {
@@ -290,7 +289,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof AbstractJiraClient)  {
+		if (obj instanceof AbstractJiraClient) {
 			return getBaseUrl().equals(((AbstractJiraClient) obj).getBaseUrl());
 		}
 		return false;
@@ -325,9 +324,9 @@ public abstract class AbstractJiraClient implements JiraClient {
 	public void setData(JiraClientData data) {
 		this.data = data;
 	}
-	
+
 	public JiraClientData getData() {
 		return data;
 	}
-	
+
 }

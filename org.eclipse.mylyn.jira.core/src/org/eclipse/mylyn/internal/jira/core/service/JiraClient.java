@@ -33,15 +33,12 @@ import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
 /**
- * This interface exposes the full set of services available from a Jira
- * installation. It provides a unified inferface for the SOAP and Web/RSS
- * services available.
+ * This interface exposes the full set of services available from a Jira installation. It provides a unified inferface
+ * for the SOAP and Web/RSS services available.
  * 
- * TODO this class needs to be populated using the SOAP or JAX-RPC interfaces.
- * Once this is done it should be cached on disk somewhere so we don't have to
- * query the server each time a client loads. It should be possible to reload
- * and restore the cache information. We also need to store the images in a
- * cache somewhere since we will ue them a lot.
+ * TODO this class needs to be populated using the SOAP or JAX-RPC interfaces. Once this is done it should be cached on
+ * disk somewhere so we don't have to query the server each time a client loads. It should be possible to reload and
+ * restore the cache information. We also need to store the images in a cache somewhere since we will ue them a lot.
  * 
  * TODO explain this is an attempt to enrich the jira service layer
  * 
@@ -51,17 +48,16 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
  * @author Steffen Pingel
  */
 public interface JiraClient {
-	
+
 	String CHARSET = "UTF-8";
-	
+
 	/**
 	 * Assign to the default user
 	 */
 	int ASSIGNEE_DEFAULT = 1;
 
 	/**
-	 * Leave the assignee field as is (this does not apply when performing an
-	 * assign to action)
+	 * Leave the assignee field as is (this does not apply when performing an assign to action)
 	 */
 	int ASSIGNEE_CURRENT = 2;
 
@@ -71,8 +67,7 @@ public interface JiraClient {
 	int ASSIGNEE_NONE = 3;
 
 	/**
-	 * Assign to a specific user. To get the name of the assignee call
-	 * {@link #getAssignee()}
+	 * Assign to a specific user. To get the name of the assignee call {@link #getAssignee()}
 	 */
 	int ASSIGNEE_USER = 4;
 
@@ -92,18 +87,16 @@ public interface JiraClient {
 	/**
 	 * Force a login to the remote repository.
 	 * 
-	 * @deprecated There is no need to call this method as all services should
-	 *             automatically login when the session is about to expire. If
-	 *             you need to check if the credentials are valid, call
+	 * @deprecated There is no need to call this method as all services should automatically login when the session is
+	 *             about to expire. If you need to check if the credentials are valid, call
 	 *             {@link org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
 	 */
 	@Deprecated
 	void login() throws JiraException;
 
 	/**
-	 * Force the current session to be closed. This method should only be called
-	 * during application shutdown and then only out of courtesy to the server.
-	 * Jira will automatically expire sessions after a set amount of time.
+	 * Force the current session to be closed. This method should only be called during application shutdown and then
+	 * only out of courtesy to the server. Jira will automatically expire sessions after a set amount of time.
 	 */
 	void logout();
 
@@ -172,8 +165,7 @@ public interface JiraClient {
 	 * 
 	 * @param issueKey
 	 *            Unique key of the issue to find
-	 * @return Matching issue or <code>null</code> if no matching issue could
-	 *         be found
+	 * @return Matching issue or <code>null</code> if no matching issue could be found
 	 */
 	Issue getIssueByKey(String issueKey) throws JiraException;
 
@@ -182,29 +174,28 @@ public interface JiraClient {
 	 * 
 	 * @param issueKey
 	 *            Unique id of the issue to find
-	 * @return Matching issue or <code>null</code> if no matching issue could
-	 *         be found
+	 * @return Matching issue or <code>null</code> if no matching issue could be found
 	 */
 	Issue getIssueById(String issue) throws JiraException;
 
 	/**
 	 * Returns the corresponding key for <code>issueId</code>.
 	 * 
-	 * @param issueId unique id of the issue
-	 * @return corresponding key or <code>null</code> if the id was not found 
+	 * @param issueId
+	 *            unique id of the issue
+	 * @return corresponding key or <code>null</code> if the id was not found
 	 */
 	String getKeyFromId(final String issueId) throws JiraException;
-	
+
 	/**
 	 * Returns available operations for <code>issueKey</code>
 	 * 
 	 * @param issueKey
 	 *            Unique key of the issue to find
-	 * @return corresponding array of <code>RepositoryOperation</code> objects
-	 *         or <code>null</code>.
+	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
 	 */
 	RepositoryOperation[] getAvailableOperations(final String issueKey) throws JiraException;
-	
+
 	/**
 	 * Returns fields for given action id
 	 * 
@@ -215,17 +206,17 @@ public interface JiraClient {
 	 * @return array of field ids for given actionId
 	 */
 	String[] getActionFields(final String issueKey, final String actionId) throws JiraException;
-	
+
 	/**
-	 * Returns editable attributes for <code>issueKey</code> 
+	 * Returns editable attributes for <code>issueKey</code>
 	 * 
 	 * @param issueKey
 	 *            Unique key of the issue to find
-	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>. 
+	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>.
 	 */
 	RepositoryTaskAttribute[] getEditableAttributes(final String issueKey) throws JiraException;
-	
-    CustomField[] getCustomAttributes() throws JiraException;
+
+	CustomField[] getCustomAttributes() throws JiraException;
 
 	/**
 	 * @param query
@@ -238,8 +229,8 @@ public interface JiraClient {
 	ServerInfo getServerInfo() throws JiraException;
 
 	/**
-	 * Retrieve all locally defined filter definitions. These filters are not
-	 * konwn to the server and can be seen as 'quick' filters.
+	 * Retrieve all locally defined filter definitions. These filters are not konwn to the server and can be seen as
+	 * 'quick' filters.
 	 * 
 	 * @return List of all locally defined filters for this server
 	 */
@@ -248,11 +239,9 @@ public interface JiraClient {
 //	void addLocalFilter(FilterDefinition filter);
 //
 //	void removeLocalFilter(String filterName);
-
 	/**
-	 * Retrieves all filters that are stored and run on the server. The client
-	 * will never be aware of the definition for the filter, only its name and
-	 * description
+	 * Retrieves all filters that are stored and run on the server. The client will never be aware of the definition for
+	 * the filter, only its name and description
 	 * 
 	 * @return List of all filters taht are stored and executed on the server
 	 */
@@ -264,7 +253,7 @@ public interface JiraClient {
 
 	void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException;
 
-    void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException;
+	void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException;
 
 //    @Deprecated
 //	void startIssue(Issue issue) throws JiraException;
@@ -283,19 +272,19 @@ public interface JiraClient {
 //	@Deprecated
 //	void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException;
 
-    void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException; 
+	void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException;
 
-    void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType) throws JiraException;
+	void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType)
+			throws JiraException;
 
 	void attachFile(Issue issue, String comment, String filename, File file, String contentType) throws JiraException;
 
 	byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException;
-	
+
 	void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException;
-	
+
 	/**
-	 * Creates an issue with the details specified in <code>issue</code>. The
-	 * following fields are mandatory:
+	 * Creates an issue with the details specified in <code>issue</code>. The following fields are mandatory:
 	 * <ul>
 	 * <li>Project</li>
 	 * <li>Issue Type</li>
@@ -316,14 +305,13 @@ public interface JiraClient {
 	 * 
 	 * @param issue
 	 *            Prototype issue used to create the new issue
-	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.Issue}
-	 *         containing the details of the new issue
+	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.Issue} containing the details of the
+	 *         new issue
 	 */
 	Issue createIssue(Issue issue) throws JiraException;
 
 	/**
-	 * Begin watching <code>issue</code>. Nothing will happen if the user is
-	 * already watching the issue.
+	 * Begin watching <code>issue</code>. Nothing will happen if the user is already watching the issue.
 	 * 
 	 * @param issue
 	 *            Issue to begin watching
@@ -331,8 +319,7 @@ public interface JiraClient {
 	void watchIssue(Issue issue) throws JiraException;
 
 	/**
-	 * Stop watching <code>issue</code>. Nothing will happen if the user is
-	 * not currently watching the issue.
+	 * Stop watching <code>issue</code>. Nothing will happen if the user is not currently watching the issue.
 	 * 
 	 * @param issue
 	 *            Issue to stop watching
@@ -340,11 +327,10 @@ public interface JiraClient {
 	void unwatchIssue(Issue issue) throws JiraException;
 
 	/**
-	 * Vote for <code>issue</code>. Issues can only be voted on if the issue
-	 * was not raied by the current user and is not resolved. Before calling
-	 * this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is
-	 * not valid for the user to vote for an issue this method will do nothing.
+	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
+	 * not resolved. Before calling this method, ensure it is valid to vote by calling
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is not valid for the user to
+	 * vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
 	 *            Issue to vote for
@@ -352,11 +338,10 @@ public interface JiraClient {
 	void voteIssue(Issue issue) throws JiraException;
 
 	/**
-	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the
-	 * issue was not raied by the current user and is not resolved. Before
-	 * calling this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is
-	 * not valid for the user to vote for an issue this method will do nothing.
+	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user
+	 * and is not resolved. Before calling this method, ensure it is valid to vote by calling
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is not valid for the user to
+	 * vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
 	 *            Issue to remove vote from
@@ -364,22 +349,21 @@ public interface JiraClient {
 	void unvoteIssue(Issue issue) throws JiraException;
 
 	/**
-	 * Refresh any cached information with the latest values from the remote
-	 * server. This operation may take a long time to complete and should not be
-	 * called from a UI thread.
+	 * Refresh any cached information with the latest values from the remote server. This operation may take a long time
+	 * to complete and should not be called from a UI thread.
 	 */
 	void refreshDetails(IProgressMonitor monitor) throws JiraException;
 
 	void refreshServerInfo(IProgressMonitor monitor) throws JiraException;
 
 	boolean hasDetails();
-	
+
 	Proxy getProxy();
 
 	String getHttpUser();
 
 	String getHttpPassword();
-	
+
 //	void setProxy(Proxy proxy);
-	
+
 }

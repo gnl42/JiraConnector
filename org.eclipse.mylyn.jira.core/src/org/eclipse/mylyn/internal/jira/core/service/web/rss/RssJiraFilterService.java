@@ -35,7 +35,8 @@ public class RssJiraFilterService {
 		this.useGZipCompression = server.useCompression();
 	}
 
-	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector) throws JiraException {
+	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector)
+			throws JiraException {
 		// TODO make the callback a full class and pass in the filter and
 		// collector
 		JiraWebSession session = new JiraWebSession(server);
@@ -109,5 +110,5 @@ public class RssJiraFilterService {
 		});
 
 	}
-	
+
 }

@@ -29,7 +29,7 @@ import org.xml.sax.XMLReader;
  * @author Steffen Pingel
  */
 class RssReader {
-	
+
 	private final JiraClient server;
 
 	private final IssueCollector collector;

@@ -16,15 +16,13 @@ import java.io.Serializable;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 
 /**
- * Restricts to issues that have one of the specified components. This filter
- * can only be used in conjunction with a {@link ProjectFilter}. If no
- * components are specified it is assumed the user is looking for issues wih no
- * assigned components. If you are looking for issues with any component, don't
- * add a component filter.
+ * Restricts to issues that have one of the specified components. This filter can only be used in conjunction with a
+ * {@link ProjectFilter}. If no components are specified it is assumed the user is looking for issues wih no assigned
+ * components. If you are looking for issues with any component, don't add a component filter.
  * 
  * @see com.gbst.jira.core.model.filter.ProjectFilter
  * 
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class ComponentFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;

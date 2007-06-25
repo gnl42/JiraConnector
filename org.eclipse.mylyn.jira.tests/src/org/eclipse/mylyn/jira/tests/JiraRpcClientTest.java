@@ -40,7 +40,7 @@ public class JiraRpcClientTest extends TestCase {
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
 		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
-		
+
 		JiraTestUtils.refreshDetails(client);
 	}
 
@@ -71,7 +71,7 @@ public class JiraRpcClientTest extends TestCase {
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
 
 		String startOperation = JiraTestUtils.getOperation(client, issue.getKey(), "start");
-		
+
 		client.advanceIssueWorkflow(issue, startOperation, null);
 		try {
 			client.advanceIssueWorkflow(issue, startOperation, null);
@@ -79,7 +79,7 @@ public class JiraRpcClientTest extends TestCase {
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
-		
+
 		String stopOperation = JiraTestUtils.getOperation(client, issue.getKey(), "stop");
 
 		client.advanceIssueWorkflow(issue, stopOperation, null);
@@ -103,14 +103,14 @@ public class JiraRpcClientTest extends TestCase {
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
 		issue.setResolution(resolution);
 		issue.setFixVersions(new Version[0]);
-		
+
 		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
 
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
 
 		issue = client.getIssueByKey(issue.getKey());
 		assertTrue(issue.getStatus().isResolved());
-		
+
 		try {
 			client.advanceIssueWorkflow(issue, resolveOperation, "comment");
 			fail("Expected JiraRemoteMessageException");
@@ -131,7 +131,7 @@ public class JiraRpcClientTest extends TestCase {
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
-		
+
 		try {
 			client.advanceIssueWorkflow(issue, closeOperation, "comment");
 			fail("Expected JiraRemoteMessageException");
@@ -285,7 +285,7 @@ public class JiraRpcClientTest extends TestCase {
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
-		
+
 		client.attachFile(issue, "", "my.filename.1", new byte[] { 'M', 'y', 'l', 'a', 'r' }, "application/binary");
 		issue = client.getIssueByKey(issue.getKey());
 		Attachment attachment = getAttachment(issue, "my.filename.1");
@@ -328,7 +328,7 @@ public class JiraRpcClientTest extends TestCase {
 		// assertNotNull(issue.getUpdated());
 
 		init(url, PrivilegeLevel.GUEST);
-		
+
 		createdIssue = client.createIssue(issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
 		assertEquals(issue.getType(), createdIssue.getType());
@@ -355,7 +355,7 @@ public class JiraRpcClientTest extends TestCase {
 		issue = client.createIssue(issue);
 		issue = client.getIssueByKey(issue.getKey());
 		assertEquals(description, JiraTaskDataHandler.convertHtml(issue.getDescription()));
-		
+
 		issue.setDescription(JiraTaskDataHandler.convertHtml(issue.getDescription()));
 		client.updateIssue(issue, "");
 		issue = client.getIssueByKey(issue.getKey());
@@ -381,16 +381,16 @@ public class JiraRpcClientTest extends TestCase {
 		issue = client.getIssueByKey(issue.getKey());
 		assertEquals("testUpdateIssueChanged", issue.getSummary());
 		assertNotNull(issue.getUpdated());
-		
+
 		init(url, PrivilegeLevel.GUEST);
 		try {
 			client.updateIssue(issue, "");
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
-		
+
 		init(url, PrivilegeLevel.GUEST);
-		
+
 		issue.setSummary("testUpdateIssueGuest");
 		issue = client.createIssue(issue);
 		issue.setSummary("testUpdateIssueGuestChanged");

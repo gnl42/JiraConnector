@@ -37,7 +37,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 class Converter {
 
@@ -92,9 +92,7 @@ class Converter {
 		version.setId(remoteVersion.getId());
 		version.setName(remoteVersion.getName());
 		version.setReleased(remoteVersion.isReleased());
-		version
-				.setReleaseDate(remoteVersion.getReleaseDate() != null ? remoteVersion.getReleaseDate().getTime()
-						: null);
+		version.setReleaseDate(remoteVersion.getReleaseDate() != null ? remoteVersion.getReleaseDate().getTime() : null);
 		version.setSequence(remoteVersion.getSequence().longValue());
 
 		return version;

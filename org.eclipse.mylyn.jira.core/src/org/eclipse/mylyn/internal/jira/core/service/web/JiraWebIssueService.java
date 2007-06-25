@@ -122,7 +122,7 @@ public class JiraWebIssueService {
 				} else {
 					post.addParameter("duedate", "");
 				}
-				
+
 				Component[] components = issue.getComponents();
 				if (components != null) {
 					if (components.length == 0) {
@@ -171,11 +171,11 @@ public class JiraWebIssueService {
 				}
 				post.addParameter("commentLevel", "");
 				post.addParameter("id", issue.getId());
-				
+
 				// custom fields
 				for (CustomField customField : issue.getCustomFields()) {
 					for (String value : customField.getValues()) {
-						post.addParameter(customField.getId(), value==null ? "" : value);
+						post.addParameter(customField.getId(), value == null ? "" : value);
 					}
 				}
 
@@ -313,7 +313,7 @@ public class JiraWebIssueService {
 				
 				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user));
 				
-*/				
+*/
 				PostMethod method = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
 				method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
@@ -325,7 +325,7 @@ public class JiraWebIssueService {
 					method.addParameter("comment", comment);
 				}
 				method.addParameter("commentLevel", "");
-				
+
 //				method.addParameter("fixVersions", "-1");
 //				for (CustomField field : issue.getCustomFields()) {
 //					for (String value : field.getValues()) {
@@ -335,7 +335,7 @@ public class JiraWebIssueService {
 
 				for (String field : fields) {
 					String[] values = issue.getFieldValues(field);
-					if(values==null) {
+					if (values == null) {
 						// method.addParameter(field, "");
 					} else {
 						for (String value : values) {
@@ -343,7 +343,7 @@ public class JiraWebIssueService {
 						}
 					}
 				}
-				
+
 				try {
 					int result = client.executeMethod(method);
 					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
@@ -398,8 +398,8 @@ public class JiraWebIssueService {
 		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)), contentType);
 	}
 
-	public void attachFile(final Issue issue, final String comment, final String filename, final File file, final String contentType)
-			throws JiraException {
+	public void attachFile(final Issue issue, final String comment, final String filename, final File file,
+			final String contentType) throws JiraException {
 		try {
 			FilePartSource partSource = new FilePartSource(filename, file);
 			attachFile(issue, comment, new FilePart("filename.1", partSource), contentType);
@@ -448,8 +448,8 @@ public class JiraWebIssueService {
 				parts.add(idPart);
 				parts.add(commentLevelPart);
 
-				post.setRequestEntity(new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), post
-						.getParams()));
+				post.setRequestEntity(new MultipartRequestEntity(parts.toArray(new Part[parts.size()]),
+						post.getParams()));
 
 				try {
 					int result = client.executeMethod(post);
@@ -465,7 +465,8 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void retrieveFile(final Issue issue, final Attachment attachment, final byte[] attachmentData) throws JiraException {
+	public void retrieveFile(final Issue issue, final Attachment attachment, final byte[] attachmentData)
+			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -484,7 +485,8 @@ public class JiraWebIssueService {
 					} else {
 						byte[] data = get.getResponseBody();
 						if (data.length != attachmentData.length) {
-							throw new IOException("Unexpected attachment size (got " + data.length + ", expected " + attachmentData.length + ")");
+							throw new IOException("Unexpected attachment size (got " + data.length + ", expected "
+									+ attachmentData.length + ")");
 						}
 						System.arraycopy(data, 0, attachmentData, 0, attachmentData.length);
 					}
@@ -498,7 +500,8 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public void retrieveFile(final Issue issue, final Attachment attachment, final OutputStream out) throws JiraException {
+	public void retrieveFile(final Issue issue, final Attachment attachment, final OutputStream out)
+			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -770,6 +773,5 @@ public class JiraWebIssueService {
 		}
 		return sb.toString();
 	}
-
 
 }

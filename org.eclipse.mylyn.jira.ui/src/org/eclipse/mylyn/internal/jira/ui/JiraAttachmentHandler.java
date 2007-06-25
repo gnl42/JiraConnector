@@ -41,21 +41,24 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 	public final static String CONTEXT_ATTACHEMNT_FILENAME = AbstractAttachmentHandler.MYLAR_CONTEXT_FILENAME;
 
 	public final static String CONTEXT_ATTACHEMNT_FILENAME_LEGACY = "mylar-context.zip";
-	
+
 	public JiraAttachmentHandler() {
 	}
 
 	@Override
-	public void downloadAttachment(TaskRepository repository, RepositoryAttachment attachment, OutputStream out, IProgressMonitor monitor) throws CoreException {
+	public void downloadAttachment(TaskRepository repository, RepositoryAttachment attachment, OutputStream out,
+			IProgressMonitor monitor) throws CoreException {
 		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
 		if (id == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL,
+					"Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
 		}
 		String key = attachment.getTaskId();
 		if (key == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL,
+					"Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
 		}
-		
+
 		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
 		try {
 			Issue issue = server.getIssueByKey(key);
@@ -97,7 +100,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 	}
 
 	@Override
-	public boolean canDeprecate(TaskRepository repository, RepositoryAttachment attachment) {		
+	public boolean canDeprecate(TaskRepository repository, RepositoryAttachment attachment) {
 		return false;
 	}
 

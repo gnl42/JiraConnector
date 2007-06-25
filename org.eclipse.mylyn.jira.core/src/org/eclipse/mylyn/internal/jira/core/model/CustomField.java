@@ -20,9 +20,13 @@ import java.util.List;
 public class CustomField implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
 	private final String id;
+
 	private final String key;
+
 	private final String name;
+
 	private final List<String> values;
 
 	public CustomField(String id, String key, String name, List<String> values) {

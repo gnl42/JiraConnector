@@ -27,7 +27,7 @@ public class AttachmentPartSource implements PartSource {
 	public AttachmentPartSource(ITaskAttachment attachment) {
 		this.attachment = attachment;
 	}
-	
+
 	public InputStream createInputStream() throws IOException {
 		return attachment.createInputStream();
 	}

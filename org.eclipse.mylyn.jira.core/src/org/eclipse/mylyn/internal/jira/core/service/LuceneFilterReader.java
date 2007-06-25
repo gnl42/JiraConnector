@@ -19,7 +19,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class LuceneFilterReader {
 

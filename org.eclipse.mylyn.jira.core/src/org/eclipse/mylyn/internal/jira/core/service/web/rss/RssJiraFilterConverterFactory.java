@@ -18,7 +18,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
  * @author Brock Janiczak
  */
 public class RssJiraFilterConverterFactory {
-	
+
 	private static final RssFilterConverter filterConverter = new RssFilterConverter();
 
 	private static final RssFilterConverter jira33FilterConverter = new Jira33RssFilterConverter();

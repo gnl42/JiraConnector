@@ -16,7 +16,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class ServerInfo implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -57,13 +57,13 @@ public class JiraFilterTest extends TestCase {
 
 		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		JiraClientFacade.getDefault().clearClients();
-		
+
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
 
 		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);
 		connector = (JiraRepositoryConnector) abstractConnector;
-		
+
 		repository = null;
 	}
 
@@ -76,9 +76,9 @@ public class JiraFilterTest extends TestCase {
 
 		if (repository != null) {
 			TasksUiPlugin.getRepositoryManager().removeRepository(repository,
-					TasksUiPlugin.getDefault().getRepositoriesFilePath());			
+					TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		}
-		
+
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		repository.setCharacterEncoding(JiraClient.CHARSET);

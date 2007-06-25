@@ -14,7 +14,7 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 import java.util.Date;
 
 /**
- * @author	Brock Janiczak
+ * @author Brock Janiczak
  */
 public class DateRangeFilter extends DateFilter {
 	private static final long serialVersionUID = 1L;

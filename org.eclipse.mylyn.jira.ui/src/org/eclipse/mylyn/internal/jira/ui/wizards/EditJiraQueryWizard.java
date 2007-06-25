@@ -35,7 +35,7 @@ public class EditJiraQueryWizard extends AbstractEditQueryWizard {
 
 	@Override
 	public void addPages() {
-		if(query instanceof JiraCustomQuery) {
+		if (query instanceof JiraCustomQuery) {
 			page = new JiraQueryPage(repository, (JiraCustomQuery) query);
 		} else {
 			page = new JiraQueryWizardPage(repository, query);
@@ -45,10 +45,9 @@ public class EditJiraQueryWizard extends AbstractEditQueryWizard {
 		addPage(page);
 	}
 
-
 	@Override
 	public boolean canFinish() {
-		if(page.getNextPage() == null) {
+		if (page.getNextPage() == null) {
 			return page.isPageComplete();
 		}
 		return page.getNextPage().isPageComplete();

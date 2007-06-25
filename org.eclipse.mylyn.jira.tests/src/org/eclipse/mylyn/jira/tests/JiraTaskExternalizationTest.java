@@ -65,8 +65,9 @@ public class JiraTaskExternalizationTest extends TestCase {
 		super.setUp();
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setAuthenticationCredentials(USER, PASSWORD);
-		TasksUiPlugin.getRepositoryManager().addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		TasksUiPlugin.getTaskListManager().resetTaskList();		
+		TasksUiPlugin.getRepositoryManager().addRepository(repository,
+				TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getTaskListManager().resetTaskList();
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
 		TasksUiPlugin.getTaskListManager().saveTaskList();
 	}
@@ -79,7 +80,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 		// taskList.clearArchive();
 		// MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
 		TasksUiPlugin.getTaskListManager().resetTaskList();
-		TasksUiPlugin.getRepositoryManager().removeRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getRepositoryManager().removeRepository(repository,
+				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		super.tearDown();
 	}
 
@@ -92,15 +94,15 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
-		
+
 		manager.saveTaskList();
 		manager.resetTaskList();
 		manager.readExistingOrCreateNewList();
-		
+
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("f-name", taskList.getQueries().iterator().next().getSummary());
 	}
-	
+
 	public void testCustomQueryRename() {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setName("f-name");
@@ -110,15 +112,15 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
-		
+
 		manager.saveTaskList();
 		manager.resetTaskList();
 		manager.readExistingOrCreateNewList();
-		
+
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
 	}
-	
+
 	public void testCompletionSave() {
 		JiraTask jiraTask = new JiraTask(SERVER_URL, TEST_TASK, TEST_LABEL);
 		jiraTask.setCompleted(true);
@@ -132,7 +134,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	}
 
 	public void testJiraTaskSave() {
-		JiraTask jiraTask = new JiraTask(SERVER_URL+"testSave", TEST_TASK, TEST_LABEL);
+		JiraTask jiraTask = new JiraTask(SERVER_URL + "testSave", TEST_TASK, TEST_LABEL);
 		String testUrl = "http://foo";
 		jiraTask.setUrl(testUrl);
 		manager.getTaskList().moveToContainer(jiraTask, manager.getTaskList().getDefaultCategory());
@@ -142,10 +144,10 @@ public class JiraTaskExternalizationTest extends TestCase {
 		manager.readExistingOrCreateNewList();
 		Collection<AbstractTask> taskSet = manager.getTaskList().getAllTasks();
 
-		
 		boolean taskFound = false;
 		for (AbstractTask currTask : taskSet) {
-			if (currTask instanceof JiraTask && ((JiraTask)currTask).getRepositoryUrl().equals(SERVER_URL+"testSave")) {
+			if (currTask instanceof JiraTask
+					&& ((JiraTask) currTask).getRepositoryUrl().equals(SERVER_URL + "testSave")) {
 				taskFound = true;
 				// Check that the URL of the Jira task is it's handle
 				assertEquals(testUrl, currTask.getUrl());
@@ -167,12 +169,12 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraIssue.setKey(ISSUE_KEY);
 		jiraIssue.setDescription(ISSUE_DESCRIPTION);
 		jiraIssue.setSummary(ISSUE_SUMMARY);
-		JiraTask jiraTask = new JiraTask(SERVER_URL, ""+123, ISSUE_DESCRIPTION);
+		JiraTask jiraTask = new JiraTask(SERVER_URL, "" + 123, ISSUE_DESCRIPTION);
 		taskList.addTask(jiraTask);
 		JiraRepositoryConnector.updateTaskFromIssue(repository.getUrl(), jiraTask, jiraIssue);
 		TasksUiPlugin.getTaskListManager().getTaskList().addTask(jiraTask);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
-		
+
 		TasksUiPlugin.getTaskListManager().getTaskList().addQuery(jiraRepositoryQuery);
 		TasksUiPlugin.getTaskListManager().getTaskList().addTask(jiraTask, jiraRepositoryQuery);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
@@ -191,21 +193,22 @@ public class JiraTaskExternalizationTest extends TestCase {
 		}
 
 		assertNotNull(savedFilter);
-		if(savedFilter == null) return;
+		if (savedFilter == null)
+			return;
 		assertEquals(savedFilter.getUrl(), filterUrl);
 
 		assertTrue(savedFilter.getChildren().size() > 0);
 
 		JiraTask savedHit = (JiraTask) savedFilter.getChildren().iterator().next();
-		
+
 		assertEquals(jiraIssue.getKey(), savedHit.getTaskKey());
 		assertEquals(jiraIssue.getSummary(), savedHit.getSummary());
-		
+
 		String handle = RepositoryTaskHandleUtil.getHandle(savedHit.getRepositoryUrl(), "123");
 		assertEquals(handle, savedHit.getHandleIdentifier());
-		
+
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraUiPlugin.REPOSITORY_KIND);  
+				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 		assertNotNull(taskList.getTask(savedHit.getHandleIdentifier()));
 	}

@@ -16,11 +16,11 @@ package org.eclipse.mylyn.internal.jira.core.service;
  * @author Steffen Pingel
  */
 public class JiraInsufficientPermissionException extends JiraException {
-	
+
 	private static final long serialVersionUID = 8122623908757665154L;
 
 	public JiraInsufficientPermissionException(String message) {
-		super(message==null ? "Insufficient permissions" : message);
+		super(message == null ? "Insufficient permissions" : message);
 	}
-	
+
 }

@@ -818,7 +818,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		// XXX workaround for bad implementation of AbstractRepositoryQueryPage.isPageComplete()
 		String errorMessage = getErrorMessage();
 		boolean isPageComplete = super.isPageComplete();
-		if(errorMessage!=null) {
+		if (errorMessage != null) {
 			setErrorMessage(errorMessage);
 		}
 		return isPageComplete;
@@ -863,7 +863,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				fixFor.setSelection(new StructuredSelection(new Object[] { NO_FIX_VERSION }));
 			} else if (workingCopy.getFixForVersionFilter().isReleasedVersions()
 					&& workingCopy.getFixForVersionFilter().isUnreleasedVersions()) {
-				fixFor.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }), true);
+				fixFor.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }),
+						true);
 			} else if (workingCopy.getFixForVersionFilter().isReleasedVersions()) {
 				fixFor.setSelection(new StructuredSelection(RELEASED_VERSION), true);
 			} else if (workingCopy.getFixForVersionFilter().isUnreleasedVersions()) {
@@ -880,14 +881,15 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				reportedIn.setSelection(new StructuredSelection(new Object[] { NO_REPORTED_VERSION }), true);
 			} else if (workingCopy.getReportedInVersionFilter().isReleasedVersions()
 					&& workingCopy.getReportedInVersionFilter().isUnreleasedVersions()) {
-				reportedIn.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }), true);
+				reportedIn.setSelection(new StructuredSelection(new Object[] { RELEASED_VERSION, UNRELEASED_VERSION }),
+						true);
 			} else if (workingCopy.getReportedInVersionFilter().isReleasedVersions()) {
 				reportedIn.setSelection(new StructuredSelection(RELEASED_VERSION), true);
 			} else if (workingCopy.getReportedInVersionFilter().isUnreleasedVersions()) {
 				reportedIn.setSelection(new StructuredSelection(UNRELEASED_VERSION), true);
 			} else {
-				reportedIn
-						.setSelection(new StructuredSelection(workingCopy.getReportedInVersionFilter().getVersions()), true);
+				reportedIn.setSelection(
+						new StructuredSelection(workingCopy.getReportedInVersionFilter().getVersions()), true);
 			}
 		} else {
 			reportedIn.setSelection(new StructuredSelection(ANY_REPORTED_VERSION), true);
@@ -1001,9 +1003,9 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		if (this.queryString.getText().length() > 0 || this.searchSummary.getSelection()
 				|| this.searchDescription.getSelection() || this.searchEnvironment.getSelection()
 				|| this.searchComments.getSelection()) {
-			workingCopy.setContentFilter(new ContentFilter(this.queryString.getText(), this.searchSummary
-					.getSelection(), this.searchDescription.getSelection(), this.searchEnvironment.getSelection(),
-					this.searchComments.getSelection()));
+			workingCopy.setContentFilter(new ContentFilter(this.queryString.getText(),
+					this.searchSummary.getSelection(), this.searchDescription.getSelection(),
+					this.searchEnvironment.getSelection(), this.searchComments.getSelection()));
 		} else {
 			workingCopy.setContentFilter(null);
 		}
@@ -1049,8 +1051,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				workingCopy.setReportedInVersionFilter(new VersionFilter(selectionContainsReleased,
 						selectionContainsUnreleased));
 			} else if (selectedVersions.size() > 0) {
-				workingCopy.setReportedInVersionFilter(new VersionFilter(selectedVersions
-						.toArray(new Version[selectedVersions.size()])));
+				workingCopy.setReportedInVersionFilter(new VersionFilter(
+						selectedVersions.toArray(new Version[selectedVersions.size()])));
 			} else {
 				workingCopy.setReportedInVersionFilter(null);
 			}
@@ -1090,8 +1092,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				workingCopy.setFixForVersionFilter(new VersionFilter(selectionContainsReleased,
 						selectionContainsUnreleased));
 			} else if (selectedVersions.size() > 0) {
-				workingCopy.setFixForVersionFilter(new VersionFilter(selectedVersions
-						.toArray(new Version[selectedVersions.size()])));
+				workingCopy.setFixForVersionFilter(new VersionFilter(
+						selectedVersions.toArray(new Version[selectedVersions.size()])));
 			} else {
 				workingCopy.setFixForVersionFilter(null);
 			}
@@ -1120,8 +1122,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			if (selectionContainsAll) {
 				workingCopy.setComponentFilter(null);
 			} else if (selectedComponents.size() > 0) {
-				workingCopy.setComponentFilter(new ComponentFilter(selectedComponents
-						.toArray(new Component[selectedComponents.size()])));
+				workingCopy.setComponentFilter(new ComponentFilter(
+						selectedComponents.toArray(new Component[selectedComponents.size()])));
 			} else if (selectionContainsNone) {
 				workingCopy.setComponentFilter(new ComponentFilter(new Component[0]));
 			} else {
@@ -1152,8 +1154,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			if (isAnyIssueTypeSelected) {
 				workingCopy.setIssueTypeFilter(null);
 			} else {
-				workingCopy.setIssueTypeFilter(new IssueTypeFilter(selectedIssueTypes
-						.toArray(new IssueType[selectedIssueTypes.size()])));
+				workingCopy.setIssueTypeFilter(new IssueTypeFilter(
+						selectedIssueTypes.toArray(new IssueType[selectedIssueTypes.size()])));
 			}
 		}
 
@@ -1215,8 +1217,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			if (isAnyStatusSelected) {
 				workingCopy.setStatusFilter(null);
 			} else {
-				workingCopy.setStatusFilter(new StatusFilter(selectedStatuses.toArray(new Status[selectedStatuses
-						.size()])));
+				workingCopy.setStatusFilter(new StatusFilter(
+						selectedStatuses.toArray(new Status[selectedStatuses.size()])));
 			}
 		}
 
@@ -1240,8 +1242,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			if (isAnyResolutionSelected) {
 				workingCopy.setResolutionFilter(null);
 			} else {
-				workingCopy.setResolutionFilter(new ResolutionFilter(selectedResolutions
-						.toArray(new Resolution[selectedResolutions.size()])));
+				workingCopy.setResolutionFilter(new ResolutionFilter(
+						selectedResolutions.toArray(new Resolution[selectedResolutions.size()])));
 			}
 		}
 
@@ -1265,8 +1267,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			if (isAnyPrioritiesSelected) {
 				workingCopy.setPriorityFilter(null);
 			} else {
-				workingCopy.setPriorityFilter(new PriorityFilter(selectedPriorities
-						.toArray(new Priority[selectedPriorities.size()])));
+				workingCopy.setPriorityFilter(new PriorityFilter(
+						selectedPriorities.toArray(new Priority[selectedPriorities.size()])));
 			}
 		}
 
@@ -1494,8 +1496,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			return false;
 		}
 
-		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getUrl(), repository
-				.getCharacterEncoding());
+		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getUrl(),
+				repository.getCharacterEncoding());
 		workingCopy = query.getFilterDefinition(server, false);
 		return true;
 	}

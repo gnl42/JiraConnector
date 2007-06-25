@@ -56,7 +56,7 @@ public class JiraTaskArchiveTest extends TestCase {
 //		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}
-	
+
 	public void testJiraTaskRegistry() {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);
