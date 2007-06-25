@@ -29,6 +29,8 @@ public class CustomField implements Serializable {
 
 	private final List<String> values;
 
+	private boolean readOnly; 
+	
 	public CustomField(String id, String key, String name, List<String> values) {
 		this.id = id;
 		this.key = key;
@@ -52,4 +54,12 @@ public class CustomField implements Serializable {
 		return values;
 	}
 
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+	
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+	
 }

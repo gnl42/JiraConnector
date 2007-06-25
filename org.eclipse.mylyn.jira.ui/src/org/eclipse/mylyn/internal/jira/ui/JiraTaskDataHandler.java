@@ -692,8 +692,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (RepositoryTaskAttribute attr : taskData.getAttributes()) {
 			if (attr.getId().startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
 				String id = attr.getId().substring(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX.length());
-				customFields.add(new CustomField(id, attr.getMetaDataValue(JiraAttributeFactory.TYPE_KEY),
-						attr.getName(), attr.getValues()));
+				CustomField field = new CustomField(id, attr.getMetaDataValue(JiraAttributeFactory.TYPE_KEY),
+						attr.getName(), attr.getValues());
+				field.setReadOnly(attr.isReadOnly());
+				customFields.add(field);
 			}
 		}
 		issue.setCustomFields(customFields.toArray(new CustomField[customFields.size()]));

@@ -175,7 +175,9 @@ public class JiraWebIssueService {
 				// custom fields
 				for (CustomField customField : issue.getCustomFields()) {
 					for (String value : customField.getValues()) {
-						post.addParameter(customField.getId(), value == null ? "" : value);
+						if (!customField.getKey().startsWith("com.atlassian.jira.toolkit")) {
+							post.addParameter(customField.getId(), value == null ? "" : value);
+						}
 					}
 				}
 
