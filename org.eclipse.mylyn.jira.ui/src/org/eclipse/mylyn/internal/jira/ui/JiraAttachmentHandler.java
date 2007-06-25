@@ -45,6 +45,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 	public JiraAttachmentHandler() {
 	}
 
+	@Override
 	public void downloadAttachment(TaskRepository repository, RepositoryAttachment attachment, OutputStream out, IProgressMonitor monitor) throws CoreException {
 		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
 		if (id == null) {
@@ -65,6 +66,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 		}
 	}
 
+	@Override
 	public InputStream getAttachmentAsStream(TaskRepository repository, RepositoryAttachment attachment,
 			IProgressMonitor monitor) throws CoreException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -72,6 +74,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 		return new ByteArrayInputStream(out.toByteArray());
 	}
 
+	@Override
 	public void uploadAttachment(TaskRepository repository, AbstractTask task, ITaskAttachment attachment,
 			String comment, IProgressMonitor monitor) throws CoreException {
 		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
@@ -83,18 +86,22 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 		}
 	}
 
+	@Override
 	public boolean canDownloadAttachment(TaskRepository repository, AbstractTask task) {
 		return true;
 	}
 
+	@Override
 	public boolean canUploadAttachment(TaskRepository repository, AbstractTask task) {
 		return true;
 	}
 
+	@Override
 	public boolean canDeprecate(TaskRepository repository, RepositoryAttachment attachment) {		
 		return false;
 	}
 
+	@Override
 	public void updateAttachment(TaskRepository repository, RepositoryAttachment attachment) throws CoreException {
 		throw new UnsupportedOperationException();
 	}

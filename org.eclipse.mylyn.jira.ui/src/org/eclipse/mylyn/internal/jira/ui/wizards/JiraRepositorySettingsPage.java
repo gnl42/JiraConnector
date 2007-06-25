@@ -64,6 +64,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		}
 
 		serverUrlCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String text = serverUrlCombo.getText();
 				RepositoryTemplate template = connector.getTemplate(text);

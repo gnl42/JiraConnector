@@ -39,6 +39,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
  */
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
+	@Override
 	public String getTaskKindLabel(AbstractTask repositoryTask) {
 		return "Issue";
 	}

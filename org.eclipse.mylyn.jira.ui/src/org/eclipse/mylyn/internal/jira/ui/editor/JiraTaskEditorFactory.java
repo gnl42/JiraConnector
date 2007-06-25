@@ -27,10 +27,12 @@ import org.eclipse.ui.IEditorPart;
  */
 public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 
+	@Override
 	public boolean canCreateEditorFor(AbstractTask task) {
 		return task instanceof JiraTask;
 	}
 
+	@Override
 	public boolean canCreateEditorFor(IEditorInput input) {
 		if (input instanceof RepositoryTaskEditorInput) {
 			RepositoryTaskEditorInput existingInput = (RepositoryTaskEditorInput) input;
@@ -40,6 +42,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 		return false;
 	}
 
+	@Override
 	public IEditorPart createEditor(TaskEditor parentEditor, IEditorInput editorInput) {
 		if (editorInput instanceof RepositoryTaskEditorInput) {
 			RepositoryTaskEditorInput taskInput = (RepositoryTaskEditorInput) editorInput;
@@ -54,6 +57,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 		return null;
 	}
 
+	@Override
 	public IEditorInput createEditorInput(AbstractTask task) {
 		JiraTask jiraTask = (JiraTask) task;
 		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND,
@@ -66,10 +70,12 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 		return null;
 	}
 
+	@Override
 	public String getTitle() {
 		return "JIRA";
 	}
 
+	@Override
 	public boolean providesOutline() {
 		return true;
 	}

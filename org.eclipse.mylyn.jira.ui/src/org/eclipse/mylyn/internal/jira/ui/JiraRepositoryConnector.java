@@ -362,12 +362,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return status != null && (status.isClosed() || status.isResolved());
 	}
 
+	@Override
 	public AbstractTask createTask(String repositoryUrl, String id, String summary) {
 		JiraTask jiraTask = new JiraTask(repositoryUrl, id, summary);
 		jiraTask.setCreationDate(new Date());
 		return jiraTask;
 	}
 
+	@Override
 	public void updateTaskFromTaskData(TaskRepository repository, AbstractTask repositoryTask,
 			RepositoryTaskData taskData) {
 		if (repositoryTask instanceof JiraTask) {

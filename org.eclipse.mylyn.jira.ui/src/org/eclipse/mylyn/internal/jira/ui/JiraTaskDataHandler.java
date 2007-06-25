@@ -72,6 +72,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	public JiraTaskDataHandler(JiraRepositoryConnector connector) {
 	}
 
+	@Override
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
 		try {
@@ -389,7 +390,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	private void removeAttributes(RepositoryTaskData data, String prefix) {
 		ListIterator<RepositoryTaskAttribute> it = data.getAttributes().listIterator();
 		while (it.hasNext()) {
-			RepositoryTaskAttribute attribute = (RepositoryTaskAttribute) it.next();
+			RepositoryTaskAttribute attribute = it.next();
 			if(attribute.getName().startsWith(prefix)) {
 				it.remove();
 			}
@@ -490,6 +491,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
+	@Override
 	public String postTaskData(TaskRepository repository, RepositoryTaskData taskData, IProgressMonitor monitor)
 			throws CoreException {
 		final JiraClient jiraServer = JiraClientFacade.getDefault().getJiraClient(repository);
@@ -568,17 +570,20 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
+	@Override
 	public boolean initializeTaskData(TaskRepository repository, RepositoryTaskData data, IProgressMonitor monitor)
 			throws CoreException {
 		// JIRA needs a project to create task data
 		return false;
 	}
 
+	@Override
 	public AbstractAttributeFactory getAttributeFactory(String repositoryUrl, String repositoryKind, String taskKind) {
 		// we don't care about the repository information right now
 		return attributeFactory;
 	}
 
+	@Override
 	public AbstractAttributeFactory getAttributeFactory(RepositoryTaskData taskData) {
 		return getAttributeFactory(taskData.getRepositoryUrl(), taskData.getRepositoryKind(), taskData.getTaskKind());
 	}
@@ -694,6 +699,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return issue;
 	}
 
+	@Override
 	public Set<String> getSubTaskIds(RepositoryTaskData taskData) {
 		Set<String> subIds = new HashSet<String>();
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttribute.SUBTASK_IDS.getId());
