@@ -94,6 +94,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	private String encoding;
 
+	private boolean search;
 
 	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, String encoding) {
 		super(filter.getName());
@@ -501,6 +502,14 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		}
 	}
 
+	public boolean isSearch() {
+		return search;
+	}
+	
+	public void setSearch(boolean search) {
+		this.search = search;
+	}
+	
 }
 
 //public void refreshHits() {

@@ -117,6 +117,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 
+			boolean isSearch = false;
 			Query filter;
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
@@ -126,6 +127,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						client.refreshDetails(monitor);
 					}
 					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
+					isSearch = ((JiraCustomQuery)repositoryQuery).isSearch();
 				} catch (JiraException e) {
 					return JiraCorePlugin.toStatus(repository, e);
 				} catch (InvalidJiraQueryException e) {
@@ -152,8 +154,18 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						return Status.CANCEL_STATUS;
 
 					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(repository.getUrl(), issue.getId());
-					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData));
+					if (isSearch) {
+						AbstractTask task = taskList.getTask(repository.getUrl(), issue.getId());
+						if (!(task instanceof JiraTask)) {
+							task = createTask(repository.getUrl(), issue.getId(), issue.getSummary());
+							updateTaskFromIssue(repository.getUrl(), (JiraTask) task, issue);
+						}
+						// TODO we could update the task if it already exists in the task list
+						resultCollector.accept(task);
+					} else {
+						RepositoryTaskData oldTaskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(repository.getUrl(), issue.getId());
+						resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData));
+					}
 				}
 				return Status.OK_STATUS;
 			} catch (JiraException e) {
@@ -321,7 +333,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return super.getTaskIdsFromComment(repository, comment);
 	}
 
-	public static void updateTaskDetails(String repositoryUrl, JiraTask task, Issue issue, boolean notifyOfChange) {
+	public static void updateTaskFromIssue(String repositoryUrl, JiraTask task, Issue issue) {
 		if (issue.getKey() != null) {
 			task.setTaskKey(issue.getKey());
 			task.setUrl(getTaskUrlFromKey(repositoryUrl, issue.getKey()));
@@ -340,10 +352,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task.setTaskKind(issue.getType().getName());
 		}
 		task.setPriority(getMylarPriority(issue.getPriority()).toString());
-
-		if (notifyOfChange) {
-			TasksUiPlugin.getTaskListManager().getTaskList().notifyTaskChanged(task, false);
-		}
 	}
 
 	public static String getTaskUrlFromKey(String repositoryUrl, String key) {

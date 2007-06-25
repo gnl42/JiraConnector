@@ -1591,6 +1591,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		String url = repository.getUrl();
 		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding());
+		query.setSearch(inSearchContainer());
 		return query;
 	}
 }
