@@ -218,7 +218,7 @@ litigation.
    </url>
 
    <requires>
-      <import feature="org.eclipse.mylyn_feature" version="2.0.0.v20070619-1930" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="2.0.0.v20070626-1000" match="compatible"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui.views"/>
