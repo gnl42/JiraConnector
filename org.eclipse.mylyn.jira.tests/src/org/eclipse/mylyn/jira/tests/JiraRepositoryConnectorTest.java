@@ -12,6 +12,8 @@
 package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -25,6 +27,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
@@ -79,16 +82,17 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	protected void init(String url) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
-		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.ADMIN);
-		repository = new TaskRepository(kind, url);
-		repository.setAuthenticationCredentials(credentials.username, credentials.password);
-		server = JiraClientFacade.getDefault().getJiraClient(repository);
+//		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.ADMIN);
+//		repository = new TaskRepository(kind, url);
+//		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+//		server = JiraClientFacade.getDefault().getJiraClient(repository);
+//		customFieldId = JiraTestUtils.getCustomField(server, customFieldName);
+//		assertNotNull("Unable to find custom field id", customFieldId);
 
 		customFieldName = "Free Text";
-		customFieldId = JiraTestUtils.getCustomField(server, customFieldName);
-		assertNotNull("Unable to find custom field id", customFieldId);
+		customFieldId = "customfield_10011";
 
-		credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
+		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 
@@ -123,6 +127,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testUpdateTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
+		Date today = new SimpleDateFormat("dd/MMM/yy").parse("1/Jun/06");
+		SimpleDateFormat df = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT);
+		String dueDate = df.format(today);
+		
 		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
@@ -134,6 +142,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		RepositoryTaskData taskData;
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		taskData.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, dueDate);
 		taskData.addAttributeValue(customFieldId, "foo");
 		taskData.addAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "add comment");
 		RepositoryOperation leaveOperation = new RepositoryOperation("leave", "");
@@ -150,6 +159,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		issue = server.getIssueByKey(issueKey);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
 
 		{
 			String operation = JiraTestUtils.getOperation(server, issue.getKey(), "resolve");
@@ -176,9 +186,11 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(true, task.isCompleted());
 		assertNotNull(task.getCompletionDate());
+		assertTrue("Invalid task due date " + task.getDueDate(), today.equals(task.getDueDate()));
 
 		issue = server.getIssueByKey(issueKey);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
 
 		{
 			String operation = JiraTestUtils.getOperation(server, issue.getKey(), "close");
@@ -208,6 +220,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		issue = server.getIssueByKey(issueKey);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
+		assertEquals("Invalid due date", dueDate, df.format(issue.getDue()));
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
 	}
 
 	private void assertCustomField(Issue issue, String fieldId, String fieldName, String value) {

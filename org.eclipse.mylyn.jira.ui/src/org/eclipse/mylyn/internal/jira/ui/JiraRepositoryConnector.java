@@ -399,6 +399,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
 			jiraTask.setUrl(getTaskUrlFromKey(repository.getUrl(), repositoryTask.getTaskKey()));
+			try {
+				String dueDateString = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
+				if (dueDateString != null) {
+					jiraTask.setDueDate(new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT).parse(dueDateString));
+				}
+			} catch (ParseException ex) {
+				// ignore
+			}
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 			jiraTask.setPriority(getMylarPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());

@@ -10,6 +10,7 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -145,6 +146,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
 
+		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
 
 		RepositoryTaskAttribute affectsVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
@@ -243,6 +245,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, jiraIssue.getType().getName());
 
 		data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, Long.toString(jiraIssue.getEstimate()));
+		if (jiraIssue.getDue() != null) {
+			data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, dateToString(jiraIssue.getDue()));
+		}
 
 		if (jiraIssue.getComponents() != null) {
 			for (Component component : jiraIssue.getComponents()) {
@@ -411,6 +416,17 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(date);
 	}
 
+	private Date stringToDate(String s) {
+		if (s == null) {
+			return null;
+		}
+		try {
+			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(s);
+		} catch (ParseException ex) {
+			return null;
+		}
+	}
+	
 	private String getAssignee(Issue jiraIssue) {
 		String assignee = jiraIssue.getAssignee();
 		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;
@@ -597,6 +613,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setKey(taskData.getTaskKey());
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
+		issue.setDue(stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
 
 		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {
 			if (project.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT))) {

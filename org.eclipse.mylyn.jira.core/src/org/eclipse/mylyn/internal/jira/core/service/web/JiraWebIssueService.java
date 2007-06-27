@@ -65,7 +65,9 @@ import org.eclipse.mylyn.web.core.HtmlStreamTokenizer.Token;
  */
 public class JiraWebIssueService {
 
-	private static final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
+	public static final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
+
+	public static final String DUE_DATE_FORMAT = "dd/MMM/yy"; //$NON-NLS-1$
 
 	private final JiraClient server;
 
@@ -118,7 +120,7 @@ public class JiraWebIssueService {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
 				if (issue.getDue() != null) {
-					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT, Locale.US).format(issue.getDue()));
+					post.addParameter("duedate", new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
 				} else {
 					post.addParameter("duedate", "");
 				}
@@ -175,7 +177,8 @@ public class JiraWebIssueService {
 				// custom fields
 				for (CustomField customField : issue.getCustomFields()) {
 					for (String value : customField.getValues()) {
-						if (!customField.getKey().startsWith("com.atlassian.jira.toolkit")) {
+						String key = customField.getKey();
+						if (key == null || !key.startsWith("com.atlassian.jira.toolkit")) {
 							post.addParameter(customField.getId(), value == null ? "" : value);
 						}
 					}

@@ -39,8 +39,13 @@ public enum JiraAttribute {
 			JiraFieldType.MULTISELECT, "Fix Versions:", false, false, "fixVersions"),
 
 	ESTIMATE(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, JiraFieldType.TEXTFIELD, "Estimate:", false, false,
-			"timetracking"), ENVIRONMENT(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA,
-			"Environment:", false, false, "environment"),
+			"timetracking"),
+
+	// TODO need to change type to DATEPICKER once it supported in the editor, then we could make it editable
+	DUE(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraFieldType.TEXTFIELD, "Due Date:", false, true, "duedate"),
+
+	ENVIRONMENT(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA, "Environment:", false, false,
+			"environment"),
 
 	COMMENT_NEW(RepositoryTaskAttribute.COMMENT_NEW, JiraFieldType.TEXTAREA, "New Comment:", true, false, "comment"),
 
