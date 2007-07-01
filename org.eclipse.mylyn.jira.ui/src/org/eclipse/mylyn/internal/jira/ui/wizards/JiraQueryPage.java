@@ -508,6 +508,19 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				}
 			});
 
+			reporterType.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
+					Object selection = ((IStructuredSelection) event.getSelection()).getFirstElement();
+					if (SPECIFIC_USER_REPORTER.equals(selection) || SPECIFIC_GROUP_REPORTER.equals(selection)) {
+						reporter.setEnabled(true);
+					} else {
+						reporter.setEnabled(false);
+						reporter.setText(""); //$NON-NLS-1$
+					}
+					// validatePage();
+				}
+			});
+
 			reporterType.setInput(server);
 
 			reporter = new Text(c, SWT.BORDER);
