@@ -36,9 +36,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
  */
 public class JiraClientFacade implements ITaskRepositoryListener {
 
-	public final static String MIN_VERSION = "3.3.3";
-
-	public final static int MIN_BUILD_NUMBER = 99;
+	public final static JiraVersion MIN_VERSION = new JiraVersion("3.3.3");
 
 	private JiraClientManager clientManager = null;
 
@@ -141,11 +139,12 @@ public class JiraClientFacade implements ITaskRepositoryListener {
 	public void validateServerAndCredentials(String serverUrl, String user, String password, Proxy proxy,
 			String httpUser, String httpPassword) throws JiraException {
 		ServerInfo info = clientManager.testConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
-		if (MIN_VERSION.compareTo(info.getVersion()) > 0) {
-			throw new JiraException("Mylar requires JIRA version " + MIN_VERSION + " or later");
+		JiraVersion serverVersion = new JiraVersion(info.getVersion());
+		if (MIN_VERSION.compareTo(serverVersion) > 0) {
+			throw new JiraException("JIRA connector requires server " + MIN_VERSION + " or later");
 		}
 	}
-
+	
 	/*
 	 * TODO: refactor
 	 */
