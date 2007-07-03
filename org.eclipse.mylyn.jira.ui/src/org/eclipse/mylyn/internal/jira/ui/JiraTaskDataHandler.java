@@ -240,12 +240,20 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		if (jiraIssue.getPriority() != null) {
 			data.addAttributeValue(RepositoryTaskAttribute.PRIORITY, jiraIssue.getPriority().getName());
+		} else {
+			data.removeAttribute(RepositoryTaskAttribute.PRIORITY);
 		}
 
-		data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, jiraIssue.getType().getName());
+		if (jiraIssue.getType() == null) {
+			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+		} else {
+			data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, jiraIssue.getType().getName());
+		}
 
 		data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, Long.toString(jiraIssue.getEstimate()));
-		if (jiraIssue.getDue() != null) {
+		if (jiraIssue.getDue() == null) {
+			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
+		} else {
 			data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, dateToString(jiraIssue.getDue()));
 		}
 
@@ -380,6 +388,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			} else if (JiraFieldType.MULTISELECT.getKey().equals(key) && (options == null || options.isEmpty())) {
 				attribute.setReadOnly(true);
 			}
+		}
+		
+		RepositoryTaskAttribute attribute = data.getAttribute(RepositoryTaskAttribute.DESCRIPTION);
+		if(attribute!=null) {
+			attribute.setReadOnly(true);
 		}
 	}
 
@@ -613,6 +626,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setKey(taskData.getTaskKey());
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
+		// TODO sync due date between jira and local planning
 		issue.setDue(stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
 
 		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {

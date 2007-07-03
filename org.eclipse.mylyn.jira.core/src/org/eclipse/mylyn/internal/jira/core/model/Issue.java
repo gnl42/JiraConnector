@@ -12,6 +12,7 @@
 package org.eclipse.mylyn.internal.jira.core.model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -401,6 +402,28 @@ public class Issue implements Serializable {
 			}
 		} else if ("assignee".equals(field)) {
 			return new String[] { assigneeName };
+		} else if("issuetype".equals(field)) {
+			if(type!=null) {
+				return new String[] { type.getId() };
+			}
+		} else if("summary".equals(field)) {
+			return new String[] { getSummary() };
+		} else if("priority".equals(field)) {
+			if(priority!=null) {
+				return new String[] { getPriority().getId() };
+			}
+		} else if("components".equals(field)) {
+			if(components!=null) {
+				String[] res = new String[components.length];
+				for (int i = 0; i < components.length; i++) {
+					res[i] = components[i].getId();
+				}
+				return res;
+			}
+		} else if("duedate".equals(field)) {
+			if(due!=null) {
+				return new String[] { new SimpleDateFormat("dd/MMM/yy").format(due)};
+			}
 		}
 
 		// TODO add other fields
