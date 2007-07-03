@@ -455,37 +455,15 @@ public class JiraRpcClient extends AbstractJiraClient {
 		issueService.assignIssueTo(issue, assigneeType, user, comment);
 	}
 
-	public void advanceIssueWorkflow(Issue issue, String action, Resolution resolution, Version[] fixVersions,
-			String comment, int assigneeType, String user) throws JiraException {
-		issueService.advanceIssueWorkflow(issue, action, resolution, fixVersions, comment, assigneeType, user);
-	}
+//	public void advanceIssueWorkflow(Issue issue, String action, Resolution resolution, Version[] fixVersions,
+//			String comment, int assigneeType, String user) throws JiraException {
+//		issueService.advanceIssueWorkflow(issue, action, resolution, fixVersions, comment, assigneeType, user);
+//	}
 
 	public void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException {
 		String[] fields = getActionFields(issue.getKey(), action);
 		issueService.advanceIssueWorkflow(issue, action, comment, fields);
 	}
-
-//    public void startIssue(Issue issue) throws JiraException {
-//        issueService.startIssue(issue);
-//    }
-//
-//    public void stopIssue(Issue issue) throws JiraException {
-//        issueService.stopIssue(issue);
-//    }
-//
-//    public void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-//            int assigneeType, String user) throws JiraException {
-//        issueService.resolveIssue(issue, resolution, fixVersions, comment, assigneeType, user);
-//    }
-//
-//    public void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException {
-//        issueService.reopenIssue(issue, comment, assigneeType, user);
-//    }
-//
-//    public void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment, int assigneeType,
-//            String user) throws JiraException {
-//        issueService.closeIssue(issue, resolution, fixVersions, comment, assigneeType, user);
-//    }
 
 	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
 		issueService.attachFile(issue, comment, partSource, contentType);
