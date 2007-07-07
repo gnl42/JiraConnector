@@ -58,7 +58,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 	private AbstractTaskDataHandler dataHandler;
 
-	private JiraClient server;
+	private JiraClient client;
 
 	private String customFieldId;
 
@@ -105,7 +105,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		dataHandler = connector.getTaskDataHandler();
 
-		server = JiraClientFacade.getDefault().getJiraClient(repository);
+		client = JiraClientFacade.getDefault().getJiraClient(repository);
 	}
 
 	public void testChangeTaskRepositorySettings() throws Exception {
@@ -120,8 +120,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		wizard.getSettingsPage().setUserId("newuser");
 		assertTrue(wizard.performFinish());
 
-		server = JiraClientFacade.getDefault().getJiraClient(repository);
-		assertEquals("newuser", server.getUserName());
+		client = JiraClientFacade.getDefault().getJiraClient(repository);
+		assertEquals("newuser", client.getUserName());
 	}
 
 	public void testUpdateTask() throws Exception {
@@ -130,8 +130,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Date today = new SimpleDateFormat("dd/MMM/yy").parse("1/Jun/06");
 		SimpleDateFormat df = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT);
 		String dueDate = df.format(today);
-		
-		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
+
+		Issue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
+		issue = client.createIssue(issue);
+
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(false, task.isCompleted());
@@ -157,14 +159,13 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 
-		issue = server.getIssueByKey(issueKey);
+		issue = client.getIssueByKey(issueKey);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
-		
-		// XXX: put back
-//		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
+
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
 
 		{
-			String operation = JiraTestUtils.getOperation(server, issue.getKey(), "resolve");
+			String operation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
 			assertNotNull("Unable to find id for resolve operation", operation);
 
 //			Map<String, String[]> params = new HashMap<String, String[]>();
@@ -175,7 +176,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 //			server.advanceIssueWorkflow(issue, operation, params);
 
 			taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(server)
+			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(client)
 					.getId());
 			taskData.setAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "comment");
 
@@ -188,18 +189,16 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(true, task.isCompleted());
 		assertNotNull(task.getCompletionDate());
-		
-		// XXX: put back
-//		assertTrue("Invalid task due date " + task.getDueDate(), today.equals(task.getDueDate()));
 
-		issue = server.getIssueByKey(issueKey);
+		assertTrue("Invalid task due date " + task.getDueDate(), today.equals(task.getDueDate()));
+
+		issue = client.getIssueByKey(issueKey);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
-		
-		// XXX: put back
-//		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
+
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
 
 		{
-			String operation = JiraTestUtils.getOperation(server, issue.getKey(), "close");
+			String operation = JiraTestUtils.getOperation(client, issue.getKey(), "close");
 			assertNotNull("Unable to find id for close operation", operation);
 
 //			Map<String, String[]> params = new HashMap<String, String[]>();
@@ -210,7 +209,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 //			server.advanceIssueWorkflow(issue, operation, params);
 
 			taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(server)
+			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(client)
 					.getId());
 			taskData.setAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "comment");
 
@@ -224,12 +223,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(true, task.isCompleted());
 		assertNotNull(task.getCompletionDate());
 
-		issue = server.getIssueByKey(issueKey);
+		issue = client.getIssueByKey(issueKey);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
-		
-		// XXX: put back
-//		assertEquals("Invalid due date", dueDate, df.format(issue.getDue()));
-//		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
+
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
 	}
 
 	private void assertCustomField(Issue issue, String fieldId, String fieldName, String value) {
@@ -244,7 +241,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testAttachContext() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Issue issue = JiraTestUtils.createIssue(server, "testAttachContext");
+		Issue issue = JiraTestUtils.createIssue(client, "testAttachContext");
+		issue = client.createIssue(issue);
+
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testAttachContext", task.getSummary());
 
@@ -264,5 +263,41 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(connector.getAttachmentHandler().retrieveContext(repository, task, attachment,
 				System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
 	}
+
+//	public void testDueDateFilter() throws Exception {
+//		init(JiraTestConstants.JIRA_39_URL);
+//
+//		GregorianCalendar c = new GregorianCalendar();
+//		c.add(Calendar.MONTH, 1);
+//		Date fromDate = c.getTime();
+//		Date toDate = c.getTime();
+//		
+//		DateFilter dueDateFilter = new DateRangeFilter(fromDate, toDate);
+//
+//		FilterDefinition filter = new FilterDefinition("test query");
+//		filter.setDueDateFilter(dueDateFilter);
+//		
+//		// AbstractRepositoryQuery query = new JiraCustomQuery("test query", queryUrl, repository.getUrl(), repository.getCharacterEncoding());
+//		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
+//
+//		TaskFactory taskFactory = new TaskFactory(repository, false, false);
+//		
+//		ITaskCollector collector1 = new QueryHitCollector(taskFactory);
+//		connector.performQuery(query, repository, new NullProgressMonitor(), collector1);
+//
+//		Set<AbstractTask> tasks1 = collector1.getTasks();
+//		// assertEquals(-1, tasks.size());
+//
+//		Issue issue = JiraTestUtils.createIssue(client, "testDueDateFilter");
+//		issue.setDue(fromDate);
+//		issue = client.createIssue(issue);
+//		assertNotNull(issue);
+//		
+//		ITaskCollector collector2 = new QueryHitCollector(taskFactory);
+//		connector.performQuery(query, repository, new NullProgressMonitor(), collector2);
+//		Set<AbstractTask> tasks2 = collector2.getTasks();
+//		
+//		assertEquals(tasks1.size() + 1, tasks2.size());
+//	}
 
 }

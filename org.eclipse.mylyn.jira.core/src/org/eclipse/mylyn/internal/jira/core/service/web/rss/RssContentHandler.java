@@ -101,7 +101,9 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class RssContentHandler extends DefaultHandler {
 
-	private static final String XML_DATE_FORMAT = "E, dd MMM yyyy HH:mm:ss Z (zz)"; //$NON-NLS-1$
+	private static final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
+
+	private static final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
 
 	private static final String CREATED_ATTR = "created"; //$NON-NLS-1$
 
@@ -670,7 +672,7 @@ public class RssContentHandler extends DefaultHandler {
 					currentComponents.add(component);
 				}
 			} else if (DUE.equals(localName)) {
-				currentIssue.setDue(convertToDate(currentElementText.toString()));
+				currentIssue.setDue(convertToDueDate(currentElementText.toString()));
 			} else if (VOTES.equals(localName)) {
 				// TODO check for number format exception
 				if (currentElementText.toString().length() > 0) {
@@ -722,11 +724,22 @@ public class RssContentHandler extends DefaultHandler {
 		if (value == null || value.length() == 0) {
 			return null;
 		}
-
 		try {
-			return new SimpleDateFormat(XML_DATE_FORMAT, Locale.US).parse(value);
+			return XML_DATE_FORMAT.parse(value);
 		} catch (ParseException e) {
 			StatusHandler.log(e, "Error while parsing date string " + value);
+			return null;
+		}
+	}
+
+	private static Date convertToDueDate(String value) {
+		if (value == null || value.length() == 0) {
+			return null;
+		}
+		try {
+			return XML_DUE_DATE_FORMAT.parse(value);
+		} catch (ParseException e) {
+			StatusHandler.log(e, "Error while parsing due date string " + value);
 			return null;
 		}
 	}
