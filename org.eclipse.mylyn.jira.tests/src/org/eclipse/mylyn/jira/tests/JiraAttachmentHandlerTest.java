@@ -45,7 +45,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 	private AbstractAttachmentHandler attachmentHandler;
 
-	private JiraClient server;
+	private JiraClient client;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -81,8 +81,8 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		server = JiraClientFacade.getDefault().getJiraClient(repository);
-		JiraTestUtils.refreshDetails(server);
+		client = JiraClientFacade.getDefault().getJiraClient(repository);
+		JiraTestUtils.refreshDetails(client);
 	}
 
 	public void testAttachFile() throws Exception {
@@ -92,7 +92,8 @@ public class JiraAttachmentHandlerTest extends TestCase {
 	private void attachFile(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Issue issue = JiraTestUtils.createIssue(server, "testAttachFile");
+		Issue issue = JiraTestUtils.createIssue(client, "testAttachFile");
+		issue = client.createIssue(issue);
 
 		File file = File.createTempFile("attachment", null);
 		file.deleteOnExit();

@@ -9,14 +9,14 @@
  *     University Of British Columbia - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.core.model;
 
 /**
  * JIRA version holder
  * 
  * @author Eugene Kuleshov
  */
-class JiraVersion implements Comparable<JiraVersion> {
+public class JiraVersion implements Comparable<JiraVersion> {
 	private final int major;
 	private final int minor;
 	private final int micro;

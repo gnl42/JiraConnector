@@ -71,16 +71,16 @@ public class JiraTestUtils {
 		return null;
 	}
 
-	public static Issue createIssue(JiraClient server, String summary) throws JiraException {
-		refreshDetails(server);
+	public static Issue createIssue(JiraClient client, String summary) throws JiraException {
+		refreshDetails(client);
 
 		Issue issue = new Issue();
-		issue.setProject(getProject1(server));
-		issue.setType(server.getIssueTypes()[0]);
+		issue.setProject(getProject1(client));
+		issue.setType(client.getIssueTypes()[0]);
 		issue.setSummary(summary);
-		issue.setAssignee(server.getUserName());
+		issue.setAssignee(client.getUserName());
 
-		return server.createIssue(issue);
+		return issue;
 	}
 
 	public static void refreshDetails(JiraClient server) throws JiraException {

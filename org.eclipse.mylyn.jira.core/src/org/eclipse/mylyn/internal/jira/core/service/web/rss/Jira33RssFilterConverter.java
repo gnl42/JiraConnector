@@ -29,13 +29,8 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
  * @author Brock Janiczak
  */
 public class Jira33RssFilterConverter extends RssFilterConverter {
-	private final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
+	private final String DATE_FORMAT = "dd/MMM/yy"; //$NON-NLS-1$
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertResolutionFilter(org.eclipse.mylyn.internal.jira.core.model.filter.ResolutionFilter)
-	 */
 	@Override
 	protected String convertResolutionFilter(ResolutionFilter resolutionFilter) {
 		if (resolutionFilter.isUnresolved()) {
@@ -57,11 +52,6 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 		return buffer.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertPriorityFilter(org.eclipse.mylyn.internal.jira.core.model.filter.PriorityFilter)
-	 */
 	@Override
 	protected String convertPriorityFilter(PriorityFilter priorityFilter) {
 		Priority[] priorities = priorityFilter.getPriorities();
@@ -79,11 +69,6 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 		return buffer.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertStatusFilter(org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter)
-	 */
 	@Override
 	protected String convertStatusFilter(StatusFilter statusFilter) {
 		Status[] statuses = statusFilter.getStatuses();
@@ -101,31 +86,16 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 		return buffer.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertCreatedDateFilter(org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter)
-	 */
 	@Override
 	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
 		return createDateFilder(createdDateFilter, "created");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertUpdatedDateFilter(org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter)
-	 */
 	@Override
 	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
 		return createDateFilder(updatedDateFilter, "updated");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFilterConverter#convertDueDateFilter(org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter)
-	 */
 	@Override
 	protected String convertDueDateFilter(DateFilter dueDateFilter) {
 		return createDateFilder(dueDateFilter, "duedate");

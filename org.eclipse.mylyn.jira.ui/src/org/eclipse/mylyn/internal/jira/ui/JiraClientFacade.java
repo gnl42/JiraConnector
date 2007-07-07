@@ -15,6 +15,7 @@ import java.net.Proxy;
 
 import org.eclipse.mylyn.internal.jira.core.JiraClientManager;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;

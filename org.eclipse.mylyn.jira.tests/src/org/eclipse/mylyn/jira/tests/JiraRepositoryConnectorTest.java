@@ -13,7 +13,9 @@ package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -26,20 +28,28 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
+import org.eclipse.mylyn.tasks.core.ITaskCollector;
+import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryManager;
+import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -264,40 +274,40 @@ public class JiraRepositoryConnectorTest extends TestCase {
 				System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
 	}
 
-//	public void testDueDateFilter() throws Exception {
-//		init(JiraTestConstants.JIRA_39_URL);
-//
-//		GregorianCalendar c = new GregorianCalendar();
-//		c.add(Calendar.MONTH, 1);
-//		Date fromDate = c.getTime();
-//		Date toDate = c.getTime();
-//		
-//		DateFilter dueDateFilter = new DateRangeFilter(fromDate, toDate);
-//
-//		FilterDefinition filter = new FilterDefinition("test query");
-//		filter.setDueDateFilter(dueDateFilter);
-//		
-//		// AbstractRepositoryQuery query = new JiraCustomQuery("test query", queryUrl, repository.getUrl(), repository.getCharacterEncoding());
-//		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
-//
-//		TaskFactory taskFactory = new TaskFactory(repository, false, false);
-//		
-//		ITaskCollector collector1 = new QueryHitCollector(taskFactory);
-//		connector.performQuery(query, repository, new NullProgressMonitor(), collector1);
-//
-//		Set<AbstractTask> tasks1 = collector1.getTasks();
-//		// assertEquals(-1, tasks.size());
-//
-//		Issue issue = JiraTestUtils.createIssue(client, "testDueDateFilter");
-//		issue.setDue(fromDate);
-//		issue = client.createIssue(issue);
-//		assertNotNull(issue);
-//		
-//		ITaskCollector collector2 = new QueryHitCollector(taskFactory);
-//		connector.performQuery(query, repository, new NullProgressMonitor(), collector2);
-//		Set<AbstractTask> tasks2 = collector2.getTasks();
-//		
-//		assertEquals(tasks1.size() + 1, tasks2.size());
-//	}
+	public void testDueDateFilter() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		GregorianCalendar c = new GregorianCalendar();
+		c.add(Calendar.MONTH, 1);
+		Date fromDate = c.getTime();
+		Date toDate = c.getTime();
+		
+		DateFilter dueDateFilter = new DateRangeFilter(fromDate, toDate);
+
+		FilterDefinition filter = new FilterDefinition("test query");
+		filter.setDueDateFilter(dueDateFilter);
+		
+		// AbstractRepositoryQuery query = new JiraCustomQuery("test query", queryUrl, repository.getUrl(), repository.getCharacterEncoding());
+		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
+
+		TaskFactory taskFactory = new TaskFactory(repository, false, false);
+		
+		ITaskCollector collector1 = new QueryHitCollector(taskFactory);
+		connector.performQuery(query, repository, new NullProgressMonitor(), collector1);
+
+		Set<AbstractTask> tasks1 = collector1.getTasks();
+		// assertEquals(-1, tasks.size());
+
+		Issue issue = JiraTestUtils.createIssue(client, "testDueDateFilter");
+		issue.setDue(fromDate);
+		issue = client.createIssue(issue);
+		assertNotNull(issue);
+		
+		ITaskCollector collector2 = new QueryHitCollector(taskFactory);
+		connector.performQuery(query, repository, new NullProgressMonitor(), collector2);
+		Set<AbstractTask> tasks2 = collector2.getTasks();
+		
+		assertEquals(tasks1.size() + 1, tasks2.size());
+	}
 
 }

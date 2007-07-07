@@ -94,12 +94,12 @@ public class JiraFilterTest extends TestCase {
 	private void filterRefresh(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
-		Issue issue = JiraTestUtils.createIssue(server, "testFilterRefresh");
-		issue.setAssignee(server.getUserName());
-		server.updateIssue(issue, "comment");
+		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+		Issue issue = JiraTestUtils.createIssue(client, "testFilterRefresh");
+		issue.setAssignee(client.getUserName());
+		client.createIssue(issue);
 
-		NamedFilter[] filters = server.getNamedFilters();
+		NamedFilter[] filters = client.getNamedFilters();
 		assertTrue(filters.length > 0);
 
 		NamedFilter filter = filters[0];
@@ -120,22 +120,21 @@ public class JiraFilterTest extends TestCase {
 		customQuery(JiraTestConstants.JIRA_39_URL);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void customQuery(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
 		String summary = "testCustomQuery" + System.currentTimeMillis();
-		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
-		Issue issue = JiraTestUtils.createIssue(server, summary);
-		issue.setPriority(server.getPriorityById(Priority.BLOCKER_ID));
-		server.updateIssue(issue, "comment");
+		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+		Issue issue = JiraTestUtils.createIssue(client, summary);
+		issue.setPriority(client.getPriorityById(Priority.BLOCKER_ID));
+		issue = client.createIssue(issue);
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 
 		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
 
-		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository));
+		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
 
 		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
 		assertEquals(1, hitCollector.getTasks().size());
@@ -147,17 +146,18 @@ public class JiraFilterTest extends TestCase {
 		customQueryWithoutRepositoryConfiguraton(JiraTestConstants.JIRA_39_URL);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void customQueryWithoutRepositoryConfiguraton(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
 		String summary = "testCustomQueryWithoutRepositoryConfiguraton" + System.currentTimeMillis();
-		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
-		JiraTestUtils.createIssue(server, summary + " 1");
-		Issue issue2 = JiraTestUtils.createIssue(server, summary + " 2");
+		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+		Issue issue = JiraTestUtils.createIssue(client, summary + " 1");
+		client.createIssue(issue);
+
+		Issue issue2 = JiraTestUtils.createIssue(client, summary + " 2");
 		assertTrue(issue2.getProject().getComponents().length > 0);
 		issue2.setComponents(issue2.getProject().getComponents());
-		server.updateIssue(issue2, "comment");
+		client.createIssue(issue2);
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(issue2.getProject()));
@@ -165,12 +165,12 @@ public class JiraFilterTest extends TestCase {
 		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
 
 		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
-		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository));
+		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
 		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
 		assertEquals(1, hitCollector.getTasks().size());
 		assertEquals(issue2.getSummary(), hitCollector.getTasks().iterator().next().getSummary());
 
-		hitCollector = new QueryHitCollector(new TaskFactory(repository));
+		hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
 		JiraClientFacade.getDefault().clearClientsAndConfigurationData();
 		connector.performQuery(query, repository, new NullProgressMonitor(), hitCollector);
 		assertEquals(1, hitCollector.getTasks().size());

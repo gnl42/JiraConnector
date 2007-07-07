@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<session version="1.0">
+<refactoring comment="Move 1 elements(s) to 'org.eclipse.mylyn.jira.core/src/org.eclipse.mylyn.internal.jira.core.model'&#13;&#10;- Original project: 'org.eclipse.mylyn.jira.ui'&#13;&#10;- Destination element: 'org.eclipse.mylyn.jira.core/src/org.eclipse.mylyn.internal.jira.core.model'&#13;&#10;- Original element: 'org.eclipse.mylyn.internal.jira.ui.JiraVersion.java'&#13;&#10;- Update references to refactored element" description="Move compilation unit" destination="/src&lt;org.eclipse.mylyn.internal.jira.core.model" element1="/src&lt;org.eclipse.mylyn.internal.jira.ui{JiraVersion.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1183836757046" units="1" version="1.0"/>
+</session>

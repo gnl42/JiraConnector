@@ -11,6 +11,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 
@@ -23,8 +24,11 @@ public class RssJiraFilterConverterFactory {
 
 	private static final RssFilterConverter jira33FilterConverter = new Jira33RssFilterConverter();
 
+	private static final JiraVersion JIRA_3_3 = new JiraVersion("3.3");
+
 	public static RssFilterConverter getConverter(JiraClient server) throws JiraException {
-		if (server.getServerInfo().getVersion().compareTo("3.3") >= 0) { //$NON-NLS-1$
+		String version = server.getServerInfo().getVersion();
+		if (new JiraVersion(version).compareTo(JIRA_3_3) >= 0) {
 			return jira33FilterConverter;
 		} else {
 			return filterConverter;

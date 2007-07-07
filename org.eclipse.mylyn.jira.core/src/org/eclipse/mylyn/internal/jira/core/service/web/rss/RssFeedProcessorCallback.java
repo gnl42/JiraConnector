@@ -20,6 +20,7 @@ import org.apache.commons.httpclient.HeaderElement;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -60,6 +61,10 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 			}
 			client.executeMethod(rssRequest);
 
+			if (rssRequest.getStatusCode() != HttpStatus.SC_OK) {
+				throw new JiraException("Unexpected server response:\n" + rssRequest.getResponseBodyAsString(), null);
+			}
+			
 			// JIRA 3.4 can redirect straight to the issue browser, but not with
 			// the RSS view type
 			if (!isXMLOrRSS(rssRequest)) {

@@ -466,8 +466,7 @@ public class JiraWebIssueService {
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
 	public Issue createIssue(final Issue issue) throws JiraException {
-		final String[] location = new String[1];
-		final Issue[] result = new Issue[1];
+		final SingleIssueCollector collector = new SingleIssueCollector();
 
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
@@ -487,7 +486,7 @@ public class JiraWebIssueService {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
 				if (issue.getDue() != null) {
-					post.addParameter("duedate", new SimpleDateFormat(DATE_FORMAT, Locale.US).format(issue.getDue()));
+					post.addParameter("duedate", new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
 				}
 
 				if (issue.getComponents() != null) {
@@ -531,17 +530,14 @@ public class JiraWebIssueService {
 					int status = client.executeMethod(post);
 					// Expect a 302 response here as it should redirect to the
 					// issue detail screen
+					// TODO need to handle and inform about issue creation errors
 					if (status == HttpURLConnection.HTTP_MOVED_TEMP) {
-						Header locationHeader = post.getResponseHeader("Location");
-						location[0] = locationHeader.getValue();
-
-						SingleIssueCollector collector = new SingleIssueCollector();
+						final Header locationHeader = post.getResponseHeader("Location");
 						new RssFeedProcessorCallback(true, collector) {
 							protected String getRssUrl(String baseUrl) {
-								return location[0];
+								return locationHeader.getValue();
 							}
 						}.execute(client, server, baseUrl);
-						result[0] = collector.getIssue();
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);
@@ -551,7 +547,7 @@ public class JiraWebIssueService {
 			}
 		});
 
-		return result[0];
+		return collector.getIssue();
 	}
 
 	public void watchIssue(final Issue issue) throws JiraException {

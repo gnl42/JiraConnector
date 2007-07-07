@@ -29,7 +29,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	private AbstractTaskDataHandler dataHandler;
 
-	private JiraClient server;
+	private JiraClient client;
 
 	protected void init(String url) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
@@ -46,15 +46,17 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		dataHandler = connector.getTaskDataHandler();
 
-		server = JiraClientFacade.getDefault().getJiraClient(repository);
+		client = JiraClientFacade.getDefault().getJiraClient(repository);
 	}
 
 	public void testGetTaskData() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		String commentText = "line1\nline2\n\nline4\n\n\n";
-		Issue issue = JiraTestUtils.createIssue(server, "testUpdateTask");
-		server.addCommentToIssue(issue, commentText);
+		Issue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
+		issue = client.createIssue(issue);
+		
+		client.addCommentToIssue(issue, commentText);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertEquals(1, taskData.getComments().size());

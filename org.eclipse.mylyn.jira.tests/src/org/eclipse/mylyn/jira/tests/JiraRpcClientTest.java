@@ -69,6 +69,7 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
+		issue = client.createIssue(issue);
 
 		String startOperation = JiraTestUtils.getOperation(client, issue.getKey(), "start");
 
@@ -101,6 +102,8 @@ public class JiraRpcClientTest extends TestCase {
 
 		Resolution resolution = JiraTestUtils.getFixedResolution(client);
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
+		issue = client.createIssue(issue);
+		
 		issue.setResolution(resolution);
 		issue.setFixVersions(new Version[0]);
 
@@ -154,6 +157,8 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.GUEST);
 
 		Issue issue = JiraTestUtils.createIssue(client, "getIdFromKey");
+		issue = client.createIssue(issue);
+		
 		String key = client.getKeyFromId(issue.getId());
 		assertEquals(issue.getKey(), key);
 
@@ -179,6 +184,8 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testReassign");
+		issue = client.createIssue(issue);
+		
 		issue.setAssignee("nonexistantuser");
 		try {
 			client.updateIssue(issue, "comment");
@@ -244,6 +251,8 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testAddComment");
+		issue = client.createIssue(issue);
+		
 		client.addCommentToIssue(issue, "comment 1");
 		issue = client.getIssueByKey(issue.getKey());
 		Comment comment = getComment(issue, "comment 1");
@@ -279,6 +288,8 @@ public class JiraRpcClientTest extends TestCase {
 		file.deleteOnExit();
 
 		Issue issue = JiraTestUtils.createIssue(client, "testAttachFile");
+		issue = client.createIssue(issue);
+
 		// test attaching an empty file
 		try {
 			client.attachFile(issue, "", file.getName(), file, "application/binary");
@@ -409,6 +420,8 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testWatchUnwatch");
+		issue = client.createIssue(issue);
+		
 		assertFalse(issue.isWatched());
 		client.watchIssue(issue);
 		issue = client.getIssueByKey(issue.getKey());
