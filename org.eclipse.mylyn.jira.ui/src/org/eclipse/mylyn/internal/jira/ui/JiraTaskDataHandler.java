@@ -108,9 +108,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		try {
 			int id = Integer.parseInt(taskId);
 			AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
-			if (task instanceof JiraTask) {
-				JiraTask jiraTask = (JiraTask) task;
-				return server.getIssueByKey(jiraTask.getTaskKey());
+			if (task != null) {
+				return server.getIssueByKey(task.getTaskKey());
 			} else {
 				return server.getIssueById(taskId);
 			}
