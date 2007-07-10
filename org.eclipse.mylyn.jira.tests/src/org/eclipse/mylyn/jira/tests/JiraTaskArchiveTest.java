@@ -1,12 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
+ * Copyright (c) 2004, 2007 Mylyn project committers and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylyn.jira.tests;
@@ -36,9 +33,9 @@ public class JiraTaskArchiveTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-//		jiraRepository = new TaskRepository(MylarJiraPlugin.REPOSITORY_KIND, SERVER_URL);
+//		jiraRepository = new TaskRepository(MylynJiraPlugin.REPOSITORY_KIND, SERVER_URL);
 //		jiraRepository.setAuthenticationCredentials(USER, PASSWORD);
-//		MylarTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
+//		MylynTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
 //		jiraFacade = JiraServerFacade.getDefault();
 		TasksUiPlugin.getTaskListManager().resetTaskList();
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
@@ -50,9 +47,9 @@ public class JiraTaskArchiveTest extends TestCase {
 				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 //		taskList.clearArchive();
-//		MylarTaskListPlugin.getTaskListManager().getTaskList().clear();
+//		MylynTaskListPlugin.getTaskListManager().getTaskList().clear();
 		TasksUiPlugin.getTaskListManager().resetTaskList();
-//		MylarTaskListPlugin.getRepositoryManager().removeRepository(jiraRepository);
+//		MylynTaskListPlugin.getRepositoryManager().removeRepository(jiraRepository);
 //		jiraFacade.logOutFromAll();
 		super.tearDown();
 	}

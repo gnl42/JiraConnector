@@ -49,7 +49,7 @@ public class JiraHyperLink implements IHyperlink {
 		if (repository != null) {
 			TasksUiUtil.openRepositoryTask(repository.getUrl(), key, taskUrl);
 		} else {
-			MessageDialog.openError(null, "Mylar Jira Connector", "Could not determine repository for report");
+			MessageDialog.openError(null, "Mylyn Jira Connector", "Could not determine repository for report");
 		}
 	}
 

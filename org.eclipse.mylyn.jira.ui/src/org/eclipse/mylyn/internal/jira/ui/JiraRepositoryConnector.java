@@ -1,12 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
+ * Copyright (c) 2004, 2007 Mylyn project committers and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.ui;
@@ -353,7 +350,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (issue.getType() != null) {
 			task.setTaskKind(issue.getType().getName());
 		}
-		task.setPriority(getMylarPriority(issue.getPriority()).toString());
+		task.setPriority(getMylynPriority(issue.getPriority()).toString());
 	}
 
 	public static String getTaskUrlFromKey(String repositoryUrl, String key) {
@@ -409,7 +406,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
-			jiraTask.setPriority(getMylarPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
+			jiraTask.setPriority(getMylynPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
 			for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
@@ -437,18 +434,18 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return false;
 	}
 
-	private static PriorityLevel getMylarPriority(JiraClient client, String jiraPriority) {
+	private static PriorityLevel getMylynPriority(JiraClient client, String jiraPriority) {
 		if (jiraPriority != null) {
 			for (Priority priority : client.getPriorities()) {
 				if (jiraPriority.equals(priority.getName())) {
-					return getMylarPriority(priority);
+					return getMylynPriority(priority);
 				}
 			}
 		}
 		return PriorityLevel.getDefault();
 	}
 
-	public static PriorityLevel getMylarPriority(Priority jiraPriority) {
+	public static PriorityLevel getMylynPriority(Priority jiraPriority) {
 		if (jiraPriority != null) {
 			String priorityId = jiraPriority.getId();
 			if (Priority.BLOCKER_ID.equals(priorityId)) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004 - 2006 Mylar committers and others.
+ * Copyright (c) 2004, 2007 Mylyn project committers and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -284,7 +284,7 @@ public class JiraRpcClientTest extends TestCase {
 	private void attachFile(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		File file = File.createTempFile("mylar", null);
+		File file = File.createTempFile("mylyn", null);
 		file.deleteOnExit();
 
 		Issue issue = JiraTestUtils.createIssue(client, "testAttachFile");

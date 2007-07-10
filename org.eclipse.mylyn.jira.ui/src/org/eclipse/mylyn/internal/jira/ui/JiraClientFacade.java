@@ -1,12 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
+ * Copyright (c) 2004, 2007 Mylyn project committers and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.ui;
@@ -28,7 +25,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
  * This class acts as a layer of indirection between clients in this project and the server API implemented by the Jira
- * Dashboard, and also abstracts some Mylar implementation details. It initializes a jiraServer object and serves as the
+ * Dashboard, and also abstracts some Mylyn implementation details. It initializes a jiraServer object and serves as the
  * central location to get a reference to it.
  * 
  * @author Mik Kersten

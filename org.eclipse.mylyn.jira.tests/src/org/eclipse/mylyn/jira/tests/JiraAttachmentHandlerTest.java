@@ -1,12 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
+ * Copyright (c) 2004, 2007 Mylyn project committers and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylyn.jira.tests;
@@ -97,7 +94,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 		File file = File.createTempFile("attachment", null);
 		file.deleteOnExit();
-		JiraTestUtils.writeFile(file, "Mylar".getBytes());
+		JiraTestUtils.writeFile(file, "Mylyn".getBytes());
 
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		FileAttachment attachment = new FileAttachment(file);
@@ -115,7 +112,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		try {
 			byte[] data = new byte[5];
 			in.read(data);
-			assertEquals("Mylar", new String(data));
+			assertEquals("Mylyn", new String(data));
 		} finally {
 			in.close();
 		}
@@ -126,7 +123,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 				new NullProgressMonitor());
 		assertTrue(file.exists());
 		byte[] data = JiraTestUtils.readFile(file);
-		assertEquals("Mylar", new String(data));
+		assertEquals("Mylyn", new String(data));
 	}
 
 }

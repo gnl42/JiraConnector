@@ -1,12 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2006 Mylar eclipse.org project and others.
+ * Copyright (c) 2004, 2007 Mylyn project committers and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Mylar project committers - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylyn.jira.tests;
@@ -193,9 +190,9 @@ public class JiraFilterTest extends TestCase {
 
 	// TODO: reneable
 // public void testJiraTaskRegistryIntegration() {
-// TaskList taskList = MylarTaskListPlugin.getTaskListManager().getTaskList();
+// TaskList taskList = MylynTaskListPlugin.getTaskListManager().getTaskList();
 // AbstractRepositoryConnector client =
-// MylarTaskListPlugin.getRepositoryManager().getRepositoryConnector(
+// MylynTaskListPlugin.getRepositoryManager().getRepositoryConnector(
 // JiraUiPlugin.REPOSITORY_KIND);
 // assertNotNull(client);
 // assertEquals(""+taskList.getArchiveContainer().getChildren(), 0,
@@ -203,11 +200,11 @@ public class JiraFilterTest extends TestCase {
 // JiraServer server = jiraFacade.getJiraServer(repository);
 // NamedFilter[] namedFilters = server.getNamedFilters();
 // JiraRepositoryQuery filter = new JiraRepositoryQuery(repository.getUrl(),
-// namedFilters[0], MylarTaskListPlugin.getTaskListManager().getTaskList());
+// namedFilters[0], MylynTaskListPlugin.getTaskListManager().getTaskList());
 //		
 // connector.synchronize(filter, null);
 // // filter.refreshHits();
-// // MylarTaskListPlugin.getTaskListManager().addQuery(filter);
+// // MylynTaskListPlugin.getTaskListManager().addQuery(filter);
 // Job job = connector.synchronize(filter, null);
 // while (job.getResult() == null) {
 // // while (filter.isRefreshing()) {

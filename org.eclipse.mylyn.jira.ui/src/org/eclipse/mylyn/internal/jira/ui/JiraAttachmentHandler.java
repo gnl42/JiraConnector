@@ -105,25 +105,4 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 	public void updateAttachment(TaskRepository repository, RepositoryAttachment attachment) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
-
-//	public byte[] getAttachmentData(TaskRepository repository, RepositoryAttachment attachment) throws CoreException {
-//		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
-//		if (id == null) {
-//			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
-//		}
-//		String key = attachment.getTaskId();
-//		if (key == null) {
-//			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IMylarStatusConstants.INTERNAL_ERROR, "Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
-//		}
-//		
-//		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
-//		try {
-//			Issue issue = server.getIssueByKey(key);
-//			Attachment jiraAttachment = issue.getAttachmentById(id);
-//			return server.retrieveFile(issue, jiraAttachment);
-//		} catch (JiraException e) {
-//			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
-//		}
-//	}
-//
 }
