@@ -15,6 +15,8 @@ import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractNewRepositoryTaskEditor;
 import org.eclipse.mylyn.tasks.ui.search.SearchHitCollector;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
@@ -26,6 +28,13 @@ public class NewJiraTaskEditor extends AbstractNewRepositoryTaskEditor {
 		super(editor);
 	}
 
+	@Override
+	public void init(IEditorSite site, IEditorInput input) {
+		super.init(site, input);
+
+		setExpandAttributeSection(true);
+	}
+	
 	@Override
 	public SearchHitCollector getDuplicateSearchCollector(String name) {
 		String searchString = AbstractNewRepositoryTaskEditor.getStackTraceFromDescription(taskData.getDescription());
