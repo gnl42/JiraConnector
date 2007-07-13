@@ -18,10 +18,8 @@ import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraFieldType;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractRepositoryTaskEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -356,12 +354,13 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 	@Override
 	protected String getHistoryUrl() {
 		if (taskData != null) {
-			String taskId = taskData.getId();
+			String taskId = taskData.getTaskKey();
 			String repositoryUrl = taskData.getRepositoryUrl();
-			if (repositoryUrl != null && taskId != null) {
-				AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
-				if (task != null) {
-					return task.getUrl() + "?page=history";
+			if (getConnector() != null && repositoryUrl != null && taskId != null) {
+				String url = getConnector().getTaskUrl(repositoryUrl, taskId);
+				//AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
+				if (url != null) {
+					return url + "?page=history";
 				}
 			}
 		}
