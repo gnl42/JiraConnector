@@ -134,13 +134,23 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		addAttribute(data, RepositoryTaskAttribute.PRODUCT);
 
 		RepositoryTaskAttribute priorities = addAttribute(data, RepositoryTaskAttribute.PRIORITY);
-		for (Priority priority : server.getPriorities()) {
+		Priority[] jiraPriorities = server.getPriorities();
+		for (int i = 0; i < jiraPriorities.length; i++) {
+			Priority priority = jiraPriorities[i];
 			priorities.addOption(priority.getName(), priority.getId());
+			if (i == (jiraPriorities.length / 2)) {
+				priorities.setValue(priority.getName());
+			}
 		}
 
 		RepositoryTaskAttribute types = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE);
-		for (IssueType type : server.getIssueTypes()) {
+		IssueType[] jiraIssueTypes = server.getIssueTypes();
+		for (int i = 0; i < jiraIssueTypes.length; i++) {
+			IssueType type = jiraIssueTypes[i];
 			types.addOption(type.getName(), type.getId());
+			if (i == 0) {
+				types.setValue(type.getName());
+			}
 		}
 
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
@@ -388,9 +398,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.setReadOnly(true);
 			}
 		}
-		
+
 		RepositoryTaskAttribute attribute = data.getAttribute(RepositoryTaskAttribute.DESCRIPTION);
-		if(attribute!=null) {
+		if (attribute != null) {
 			attribute.setReadOnly(true);
 		}
 	}
@@ -438,7 +448,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			return null;
 		}
 	}
-	
+
 	private String getAssignee(Issue jiraIssue) {
 		String assignee = jiraIssue.getAssignee();
 		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;

@@ -8,13 +8,10 @@
 
 package org.eclipse.mylyn.internal.jira.ui.wizards;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
@@ -79,20 +76,11 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		Project project = projectPage.getSelectedProject();
 		taskDataHandler.initializeTaskData(taskData, server, project);
 		taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
-		intializeToFirst(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE));
-		intializeToFirst(taskData.getAttribute(RepositoryTaskAttribute.PRIORITY));
 
 		NewTaskEditorInput editorInput = new NewTaskEditorInput(taskRepository, taskData);
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		TasksUiUtil.openEditor(editorInput, TaskEditor.ID_EDITOR, page);
 		return true;
-	}
-
-	private void intializeToFirst(RepositoryTaskAttribute attribute) {
-		List<String> options = attribute.getOptions();
-		if (options != null && !options.isEmpty()) {
-			attribute.setValue(options.get(0));
-		}
 	}
 
 }
