@@ -29,6 +29,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
+import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 
@@ -150,8 +151,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		for (int i = 0; i < taskIds.length; i++) {
 			String taskId = taskIds[i];
 			int startRegion = text.indexOf(taskId, startPos);
-			links[i] = new JiraHyperLink(new Region(regionOffset + startRegion, taskId.length()), repository, taskId,
-					connector.getTaskUrl(repository.getUrl(), taskId));
+			links[i] = new TaskHyperlink(new Region(regionOffset + startRegion, taskId.length()), repository, taskId);
 		}
 		return links;
 	}
