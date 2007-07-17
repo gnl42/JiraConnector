@@ -108,18 +108,18 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return data;
 	}
 
-	private Issue getJiraIssue(JiraClient cleant, String taskId, String repositoryUrl) //
+	private Issue getJiraIssue(JiraClient client, String taskId, String repositoryUrl) //
 			throws CoreException, JiraException {
 		try {
 			int id = Integer.parseInt(taskId);
 			AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
 			if (task != null) {
-				return cleant.getIssueByKey(task.getTaskKey());
+				return client.getIssueByKey(task.getTaskKey());
 			} else {
-				return cleant.getIssueById(taskId);
+				return client.getIssueById(taskId);
 			}
 		} catch (NumberFormatException e) {
-			return cleant.getIssueByKey(taskId);
+			return client.getIssueByKey(taskId);
 		}
 	}
 
