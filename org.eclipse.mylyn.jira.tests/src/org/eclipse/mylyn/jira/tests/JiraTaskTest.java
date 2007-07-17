@@ -22,7 +22,7 @@ public class JiraTaskTest extends TestCase {
 	public void testPriorityMapping() {
 		Priority priority = new Priority();
 		priority.setId("1");
-		assertEquals(PriorityLevel.P1, JiraRepositoryConnector.getMylynPriority(priority));
+		assertEquals(PriorityLevel.P1, JiraRepositoryConnector.getPriorityLevel(priority));
 	}
 
 }

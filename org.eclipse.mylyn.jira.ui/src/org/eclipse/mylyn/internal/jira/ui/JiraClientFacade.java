@@ -14,11 +14,8 @@ import org.eclipse.mylyn.internal.jira.core.JiraClientManager;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
@@ -141,24 +138,4 @@ public class JiraClientFacade implements ITaskRepositoryListener {
 		}
 	}
 	
-	/*
-	 * TODO: refactor
-	 */
-	public static void handleConnectionException(Exception e) {
-		if (e instanceof JiraServiceUnavailableException) {
-			StatusHandler.fail(e, "Jira Connection Failure.\n\n"
-					+ "Please check your network connection and Jira server settings in the Task Repositories view.",
-					true);
-		} else if (e instanceof JiraAuthenticationException) {
-			StatusHandler.fail(e, "Jira Authentication Failed.\n\n"
-					+ "Please check your Jira username and password in the Task Repositories view", true);
-		} else if (e instanceof RuntimeException) {
-			StatusHandler.fail(e, "No Jira repository found.\n\n"
-					+ "Please verify that a vaild Jira repository exists in the Task Repositories view", true);
-		} else {
-			StatusHandler.fail(e, "Could not connect to Jira repository.\n\n"
-					+ "Please check your credentials in the Task Repositories view", true);
-		}
-	}
-
 }

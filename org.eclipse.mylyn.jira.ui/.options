@@ -1,0 +1,7 @@
+
+# JiraRepositoryConnector
+org.eclipse.mylyn.jira.ui/connector=false
+
+# JiraTaskDataHandler
+org.eclipse.mylyn.jira.ui/dataHandler=false
+

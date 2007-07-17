@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
@@ -55,8 +56,12 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 /**
  * @author Mik Kersten
  * @author Steffen Pingel
+ * @author Eugene Kuleshov
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
+	
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(
+			Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/connector"));
 
 	/** Repository address + Issue Prefix + Issue key = the issue's web address */
 	public final static String ISSUE_URL_PREFIX = "/browse/";
@@ -109,8 +114,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
 			IProgressMonitor monitor, ITaskCollector resultCollector) {
+		monitor.beginTask("Running query", IProgressMonitor.UNKNOWN);
 		try {
-			monitor.beginTask("Running query", IProgressMonitor.UNKNOWN);
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 
@@ -137,14 +142,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						"Invalid query type: " + repositoryQuery.getClass(), null);
 			}
 
-			List<Issue> issues = new ArrayList<Issue>();
 			try {
+				List<Issue> issues = new ArrayList<Issue>();
 				client.search(filter, new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS));
-			} catch (JiraException e) {
-				return JiraCorePlugin.toStatus(repository, e);
-			}
 
-			try {
 				int n = 0;
 				for (Issue issue : issues) {
 					if (monitor.isCanceled())
@@ -167,9 +168,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				}
 				return Status.OK_STATUS;
 			} catch (JiraException e) {
-				return JiraCorePlugin.toStatus(repository, e);
+				IStatus status = JiraCorePlugin.toStatus(repository, e);
+				trace(status);
+				return status;
 			} catch (CoreException e) {
-				return e.getStatus();
+				IStatus status = e.getStatus();
+				trace(status);
+				return status;
 			}
 		} finally {
 			monitor.done();
@@ -249,7 +254,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			return true;
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
+			IStatus status = JiraCorePlugin.toStatus(repository, e);
+			trace(status);
+			throw new CoreException(status);
 		}
 	}
 
@@ -350,7 +357,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		if (issue.getType() != null) {
 			task.setTaskKind(issue.getType().getName());
 		}
-		task.setPriority(getMylynPriority(issue.getPriority()).toString());
+		task.setPriority(getPriorityLevel(issue.getPriority()).toString());
 	}
 
 	public static String getTaskUrlFromKey(String repositoryUrl, String key) {
@@ -406,7 +413,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
-			jiraTask.setPriority(getMylynPriority(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
+			jiraTask.setPriority(getPriorityLevel(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
 			for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
@@ -434,18 +441,18 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return false;
 	}
 
-	private static PriorityLevel getMylynPriority(JiraClient client, String jiraPriority) {
+	private static PriorityLevel getPriorityLevel(JiraClient client, String jiraPriority) {
 		if (jiraPriority != null) {
 			for (Priority priority : client.getPriorities()) {
 				if (jiraPriority.equals(priority.getName())) {
-					return getMylynPriority(priority);
+					return getPriorityLevel(priority);
 				}
 			}
 		}
 		return PriorityLevel.getDefault();
 	}
 
-	public static PriorityLevel getMylynPriority(Priority jiraPriority) {
+	public static PriorityLevel getPriorityLevel(Priority jiraPriority) {
 		if (jiraPriority != null) {
 			String priorityId = jiraPriority.getId();
 			if (Priority.BLOCKER_ID.equals(priorityId)) {
@@ -474,7 +481,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 			client.refreshDetails(monitor);
 		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
+			IStatus status = JiraCorePlugin.toStatus(repository, e);
+			trace(status);
+			throw new CoreException(status);
 		}
 	}
 
@@ -487,4 +496,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return "".equals(assignee) ? JiraTask.UNASSIGNED_USER : assignee;
 	}
 
+	private void trace(IStatus status) {
+		if(TRACE_ENABLED) {
+			JiraUiPlugin.getDefault().getLog().log(status);
+		}
+	}
+	
 }
