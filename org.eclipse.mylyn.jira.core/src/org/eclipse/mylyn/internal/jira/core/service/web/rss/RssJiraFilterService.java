@@ -11,6 +11,7 @@ package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
@@ -64,7 +65,8 @@ public class RssJiraFilterService {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
-				if (server.getServerInfo().getVersion().compareTo("3.7") >= 0) {
+				String version = server.getServerInfo().getVersion();
+				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
 					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append(
 							"/SearchRequest-").append(filter.getId()).append(".xml");
 					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {

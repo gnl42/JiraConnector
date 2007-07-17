@@ -45,7 +45,8 @@ class RssReader {
 			factory.setNamespaceAware(true);
 			XMLReader reader = factory.newSAXParser().getXMLReader();
 			reader.setContentHandler(new RssContentHandler(server, collector, baseUrl));
-			reader.parse(new InputSource(feed));
+			InputSource inputSource = new InputSource(feed);
+			reader.parse(inputSource);
 			collector.done();
 		} catch (ParseCancelledException e) {
 			// User requested this action, so don't log anything

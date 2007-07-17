@@ -21,11 +21,9 @@ public class RssJiraFilterConverterFactory {
 
 	private static final RssFilterConverter jira33FilterConverter = new Jira33RssFilterConverter();
 
-	private static final JiraVersion JIRA_3_3 = new JiraVersion("3.3");
-
 	public static RssFilterConverter getConverter(JiraClient server) throws JiraException {
 		String version = server.getServerInfo().getVersion();
-		if (new JiraVersion(version).compareTo(JIRA_3_3) >= 0) {
+		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_3) >= 0) {
 			return jira33FilterConverter;
 		} else {
 			return filterConverter;

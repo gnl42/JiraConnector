@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
@@ -122,7 +123,8 @@ public abstract class AbstractJiraClient implements JiraClient {
 	}
 
 	private void initializeProjects(JiraClientData data) throws JiraException {
-		if (data.serverInfo.getVersion().compareTo("3.4") >= 0) {
+		String version = data.serverInfo.getVersion();
+		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_4) >= 0) {
 			data.projects = getProjectsRemoteNoSchemes();
 		} else {
 			data.projects = getProjectsRemote();
@@ -183,10 +185,11 @@ public abstract class AbstractJiraClient implements JiraClient {
 	private void initializeIssueTypes(JiraClientData data) throws JiraException {
 		IssueType[] issueTypes = getIssueTypesRemote();
 		IssueType[] subTaskIssueTypes;
-		if (data.serverInfo.getVersion().compareTo("3.2") < 0) {
-			subTaskIssueTypes = new IssueType[0];
-		} else {
+		String version = data.serverInfo.getVersion();
+		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_3) >= 0) {
 			subTaskIssueTypes = getSubTaskIssueTypesRemote();
+		} else {
+			subTaskIssueTypes = new IssueType[0];
 		}
 
 		data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length + subTaskIssueTypes.length);
