@@ -1,0 +1,3 @@
+1185063541125	Extract interface 'JiraClientFactory'
+1185071215265	Extract method 'removeAttributes'
+1185071250546	Introduce parameter for 'removeAttributes'

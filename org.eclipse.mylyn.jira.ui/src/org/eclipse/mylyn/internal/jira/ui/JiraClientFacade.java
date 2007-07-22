@@ -29,7 +29,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
-public class JiraClientFacade implements ITaskRepositoryListener {
+public class JiraClientFacade implements ITaskRepositoryListener, JiraClientFactory {
 
 	private JiraClientManager clientManager = null;
 
@@ -51,7 +51,7 @@ public class JiraClientFacade implements ITaskRepositoryListener {
 	}
 
 	/**
-	 * Lazily creates server.
+	 * Lazily creates {@link JiraClient} instance
 	 * 
 	 * @see #validateServerAndCredentials(String, String, String, Proxy, String, String)
 	 */

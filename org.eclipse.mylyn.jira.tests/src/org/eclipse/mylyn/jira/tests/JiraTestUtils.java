@@ -86,8 +86,8 @@ public class JiraTestUtils {
 		}
 	}
 
-	public static Project getProject1(JiraClient server) {
-		Project project = server.getProjectByKey(PROJECT1);
+	public static Project getProject1(JiraClient client) {
+		Project project = client.getProjectByKey(PROJECT1);
 		if (project == null) {
 			throw new AssertionFailedError("Project '" + PROJECT1 + "' not found");
 		}

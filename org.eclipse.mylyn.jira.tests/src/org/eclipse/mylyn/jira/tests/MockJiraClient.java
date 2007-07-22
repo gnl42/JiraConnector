@@ -173,4 +173,53 @@ public class MockJiraClient extends AbstractJiraClient {
 	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
 	}
 
+	// factory methods
+	
+	public static Project createProject() {
+		Project project = new Project();
+		project.setId(JiraTestUtils.PROJECT1);
+		project.setKey("PRONE");
+		project.setName("Prone");
+
+		Component[] components = new Component[] { createComponent("1", "component1"),
+				createComponent("2", "component2"), createComponent("3", "component3"),
+				createComponent("4", "component4"), };
+		project.setComponents(components);
+
+		Version[] versions = new Version[] { createVersion("1", "1.0"), createVersion("2", "2.0"),
+				createVersion("3", "3.0"), createVersion("4", "4.0"), };
+		project.setVersions(versions);
+
+		return project;
+	}
+	
+	public static IssueType createIssueType(String id, String name) {
+		IssueType issueType = new IssueType();
+		issueType.setId(id);
+		issueType.setName(name);
+		return issueType;
+		
+	}
+	
+	public static Version createVersion(String id, String name) {
+		Version version = new Version();
+		version.setId(id);
+		version.setName(name);
+		return version;
+	}
+
+	public static Component createComponent(String id, String name) {
+		Component component = new Component();
+		component.setId(id);
+		component.setName(name);
+		return component;
+	}
+	
+	public static Priority createPriority(String id, String name) {
+		Priority priority = new Priority();
+		priority.setId(id);
+		priority.setName(name);
+		return priority;
+	}
+	
 }

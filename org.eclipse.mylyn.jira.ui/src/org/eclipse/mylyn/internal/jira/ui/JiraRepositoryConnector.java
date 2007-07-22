@@ -81,7 +81,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static final int RETURN_ALL_HITS = -1;
 
 	public JiraRepositoryConnector() {
-		offlineHandler = new JiraTaskDataHandler(this);
+		offlineHandler = new JiraTaskDataHandler(JiraClientFacade.getDefault());
 		attachmentHandler = new JiraAttachmentHandler();
 	}
 
