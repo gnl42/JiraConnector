@@ -12,5 +12,7 @@ public class JiraTestConstants {
 
 	public static final String JIRA_39_URL = System.getProperty("jira.server.url",
 			"http://mylyn.eclipse.org/jira-enterprise-3.9");
+	
+	public static final String JIRA_39_BASIC_AUTH_URL = JIRA_39_URL + "-basic-auth";
 
 }

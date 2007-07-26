@@ -436,4 +436,15 @@ public class JiraRpcClientTest extends TestCase {
 		assertFalse(issue.isWatched());
 	}
 
+	public void testBasicAuth() throws Exception {
+		basicAuth(JiraTestConstants.JIRA_39_BASIC_AUTH_URL);
+	}
+
+	private void basicAuth(String url) throws Exception {
+		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.GUEST);
+		Credentials httpCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
+		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, httpCredentials.username, httpCredentials.password);
+		assertNotNull(client.getServerInfo());
+	}
+
 }
