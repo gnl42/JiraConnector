@@ -31,6 +31,7 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraRpcClientTest.class);
 		suite.addTestSuite(JiraAttachmentHandlerTest.class);
 		suite.addTestSuite(JiraTaskDataHandlerTest.class);
+		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
 		// $JUnit-END$
 		return suite;
 	}

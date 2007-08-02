@@ -8,10 +8,10 @@
 
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
-import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
-import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
-import org.eclipse.mylyn.tasks.ui.TaskFactory;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.mylyn.tasks.ui.AbstractDuplicateDetector;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractNewRepositoryTaskEditor;
 import org.eclipse.mylyn.tasks.ui.search.SearchHitCollector;
@@ -35,18 +35,34 @@ public class NewJiraTaskEditor extends AbstractNewRepositoryTaskEditor {
 		setExpandAttributeSection(true);
 	}
 	
+	/**
+	 * This method is duplicated in JiraTaskEditor for now.
+	 */
 	@Override
 	public SearchHitCollector getDuplicateSearchCollector(String name) {
-		String searchString = AbstractNewRepositoryTaskEditor.getStackTraceFromDescription(taskData.getDescription());
-		ContentFilter contentFilter = new ContentFilter(searchString, false, true, false, true);
+		String duplicateDetectorName = "default".equals(name) ? "Stack Trace" : name;
+		Set<AbstractDuplicateDetector> detectors = getDuplicateSearchCollectorsList();
 
-		FilterDefinition filter = new FilterDefinition();
-		filter.setContentFilter(contentFilter);
-		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
-
-		SearchHitCollector collector = new SearchHitCollector(TasksUiPlugin.getTaskListManager().getTaskList(),
-				repository, query, new TaskFactory(repository, false, false));
-		return collector;
+		for (AbstractDuplicateDetector detector : detectors) {
+			if (duplicateDetectorName.equals(detector.getName())) {
+				return detector.getSearchHitCollector(repository, taskData);
+			}
+		}
+		return null;
 	}
 
+	/**
+	 * This method is duplicated in JiraTaskEditor for now.
+	 */
+	@Override
+	protected Set<AbstractDuplicateDetector> getDuplicateSearchCollectorsList() {
+		Set<AbstractDuplicateDetector> detectors = new HashSet<AbstractDuplicateDetector>();
+		for (AbstractDuplicateDetector detector : TasksUiPlugin.getDefault().getDuplicateSearchCollectorsList()) {
+			if (detector.getKind() == null || detector.getKind().equals(getConnector().getConnectorKind())) {
+				detectors.add(detector);
+			}
+		}
+		return detectors;
+	}
+	
 }
