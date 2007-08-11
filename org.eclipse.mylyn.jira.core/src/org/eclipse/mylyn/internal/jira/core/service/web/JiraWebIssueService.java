@@ -528,7 +528,9 @@ public class JiraWebIssueService {
 					// Expect a 302 response here as it should redirect to the
 					// issue detail screen
 					// TODO need to handle and inform about issue creation errors
-					if (status == HttpURLConnection.HTTP_MOVED_TEMP) {
+					if (status != HttpURLConnection.HTTP_MOVED_TEMP) {
+						handleErrorMessage(post, status);
+					} else {
 						final Header locationHeader = post.getResponseHeader("Location");
 						new RssFeedProcessorCallback(true, collector) {
 							protected String getRssUrl(String baseUrl) {
@@ -634,7 +636,7 @@ public class JiraWebIssueService {
 		}
 	}
 
-	private void handleErrorMessage(HttpMethodBase method, int result) throws IOException, JiraException {
+	protected void handleErrorMessage(HttpMethodBase method, int result) throws IOException, JiraException {
 		String response = method.getResponseBodyAsString();
 		StatusHandler.log("JIRA error\n"+response, null);
 		

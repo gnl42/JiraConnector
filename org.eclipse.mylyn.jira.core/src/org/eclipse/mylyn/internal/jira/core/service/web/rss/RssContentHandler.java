@@ -615,7 +615,7 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setKey(key);
 				currentIssue.setUrl(client.getBaseUrl() + "/browse/" + key);
 				// TODO super dodgey to assume the project from the issue key
-				String projectKey = key.substring(0, key.indexOf('-'));
+				String projectKey = key.substring(0, key.lastIndexOf('-'));
 				Project project = client.getProjectByKey(projectKey);
 				if (project == null) {
 					throw new SAXException("No project with key '" + projectKey + "' found");

@@ -42,8 +42,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 	public final void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException, IOException {
 		String rssUrl = getRssUrl(baseUrl);
 		GetMethod rssRequest = new GetMethod(rssUrl);
-		// If there is only a single match JIRA will redirect to the issue
-		// browser
+		// If there is only a single match JIRA will redirect to the issue browser
 		rssRequest.setFollowRedirects(true);
 
 		// Tell the server we would like the response GZipped. This does not
