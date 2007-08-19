@@ -345,9 +345,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		removeAttributes(data, JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX);
 		for (CustomField field : jiraIssue.getCustomFields()) {
+			String mappedKey = attributeFactory.mapCommonAttributeKey(field.getId());
+			String name = field.getName().replace("&", "&&") + ":"; // mask & from SWT
+			RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(mappedKey, name,
+					attributeFactory.isHidden(mappedKey));
+			
 			String type = field.getKey();
-			RepositoryTaskAttribute attribute = attributeFactory.createAttribute(field.getId());
 			attribute.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, type);
+			attribute.setReadOnly(field.isReadOnly());
+			
 			for (String value : field.getValues()) {
 				if (JiraFieldType.TEXTAREA.getKey().equals(type)) {
 					attribute.addValue(convertHtml(value));
@@ -385,7 +391,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
 			boolean editable = editableKeys.contains(attribute.getId().toLowerCase());
 			attribute.setReadOnly(!editable);
-			if (editable && !attributeFactory.isHidden(attribute.getId())) {
+			if (editable && (attribute.getId().startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX) //
+					|| !attributeFactory.isHidden(attribute.getId()))) {
 				attribute.setHidden(false);
 			}
 

@@ -503,7 +503,7 @@ public class RssContentHandler extends DefaultHandler {
 		case IN_CUSTOM_FIELD_VALUES:
 			if (CUSTOM_FIELD_VALUES.equals(localName)) {
 				if (customFieldValues.size() == 0) {
-					customFieldValues.add(currentElementText.toString());
+					customFieldValues.add(currentElementText.toString().trim());
 				}
 				state = IN_CUSTOM_FIELD;
 			}

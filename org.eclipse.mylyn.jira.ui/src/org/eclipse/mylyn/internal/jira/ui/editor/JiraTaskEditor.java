@@ -91,7 +91,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		int currentCol = 1;
 
 		for (final RepositoryTaskAttribute attribute : taskData.getAttributes()) {
-			if (attribute.isHidden()) {
+			if (attribute.isHidden() ||
+					(attribute.isReadOnly() && (attribute.getValue()==null || attribute.getValue().length()==0))) {
 				continue;
 			}
 
@@ -300,7 +301,9 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()
 					|| !JiraFieldType.TEXTAREA.getKey().equals(
-							attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY))) {
+							attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY))
+					// no need to show non-editable empty values
+					|| (attribute.isReadOnly() && (attribute.getValue() == null || attribute.getValue().length() == 0))) {
 				continue;
 			}
 
