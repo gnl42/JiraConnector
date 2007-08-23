@@ -234,7 +234,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			title.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
 			title.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent e) {
-					validatePage();
+//					validatePage();
+					setPageComplete(isPageComplete());
 				}
 			});
 		}
@@ -823,26 +824,26 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	}
 
-	@Override
-	public boolean isPageComplete() {
-		// XXX workaround for bad implementation of AbstractRepositoryQueryPage.isPageComplete()
-		String errorMessage = getErrorMessage();
-		boolean isPageComplete = super.isPageComplete();
-		if (errorMessage != null) {
-			setErrorMessage(errorMessage);
-		}
-		return isPageComplete;
-	}
-
-	void validatePage() {
-		if (title != null && !title.getText().equals("")) {
-			setErrorMessage(null);
-			setPageComplete(true);
-		} else {
-			setErrorMessage("Query title is mandatory");
-			setPageComplete(false);
-		}
-	}
+//	@Override
+//	public boolean isPageComplete() {
+//		// XXX workaround for bad implementation of AbstractRepositoryQueryPage.isPageComplete()
+//		String errorMessage = getErrorMessage();
+//		boolean isPageComplete = super.isPageComplete();
+//		if (errorMessage != null) {
+//			setErrorMessage(errorMessage);
+//		}
+//		return isPageComplete;
+//	}
+//
+//	void validatePage() {
+//		if (title != null && !title.getText().equals("")) {
+//			setErrorMessage(null);
+//			setPageComplete(true);
+//		} else {
+//			setErrorMessage("Query title is mandatory");
+//			setPageComplete(false);
+//		}
+//	}
 
 	private void loadDefaults() {
 		// project.setSelection(new StructuredSelection(new Placeholder("All
