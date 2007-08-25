@@ -267,7 +267,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
 		}
 
-		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, Long.toString(jiraIssue.getEstimate()));
+		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, Long.toString(jiraIssue.getEstimate() / 60));
 
 		if (jiraIssue.getDue() != null) {
 			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, dateToString(jiraIssue.getDue()));
@@ -349,11 +349,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			String name = field.getName().replace("&", "&&") + ":"; // mask & from SWT
 			RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(mappedKey, name,
 					attributeFactory.isHidden(mappedKey));
-			
+
 			String type = field.getKey();
 			attribute.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, type);
 			attribute.setReadOnly(field.isReadOnly());
-			
+
 			for (String value : field.getValues()) {
 				if (JiraFieldType.TEXTAREA.getKey().equals(type)) {
 					attribute.addValue(convertHtml(value));
@@ -415,7 +415,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private void removeAttributes(RepositoryTaskData data, String keyPrefix) {
 		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
-			if(attribute.getName().startsWith(keyPrefix)) {
+			if (attribute.getName().startsWith(keyPrefix)) {
 				data.removeAttribute(attribute.getId());
 			}
 		}
@@ -640,8 +640,18 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setKey(taskData.getTaskKey());
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
+
 		// TODO sync due date between jira and local planning
 		issue.setDue(stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
+
+		String estimate = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
+		if (estimate != null) {
+			try {
+				issue.setInitialEstimate(Long.parseLong(estimate) * 60); // in minutes
+			} catch (NumberFormatException ex) {
+				// ignore
+			}
+		}
 
 		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {
 			if (project.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT))) {

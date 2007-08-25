@@ -250,7 +250,7 @@ public interface JiraClient {
 
 	void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException;
 
-	void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException;
+	void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException;
 
 //    @Deprecated
 //	void startIssue(Issue issue) throws JiraException;

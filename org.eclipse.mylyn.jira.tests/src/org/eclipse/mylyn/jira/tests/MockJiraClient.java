@@ -167,7 +167,7 @@ public class MockJiraClient extends AbstractJiraClient {
 		return null;
 	}
 
-	public void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException {
+	public void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException {
 	}
 
 	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {

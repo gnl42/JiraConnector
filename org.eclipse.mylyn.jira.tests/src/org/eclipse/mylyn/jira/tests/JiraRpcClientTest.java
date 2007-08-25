@@ -20,6 +20,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -32,6 +33,7 @@ import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 
 /**
  * @author Steffen Pingel
+ * @author Eugene Kuleshov
  */
 public class JiraRpcClientTest extends TestCase {
 
@@ -374,14 +376,26 @@ public class JiraRpcClientTest extends TestCase {
 	}
 
 	public void testUpdateIssue() throws Exception {
-		updateIssue(JiraTestConstants.JIRA_39_URL);
+		updateIssue(JiraTestConstants.JIRA_39_URL, "CUSTOMFIELDS");
 	}
 
-	private void updateIssue(String url) throws Exception {
+	public void testUpdateIssue2() throws Exception {
+		Issue issue = updateIssue(JiraTestConstants.JIRA_39_URL, "EDITABLEREPORTER");
+		
+		String operation = JiraTestUtils.getOperation(client, issue.getKey(), "custom");
+		assertNotNull("Unable to find Custom workflow action", operation);
+		
+		init(JiraTestConstants.JIRA_39_URL, PrivilegeLevel.USER);
+		client.advanceIssueWorkflow(issue, operation, "custom action test");
+	}
+	
+	private Issue updateIssue(String url, String projectKey) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
+		Project project = JiraTestUtils.getProject(client, projectKey);
+		
 		Issue issue = new Issue();
-		issue.setProject(client.getProjects()[0]);
+		issue.setProject(project);
 		issue.setType(client.getIssueTypes()[0]);
 		issue.setSummary("testUpdateIssue");
 		issue.setAssignee(client.getUserName());
@@ -410,6 +424,8 @@ public class JiraRpcClientTest extends TestCase {
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
+		
+		return issue;
 	}
 
 	public void testWatchUnwatchIssue() throws Exception {

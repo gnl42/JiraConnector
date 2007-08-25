@@ -123,6 +123,7 @@ public class JiraWebIssueService {
 				} else {
 					post.addParameter("duedate", "");
 				}
+				post.addParameter("timetracking", Long.toString(issue.getInitialEstimate()/60)+"m");
 
 				Component[] components = issue.getComponents();
 				if (components != null) {
@@ -277,7 +278,7 @@ public class JiraWebIssueService {
 //		});
 //	}
 
-	public void advanceIssueWorkflow(final Issue issue, final String action, final String comment, final String[] fields)
+	public void advanceIssueWorkflow(final Issue issue, final String actionKey, final String comment, final String[] fields)
 			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
@@ -286,7 +287,7 @@ public class JiraWebIssueService {
 				method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
 				method.addParameter("id", issue.getId());
-				method.addParameter("action", action);
+				method.addParameter("action", actionKey);
 				// method.addParameter("assignee", issue.getAssignee());
 
 				if (comment != null) {

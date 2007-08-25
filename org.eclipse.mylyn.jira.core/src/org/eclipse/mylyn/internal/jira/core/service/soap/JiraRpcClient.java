@@ -457,9 +457,9 @@ public class JiraRpcClient extends AbstractJiraClient {
 //		issueService.advanceIssueWorkflow(issue, action, resolution, fixVersions, comment, assigneeType, user);
 //	}
 
-	public void advanceIssueWorkflow(Issue issue, String action, String comment) throws JiraException {
-		String[] fields = getActionFields(issue.getKey(), action);
-		issueService.advanceIssueWorkflow(issue, action, comment, fields);
+	public void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException {
+		String[] fields = getActionFields(issue.getKey(), actionKey);
+		issueService.advanceIssueWorkflow(issue, actionKey, comment, fields);
 	}
 
 	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {

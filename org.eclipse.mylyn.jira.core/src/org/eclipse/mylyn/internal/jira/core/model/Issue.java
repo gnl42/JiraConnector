@@ -385,9 +385,41 @@ public class Issue implements Serializable {
 	}
 
 	public String[] getFieldValues(String field) {
-		if ("resolution".equals(field)) {
+		if ("summary".equals(field)) {
+			return new String[] { getSummary() };
+		} else if ("description".equals(field)) {
+			return new String[] { getDescription() };
+		} else if ("resolution".equals(field)) {
 			if (resolution != null) {
 				return new String[] { resolution.getId() };
+			}
+		} else if ("assignee".equals(field)) {
+			return new String[] { assigneeName };
+		} else if ("reporter".equals(field)) {
+			return new String[] { reporterName };
+		} else if ("issuetype".equals(field)) {
+			if (type != null) {
+				return new String[] { type.getId() };
+			}
+		} else if ("priority".equals(field)) {
+			if (priority != null) {
+				return new String[] { getPriority().getId() };
+			}
+		} else if ("components".equals(field)) {
+			if (components != null) {
+				String[] res = new String[components.length];
+				for (int i = 0; i < components.length; i++) {
+					res[i] = components[i].getId();
+				}
+				return res;
+			}
+		} else if ("versions".equals(field)) {
+			if (reportedVersions != null) {
+				String[] res = new String[reportedVersions.length];
+				for (int i = 0; i < reportedVersions.length; i++) {
+					res[i] = reportedVersions[i].getId();
+				}
+				return res;
 			}
 		} else if ("fixVersions".equals(field)) {
 			if (fixVersions != null) {
@@ -397,30 +429,16 @@ public class Issue implements Serializable {
 				}
 				return res;
 			}
-		} else if ("assignee".equals(field)) {
-			return new String[] { assigneeName };
-		} else if("issuetype".equals(field)) {
-			if(type!=null) {
-				return new String[] { type.getId() };
+		} else if ("environment".equals(field)) {
+			if (environment != null) {
+				return new String[] { environment };
 			}
-		} else if("summary".equals(field)) {
-			return new String[] { getSummary() };
-		} else if("priority".equals(field)) {
-			if(priority!=null) {
-				return new String[] { getPriority().getId() };
+		} else if ("duedate".equals(field)) {
+			if (due != null) {
+				return new String[] { new SimpleDateFormat("dd/MMM/yy").format(due) };
 			}
-		} else if("components".equals(field)) {
-			if(components!=null) {
-				String[] res = new String[components.length];
-				for (int i = 0; i < components.length; i++) {
-					res[i] = components[i].getId();
-				}
-				return res;
-			}
-		} else if("duedate".equals(field)) {
-			if(due!=null) {
-				return new String[] { new SimpleDateFormat("dd/MMM/yy").format(due)};
-			}
+		} else if ("timetracking".equals(field)) {
+			return new String[] { Long.toString(getInitialEstimate()/60) + "m" };
 		}
 
 		// TODO add other fields

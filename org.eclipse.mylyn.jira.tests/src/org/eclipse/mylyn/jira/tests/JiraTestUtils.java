@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 import junit.framework.AssertionFailedError;
 
@@ -23,8 +23,8 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 
 public class JiraTestUtils {
@@ -46,14 +46,16 @@ public class JiraTestUtils {
 	public static String getOperation(JiraClient server, String issueKey, String name) throws JiraException {
 		refreshDetails(server);
 
+		ArrayList<String> names = new ArrayList<String>();
 		RepositoryOperation[] operations = server.getAvailableOperations(issueKey);
 		for (RepositoryOperation operation : operations) {
+			names.add(operation.getOperationName());
 			if (operation.getOperationName().toLowerCase().startsWith(name)) {
 				return operation.getKnobName();
 			}
 		}
 
-		throw new AssertionFailedError("Unable to find operation " + name + " in " + Arrays.asList(operations));
+		throw new AssertionFailedError("Unable to find operation " + name + " in " + names);
 	}
 
 	public static String getCustomField(JiraClient server, String name) throws JiraException {
@@ -72,7 +74,7 @@ public class JiraTestUtils {
 		refreshDetails(client);
 
 		Issue issue = new Issue();
-		issue.setProject(getProject1(client));
+		issue.setProject(getProject(client, PROJECT1));
 		issue.setType(client.getIssueTypes()[0]);
 		issue.setSummary(summary);
 		issue.setAssignee(client.getUserName());
@@ -86,10 +88,10 @@ public class JiraTestUtils {
 		}
 	}
 
-	public static Project getProject1(JiraClient client) {
-		Project project = client.getProjectByKey(PROJECT1);
+	public static Project getProject(JiraClient client, String projectKey) {
+		Project project = client.getProjectByKey(projectKey);
 		if (project == null) {
-			throw new AssertionFailedError("Project '" + PROJECT1 + "' not found");
+			throw new AssertionFailedError("Project '" + projectKey + "' not found");
 		}
 		return project;
 	}
