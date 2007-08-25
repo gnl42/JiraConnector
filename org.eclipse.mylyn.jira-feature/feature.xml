@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.mylyn.jira_feature"
       label="Mylyn Connector: Jira (Incubation)"
-      version="2.0.0.v20070824-1600"
+      version="2.0.0.v20070824-1700"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylyn">
 
@@ -219,7 +219,7 @@ litigation.
    </url>
 
    <requires>
-      <import feature="org.eclipse.mylyn_feature" version="2.0.0.v20070824-1600" match="greaterOrEqual"/>
+      <import feature="org.eclipse.mylyn_feature" version="2.0.0.v20070824-1700" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui.views"/>
@@ -239,14 +239,14 @@ litigation.
          id="org.eclipse.mylyn.jira.ui"
          download-size="0"
          install-size="0"
-         version="2.0.0.v20070824-1600"
+         version="2.0.0.v20070824-1700"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylyn.jira.core"
          download-size="0"
          install-size="0"
-         version="2.0.0.v20070824-1600"
+         version="2.0.0.v20070824-1700"
          unpack="false"/>
 
 </feature>
