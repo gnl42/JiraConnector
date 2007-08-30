@@ -206,19 +206,19 @@ public class JiraRpcClientTest extends TestCase {
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("Issue already assigned to Test User 1 (" + client.getUserName() + ").", e.getHtmlMessage());
+			assertEquals("Issue already assigned to Developer (" + client.getUserName() + ").", e.getHtmlMessage());
 		}
 
 		String guestUsername = TestUtil.readCredentials(PrivilegeLevel.GUEST).username;
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "");
 		} catch (JiraRemoteMessageException e) {
-			assertEquals("User 'guest@mylar.eclipse.org' cannot be assigned issues.", e.getHtmlMessage());
+			assertEquals("User 'guest@mylyn.eclipse.org' cannot be assigned issues.", e.getHtmlMessage());
 		}
 
 		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "");
 		issue = client.getIssueByKey(issue.getKey());
-		assertEquals("admin@mylar.eclipse.org", issue.getAssignee());
+		assertEquals("admin@mylyn.eclipse.org", issue.getAssignee());
 
 		client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
 		issue = client.getIssueByKey(issue.getKey());
@@ -346,7 +346,7 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals(issue.getProject(), createdIssue.getProject());
 		assertEquals(issue.getType(), createdIssue.getType());
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
-		assertEquals("admin@mylar.eclipse.org", createdIssue.getAssignee());
+		assertEquals("admin@mylyn.eclipse.org", createdIssue.getAssignee());
 		assertEquals(client.getUserName(), createdIssue.getReporter());
 	}
 
