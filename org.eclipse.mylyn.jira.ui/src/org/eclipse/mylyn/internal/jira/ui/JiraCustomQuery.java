@@ -286,11 +286,14 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			return null;
 		}
 
+		boolean hasNoVersions = false;
 		boolean hasReleasedVersions = false;
 		boolean hasUnreleasedVersions = false;
 		List<Version> fixForversions = new ArrayList<Version>();
 		for (String fixForId : fixForIds) {
-			if (fixForId.equals(VERSION_RELEASED)) {
+			if (fixForId.equals(VERSION_NONE)) {
+				hasNoVersions = true;
+			} else if (fixForId.equals(VERSION_RELEASED)) {
 				hasReleasedVersions = true;
 			} else if (fixForId.equals(VERSION_UNRELEASED)) {
 				hasUnreleasedVersions = true;
@@ -304,6 +307,8 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		}
 		if (!fixForversions.isEmpty()) {
 			return new VersionFilter(fixForversions.toArray(new Version[fixForversions.size()]));
+		} else if (hasNoVersions) {
+			return new VersionFilter(new Version[0]);
 		} else if (hasReleasedVersions || hasUnreleasedVersions) {
 			return new VersionFilter(hasReleasedVersions, hasUnreleasedVersions);
 		}
