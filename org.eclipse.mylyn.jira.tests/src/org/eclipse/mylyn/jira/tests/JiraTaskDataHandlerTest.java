@@ -17,6 +17,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
+import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
@@ -28,7 +29,9 @@ import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
+import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -46,6 +49,12 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	private JiraClient client;
 
+	private AbstractRepositoryConnector connector;
+
+	private String customFieldId;
+
+	private String customFieldName;
+
 	protected void init(String url) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
@@ -54,14 +63,19 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 
-		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(kind);
+		connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
-
+		
 		dataHandler = connector.getTaskDataHandler();
 
 		client = JiraClientFacade.getDefault().getJiraClient(repository);
+		
+//		customFieldId = JiraTestUtils.getCustomField(server, customFieldName);
+//		assertNotNull("Unable to find custom field id", customFieldId);
+		customFieldName = "Free Text";
+		customFieldId = "customfield_10011";
 	}
 
 	public void testGetTaskData() throws Exception {
@@ -141,6 +155,120 @@ public class JiraTaskDataHandlerTest extends TestCase {
 			assertEquals(values[n], value);
 			n++;
 		}
+	}
+
+	public void testUpdateTaskCustomFields() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		Date today = new SimpleDateFormat("dd/MMM/yy").parse("1/Jun/06");
+		SimpleDateFormat df = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT);
+		String dueDate = df.format(today);
+
+		Issue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
+		issue = client.createIssue(issue);
+
+		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
+		assertEquals("testUpdateTask", task.getSummary());
+		assertEquals(false, task.isCompleted());
+		assertNull(task.getDueDate());
+
+		String issueKey = issue.getKey();
+
+		RepositoryTaskData taskData;
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		taskData.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, dueDate);
+		taskData.addAttributeValue(customFieldId, "foo");
+		taskData.addAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "add comment");
+		RepositoryOperation leaveOperation = new RepositoryOperation("leave", "");
+		taskData.addOperation(leaveOperation);
+		taskData.setSelectedOperation(leaveOperation);
+
+//		issue = server.getIssueByKey(issueKey);
+//		issue.setCustomFields(new CustomField[] { new CustomField(fieldId, //
+//				"com.atlassian.jira.plugin.system.customfieldtypes:textfield", // 
+//				fieldName, Collections.singletonList("foo")) });
+//		server.updateIssue(issue, "add comment");
+
+		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+
+		issue = client.getIssueByKey(issueKey);
+		assertCustomField(issue, customFieldId, customFieldName, "foo");
+
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
+
+		{
+			String operation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
+			assertNotNull("Unable to find id for resolve operation", operation);
+
+//			Map<String, String[]> params = new HashMap<String, String[]>();
+//			params.put(JiraAttribute.RESOLUTION.getParamName(), new String[] {JiraTestUtils.getFixedResolution(server).getId()});
+//			params.put(JiraAttribute.COMMENT_NEW.getParamName(), new String[] {"comment"});
+//			
+//			// server.resolveIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+//			server.advanceIssueWorkflow(issue, operation, params);
+
+			taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(client)
+					.getId());
+			taskData.setAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "comment");
+
+			RepositoryOperation resolveOperation = new RepositoryOperation(operation, "resolve");
+			taskData.addOperation(resolveOperation);
+			taskData.setSelectedOperation(resolveOperation);
+			dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+		}
+		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+		assertEquals("testUpdateTask", task.getSummary());
+		assertEquals(true, task.isCompleted());
+		assertNotNull(task.getCompletionDate());
+
+		assertTrue("Invalid task due date " + task.getDueDate(), today.equals(task.getDueDate()));
+
+		issue = client.getIssueByKey(issueKey);
+		assertCustomField(issue, customFieldId, customFieldName, "foo");
+
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
+
+		{
+			String operation = JiraTestUtils.getOperation(client, issue.getKey(), "close");
+			assertNotNull("Unable to find id for close operation", operation);
+
+//			Map<String, String[]> params = new HashMap<String, String[]>();
+//			params.put(JiraAttribute.RESOLUTION.getParamName(), new String[] {JiraTestUtils.getFixedResolution(server).getId()});
+//			params.put(JiraAttribute.COMMENT_NEW.getParamName(), new String[] {"comment"});
+//			
+//			// server.closeIssue(issue, JiraTestUtils.getFixedResolution(server), null, "comment", JiraClient.ASSIGNEE_DEFAULT, "");
+//			server.advanceIssueWorkflow(issue, operation, params);
+
+			taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+			taskData.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, JiraTestUtils.getFixedResolution(client)
+					.getId());
+			taskData.setAttributeValue(RepositoryTaskAttribute.COMMENT_NEW, "comment");
+
+			RepositoryOperation resolveOperation = new RepositoryOperation(operation, "close");
+			taskData.addOperation(resolveOperation);
+			taskData.setSelectedOperation(resolveOperation);
+			dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+		}
+		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+		assertEquals("testUpdateTask", task.getSummary());
+		assertEquals(true, task.isCompleted());
+		assertNotNull(task.getCompletionDate());
+
+		issue = client.getIssueByKey(issueKey);
+		assertCustomField(issue, customFieldId, customFieldName, "foo");
+
+		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
+	}
+
+	private void assertCustomField(Issue issue, String fieldId, String fieldName, String value) {
+		CustomField customField;
+		customField = issue.getCustomFieldById(fieldId);
+		assertNotNull("Expecting to see custom field " + fieldName, customField);
+		assertEquals(fieldName, customField.getName());
+		assertEquals(1, customField.getValues().size());
+		assertEquals(value, customField.getValues().get(0));
 	}
 
 }

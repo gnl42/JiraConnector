@@ -82,9 +82,9 @@ public class JiraTestUtils {
 		return issue;
 	}
 
-	public static void refreshDetails(JiraClient server) throws JiraException {
-		if (!server.hasDetails()) {
-			server.refreshDetails(new NullProgressMonitor());
+	public static void refreshDetails(JiraClient client) throws JiraException {
+		if (!client.hasDetails()) {
+			client.refreshDetails(new NullProgressMonitor());
 		}
 	}
 

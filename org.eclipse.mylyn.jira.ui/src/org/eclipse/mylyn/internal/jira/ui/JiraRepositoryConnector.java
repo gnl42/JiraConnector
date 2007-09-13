@@ -11,11 +11,9 @@ package org.eclipse.mylyn.internal.jira.ui;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +48,6 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
-import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
@@ -59,9 +56,10 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
  * @author Eugene Kuleshov
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
-	
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(
-			Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/connector"));
+
+	private static final int MAX_MARK_STALE_QUERY_HITS = 500;
+
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/connector"));
 
 	/** Repository address + Issue Prefix + Issue key = the issue's web address */
 	public final static String ISSUE_URL_PREFIX = "/browse/";
@@ -73,6 +71,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private JiraAttachmentHandler attachmentHandler;
 
+	private final TasksFacade mylynFacade;
+
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
@@ -80,9 +80,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public static final int RETURN_ALL_HITS = -1;
 
-	public JiraRepositoryConnector() {
+	public JiraRepositoryConnector(TasksFacade mylynFacade) {
+		this.mylynFacade = mylynFacade;
+
 		offlineHandler = new JiraTaskDataHandler(JiraClientFacade.getDefault());
 		attachmentHandler = new JiraAttachmentHandler();
+	}
+
+	public JiraRepositoryConnector() {
+		this(new TasksFacade());
 	}
 
 	@Override
@@ -110,7 +116,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return true;
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
 			IProgressMonitor monitor, ITaskCollector resultCollector) {
@@ -133,12 +138,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				} catch (JiraException e) {
 					return JiraCorePlugin.toStatus(repository, e);
 				} catch (InvalidJiraQueryException e) {
-					return new Status(IStatus.ERROR, TasksUiPlugin.ID_PLUGIN, 0,
+					return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
 							"The query parameters do not match the repository configuration, please check the query properties; "
 									+ e.getMessage(), null);
 				}
 			} else {
-				return new Status(IStatus.ERROR, TasksUiPlugin.ID_PLUGIN, 0, //
+				return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0, //
 						"Invalid query type: " + repositoryQuery.getClass(), null);
 			}
 
@@ -161,8 +166,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						// TODO we could update the task if it already exists in the task list
 						resultCollector.accept(task);
 					} else {
-						RepositoryTaskData oldTaskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(
-								repository.getUrl(), issue.getId());
+						RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
 						resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData));
 					}
 				}
@@ -181,20 +185,23 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public boolean markStaleTasks(TaskRepository repository, Set<AbstractTask> tasks, IProgressMonitor monitor)
 			throws CoreException {
 		String dateString = repository.getSynchronizationTimeStamp();
-		Date lastSyncDate = convertDate(dateString);
+		Date lastSyncDate = JiraTaskDataHandler.stringToDate(dateString);
+
+		// use the timestamp on the task that was modified last
 		if (lastSyncDate == null) {
 			for (AbstractTask task : tasks) {
-				Date date = convertDate(task.getLastReadTimeStamp());
+				Date date = JiraTaskDataHandler.stringToDate(task.getLastReadTimeStamp());
 				if (lastSyncDate == null || (date != null && date.before(lastSyncDate))) {
 					lastSyncDate = date;
 				}
 			}
 		}
+
+		// repository was never synchronized, update all tasks
 		if (lastSyncDate == null) {
 			for (AbstractTask task : tasks) {
 				task.setStale(true);
@@ -202,74 +209,68 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return true;
 		}
 
-		long mil = lastSyncDate.getTime();
-		long now = Calendar.getInstance().getTimeInMillis();
-		if (now - mil <= 0) {
-			return false;
-		}
-		long minutes = -1 * ((now - mil) / (1000 * 60));
-		if (minutes == 0) {
+		// XXX using local time to determine time difference to last sync can be inaccurate  
+		long now = System.currentTimeMillis();
+		long lastSyncTime = lastSyncDate.getTime();
+
+		// check if time stamp is skewed
+		if (lastSyncTime >= now) {
+			// TODO reset time stamp?
+			trace(new Status(Status.WARNING, JiraUiPlugin.PLUGIN_ID, 0, "Repository clock skew detected for "
+					+ repository.getUrl() + ": " + lastSyncTime + " >= " + now, null));
 			return false;
 		}
 
 		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
-		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, minutes));
+		// need to use RelativeDateRangeFilter since the granularity of DateRangeFilter is days
+		// whereas this allows us to use minutes 
+		long minutes = (now - lastSyncTime) / (60 * 1000) + 1;
+		changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, -minutes));
+		// make sure it's sorted so the most recent changes are returned in case the query maximum is hit
 		changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
-		// TODO: Need some way to further scope this query
 
 		List<Issue> issues = new ArrayList<Issue>();
 		JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 		// unlimited maxHits can create crazy amounts of traffic
-		JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues, 500);
+		JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues,
+				MAX_MARK_STALE_QUERY_HITS);
 		try {
 			client.search(changedFilter, issueCollector);
 
 			if (issues.isEmpty()) {
-				return false; // no hits
+				// repository is unchanged
+				return false;
 			}
 
-			int n = 0;
-			TaskFactory factory = new TaskFactory(repository, false, false);
 			for (Issue issue : issues) {
-				AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repository.getUrl(),
-						issue.getId());
-				if (!tasks.contains(task)) {
-					++n;
-					continue;
+				AbstractTask task = mylynFacade.getTask(repository.getUrl(), issue.getId());
+				if (task != null) {
+					// for JIRA we all is returned by the query so no need to mark tasks as stale
+					monitor.subTask(issue.getKey() + " " + issue.getSummary());
+					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
+					RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData);
+					mylynFacade.saveIncoming(task, taskData);
 				}
-
-				monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-				RepositoryTaskData oldTaskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(repository.getUrl(),
-						issue.getId());
-				RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData);
-				factory.createTask(taskData, new NullProgressMonitor());
 
 				if (issue.getUpdated() != null && issue.getUpdated().after(lastSyncDate)) {
 					lastSyncDate = issue.getUpdated();
 				}
 			}
 
-			repository.setSynchronizationTimeStamp( // 
-			new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(lastSyncDate));
+			if (!JiraTaskDataHandler.dateToString(lastSyncDate).equals(repository.getSynchronizationTimeStamp())) {
+				repository.setSynchronizationTimeStamp(JiraTaskDataHandler.dateToString(lastSyncDate));
 
-			return true;
+				// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
+				return true;
+			} else {
+				// didn't see any new changes
+				return false;
+			}
 		} catch (JiraException e) {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
 			trace(status);
 			throw new CoreException(status);
 		}
-	}
-
-	private Date convertDate(String dateString) {
-		if (dateString == null || dateString.length() == 0) {
-			return null;
-		}
-		try {
-			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
-		} catch (ParseException e) {
-			StatusHandler.log(e, "Error while parsing date string " + dateString);
-		}
-		return null;
 	}
 
 	@Override
@@ -497,9 +498,26 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	private void trace(IStatus status) {
-		if(TRACE_ENABLED) {
+		if (TRACE_ENABLED) {
 			JiraUiPlugin.getDefault().getLog().log(status);
 		}
 	}
-	
+
+	public static class TasksFacade {
+
+		public AbstractTask getTask(String repositoryUrl, String taskId) {
+			return TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
+		}
+
+		@SuppressWarnings("restriction")
+		public RepositoryTaskData getNewTaskData(String repositoryUrl, String id) {
+			return TasksUiPlugin.getTaskDataManager().getNewTaskData(repositoryUrl, id);
+		}
+
+		public void saveIncoming(AbstractTask task, RepositoryTaskData taskData) {
+			TasksUiPlugin.getSynchronizationManager().saveIncoming(task, taskData, false);
+		}
+
+	}
+
 }

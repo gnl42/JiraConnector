@@ -455,7 +455,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return attr;
 	}
 
-	private String dateToString(Date date) {
+	/* Public for testing. */
+	public static String dateToString(Date date) {
 		if (date == null) {
 			return "";
 		} else {
@@ -463,13 +464,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private Date stringToDate(String s) {
-		if (s == null) {
+	/* Public for testing. */
+	public static Date stringToDate(String dateString) {
+		if (dateString == null || dateString.length() == 0) {
 			return null;
 		}
 		try {
-			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(s);
-		} catch (ParseException ex) {
+			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
+		} catch (ParseException e) {
+			trace(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, 0, 				
+					"Error while parsing date string " + dateString, e));
 			return null;
 		}
 	}
@@ -768,7 +772,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return subIds;
 	}
 
-	private void trace(IStatus status) {
+	private static void trace(IStatus status) {
 		if (TRACE_ENABLED) {
 			JiraUiPlugin.getDefault().getLog().log(status);
 		}
