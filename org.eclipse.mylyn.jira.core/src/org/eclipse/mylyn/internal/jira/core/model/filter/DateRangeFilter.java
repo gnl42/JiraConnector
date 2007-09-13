@@ -33,11 +33,6 @@ public class DateRangeFilter extends DateFilter {
 		return this.toDate;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gbst.jira.core.model.filter.DateFilter#copy(com.gbst.jira.core.model.filter.DateFilter)
-	 */
 	@Override
 	DateFilter copy() {
 		return new DateRangeFilter(fromDate, toDate);

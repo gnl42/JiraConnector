@@ -325,18 +325,18 @@ class RssFilterConverter {
 	}
 
 	protected String convertDueDateFilter(DateFilter dueDateFilter) {
-		return convertDateFilder(dueDateFilter, "duedate");
+		return convertDateFilter(dueDateFilter, "duedate");
 	}
 
 	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
-		return convertDateFilder(updatedDateFilter, "updated");
+		return convertDateFilter(updatedDateFilter, "updated");
 	}
 
 	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
-		return convertDateFilder(createdDateFilter, "created");
+		return convertDateFilter(createdDateFilter, "created");
 	}
 
-	private String convertDateFilder(DateFilter dateFilter, String name) {
+	private String convertDateFilter(DateFilter dateFilter, String name) {
 		StringBuffer buffer = new StringBuffer();
 
 		if (dateFilter instanceof DateRangeFilter) {

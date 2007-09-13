@@ -85,20 +85,20 @@ public class Jira33RssFilterConverter extends RssFilterConverter {
 
 	@Override
 	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
-		return createDateFilder(createdDateFilter, "created");
+		return createDateFilter(createdDateFilter, "created");
 	}
 
 	@Override
 	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
-		return createDateFilder(updatedDateFilter, "updated");
+		return createDateFilter(updatedDateFilter, "updated");
 	}
 
 	@Override
 	protected String convertDueDateFilter(DateFilter dueDateFilter) {
-		return createDateFilder(dueDateFilter, "duedate");
+		return createDateFilter(dueDateFilter, "duedate");
 	}
 
-	private String createDateFilder(DateFilter dateFilter, String name) {
+	private String createDateFilter(DateFilter dateFilter, String name) {
 		StringBuffer buffer = new StringBuffer();
 		if (dateFilter instanceof DateRangeFilter) {
 			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);

@@ -66,11 +66,6 @@ public class RelativeDateRangeFilter extends DateFilter {
 		return this.previousRangeType;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -89,11 +84,6 @@ public class RelativeDateRangeFilter extends DateFilter {
 		return sb.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gbst.jira.core.model.filter.DateFilter#copy()
-	 */
 	@Override
 	DateFilter copy() {
 		return new RelativeDateRangeFilter(this.previousRangeType, previousCount, nextRangeType, nextCount);
@@ -120,11 +110,6 @@ public class RelativeDateRangeFilter extends DateFilter {
 			return this.multiplier;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Object#toString()
-		 */
 		@Override
 		public String toString() {
 			if (HOUR.equals(this)) {
