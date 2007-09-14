@@ -376,7 +376,7 @@ public class JiraRpcClientTest extends TestCase {
 		parentIssue = client.getIssueByKey(parentIssue.getKey());
 		assertNotNull(parentIssue.getSubtasks());
 		assertEquals(1, parentIssue.getSubtasks().length);
-		assertEquals(childIssue.getId(), parentIssue.getSubtasks()[0]);
+		assertEquals(childIssue.getId(), parentIssue.getSubtasks()[0].getIssueId());
 	}
 
 	public void testGetIssueLeadingSpacesInDescription() throws Exception {
