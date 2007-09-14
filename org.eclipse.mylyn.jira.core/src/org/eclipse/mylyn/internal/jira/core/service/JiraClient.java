@@ -308,6 +308,12 @@ public interface JiraClient {
 	Issue createIssue(Issue issue) throws JiraException;
 
 	/**
+	 * See {@link #createIssue(Issue)} for mandatory attributes of <code>issue</code>. Additionally the
+	 * <code>parentIssueId</code> must be set.
+	 */
+	Issue createSubTask(Issue issue) throws JiraException;
+	
+	/**
 	 * Begin watching <code>issue</code>. Nothing will happen if the user is already watching the issue.
 	 * 
 	 * @param issue

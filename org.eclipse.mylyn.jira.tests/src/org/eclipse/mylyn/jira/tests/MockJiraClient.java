@@ -104,6 +104,10 @@ public class MockJiraClient extends AbstractJiraClient {
 		return null;
 	}
 
+	public Issue createSubTask(Issue issue) throws JiraException {
+		return null;
+	}
+
 	public Issue getIssueById(String issue) throws JiraException {
 		return null;
 	}

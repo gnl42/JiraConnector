@@ -462,8 +462,16 @@ public class JiraWebIssueService {
 		});
 	}
 
-	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
 	public Issue createIssue(final Issue issue) throws JiraException {
+		return createIssue("/secure/CreateIssueDetails.jspa", issue);
+	}
+	
+	public Issue createSubTask(final Issue issue) throws JiraException {
+		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue);
+	}
+	
+	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
+	private Issue createIssue(final String url, final Issue issue) throws JiraException {
 		final SingleIssueCollector collector = new SingleIssueCollector();
 
 		JiraWebSession s = new JiraWebSession(server);
@@ -471,7 +479,7 @@ public class JiraWebIssueService {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(baseUrl);
-				attachFileURLBuffer.append("/secure/CreateIssueDetails.jspa");
+				attachFileURLBuffer.append(url);
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
 
@@ -524,6 +532,10 @@ public class JiraWebIssueService {
 				post.addParameter("environment", issue.getEnvironment() != null ? issue.getEnvironment() : "");
 				post.addParameter("description", issue.getDescription() != null ? issue.getDescription() : "");
 
+				if (issue.getParentId() != null) {
+					post.addParameter("parentIssueId", issue.getParentId());
+				}
+				
 				try {
 					int status = client.executeMethod(post);
 					// Expect a 302 response here as it should redirect to the

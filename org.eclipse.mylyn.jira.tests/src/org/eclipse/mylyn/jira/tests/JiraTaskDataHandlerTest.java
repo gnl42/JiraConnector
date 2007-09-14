@@ -9,6 +9,7 @@ package org.eclipse.mylyn.jira.tests;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -35,6 +36,7 @@ import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
@@ -55,6 +57,16 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	private String customFieldName;
 
+	private TaskRepositoryManager manager;
+
+	@Override
+	protected void setUp() throws Exception {
+		manager = TasksUiPlugin.getRepositoryManager();
+		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		
+		JiraClientFacade.getDefault().clearClients();
+	}
+	
 	protected void init(String url) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
@@ -62,7 +74,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
-
+		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		
 		connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
@@ -269,6 +282,45 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(fieldName, customField.getName());
 		assertEquals(1, customField.getValues().size());
 		assertEquals(value, customField.getValues().get(0));
+	}
+
+	public void testGetTaskDataSubTasks() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		Issue parentIssue = JiraTestUtils.createIssue(client, "testSubTask");
+		parentIssue = client.createIssue(parentIssue);
+		
+		Issue subTaskIssue = JiraTestUtils.createSubTask(client, parentIssue, "testSubTaskChild");
+		subTaskIssue = client.createSubTask(subTaskIssue);
+
+		RepositoryTaskData taskData = dataHandler.getTaskData(repository, parentIssue.getId(), new NullProgressMonitor());
+		Set<String> ids = dataHandler.getSubTaskIds(taskData);
+		assertEquals(1, ids.size());
+		assertEquals(subTaskIssue.getId(), ids.iterator().next());
+		
+		taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(), new NullProgressMonitor());
+		assertEquals(subTaskIssue.getId(), taskData.getId());
+		assertEquals(subTaskIssue.getKey(), taskData.getTaskKey());
+	}
+
+	public void testPostTaskDataSubTask() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		Issue parentIssue = JiraTestUtils.createIssue(client, "testUpdateSubTask");
+		parentIssue = client.createIssue(parentIssue);
+		
+		Issue subTaskIssue = JiraTestUtils.createSubTask(client, parentIssue, "testUpdateSubTaskChild");
+		subTaskIssue = client.createSubTask(subTaskIssue);
+
+		RepositoryTaskData taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(), new NullProgressMonitor());
+		assertEquals(subTaskIssue.getKey(), taskData.getTaskKey());
+		
+		taskData.setDescription("new description");
+		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+		
+		Issue updatedSubTaskIssue = client.getIssueByKey(taskData.getTaskKey());
+		assertEquals(subTaskIssue.getId(), updatedSubTaskIssue.getId());
+		assertEquals("new description", updatedSubTaskIssue.getDescription());
 	}
 
 }

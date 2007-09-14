@@ -350,6 +350,35 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals(client.getUserName(), createdIssue.getReporter());
 	}
 
+	public void testCreateSubTask() throws Exception {
+		createSubTask(JiraTestConstants.JIRA_39_URL);
+	}
+
+	private void createSubTask(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+
+		Issue issue = new Issue();
+		issue.setProject(client.getProjects()[0]);
+		issue.setType(client.getIssueTypes()[0]);
+		issue.setSummary("testCreateSubTaskParent");
+
+		Issue parentIssue = client.createIssue(issue);
+
+		issue = new Issue();
+		issue.setProject(client.getProjects()[0]);
+		issue.setType(client.getIssueTypes()[5]);
+		issue.setParentId(parentIssue.getId());
+		issue.setSummary("testCreateSubTaskChild");
+		
+		Issue childIssue = client.createSubTask(issue);
+		assertEquals(parentIssue.getId(), childIssue.getParentId());
+		
+		parentIssue = client.getIssueByKey(parentIssue.getKey());
+		assertNotNull(parentIssue.getSubtasks());
+		assertEquals(1, parentIssue.getSubtasks().length);
+		assertEquals(childIssue.getId(), parentIssue.getSubtasks()[0]);
+	}
+
 	public void testGetIssueLeadingSpacesInDescription() throws Exception {
 		getIssueLeadingSpacesInDescripton(JiraTestConstants.JIRA_39_URL);
 	}

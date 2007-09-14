@@ -82,6 +82,19 @@ public class JiraTestUtils {
 		return issue;
 	}
 
+	public static Issue createSubTask(JiraClient client, Issue parent, String summary) throws JiraException {
+		refreshDetails(client);
+
+		Issue issue = new Issue();
+		issue.setProject(getProject(client, PROJECT1));
+		issue.setType(client.getIssueTypes()[5]);
+		issue.setParentId(parent.getId());
+		issue.setSummary(summary);
+		issue.setAssignee(client.getUserName());
+
+		return issue;
+	}
+
 	public static void refreshDetails(JiraClient client) throws JiraException {
 		if (!client.hasDetails()) {
 			client.refreshDetails(new NullProgressMonitor());

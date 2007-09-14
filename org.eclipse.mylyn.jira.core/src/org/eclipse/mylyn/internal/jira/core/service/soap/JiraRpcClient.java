@@ -279,6 +279,10 @@ public class JiraRpcClient extends AbstractJiraClient {
 		return issueService.createIssue(issue);
 	}
 
+	public Issue createSubTask(Issue issue) throws JiraException {
+		return issueService.createSubTask(issue);
+	}
+
 	@Override
 	public Project[] getProjectsRemote() throws JiraException {
 		return call(new RemoteRunnable<Project[]>() {
