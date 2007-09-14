@@ -10,15 +10,11 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -164,6 +160,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
 
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
@@ -198,6 +195,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentKey);
 		} else {
 			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+		}
+
+		String parentId = jiraIssue.getParentId();
+		if (parentId != null) {
+			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID, parentId);
+		} else {
+			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
 		}
 
 		data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS);
@@ -243,14 +247,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 		}
 
-		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, dateToString(jiraIssue.getCreated()));
+		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, JiraUtils.dateToString(jiraIssue.getCreated()));
 		data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, convertHtml(jiraIssue.getSummary()));
 		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, convertHtml(jiraIssue.getDescription()));
 		data.setAttributeValue(RepositoryTaskAttribute.STATUS, convertHtml(jiraIssue.getStatus().getName()));
 		data.setAttributeValue(RepositoryTaskAttribute.TASK_KEY, jiraIssue.getKey());
 		data.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, //
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getName());
-		data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, dateToString(jiraIssue.getUpdated()));
+		data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, JiraUtils.dateToString(jiraIssue.getUpdated()));
 
 		data.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
 		data.setAttributeValue(RepositoryTaskAttribute.USER_REPORTER, jiraIssue.getReporter());
@@ -278,7 +282,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, Long.toString(jiraIssue.getEstimate() / 60));
 
 		if (jiraIssue.getDue() != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, dateToString(jiraIssue.getDue()));
+			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraUtils.dateToString(jiraIssue.getDue()));
 		} else {
 			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
 		}
@@ -318,7 +322,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_AUTHOR, createAuthorAttribute(comment.getAuthor()));
 
 			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, convertHtml(comment.getComment()));
-			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, dateToString(comment.getCreated()));
+			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, JiraUtils.dateToString(comment.getCreated()));
 			data.addComment(taskComment);
 		}
 
@@ -345,7 +349,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_OWNER, attachment.getAuthor());
 
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE,
-					dateToString(attachment.getCreated()));
+					JiraUtils.dateToString(attachment.getCreated()));
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_URL, //
 					client.getBaseUrl() + "/secure/attachment/" + attachment.getId() + "/" + attachment.getName());
 			data.addAttachment(taskAttachment);
@@ -463,29 +467,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return attr;
 	}
 
-	/* Public for testing. */
-	public static String dateToString(Date date) {
-		if (date == null) {
-			return "";
-		} else {
-			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(date);
-		}
-	}
-
-	/* Public for testing. */
-	public static Date stringToDate(String dateString) {
-		if (dateString == null || dateString.length() == 0) {
-			return null;
-		}
-		try {
-			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
-		} catch (ParseException e) {
-			trace(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, 0, 				
-					"Error while parsing date string " + dateString, e));
-			return null;
-		}
-	}
-
 	private String getAssignee(Issue jiraIssue) {
 		String assignee = jiraIssue.getAssignee();
 		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;
@@ -583,7 +564,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		try {
 			Issue issue = buildJiraIssue(taskData, client);
 			if (taskData.isNew()) {
-				issue = client.createIssue(issue);
+				if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
+					issue = client.createSubTask(issue);
+				} else {
+					issue = client.createIssue(issue);
+				}
+				
 				if (issue == null) {
 					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
 							IStatus.OK, "Could not create ticket.", null));
@@ -654,8 +640,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
 
 		// TODO sync due date between jira and local planning
-		issue.setDue(stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
+		issue.setDue(JiraUtils.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
 
+		String parentId = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
+		if (parentId != null) {
+			issue.setParentId(parentId);
+		}
+		
 		String estimate = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
 		if (estimate != null) {
 			try {

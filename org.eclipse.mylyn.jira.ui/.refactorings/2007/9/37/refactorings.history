@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session version="1.0">
+<refactoring comment="Move 2 members to 'org.eclipse.mylyn.internal.jira.ui.JiraUtils'&#10;- Original project: 'org.eclipse.mylyn.jira.ui'&#10;- Original elements:&#10;     org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler.stringToDate(...)&#10;     org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler.dateToString(...)&#10;- Destination type: 'org.eclipse.mylyn.internal.jira.ui.JiraUtils'" delegate="false" deprecate="true" description="Move members" element1="/src&lt;org.eclipse.mylyn.internal.jira.ui{JiraTaskDataHandler.java[JiraTaskDataHandler~stringToDate~QString;" element2="/src&lt;org.eclipse.mylyn.internal.jira.ui{JiraTaskDataHandler.java[JiraTaskDataHandler~dateToString~QDate;" flags="589830" id="org.eclipse.jdt.ui.move.static" input="/src&lt;org.eclipse.mylyn.internal.jira.ui{JiraUtils.java[JiraUtils" stamp="1189810382789" version="1.0"/>
+</session>
