@@ -155,9 +155,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		IssueType[] jiraIssueTypes = client.getIssueTypes();
 		for (int i = 0; i < jiraIssueTypes.length; i++) {
 			IssueType type = jiraIssueTypes[i];
-			types.addOption(type.getName(), type.getId());
-			if (i == 0) {
-				types.setValue(type.getName());
+			if (!type.isSubTaskType()) {
+				types.addOption(type.getName(), type.getId());
+				if (i == 0) {
+					types.setValue(type.getName());
+				}
 			}
 		}
 
@@ -261,8 +263,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.removeAttribute(RepositoryTaskAttribute.PRIORITY);
 		}
 
-		if (jiraIssue.getType() != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, jiraIssue.getType().getName());
+		IssueType issueType = jiraIssue.getType(); 
+		if (issueType != null) {
+			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, issueType.getName());
+			if (issueType.isSubTaskType()) {
+				RepositoryTaskAttribute attribute = data.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+				attribute.setReadOnly(true);
+				attribute.clearOptions();
+			}
 		} else {
 			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
 		}

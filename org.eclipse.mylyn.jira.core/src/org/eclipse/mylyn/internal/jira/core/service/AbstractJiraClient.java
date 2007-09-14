@@ -194,13 +194,12 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 		data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length + subTaskIssueTypes.length);
 
-		for (int i = 0; i < issueTypes.length; i++) {
-			IssueType issueType = issueTypes[i];
+		for (IssueType issueType : issueTypes) {
 			data.issueTypesById.put(issueType.getId(), issueType);
 		}
 
-		for (int i = 0; i < subTaskIssueTypes.length; i++) {
-			IssueType issueType = subTaskIssueTypes[i];
+		for (IssueType issueType : subTaskIssueTypes) {
+			issueType.setSubTaskType(true);
 			data.issueTypesById.put(issueType.getId(), issueType);
 		}
 

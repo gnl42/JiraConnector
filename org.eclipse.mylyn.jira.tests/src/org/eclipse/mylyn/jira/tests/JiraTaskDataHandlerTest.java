@@ -294,6 +294,9 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		subTaskIssue = client.createSubTask(subTaskIssue);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, parentIssue.getId(), new NullProgressMonitor());
+		RepositoryTaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+		assertFalse(typeAttribute.isReadOnly());
+		assertTrue(typeAttribute.getOptions().size() > 0);		
 		Set<String> ids = dataHandler.getSubTaskIds(taskData);
 		assertEquals(1, ids.size());
 		assertEquals(subTaskIssue.getId(), ids.iterator().next());
@@ -301,6 +304,9 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(), new NullProgressMonitor());
 		assertEquals(subTaskIssue.getId(), taskData.getId());
 		assertEquals(subTaskIssue.getKey(), taskData.getTaskKey());
+		typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+		assertTrue(typeAttribute.isReadOnly());
+		assertEquals(0, typeAttribute.getOptions().size());		
 	}
 
 	public void testPostTaskDataSubTask() throws Exception {

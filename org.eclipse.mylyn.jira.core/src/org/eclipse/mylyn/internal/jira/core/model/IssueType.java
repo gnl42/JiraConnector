@@ -14,6 +14,7 @@ import java.io.Serializable;
  * @author Brock Janiczak
  */
 public class IssueType implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	public static final String BUG_ID = "1";
@@ -31,6 +32,8 @@ public class IssueType implements Serializable {
 	private String description;
 
 	private String icon;
+
+	private boolean subTaskType;
 
 	public String getDescription() {
 		return this.description;
@@ -62,6 +65,14 @@ public class IssueType implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isSubTaskType() {
+		return subTaskType;
+	}
+
+	public void setSubTaskType(boolean subTaskType) {
+		this.subTaskType = subTaskType;
 	}
 
 	@Override
