@@ -428,6 +428,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
+			jiraTask.setTaskKind(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE));
 			jiraTask.setUrl(getTaskUrlFromKey(repository.getUrl(), repositoryTask.getTaskKey()));
 			try {
 				String dueDateString = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
