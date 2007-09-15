@@ -12,6 +12,7 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
 /**
  * @author Eugene Kuleshov
+ * @author Steffen Pingel
  */
 public enum JiraAttribute {
 	ISSUE_KEY(RepositoryTaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Issue ID:"),
@@ -32,6 +33,8 @@ public enum JiraAttribute {
 
 	TYPE(JiraAttributeFactory.ATTRIBUTE_TYPE, JiraFieldType.SELECT, "Type:", false, false, "issuetype"), PARENT_KEY(
 			JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.ISSUELINK, "Parent:", false, true),
+
+	PARENT_ID(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID, JiraFieldType.ISSUELINK, "Parent ID:", true, true),
 
 	COMPONENTS(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, JiraFieldType.MULTISELECT, "Components:", false, false,
 			"components"), AFFECTSVERSIONS(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT,
@@ -54,7 +57,7 @@ public enum JiraAttribute {
 			RepositoryTaskAttribute.COMMENT_DATE, JiraFieldType.TEXTAREA, "Date:"),
 
 	SUBTASK_IDS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, "Subtask ids:", true, true), SUBTASK_KEYS(
-			JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Sub-Tasks:", false, true),
+			JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Sub-tasks:", false, true),
 
 	UNKNOWN(null, JiraFieldType.UNKNOWN, "unknown:", true, true);
 

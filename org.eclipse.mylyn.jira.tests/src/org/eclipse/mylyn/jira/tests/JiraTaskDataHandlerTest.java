@@ -29,9 +29,9 @@ import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
@@ -47,7 +47,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	private TaskRepository repository;
 
-	private AbstractTaskDataHandler dataHandler;
+	private JiraTaskDataHandler dataHandler;
 
 	private JiraClient client;
 
@@ -81,7 +81,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 		
-		dataHandler = connector.getTaskDataHandler();
+		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 
 		client = JiraClientFacade.getDefault().getJiraClient(repository);
 		
@@ -329,4 +329,23 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals("new description", updatedSubTaskIssue.getDescription());
 	}
 
+	public void testInitializeSubTask() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		Issue parentIssue = JiraTestUtils.createIssue(client, "testInitializeSubTask");
+		parentIssue = client.createIssue(parentIssue);
+
+		RepositoryTaskData parentTaskData = dataHandler.getTaskData(repository, parentIssue.getId(), new NullProgressMonitor());
+		
+		AbstractAttributeFactory attributeFactory = dataHandler.getAttributeFactory(repository.getUrl(),
+				repository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
+		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
+				repository.getUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
+
+		dataHandler.initializeSubTaskData(repository, taskData, parentTaskData, new NullProgressMonitor());
+
+		assertEquals(parentIssue.getId(), taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID));
+		assertEquals(parentIssue.getProject().getName(), taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT));
+		assertNotNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE));
+	}
 }

@@ -22,7 +22,7 @@ public class JiraTask extends AbstractTask {
 	private String key = null;
 
 	public enum Kind {
-		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE;
+		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
 
 		@Override
 		public String toString() {
@@ -37,6 +37,8 @@ public class JiraTask extends AbstractTask {
 				return "Improvement";
 			case CUSTOM_ISSUE:
 				return "Custom Issue";
+			case SUB_TASK:
+				return "Sub-task";
 			default:
 				return "";
 			}

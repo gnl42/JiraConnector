@@ -55,4 +55,21 @@
       </detector>
    </extension>
 
+
+  <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.eclipse.mylyn.jira.ui.jiraTask"
+            objectClass="org.eclipse.mylyn.internal.jira.ui.JiraTask">
+         <action
+               class="org.eclipse.mylyn.internal.jira.ui.actions.NewSubTaskAction"
+               enablesFor="org.eclipse.mylyn.internal.jira.ui.JiraTask"
+               icon="icons/etool16/sub-task-new.gif"
+               id="org.eclipse.mylyn.jira.ui.new.subtask"
+               label="New Sub-task"
+               menubarPath="new"
+               tooltip="New Sub-Task">
+         </action>
+      </objectContribution> 
+   </extension>
+	
 </plugin>

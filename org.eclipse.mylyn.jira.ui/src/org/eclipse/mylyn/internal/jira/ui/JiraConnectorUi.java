@@ -70,6 +70,10 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		task.setTaskKind(JiraTask.Kind.TASK.toString());
 		legendItems.add(task);
 
+		JiraTask subTask = new JiraTask("", "task", "Sub-task");
+		subTask.setTaskKind(JiraTask.Kind.SUB_TASK.toString());
+		legendItems.add(subTask);
+
 		return legendItems;
 	}
 
@@ -85,6 +89,8 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 				return JiraImages.OVERLAY_IMPROVEMENT;
 			} else if (JiraTask.Kind.TASK.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_TASK;
+			} else if (JiraTask.Kind.SUB_TASK.toString().equals(task.getTaskKind())) {
+				return JiraImages.OVERLAY_SUB_TASK;
 			}
 		}
 		return super.getTaskKindOverlay(repositoryTask);

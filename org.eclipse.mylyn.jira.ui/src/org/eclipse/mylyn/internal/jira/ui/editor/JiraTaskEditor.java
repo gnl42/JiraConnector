@@ -13,13 +13,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraFieldType;
+import org.eclipse.mylyn.internal.jira.ui.actions.NewSubTaskAction;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.ui.AbstractDuplicateDetector;
@@ -425,4 +428,18 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		return detectors;
 	}
 
+	@Override
+	protected void fillToolBar(IToolBarManager toolBarManager) {
+		if (taskData != null && !taskData.isNew()) {
+			if (getRepositoryTask() != null) {
+				NewSubTaskAction newSubTaskAction = new NewSubTaskAction();
+				newSubTaskAction.selectionChanged(newSubTaskAction, new StructuredSelection(getRepositoryTask()));
+				if (newSubTaskAction.isEnabled()) {
+					toolBarManager.add(newSubTaskAction);
+				}
+			}
+		}
+		super.fillToolBar(toolBarManager);
+	}
+	
 }

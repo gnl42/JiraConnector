@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
@@ -621,6 +622,55 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return false;
 	}
 
+	public void initializeSubTaskData(TaskRepository taskRepository, RepositoryTaskData taskData, RepositoryTaskData parentTaskData, IProgressMonitor monitor) throws CoreException {
+		JiraClient client = JiraClientFacade.getDefault().getJiraClient(taskRepository);
+		Project project = getProject(client, parentTaskData.getProduct());
+		if (project == null) {
+			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
+					IStatus.OK, "The parent task does not have a valid project.", null));
+		}
+
+		initializeTaskData(taskData, client, project);
+		taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
+
+		// set type
+		RepositoryTaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+		typeAttribute.clearOptions();
+
+		IssueType[] jiraIssueTypes = client.getIssueTypes();
+		for (int i = 0; i < jiraIssueTypes.length; i++) {
+			IssueType type = jiraIssueTypes[i];
+			if (type.isSubTaskType()) {
+				typeAttribute.addOption(type.getName(), type.getId());
+			}
+		}
+		
+		List<String> options = typeAttribute.getOptions();
+		if (options.size() == 0) {
+			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
+					IStatus.OK, "The repository does not support sub-tasks.", null));
+		} else if (options.size() == 1) {
+			typeAttribute.setReadOnly(true);
+		}  
+		typeAttribute.setValue(options.get(0));
+		
+		// set parent id
+		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
+		attribute.setValue(parentTaskData.getId());
+		
+		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+		attribute.setValue(parentTaskData.getTaskKey());
+	}
+
+	private Project getProject(JiraClient client, String projectName) {
+		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {
+			if (project.getName().equals(projectName)) {
+				return project;
+			}
+		}
+		return null;
+	}
+	
 	@Override
 	public AbstractAttributeFactory getAttributeFactory(String repositoryUrl, String repositoryKind, String taskKind) {
 		// we don't care about the repository information right now

@@ -26,6 +26,8 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	public static final String ATTRIBUTE_TYPE = "attribute.jira.type";
 
 	public static final String ATTRIBUTE_ISSUE_PARENT_KEY = "attribute.jira.issue_parent_key";
+	
+	public static final String ATTRIBUTE_ISSUE_PARENT_ID = "attribute.jira.issue_parent_id";
 
 	public static final String ATTRIBUTE_ENVIRONMENT = "attribute.jira.environment";
 
