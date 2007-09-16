@@ -260,7 +260,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			}
 
 			Button keepLocationButton = new Button(composite, SWT.RADIO);
-			keepLocationButton.setText("Keep my current location: " + locations[0]);
+			keepLocationButton.setText("Keep current location: " + locations[0]);
 			keepLocationButton.setData(locations[0]);
 			keepLocationButton.setSelection(getSelectedUrl().equals(locations[0]));
 			buttons.add(keepLocationButton);
