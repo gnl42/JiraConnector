@@ -33,64 +33,50 @@ public class JiraWebSession {
 
 	private static final int MAX_REDIRECTS = 3;
 
-	private final JiraClient server;
+	private final JiraClient client;
 
 	private String baseUrl;
 
-	public JiraWebSession(JiraClient server) {
-		this.server = server;
-		this.baseUrl = server.getBaseUrl();
+	private String characterEncoding;
+
+	public JiraWebSession(JiraClient client, String baseUrl) {
+		this.client = client;
+		this.baseUrl = baseUrl;
+	}
+
+	public JiraWebSession(JiraClient client) {
+		this(client, client.getBaseUrl());
 	}
 
 	public void doInSession(JiraWebSessionCallback callback) throws JiraException {
-		HttpClient client = new HttpClient();
+		HttpClient httpClient = new HttpClient();
 
-		WebClientUtil.setupHttpClient(client, server.getProxy(), baseUrl, server.getHttpUser(),
-				server.getHttpPassword());
+		WebClientUtil.setupHttpClient(httpClient, client.getProxy(), baseUrl, client.getHttpUser(),
+				client.getHttpPassword());
 
-		login(client);
+		login(httpClient);
 		try {
-			callback.execute(client, server, baseUrl);
+			callback.execute(httpClient, client, baseUrl);
 		} catch (IOException e) {
 			throw new JiraException(e);
 		} finally {
-			logout(client);
+			logout(httpClient);
 		}
 	}
 
+	protected String getCharacterEncoding() {
+		return characterEncoding;
+	}
+
+	protected String getContentType() throws JiraException {
+		return "application/x-www-form-urlencoded; charset=" + client.getCharacterEncoding();
+	}
+	
 	protected String getBaseURL() {
 		return baseUrl;
 	}
 
-	private void login(HttpClient client) throws JiraException {
-		class RedirectInfo {
-			final int statusCode;
-
-			final String url;
-
-			final Header[] responseHeaders;
-
-			final String responseBody;
-
-			public RedirectInfo(String url, int statusCode, Header[] responseHeaders, String responseBody) {
-				this.url = url;
-				this.statusCode = statusCode;
-				this.responseHeaders = responseHeaders;
-				this.responseBody = responseBody;
-			}
-
-			@Override
-			public String toString() {
-				StringBuilder sb = new StringBuilder("Request: ");
-				sb.append(statusCode).append(' ').append(url).append('\n');
-				for (Header header : responseHeaders) {
-					sb.append("  ").append(header.toExternalForm()).append('\n');
-				}
-				sb.append(responseBody);
-				sb.append("-----------\n");
-				return sb.toString();
-			}
-		}
+	private void login(HttpClient httpClient) throws JiraException {
 
 		ArrayList<RedirectInfo> redirects = new ArrayList<RedirectInfo>();
 
@@ -99,12 +85,12 @@ public class JiraWebSession {
 			PostMethod login = new PostMethod(url);
 			login.setFollowRedirects(false);
 			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-			login.addParameter("os_username", server.getUserName()); //$NON-NLS-1$
-			login.addParameter("os_password", server.getPassword()); //$NON-NLS-1$
+			login.addParameter("os_username", client.getUserName()); //$NON-NLS-1$
+			login.addParameter("os_password", client.getPassword()); //$NON-NLS-1$
 			login.addParameter("os_destination", "/success"); //$NON-NLS-1$
 
 			try {
-				int statusCode = client.executeMethod(login);
+				int statusCode = httpClient.executeMethod(login);
 				if (statusCode == HttpStatus.SC_OK) {
 					throw new JiraAuthenticationException("Login failed.");
 				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
@@ -112,6 +98,8 @@ public class JiraWebSession {
 					throw new JiraServiceUnavailableException("Unexpected status code on login: " + statusCode);
 				}
 
+				this.characterEncoding = login.getResponseCharSet();
+				
 				Header locationHeader = login.getResponseHeader("location");
 				redirects.add(new RedirectInfo(url, statusCode, login.getResponseHeaders(),
 						login.getResponseBodyAsString()));
@@ -145,12 +133,12 @@ public class JiraWebSession {
 		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects on login");
 	}
 
-	private void logout(HttpClient client) throws JiraException {
+	private void logout(HttpClient httpClient) throws JiraException {
 		GetMethod logout = new GetMethod(baseUrl + "/logout"); //$NON-NLS-1$
 		logout.setFollowRedirects(false);
 
 		try {
-			client.executeMethod(logout);
+			httpClient.executeMethod(logout);
 		} catch (IOException e) {
 			// It doesn't matter if the logout fails. The server will clean up
 			// the session eventually
@@ -158,4 +146,36 @@ public class JiraWebSession {
 			logout.releaseConnection();
 		}
 	}
+
+	private class RedirectInfo {
+		
+		final int statusCode;
+
+		final String url;
+
+		final Header[] responseHeaders;
+
+		final String responseBody;
+
+		public RedirectInfo(String url, int statusCode, Header[] responseHeaders, String responseBody) {
+			this.url = url;
+			this.statusCode = statusCode;
+			this.responseHeaders = responseHeaders;
+			this.responseBody = responseBody;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder("Request: ");
+			sb.append(statusCode).append(' ').append(url).append('\n');
+			for (Header header : responseHeaders) {
+				sb.append("  ").append(header.toExternalForm()).append('\n');
+			}
+			sb.append(responseBody);
+			sb.append("-----------\n");
+			return sb.toString();
+		}
+		
+	}
+
 }

@@ -23,6 +23,10 @@ public class JiraUtils {
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/general"));
 
 	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate";
+	
+	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated";
+
+	private static final String COMPRESSION_KEY = "compression";
 
 	public static void setLastUpdate(TaskRepository repository, Date date) {
 		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtils.dateToString(date));
@@ -32,6 +36,22 @@ public class JiraUtils {
 		return JiraUtils.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
 	}
 
+	public static void setCompression(TaskRepository taskRepository, boolean compression) {
+		taskRepository.setProperty(COMPRESSION_KEY, String.valueOf(compression));
+	}
+
+	public static boolean getCompression(TaskRepository taskRepository) {
+		return Boolean.parseBoolean(taskRepository.getProperty(COMPRESSION_KEY));
+	}
+
+	public static void setCharacterEncodingValidated(TaskRepository taskRepository, boolean validated) {
+		taskRepository.setProperty(CHARACTER_ENCODING_VALIDATED, String.valueOf(validated));
+	}
+
+	public static boolean getCharacterEncodingValidated(TaskRepository taskRepository) {
+		return Boolean.parseBoolean(taskRepository.getProperty(CHARACTER_ENCODING_VALIDATED));
+	}
+	
 	public static String dateToString(Date date) {
 		if (date == null) {
 			return "";

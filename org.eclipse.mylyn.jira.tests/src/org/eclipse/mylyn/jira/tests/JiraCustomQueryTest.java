@@ -235,7 +235,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
-		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET);
+		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.DEFAULT_CHARSET);
 		MockJiraClient client = new MockJiraClient(repositoryUrl);
 		filter = customQuery.getFilterDefinition(client, true);
 		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
@@ -248,7 +248,7 @@ public class JiraCustomQueryTest extends TestCase {
 		resolutions[0].setId("123");
 		resolutionFilter = new ResolutionFilter(resolutions);
 		filter.setResolutionFilter(resolutionFilter);
-		customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.CHARSET);
+		customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.DEFAULT_CHARSET);
 		try {
 			filter = customQuery.getFilterDefinition(client, true);
 			fail("Expected InvalidJiraQueryException, got: " + filter);

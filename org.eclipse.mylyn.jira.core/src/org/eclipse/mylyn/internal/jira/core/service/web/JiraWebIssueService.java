@@ -42,6 +42,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -82,7 +83,7 @@ public class JiraWebIssueService {
 				rssUrlBuffer.append("/secure/AddComment.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+				post.setRequestHeader("Content-Type", s.getContentType());
 				post.addParameter("comment", comment);
 				post.addParameter("commentLevel", "");
 				post.addParameter("id", issue.getId());
@@ -104,7 +105,7 @@ public class JiraWebIssueService {
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
 	public void updateIssue(final Issue issue, final String comment) throws JiraException {
-		JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -112,7 +113,7 @@ public class JiraWebIssueService {
 				rssUrlBuffer.append("/secure/EditIssue.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+				post.setRequestHeader("Content-Type", s.getContentType());
 				post.addParameter("summary", issue.getSummary());
 				post.addParameter("issuetype", issue.getType().getId());
 				if (issue.getPriority() != null) {
@@ -201,7 +202,7 @@ public class JiraWebIssueService {
 
 	public void assignIssueTo(final Issue issue, final int assigneeType, final String user, final String comment)
 			throws JiraException {
-		JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -209,7 +210,7 @@ public class JiraWebIssueService {
 				rssUrlBuffer.append("/secure/AssignIssue.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+				post.setRequestHeader("Content-Type", s.getContentType());
 
 				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user));
 
@@ -242,7 +243,7 @@ public class JiraWebIssueService {
 //
 //			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
 //				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
-//				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+//				post.setRequestHeader("Content-Type", s.getContentType());
 //
 //				if (resolution != null) {
 //					post.addParameter("resolution", resolution.getId());
@@ -280,11 +281,11 @@ public class JiraWebIssueService {
 
 	public void advanceIssueWorkflow(final Issue issue, final String actionKey, final String comment, final String[] fields)
 			throws JiraException {
-		JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
 				PostMethod method = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
-				method.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+				method.setRequestHeader("Content-Type", s.getContentType());
 
 				method.addParameter("id", issue.getId());
 				method.addParameter("action", actionKey);
@@ -474,7 +475,7 @@ public class JiraWebIssueService {
 	private Issue createIssue(final String url, final Issue issue) throws JiraException {
 		final SingleIssueCollector collector = new SingleIssueCollector();
 
-		JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -482,8 +483,7 @@ public class JiraWebIssueService {
 				attachFileURLBuffer.append(url);
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
-
-				post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+				post.setRequestHeader("Content-Type", s.getContentType());
 
 				post.addParameter("pid", issue.getProject().getId());
 				post.addParameter("issuetype", issue.getType().getId());
@@ -632,6 +632,19 @@ public class JiraWebIssueService {
 		});
 	}
 
+	public WebServerInfo getWebServerInfo() throws JiraException {
+		final WebServerInfo webServerInfo = new WebServerInfo();
+		final JiraWebSession s = new JiraWebSession(server);
+		s.doInSession(new JiraWebSessionCallback() {
+
+			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+				webServerInfo.setCharacterEncoding(s.getBaseURL());
+				webServerInfo.setCharacterEncoding(s.getCharacterEncoding());
+			}
+		});
+		return webServerInfo;
+	}
+	
 	private String getAssigneeParam(JiraClient server, Issue issue, int assigneeType, String user) {
 		switch (assigneeType) {
 		case JiraClient.ASSIGNEE_CURRENT:

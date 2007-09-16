@@ -73,7 +73,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
-		repository.setCharacterEncoding(JiraClient.CHARSET);
+		repository.setCharacterEncoding(JiraClient.DEFAULT_CHARSET);
 
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());

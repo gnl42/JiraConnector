@@ -53,15 +53,20 @@ public class JiraClientFacade implements ITaskRepositoryListener, JiraClientFact
 	/**
 	 * Lazily creates {@link JiraClient} instance
 	 * 
-	 * @see #validateServerAndCredentials(String, String, String, Proxy, String, String)
+	 * @see #validateConnection(String, String, String, Proxy, String, String)
 	 */
 	public synchronized JiraClient getJiraClient(TaskRepository repository) {
 		JiraClient server = clientManager.getClient(repository.getUrl());
 		if (server == null) {
 			String userName = repository.getUserName();
 			String password = repository.getPassword();
+			String characterEncoding = null; 
+			if (JiraUtils.getCharacterEncodingValidated(repository)) {
+				characterEncoding = repository.getCharacterEncoding();
+			}
 			server = clientManager.addClient(repository.getUrl(), //
-					Boolean.parseBoolean(repository.getProperty(JiraRepositoryConnector.COMPRESSION_KEY)), //
+					characterEncoding,
+					JiraUtils.getCompression(repository), //
 					userName == null ? "" : userName, //
 					password == null ? "" : password, //
 					repository.getProxy(), //
@@ -127,15 +132,17 @@ public class JiraClientFacade implements ITaskRepositoryListener, JiraClientFact
 	 *            Username
 	 * @param password
 	 *            Password
+	 * @return 
 	 * @return String describing validation failure or null if the details are valid
 	 */
-	public void validateServerAndCredentials(String serverUrl, String user, String password, Proxy proxy,
+	public ServerInfo validateConnection(String serverUrl, String user, String password, Proxy proxy,
 			String httpUser, String httpPassword) throws JiraException {
-		ServerInfo info = clientManager.testConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
+		ServerInfo info = clientManager.validateConnection(serverUrl, user, password, proxy, httpUser, httpPassword);
 		JiraVersion serverVersion = new JiraVersion(info.getVersion());
 		if (JiraVersion.MIN_VERSION.compareTo(serverVersion) > 0) {
 			throw new JiraException("JIRA connector requires server " + JiraVersion.MIN_VERSION + " or later");
 		}
+		return info;
 	}
 	
 }

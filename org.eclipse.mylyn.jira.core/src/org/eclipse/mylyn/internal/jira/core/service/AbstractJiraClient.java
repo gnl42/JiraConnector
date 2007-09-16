@@ -12,6 +12,7 @@ import java.net.Proxy;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
@@ -49,6 +50,10 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 	private final String httpPassword;
 
+	private String characterEncoding;
+
+	private boolean attemptedToDetermineCharacterEncoding; 
+	
 	public AbstractJiraClient(String baseUrl, boolean useCompression, String username, String password, Proxy proxy,
 			String httpUser, String httpPassword) {
 		if (baseUrl == null) {
@@ -93,10 +98,13 @@ public abstract class AbstractJiraClient implements JiraClient {
 	}
 
 	public synchronized void refreshServerInfo(IProgressMonitor monitor) throws JiraException {
-		monitor.beginTask("Getting server information", 1);
-
-		initializeServerInfo(data);
-		advance(monitor, 1);
+		try {
+			monitor.beginTask("Getting server information", IProgressMonitor.UNKNOWN);
+			
+			initializeServerInfo(data);
+		} finally {
+			monitor.done();
+		}
 	}
 
 	private void advance(IProgressMonitor monitor, int worked) {
@@ -259,7 +267,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	}
 
 	private void initializeServerInfo(JiraClientData data) throws JiraException {
-		data.serverInfo = getServerInfo();
+		data.serverInfo = getServerInfoRemote();
 	}
 
 	public ServerInfo getServerInfo() throws JiraException {
@@ -328,4 +336,26 @@ public abstract class AbstractJiraClient implements JiraClient {
 		return data;
 	}
 
+	public String getCharacterEncoding() throws JiraException {
+		if (this.characterEncoding == null) {
+			String serverEncoding = getServerInfo().getCharacterEncoding();
+			if (serverEncoding != null) {
+				return serverEncoding;
+			} else if (!attemptedToDetermineCharacterEncoding) {
+				refreshServerInfo(new NullProgressMonitor());
+				serverEncoding = getServerInfo().getCharacterEncoding();
+				if (serverEncoding != null) {
+					return serverEncoding;
+				}
+			}
+			// fallback
+			return DEFAULT_CHARSET;
+		}
+		return this.characterEncoding;
+	}
+	
+	public void setCharacterEncoding(String characterEncoding) {
+		this.characterEncoding = characterEncoding;
+	}
+	
 }

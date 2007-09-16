@@ -14,10 +14,12 @@ import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
@@ -74,11 +76,11 @@ public class JiraClientFacadeTest extends TestCase {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 
 		// standard connect
-		jiraFacade.validateServerAndCredentials(url, credentials.username, credentials.password, null, null, null);
+		jiraFacade.validateConnection(url, credentials.username, credentials.password, null, null, null);
 
 		// invalid URL		
 		try {
-			jiraFacade.validateServerAndCredentials("http://non.existant/repository", credentials.username,
+			jiraFacade.validateConnection("http://non.existant/repository", credentials.username,
 					credentials.password, null, null, null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
@@ -86,17 +88,37 @@ public class JiraClientFacadeTest extends TestCase {
 
 		// invalid password
 		try {
-			jiraFacade.validateServerAndCredentials(url, credentials.username, "wrongpassword", null, null, null);
+			jiraFacade.validateConnection(url, credentials.username, "wrongpassword", null, null, null);
 			fail("Expected exception");
 		} catch (JiraAuthenticationException e) {
 		}
 
 		// invalid username
 		try {
-			jiraFacade.validateServerAndCredentials(url, "wrongusername", credentials.password, null, null, null);
+			jiraFacade.validateConnection(url, "wrongusername", credentials.password, null, null, null);
 			fail("Expected exception");
 		} catch (JiraAuthenticationException e) {
 		}
+	}
+
+	public void testCharacterEncoding() throws Exception {
+		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
+		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
+		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		assertFalse(JiraUtils.getCharacterEncodingValidated(repository));		
+
+		JiraClient client = jiraFacade.getJiraClient(repository);
+		assertEquals("ISO-8895-1", client.getCharacterEncoding());
+		
+		repository.setCharacterEncoding("UTF-8");
+		jiraFacade.repositorySettingsChanged(repository);		
+		client = jiraFacade.getJiraClient(repository);
+		assertEquals("ISO-8895-1", client.getCharacterEncoding());
+
+		JiraUtils.setCharacterEncodingValidated(repository, true);
+		jiraFacade.repositorySettingsChanged(repository);		
+		client = jiraFacade.getJiraClient(repository);
+		assertEquals("UTF-8", client.getCharacterEncoding());
 	}
 
 }

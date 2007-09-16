@@ -142,9 +142,9 @@ public class JiraClientManager {
 	 * @throws JiraServiceUnavailableException
 	 *             URL was not valid
 	 */
-	public ServerInfo testConnection(String baseUrl, String username, String password, Proxy proxy, String httpUser,
+	public ServerInfo validateConnection(String baseUrl, String username, String password, Proxy proxy, String httpUser,
 			String httpPassword) throws JiraException {
-		JiraClient server = createServer(baseUrl, false, username, password, proxy, httpUser, httpPassword);
+		JiraClient server = createClient(baseUrl, false, username, password, proxy, httpUser, httpPassword);
 		server.refreshServerInfo(new NullProgressMonitor());
 		return server.getServerInfo();
 	}
@@ -157,7 +157,7 @@ public class JiraClientManager {
 		return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
 	}
 
-	private AbstractJiraClient createServer(String baseUrl, boolean useCompression, String username, String password,
+	private AbstractJiraClient createClient(String baseUrl, boolean useCompression, String username, String password,
 			Proxy proxy, String httpUser, String httpPassword) {
 		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -168,25 +168,30 @@ public class JiraClientManager {
 		return server;
 	}
 
-	public JiraClient addClient(String baseUrl, boolean useCompression, String username, String password, Proxy proxy,
+	public JiraClient addClient(String baseUrl, String characterEncoding, boolean useCompression, String username, String password, Proxy proxy,
 			String httpUser, String httpPassword) {
 		if (clientByUrl.containsKey(baseUrl)) {
 			throw new RuntimeException("A server with that name already exists");
 		}
 
-		AbstractJiraClient server = createServer(baseUrl, useCompression, username, password, proxy, httpUser,
+		AbstractJiraClient server = createClient(baseUrl, useCompression, username, password, proxy, httpUser,
 				httpPassword);
+		server.setCharacterEncoding(characterEncoding);
 		JiraClientData data = clientDataByUrl.get(baseUrl);
 		if (data != null) {
 			server.setData(data);
 		}
 		clientByUrl.put(baseUrl, server);
-
+		
 		fireClientAddded(server);
 
 		return server;
 	}
 
+	public void refreshClient() {
+		
+	}
+	
 	public void removeClient(JiraClient server) {
 		clientDataByUrl.remove(server.getBaseUrl());
 		clientByUrl.remove(server.getBaseUrl());

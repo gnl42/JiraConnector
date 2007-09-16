@@ -16,9 +16,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
+import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
@@ -46,6 +49,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private Button compressionButton;
 
+	private boolean characterEncodingValidated;
+
 	public JiraRepositorySettingsPage(AbstractRepositoryConnectorUi repositoryUi) {
 		super(TITLE, DESCRIPTION, repositoryUi);
 		setNeedsProxy(true);
@@ -59,6 +64,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			serverUrlCombo.add(template.label);
 		}
 
+		this.characterEncodingValidated = JiraUtils.getCharacterEncodingValidated(repository);
+		
 		serverUrlCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -80,8 +87,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		compressionLabel.setText("Compression:");
 		compressionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
 		if (repository != null) {
-			boolean shortLogin = Boolean.parseBoolean(repository.getProperty(JiraRepositoryConnector.COMPRESSION_KEY));
-			compressionButton.setSelection(shortLogin);
+			compressionButton.setSelection(JiraUtils.getCompression(repository));
 		}
 
 	}
@@ -105,18 +111,42 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	@Override
 	public void updateProperties(TaskRepository repository) {
-		repository.setProperty(JiraRepositoryConnector.COMPRESSION_KEY,
-				String.valueOf(compressionButton.getSelection()));
+		JiraUtils.setCompression(repository, compressionButton.getSelection());
+		if (characterEncodingValidated) {
+			JiraUtils.setCharacterEncodingValidated(repository, true);
+		}
+	}
+
+	@Override
+	protected void applyValidatorResult(Validator validator) {
+		super.applyValidatorResult(validator);
+		
+		JiraValidator jiraValidator = (JiraValidator) validator;
+		ServerInfo serverInfo = jiraValidator.getServerInfo();
+		if (serverInfo != null) {
+			if (serverInfo.getCharacterEncoding() != null) {
+				setEncoding(serverInfo.getCharacterEncoding());
+			} else {
+				setEncoding(TaskRepository.DEFAULT_CHARACTER_ENCODING);
+			}
+			characterEncodingValidated = true;
+		}
 	}
 
 	private class JiraValidator extends Validator {
 
 		final TaskRepository repository;
+		
+		private ServerInfo serverInfo;
 
 		public JiraValidator(TaskRepository repository) {
 			this.repository = repository;
 		}
 
+		public ServerInfo getServerInfo() {
+			return serverInfo;
+		}
+		
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
 			try {
@@ -127,15 +157,20 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			}
 
 			try {
-				JiraClientFacade.getDefault().validateServerAndCredentials(repository.getUrl(),
+				this.serverInfo = JiraClientFacade.getDefault().validateConnection(repository.getUrl(),
 						repository.getUserName(), repository.getPassword(), repository.getProxy(),
 						repository.getHttpUser(), repository.getHttpPassword());
+			} catch (JiraAuthenticationException e) {
+				throw new CoreException(RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR,
+						JiraUiPlugin.PLUGIN_ID, INVALID_LOGIN));
 			} catch (Exception e) {
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 			}
 
-			setStatus(new Status(IStatus.OK, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
-					"Valid JIRA server found and your login was accepted", null));
+			if (this.serverInfo.getCharacterEncoding() == null) {
+				setStatus(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
+						"Authentication credentials are valid. Note: The character encoding could not be determined, verify 'Additional Settings'.", null));
+			}
 		}
 
 	}

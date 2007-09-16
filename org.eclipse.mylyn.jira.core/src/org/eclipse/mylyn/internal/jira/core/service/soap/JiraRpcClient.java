@@ -41,6 +41,7 @@ import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
@@ -174,11 +175,18 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 	@Override
 	public ServerInfo getServerInfoRemote() throws JiraException {
-		return call(new RemoteRunnable<ServerInfo>() {
+		// get server information through SOAP
+		ServerInfo serverInfo = call(new RemoteRunnable<ServerInfo>() {
 			public ServerInfo run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getServerInfo(loginToken.getCurrentValue()));
 			}
 		});
+		
+		// get character encoding through web
+		WebServerInfo webServerInfo = issueService.getWebServerInfo();
+		serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
+		
+		return serverInfo;
 	}
 
 	public Issue getIssueByKey(String issueKey) throws JiraException {

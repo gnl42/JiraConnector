@@ -46,8 +46,8 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
  */
 public interface JiraClient {
 
-	String CHARSET = "UTF-8";
-
+	String DEFAULT_CHARSET = "UTF-8";
+	
 	/**
 	 * Assign to the default user
 	 */
@@ -367,6 +367,8 @@ public interface JiraClient {
 
 	String getHttpPassword();
 
+	String getCharacterEncoding() throws JiraException;
+	
 //	void setProxy(Proxy proxy);
 
 }

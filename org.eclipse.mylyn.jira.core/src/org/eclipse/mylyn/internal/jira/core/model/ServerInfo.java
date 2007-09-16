@@ -16,6 +16,7 @@ import java.util.Date;
  * @author Brock Janiczak
  */
 public class ServerInfo implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	private String baseUrl;
@@ -27,6 +28,8 @@ public class ServerInfo implements Serializable {
 	private String edition;
 
 	private String version;
+
+	private String characterEncoding;
 
 	public String getBaseUrl() {
 		return this.baseUrl;
@@ -68,14 +71,18 @@ public class ServerInfo implements Serializable {
 		this.version = version;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
+	public String getCharacterEncoding() {
+		return characterEncoding;
+	}
+
+	public void setCharacterEncoding(String characterEncoding) {
+		this.characterEncoding = characterEncoding;
+	}
+
 	@Override
 	public String toString() {
 		return this.baseUrl + " - Jira " + this.edition + " " + this.version + "#" + this.buildNumber + " ("
 				+ DateFormat.getDateInstance(DateFormat.SHORT).format(this.buildDate) + ")";
 	}
+
 }

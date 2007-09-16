@@ -16,7 +16,6 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import junit.framework.TestCase;
 
 /**
- * @author
  * @author Eugene Kuleshov
  */
 public class JiraVersionTest extends TestCase {

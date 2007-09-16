@@ -22,12 +22,14 @@ import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 
@@ -408,7 +410,7 @@ public class JiraRpcClientTest extends TestCase {
 		updateIssue(JiraTestConstants.JIRA_39_URL, "CUSTOMFIELDS");
 	}
 
-	public void testUpdateIssue2() throws Exception {
+	public void testUpdateIssueCustomOperation() throws Exception {
 		Issue issue = updateIssue(JiraTestConstants.JIRA_39_URL, "EDITABLEREPORTER");
 		
 		String operation = JiraTestUtils.getOperation(client, issue.getKey(), "custom");
@@ -457,6 +459,24 @@ public class JiraRpcClientTest extends TestCase {
 		return issue;
 	}
 
+	public void testUpdateIssueNonAscii() throws Exception {
+		updateIssueNonAscii(JiraTestConstants.JIRA_39_URL);
+	}
+
+	private void updateIssueNonAscii(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+
+		Issue issue = JiraTestUtils.createIssue(client, "\u00C4\u00D6\u00DC");
+		issue = client.createIssue(issue);
+		assertEquals("\u00C4\u00D6\u00DC", issue.getSummary());
+		
+		client.updateIssue(issue, "comment: \u00C4\u00D6\u00DC");
+		issue = client.getIssueByKey(issue.getKey());
+		assertEquals("\u00C4\u00D6\u00DC", issue.getSummary());
+		assertEquals(1, issue.getComments().length);
+		assertEquals("comment: \u00C4\u00D6\u00DC", JiraTaskDataHandler.convertHtml(issue.getComments()[0].getComment()));
+	}
+
 	public void testWatchUnwatchIssue() throws Exception {
 		watchUnwatchIssue(JiraTestConstants.JIRA_39_URL);
 	}
@@ -490,6 +510,37 @@ public class JiraRpcClientTest extends TestCase {
 		Credentials httpCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, httpCredentials.username, httpCredentials.password);
 		assertNotNull(client.getServerInfo());
+		
+		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
+		try {
+			assertNotNull(client.getServerInfo());
+			fail("Expected JiraServiceUnavailableException");
+		} catch (JiraServiceUnavailableException expected) {			
+		}
+	}
+	
+	public void testCharacterEncoding() throws Exception {
+		characterEncoding(JiraTestConstants.JIRA_39_URL);
+	}
+
+	private void characterEncoding(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+		assertEquals("ISO-8859-1", client.getCharacterEncoding());
+		client.setCharacterEncoding("UTF-8");
+		assertEquals("UTF-8", client.getCharacterEncoding());
+	}
+
+	public void testGetServerInfo() throws Exception {
+		getServerInfo(JiraTestConstants.JIRA_39_URL, "3.9", "233");
+	}
+
+	private void getServerInfo(String url, String version, String buildNumber) throws Exception {
+		init(url, PrivilegeLevel.USER);
+		ServerInfo serverInfo = client.getServerInfo();
+		assertEquals(version, serverInfo.getVersion());
+		assertEquals(buildNumber, serverInfo.getBuildNumber());
+		assertEquals("ISO-8859-1", serverInfo.getCharacterEncoding());
+		assertEquals(url, serverInfo.getBaseUrl());
 	}
 
 }
