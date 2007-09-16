@@ -47,6 +47,8 @@ public class JiraWebSession {
 	private boolean secure;
 
 	private boolean insecureRedirect;
+	
+	private boolean logEnabled;
 
 	public JiraWebSession(JiraClient client, String baseUrl) { 
 		this.client = client;
@@ -86,12 +88,20 @@ public class JiraWebSession {
 		return baseUrl;
 	}
 
-	public boolean isInsecureRedirect() {
+	protected boolean isInsecureRedirect() {
 		return insecureRedirect;
 	}
 	
 	protected boolean isSecure() {
 		return secure;
+	}
+
+	protected boolean isLogEnabled() {
+		return logEnabled;
+	}
+	
+	protected void setLogEnabled(boolean logEnabled) {
+		this.logEnabled = logEnabled;
 	}
 	
 	private void login(HttpClient httpClient) throws JiraException {
@@ -189,9 +199,13 @@ public class JiraWebSession {
 		}
 		
 		public void log(String message) {
+			if (!isLogEnabled()) {
+				return;
+			}
+			
 			MultiStatus status = new MultiStatus(JiraCorePlugin.ID, 0, message, null);
 			for (RedirectInfo info : redirects) {
-				status.add(new Status(IStatus.INFO, JiraCorePlugin.ID, 0, info.toString(), null));
+				status.add(new Status(IStatus.WARNING, JiraCorePlugin.ID, 0, info.toString(), null));
 			}
 			JiraCorePlugin.log(status);
 		}

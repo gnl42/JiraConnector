@@ -635,6 +635,7 @@ public class JiraWebIssueService {
 	public WebServerInfo getWebServerInfo() throws JiraException {
 		final WebServerInfo webServerInfo = new WebServerInfo();
 		final JiraWebSession s = new JiraWebSession(server);
+		s.setLogEnabled(true);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {

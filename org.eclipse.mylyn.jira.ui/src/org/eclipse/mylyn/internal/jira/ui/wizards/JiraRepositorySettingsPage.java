@@ -10,11 +10,17 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
@@ -29,9 +35,14 @@ import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Wizard page used to specify a JIRA repository address, username, and password.
@@ -124,10 +135,19 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		if (serverInfo != null) {
 			String url = jiraValidator.getRepositoryUrl();
 			if (serverInfo.getBaseUrl() != null && !url.equals(serverInfo.getBaseUrl())) {
-				// TODO prompt user
-				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
-						"Authentication credentials are valid. Note: The server reported a different location.", null));
-				setUrl(serverInfo.getBaseUrl());
+				Set<String> urls = new LinkedHashSet<String>();
+				urls.add(url);
+				urls.add(serverInfo.getBaseUrl());
+				if (serverInfo.getWebBaseUrl() != null) {
+					urls.add(serverInfo.getWebBaseUrl());
+				}
+				
+				UrlSelectionDialog dialog = new UrlSelectionDialog(getShell(), urls.toArray(new String[0]));
+				dialog.setSelectedUrl(serverInfo.getBaseUrl());
+				int result = dialog.open();
+				if (result == Dialog.OK) {
+					setUrl(dialog.getSelectedUrl());
+				}
 			}
 			
 			if (serverInfo.getCharacterEncoding() != null) {
@@ -192,4 +212,92 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	}
 
+	private static class UrlSelectionDialog extends Dialog {
+
+		private String[] locations;
+
+		private String selectedUrl;
+
+		protected UrlSelectionDialog(Shell parentShell, String[] locations) {
+			super(parentShell);
+			
+			if (locations == null || locations.length < 2) {
+				throw new IllegalArgumentException();
+			}
+			
+			this.locations = locations;
+		}
+		
+		@Override
+		protected Control createDialogArea(Composite parent) {
+			getShell().setText("Select repository location");
+			
+			Composite composite = new Composite(parent, SWT.NONE);
+			GridLayout layout = new GridLayout();
+			layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+			layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+			layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+			layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+			composite.setLayout(layout);
+			composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+			applyDialogFont(composite);
+
+			Label label = new Label(composite, SWT.NONE);
+			label.setText("The repository location reported by the server does not match the provided location.");
+			
+			final List<Button> buttons = new ArrayList<Button>(locations.length);
+
+			if (getSelectedUrl() == null) {
+				setSelectedUrl(locations[0]);
+			}
+
+			for (int i = 1; i < locations.length; i++) {
+				Button button = new Button(composite, SWT.RADIO);
+				button.setText("Use server location: " + locations[i]);
+				button.setData(locations[i]);
+				button.setSelection(getSelectedUrl().equals(locations[i]));
+				buttons.add(button);
+			}
+
+			Button keepLocationButton = new Button(composite, SWT.RADIO);
+			keepLocationButton.setText("Keep my current location: " + locations[0]);
+			keepLocationButton.setData(locations[0]);
+			keepLocationButton.setSelection(getSelectedUrl().equals(locations[0]));
+			buttons.add(keepLocationButton);
+			
+			SelectionListener listener = new SelectionListener() {
+				public void widgetDefaultSelected(SelectionEvent e) {
+					widgetSelected(e);
+				}
+
+				public void widgetSelected(SelectionEvent e) {
+					if (e.item != null && ((Button) e.item).getSelection()) {
+						for (Button button : buttons) {
+							if (e.item != button) {
+								button.setSelection(false);
+							}
+						}
+						setSelectedUrl((String)e.item.getData());
+					}
+				}
+
+			};
+			
+			for (Button button : buttons) {
+				button.addSelectionListener(listener);
+			}
+			
+			return composite;
+		}
+		
+		public void setSelectedUrl(String selectedUrl) {
+			this.selectedUrl = selectedUrl;
+		}
+
+		public String getSelectedUrl() {
+			return selectedUrl;
+		}
+		
+	}
+	
 }
