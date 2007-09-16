@@ -108,12 +108,12 @@ public class JiraClientFacadeTest extends TestCase {
 		assertFalse(JiraUtils.getCharacterEncodingValidated(repository));		
 
 		JiraClient client = jiraFacade.getJiraClient(repository);
-		assertEquals("ISO-8895-1", client.getCharacterEncoding());
+		assertEquals("ISO-8859-1", client.getCharacterEncoding());
 		
 		repository.setCharacterEncoding("UTF-8");
 		jiraFacade.repositorySettingsChanged(repository);		
 		client = jiraFacade.getJiraClient(repository);
-		assertEquals("ISO-8895-1", client.getCharacterEncoding());
+		assertEquals("ISO-8859-1", client.getCharacterEncoding());
 
 		JiraUtils.setCharacterEncodingValidated(repository, true);
 		jiraFacade.repositorySettingsChanged(repository);		
