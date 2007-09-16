@@ -139,6 +139,10 @@ public class JiraCorePlugin extends Plugin {
 		getDefault().getLog().log(new Status(severity, ID, -1, message, e));
 	}
 
+	public static void log(IStatus status) {
+		getDefault().getLog().log(status);
+	}
+	
 	public static IStatus toStatus(TaskRepository repository, Throwable e) {
 		String url = repository.getUrl();
 		if (e instanceof JiraAuthenticationException) {

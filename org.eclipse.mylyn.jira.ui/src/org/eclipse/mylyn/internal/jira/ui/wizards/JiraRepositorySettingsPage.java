@@ -119,18 +119,31 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	@Override
 	protected void applyValidatorResult(Validator validator) {
-		super.applyValidatorResult(validator);
 		
 		JiraValidator jiraValidator = (JiraValidator) validator;
 		ServerInfo serverInfo = jiraValidator.getServerInfo();
 		if (serverInfo != null) {
+			String url = jiraValidator.getRepositoryUrl();
+			if (serverInfo.getBaseUrl() != null && !url.equals(serverInfo.getBaseUrl())) {
+				// TODO prompt user
+				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
+						"Authentication credentials are valid. Note: The server reported a different location.", null));
+				setUrl(serverInfo.getBaseUrl());
+			}
+			
 			if (serverInfo.getCharacterEncoding() != null) {
 				setEncoding(serverInfo.getCharacterEncoding());
 			} else {
 				setEncoding(TaskRepository.DEFAULT_CHARACTER_ENCODING);
+				
+				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
+						"Authentication credentials are valid. Note: The character encoding could not be determined, verify 'Additional Settings'.", null));
 			}
-			characterEncodingValidated = true;
+			characterEncodingValidated = true;			
 		}
+		
+		super.applyValidatorResult(validator);
+
 	}
 
 	private class JiraValidator extends Validator {
@@ -145,6 +158,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 		public ServerInfo getServerInfo() {
 			return serverInfo;
+		}
+		
+		public String getRepositoryUrl() {
+			return repository.getUrl();
 		}
 		
 		@Override
@@ -165,11 +182,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 						JiraUiPlugin.PLUGIN_ID, INVALID_LOGIN));
 			} catch (Exception e) {
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
-			}
-
-			if (this.serverInfo.getCharacterEncoding() == null) {
-				setStatus(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
-						"Authentication credentials are valid. Note: The character encoding could not be determined, verify 'Additional Settings'.", null));
 			}
 		}
 

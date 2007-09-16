@@ -185,6 +185,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		// get character encoding through web
 		WebServerInfo webServerInfo = issueService.getWebServerInfo();
 		serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
+		serverInfo.setWebBaseUrl(webServerInfo.getBaseUrl());
 		
 		return serverInfo;
 	}

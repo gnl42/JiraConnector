@@ -31,6 +31,8 @@ public class ServerInfo implements Serializable {
 
 	private String characterEncoding;
 
+	private String webBaseUrl;
+	
 	public String getBaseUrl() {
 		return this.baseUrl;
 	}
@@ -79,6 +81,14 @@ public class ServerInfo implements Serializable {
 		this.characterEncoding = characterEncoding;
 	}
 
+	public String getWebBaseUrl() {
+		return webBaseUrl;
+	}
+
+	public void setWebBaseUrl(String webBaseUrl) {
+		this.webBaseUrl = webBaseUrl;
+	}
+	
 	@Override
 	public String toString() {
 		return this.baseUrl + " - Jira " + this.edition + " " + this.version + "#" + this.buildNumber + " ("
