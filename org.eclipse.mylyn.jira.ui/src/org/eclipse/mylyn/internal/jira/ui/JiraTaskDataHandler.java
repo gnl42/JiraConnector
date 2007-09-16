@@ -563,6 +563,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		try {
+			if (!client.hasDetails()) {
+				client.refreshDetails(new NullProgressMonitor());
+			}
+
 			Issue issue = buildJiraIssue(taskData, client);
 			if (taskData.isNew()) {
 				if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
