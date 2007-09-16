@@ -640,6 +640,7 @@ public class JiraWebIssueService {
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
 				webServerInfo.setCharacterEncoding(s.getBaseURL());
 				webServerInfo.setCharacterEncoding(s.getCharacterEncoding());
+				webServerInfo.setInsecureRedirect(s.isInsecureRedirect());
 			}
 		});
 		return webServerInfo;

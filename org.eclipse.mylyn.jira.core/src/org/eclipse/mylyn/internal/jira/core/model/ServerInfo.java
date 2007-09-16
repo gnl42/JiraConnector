@@ -33,6 +33,8 @@ public class ServerInfo implements Serializable {
 
 	private String webBaseUrl;
 	
+	private transient boolean insecureRedirect; 
+	
 	public String getBaseUrl() {
 		return this.baseUrl;
 	}
@@ -87,6 +89,14 @@ public class ServerInfo implements Serializable {
 
 	public void setWebBaseUrl(String webBaseUrl) {
 		this.webBaseUrl = webBaseUrl;
+	}
+
+	public boolean isInsecureRedirect() {
+		return insecureRedirect;
+	}
+	
+	public void setInsecureRedirect(boolean insecureRedirect) {
+		this.insecureRedirect = insecureRedirect;
 	}
 	
 	@Override

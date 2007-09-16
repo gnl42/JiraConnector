@@ -17,6 +17,8 @@ public class WebServerInfo {
 	
 	private String characterEncoding;
 	
+	private boolean insecureRedirect;
+	
 	public WebServerInfo() {
 	}
 
@@ -34,6 +36,14 @@ public class WebServerInfo {
 	
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
+	}
+
+	public boolean isInsecureRedirect() {
+		return insecureRedirect;
+	}
+	
+	public void setInsecureRedirect(boolean insecureRedirect) {
+		this.insecureRedirect = insecureRedirect;
 	}
 	
 }

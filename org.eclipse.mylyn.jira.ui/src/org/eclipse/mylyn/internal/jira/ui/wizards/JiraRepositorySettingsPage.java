@@ -119,7 +119,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	@Override
 	protected void applyValidatorResult(Validator validator) {
-		
 		JiraValidator jiraValidator = (JiraValidator) validator;
 		ServerInfo serverInfo = jiraValidator.getServerInfo();
 		if (serverInfo != null) {
@@ -139,6 +138,12 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
 						"Authentication credentials are valid. Note: The character encoding could not be determined, verify 'Additional Settings'.", null));
 			}
+			
+			if (serverInfo.isInsecureRedirect()) {
+				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
+						"Authentication credentials are valid. Note: The server redirected to an insecure location.", null));				
+			}
+			
 			characterEncodingValidated = true;			
 		}
 		

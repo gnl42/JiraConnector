@@ -46,6 +46,8 @@ public class JiraWebSession {
 
 	private boolean secure;
 
+	private boolean insecureRedirect;
+
 	public JiraWebSession(JiraClient client, String baseUrl) { 
 		this.client = client;
 		this.baseUrl = baseUrl;
@@ -84,6 +86,10 @@ public class JiraWebSession {
 		return baseUrl;
 	}
 
+	public boolean isInsecureRedirect() {
+		return insecureRedirect;
+	}
+	
 	protected boolean isSecure() {
 		return secure;
 	}
@@ -108,7 +114,7 @@ public class JiraWebSession {
 					throw new JiraAuthenticationException("Login failed.");
 				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
 						&& statusCode != HttpStatus.SC_MOVED_PERMANENTLY) {
-					throw new JiraServiceUnavailableException("Unexpected status code on login: " + statusCode);
+					throw new JiraServiceUnavailableException("Unexpected status code during login: " + statusCode);
 				}
 
 				tracker.addRedirect(url, login, statusCode);
@@ -121,8 +127,9 @@ public class JiraWebSession {
 				}
 				url = locationHeader.getValue();
 				tracker.checkForCircle(url);
-				if (isSecure() && url.startsWith("http://")) {
-					throw new JiraServiceUnavailableException("Redirect to insecure location: " + url);
+				if (!insecureRedirect && isSecure() && url.startsWith("http://")) {
+					tracker.log("Redirect to insecure location during login to repository: " + client.getBaseUrl());
+					insecureRedirect = true;
 				}
 				if (url.endsWith("/success")) {
 					String newBaseUrl = url.substring(0, url.lastIndexOf("/success"));
@@ -141,9 +148,9 @@ public class JiraWebSession {
 			}
 		}
 
-		tracker.log("Exceeded maximum number of allowed redirects on login to repository: " + client.getBaseUrl());
+		tracker.log("Exceeded maximum number of allowed redirects during login to repository: " + client.getBaseUrl());
 		
-		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects on login");
+		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects during login");
 	}
 
 	private void logout(HttpClient httpClient) throws JiraException {
