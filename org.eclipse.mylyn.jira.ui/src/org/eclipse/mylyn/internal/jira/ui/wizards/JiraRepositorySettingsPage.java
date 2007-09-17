@@ -75,7 +75,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			serverUrlCombo.add(template.label);
 		}
 
-		this.characterEncodingValidated = JiraUtils.getCharacterEncodingValidated(repository);
+		if (repository != null) {
+			this.characterEncodingValidated = JiraUtils.getCharacterEncodingValidated(repository);
+		}
 		
 		serverUrlCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
