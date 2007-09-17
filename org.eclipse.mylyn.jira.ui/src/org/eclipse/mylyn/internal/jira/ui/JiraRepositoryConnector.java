@@ -424,7 +424,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 //			}
 
 			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
-			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER));
+			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED));
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
 			jiraTask.setTaskKind(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE));
 			jiraTask.setUrl(getTaskUrlFromKey(repository.getUrl(), repositoryTask.getTaskKey()));

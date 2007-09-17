@@ -177,6 +177,11 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Set<AbstractTask> tasks2 = collector2.getTasks();
 		
 		assertEquals(tasks1.size() + 1, tasks2.size());
+		
+		for (AbstractTask task : tasks2) {
+			assertNotNull(task.getOwner());
+			assertTrue("Expected ", task.getOwner().length()>0);
+		}
 	}
 
 	public void testMarkStaleNoTasks() throws Exception {

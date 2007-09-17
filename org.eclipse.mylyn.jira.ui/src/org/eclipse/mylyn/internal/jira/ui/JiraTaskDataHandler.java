@@ -347,7 +347,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, attachment.getName());
 			}
 
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_OWNER, attachment.getAuthor());
+			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, attachment.getAuthor());
 
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE,
 					JiraUtils.dateToString(attachment.getCreated()));
