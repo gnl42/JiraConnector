@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -177,6 +178,26 @@ public class JiraWebSession {
 		}
 	}
 
+	protected boolean expectRedirect(HttpMethodBase method, Issue issue) throws JiraException {
+		return expectRedirect(method, "/browse/" + issue.getKey()); 
+	}
+	
+	protected boolean expectRedirect(HttpMethodBase method, String page) throws JiraException {
+		if (method.getStatusCode() != HttpStatus.SC_MOVED_TEMPORARILY) {
+			return false;
+		}
+		
+		Header locationHeader = method.getResponseHeader("location");
+		if (locationHeader == null) {
+			throw new JiraServiceUnavailableException("Invalid server response, missing redirect location");
+		}
+		String url = locationHeader.getValue();
+		if (!url.startsWith(baseUrl + page)) {
+			throw new JiraException("Server redirected to unexpected location: " + url);
+		}
+		return true;
+	}	
+	
 	private class RedirectTracker {
 
 		ArrayList<RedirectInfo> redirects = new ArrayList<RedirectInfo>();
