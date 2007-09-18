@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.mylyn.jira_feature"
       label="Mylyn Connector: Jira (Incubation)"
-      version="2.0.0.v20070917-2100"
+      version="2.1.0.v20070917-2100"
       provider-name="Eclipse.org"
       plugin="org.eclipse.mylyn">
 
