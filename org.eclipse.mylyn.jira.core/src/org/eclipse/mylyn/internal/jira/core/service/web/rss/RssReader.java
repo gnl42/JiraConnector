@@ -46,6 +46,7 @@ class RssReader {
 			XMLReader reader = factory.newSAXParser().getXMLReader();
 			reader.setContentHandler(new RssContentHandler(server, collector, baseUrl));
 			InputSource inputSource = new InputSource(feed);
+			inputSource.setEncoding(server.getCharacterEncoding());
 			reader.parse(inputSource);
 			collector.done();
 		} catch (ParseCancelledException e) {
