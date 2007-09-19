@@ -410,7 +410,7 @@ public class JiraWebIssueService {
 				rssUrlBuffer.append(attachment.getId());
 				rssUrlBuffer.append("/");
 				try {
-					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), "UTF-8"));
+					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding()));
 				} catch (UnsupportedEncodingException e) {
 					throw new JiraException(e);
 				}
@@ -449,7 +449,7 @@ public class JiraWebIssueService {
 				rssUrlBuffer.append(attachment.getId());
 				rssUrlBuffer.append("/");
 				try {
-					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), "UTF-8"));
+					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding()));
 				} catch (UnsupportedEncodingException e) {
 					throw new JiraException(e);
 				}

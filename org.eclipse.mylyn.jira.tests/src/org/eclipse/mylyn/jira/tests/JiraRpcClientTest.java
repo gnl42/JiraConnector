@@ -317,6 +317,16 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals(client.getUserName(), attachment.getAuthor());
 		assertEquals(1, attachment.getSize());
 		assertNotNull(attachment.getCreated());
+		
+		// non-USASCII in filename
+		// upload is rejected by JIRA: bug 203663
+//		client.attachFile(issue, "", "filename\u00C4\u00D6\u00DC", new byte[] { '1' }, "text/plain");
+//		issue = client.getIssueByKey(issue.getKey());
+//		attachment = getAttachment(issue, "filename\u00C4\u00D6\u00DC");
+//		assertNotNull(attachment);
+//		assertEquals(client.getUserName(), attachment.getAuthor());
+//		assertEquals(1, attachment.getSize());
+//		assertNotNull(attachment.getCreated());
 	}
 
 	private Attachment getAttachment(Issue issue, String filename) {
