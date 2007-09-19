@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -407,7 +409,11 @@ public class JiraWebIssueService {
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
 				rssUrlBuffer.append("/");
-				rssUrlBuffer.append(attachment.getName());
+				try {
+					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), "UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					throw new JiraException(e);
+				}
 
 				GetMethod get = new GetMethod(rssUrlBuffer.toString());
 				try {
@@ -442,7 +448,11 @@ public class JiraWebIssueService {
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
 				rssUrlBuffer.append("/");
-				rssUrlBuffer.append(attachment.getName());
+				try {
+					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), "UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					throw new JiraException(e);
+				}
 
 				GetMethod get = new GetMethod(rssUrlBuffer.toString());
 				try {

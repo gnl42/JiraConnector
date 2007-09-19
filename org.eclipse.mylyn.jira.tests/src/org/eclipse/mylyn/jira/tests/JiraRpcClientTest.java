@@ -301,12 +301,21 @@ public class JiraRpcClientTest extends TestCase {
 		} catch (JiraRemoteMessageException e) {
 		}
 
-		client.attachFile(issue, "", "my.filename.1", new byte[] { 'M', 'y', 'l', 'a', 'r' }, "application/binary");
+		client.attachFile(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' }, "application/binary");
 		issue = client.getIssueByKey(issue.getKey());
 		Attachment attachment = getAttachment(issue, "my.filename.1");
 		assertNotNull(attachment);
 		assertEquals(client.getUserName(), attachment.getAuthor());
 		assertEquals(5, attachment.getSize());
+		assertNotNull(attachment.getCreated());
+
+		// spaces in filename
+		client.attachFile(issue, "", "file name with spaces", new byte[] { '1' }, "text/html");
+		issue = client.getIssueByKey(issue.getKey());
+		attachment = getAttachment(issue, "file name with spaces");
+		assertNotNull(attachment);
+		assertEquals(client.getUserName(), attachment.getAuthor());
+		assertEquals(1, attachment.getSize());
 		assertNotNull(attachment.getCreated());
 	}
 
