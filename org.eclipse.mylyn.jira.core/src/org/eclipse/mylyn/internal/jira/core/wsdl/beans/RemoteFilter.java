@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemoteFilter extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractNamedRemoteEntity implements
 		java.io.Serializable {
 	private java.lang.String author;
@@ -111,7 +111,6 @@ public class RemoteFilter extends org.eclipse.mylyn.internal.jira.core.wsdl.bean
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteFilter))
 			return false;
@@ -136,7 +135,6 @@ public class RemoteFilter extends org.eclipse.mylyn.internal.jira.core.wsdl.bean
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;

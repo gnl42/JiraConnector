@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemotePriority extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractRemoteConstant implements
 		java.io.Serializable {
 	private java.lang.String color;
@@ -48,7 +48,6 @@ public class RemotePriority extends org.eclipse.mylyn.internal.jira.core.wsdl.be
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemotePriority))
 			return false;
@@ -70,7 +69,6 @@ public class RemotePriority extends org.eclipse.mylyn.internal.jira.core.wsdl.be
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;

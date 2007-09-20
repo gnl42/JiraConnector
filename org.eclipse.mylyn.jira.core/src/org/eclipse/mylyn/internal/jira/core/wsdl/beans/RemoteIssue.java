@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemoteIssue extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractRemoteEntity implements
 		java.io.Serializable {
 	private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion[] affectsVersions;

@@ -14,9 +14,11 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemoteConfiguration implements java.io.Serializable {
 	private boolean allowAttachments;
+
+	private boolean allowExternalUserManagment;
 
 	private boolean allowIssueLinking;
 
@@ -30,18 +32,26 @@ public class RemoteConfiguration implements java.io.Serializable {
 
 	private boolean allowWatching;
 
+	private int timeTrackingDaysPerWeek;
+
+	private int timeTrackingHoursPerDay;
+
 	public RemoteConfiguration() {
 	}
 
-	public RemoteConfiguration(boolean allowAttachments, boolean allowIssueLinking, boolean allowSubTasks,
-			boolean allowTimeTracking, boolean allowUnassignedIssues, boolean allowVoting, boolean allowWatching) {
+	public RemoteConfiguration(boolean allowAttachments, boolean allowExternalUserManagment, boolean allowIssueLinking,
+			boolean allowSubTasks, boolean allowTimeTracking, boolean allowUnassignedIssues, boolean allowVoting,
+			boolean allowWatching, int timeTrackingDaysPerWeek, int timeTrackingHoursPerDay) {
 		this.allowAttachments = allowAttachments;
+		this.allowExternalUserManagment = allowExternalUserManagment;
 		this.allowIssueLinking = allowIssueLinking;
 		this.allowSubTasks = allowSubTasks;
 		this.allowTimeTracking = allowTimeTracking;
 		this.allowUnassignedIssues = allowUnassignedIssues;
 		this.allowVoting = allowVoting;
 		this.allowWatching = allowWatching;
+		this.timeTrackingDaysPerWeek = timeTrackingDaysPerWeek;
+		this.timeTrackingHoursPerDay = timeTrackingHoursPerDay;
 	}
 
 	/**
@@ -60,6 +70,24 @@ public class RemoteConfiguration implements java.io.Serializable {
 	 */
 	public void setAllowAttachments(boolean allowAttachments) {
 		this.allowAttachments = allowAttachments;
+	}
+
+	/**
+	 * Gets the allowExternalUserManagment value for this RemoteConfiguration.
+	 * 
+	 * @return allowExternalUserManagment
+	 */
+	public boolean isAllowExternalUserManagment() {
+		return allowExternalUserManagment;
+	}
+
+	/**
+	 * Sets the allowExternalUserManagment value for this RemoteConfiguration.
+	 * 
+	 * @param allowExternalUserManagment
+	 */
+	public void setAllowExternalUserManagment(boolean allowExternalUserManagment) {
+		this.allowExternalUserManagment = allowExternalUserManagment;
 	}
 
 	/**
@@ -170,9 +198,44 @@ public class RemoteConfiguration implements java.io.Serializable {
 		this.allowWatching = allowWatching;
 	}
 
+	/**
+	 * Gets the timeTrackingDaysPerWeek value for this RemoteConfiguration.
+	 * 
+	 * @return timeTrackingDaysPerWeek
+	 */
+	public int getTimeTrackingDaysPerWeek() {
+		return timeTrackingDaysPerWeek;
+	}
+
+	/**
+	 * Sets the timeTrackingDaysPerWeek value for this RemoteConfiguration.
+	 * 
+	 * @param timeTrackingDaysPerWeek
+	 */
+	public void setTimeTrackingDaysPerWeek(int timeTrackingDaysPerWeek) {
+		this.timeTrackingDaysPerWeek = timeTrackingDaysPerWeek;
+	}
+
+	/**
+	 * Gets the timeTrackingHoursPerDay value for this RemoteConfiguration.
+	 * 
+	 * @return timeTrackingHoursPerDay
+	 */
+	public int getTimeTrackingHoursPerDay() {
+		return timeTrackingHoursPerDay;
+	}
+
+	/**
+	 * Sets the timeTrackingHoursPerDay value for this RemoteConfiguration.
+	 * 
+	 * @param timeTrackingHoursPerDay
+	 */
+	public void setTimeTrackingHoursPerDay(int timeTrackingHoursPerDay) {
+		this.timeTrackingHoursPerDay = timeTrackingHoursPerDay;
+	}
+
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteConfiguration))
 			return false;
@@ -187,18 +250,20 @@ public class RemoteConfiguration implements java.io.Serializable {
 		__equalsCalc = obj;
 		boolean _equals;
 		_equals = true && this.allowAttachments == other.isAllowAttachments()
+				&& this.allowExternalUserManagment == other.isAllowExternalUserManagment()
 				&& this.allowIssueLinking == other.isAllowIssueLinking()
 				&& this.allowSubTasks == other.isAllowSubTasks()
 				&& this.allowTimeTracking == other.isAllowTimeTracking()
 				&& this.allowUnassignedIssues == other.isAllowUnassignedIssues()
-				&& this.allowVoting == other.isAllowVoting() && this.allowWatching == other.isAllowWatching();
+				&& this.allowVoting == other.isAllowVoting() && this.allowWatching == other.isAllowWatching()
+				&& this.timeTrackingDaysPerWeek == other.getTimeTrackingDaysPerWeek()
+				&& this.timeTrackingHoursPerDay == other.getTimeTrackingHoursPerDay();
 		__equalsCalc = null;
 		return _equals;
 	}
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;
@@ -206,12 +271,15 @@ public class RemoteConfiguration implements java.io.Serializable {
 		__hashCodeCalc = true;
 		int _hashCode = 1;
 		_hashCode += (isAllowAttachments() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+		_hashCode += (isAllowExternalUserManagment() ? Boolean.TRUE : Boolean.FALSE).hashCode();
 		_hashCode += (isAllowIssueLinking() ? Boolean.TRUE : Boolean.FALSE).hashCode();
 		_hashCode += (isAllowSubTasks() ? Boolean.TRUE : Boolean.FALSE).hashCode();
 		_hashCode += (isAllowTimeTracking() ? Boolean.TRUE : Boolean.FALSE).hashCode();
 		_hashCode += (isAllowUnassignedIssues() ? Boolean.TRUE : Boolean.FALSE).hashCode();
 		_hashCode += (isAllowVoting() ? Boolean.TRUE : Boolean.FALSE).hashCode();
 		_hashCode += (isAllowWatching() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+		_hashCode += getTimeTrackingDaysPerWeek();
+		_hashCode += getTimeTrackingHoursPerDay();
 		__hashCodeCalc = false;
 		return _hashCode;
 	}
@@ -226,6 +294,12 @@ public class RemoteConfiguration implements java.io.Serializable {
 		org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
 		elemField.setFieldName("allowAttachments");
 		elemField.setXmlName(new javax.xml.namespace.QName("", "allowAttachments"));
+		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+		elemField.setNillable(false);
+		typeDesc.addFieldDesc(elemField);
+		elemField = new org.apache.axis.description.ElementDesc();
+		elemField.setFieldName("allowExternalUserManagment");
+		elemField.setXmlName(new javax.xml.namespace.QName("", "allowExternalUserManagment"));
 		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
 		elemField.setNillable(false);
 		typeDesc.addFieldDesc(elemField);
@@ -263,6 +337,18 @@ public class RemoteConfiguration implements java.io.Serializable {
 		elemField.setFieldName("allowWatching");
 		elemField.setXmlName(new javax.xml.namespace.QName("", "allowWatching"));
 		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+		elemField.setNillable(false);
+		typeDesc.addFieldDesc(elemField);
+		elemField = new org.apache.axis.description.ElementDesc();
+		elemField.setFieldName("timeTrackingDaysPerWeek");
+		elemField.setXmlName(new javax.xml.namespace.QName("", "timeTrackingDaysPerWeek"));
+		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+		elemField.setNillable(false);
+		typeDesc.addFieldDesc(elemField);
+		elemField = new org.apache.axis.description.ElementDesc();
+		elemField.setFieldName("timeTrackingHoursPerDay");
+		elemField.setXmlName(new javax.xml.namespace.QName("", "timeTrackingHoursPerDay"));
+		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
 		elemField.setNillable(false);
 		typeDesc.addFieldDesc(elemField);
 	}

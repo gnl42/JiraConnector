@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "unused", "serial" })
+@SuppressWarnings("all")
 public class RemoteStatus extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractRemoteConstant implements
 		java.io.Serializable {
 	public RemoteStatus() {
@@ -26,7 +26,6 @@ public class RemoteStatus extends org.eclipse.mylyn.internal.jira.core.wsdl.bean
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteStatus))
 			return false;
@@ -47,7 +46,6 @@ public class RemoteStatus extends org.eclipse.mylyn.internal.jira.core.wsdl.bean
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;

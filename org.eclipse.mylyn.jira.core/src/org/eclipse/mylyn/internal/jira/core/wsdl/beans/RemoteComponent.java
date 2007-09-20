@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial", "unused" })
+@SuppressWarnings("all")
 public class RemoteComponent extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractNamedRemoteEntity
 		implements java.io.Serializable {
 	public RemoteComponent() {
@@ -26,7 +26,6 @@ public class RemoteComponent extends org.eclipse.mylyn.internal.jira.core.wsdl.b
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteComponent))
 			return false;
@@ -47,7 +46,6 @@ public class RemoteComponent extends org.eclipse.mylyn.internal.jira.core.wsdl.b
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;

@@ -14,13 +14,11 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemoteRoleActor implements java.io.Serializable {
 	private java.lang.String descriptor;
 
 	private java.lang.String parameter;
-
-	private java.lang.String prettyName;
 
 	private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole;
 
@@ -31,12 +29,11 @@ public class RemoteRoleActor implements java.io.Serializable {
 	public RemoteRoleActor() {
 	}
 
-	public RemoteRoleActor(java.lang.String descriptor, java.lang.String parameter, java.lang.String prettyName,
+	public RemoteRoleActor(java.lang.String descriptor, java.lang.String parameter,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole projectRole, java.lang.String type,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser[] users) {
 		this.descriptor = descriptor;
 		this.parameter = parameter;
-		this.prettyName = prettyName;
 		this.projectRole = projectRole;
 		this.type = type;
 		this.users = users;
@@ -76,24 +73,6 @@ public class RemoteRoleActor implements java.io.Serializable {
 	 */
 	public void setParameter(java.lang.String parameter) {
 		this.parameter = parameter;
-	}
-
-	/**
-	 * Gets the prettyName value for this RemoteRoleActor.
-	 * 
-	 * @return prettyName
-	 */
-	public java.lang.String getPrettyName() {
-		return prettyName;
-	}
-
-	/**
-	 * Sets the prettyName value for this RemoteRoleActor.
-	 * 
-	 * @param prettyName
-	 */
-	public void setPrettyName(java.lang.String prettyName) {
-		this.prettyName = prettyName;
 	}
 
 	/**
@@ -152,7 +131,6 @@ public class RemoteRoleActor implements java.io.Serializable {
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteRoleActor))
 			return false;
@@ -169,7 +147,6 @@ public class RemoteRoleActor implements java.io.Serializable {
 		_equals = true
 				&& ((this.descriptor == null && other.getDescriptor() == null) || (this.descriptor != null && this.descriptor.equals(other.getDescriptor())))
 				&& ((this.parameter == null && other.getParameter() == null) || (this.parameter != null && this.parameter.equals(other.getParameter())))
-				&& ((this.prettyName == null && other.getPrettyName() == null) || (this.prettyName != null && this.prettyName.equals(other.getPrettyName())))
 				&& ((this.projectRole == null && other.getProjectRole() == null) || (this.projectRole != null && this.projectRole.equals(other.getProjectRole())))
 				&& ((this.type == null && other.getType() == null) || (this.type != null && this.type.equals(other.getType())))
 				&& ((this.users == null && other.getUsers() == null) || (this.users != null && java.util.Arrays.equals(
@@ -180,7 +157,6 @@ public class RemoteRoleActor implements java.io.Serializable {
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;
@@ -192,9 +168,6 @@ public class RemoteRoleActor implements java.io.Serializable {
 		}
 		if (getParameter() != null) {
 			_hashCode += getParameter().hashCode();
-		}
-		if (getPrettyName() != null) {
-			_hashCode += getPrettyName().hashCode();
 		}
 		if (getProjectRole() != null) {
 			_hashCode += getProjectRole().hashCode();
@@ -229,12 +202,6 @@ public class RemoteRoleActor implements java.io.Serializable {
 		elemField = new org.apache.axis.description.ElementDesc();
 		elemField.setFieldName("parameter");
 		elemField.setXmlName(new javax.xml.namespace.QName("", "parameter"));
-		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-		elemField.setNillable(true);
-		typeDesc.addFieldDesc(elemField);
-		elemField = new org.apache.axis.description.ElementDesc();
-		elemField.setFieldName("prettyName");
-		elemField.setXmlName(new javax.xml.namespace.QName("", "prettyName"));
 		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
 		elemField.setNillable(true);
 		typeDesc.addFieldDesc(elemField);

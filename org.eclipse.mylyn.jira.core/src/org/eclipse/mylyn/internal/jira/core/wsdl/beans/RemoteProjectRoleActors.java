@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemoteProjectRoleActors extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteRoleActors implements
 		java.io.Serializable {
 	private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject project;
@@ -50,7 +50,6 @@ public class RemoteProjectRoleActors extends org.eclipse.mylyn.internal.jira.cor
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteProjectRoleActors))
 			return false;
@@ -72,7 +71,6 @@ public class RemoteProjectRoleActors extends org.eclipse.mylyn.internal.jira.cor
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;

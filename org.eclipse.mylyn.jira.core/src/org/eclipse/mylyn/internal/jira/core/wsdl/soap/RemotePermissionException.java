@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 
-@SuppressWarnings( { "unchecked", "unused", "serial" })
+@SuppressWarnings("all")
 public class RemotePermissionException extends org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException implements
 		java.io.Serializable {
 	public RemotePermissionException() {
@@ -22,7 +22,6 @@ public class RemotePermissionException extends org.eclipse.mylyn.internal.jira.c
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemotePermissionException))
 			return false;
@@ -43,7 +42,6 @@ public class RemotePermissionException extends org.eclipse.mylyn.internal.jira.c
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;
@@ -89,7 +87,6 @@ public class RemotePermissionException extends org.eclipse.mylyn.internal.jira.c
 	/**
 	 * Writes the exception data to the faultDetails
 	 */
-	@Override
 	public void writeDetails(javax.xml.namespace.QName qname, org.apache.axis.encoding.SerializationContext context)
 			throws java.io.IOException {
 		context.serialize(qname, null, this);

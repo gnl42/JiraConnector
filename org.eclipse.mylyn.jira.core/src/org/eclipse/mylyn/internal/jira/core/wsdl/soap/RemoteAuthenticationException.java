@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 
-@SuppressWarnings( { "unchecked", "unused", "serial" })
+@SuppressWarnings("all")
 public class RemoteAuthenticationException extends org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException
 		implements java.io.Serializable {
 	public RemoteAuthenticationException() {
@@ -22,7 +22,6 @@ public class RemoteAuthenticationException extends org.eclipse.mylyn.internal.ji
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteAuthenticationException))
 			return false;
@@ -43,7 +42,6 @@ public class RemoteAuthenticationException extends org.eclipse.mylyn.internal.ji
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;
@@ -89,7 +87,6 @@ public class RemoteAuthenticationException extends org.eclipse.mylyn.internal.ji
 	/**
 	 * Writes the exception data to the faultDetails
 	 */
-	@Override
 	public void writeDetails(javax.xml.namespace.QName qname, org.apache.axis.encoding.SerializationContext context)
 			throws java.io.IOException {
 		context.serialize(qname, null, this);

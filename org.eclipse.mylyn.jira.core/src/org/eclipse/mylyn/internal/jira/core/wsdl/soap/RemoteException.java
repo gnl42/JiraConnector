@@ -14,14 +14,13 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 
-@SuppressWarnings( { "unchecked", "unused", "serial" })
+@SuppressWarnings("all")
 public class RemoteException extends org.apache.axis.AxisFault implements java.io.Serializable {
 	public RemoteException() {
 	}
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteException))
 			return false;
@@ -42,7 +41,6 @@ public class RemoteException extends org.apache.axis.AxisFault implements java.i
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;
@@ -87,7 +85,6 @@ public class RemoteException extends org.apache.axis.AxisFault implements java.i
 	/**
 	 * Writes the exception data to the faultDetails
 	 */
-	@Override
 	public void writeDetails(javax.xml.namespace.QName qname, org.apache.axis.encoding.SerializationContext context)
 			throws java.io.IOException {
 		context.serialize(qname, null, this);

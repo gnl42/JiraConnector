@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemotePermissionScheme extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme implements
 		java.io.Serializable {
 	private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePermissionMapping[] permissionMappings;
@@ -50,7 +50,6 @@ public class RemotePermissionScheme extends org.eclipse.mylyn.internal.jira.core
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemotePermissionScheme))
 			return false;
@@ -73,7 +72,6 @@ public class RemotePermissionScheme extends org.eclipse.mylyn.internal.jira.core
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;

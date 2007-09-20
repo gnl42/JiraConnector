@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Service implements
 		org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceService {
 
@@ -79,7 +79,6 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
 	 * For the given interface, get the stub implementation. If this service has no port for the given interface, then
 	 * ServiceException is thrown.
 	 */
-	@Override
 	public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
 		try {
 			if (org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService.class.isAssignableFrom(serviceEndpointInterface)) {
@@ -99,7 +98,6 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
 	 * For the given interface, get the stub implementation. If this service has no port for the given interface, then
 	 * ServiceException is thrown.
 	 */
-	@Override
 	public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface)
 			throws javax.xml.rpc.ServiceException {
 		if (portName == null) {
@@ -115,7 +113,6 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
 		}
 	}
 
-	@Override
 	public javax.xml.namespace.QName getServiceName() {
 		return new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
 				"JiraSoapServiceService");
@@ -123,7 +120,6 @@ public class JiraSoapServiceServiceLocator extends org.apache.axis.client.Servic
 
 	private java.util.HashSet ports = null;
 
-	@Override
 	public java.util.Iterator getPorts() {
 		if (ports == null) {
 			ports = new java.util.HashSet();

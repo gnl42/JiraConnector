@@ -14,6 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 
+@SuppressWarnings("all")
 public interface JiraSoapServiceService extends javax.xml.rpc.Service {
 	public java.lang.String getJirasoapserviceV2Address();
 

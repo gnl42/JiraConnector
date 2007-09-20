@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemoteVersion extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractNamedRemoteEntity implements
 		java.io.Serializable {
 	private boolean archived;
@@ -111,7 +111,6 @@ public class RemoteVersion extends org.eclipse.mylyn.internal.jira.core.wsdl.bea
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteVersion))
 			return false;
@@ -136,7 +135,6 @@ public class RemoteVersion extends org.eclipse.mylyn.internal.jira.core.wsdl.bea
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;

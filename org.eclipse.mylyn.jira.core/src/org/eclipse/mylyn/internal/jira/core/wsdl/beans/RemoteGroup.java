@@ -14,7 +14,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings("all")
 public class RemoteGroup extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteEntity implements
 		java.io.Serializable {
 	private java.lang.String name;
@@ -67,7 +67,6 @@ public class RemoteGroup extends org.eclipse.mylyn.internal.jira.core.wsdl.beans
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteGroup))
 			return false;
@@ -91,7 +90,6 @@ public class RemoteGroup extends org.eclipse.mylyn.internal.jira.core.wsdl.beans
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;

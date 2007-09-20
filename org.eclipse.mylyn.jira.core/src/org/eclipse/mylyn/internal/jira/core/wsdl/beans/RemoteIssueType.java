@@ -14,20 +14,40 @@
 
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
-@SuppressWarnings( { "unchecked", "serial", "unused" })
+@SuppressWarnings("all")
 public class RemoteIssueType extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractRemoteConstant implements
 		java.io.Serializable {
+	private boolean subTask;
+
 	public RemoteIssueType() {
 	}
 
 	public RemoteIssueType(java.lang.String id, java.lang.String name, java.lang.String description,
-			java.lang.String icon) {
+			java.lang.String icon, boolean subTask) {
 		super(id, name, description, icon);
+		this.subTask = subTask;
+	}
+
+	/**
+	 * Gets the subTask value for this RemoteIssueType.
+	 * 
+	 * @return subTask
+	 */
+	public boolean isSubTask() {
+		return subTask;
+	}
+
+	/**
+	 * Sets the subTask value for this RemoteIssueType.
+	 * 
+	 * @param subTask
+	 */
+	public void setSubTask(boolean subTask) {
+		this.subTask = subTask;
 	}
 
 	private java.lang.Object __equalsCalc = null;
 
-	@Override
 	public synchronized boolean equals(java.lang.Object obj) {
 		if (!(obj instanceof RemoteIssueType))
 			return false;
@@ -41,20 +61,20 @@ public class RemoteIssueType extends org.eclipse.mylyn.internal.jira.core.wsdl.b
 		}
 		__equalsCalc = obj;
 		boolean _equals;
-		_equals = super.equals(obj);
+		_equals = super.equals(obj) && this.subTask == other.isSubTask();
 		__equalsCalc = null;
 		return _equals;
 	}
 
 	private boolean __hashCodeCalc = false;
 
-	@Override
 	public synchronized int hashCode() {
 		if (__hashCodeCalc) {
 			return 0;
 		}
 		__hashCodeCalc = true;
 		int _hashCode = super.hashCode();
+		_hashCode += (isSubTask() ? Boolean.TRUE : Boolean.FALSE).hashCode();
 		__hashCodeCalc = false;
 		return _hashCode;
 	}
@@ -65,6 +85,12 @@ public class RemoteIssueType extends org.eclipse.mylyn.internal.jira.core.wsdl.b
 
 	static {
 		typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteIssueType"));
+		org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+		elemField.setFieldName("subTask");
+		elemField.setXmlName(new javax.xml.namespace.QName("", "subTask"));
+		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+		elemField.setNillable(false);
+		typeDesc.addFieldDesc(elemField);
 	}
 
 	/**
