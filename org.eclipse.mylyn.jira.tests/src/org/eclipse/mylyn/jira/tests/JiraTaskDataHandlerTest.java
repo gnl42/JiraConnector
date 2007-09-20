@@ -29,6 +29,7 @@ import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -150,8 +151,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertValues(data, RepositoryTaskAttribute.PRODUCT, "Prone");
 		assertValues(data, JiraAttributeFactory.ATTRIBUTE_TYPE, "task");
 
-		assertValues(data, RepositoryTaskAttribute.DATE_CREATION, //
-				new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT).format(issue.getCreated()));
+		assertValues(data, RepositoryTaskAttribute.DATE_CREATION, JiraUtils.dateToString(issue.getCreated()));
 
 		assertValues(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "component2", "component3");
 		assertValues(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, "1.0", "2.0");
@@ -174,8 +174,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Date today = new SimpleDateFormat("dd/MMM/yy").parse("1/Jun/06");
-		SimpleDateFormat df = new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT);
-		String dueDate = df.format(today);
+		String dueDate = JiraUtils.dateToString(today);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
 		issue = client.createIssue(issue);

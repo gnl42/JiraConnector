@@ -8,8 +8,6 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -38,7 +36,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
-import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -371,6 +368,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				task.setSummary(issue.getSummary());
 			}
 		}
+		task.setCreationDate(issue.getCreated());
 		if (isCompleted(issue.getStatus())) {
 			task.setCompleted(true);
 			task.setCompletionDate(issue.getUpdated());
@@ -429,29 +427,19 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
 			jiraTask.setTaskKind(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE));
 			jiraTask.setUrl(getTaskUrlFromKey(repository.getUrl(), repositoryTask.getTaskKey()));
-			try {
-				String dueDateString = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
-				if (dueDateString != null) {
-					jiraTask.setDueDate(new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT).parse(dueDateString));
-				}
-			} catch (ParseException ex) {
-				// ignore
-			}
+			jiraTask.setCreationDate(JiraUtils.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_CREATION)));
+			jiraTask.setDueDate(JiraUtils.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
 
 			JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
 			jiraTask.setPriority(getPriorityLevel(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
 			for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
-						AbstractAttributeFactory factory = getTaskDataHandler().getAttributeFactory(
-								repository.getUrl(), repository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
-						String dateString = taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
-						jiraTask.setCompletionDate(factory.getDateForAttributeType(
-								RepositoryTaskAttribute.DATE_MODIFIED, dateString));
 						jiraTask.setCompleted(true);
+						jiraTask.setCompletionDate(JiraUtils.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED)));
 					} else {
-						jiraTask.setCompletionDate(null);
 						jiraTask.setCompleted(false);
+						jiraTask.setCompletionDate(null);
 					}
 					break;
 				}

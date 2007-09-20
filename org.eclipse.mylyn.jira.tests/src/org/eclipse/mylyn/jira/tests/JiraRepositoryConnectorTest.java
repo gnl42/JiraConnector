@@ -299,6 +299,25 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(null, dateFilter.getToDate());
 	}
 
+	public void testCreateTask() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		Issue issue = JiraTestUtils.createIssue(client, "testAttachContext");
+		issue = client.createIssue(issue);
+
+		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
+		assertEquals("testAttachContext", task.getSummary());
+		assertEquals(null, task.getCompletionDate());
+		assertFalse(task.isCompleted());
+		assertEquals(issue.getCreated(), task.getCreationDate());
+		
+		client.advanceIssueWorkflow(issue, "close", "");
+		issue = client.getIssueByKey(issue.getKey());
+		assertEquals(issue.getUpdated(), task.getCompletionDate());
+		assertTrue(task.isCompleted());
+		assertEquals(issue.getCreated(), task.getCreationDate());
+	}
+
 	private Date addSecondsToDate(Date updated, int i) {
 		Calendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(updated.getTime() + i * 1000);
