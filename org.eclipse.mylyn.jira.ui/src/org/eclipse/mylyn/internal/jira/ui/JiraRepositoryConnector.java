@@ -382,6 +382,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			task.setTaskKind(issue.getType().getName());
 		}
 		task.setPriority(getPriorityLevel(issue.getPriority()).toString());
+		task.setOwner(issue.getAssignee());
 	}
 
 	public static String getTaskUrlFromKey(String repositoryUrl, String key) {
