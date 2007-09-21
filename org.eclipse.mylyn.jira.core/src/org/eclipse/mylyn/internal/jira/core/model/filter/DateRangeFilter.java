@@ -14,6 +14,7 @@ import java.util.Date;
  * @author Brock Janiczak
  */
 public class DateRangeFilter extends DateFilter {
+
 	private static final long serialVersionUID = 1L;
 
 	private Date fromDate;

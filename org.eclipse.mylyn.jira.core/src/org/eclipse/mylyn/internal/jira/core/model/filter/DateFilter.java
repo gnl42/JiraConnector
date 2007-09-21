@@ -13,6 +13,7 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
+@SuppressWarnings("serial")
 public abstract class DateFilter implements Filter, Serializable {
 
 	abstract DateFilter copy();

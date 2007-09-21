@@ -13,6 +13,9 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
+@SuppressWarnings("serial")
 public abstract class UserFilter implements Filter, Serializable {
+	
 	abstract UserFilter copy();
+
 }
