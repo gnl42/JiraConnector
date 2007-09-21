@@ -302,19 +302,21 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testCreateTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Issue issue = JiraTestUtils.createIssue(client, "testAttachContext");
+		Issue issue = JiraTestUtils.createIssue(client, "testCreateTask");
 		issue = client.createIssue(issue);
 
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
-		assertEquals("testAttachContext", task.getSummary());
+		assertEquals("testCreateTask", task.getSummary());
 		assertEquals(null, task.getCompletionDate());
 		assertFalse(task.isCompleted());
 		assertEquals(issue.getCreated(), task.getCreationDate());
 		
-		client.advanceIssueWorkflow(issue, "close", "");
+		// close issue
+		client.advanceIssueWorkflow(issue, "2", "");
 		issue = client.getIssueByKey(issue.getKey());
-		assertEquals(issue.getUpdated(), task.getCompletionDate());
+		task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertTrue(task.isCompleted());
+		assertEquals(issue.getUpdated(), task.getCompletionDate());
 		assertEquals(issue.getCreated(), task.getCreationDate());
 	}
 
