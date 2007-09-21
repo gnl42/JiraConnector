@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mylyn Jira Connector Core
 Bundle-SymbolicName: org.eclipse.mylyn.jira.core;singleton:=true
-Bundle-Version: 2.1.0.v20070920-1000
+Bundle-Version: 2.1.0.I20070921-1200
 Bundle-Activator: org.eclipse.mylyn.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime,
