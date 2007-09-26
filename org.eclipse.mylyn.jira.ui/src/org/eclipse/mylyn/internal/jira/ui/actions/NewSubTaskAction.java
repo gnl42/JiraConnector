@@ -40,7 +40,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class NewSubTaskAction extends Action implements IViewActionDelegate, IExecutableExtension {
 
-	private static final String LABEL = "New Sub-task";
+	private static final String LABEL = "New Subtask";
 
 	public static final String ID = "org.eclipse.mylyn.jira.ui.new.subtask";
 
@@ -73,7 +73,7 @@ public class NewSubTaskAction extends Action implements IViewActionDelegate, IEx
 		try {
 			taskDataHandler.initializeSubTaskData(taskRepository, taskData, selectedTaskData, new NullProgressMonitor());
 		} catch (CoreException e) {
-			StatusHandler.displayStatus("Unable to create sub-task", e.getStatus());
+			StatusHandler.displayStatus("Unable to create Subtask", e.getStatus());
 		}
 		
 		// open editor
