@@ -65,10 +65,18 @@
                enablesFor="org.eclipse.mylyn.internal.jira.ui.JiraTask"
                icon="icons/etool16/sub-task-new.gif"
                id="org.eclipse.mylyn.jira.ui.new.subtask"
-               label="New Subtask"
-               menubarPath="new"
+               label="Subtask"
+               menubarPath="org.eclipse.mylyn.tasks.ui.menu.new/repository"
                tooltip="New Subtask">
          </action>
+         <menu
+               id="org.eclipse.mylyn.tasks.ui.menu.new"
+               label="New"
+               path="new">
+            <separator
+                  name="repository">
+            </separator>
+         </menu>
       </objectContribution>
    <!--
       <viewerContribution
