@@ -25,7 +25,7 @@ public enum JiraAttribute {
 	DATE_CREATION(RepositoryTaskAttribute.DATE_CREATION, JiraFieldType.TEXTFIELD, "Created:"), DATE_MODIFIED(
 			RepositoryTaskAttribute.DATE_MODIFIED, JiraFieldType.TEXTFIELD, "Modified:"),
 
-	USER_ASSIGNED(RepositoryTaskAttribute.USER_ASSIGNED, JiraFieldType.USERPICKER, "Assigned to:", true, true,
+	USER_ASSIGNED(RepositoryTaskAttribute.USER_ASSIGNED, JiraFieldType.USERPICKER, "Assigned to:", true, false,
 			"assignee"), USER_REPORTER(RepositoryTaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, "Reported by:"),
 
 	PRODUCT(RepositoryTaskAttribute.PRODUCT, JiraFieldType.PROJECT, "Project:", false, true), PRIORITY(
