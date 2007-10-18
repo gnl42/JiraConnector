@@ -10,6 +10,8 @@ package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
 import java.net.Proxy;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -32,6 +34,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
+import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
 /**
  * @author Steffen Pingel
@@ -560,6 +563,26 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals(buildNumber, serverInfo.getBuildNumber());
 		assertEquals("ISO-8859-1", serverInfo.getCharacterEncoding());
 		assertEquals(url, serverInfo.getBaseUrl());
+	}
+
+	public void testGetEditableFields() throws Exception {
+		getEditableFields(JiraTestConstants.JIRA_39_URL);
+	}
+
+	private void getEditableFields(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+		
+		Issue issue = JiraTestUtils.createIssue(client, "getEditableFields");
+		issue = client.createIssue(issue);
+
+		RepositoryTaskAttribute[] fields = client.getEditableAttributes(issue.getKey());
+		Set<String> ids = new HashSet<String>();
+		for (RepositoryTaskAttribute repositoryTaskAttribute : fields) {
+			ids.add(repositoryTaskAttribute.getId());
+		}
+		assertFalse(ids.isEmpty());
+		assertTrue("Missing 'versions': " + ids, ids.contains("versions"));
+		assertTrue("Missing 'fixVersions': " + ids, ids.contains("fixVersions"));
 	}
 
 }

@@ -32,6 +32,7 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -258,11 +259,23 @@ public class JiraRpcClient extends AbstractJiraClient {
 					return new RepositoryTaskAttribute[0];
 				}
 
-				RepositoryTaskAttribute[] attributes = new RepositoryTaskAttribute[fields.length];
+				// work around for bug 205015
+				int add = 0;
+				String version = getServerInfo().getVersion();
+				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0) {
+					add++;
+				}
+				
+				RepositoryTaskAttribute[] attributes = new RepositoryTaskAttribute[fields.length + add];
 				for (int i = 0; i < fields.length; i++) {
 					RemoteField field = fields[i];
 					attributes[i] = new RepositoryTaskAttribute(field.getId(), field.getName(), false);
 				}
+				
+				if (add > 0) {
+					attributes[fields.length] = new RepositoryTaskAttribute("fixVersions", "Fix Version/s", false);
+				}
+				
 				return attributes;
 			}
 		});
