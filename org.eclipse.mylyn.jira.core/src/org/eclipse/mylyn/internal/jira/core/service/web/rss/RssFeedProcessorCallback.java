@@ -22,6 +22,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
 
 /**
@@ -30,69 +32,84 @@ import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
  */
 public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback {
 
-	private final boolean useGZipCompression;
+	private static final int MAX_REDIRECTS = 1;
+
+	private final boolean useCompression;
 
 	private final IssueCollector collector;
 
-	public RssFeedProcessorCallback(boolean useGZipCompression, IssueCollector collector) {
-		this.useGZipCompression = useGZipCompression;
+	public RssFeedProcessorCallback(boolean useCompression, IssueCollector collector) {
+		this.useCompression = useCompression;
 		this.collector = collector;
 	}
 
 	public final void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException, IOException {
 		String rssUrl = getRssUrl(baseUrl);
-		GetMethod rssRequest = new GetMethod(rssUrl);
-		// If there is only a single match JIRA will redirect to the issue browser
-		rssRequest.setFollowRedirects(true);
-
-		// Tell the server we would like the response GZipped. This does not
-		// guarantee it will be done
-		if (useGZipCompression) {
-			rssRequest.setRequestHeader("Accept-Encoding", "gzip"); //$NON-NLS-1$
-		}
-
-		try {
-			if (collector.isCancelled()) {
-				return;
+		for (int i = 0; i <= MAX_REDIRECTS; i++) {
+			GetMethod rssRequest = new GetMethod(rssUrl);
+			rssRequest.setFollowRedirects(false);
+			if (useCompression) {
+				// request compressed response, this does not guarantee it will be done
+				rssRequest.setRequestHeader("Accept-Encoding", "gzip"); //$NON-NLS-1$
 			}
-			client.executeMethod(rssRequest);
 
-			if (rssRequest.getStatusCode() != HttpStatus.SC_OK) {
-				throw new JiraException("Unexpected server response:\n" + rssRequest.getResponseBodyAsString(), null);
-			}
-			
-			// JIRA 3.4 can redirect straight to the issue browser, but not with
-			// the RSS view type
-			if (!isXMLOrRSS(rssRequest)) {
-				rssRequest = new GetMethod(rssRequest.getURI().getURI());
-				rssRequest.setQueryString("decorator=none&view=rss"); //$NON-NLS-1$
-				client.executeMethod(rssRequest);
+			try {
+				int code = client.executeMethod(rssRequest);
 
-				// If it still isn't an XML response, an invalid issue was
-				// entered
+				// TODO refactor, code was copied from JiraWebSession.expectRedirect()
+				if (code == HttpStatus.SC_MOVED_TEMPORARILY) {
+					// check if redirect was to issue page, this means only a single result was received
+					Header locationHeader = rssRequest.getResponseHeader("location");
+					if (locationHeader == null) {
+						throw new JiraServiceUnavailableException("Invalid server response, missing redirect location");
+					}
+					String url = locationHeader.getValue();
+					if (!url.startsWith(baseUrl + "/browse/")) {
+						throw new JiraException("Server redirected to unexpected location: " + url);
+					}
+
+					rssRequest.releaseConnection();
+
+					// request XML for single result
+					rssUrl = url + "?decorator=none&view=rss"; //$NON-NLS-1$
+				} else if (code != HttpStatus.SC_OK) {
+					StringBuilder sb = new StringBuilder("Unexpected result code ");
+					sb.append(code);
+					sb.append(" while running query: ");
+					sb.append(rssUrl);
+					throw new JiraRemoteMessageException(sb.toString(), rssRequest.getResponseBodyAsString());
+				}
+
+				// if it still isn't an XML response, an invalid issue was entered
 				if (!isXMLOrRSS(rssRequest)) {
 					return;
 				}
-			}
 
-			boolean isResponseGZipped = isResponseGZipped(rssRequest);
+				parseResult(server, baseUrl, rssRequest);
 
-			InputStream rssFeed = null;
-			try {
-				rssFeed = isResponseGZipped ? new GZIPInputStream(rssRequest.getResponseBodyAsStream())
-						: rssRequest.getResponseBodyAsStream();
-				new RssReader(server, collector).readRssFeed(rssFeed, baseUrl);
+				// success
+				return;
 			} finally {
-				try {
-					if (rssFeed != null) {
-						rssFeed.close();
-					}
-				} catch (IOException e) {
-					// Do nothing
-				}
+				rssRequest.releaseConnection();
 			}
+		}
+
+		throw new JiraException("Maximum number of query redirects exceeded: " + rssUrl);
+	}
+
+	private void parseResult(JiraClient server, String baseUrl, GetMethod rssRequest) throws IOException, JiraException {
+		InputStream in = rssRequest.getResponseBodyAsStream();
+		try {
+			if (isResponseGZipped(rssRequest)) {
+				in = new GZIPInputStream(rssRequest.getResponseBodyAsStream());
+			}
+			new RssReader(server, collector).readRssFeed(in, baseUrl);
 		} finally {
-			rssRequest.releaseConnection();
+			try {
+				in.close();
+			} catch (IOException e) {
+				// TODO log
+			}
 		}
 	}
 

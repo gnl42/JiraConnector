@@ -193,7 +193,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 	public Issue getIssueByKey(String issueKey) throws JiraException {
 		SingleIssueCollector collector = new SingleIssueCollector();
-		filterService.quickSearch(issueKey, collector);
+		filterService.getIssueByKey(issueKey, collector);
 		return collector.getIssue();
 	}
 
@@ -298,11 +298,13 @@ public class JiraRpcClient extends AbstractJiraClient {
 	}
 
 	public Issue createIssue(Issue issue) throws JiraException {
-		return issueService.createIssue(issue);
+		String issueKey = issueService.createIssue(issue);
+		return getIssueByKey(issueKey);
 	}
 
 	public Issue createSubTask(Issue issue) throws JiraException {
-		return issueService.createSubTask(issue);
+		String issueKey = issueService.createSubTask(issue);
+		return getIssueByKey(issueKey);
 	}
 
 	@Override

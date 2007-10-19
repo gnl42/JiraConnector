@@ -109,7 +109,7 @@ public class JiraWebSession {
 		RedirectTracker tracker = new RedirectTracker();
 
 		String url = baseUrl + "/login.jsp";
-		for (int i = 0; i < MAX_REDIRECTS; i++) {
+		for (int i = 0; i <= MAX_REDIRECTS; i++) {
 			PostMethod login = new PostMethod(url);
 			login.setFollowRedirects(false);
 			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);

@@ -44,12 +44,10 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylyn.internal.jira.core.service.web.rss.RssFeedProcessorCallback;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.web.core.HtmlStreamTokenizer;
 import org.eclipse.mylyn.web.core.HtmlTag;
@@ -472,18 +470,17 @@ public class JiraWebIssueService {
 		});
 	}
 
-	public Issue createIssue(final Issue issue) throws JiraException {
+	public String createIssue(final Issue issue) throws JiraException {
 		return createIssue("/secure/CreateIssueDetails.jspa", issue);
 	}
 	
-	public Issue createSubTask(final Issue issue) throws JiraException {
+	public String createSubTask(final Issue issue) throws JiraException {
 		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue);
 	}
 	
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
-	private Issue createIssue(final String url, final Issue issue) throws JiraException {
-		final SingleIssueCollector collector = new SingleIssueCollector();
-
+	private String createIssue(final String url, final Issue issue) throws JiraException {
+		final String[] issueKey = new String[1];
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -550,12 +547,15 @@ public class JiraWebIssueService {
 					if (!s.expectRedirect(post, "/browse/")) {
 						handleErrorMessage(post);
 					} else {
-						final Header locationHeader = post.getResponseHeader("Location");
-						new RssFeedProcessorCallback(true, collector) {
-							protected String getRssUrl(String baseUrl) {
-								return locationHeader.getValue();
-							}
-						}.execute(client, server, baseUrl);
+						final Header locationHeader = post.getResponseHeader("location");
+						// parse issue key from issue URL 
+						String location = locationHeader.getValue();
+						int i = location.lastIndexOf("/");
+						if (i != -1) {
+							issueKey[0] = location.substring(i);
+						} else {
+							throw new JiraException("The server redirected to an unexpected location while creating an issue: " + location);
+						}
 					}
 				} catch (IOException e) {
 					throw new JiraException(e);
@@ -564,8 +564,8 @@ public class JiraWebIssueService {
 				}
 			}
 		});
-
-		return collector.getIssue();
+		assert issueKey[0] != null;
+		return issueKey[0];
 	}
 
 	public void watchIssue(final Issue issue) throws JiraException {
