@@ -188,6 +188,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		FilterDefinition changedFilter = getSynchronizationFilter(repository, tasks, now);
 		if (changedFilter == null) {
 			// could not determine last time, rerun queries
+			repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
 			return true;
 		}
 
@@ -201,6 +202,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			if (issues.isEmpty()) {
 				// repository is unchanged
+				repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
 				return false;
 			}
 
@@ -270,7 +272,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			if (lastSyncDate == null) {
 				// could not determine last synchronization point
-				repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
 				return null;
 			}
 			

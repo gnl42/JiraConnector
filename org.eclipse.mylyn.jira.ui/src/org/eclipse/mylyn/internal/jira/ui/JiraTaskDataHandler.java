@@ -377,7 +377,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.addAttribute(attribute.getId(), attribute);
 		}
 
-		// TODO move into server configuration and populate lazily
 		HashSet<String> editableKeys = new HashSet<String>();
 		if (oldTaskData != null) {
 			// avoid server round-trips
@@ -390,9 +389,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			try {
 				RepositoryTaskAttribute[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey());
 				if (editableAttributes != null) {
-					// System.err.println(data.getTaskKey());
 					for (RepositoryTaskAttribute attribute : editableAttributes) {
-						// System.err.println(" " + attribute.getID() + " : " + attribute.getName());
 						editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getId()));
 					}
 				}

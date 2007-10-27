@@ -190,7 +190,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		repository.setSynchronizationTimeStamp(null);
 		boolean changed = connector.markStaleTasks(repository, new HashSet<AbstractTask>(), new NullProgressMonitor());
 		assertTrue(changed);
-		assertNull(repository.getSynchronizationTimeStamp());
+		assertNotNull(repository.getSynchronizationTimeStamp());
 	}
 	
 	public void testMarkStaleOneTask() throws Exception {
@@ -275,10 +275,16 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 		
 		Date now = new Date();
-		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(now, 20)));
+		String future = JiraUtils.dateToString(addSecondsToDate(now, 20));
+		repository.setSynchronizationTimeStamp(future);
 		FilterDefinition filter = connector.getSynchronizationFilter(repository, new HashSet<AbstractTask>(), now);
-		assertEquals("Expected updated timestamp", JiraUtils.dateToString(now), repository.getSynchronizationTimeStamp());
 		assertNull(filter);
+		assertEquals("Expected unchanged timestamp", future, repository.getSynchronizationTimeStamp());
+		
+		boolean changed = connector.markStaleTasks(repository, new HashSet<AbstractTask>(), new NullProgressMonitor());
+		assertTrue(changed);
+		assertNotNull(repository.getSynchronizationTimeStamp());
+		assertTrue("Expected updated timestamp", !future.equals(repository.getSynchronizationTimeStamp()));
 	}
 	
 	public void testGetSynchronizationFilterTimeStampInTheFutureWithTask() throws Exception {
