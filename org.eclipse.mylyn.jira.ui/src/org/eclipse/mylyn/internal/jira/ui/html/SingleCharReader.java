@@ -21,7 +21,6 @@ import java.io.Reader;
 /**
  * COPY OF: org.eclipse.jface.internal.text.html.HTML2TextReader
  */
-@SuppressWarnings("unchecked")
 public abstract class SingleCharReader extends Reader {
 
 	/**
