@@ -230,7 +230,7 @@ litigation.
       <import plugin="org.eclipse.mylyn.context.core"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.mylyn.web.core"/>
-      <import feature="org.eclipse.mylyn_feature" version="2.0.0" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="2.2.0.qualifier" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.monitor.core"/>
    </requires>
 
