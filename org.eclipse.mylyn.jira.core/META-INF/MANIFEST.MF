@@ -6,6 +6,7 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.eclipse.mylyn.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.net,
  org.eclipse.mylyn.monitor.core,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.web.core

@@ -26,7 +26,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
@@ -65,7 +65,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		manager = TasksUiPlugin.getRepositoryManager();
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		
-		JiraClientFacade.getDefault().clearClients();
+		JiraClientFactory.getDefault().clearClients();
 	}
 	
 	protected void init(String url) throws Exception {
@@ -84,7 +84,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		
 		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 
-		client = JiraClientFacade.getDefault().getJiraClient(repository);
+		client = JiraClientFactory.getDefault().getJiraClient(repository);
 		
 //		customFieldId = JiraTestUtils.getCustomField(server, customFieldName);
 //		assertNotNull("Unable to find custom field id", customFieldId);

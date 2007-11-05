@@ -8,15 +8,18 @@
 
 package org.eclipse.mylyn.internal.jira.core.service.soap;
 
-import java.net.Proxy;
 import java.net.URL;
 
 import org.apache.axis.MessageContext;
 import org.apache.axis.transport.http.CommonsHTTPSender;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.WebClientUtil;
 
+/**
+ * @author Steffen Pingel
+ */
 @SuppressWarnings("serial")
 public class JiraHttpSender extends CommonsHTTPSender {
 
@@ -26,12 +29,17 @@ public class JiraHttpSender extends CommonsHTTPSender {
 
 	public static final String HTTP_PASSWORD = "org.eclipse.mylyn.jira.httpPassword";
 
+	public static final String LOCATION = "org.eclipse.mylyn.jira.location";
+
+	protected static final String USER_AGENT = "JiraConnector Apache Axis/1.3";
+
 	@Override
 	protected HostConfiguration getHostConfiguration(HttpClient client, MessageContext context, URL url) {
-		Proxy proxy = (Proxy) context.getProperty(PROXY);
-		String httpUser = (String) context.getProperty(HTTP_USER);
-		String httpPassword = (String) context.getProperty(HTTP_PASSWORD);
-		WebClientUtil.setupHttpClient(client, proxy, url.toString(), httpUser, httpPassword);
+//		Proxy proxy = (Proxy) context.getProperty(PROXY);
+//		String httpUser = (String) context.getProperty(HTTP_USER);
+//		String httpPassword = (String) context.getProperty(HTTP_PASSWORD);
+		AbstractWebLocation location = (AbstractWebLocation) context.getProperty(LOCATION);
+		WebClientUtil.setupHttpClient(client, USER_AGENT, location);
 		return client.getHostConfiguration();
 	}
 }

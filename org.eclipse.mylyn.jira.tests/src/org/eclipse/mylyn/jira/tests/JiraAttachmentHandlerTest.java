@@ -20,7 +20,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
@@ -49,7 +49,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
 
 		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		JiraClientFacade.getDefault().clearClients();
+		JiraClientFactory.getDefault().clearClients();
 
 		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);
@@ -78,7 +78,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		client = JiraClientFacade.getDefault().getJiraClient(repository);
+		client = JiraClientFactory.getDefault().getJiraClient(repository);
 		JiraTestUtils.refreshDetails(client);
 	}
 

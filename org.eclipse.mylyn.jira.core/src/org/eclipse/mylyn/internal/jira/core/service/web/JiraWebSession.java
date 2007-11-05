@@ -29,7 +29,11 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.WebClientUtil;
+import org.eclipse.mylyn.web.core.WebCredentials;
+import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
+import org.eclipse.mylyn.web.core.WebCredentials.Type;
 
 /**
  * @author Brock Janiczak
@@ -51,10 +55,15 @@ public class JiraWebSession {
 	
 	private boolean logEnabled;
 
+	private AbstractWebLocation location;
+
+	protected static final String USER_AGENT = "JiraConnector";
+	
 	public JiraWebSession(JiraClient client, String baseUrl) { 
 		this.client = client;
 		this.baseUrl = baseUrl;
 		this.secure = baseUrl.startsWith("https");
+		this.location = client.getLocation();
 	}
 
 	public JiraWebSession(JiraClient client) {
@@ -64,8 +73,7 @@ public class JiraWebSession {
 	public void doInSession(JiraWebSessionCallback callback) throws JiraException {
 		HttpClient httpClient = new HttpClient();
 
-		WebClientUtil.setupHttpClient(httpClient, client.getProxy(), baseUrl, client.getHttpUser(),
-				client.getHttpPassword());
+		WebClientUtil.setupHttpClient(httpClient, USER_AGENT, location);
 
 		login(httpClient);
 		try {
@@ -110,19 +118,25 @@ public class JiraWebSession {
 
 		String url = baseUrl + "/login.jsp";
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
+			WebCredentials credentials = location.getCredentials(WebCredentials.Type.REPOSITORY);
+			if (credentials == null) {
+				// TODO prompt user?
+				credentials = new WebCredentials("", "");
+			}
+			
 			PostMethod login = new PostMethod(url);
 			login.setFollowRedirects(false);
 			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-			login.addParameter("os_username", client.getUserName()); //$NON-NLS-1$
-			login.addParameter("os_password", client.getPassword()); //$NON-NLS-1$
+			login.addParameter("os_username", credentials.getUserName()); //$NON-NLS-1$
+			login.addParameter("os_password", credentials.getPassword()); //$NON-NLS-1$
 			login.addParameter("os_destination", "/success"); //$NON-NLS-1$
 
 			tracker.addUrl(url);
 			
 			try {
 				int statusCode = httpClient.executeMethod(login);
-				if (statusCode == HttpStatus.SC_OK) {
-					throw new JiraAuthenticationException("Login failed.");
+				if (needsReauthentication(httpClient, statusCode)) {
+					continue;
 				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
 						&& statusCode != HttpStatus.SC_MOVED_PERMANENTLY) {
 					throw new JiraServiceUnavailableException("Unexpected status code during login: " + statusCode);
@@ -164,6 +178,25 @@ public class JiraWebSession {
 		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects during login");
 	}
 
+	private boolean needsReauthentication(HttpClient httpClient, int code) throws JiraAuthenticationException {
+		final Type authenticationType;
+		if (code == HttpStatus.SC_OK) {
+			authenticationType = Type.REPOSITORY;
+		} else if (code == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED) {
+			authenticationType = Type.PROXY;
+		} else {
+			return false;
+		}
+
+		if (location.requestCredentials(authenticationType, null) == ResultType.NOT_SUPPORTED) {
+			throw new JiraAuthenticationException("Login failed.");
+		}
+
+		WebClientUtil.setupHttpClient(httpClient, USER_AGENT, location);
+
+		return true;
+	}
+	
 	private void logout(HttpClient httpClient) throws JiraException {
 		GetMethod logout = new GetMethod(baseUrl + "/logout"); //$NON-NLS-1$
 		logout.setFollowRedirects(false);

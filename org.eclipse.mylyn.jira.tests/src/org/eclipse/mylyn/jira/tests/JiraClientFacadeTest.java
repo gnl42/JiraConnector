@@ -17,11 +17,12 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.web.core.WebLocation;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -29,13 +30,13 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
  */
 public class JiraClientFacadeTest extends TestCase {
 
-	private JiraClientFacade jiraFacade = null;
+	private JiraClientFactory jiraFacade = null;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		jiraFacade = JiraClientFacade.getDefault();
+		jiraFacade = JiraClientFactory.getDefault();
 
 		TasksUiPlugin.getTaskListManager().resetTaskList();
 	}
@@ -76,26 +77,25 @@ public class JiraClientFacadeTest extends TestCase {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 
 		// standard connect
-		jiraFacade.validateConnection(url, credentials.username, credentials.password, null, null, null);
+		jiraFacade.validateConnection(new WebLocation(url, credentials.username, credentials.password));
 
 		// invalid URL		
 		try {
-			jiraFacade.validateConnection("http://non.existant/repository", credentials.username,
-					credentials.password, null, null, null);
+			jiraFacade.validateConnection(new WebLocation("http://non.existant/repository", credentials.username, credentials.password));
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 		}
 
 		// invalid password
 		try {
-			jiraFacade.validateConnection(url, credentials.username, "wrongpassword", null, null, null);
+			jiraFacade.validateConnection(new WebLocation(url, credentials.username, "wrongpassword"));
 			fail("Expected exception");
 		} catch (JiraAuthenticationException e) {
 		}
 
 		// invalid username
 		try {
-			jiraFacade.validateConnection(url, "wrongusername", credentials.password, null, null, null);
+			jiraFacade.validateConnection(new WebLocation(url, "wrongusername", credentials.password));
 			fail("Expected exception");
 		} catch (JiraAuthenticationException e) {
 		}

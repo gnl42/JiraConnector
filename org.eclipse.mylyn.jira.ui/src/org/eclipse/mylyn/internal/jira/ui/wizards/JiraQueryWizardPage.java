@@ -18,7 +18,7 @@ import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryQuery;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
@@ -184,7 +184,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 				NamedFilter[] loadedFilters = new NamedFilter[0];
 				IStatus status = Status.OK_STATUS;
 				try {
-					JiraClient jiraServer = JiraClientFacade.getDefault().getJiraClient(repository);
+					JiraClient jiraServer = JiraClientFactory.getDefault().getJiraClient(repository);
 					loadedFilters = jiraServer.getNamedFilters();
 					filters = loadedFilters;
 

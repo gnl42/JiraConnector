@@ -9,7 +9,6 @@
 package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
-import java.net.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +34,8 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableExcept
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.web.core.WebCredentials;
+import org.eclipse.mylyn.web.core.WebLocation;
 
 /**
  * @author Steffen Pingel
@@ -46,7 +47,7 @@ public class JiraRpcClientTest extends TestCase {
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
-		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
+		client = new JiraRpcClient(new WebLocation(url, credentials.username, credentials.password), false);
 
 		JiraTestUtils.refreshDetails(client);
 	}
@@ -530,10 +531,12 @@ public class JiraRpcClientTest extends TestCase {
 	private void basicAuth(String url) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.GUEST);
 		Credentials httpCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, httpCredentials.username, httpCredentials.password);
+		WebLocation location = new WebLocation(url, credentials.username, credentials.password);
+		location.setCredentials(WebCredentials.Type.HTTP, httpCredentials.username, httpCredentials.password);
+		client = new JiraRpcClient(location, false);
 		assertNotNull(client.getServerInfo());
 		
-		client = new JiraRpcClient(url, false, credentials.username, credentials.password, Proxy.NO_PROXY, null, null);
+		client = new JiraRpcClient(new WebLocation(url, credentials.username, credentials.password), false);
 		try {
 			assertNotNull(client.getServerInfo());
 			fail("Expected JiraServiceUnavailableException");

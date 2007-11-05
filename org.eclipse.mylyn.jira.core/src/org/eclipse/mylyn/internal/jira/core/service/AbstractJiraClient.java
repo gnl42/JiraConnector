@@ -8,7 +8,6 @@
 
 package org.eclipse.mylyn.internal.jira.core.service;
 
-import java.net.Proxy;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,6 +22,8 @@ import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.web.core.AbstractWebLocation;
+import org.eclipse.mylyn.web.core.WebCredentials;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a
@@ -38,36 +39,22 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 	private final String baseUrl;
 
-	private final String username;
-
-	private final String password;
+	private final AbstractWebLocation location;
 
 	private final boolean useCompression;
-
-	private final Proxy proxy;
-
-	private final String httpUser;
-
-	private final String httpPassword;
 
 	private String characterEncoding;
 
 	private boolean attemptedToDetermineCharacterEncoding; 
 	
-	public AbstractJiraClient(String baseUrl, boolean useCompression, String username, String password, Proxy proxy,
-			String httpUser, String httpPassword) {
-		if (baseUrl == null) {
+	public AbstractJiraClient(AbstractWebLocation location, boolean useCompression) {
+		if (location == null) {
 			throw new IllegalArgumentException("baseURL may not be null");
 		}
 
-		this.baseUrl = baseUrl;
+		this.baseUrl = location.getUrl();
+		this.location = location;
 		this.useCompression = useCompression;
-		this.username = username;
-		this.password = password;
-
-		this.proxy = proxy;
-		this.httpUser = httpUser;
-		this.httpPassword = httpPassword;
 
 		this.data = new JiraClientData();
 	}
@@ -123,13 +110,14 @@ public abstract class AbstractJiraClient implements JiraClient {
 	}
 
 	public String getUserName() {
-		return this.username;
+		WebCredentials credentials = location.getCredentials(WebCredentials.Type.REPOSITORY);
+		return (credentials != null) ? credentials.getUserName() : "";
 	}
 
-	public String getPassword() {
-		return this.password;
+	public AbstractWebLocation getLocation() {
+		return location;
 	}
-
+	
 	private void initializeProjects(JiraClientData data) throws JiraException {
 		String version = data.serverInfo.getVersion();
 		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_4) >= 0) {
@@ -310,18 +298,6 @@ public abstract class AbstractJiraClient implements JiraClient {
 	@Override
 	public String toString() {
 		return getBaseUrl();
-	}
-
-	public String getHttpPassword() {
-		return httpPassword;
-	}
-
-	public String getHttpUser() {
-		return httpUser;
-	}
-
-	public Proxy getProxy() {
-		return proxy;
 	}
 
 	public boolean useCompression() {

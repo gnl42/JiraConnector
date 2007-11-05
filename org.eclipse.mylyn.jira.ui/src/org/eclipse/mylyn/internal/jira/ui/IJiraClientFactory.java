@@ -6,25 +6,16 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.jira.tests;
+package org.eclipse.mylyn.internal.jira.ui;
 
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.jira.ui.IJiraClientFactory;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**
  * @author Eugene Kuleshov
  */
-public class MockJiraClientFactory implements IJiraClientFactory {
-	
-	private JiraClient client;
+public interface IJiraClientFactory {
 
-	public MockJiraClientFactory(JiraClient client) {
-		this.client = client;
-	}
+	public JiraClient getJiraClient(TaskRepository repository);
 
-	public JiraClient getJiraClient(TaskRepository repository) {
-		return client;
-	}
-	
 }

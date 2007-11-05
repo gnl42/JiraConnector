@@ -10,7 +10,6 @@ package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.net.Proxy;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,6 +27,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.web.core.AbstractWebLocation;
 
 /**
  * This interface exposes the full set of services available from a Jira installation. It provides a unified inferface
@@ -78,8 +78,6 @@ public interface JiraClient {
 	String getBaseUrl();
 
 	String getUserName();
-
-	String getPassword();
 
 	/**
 	 * Force a login to the remote repository.
@@ -361,14 +359,8 @@ public interface JiraClient {
 
 	boolean hasDetails();
 
-	Proxy getProxy();
-
-	String getHttpUser();
-
-	String getHttpPassword();
-
 	String getCharacterEncoding() throws JiraException;
-	
-//	void setProxy(Proxy proxy);
 
+	AbstractWebLocation getLocation();
+	
 }

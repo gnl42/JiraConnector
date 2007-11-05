@@ -8,10 +8,12 @@
 
 package org.eclipse.mylyn.jira.tests;
 
-import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUiTest;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUiTest;
+import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -21,6 +23,8 @@ public class AllJiraTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for mylyn.jira.tests");
+
+		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationFactory(), true);
 
 		// $JUnit-BEGIN$
 		suite.addTestSuite(JiraCustomQueryTest.class);

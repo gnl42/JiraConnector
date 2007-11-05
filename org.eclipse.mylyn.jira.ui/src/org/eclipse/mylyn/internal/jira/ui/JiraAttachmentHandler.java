@@ -56,7 +56,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 					"Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
 		}
 
-		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
+		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
 			Issue issue = server.getIssueByKey(key);
 			Attachment jiraAttachment = issue.getAttachmentById(id);
@@ -77,7 +77,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 	@Override
 	public void uploadAttachment(TaskRepository repository, AbstractTask task, ITaskAttachment attachment,
 			String comment, IProgressMonitor monitor) throws CoreException {
-		JiraClient server = JiraClientFacade.getDefault().getJiraClient(repository);
+		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
 			Issue issue = server.getIssueByKey(task.getTaskKey());
 			server.attachFile(issue, comment, new AttachmentPartSource(attachment), attachment.getContentType());

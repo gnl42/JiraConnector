@@ -14,7 +14,6 @@
 
 package org.eclipse.mylyn.internal.jira.core.service.soap;
 
-import java.net.Proxy;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -23,20 +22,16 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.transport.http.HTTPConstants;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
+import org.eclipse.mylyn.web.core.AbstractWebLocation;
 
-// TODO Tere must be an easier way to set these properties. Shame the Axis doco
-// is so bad.
 /**
  * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 @SuppressWarnings("serial")
 public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLocator {
 
-	private Proxy proxy;
-
-	private String httpUser;
-
-	private String httpPassword;
+	private AbstractWebLocation location;
 
 	private boolean compression;
 
@@ -52,11 +47,6 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 		super(wsdlLoc, sName);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.axis.client.Service#createCall()
-	 */
 	@Override
 	public Call createCall() throws ServiceException {
 		Call call = super.createCall();
@@ -65,44 +55,25 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 		if (compression) {
 			call.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
 		}
-		if (httpUser != null && httpPassword != null) {
-			call.setProperty(JiraHttpSender.HTTP_USER, httpUser);
-			call.setProperty(JiraHttpSender.HTTP_PASSWORD, httpPassword);
-		}
-		if (proxy != null) {
-			call.setProperty(JiraHttpSender.PROXY, proxy);
-		}
 
-		// Some servers break with a 411 Length Required when chunked encoding
+//		WebCredentials credentials = location.getCredentials(WebCredentials.Type.HTTP);
+//		if (credentials != null) {
+//			call.setProperty(JiraHttpSender.HTTP_USER, credentials.getUserName());
+//			call.setProperty(JiraHttpSender.HTTP_PASSWORD, credentials.getPassword());
+//		}
+//
+//		Proxy proxy = location.getProxyForHost(WebClientUtil.getDomain(location.getUrl()), IProxyData.HTTP_PROXY_TYPE);
+//		if (proxy != null) {
+//			call.setProperty(JiraHttpSender.PROXY, proxy);
+//		}
+		call.setProperty(JiraHttpSender.LOCATION, location);
+		
+		// some servers break with a 411 Length Required when chunked encoding
 		// is used
 		Map<String, Boolean> headers = new Hashtable<String, Boolean>();
 		headers.put(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED, Boolean.FALSE);
 		call.setProperty(HTTPConstants.REQUEST_HEADERS, headers);
 		return call;
-	}
-
-	public Proxy getProxy() {
-		return proxy;
-	}
-
-	public void setProxy(Proxy proxy) {
-		this.proxy = proxy;
-	}
-
-	public String getHttpUser() {
-		return httpUser;
-	}
-
-	public void setHttpUser(String httpUser) {
-		this.httpUser = httpUser;
-	}
-
-	public String getHttpPassword() {
-		return httpPassword;
-	}
-
-	public void setHttpPassword(String httpPassword) {
-		this.httpPassword = httpPassword;
 	}
 
 	public boolean isCompression() {
@@ -113,4 +84,12 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 		this.compression = compression;
 	}
 
+	public AbstractWebLocation getLocation() {
+		return location;
+	}
+	
+	public void setLocation(AbstractWebLocation location) {
+		this.location = location;
+	}
+	
 }

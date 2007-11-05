@@ -70,9 +70,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final JiraAttributeFactory attributeFactory = new JiraAttributeFactory();
 
-	private final JiraClientFactory clientFactory;
+	private final IJiraClientFactory clientFactory;
 
-	public JiraTaskDataHandler(JiraClientFactory clientFactory) {
+	public JiraTaskDataHandler(IJiraClientFactory clientFactory) {
 		this.clientFactory = clientFactory;
 	}
 
@@ -624,7 +624,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	public void initializeSubTaskData(TaskRepository taskRepository, RepositoryTaskData taskData, RepositoryTaskData parentTaskData, IProgressMonitor monitor) throws CoreException {
-		JiraClient client = JiraClientFacade.getDefault().getJiraClient(taskRepository);
+		JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
 		Project project = getProject(client, parentTaskData.getProduct());
 		if (project == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,

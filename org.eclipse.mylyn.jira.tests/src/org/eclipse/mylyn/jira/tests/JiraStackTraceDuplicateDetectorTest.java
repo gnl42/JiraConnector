@@ -22,7 +22,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraStackTraceDuplicateDetector;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
@@ -56,7 +56,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		manager = TasksUiPlugin.getRepositoryManager();
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		JiraClientFacade.getDefault().clearClients();
+		JiraClientFactory.getDefault().clearClients();
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 
-		client = JiraClientFacade.getDefault().getJiraClient(repository);
+		client = JiraClientFactory.getDefault().getJiraClient(repository);
 	}
 
 	public void testStackTraceInDescription() throws Exception {

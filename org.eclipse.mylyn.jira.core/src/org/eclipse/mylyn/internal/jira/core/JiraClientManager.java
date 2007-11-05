@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
+import org.eclipse.mylyn.web.core.AbstractWebLocation;
 
 /**
  * Note: This class is not thread safe.
@@ -142,9 +142,8 @@ public class JiraClientManager {
 	 * @throws JiraServiceUnavailableException
 	 *             URL was not valid
 	 */
-	public ServerInfo validateConnection(String baseUrl, String username, String password, Proxy proxy, String httpUser,
-			String httpPassword) throws JiraException {
-		JiraClient server = createClient(baseUrl, false, username, password, proxy, httpUser, httpPassword);
+	public ServerInfo validateConnection(AbstractWebLocation location) throws JiraException {
+		JiraClient server = createClient(location, false);
 		server.refreshServerInfo(new NullProgressMonitor());
 		return server.getServerInfo();
 	}
@@ -157,31 +156,27 @@ public class JiraClientManager {
 		return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
 	}
 
-	private AbstractJiraClient createClient(String baseUrl, boolean useCompression, String username, String password,
-			Proxy proxy, String httpUser, String httpPassword) {
-		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
-			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-		}
+	private AbstractJiraClient createClient(AbstractWebLocation location, boolean useCompression) {
+//		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
+//			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+//		}
 
-		JiraRpcClient server = new JiraRpcClient(baseUrl, useCompression, username, password, proxy, httpUser,
-				httpPassword);
+		JiraRpcClient server = new JiraRpcClient(location, useCompression);
 		return server;
 	}
 
-	public JiraClient addClient(String baseUrl, String characterEncoding, boolean useCompression, String username, String password, Proxy proxy,
-			String httpUser, String httpPassword) {
-		if (clientByUrl.containsKey(baseUrl)) {
+	public JiraClient addClient(AbstractWebLocation location, String characterEncoding, boolean useCompression) {
+		if (clientByUrl.containsKey(location.getUrl())) {
 			throw new RuntimeException("A server with that name already exists");
 		}
 
-		AbstractJiraClient server = createClient(baseUrl, useCompression, username, password, proxy, httpUser,
-				httpPassword);
+		AbstractJiraClient server = createClient(location, useCompression);
 		server.setCharacterEncoding(characterEncoding);
-		JiraClientData data = clientDataByUrl.get(baseUrl);
+		JiraClientData data = clientDataByUrl.get(location.getUrl());
 		if (data != null) {
 			server.setData(data);
 		}
-		clientByUrl.put(baseUrl, server);
+		clientByUrl.put(location.getUrl(), server);
 		
 		fireClientAddded(server);
 

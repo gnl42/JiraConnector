@@ -54,7 +54,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
@@ -200,7 +200,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	public JiraQueryPage(TaskRepository repository, JiraCustomQuery query) {
 		super(TITLE_PAGE);
 		this.repository = repository;
-		this.server = JiraClientFacade.getDefault().getJiraClient(repository);
+		this.server = JiraClientFactory.getDefault().getJiraClient(repository);
 		if (query != null) {
 			this.workingCopy = query.getFilterDefinition(server, false);
 		} else {
@@ -1304,7 +1304,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			try {
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+						JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 						try {
 							client.refreshDetails(monitor);
 						} catch (JiraException e) {

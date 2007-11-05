@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Collections;
@@ -63,6 +62,10 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.web.core.AbstractWebLocation;
+import org.eclipse.mylyn.web.core.WebCredentials;
+import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
+import org.eclipse.mylyn.web.core.WebCredentials.Type;
 import org.w3c.dom.Element;
 
 // This class does not represent the data in a JIRA installation. It is merely
@@ -101,18 +104,12 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 	private LoginToken loginToken;
 
-	public JiraRpcClient(String baseURL, boolean useCompression, String username, String password, Proxy proxy,
-			String httpUser, String httpPassword) {
-		super(baseURL, useCompression, username, password, proxy, httpUser, httpPassword);
+	public JiraRpcClient(AbstractWebLocation location, boolean useCompression) {
+		super(location, useCompression);
 
-		filterService = new RssJiraFilterService(this);
-		issueService = new JiraWebIssueService(this);
-
-		if (username == null) {
-			loginToken = new AnonymousLoginToken();
-		} else {
-			loginToken = new StandardLoginToken(username, password, DEFAULT_SESSION_TIMEOUT);
-		}
+		this.loginToken = new LoginToken(location, DEFAULT_SESSION_TIMEOUT);
+		this.filterService = new RssJiraFilterService(this);
+		this.issueService = new JiraWebIssueService(this);
 	}
 
 	private JiraSoapService getSoapService() throws JiraException {
@@ -121,9 +118,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 			if (soapService == null) {
 				GZipJiraSoapServiceServiceLocator locator = new GZipJiraSoapServiceServiceLocator(new FileProvider(
 						this.getClass().getClassLoader().getResourceAsStream("client-config.wsdd")));
-				locator.setHttpUser(getHttpUser());
-				locator.setHttpPassword(getHttpPassword());
-				locator.setProxy(getProxy());
+				locator.setLocation(getLocation());
 				locator.setCompression(useCompression());
 
 				try {
@@ -552,7 +547,15 @@ public class JiraRpcClient extends AbstractJiraClient {
 	}
 
 	private <T> T call(RemoteRunnable<T> runnable) throws JiraException {
-		return call(runnable, true);
+		while (true) {
+			try {
+				return call(runnable, true);
+			} catch (JiraAuthenticationException e) {
+				if (getLocation().requestCredentials(WebCredentials.Type.REPOSITORY, null) == ResultType.NOT_SUPPORTED) {
+					throw e;
+				}
+			}
+		}
 	}
 
 	private interface RemoteRunnable<T> {
@@ -561,35 +564,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 	}
 
-	private static interface LoginToken {
-
-		/**
-		 * Gets the current value of the login token. If the token has expired a new one may be requested.
-		 * 
-		 * @return current login token
-		 */
-		public String getCurrentValue() throws JiraException;
-
-		/**
-		 * Manually expire the current session token
-		 */
-		public void expire();
-
-		/**
-		 * Determines if there is a currently valid token being stored. This method can be used to check if the token
-		 * has been set and has not probably expired. Usually, this method will only be used by the logout service to
-		 * determine if it needs to do anything.
-		 * 
-		 * @return <code>true</code> if the token is probably valid
-		 */
-		public boolean isValidToken();
-	}
-
-	private class StandardLoginToken implements LoginToken {
-
-		private final String username;
-
-		private final String password;
+	private class LoginToken {
 
 		private final long timeout;
 
@@ -597,20 +572,32 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 		private long lastAccessed;
 
-		public StandardLoginToken(String username, String password, long timeout) {
-			this.username = username;
-			this.password = password;
+		private final AbstractWebLocation location;
+
+		private WebCredentials credentials;
+
+		public LoginToken(AbstractWebLocation location, long timeout) {
+			this.location = location;
 			this.timeout = timeout;
 			this.lastAccessed = -1L;
 		}
 
 		public synchronized String getCurrentValue() throws JiraException {
+			WebCredentials newCredentials = location.getCredentials(Type.REPOSITORY);
+			if (newCredentials == null) {
+				expire();
+				return "";
+			} else if (!newCredentials.equals(credentials)) {
+				expire();
+				credentials = newCredentials;
+			}
+			
 			if ((System.currentTimeMillis() - lastAccessed) >= timeout || token == null) {
 				expire();
 
 				this.token = call(new RemoteRunnable<String>() {
 					public String run() throws java.rmi.RemoteException, JiraException {
-						return getSoapService().login(username, password);
+						return getSoapService().login(credentials.getUserName(), credentials.getPassword());
 					}
 				}, false);
 
@@ -641,24 +628,10 @@ public class JiraRpcClient extends AbstractJiraClient {
 		@Override
 		public String toString() {
 			long expiresIn = (timeout - (System.currentTimeMillis() - lastAccessed)) / 1000;
-			return "[username=" + username + ", password=" + password + ", timeout=" + timeout + ", valid="
+			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid="
 					+ isValidToken() + ", expires=" + expiresIn + "]";
 		}
-
-	}
-
-	private class AnonymousLoginToken implements LoginToken {
-
-		public String getCurrentValue() {
-			return "";
-		}
-
-		public void expire() {
-		}
-
-		public boolean isValidToken() {
-			return false;
-		}
+		
 	}
 
 }

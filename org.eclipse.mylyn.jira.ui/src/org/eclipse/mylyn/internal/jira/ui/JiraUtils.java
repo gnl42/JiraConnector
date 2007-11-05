@@ -27,6 +27,8 @@ public class JiraUtils {
 	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated";
 
 	private static final String COMPRESSION_KEY = "compression";
+	
+	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration";
 
 	public static void setLastUpdate(TaskRepository repository, Date date) {
 		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtils.dateToString(date));
@@ -77,6 +79,14 @@ public class JiraUtils {
 		if (TRACE_ENABLED) {
 			JiraUiPlugin.getDefault().getLog().log(status);
 		}
+	}
+
+	public static boolean getAutoRefreshConfiguration(TaskRepository repository) {
+		return Boolean.parseBoolean(repository.getProperty(REFRESH_CONFIGURATION_KEY));
+	}
+	
+	public static void setAutoRefreshConfiguration(TaskRepository repository, boolean autoRefreshConfiguration) {
+		repository.setProperty(REFRESH_CONFIGURATION_KEY, String.valueOf(autoRefreshConfiguration));
 	}
 
 }

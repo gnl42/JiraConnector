@@ -10,6 +10,7 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -36,13 +37,15 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		
+		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationUiFactory(), false);
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		INSTANCE = null;
-		JiraClientFacade.getDefault().logOutFromAll();
+		JiraClientFactory.getDefault().logOutFromAll();
 	}
 
 	public static JiraUiPlugin getDefault() {

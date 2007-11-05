@@ -9,6 +9,7 @@ package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.net.Proxy;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
@@ -29,11 +30,12 @@ import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.web.core.WebLocation;
 
 public class MockJiraClient extends AbstractJiraClient {
 
 	public MockJiraClient(String baseUrl) {
-		super(baseUrl, false, null, null, null, null, null);
+		super(new WebLocation(baseUrl), false);
 	}
 
 	@Override
@@ -224,6 +226,21 @@ public class MockJiraClient extends AbstractJiraClient {
 		priority.setId(id);
 		priority.setName(name);
 		return priority;
+	}
+
+	public String getHttpPassword() {
+		// ignore
+		return null;
+	}
+
+	public String getHttpUser() {
+		// ignore
+		return null;
+	}
+
+	public Proxy getProxy() {
+		// ignore
+		return null;
 	}
 	
 }

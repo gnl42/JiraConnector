@@ -26,7 +26,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFacade;
+import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
@@ -163,13 +163,13 @@ public class JiraProjectPage extends WizardPage {
 	}
 
 	private void updateProjectsFromRepository(final boolean force) {
-		final JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+		final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		if (!client.hasDetails() || force) {
 			try {
 				getContainer().run(true, false, new IRunnableWithProgress() {
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 						try {
-							JiraClient client = JiraClientFacade.getDefault().getJiraClient(repository);
+							JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 							client.refreshDetails(monitor);
 						} catch (JiraException e) {
 							showWarning(NLS.bind( //
