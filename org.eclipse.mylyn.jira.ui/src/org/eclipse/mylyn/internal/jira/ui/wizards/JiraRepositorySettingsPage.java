@@ -289,13 +289,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				}
 
 				public void widgetSelected(SelectionEvent e) {
-					if (e.item != null && ((Button) e.item).getSelection()) {
-						for (Button button : buttons) {
-							if (e.item != button) {
-								button.setSelection(false);
-							}
-						}
-						setSelectedUrl((String) e.item.getData());
+					Object source = e.getSource();
+					if (source instanceof Button && ((Button) source).getSelection()) {
+						setSelectedUrl((String) ((Button)source).getData());
 					}
 				}
 
