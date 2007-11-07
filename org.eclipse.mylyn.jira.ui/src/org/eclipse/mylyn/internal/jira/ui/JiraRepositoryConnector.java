@@ -241,6 +241,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	/* Public for testing. */
 	public FilterDefinition getSynchronizationFilter(TaskRepository repository, Set<AbstractTask> tasks, Date now) {
+		// there are no JIRA tasks in the task list, skip contacting the repository
+		if (tasks.isEmpty()) {
+			return null;
+		}
+
 		Date lastSyncDate = JiraUtils.stringToDate(repository.getSynchronizationTimeStamp());
 
 		// repository was never synchronized, update all tasks

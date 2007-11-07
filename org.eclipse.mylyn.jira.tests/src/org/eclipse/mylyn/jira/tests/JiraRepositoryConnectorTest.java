@@ -150,17 +150,18 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		c.add(Calendar.MONTH, 1);
 		Date fromDate = c.getTime();
 		Date toDate = c.getTime();
-		
+
 		DateFilter dueDateFilter = new DateRangeFilter(fromDate, toDate);
 
 		FilterDefinition filter = new FilterDefinition("test query");
 		filter.setDueDateFilter(dueDateFilter);
-		
+
 		// AbstractRepositoryQuery query = new JiraCustomQuery("test query", queryUrl, repository.getUrl(), repository.getCharacterEncoding());
-		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
+		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter,
+				repository.getCharacterEncoding());
 
 		TaskFactory taskFactory = new TaskFactory(repository, false, false);
-		
+
 		ITaskCollector collector1 = new QueryHitCollector(taskFactory);
 		connector.performQuery(query, repository, new NullProgressMonitor(), collector1);
 
@@ -171,16 +172,16 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		issue.setDue(fromDate);
 		issue = client.createIssue(issue);
 		assertNotNull(issue);
-		
+
 		ITaskCollector collector2 = new QueryHitCollector(taskFactory);
 		connector.performQuery(query, repository, new NullProgressMonitor(), collector2);
 		Set<AbstractTask> tasks2 = collector2.getTasks();
-		
+
 		assertEquals(tasks1.size() + 1, tasks2.size());
-		
+
 		for (AbstractTask task : tasks2) {
 			assertNotNull(task.getOwner());
-			assertTrue("Expected ", task.getOwner().length()>0);
+			assertTrue("Expected ", task.getOwner().length() > 0);
 		}
 	}
 
@@ -192,23 +193,24 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(changed);
 		assertNotNull(repository.getSynchronizationTimeStamp());
 	}
-	
+
 	public void testMarkStaleOneTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
-		
+
 		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");
 		issue = client.createIssue(issue);
 
 		Date start = new Date();
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false, new NullProgressMonitor());
+		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
+				new NullProgressMonitor());
 		taskList.addTask(task);
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference 
 		assertNull(JiraUtils.getLastUpdate(repository));
-		
+
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
-		
+
 		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
 		assertTrue(changed);
 		assertFalse(task.isStale());
@@ -217,28 +219,30 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(timestamp.after(start));
 		assertTrue(timestamp.before(new Date()));
 		assertEquals(issue.getUpdated(), JiraUtils.getLastUpdate(repository));
-		
+
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference
-		
+
 		changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
 		assertFalse(changed);
 		assertNotNull(repository.getSynchronizationTimeStamp());
 		assertFalse(task.isStale());
-		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(timestamp).equals(repository.getSynchronizationTimeStamp()));
+		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(timestamp).equals(
+				repository.getSynchronizationTimeStamp()));
 		assertEquals(issue.getUpdated(), JiraUtils.getLastUpdate(repository));
 	}
 
 	public void testMarkStaleRepositoryChanged() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
-		
+
 		// create two issues, the first one is added to the task list
 		Date start = new Date();
 		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");
 		issue = client.createIssue(issue);
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false, new NullProgressMonitor());
-		taskList.addTask(task);	
+		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
+				new NullProgressMonitor());
+		taskList.addTask(task);
 		Issue issue2 = JiraTestUtils.createIssue(client, "testMarkStale2");
-		issue2 = client.createIssue(issue);		
+		issue2 = client.createIssue(issue);
 		assertTrue(issue2.getUpdated().after(issue.getUpdated()));
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
 
@@ -247,7 +251,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
 		assertTrue(changed);
-		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(start).equals(repository.getSynchronizationTimeStamp()));
+		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(start).equals(
+				repository.getSynchronizationTimeStamp()));
 		assertEquals(issue2.getUpdated(), JiraUtils.getLastUpdate(repository));
 	}
 
@@ -268,7 +273,6 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(RangeType.NONE, dateFilter.getNextRangeType());
 		assertEquals(0, dateFilter.getNextCount());
 
-		
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(now, -121)));
 		filter = connector.getSynchronizationFilter(repository, tasks, now);
 		assertNotNull(filter);
@@ -282,7 +286,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 	public void testGetSynchronizationFilterTimeStampInTheFuture() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
-	
+
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(new JiraTask(JiraTestConstants.JIRA_39_URL, "1", ""));
 
@@ -292,22 +296,22 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, now);
 		assertNull(filter);
 		assertEquals("Expected unchanged timestamp", future, repository.getSynchronizationTimeStamp());
-		
+
 		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
 		assertTrue(changed);
 		assertNotNull(repository.getSynchronizationTimeStamp());
 		assertTrue("Expected updated timestamp", !future.equals(repository.getSynchronizationTimeStamp()));
 	}
-	
+
 	public void testGetSynchronizationFilterTimeStampInTheFutureWithTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
-		
+
 		Date now = new Date();
 		HashSet<AbstractTask> tasks = new HashSet<AbstractTask>();
 		JiraTask task = new JiraTask(repository.getUrl(), "1", "");
 		task.setLastReadTimeStamp(JiraUtils.dateToString(now));
 		tasks.add(task);
-		
+
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(new Date(), 121)));
 		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, now);
 		assertNotNull(filter);
@@ -328,7 +332,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(null, task.getCompletionDate());
 		assertFalse(task.isCompleted());
 		assertEquals(issue.getCreated(), task.getCreationDate());
-		
+
 		// close issue
 		client.advanceIssueWorkflow(issue, "2", "");
 		issue = client.getIssueByKey(issue.getKey());
