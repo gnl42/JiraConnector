@@ -521,6 +521,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 	}
 
+	@Override
+	public boolean isRepositoryConfigurationStale(TaskRepository repository) throws CoreException {
+		return JiraUtils.getAutoRefreshConfiguration(repository);
+	}
+	
 	public static class TasksFacade {
 
 		public AbstractTask getTask(String repositoryUrl, String taskId) {

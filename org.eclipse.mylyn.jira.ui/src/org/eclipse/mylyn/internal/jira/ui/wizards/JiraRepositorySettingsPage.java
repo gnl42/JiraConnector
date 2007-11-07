@@ -110,6 +110,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		Label label = new Label(parent, SWT.NONE);
 		label.setText("Automatically refresh attributes:");
 		autoRefreshConfigurationButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+		autoRefreshConfigurationButton.setToolTipText("If checked Mylyn will periodically update the the repository attributes. Note: This can cause a significant load on the repository if it has many projects.");
 		if (repository != null) {
 			autoRefreshConfigurationButton.setSelection(JiraUtils.getAutoRefreshConfiguration(repository));
 		}
