@@ -14,6 +14,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.axis.AxisEngine;
+import org.apache.axis.AxisProperties;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -45,6 +47,9 @@ public class JiraCorePlugin extends Plugin {
 	public JiraCorePlugin() {
 		super();
 		plugin = this;
+
+		// disable Axis attachment support, see bug 197819
+		AxisProperties.setProperty(AxisEngine.PROP_ATTACHMENT_IMPLEMENTATION, "org.eclipse.mylyn.does.not.exist");
 	}
 
 	/**
@@ -142,7 +147,7 @@ public class JiraCorePlugin extends Plugin {
 	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
-	
+
 	public static IStatus toStatus(TaskRepository repository, Throwable e) {
 		String url = repository.getUrl();
 		if (e instanceof JiraAuthenticationException) {
