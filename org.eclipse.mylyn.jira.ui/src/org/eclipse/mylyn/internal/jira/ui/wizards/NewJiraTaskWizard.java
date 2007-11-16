@@ -22,6 +22,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskSelection;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.NewTaskEditorInput;
@@ -38,14 +39,17 @@ import org.eclipse.ui.PlatformUI;
  */
 public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
-	private TaskRepository taskRepository;
+	private final TaskRepository taskRepository;
 
-	private JiraProjectPage projectPage;
+	private final JiraProjectPage projectPage;
 
-	public NewJiraTaskWizard(TaskRepository taskRepository) {
+	private final TaskSelection taskSelection;
+
+	public NewJiraTaskWizard(TaskRepository taskRepository, TaskSelection taskSelection) {
 		this.taskRepository = taskRepository;
+		this.taskSelection = taskSelection;
 
-		projectPage = new JiraProjectPage(taskRepository);
+		this.projectPage = new JiraProjectPage(taskRepository);
 
 		setWindowTitle("New Task");
 		setDefaultPageImageDescriptor(TasksUiImages.BANNER_REPOSITORY);
@@ -75,6 +79,9 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(taskRepository);
 		Project project = projectPage.getSelectedProject();
 		taskDataHandler.initializeTaskData(taskData, server, project);
+		if (taskSelection != null) {
+			taskDataHandler.cloneTaskData(taskSelection.getTaskData(), taskData);
+		}		
 		taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
 
 		NewTaskEditorInput editorInput = new NewTaskEditorInput(taskRepository, taskData);

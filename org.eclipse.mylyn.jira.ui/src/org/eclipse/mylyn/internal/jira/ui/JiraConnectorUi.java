@@ -28,6 +28,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskSelection;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
@@ -116,7 +117,12 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
-		return new NewJiraTaskWizard(taskRepository);
+		return new NewJiraTaskWizard(taskRepository, null);
+	}
+
+	@Override
+	public IWizard getNewTaskWizard(TaskRepository taskRepository, TaskSelection taskSelection) {
+		return new NewJiraTaskWizard(taskRepository, taskSelection);
 	}
 
 	@Override
