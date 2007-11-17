@@ -8,9 +8,7 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
@@ -130,7 +128,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 		try {
 			// RepositoryTaskAttribute.DATE_MODIFIED
 			// RepositoryTaskAttribute.DATE_CREATION
-			return new SimpleDateFormat(JIRA_DATE_FORMAT, Locale.US).parse(dateString);
+			return JiraUtils.stringToDate(dateString);
 		} catch (Exception e) {
 			StatusHandler.log(e, "Error while date for attribute " + attributeKey + ": " + dateString);
 			return null;

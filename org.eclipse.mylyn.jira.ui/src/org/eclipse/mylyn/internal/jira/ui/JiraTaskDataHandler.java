@@ -10,12 +10,15 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -323,7 +326,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_AUTHOR, createAuthorAttribute(comment.getAuthor()));
 
 			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, convertHtml(comment.getComment()));
-			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, JiraUtils.dateToString(comment.getCreated()));
+			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, formatDate(comment.getCreated()));
 			data.addComment(taskComment);
 		}
 
@@ -350,7 +353,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, attachment.getAuthor());
 
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE,
-					JiraUtils.dateToString(attachment.getCreated()));
+					formatDate(attachment.getCreated()));
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_URL, //
 					client.getBaseUrl() + "/secure/attachment/" + attachment.getId() + "/" + attachment.getName());
 			data.addAttachment(taskAttachment);
@@ -420,6 +423,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		RepositoryTaskAttribute attribute = data.getAttribute(RepositoryTaskAttribute.DESCRIPTION);
 		if (attribute != null) {
 			attribute.setReadOnly(true);
+		}
+	}
+
+	private String formatDate(Date date) {
+		if (date == null) {
+			return "";
+		} else {
+			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(date);
 		}
 	}
 

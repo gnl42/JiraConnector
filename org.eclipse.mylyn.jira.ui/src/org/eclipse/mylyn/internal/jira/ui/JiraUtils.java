@@ -58,7 +58,7 @@ public class JiraUtils {
 		if (date == null) {
 			return "";
 		} else {
-			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(date);
+			return date.getTime() + "";
 		}
 	}
 
@@ -67,11 +67,15 @@ public class JiraUtils {
 			return null;
 		}
 		try {
-			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
-		} catch (ParseException e) {
-			trace(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, 0, "Error while parsing date string "
-					+ dateString, e));
-			return null;
+			return new Date(Long.parseLong(dateString));
+		} catch (NumberFormatException nfe) {
+			try {
+				return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
+			} catch (ParseException e) {
+				trace(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, 0, "Error while parsing date string "
+						+ dateString, e));
+				return null;
+			}
 		}
 	}
 
