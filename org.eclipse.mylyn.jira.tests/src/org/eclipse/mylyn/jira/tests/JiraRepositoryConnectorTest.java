@@ -264,7 +264,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		Date now = new Date();
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
-		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, now);
+		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, addSecondsToDate(now, 1));
 		assertNotNull(filter);
 		assertTrue(filter.getUpdatedDateFilter() instanceof RelativeDateRangeFilter);
 		RelativeDateRangeFilter dateFilter = (RelativeDateRangeFilter) filter.getUpdatedDateFilter();
