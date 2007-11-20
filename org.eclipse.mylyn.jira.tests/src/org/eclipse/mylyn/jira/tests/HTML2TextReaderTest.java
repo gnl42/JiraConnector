@@ -55,11 +55,13 @@ public class HTML2TextReaderTest extends TestCase {
 	}
 
 	public void testHeadCpuLoop() throws IOException {
-		assertEquals("b <head> a ", "b <head> a ");
+		assertEquals("b ", read("b <head> a "));
+		assertEquals("b ", read("b <head> a </head>"));
 	}
 
 	public void testPreCpuLoop() throws IOException {
 		assertEquals("b  b ", read("b <pre> b "));
+		assertEquals("b  b ", read("b <pre> b </pre>"));
 	}
 
 	private String read(final String text) throws IOException {
