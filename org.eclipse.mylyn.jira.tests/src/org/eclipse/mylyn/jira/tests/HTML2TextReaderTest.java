@@ -8,12 +8,17 @@
 package org.eclipse.mylyn.jira.tests;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 
 import junit.framework.TestCase;
 
 import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
 
+/**
+ * @author Steffen Pingel
+ * @author George Lindholm
+ */
 public class HTML2TextReaderTest extends TestCase {
 
 	public void testReadOnlyWhitespacesWithSkip() throws Exception {
@@ -47,6 +52,22 @@ public class HTML2TextReaderTest extends TestCase {
 		len = html2TextReader.read(chars, 0, text.length());
 		assertEquals(1, len);
 		assertEquals(" ", new String(chars, 0, len));
+	}
+
+	public void testHeadCpuLoop() throws IOException {
+		assertEquals("b <head> a ", "b <head> a ");
+	}
+
+	public void testPreCpuLoop() throws IOException {
+		assertEquals("b  b ", read("b <pre> b "));
+	}
+
+	private String read(final String text) throws IOException {
+		Reader stringReader = new StringReader(text);
+		HTML2TextReader html2TextReader = new HTML2TextReader(stringReader, null);
+		char[] chars = new char[text.length()];
+		int len = html2TextReader.read(chars, 0, chars.length);
+		return new String(chars, 0, len);
 	}
 
 }

@@ -88,7 +88,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 
 	/**
 	 * Transforms the HTML text from the reader to formatted text.
-	 * 
+	 *
 	 * @param reader
 	 *            the reader
 	 * @param presentation
@@ -140,7 +140,9 @@ public class HTML2TextReader extends SubstitutionTextReader {
 	@Override
 	protected String computeSubstitution(int c) throws IOException {
 
-		if (c == '<')
+		if (c == -1) {
+			return null;
+		} else if (c == '<')
 			return processHTMLTag();
 		else if (fIgnore)
 			return EMPTY_STRING;
