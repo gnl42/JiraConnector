@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
@@ -271,7 +272,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.removeAttribute(RepositoryTaskAttribute.PRIORITY);
 		}
 
-		IssueType issueType = jiraIssue.getType(); 
+		IssueType issueType = jiraIssue.getType();
 		if (issueType != null) {
 			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, issueType.getName());
 			if (issueType.isSubTaskType()) {
@@ -582,7 +583,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				} else {
 					issue = client.createIssue(issue);
 				}
-				
+
 				if (issue == null) {
 					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
 							IStatus.OK, "Could not create ticket.", null));
@@ -634,44 +635,59 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return false;
 	}
 
-	public void initializeSubTaskData(TaskRepository taskRepository, RepositoryTaskData taskData, RepositoryTaskData parentTaskData, IProgressMonitor monitor) throws CoreException {
-		JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
-		Project project = getProject(client, parentTaskData.getProduct());
-		if (project == null) {
-			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
-					IStatus.OK, "The parent task does not have a valid project.", null));
-		}
+	public void initializeSubTaskData(TaskRepository repository, RepositoryTaskData taskData,
+			RepositoryTaskData parentTaskData, IProgressMonitor monitor) throws CoreException {
+		try {
+			monitor.beginTask("Creating subtask", IProgressMonitor.UNKNOWN);
 
-		initializeTaskData(taskData, client, project);
-		taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
-
-		// set type
-		RepositoryTaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
-		typeAttribute.clearOptions();
-
-		IssueType[] jiraIssueTypes = client.getIssueTypes();
-		for (int i = 0; i < jiraIssueTypes.length; i++) {
-			IssueType type = jiraIssueTypes[i];
-			if (type.isSubTaskType()) {
-				typeAttribute.addOption(type.getName(), type.getId());
+			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+			if (!client.hasDetails()) {
+				client.refreshDetails(new SubProgressMonitor(monitor, 1));
 			}
+
+			Project project = getProject(client, parentTaskData.getProduct());
+			if (project == null) {
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
+						IStatus.OK, "The parent task does not have a valid project.", null));
+			}
+
+			initializeTaskData(taskData, client, project);
+			taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
+
+			// set type
+			RepositoryTaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+			typeAttribute.clearOptions();
+
+			IssueType[] jiraIssueTypes = client.getIssueTypes();
+			for (int i = 0; i < jiraIssueTypes.length; i++) {
+				IssueType type = jiraIssueTypes[i];
+				if (type.isSubTaskType()) {
+					typeAttribute.addOption(type.getName(), type.getId());
+				}
+			}
+
+			List<String> options = typeAttribute.getOptions();
+			if (options.size() == 0) {
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
+						IStatus.OK, "The repository does not support sub-tasks.", null));
+			} else if (options.size() == 1) {
+				typeAttribute.setReadOnly(true);
+			}
+			typeAttribute.setValue(options.get(0));
+
+			// set parent id
+			RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
+			attribute.setValue(parentTaskData.getId());
+
+			attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+			attribute.setValue(parentTaskData.getTaskKey());
+		} catch (JiraException e) {
+			IStatus status = JiraCorePlugin.toStatus(repository, e);
+			trace(status);
+			throw new CoreException(status);
+		} finally {
+			monitor.done();
 		}
-		
-		List<String> options = typeAttribute.getOptions();
-		if (options.size() == 0) {
-			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
-					IStatus.OK, "The repository does not support sub-tasks.", null));
-		} else if (options.size() == 1) {
-			typeAttribute.setReadOnly(true);
-		}  
-		typeAttribute.setValue(options.get(0));
-		
-		// set parent id
-		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
-		attribute.setValue(parentTaskData.getId());
-		
-		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
-		attribute.setValue(parentTaskData.getTaskKey());
 	}
 
 	private Project getProject(JiraClient client, String projectName) {
@@ -682,7 +698,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public AbstractAttributeFactory getAttributeFactory(String repositoryUrl, String repositoryKind, String taskKind) {
 		// we don't care about the repository information right now
@@ -708,7 +724,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (parentId != null) {
 			issue.setParentId(parentId);
 		}
-		
+
 		String estimate = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
 		if (estimate != null) {
 			try {

@@ -8,12 +8,16 @@
 
 package org.eclipse.mylyn.internal.jira.ui.actions;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.jira.ui.JiraImages;
@@ -34,6 +38,7 @@ import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.IProgressService;
 
 /**
  * @author Steffen Pingel
@@ -60,20 +65,33 @@ public class NewSubTaskAction extends Action implements IViewActionDelegate, IEx
 				JiraUiPlugin.REPOSITORY_KIND);
 
 		String repositoryUrl = selectedTask.getRepositoryUrl();
-		TaskRepository taskRepository = TasksUiPlugin.getRepositoryManager().getRepository(repositoryUrl);
-		RepositoryTaskData selectedTaskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(repositoryUrl, selectedTask.getTaskId());
+		final TaskRepository taskRepository = TasksUiPlugin.getRepositoryManager().getRepository(repositoryUrl);
+		final RepositoryTaskData selectedTaskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(repositoryUrl, selectedTask.getTaskId());
 
 		
-		JiraTaskDataHandler taskDataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
+		final JiraTaskDataHandler taskDataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 		AbstractAttributeFactory attributeFactory = taskDataHandler.getAttributeFactory(taskRepository.getUrl(),
 				taskRepository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
-		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
+		final RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
 				taskRepository.getUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
 		taskData.setNew(true);
+		
+		IProgressService service = PlatformUI.getWorkbench().getProgressService();
 		try {
-			taskDataHandler.initializeSubTaskData(taskRepository, taskData, selectedTaskData, new NullProgressMonitor());
-		} catch (CoreException e) {
-			StatusHandler.displayStatus("Unable to create Subtask", e.getStatus());
+			service.run(false, true, new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					try {
+						taskDataHandler.initializeSubTaskData(taskRepository, taskData, selectedTaskData, new NullProgressMonitor());
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
+					}
+				}			
+			});
+		} catch (InvocationTargetException e) {
+			StatusHandler.displayStatus("Unable to create Subtask", ((CoreException)e.getCause()).getStatus());
+		} catch (InterruptedException e) {
+			// canceled
+			return;
 		}
 		
 		// open editor
