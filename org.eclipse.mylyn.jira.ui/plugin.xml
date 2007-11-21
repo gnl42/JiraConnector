@@ -55,42 +55,4 @@
       </detector>
    </extension>
 
-
-  <extension point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.eclipse.mylyn.jira.ui.jiraTask"
-            objectClass="org.eclipse.mylyn.internal.jira.ui.JiraTask">
-         <action
-               class="org.eclipse.mylyn.internal.jira.ui.actions.NewSubTaskAction"
-               enablesFor="org.eclipse.mylyn.internal.jira.ui.JiraTask"
-               icon="icons/etool16/sub-task-new.gif"
-               id="org.eclipse.mylyn.jira.ui.new.subtask"
-               label="Subtask"
-               menubarPath="org.eclipse.mylyn.tasks.ui.menu.new/repository"
-               tooltip="New Subtask">
-         </action>
-         <menu
-               id="org.eclipse.mylyn.tasks.ui.menu.new"
-               label="New"
-               path="new">
-            <separator
-                  name="repository">
-            </separator>
-         </menu>
-      </objectContribution>
-   <!--
-      <viewerContribution
-            id="org.eclipse.mylyn.jira.ui.viewerContribution.tasklist"
-            targetID="org.eclipse.mylyn.tasks.ui.views.tasks">
-         <action
-               class="org.eclipse.mylyn.internal.jira.ui.actions.NewSubTaskAction"
-               icon="icons/etool16/sub-task-new.gif"
-               id="org.eclipse.mylyn.jira.ui.new.subtask"
-               label="New Subtask"
-               menubarPath="new"
-               tooltip="New Subtask">
-         </action>
-      </viewerContribution> 
-    -->
-   </extension>	
 </plugin>

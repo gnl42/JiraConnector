@@ -635,7 +635,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return false;
 	}
 
-	public void initializeSubTaskData(TaskRepository repository, RepositoryTaskData taskData,
+	@Override
+	public boolean initializeSubTaskData(TaskRepository repository, RepositoryTaskData taskData,
 			RepositoryTaskData parentTaskData, IProgressMonitor monitor) throws CoreException {
 		try {
 			monitor.beginTask("Creating subtask", IProgressMonitor.UNKNOWN);
@@ -681,6 +682,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
 			attribute.setValue(parentTaskData.getTaskKey());
+			
+			return true;
 		} catch (JiraException e) {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
 			trace(status);
@@ -690,6 +693,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
+	@Override
+	public boolean canInitializeSubTaskData() {
+		return true;
+	}
+	
 	private Project getProject(JiraClient client, String projectName) {
 		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {
 			if (project.getName().equals(projectName)) {
