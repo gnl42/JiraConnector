@@ -694,7 +694,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	@Override
-	public boolean canInitializeSubTaskData() {
+	public boolean canInitializeSubTaskData(AbstractTask task, RepositoryTaskData parentTaskData) {
 		return true;
 	}
 	
