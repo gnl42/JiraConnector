@@ -420,11 +420,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.setReadOnly(true);
 			}
 		}
-
-		RepositoryTaskAttribute attribute = data.getAttribute(RepositoryTaskAttribute.DESCRIPTION);
-		if (attribute != null) {
-			attribute.setReadOnly(true);
-		}
 	}
 
 	private String formatDate(Date date) {
