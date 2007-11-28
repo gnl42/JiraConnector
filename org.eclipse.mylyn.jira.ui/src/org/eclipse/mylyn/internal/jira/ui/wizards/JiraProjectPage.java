@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -198,8 +199,13 @@ public class JiraProjectPage extends WizardPage {
 			}
 		}
 
-		projectTree.getViewer().setInput(client.getProjects());
+		Project[] projects = client.getProjects();
+		projectTree.getViewer().setInput(projects);
 		getWizard().getContainer().updateButtons();
+		
+		if (projects.length == 1 && projectTree.getViewer().getSelection().isEmpty()) {
+			projectTree.getViewer().setSelection(new StructuredSelection(projects[0]));
+		}
 	}
 
 	public Project getSelectedProject() {
