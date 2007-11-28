@@ -9,7 +9,9 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IOpenListener;
@@ -23,13 +25,13 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,7 +39,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
@@ -118,7 +120,7 @@ public class JiraProjectPage extends WizardPage {
 		projectTreeViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
 
 			public void selectionChanged(SelectionChangedEvent event) {
-				if (projectTree.getViewer().getSelection().isEmpty()) {
+				if (getSelectedProject() == null) {
 					setErrorMessage("You must select a product");
 				} else {
 					setErrorMessage(null);
@@ -143,7 +145,6 @@ public class JiraProjectPage extends WizardPage {
 		updateButton.setLayoutData(new GridData());
 
 		updateButton.addSelectionListener(new SelectionAdapter() {
-
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				updateProjectsFromRepository(true);
@@ -152,56 +153,53 @@ public class JiraProjectPage extends WizardPage {
 
 		// set the composite as the control for this page
 		setControl(composite);
-
-		isPageComplete();
-		getWizard().getContainer().updateButtons();
 	}
 
 	@Override
 	public boolean isPageComplete() {
-		return !projectTree.getViewer().getSelection().isEmpty();
+		return getSelectedProject() != null;
 	}
 
 	private void updateProjectsFromRepository(final boolean force) {
 		final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		if (!client.hasDetails() || force) {
 			try {
-				getContainer().run(true, false, new IRunnableWithProgress() {
+				IRunnableWithProgress runner = new IRunnableWithProgress() {
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 						try {
 							JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 							client.refreshDetails(monitor);
 						} catch (JiraException e) {
-							showWarning(NLS.bind( //
-									"Error updating attributes: {0}\n"
-											+ "Please check repository settings in the Task Repositories view.", //
-									e.getMessage()));
-						} catch (Exception e) {
-							String msg = NLS.bind( //
-									"Error updating attributes: {0}\n"
-											+ "Please check repository settings in the Task Repositories view.", //
-									e.getMessage());
-							showWarning(msg);
-							StatusHandler.fail(e, msg, false);
+							throw new InvocationTargetException(new CoreException(JiraCorePlugin.toStatus(repository, e)));
+						} catch (OperationCanceledException e) {
+							// canceled
+							throw new InterruptedException();
 						} finally {
 							monitor.done();
 						}
 					}
-
-					private void showWarning(final String msg) {
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								JiraProjectPage.this.setErrorMessage(msg);
-							}
-						});
-					}
-				});
-			} catch (Exception e) {
+				};
+				
+				if (getContainer().getShell().isVisible()) {
+					getContainer().run(true, true, runner);
+				} else {
+					PlatformUI.getWorkbench().getProgressService().busyCursorWhile(runner);
+				}
+			} catch (InterruptedException e) {
+				// canceled
+				return;
+			} catch (InvocationTargetException e) {
+				if (e.getCause() instanceof CoreException) {
+					setErrorMessage(((CoreException)e.getCause()).getMessage());
+				} else {
+					StatusHandler.fail(e.getCause(), "Error updating attributes", true);
+				}
 				return;
 			}
 		}
 
 		projectTree.getViewer().setInput(client.getProjects());
+		getWizard().getContainer().updateButtons();
 	}
 
 	public Project getSelectedProject() {
