@@ -648,9 +648,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 
 			initializeTaskData(taskData, client, project);
+			cloneTaskData(parentTaskData, taskData);
+			taskData.setDescription("");
+			taskData.setSummary("");
+			taskData.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, parentTaskData.getAssignedTo());			
 			taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
 
-			// set type
+			// set subtask type
 			RepositoryTaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
 			typeAttribute.clearOptions();
 
@@ -665,7 +669,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			List<String> options = typeAttribute.getOptions();
 			if (options.size() == 0) {
 				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
-						IStatus.OK, "The repository does not support sub-tasks.", null));
+						IStatus.OK, "The repository does not support subtasks.", null));
 			} else if (options.size() == 1) {
 				typeAttribute.setReadOnly(true);
 			}
@@ -677,7 +681,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
 			attribute.setValue(parentTaskData.getTaskKey());
-			
+
 			return true;
 		} catch (JiraException e) {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
@@ -692,7 +696,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	public boolean canInitializeSubTaskData(AbstractTask task, RepositoryTaskData parentTaskData) {
 		return true;
 	}
-	
+
 	private Project getProject(JiraClient client, String projectName) {
 		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {
 			if (project.getName().equals(projectName)) {
