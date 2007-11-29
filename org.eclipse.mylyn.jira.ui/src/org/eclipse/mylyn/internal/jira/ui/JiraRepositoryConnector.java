@@ -525,6 +525,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public boolean isRepositoryConfigurationStale(TaskRepository repository) throws CoreException {
 		return JiraUtils.getAutoRefreshConfiguration(repository);
 	}
+
+	@Override
+	public boolean hasCredentialsManagement() {
+		return true;
+	}
 	
 	public static class TasksFacade {
 
