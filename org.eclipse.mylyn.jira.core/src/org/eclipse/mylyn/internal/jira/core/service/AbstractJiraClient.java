@@ -23,7 +23,8 @@ import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
-import org.eclipse.mylyn.web.core.WebCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a
@@ -110,7 +111,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	}
 
 	public String getUserName() {
-		WebCredentials credentials = location.getCredentials(WebCredentials.Type.REPOSITORY);
+		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		return (credentials != null) ? credentials.getUserName() : "";
 	}
 

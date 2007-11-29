@@ -30,10 +30,10 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.WebClientUtil;
-import org.eclipse.mylyn.web.core.WebCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
-import org.eclipse.mylyn.web.core.WebCredentials.Type;
 
 /**
  * @author Brock Janiczak
@@ -118,10 +118,10 @@ public class JiraWebSession {
 
 		String url = baseUrl + "/login.jsp";
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
-			WebCredentials credentials = location.getCredentials(WebCredentials.Type.REPOSITORY);
+			AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (credentials == null) {
 				// TODO prompt user?
-				credentials = new WebCredentials("", "");
+				credentials = new AuthenticationCredentials("", "");
 			}
 			
 			PostMethod login = new PostMethod(url);
@@ -179,11 +179,11 @@ public class JiraWebSession {
 	}
 
 	private boolean needsReauthentication(HttpClient httpClient, int code) throws JiraAuthenticationException {
-		final Type authenticationType;
+		final AuthenticationType authenticationType;
 		if (code == HttpStatus.SC_OK) {
-			authenticationType = Type.REPOSITORY;
+			authenticationType = AuthenticationType.REPOSITORY;
 		} else if (code == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED) {
-			authenticationType = Type.PROXY;
+			authenticationType = AuthenticationType.PROXY;
 		} else {
 			return false;
 		}

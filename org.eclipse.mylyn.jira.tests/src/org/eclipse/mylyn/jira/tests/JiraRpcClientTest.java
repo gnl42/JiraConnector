@@ -34,7 +34,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableExcept
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylyn.web.core.WebCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.WebLocation;
 
 /**
@@ -532,7 +532,7 @@ public class JiraRpcClientTest extends TestCase {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.GUEST);
 		Credentials httpCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		WebLocation location = new WebLocation(url, credentials.username, credentials.password);
-		location.setCredentials(WebCredentials.Type.HTTP, httpCredentials.username, httpCredentials.password);
+		location.setCredentials(AuthenticationType.HTTP, httpCredentials.username, httpCredentials.password);
 		client = new JiraRpcClient(location, false);
 		assertNotNull(client.getServerInfo());
 		

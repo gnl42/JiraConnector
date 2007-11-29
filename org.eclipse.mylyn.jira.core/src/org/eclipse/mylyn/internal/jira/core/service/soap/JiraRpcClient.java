@@ -63,9 +63,9 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
-import org.eclipse.mylyn.web.core.WebCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
-import org.eclipse.mylyn.web.core.WebCredentials.Type;
 import org.w3c.dom.Element;
 
 // This class does not represent the data in a JIRA installation. It is merely
@@ -551,7 +551,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 			try {
 				return call(runnable, true);
 			} catch (JiraAuthenticationException e) {
-				if (getLocation().requestCredentials(WebCredentials.Type.REPOSITORY, null) == ResultType.NOT_SUPPORTED) {
+				if (getLocation().requestCredentials(AuthenticationType.REPOSITORY, null) == ResultType.NOT_SUPPORTED) {
 					throw e;
 				}
 			}
@@ -574,7 +574,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 		private final AbstractWebLocation location;
 
-		private WebCredentials credentials;
+		private AuthenticationCredentials credentials;
 
 		public LoginToken(AbstractWebLocation location, long timeout) {
 			this.location = location;
@@ -583,7 +583,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		}
 
 		public synchronized String getCurrentValue() throws JiraException {
-			WebCredentials newCredentials = location.getCredentials(Type.REPOSITORY);
+			AuthenticationCredentials newCredentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (newCredentials == null) {
 				expire();
 				return "";
