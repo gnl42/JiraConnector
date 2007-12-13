@@ -258,7 +258,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 				int add = 0;
 				String version = getServerInfo().getVersion();
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0) {
-					add++;
+					add += 2;
 				}
 				
 				RepositoryTaskAttribute[] attributes = new RepositoryTaskAttribute[fields.length + add];
@@ -268,7 +268,9 @@ public class JiraRpcClient extends AbstractJiraClient {
 				}
 				
 				if (add > 0) {
-					attributes[fields.length] = new RepositoryTaskAttribute("fixVersions", "Fix Version/s", false);
+					// might also need to add: Reporter and Summary (http://jira.atlassian.com/browse/JRA-13703)
+					attributes[attributes.length - 2] = new RepositoryTaskAttribute("duedate", "Due Date", false);
+					attributes[attributes.length - 1] = new RepositoryTaskAttribute("fixVersions", "Fix Version/s", false);
 				}
 				
 				return attributes;

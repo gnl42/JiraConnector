@@ -97,7 +97,10 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 			return ATTRIBUTE_FIXVERSIONS;
 		} else if ("timetracking".equals(key)) {
 			return ATTRIBUTE_ESTIMATE;
+		} else if ("duedate".equals(key)) {
+			return ATTRIBUTE_DUE_DATE;
 		}
+
 
 		if (key.startsWith("issueLink")) {
 			return ATTRIBUTE_LINK_PREFIX + key;

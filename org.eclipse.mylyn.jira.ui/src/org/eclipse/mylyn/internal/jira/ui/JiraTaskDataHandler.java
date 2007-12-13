@@ -399,6 +399,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 			} catch (JiraInsufficientPermissionException ex) {
 				// ignore
+				// TODO remember this and use addComment() to submit issues
 			}
 		}
 
@@ -418,7 +419,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.setReadOnly(true);
 			} else if (JiraFieldType.MULTISELECT.getKey().equals(key) && (options == null || options.isEmpty())) {
 				attribute.setReadOnly(true);
-			}
+			} 
 		}
 	}
 
