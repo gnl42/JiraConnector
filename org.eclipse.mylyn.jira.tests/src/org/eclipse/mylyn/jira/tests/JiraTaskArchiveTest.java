@@ -14,6 +14,7 @@ import org.eclipse.mylyn.internal.jira.ui.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskList;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
@@ -58,14 +59,23 @@ public class JiraTaskArchiveTest extends TestCase {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraUiPlugin.REPOSITORY_KIND);
 		assertNotNull(client);
-		assertEquals(0, taskList.getArchiveContainer().getChildren().size());
-		JiraTask task1 = new JiraTask("repo", HANDLE1, LABEL);
-		JiraTask task2 = new JiraTask("repo", HANDLE1, LABEL);
 
+		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, "repo");
+		TasksUiPlugin.getRepositoryManager().addRepository(repository,
+				TasksUiPlugin.getDefault().getRepositoriesFilePath());
+
+		JiraTask task1 = new JiraTask("repo", HANDLE1, LABEL);
+		task1.setLastReadTimeStamp("now");
+		JiraTask task2 = new JiraTask("repo", HANDLE1, LABEL);
+		task2.setLastReadTimeStamp("now");
 		taskList.addTask(task1);
 		taskList.addTask(task2);
 
-		assertEquals(1, taskList.getArchiveContainer().getChildren().size());
+		assertEquals(1, taskList.getOrphanContainer("repo").getChildren().size());
 		assertEquals(taskList.getTask("repo-" + HANDLE1), task1);
+
+		TasksUiPlugin.getRepositoryManager().removeRepository(repository,
+				TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getTaskListManager().resetTaskList();
 	}
 }
