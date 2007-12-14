@@ -390,29 +390,31 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		HashSet<String> editableKeys = new HashSet<String>();
-		if (useCachedInformation(jiraIssue, oldTaskData)) {
-			// avoid server round-trips
-			for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
-				if (!attribute.isReadOnly()) {
-					editableKeys.add(attribute.getId());
-				}
-			}
-			
-			RepositoryTaskAttribute attribute = oldTaskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY);
-			if (attribute != null) {
-				data.addAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, attribute);
-			}
-		} else {
-			try {
-				RepositoryTaskAttribute[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey());
-				if (editableAttributes != null) {
-					for (RepositoryTaskAttribute attribute : editableAttributes) {
-						editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getId()));
+		if (!jiraIssue.getStatus().isClosed()) {
+			if (useCachedInformation(jiraIssue, oldTaskData)) {
+				// avoid server round-trips
+				for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
+					if (!attribute.isReadOnly()) {
+						editableKeys.add(attribute.getId());
 					}
 				}
-			} catch (JiraInsufficientPermissionException ex) {
-				RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, "Read-only", true);
-				data.addAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, attribute);
+
+				RepositoryTaskAttribute attribute = oldTaskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY);
+				if (attribute != null) {
+					data.addAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, attribute);
+				}
+			} else {
+				try {				
+					RepositoryTaskAttribute[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey());
+					if (editableAttributes != null) {
+						for (RepositoryTaskAttribute attribute : editableAttributes) {
+							editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getId()));
+						}
+					}
+				} catch (JiraInsufficientPermissionException ex) {
+					RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, "Read-only", true);
+					data.addAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, attribute);
+				}
 			}
 		}
 

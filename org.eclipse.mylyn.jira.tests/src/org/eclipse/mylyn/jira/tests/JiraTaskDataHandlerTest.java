@@ -468,4 +468,28 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals("new comment", taskData.getComments().get(1).getText());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
 	}
+	
+	public void testClosedIssueNotEditable() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		Issue issue = JiraTestUtils.createIssue(client, "testEditClosed");
+		issue = client.createIssue(issue);
+
+		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
+		assertFalse(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS).isReadOnly());
+
+		// close
+		client.advanceIssueWorkflow(issue, "2", "");
+		
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
+		assertTrue(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS).isReadOnly());
+
+		taskData.setSummary("new summary");
+		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("testEditClosed", taskData.getSummary());
+	}
+
 }
