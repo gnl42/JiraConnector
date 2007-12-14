@@ -38,6 +38,7 @@ import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Subtask;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
@@ -272,6 +273,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.removeAttribute(RepositoryTaskAttribute.PRIORITY);
 		}
 
+		SecurityLevel securityLevel = jiraIssue.getSecurityLevel();
+		if (securityLevel != null) { 
+			RepositoryTaskAttribute attribute = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
+			attribute.addOption(securityLevel.getName(), securityLevel.getId());
+			attribute.setValue(securityLevel.getName()); 
+		}
+		
 		IssueType issueType = jiraIssue.getType();
 		if (issueType != null) {
 			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, issueType.getName());
@@ -733,6 +741,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			issue.setParentId(parentId);
 		}
 
+		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
+		if (attribute != null) {
+			SecurityLevel securityLevel = new SecurityLevel();
+			securityLevel.setId(attribute.getOptionParameter(attribute.getValue()));
+			issue.setSecurityLevel(securityLevel);
+		}
+		
 		String estimate = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
 		if (estimate != null) {
 			try {

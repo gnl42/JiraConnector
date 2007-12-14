@@ -88,6 +88,8 @@ public class Issue implements Serializable {
 
 	private IssueLink[] issueLinks = new IssueLink[0];
 
+	private SecurityLevel securityLevel;
+	
 	public String getId() {
 		return id;
 	}
@@ -489,4 +491,12 @@ public class Issue implements Serializable {
 		}
 	}
 
+	public SecurityLevel getSecurityLevel() {
+		return securityLevel;
+	}
+	
+	public void setSecurityLevel(SecurityLevel securityLevel) {
+		this.securityLevel = securityLevel;
+	}
+	
 }

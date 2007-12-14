@@ -47,6 +47,8 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	public static final String ATTRIBUTE_LINK_PREFIX = "attribute.jira.link::";
 
+	public static final String ATTRIBUTE_SECURITY_LEVEL = "attribute.jira.security";
+
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
 
 	public static final String TYPE_KEY = "type";

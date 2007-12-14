@@ -21,6 +21,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -347,4 +348,41 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(parentIssue.getProject().getName(), taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT));
 		assertNotNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE));
 	}
+	
+	public void testSecurityLevel() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		Issue issue = JiraTestUtils.createIssue(client, "testSecurityLevel");
+		issue.setProject(client.getProjectByKey("SECURITY"));
+		issue = client.createIssue(issue);
+
+		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL));
+		
+		SecurityLevel securityLevel = new SecurityLevel();
+		securityLevel.setId("10000");
+		issue.setSecurityLevel(securityLevel);
+		client.updateIssue(issue, "");
+		
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
+		assertNotNull(attribute);
+		assertEquals("10000", attribute.getOptionParameter("Developers"));
+		assertEquals("Developers", attribute.getValue());
+		
+		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+		
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
+		assertNotNull(attribute);
+		assertEquals("10000", attribute.getOptionParameter("Developers"));
+		assertEquals("Developers", attribute.getValue());
+		
+		taskData.removeAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
+		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+		
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL));		
+	}
+	
 }

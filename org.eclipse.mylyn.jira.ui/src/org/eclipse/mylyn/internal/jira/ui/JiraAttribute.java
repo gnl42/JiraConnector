@@ -56,7 +56,9 @@ public enum JiraAttribute {
 			RepositoryTaskAttribute.COMMENT_DATE, JiraFieldType.TEXTAREA, "Date:"),
 
 	SUBTASK_IDS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, "Subtask ids:", true, true), SUBTASK_KEYS(
-			JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Sub-tasks:", false, true),
+			JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Subtasks:", false, true),
+
+	SECURITY_LEVEL(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT, "Security Level:", false, true),
 
 	UNKNOWN(null, JiraFieldType.UNKNOWN, "unknown:", true, true);
 

@@ -174,6 +174,10 @@ public class JiraWebIssueService {
 				post.addParameter("commentLevel", "");
 				post.addParameter("id", issue.getId());
 
+				if (issue.getSecurityLevel() != null) {
+					post.addParameter("security", issue.getSecurityLevel().getId());
+				}
+				
 				// custom fields
 				for (CustomField customField : issue.getCustomFields()) {
 					for (String value : customField.getValues()) {

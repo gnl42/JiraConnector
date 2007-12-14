@@ -21,6 +21,7 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Subtask;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
@@ -208,6 +209,8 @@ public class RssContentHandler extends DefaultHandler {
 
 	private static final String ISSUE_KEY = "issuekey"; //$NON-NLS-1$
 
+	private static final String SECURITY = "security";
+
 	private static final int START = 0;
 
 	private static final int LOOKING_FOR_CHANNEL = 1;
@@ -386,6 +389,10 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setEstimate(Long.parseLong(attributes.getValue(SECONDS_ATTR)));
 			} else if (ACTUAL.equals(localName)) {
 				currentIssue.setActual(Long.parseLong(attributes.getValue(SECONDS_ATTR)));
+			} else if (SECURITY.equals(localName)) {
+				SecurityLevel securityLevel = new SecurityLevel();
+				securityLevel.setId(attributes.getValue(ID_ATTR));
+				currentIssue.setSecurityLevel(securityLevel);
 			}
 
 			if (COMMENTS.equals(localName)) {
@@ -674,6 +681,11 @@ public class RssContentHandler extends DefaultHandler {
 				// TODO check for number format exception
 				if (currentElementText.toString().length() > 0) {
 					currentIssue.setVotes(Integer.parseInt(currentElementText.toString()));
+				}
+			} else if (SECURITY.equals(localName)) {
+				SecurityLevel securityLevel = currentIssue.getSecurityLevel();
+				if (securityLevel != null) {
+					securityLevel.setName(currentElementText.toString());
 				}
 			} else if (TYPE.equals(localName)) {
 
