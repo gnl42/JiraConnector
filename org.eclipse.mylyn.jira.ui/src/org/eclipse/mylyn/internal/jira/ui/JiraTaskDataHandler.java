@@ -397,6 +397,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					editableKeys.add(attribute.getId());
 				}
 			}
+			
+			RepositoryTaskAttribute attribute = oldTaskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY);
+			if (attribute != null) {
+				data.addAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, attribute);
+			}
 		} else {
 			try {
 				RepositoryTaskAttribute[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey());
@@ -406,8 +411,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					}
 				}
 			} catch (JiraInsufficientPermissionException ex) {
-				// ignore
-				// TODO remember this and use addComment() to submit issues
+				RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, "Read-only", true);
+				data.addAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, attribute);
 			}
 		}
 
@@ -601,32 +606,33 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			} else {
 				RepositoryOperation operation = taskData.getSelectedOperation();
 				if (operation == null) {
-					client.updateIssue(issue, taskData.getNewComment());
-				} else {
-					String inputName = operation.getInputName();
-					if (inputName != null) {
-						String value;
-						if (operation.hasOptions()) {
-							value = operation.getOptionValue(operation.getOptionSelection());
-						} else {
-							value = operation.getInputValue();
-						}
-						if (value != null) {
-							issue.setValue(inputName, value);
-						}
-					}
+					operation = new RepositoryOperation(LEAVE_OPERATION, "");
+				} 
 
-					if (LEAVE_OPERATION.equals(operation.getKnobName())
-							|| REASSIGN_OPERATION.equals(operation.getKnobName())) {
-						if (!issue.getStatus().isClosed()) {
-							client.updateIssue(issue, taskData.getNewComment());
-						} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
-							client.addCommentToIssue(issue, taskData.getNewComment());
-						}
+				String inputName = operation.getInputName();
+				if (inputName != null) {
+					String value;
+					if (operation.hasOptions()) {
+						value = operation.getOptionValue(operation.getOptionSelection());
 					} else {
-						client.advanceIssueWorkflow(issue, operation.getKnobName(), taskData.getNewComment());
+						value = operation.getInputValue();
+					}
+					if (value != null) {
+						issue.setValue(inputName, value);
 					}
 				}
+
+				if (LEAVE_OPERATION.equals(operation.getKnobName())
+						|| REASSIGN_OPERATION.equals(operation.getKnobName())) {
+					if (!issue.getStatus().isClosed() && taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
+						client.updateIssue(issue, taskData.getNewComment());
+					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
+						client.addCommentToIssue(issue, taskData.getNewComment());
+					}
+				} else {
+					client.advanceIssueWorkflow(issue, operation.getKnobName(), taskData.getNewComment());
+				}
+
 				return "";
 			}
 		} catch (JiraException e) {

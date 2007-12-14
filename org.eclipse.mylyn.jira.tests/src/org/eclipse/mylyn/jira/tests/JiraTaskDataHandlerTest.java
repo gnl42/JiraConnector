@@ -66,28 +66,32 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	protected void setUp() throws Exception {
 		manager = TasksUiPlugin.getRepositoryManager();
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		
+
 		JiraClientFactory.getDefault().clearClients();
 	}
-	
+
 	protected void init(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+	}
+
+	protected void init(String url, PrivilegeLevel level) throws Exception {
 		String kind = JiraUiPlugin.REPOSITORY_KIND;
 
-		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
+		Credentials credentials = TestUtil.readCredentials(level);
 
 		repository = new TaskRepository(kind, url);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		
+
 		connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
 		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
-		
+
 		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
-		
+
 //		customFieldId = JiraTestUtils.getCustomField(server, customFieldName);
 //		assertNotNull("Unable to find custom field id", customFieldId);
 		customFieldName = "Free Text";
@@ -290,24 +294,25 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		Issue parentIssue = JiraTestUtils.createIssue(client, "testSubTask");
 		parentIssue = client.createIssue(parentIssue);
-		
+
 		Issue subTaskIssue = JiraTestUtils.createSubTask(client, parentIssue, "testSubTaskChild");
 		subTaskIssue = client.createSubTask(subTaskIssue);
 
-		RepositoryTaskData taskData = dataHandler.getTaskData(repository, parentIssue.getId(), new NullProgressMonitor());
+		RepositoryTaskData taskData = dataHandler.getTaskData(repository, parentIssue.getId(),
+				new NullProgressMonitor());
 		RepositoryTaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
 		assertFalse(typeAttribute.isReadOnly());
-		assertTrue(typeAttribute.getOptions().size() > 0);		
+		assertTrue(typeAttribute.getOptions().size() > 0);
 		Set<String> ids = dataHandler.getSubTaskIds(taskData);
 		assertEquals(1, ids.size());
 		assertEquals(subTaskIssue.getId(), ids.iterator().next());
-		
+
 		taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(), new NullProgressMonitor());
 		assertEquals(subTaskIssue.getId(), taskData.getId());
 		assertEquals(subTaskIssue.getKey(), taskData.getTaskKey());
 		typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
 		assertTrue(typeAttribute.isReadOnly());
-		assertEquals(0, typeAttribute.getOptions().size());		
+		assertEquals(0, typeAttribute.getOptions().size());
 	}
 
 	public void testPostTaskDataSubTask() throws Exception {
@@ -315,16 +320,17 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		Issue parentIssue = JiraTestUtils.createIssue(client, "testUpdateSubTask");
 		parentIssue = client.createIssue(parentIssue);
-		
+
 		Issue subTaskIssue = JiraTestUtils.createSubTask(client, parentIssue, "testUpdateSubTaskChild");
 		subTaskIssue = client.createSubTask(subTaskIssue);
 
-		RepositoryTaskData taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(), new NullProgressMonitor());
+		RepositoryTaskData taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(),
+				new NullProgressMonitor());
 		assertEquals(subTaskIssue.getKey(), taskData.getTaskKey());
-		
+
 		taskData.setDescription("new description");
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
-		
+
 		Issue updatedSubTaskIssue = client.getIssueByKey(taskData.getTaskKey());
 		assertEquals(subTaskIssue.getId(), updatedSubTaskIssue.getId());
 		assertEquals("new description", updatedSubTaskIssue.getDescription());
@@ -336,8 +342,9 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		Issue parentIssue = JiraTestUtils.createIssue(client, "testInitializeSubTask");
 		parentIssue = client.createIssue(parentIssue);
 
-		RepositoryTaskData parentTaskData = dataHandler.getTaskData(repository, parentIssue.getId(), new NullProgressMonitor());
-		
+		RepositoryTaskData parentTaskData = dataHandler.getTaskData(repository, parentIssue.getId(),
+				new NullProgressMonitor());
+
 		AbstractAttributeFactory attributeFactory = dataHandler.getAttributeFactory(repository.getUrl(),
 				repository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
 		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
@@ -349,7 +356,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(parentIssue.getProject().getName(), taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT));
 		assertNotNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE));
 	}
-	
+
 	public void testSecurityLevel() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
@@ -359,33 +366,36 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL));
-		
+
 		SecurityLevel securityLevel = new SecurityLevel();
 		securityLevel.setId("10000");
 		issue.setSecurityLevel(securityLevel);
 		client.updateIssue(issue, "");
-		
+
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
 		assertNotNull(attribute);
 		assertEquals("10000", attribute.getOptionParameter("Developers"));
 		assertEquals("Developers", attribute.getValue());
-		
+
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
-		
+
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
 		assertNotNull(attribute);
 		assertEquals("10000", attribute.getOptionParameter("Developers"));
 		assertEquals("Developers", attribute.getValue());
-		
+
 		taskData.removeAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
-		
+
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL));		
+		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL));
 	}
 
+	/**
+	 * Verifies that cached operations are refreshed from the repository when the status of an issue changes.
+	 */
 	public void testCachedOperationsAfterChangingState() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
@@ -398,21 +408,21 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(5, operations.size());
 		assertEquals("5", operations.get(3).getKnobName());
 		assertEquals("2", operations.get(4).getKnobName());
-		
+
 		// resolve issue
 		client.advanceIssueWorkflow(issue, "5", "");
 		issue = client.getIssueByKey(issue.getKey());
-		
+
 		RepositoryTaskData newTaskData = dataHandler.createTaskData(repository, client, issue, taskData);
 		operations = newTaskData.getOperations();
 		assertNotNull(operations);
 		assertEquals(3, operations.size());
 		assertEquals("3", operations.get(2).getKnobName());
-		
+
 		issue.setSummary("changed");
 		client.updateIssue(issue, "");
 		newTaskData.getOperations().remove(0);
-		
+
 		// make sure cached operations are used
 		newTaskData = dataHandler.createTaskData(repository, client, issue, newTaskData);
 		operations = newTaskData.getOperations();
@@ -422,4 +432,40 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	}
 
+	public void testReadOnly() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL, PrivilegeLevel.GUEST);
+
+		Issue issue = JiraTestUtils.createIssue(client, "testReadOnly");
+		issue = client.createIssue(issue);
+
+		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertNotNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
+
+		taskData.setSummary("new summary");
+		taskData.setNewComment("comment");
+		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("testReadOnly", taskData.getSummary());
+		assertEquals(1, taskData.getComments().size());
+		assertEquals("comment", taskData.getComments().get(0).getText());
+		assertNotNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
+
+		setUp();
+		init(JiraTestConstants.JIRA_39_URL, PrivilegeLevel.USER);
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
+
+		taskData.setSummary("new summary");
+		taskData.setNewComment("new comment");
+		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("new summary", taskData.getSummary());
+		assertEquals(2, taskData.getComments().size());
+		assertEquals("comment", taskData.getComments().get(0).getText());
+		assertEquals("new comment", taskData.getComments().get(1).getText());
+		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
+	}
 }
