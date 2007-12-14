@@ -390,7 +390,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		HashSet<String> editableKeys = new HashSet<String>();
-		if (oldTaskData != null) {
+		if (useCachedInformation(jiraIssue, oldTaskData)) {
 			// avoid server round-trips
 			for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
 				if (!attribute.isReadOnly()) {
@@ -429,6 +429,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.setReadOnly(true);
 			} 
 		}
+	}
+
+	private boolean useCachedInformation(Issue issue, RepositoryTaskData oldTaskData) {
+		return oldTaskData != null && oldTaskData.getStatus().equals(issue.getStatus().getName());
 	}
 
 	private String formatDate(Date date) {
@@ -507,7 +511,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	public void addOperations(RepositoryTaskData data, Issue issue, JiraClient client, RepositoryTaskData oldTaskData)
 			throws JiraException {
 		// avoid server round-trips
-		if (oldTaskData != null) {
+		if (useCachedInformation(issue, oldTaskData)) {
 			for (RepositoryOperation operation : oldTaskData.getOperations()) {
 				data.addOperation(operation);
 			}

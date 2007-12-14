@@ -9,6 +9,7 @@ package org.eclipse.mylyn.jira.tests;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -384,5 +385,41 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL));		
 	}
-	
+
+	public void testCachedOperationsAfterChangingState() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		Issue issue = JiraTestUtils.createIssue(client, "testChangeState");
+		issue = client.createIssue(issue);
+
+		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		List<RepositoryOperation> operations = taskData.getOperations();
+		assertNotNull(operations);
+		assertEquals(5, operations.size());
+		assertEquals("5", operations.get(3).getKnobName());
+		assertEquals("2", operations.get(4).getKnobName());
+		
+		// resolve issue
+		client.advanceIssueWorkflow(issue, "5", "");
+		issue = client.getIssueByKey(issue.getKey());
+		
+		RepositoryTaskData newTaskData = dataHandler.createTaskData(repository, client, issue, taskData);
+		operations = newTaskData.getOperations();
+		assertNotNull(operations);
+		assertEquals(3, operations.size());
+		assertEquals("3", operations.get(2).getKnobName());
+		
+		issue.setSummary("changed");
+		client.updateIssue(issue, "");
+		newTaskData.getOperations().remove(0);
+		
+		// make sure cached operations are used
+		newTaskData = dataHandler.createTaskData(repository, client, issue, newTaskData);
+		operations = newTaskData.getOperations();
+		assertNotNull(operations);
+		assertEquals(2, operations.size());
+		assertEquals("3", operations.get(1).getKnobName());
+
+	}
+
 }
