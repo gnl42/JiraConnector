@@ -1337,7 +1337,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 					scontainer.getRunnableContext().run(true, true, runnable);
 				} else {
 					IProgressService service = PlatformUI.getWorkbench().getProgressService();
-					service.run(true, true, runnable);
+					service.busyCursorWhile(runnable);
 				}
 			} catch (InvocationTargetException e) {
 				return;
