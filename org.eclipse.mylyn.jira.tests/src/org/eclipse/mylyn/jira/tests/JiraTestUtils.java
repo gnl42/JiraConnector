@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.AssertionFailedError;
 
@@ -23,13 +26,27 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 
 public class JiraTestUtils {
 
 	public static String PROJECT1 = "PRONE";
+
+	// persist caching across test runs
+	private static Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
+
+	private static List<Issue> testIssues = new ArrayList<Issue>();
+	
+	public static void cleanup(JiraClient client) throws JiraException {
+		for (Issue issue : testIssues) {
+			client.deleteIssue(issue);			
+		}
+		testIssues.clear();
+	}
 
 	public static Resolution getFixedResolution(JiraClient server) throws JiraException {
 		refreshDetails(server);
@@ -70,7 +87,7 @@ public class JiraTestUtils {
 		return null;
 	}
 
-	public static Issue createIssue(JiraClient client, String summary) throws JiraException {
+	public static Issue newIssue(JiraClient client, String summary) throws JiraException {
 		refreshDetails(client);
 
 		Issue issue = new Issue();
@@ -78,11 +95,21 @@ public class JiraTestUtils {
 		issue.setType(client.getIssueTypes()[0]);
 		issue.setSummary(summary);
 		issue.setAssignee(client.getUserName());
-
 		return issue;
 	}
 
-	public static Issue createSubTask(JiraClient client, Issue parent, String summary) throws JiraException {
+	public static Issue createIssue(JiraClient client, String summary) throws JiraException {
+		Issue issue = newIssue(client, summary);
+		return createIssue(client, issue);
+	}
+	
+	public static Issue createIssue(JiraClient client, Issue issue) throws JiraException {
+		issue = client.createIssue(issue);
+		testIssues .add(issue);
+		return issue;
+	}
+ 
+	public static Issue newSubTask(JiraClient client, Issue parent, String summary) throws JiraException {
 		refreshDetails(client);
 
 		Issue issue = new Issue();
@@ -97,7 +124,13 @@ public class JiraTestUtils {
 
 	public static void refreshDetails(JiraClient client) throws JiraException {
 		if (!client.hasDetails()) {
-			client.refreshDetails(new NullProgressMonitor());
+			JiraClientData data = clientDataByUrl.get(client.getBaseUrl());
+			if (data != null) {
+				((AbstractJiraClient)client).setData(data);
+			} else {
+				client.refreshDetails(new NullProgressMonitor());
+				clientDataByUrl.put(client.getBaseUrl(), ((AbstractJiraClient)client).getData());
+			}
 		}
 	}
 

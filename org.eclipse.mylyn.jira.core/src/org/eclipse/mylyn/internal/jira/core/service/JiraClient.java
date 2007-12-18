@@ -362,5 +362,7 @@ public interface JiraClient {
 	String getCharacterEncoding() throws JiraException;
 
 	AbstractWebLocation getLocation();
+
+	void deleteIssue(Issue issue) throws JiraException;
 	
 }

@@ -45,6 +45,13 @@ public class JiraRpcClientTest extends TestCase {
 
 	private AbstractJiraClient client;
 
+	@Override
+	protected void tearDown() throws Exception {
+		if (client != null) {
+			JiraTestUtils.cleanup(client);
+		}
+	}
+	
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
 		client = new JiraRpcClient(new WebLocation(url, credentials.username, credentials.password), false);
@@ -77,7 +84,6 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
-		issue = client.createIssue(issue);
 
 		String startOperation = JiraTestUtils.getOperation(client, issue.getKey(), "start");
 
@@ -110,7 +116,6 @@ public class JiraRpcClientTest extends TestCase {
 
 		Resolution resolution = JiraTestUtils.getFixedResolution(client);
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
-		issue = client.createIssue(issue);
 		
 		issue.setResolution(resolution);
 		issue.setFixVersions(new Version[0]);
@@ -165,7 +170,6 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.GUEST);
 
 		Issue issue = JiraTestUtils.createIssue(client, "getIdFromKey");
-		issue = client.createIssue(issue);
 		
 		String key = client.getKeyFromId(issue.getId());
 		assertEquals(issue.getKey(), key);
@@ -192,7 +196,6 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testReassign");
-		issue = client.createIssue(issue);
 		
 		issue.setAssignee("nonexistantuser");
 		try {
@@ -259,7 +262,6 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testAddComment");
-		issue = client.createIssue(issue);
 		
 		client.addCommentToIssue(issue, "comment 1");
 		issue = client.getIssueByKey(issue.getKey());
@@ -296,7 +298,6 @@ public class JiraRpcClientTest extends TestCase {
 		file.deleteOnExit();
 
 		Issue issue = JiraTestUtils.createIssue(client, "testAttachFile");
-		issue = client.createIssue(issue);
 
 		// test attaching an empty file
 		try {
@@ -355,7 +356,7 @@ public class JiraRpcClientTest extends TestCase {
 		issue.setSummary("testCreateIssue");
 		issue.setAssignee(client.getUserName());
 
-		Issue createdIssue = client.createIssue(issue);
+		Issue createdIssue = JiraTestUtils.createIssue(client, issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
 		assertEquals(issue.getType(), createdIssue.getType());
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
@@ -367,7 +368,7 @@ public class JiraRpcClientTest extends TestCase {
 
 		init(url, PrivilegeLevel.GUEST);
 
-		createdIssue = client.createIssue(issue);
+		createdIssue = JiraTestUtils.createIssue(client, issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
 		assertEquals(issue.getType(), createdIssue.getType());
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
@@ -387,7 +388,7 @@ public class JiraRpcClientTest extends TestCase {
 		issue.setType(client.getIssueTypes()[0]);
 		issue.setSummary("testCreateSubTaskParent");
 
-		Issue parentIssue = client.createIssue(issue);
+		Issue parentIssue = JiraTestUtils.createIssue(client, issue);
 
 		issue = new Issue();
 		issue.setProject(client.getProjects()[0]);
@@ -419,7 +420,7 @@ public class JiraRpcClientTest extends TestCase {
 		issue.setDescription(description);
 		issue.setAssignee(client.getUserName());
 
-		issue = client.createIssue(issue);
+		issue = JiraTestUtils.createIssue(client, issue);
 		issue = client.getIssueByKey(issue.getKey());
 		assertEquals(description, JiraTaskDataHandler.convertHtml(issue.getDescription()));
 
@@ -454,7 +455,7 @@ public class JiraRpcClientTest extends TestCase {
 		issue.setSummary("testUpdateIssue");
 		issue.setAssignee(client.getUserName());
 
-		issue = client.createIssue(issue);
+		issue = JiraTestUtils.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueChanged");
 		client.updateIssue(issue, "");
 		issue = client.getIssueByKey(issue.getKey());
@@ -471,7 +472,7 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.GUEST);
 
 		issue.setSummary("testUpdateIssueGuest");
-		issue = client.createIssue(issue);
+		issue = JiraTestUtils.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueGuestChanged");
 		try {
 			client.updateIssue(issue, "");
@@ -490,7 +491,6 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "\u00C4\u00D6\u00DC");
-		issue = client.createIssue(issue);
 		assertEquals("\u00C4\u00D6\u00DC", issue.getSummary());
 		
 		client.updateIssue(issue, "comment: \u00C4\u00D6\u00DC");
@@ -508,7 +508,6 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testWatchUnwatch");
-		issue = client.createIssue(issue);
 		
 		assertFalse(issue.isWatched());
 		client.watchIssue(issue);
@@ -576,7 +575,6 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 		
 		Issue issue = JiraTestUtils.createIssue(client, "getEditableFields");
-		issue = client.createIssue(issue);
 
 		RepositoryTaskAttribute[] fields = client.getEditableAttributes(issue.getKey());
 		Set<String> ids = new HashSet<String>();

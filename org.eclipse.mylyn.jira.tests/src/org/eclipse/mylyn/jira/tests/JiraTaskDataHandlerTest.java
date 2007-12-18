@@ -70,6 +70,13 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		JiraClientFactory.getDefault().clearClients();
 	}
 
+	@Override
+	protected void tearDown() throws Exception {
+		if (client != null) {
+			JiraTestUtils.cleanup(client);
+		}
+	}
+
 	protected void init(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 	}
@@ -103,7 +110,6 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		String commentText = "line1\nline2\n\nline4\n\n\n";
 		Issue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
-		issue = client.createIssue(issue);
 
 		client.addCommentToIssue(issue, commentText);
 
@@ -183,7 +189,6 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		String dueDate = JiraUtils.dateToString(today);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
-		issue = client.createIssue(issue);
 
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
@@ -293,9 +298,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue parentIssue = JiraTestUtils.createIssue(client, "testSubTask");
-		parentIssue = client.createIssue(parentIssue);
 
-		Issue subTaskIssue = JiraTestUtils.createSubTask(client, parentIssue, "testSubTaskChild");
+		Issue subTaskIssue = JiraTestUtils.newSubTask(client, parentIssue, "testSubTaskChild");
 		subTaskIssue = client.createSubTask(subTaskIssue);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, parentIssue.getId(),
@@ -319,9 +323,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue parentIssue = JiraTestUtils.createIssue(client, "testUpdateSubTask");
-		parentIssue = client.createIssue(parentIssue);
 
-		Issue subTaskIssue = JiraTestUtils.createSubTask(client, parentIssue, "testUpdateSubTaskChild");
+		Issue subTaskIssue = JiraTestUtils.newSubTask(client, parentIssue, "testUpdateSubTaskChild");
 		subTaskIssue = client.createSubTask(subTaskIssue);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(),
@@ -340,7 +343,6 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue parentIssue = JiraTestUtils.createIssue(client, "testInitializeSubTask");
-		parentIssue = client.createIssue(parentIssue);
 
 		RepositoryTaskData parentTaskData = dataHandler.getTaskData(repository, parentIssue.getId(),
 				new NullProgressMonitor());
@@ -360,9 +362,9 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	public void testSecurityLevel() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Issue issue = JiraTestUtils.createIssue(client, "testSecurityLevel");
+		Issue issue = JiraTestUtils.newIssue(client, "testSecurityLevel");
 		issue.setProject(client.getProjectByKey("SECURITY"));
-		issue = client.createIssue(issue);
+		issue = JiraTestUtils.createIssue(client, issue);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL));
@@ -400,7 +402,6 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testChangeState");
-		issue = client.createIssue(issue);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		List<RepositoryOperation> operations = taskData.getOperations();
@@ -436,7 +437,6 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL, PrivilegeLevel.GUEST);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testReadOnly");
-		issue = client.createIssue(issue);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNotNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
@@ -473,8 +473,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testEditClosed");
-		issue = client.createIssue(issue);
-
+		
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
 		assertFalse(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS).isReadOnly());

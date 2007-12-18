@@ -242,5 +242,10 @@ public class MockJiraClient extends AbstractJiraClient {
 		// ignore
 		return null;
 	}
+
+	public void deleteIssue(Issue issue) throws JiraException {
+		// ignore
+		
+	}
 	
 }

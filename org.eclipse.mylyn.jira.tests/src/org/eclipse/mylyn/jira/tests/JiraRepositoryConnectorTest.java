@@ -81,7 +81,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		super.tearDown();
+		if (client != null) {
+			JiraTestUtils.cleanup(client);
+		}
 	}
 
 	protected void init(String url) throws Exception {
@@ -121,7 +123,6 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testAttachContext");
-		issue = client.createIssue(issue);
 
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testAttachContext", task.getSummary());
@@ -168,9 +169,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Set<AbstractTask> tasks1 = collector1.getTasks();
 		// assertEquals(-1, tasks.size());
 
-		Issue issue = JiraTestUtils.createIssue(client, "testDueDateFilter");
+		Issue issue = JiraTestUtils.newIssue(client, "testDueDateFilter");
 		issue.setDue(fromDate);
-		issue = client.createIssue(issue);
+		issue = JiraTestUtils.createIssue(client, issue);
 		assertNotNull(issue);
 
 		ITaskCollector collector2 = new QueryHitCollector(taskFactory);
@@ -198,7 +199,6 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-		issue = client.createIssue(issue);
 
 		Date start = new Date();
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
@@ -237,12 +237,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		// create two issues, the first one is added to the task list
 		Date start = new Date();
 		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-		issue = client.createIssue(issue);
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
 				new NullProgressMonitor());
 		taskList.addTask(task);
 		Issue issue2 = JiraTestUtils.createIssue(client, "testMarkStale2");
-		issue2 = client.createIssue(issue);
 		assertTrue(issue2.getUpdated().after(issue.getUpdated()));
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
 
@@ -325,7 +323,6 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testCreateTask");
-		issue = client.createIssue(issue);
 
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testCreateTask", task.getSummary());

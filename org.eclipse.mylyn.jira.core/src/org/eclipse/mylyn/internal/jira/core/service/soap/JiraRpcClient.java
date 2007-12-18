@@ -527,6 +527,10 @@ public class JiraRpcClient extends AbstractJiraClient {
 		issueService.unvoteIssue(issue);
 	}
 
+	public void deleteIssue(Issue issue) throws JiraException {
+		issueService.deleteIssue(issue);
+	}
+
 	private <T> T call(RemoteRunnable<T> runnable, boolean retry) throws JiraException {
 		// retry in case login token is expired
 		for (int i = 0; i < 2; i++) {

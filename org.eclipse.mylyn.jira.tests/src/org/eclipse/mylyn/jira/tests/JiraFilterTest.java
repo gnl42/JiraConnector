@@ -66,6 +66,10 @@ public class JiraFilterTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
+		if (repository != null) {
+			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+			JiraTestUtils.cleanup(client);
+		}
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
@@ -92,14 +96,14 @@ public class JiraFilterTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		Issue issue = JiraTestUtils.createIssue(client, "testFilterRefresh");
+		Issue issue = JiraTestUtils.newIssue(client, "testFilterRefresh");
 		issue.setAssignee(client.getUserName());
-		client.createIssue(issue);
+		JiraTestUtils.createIssue(client, issue);
 
 		NamedFilter[] filters = client.getNamedFilters();
-		assertTrue(filters.length > 0);
+		assertTrue(filters.length > 1);
 
-		NamedFilter filter = filters[0];
+		NamedFilter filter = filters[1];
 		assertEquals("My Issues", filter.getName());
 
 		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter);
@@ -122,9 +126,9 @@ public class JiraFilterTest extends TestCase {
 
 		String summary = "testCustomQuery" + System.currentTimeMillis();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		Issue issue = JiraTestUtils.createIssue(client, summary);
+		Issue issue = JiraTestUtils.newIssue(client, summary);
 		issue.setPriority(client.getPriorityById(Priority.BLOCKER_ID));
-		issue = client.createIssue(issue);
+		issue = JiraTestUtils.createIssue(client, issue);
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
@@ -148,13 +152,12 @@ public class JiraFilterTest extends TestCase {
 
 		String summary = "testCustomQueryWithoutRepositoryConfiguraton" + System.currentTimeMillis();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		Issue issue = JiraTestUtils.createIssue(client, summary + " 1");
-		client.createIssue(issue);
+		JiraTestUtils.createIssue(client, summary + " 1");
 
-		Issue issue2 = JiraTestUtils.createIssue(client, summary + " 2");
+		Issue issue2 = JiraTestUtils.newIssue(client, summary + " 2");
 		assertTrue(issue2.getProject().getComponents().length > 0);
 		issue2.setComponents(issue2.getProject().getComponents());
-		client.createIssue(issue2);
+		JiraTestUtils.createIssue(client, issue2);
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(issue2.getProject()));

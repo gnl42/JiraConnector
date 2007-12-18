@@ -61,7 +61,9 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		super.tearDown();
+		if (client != null) {
+			JiraTestUtils.cleanup(client);
+		}
 	}
 
 	protected void init(String url) throws Exception {
@@ -90,9 +92,9 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		new Exception().printStackTrace(new PrintWriter(sw));
 		String stackTrace = sw.toString();
 
-		Issue issue1 = JiraTestUtils.createIssue(client, "testStackTraceDetector1");
+		Issue issue1 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
 		issue1.setDescription(stackTrace);
-		issue1 = client.createIssue(issue1);
+		issue1 = JiraTestUtils.createIssue(client, issue1);
 
 		verifyDuplicate(stackTrace, issue1);
 	}
@@ -105,7 +107,6 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		String stackTrace = sw.toString();
 
 		Issue issue1 = JiraTestUtils.createIssue(client, "testStackTraceDetector2");
-		issue1 = client.createIssue(issue1);
 		
 		client.updateIssue(issue1, stackTrace);
 
@@ -118,7 +119,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		assertEquals(false, task1.isCompleted());
 		assertNull(task1.getDueDate());
 		
-		Issue issue2 = JiraTestUtils.createIssue(client, "testStackTraceDetector1");
+		Issue issue2 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
 		issue2.setDescription(stackTrace);
 
 		RepositoryTaskData data = new RepositoryTaskData(dataHandler.getAttributeFactory(null, null, null),

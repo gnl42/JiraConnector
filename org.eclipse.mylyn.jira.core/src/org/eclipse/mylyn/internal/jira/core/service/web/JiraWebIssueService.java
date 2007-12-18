@@ -54,8 +54,7 @@ import org.eclipse.mylyn.web.core.HtmlTag;
 import org.eclipse.mylyn.web.core.HtmlStreamTokenizer.Token;
 
 /**
- * TODO look at creation Operation classes to perform each of these actions
- * TODO extract field names into constants
+ * TODO look at creation Operation classes to perform each of these actions TODO extract field names into constants
  * 
  * @author Brock Janiczak
  * @author Steffen Pingel
@@ -119,11 +118,12 @@ public class JiraWebIssueService {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
 				if (issue.getDue() != null) {
-					post.addParameter("duedate", new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
+					post.addParameter("duedate",
+							new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
 				} else {
 					post.addParameter("duedate", "");
 				}
-				post.addParameter("timetracking", Long.toString(issue.getInitialEstimate()/60)+"m");
+				post.addParameter("timetracking", Long.toString(issue.getInitialEstimate() / 60) + "m");
 
 				Component[] components = issue.getComponents();
 				if (components != null) {
@@ -177,7 +177,7 @@ public class JiraWebIssueService {
 				if (issue.getSecurityLevel() != null) {
 					post.addParameter("security", issue.getSecurityLevel().getId());
 				}
-				
+
 				// custom fields
 				for (CustomField customField : issue.getCustomFields()) {
 					for (String value : customField.getValues()) {
@@ -282,8 +282,8 @@ public class JiraWebIssueService {
 //		});
 //	}
 
-	public void advanceIssueWorkflow(final Issue issue, final String actionKey, final String comment, final String[] fields)
-			throws JiraException {
+	public void advanceIssueWorkflow(final Issue issue, final String actionKey, final String comment,
+			final String[] fields) throws JiraException {
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -477,11 +477,11 @@ public class JiraWebIssueService {
 	public String createIssue(final Issue issue) throws JiraException {
 		return createIssue("/secure/CreateIssueDetails.jspa", issue);
 	}
-	
+
 	public String createSubTask(final Issue issue) throws JiraException {
 		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue);
 	}
-	
+
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
 	private String createIssue(final String url, final Issue issue) throws JiraException {
 		final String[] issueKey = new String[1];
@@ -502,7 +502,8 @@ public class JiraWebIssueService {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
 				if (issue.getDue() != null) {
-					post.addParameter("duedate", new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
+					post.addParameter("duedate",
+							new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
 				}
 
 				if (issue.getComponents() != null) {
@@ -545,7 +546,7 @@ public class JiraWebIssueService {
 				if (issue.getParentId() != null) {
 					post.addParameter("parentIssueId", issue.getParentId());
 				}
-				
+
 				try {
 					client.executeMethod(post);
 					if (!s.expectRedirect(post, "/browse/")) {
@@ -558,7 +559,9 @@ public class JiraWebIssueService {
 						if (i != -1) {
 							issueKey[0] = location.substring(i);
 						} else {
-							throw new JiraException("The server redirected to an unexpected location while creating an issue: " + location);
+							throw new JiraException(
+									"The server redirected to an unexpected location while creating an issue: "
+											+ location);
 						}
 					}
 				} catch (IOException e) {
@@ -642,6 +645,32 @@ public class JiraWebIssueService {
 		});
 	}
 
+	public void deleteIssue(final Issue issue) throws JiraException {
+		final JiraWebSession s = new JiraWebSession(server);
+		s.doInSession(new JiraWebSessionCallback() {
+
+			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+				StringBuffer urlBuffer = new StringBuffer(baseUrl);
+				urlBuffer.append("/secure/DeleteIssue.jspa");
+				urlBuffer.append("?id=").append(issue.getId());
+				urlBuffer.append("&confirm=true");
+
+				HeadMethod head = new HeadMethod(urlBuffer.toString());
+				try {
+					int result = client.executeMethod(head);
+					if (result != HttpStatus.SC_OK) {
+						throw new JiraException("Deleting issue failed. Return code: " + result);
+					}
+				} catch (IOException e) {
+					throw new JiraException(e);
+				} finally {
+					head.releaseConnection();
+				}
+			}
+
+		});
+	}
+
 	public WebServerInfo getWebServerInfo() throws JiraException {
 		final WebServerInfo webServerInfo = new WebServerInfo();
 		final JiraWebSession s = new JiraWebSession(server);
@@ -656,7 +685,7 @@ public class JiraWebIssueService {
 		});
 		return webServerInfo;
 	}
-	
+
 	private String getAssigneeParam(JiraClient server, Issue issue, int assigneeType, String user) {
 		switch (assigneeType) {
 		case JiraClient.ASSIGNEE_CURRENT:
@@ -676,10 +705,15 @@ public class JiraWebIssueService {
 
 	protected void handleErrorMessage(HttpMethodBase method) throws IOException, JiraException {
 		String response = method.getResponseBodyAsString();
-		StatusHandler.log("JIRA error\n"+response, null);
-		
+		StatusHandler.log("JIRA error\n" + response, null);
+
 		if (method.getStatusCode() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
 			throw new JiraRemoteException("JIRA system error", null);
+		}
+
+		if (response == null) {
+			throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(),
+					"");
 		}
 
 		StringReader reader = new StringReader(response);
@@ -712,7 +746,8 @@ public class JiraWebIssueService {
 				throw new JiraRemoteMessageException(msg.toString());
 			}
 		} catch (ParseException e) {
-			throw new JiraRemoteMessageException("An error has while parsing JIRA response: " + method.getStatusCode(), "");
+			throw new JiraRemoteMessageException("Error parsing JIRA response: " + method.getStatusCode(),
+					"");
 		} finally {
 			reader.close();
 		}

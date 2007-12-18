@@ -61,6 +61,9 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
+		if (client != null) {
+			JiraTestUtils.cleanup(client);
+		}
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
@@ -90,7 +93,6 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testAttachFile");
-		issue = client.createIssue(issue);
 
 		File file = File.createTempFile("attachment", null);
 		file.deleteOnExit();
