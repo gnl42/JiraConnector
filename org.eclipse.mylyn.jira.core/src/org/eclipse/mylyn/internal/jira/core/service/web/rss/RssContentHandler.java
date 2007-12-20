@@ -332,7 +332,7 @@ public class RssContentHandler extends DefaultHandler {
 	@Override
 	public void endDocument() throws SAXException {
 		if (state != START) {
-			// System.err.println("Document ended abnormally");
+			// ignore
 		}
 		this.collector.done();
 		// remove unused buffers
@@ -706,7 +706,7 @@ public class RssContentHandler extends DefaultHandler {
 			} else if (ACTUAL.equals(localName)) {
 
 			} else {
-				//System.err.println("Unknown Issue attribute: " + localName);
+				// ignore
 			}
 
 			break;
