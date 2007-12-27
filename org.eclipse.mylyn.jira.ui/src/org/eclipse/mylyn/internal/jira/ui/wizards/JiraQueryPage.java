@@ -217,9 +217,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public void createControl(final Composite parent) {
-		Composite c = null;
-
-		c = new Composite(parent, SWT.NONE);
+		Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new GridLayout(3, false));
 		c.setLayoutData(new GridData(GridData.FILL_BOTH));
 		setControl(c);
@@ -241,7 +239,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		}
 
 		SashForm sashForm = new SashForm(c, SWT.VERTICAL);
-		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1));
+		GridData gd_sashForm = new GridData(SWT.FILL, SWT.FILL, false, true, 3, 1);
+		gd_sashForm.heightHint = 200;
+		gd_sashForm.widthHint = 500;
+		sashForm.setLayoutData(gd_sashForm);
 
 		{
 			SashForm cc = new SashForm(sashForm, SWT.HORIZONTAL);
@@ -311,7 +312,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				typeLabel.setText("Type:");
 
 				issueType = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-				issueType.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+				gridData.heightHint = 50;
+				gridData.widthHint = 90;
+				issueType.getList().setLayoutData(gridData);
 
 				issueType.setLabelProvider(new LabelProvider() {
 
@@ -341,7 +345,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				statusLabel.setText("Status:");
 
 				status = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-				status.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+				gridData.heightHint = 50;
+				gridData.widthHint = 90;
+				status.getList().setLayoutData(gridData);
 
 				status.setLabelProvider(new LabelProvider() {
 
@@ -371,7 +378,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				resolutionLabel.setText("Resolution:");
 
 				resolution = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-				resolution.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+				gridData.heightHint = 50;
+				gridData.widthHint = 90;
+				resolution.getList().setLayoutData(gridData);
 
 				resolution.setLabelProvider(new LabelProvider() {
 
@@ -401,7 +411,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				priorityLabel.setText("Priority:");
 
 				priority = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-				priority.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+				gridData.heightHint = 50;
+				gridData.widthHint = 90;
+				priority.getList().setLayoutData(gridData);
 
 				priority.setLabelProvider(new LabelProvider() {
 
@@ -655,7 +668,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	private void createReportedInViewer(Composite c) {
 		reportedIn = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 55;
+		gridData.heightHint = 50;
 		gridData.widthHint = 90;
 		reportedIn.getControl().setLayoutData(gridData);
 
@@ -698,7 +711,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	private void createComponentsViewer(Composite c) {
 		components = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 63;
+		gridData.heightHint = 50;
 		gridData.widthHint = 90;
 		components.getControl().setLayoutData(gridData);
 
@@ -733,7 +746,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	private void createFixForViewer(Composite c) {
 		fixFor = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 57;
+		gridData.heightHint = 50;
 		gridData.widthHint = 90;
 		fixFor.getControl().setLayoutData(gridData);
 
@@ -775,7 +788,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	private void createProjectsViewer(Composite c) {
 		project = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 59;
+		gridData.heightHint = 50;
 		gridData.widthHint = 90;
 		project.getControl().setLayoutData(gridData);
 
