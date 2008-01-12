@@ -32,7 +32,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
-import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.WebLocation;
@@ -405,29 +404,32 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals(childIssue.getId(), parentIssue.getSubtasks()[0].getIssueId());
 	}
 
-	public void testGetIssueLeadingSpacesInDescription() throws Exception {
-		getIssueLeadingSpacesInDescripton(JiraTestConstants.JIRA_39_URL);
+	public void testGetIssueLeadingSpaces() throws Exception {
+		getIssueLeadingSpaces(JiraTestConstants.JIRA_39_URL);
 	}
 
-	private void getIssueLeadingSpacesInDescripton(String url) throws Exception {
+	private void getIssueLeadingSpaces(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
+		String summary = "  testCreateIssueLeadingSpaces";
+		String description = "  leading spaces\n  more spaces";
+		
 		Issue issue = new Issue();
 		issue.setProject(client.getProjects()[0]);
 		issue.setType(client.getIssueTypes()[0]);
-		issue.setSummary("testCreateIssue");
-		String description = "  leading spaces\n  more spaces";
+		issue.setSummary(summary);
 		issue.setDescription(description);
 		issue.setAssignee(client.getUserName());
 
 		issue = JiraTestUtils.createIssue(client, issue);
 		issue = client.getIssueByKey(issue.getKey());
-		assertEquals(description, JiraTaskDataHandler.convertHtml(issue.getDescription()));
+		assertEquals(description, issue.getDescription());
+		assertEquals(summary, issue.getSummary());
 
-		issue.setDescription(JiraTaskDataHandler.convertHtml(issue.getDescription()));
+		issue.setDescription(issue.getDescription());
 		client.updateIssue(issue, "");
 		issue = client.getIssueByKey(issue.getKey());
-		assertEquals(description, JiraTaskDataHandler.convertHtml(issue.getDescription()));
+		assertEquals(description, issue.getDescription());
 	}
 
 	public void testUpdateIssue() throws Exception {
@@ -490,14 +492,19 @@ public class JiraRpcClientTest extends TestCase {
 	private void updateIssueNonAscii(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Issue issue = JiraTestUtils.createIssue(client, "\u00C4\u00D6\u00DC");
-		assertEquals("\u00C4\u00D6\u00DC", issue.getSummary());
+		String summary = "\u00C4\u00D6\u00DC\nnewline";
+		String description = "\"&\n\u00A9\\ ',><br/>&nbsp; ";
+		
+		Issue issue = JiraTestUtils.createIssue(client, summary);
+		issue.setDescription(description);
+		assertEquals(summary, issue.getSummary());
 		
 		client.updateIssue(issue, "comment: \u00C4\u00D6\u00DC");
 		issue = client.getIssueByKey(issue.getKey());
-		assertEquals("\u00C4\u00D6\u00DC", issue.getSummary());
+		assertEquals(summary, issue.getSummary());
+		assertEquals(description, issue.getDescription());
 		assertEquals(1, issue.getComments().length);
-		assertEquals("comment: \u00C4\u00D6\u00DC", JiraTaskDataHandler.convertHtml(issue.getComments()[0].getComment()));
+		assertEquals("comment: \u00C4\u00D6\u00DC", issue.getComments()[0].getComment());
 	}
 
 	public void testWatchUnwatchIssue() throws Exception {

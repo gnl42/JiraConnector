@@ -1,0 +1,4 @@
+1200100860133	Delete element
+1200102483395	Extract local variable 'description'
+1200102516366	Extract local variable 'expected'
+1200102753104	Extract local variable 'summary'

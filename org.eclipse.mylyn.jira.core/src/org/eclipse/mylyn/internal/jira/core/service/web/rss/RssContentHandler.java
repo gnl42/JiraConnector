@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
@@ -485,7 +486,7 @@ public class RssContentHandler extends DefaultHandler {
 		switch (state) {
 		case IN_SUBTASKS:
 			if (SUBTASK.equals(localName)) {
-				currentSubtasks.add(new Subtask(currentSubtaskId, currentElementText.toString()));
+				currentSubtasks.add(new Subtask(currentSubtaskId, getCurrentElementText()));
 				currentSubtaskId = null;
 			} else if (SUBTASKS.equals(localName)) {
 				state = IN_ITEM;
@@ -503,21 +504,21 @@ public class RssContentHandler extends DefaultHandler {
 
 		case IN_CUSTOM_FIELD_VALUE:
 			if (CUSTOM_FIELD_VALUE.equals(localName)) {
-				customFieldValues.add(currentElementText.toString());
+				customFieldValues.add(getCurrentElementText());
 				state = IN_CUSTOM_FIELD_VALUES;
 			}
 			break;
 		case IN_CUSTOM_FIELD_VALUES:
 			if (CUSTOM_FIELD_VALUES.equals(localName)) {
 				if (customFieldValues.size() == 0) {
-					customFieldValues.add(currentElementText.toString().trim());
+					customFieldValues.add(getCurrentElementText());
 				}
 				state = IN_CUSTOM_FIELD;
 			}
 			break;
 		case IN_CUSTOM_FIELD_NAME:
 			if (CUSTOM_FIELD_NAME.equals(localName)) {
-				customFieldName = currentElementText.toString();
+				customFieldName = getCurrentElementText();
 				state = IN_CUSTOM_FIELD;
 			}
 			break;
@@ -540,7 +541,7 @@ public class RssContentHandler extends DefaultHandler {
 
 		case IN_XWARDS_ISSUE_LINK:
 			if (ISSUE_LINK.equals(localName)) {
-				String key = currentElementText.toString().trim();
+				String key = getCurrentElementText().trim();
 				IssueLink link = new IssueLink(currentIssueLinkIssueId, key, currentIssueLinkTypeId,
 						currentIssueLinkTypeName, currentIssueLinkInwardDescription, currentIssueLinkOutwardDescription);
 				currentIssueLinks.add(link);
@@ -562,7 +563,7 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssueLinkTypeName = null;
 				state = IN_ISSUE_LINKS;
 			} else if (ISSUE_LINK_NAME.equals(localName)) {
-				currentIssueLinkTypeName = currentElementText.toString().trim();
+				currentIssueLinkTypeName = getCurrentElementText().trim();
 			}
 			break;
 
@@ -576,7 +577,7 @@ public class RssContentHandler extends DefaultHandler {
 			if (COMMENTS.equals(localName)) {
 				state = IN_ITEM;
 			} else if (COMMENT.equals(localName)) {
-				Comment comment = new Comment(currentElementText.toString(), commentAuthor, commentLevel, commentDate);
+				Comment comment = new Comment(getCurrentElementText(), commentAuthor, commentLevel, commentDate);
 				currentComments.add(comment);
 			}
 			break;
@@ -614,11 +615,11 @@ public class RssContentHandler extends DefaultHandler {
 			} else if (LINK.equals(localName)) {
 
 			} else if (DESCRIPTION.equals(localName)) {
-				currentIssue.setDescription(currentElementText.toString());
+				currentIssue.setDescription(getCurrentElementTextEscapeHtml());
 			} else if (ENVIRONMENT.equals(localName)) {
-				currentIssue.setEnvironment(currentElementText.toString());
+				currentIssue.setEnvironment(getCurrentElementText());
 			} else if (KEY.equals(localName)) {
-				String key = currentElementText.toString();
+				String key = getCurrentElementText();
 				currentIssue.setKey(key);
 				currentIssue.setUrl(client.getBaseUrl() + "/browse/" + key);
 				// TODO super dodgey to assume the project from the issue key
@@ -629,21 +630,21 @@ public class RssContentHandler extends DefaultHandler {
 				}
 				currentIssue.setProject(project);
 			} else if (PARENT.equals(localName)) {
-				currentIssue.setParentKey(currentElementText.toString());
+				currentIssue.setParentKey(getCurrentElementText());
 			} else if (SUMMARY.equals(localName)) {
-				currentIssue.setSummary(currentElementText.toString());
+				currentIssue.setSummary(getCurrentElementText());
 			} else if (CREATED.equals(localName)) {
-				currentIssue.setCreated(convertToDate(currentElementText.toString()));
+				currentIssue.setCreated(convertToDate(getCurrentElementText()));
 			} else if (UPDATED.equals(localName)) {
-				currentIssue.setUpdated(convertToDate(currentElementText.toString()));
+				currentIssue.setUpdated(convertToDate(getCurrentElementText()));
 			} else if (VERSION.equals(localName)) {
 				if (currentIssue.getProject() == null) {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
-				Version version = currentIssue.getProject().getVersion(currentElementText.toString());
+				Version version = currentIssue.getProject().getVersion(getCurrentElementText());
 				// TODO add better handling of unknown versions
 				if (version != null) {
-					// throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
+					// throw new SAXException("No version with name '" + getCurrentElementText() + "' found");
 					if (currentReportedVersions == null) {
 						currentReportedVersions = new ArrayList<Version>();
 					}
@@ -653,10 +654,10 @@ public class RssContentHandler extends DefaultHandler {
 				if (currentIssue.getProject() == null) {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
-				Version version = currentIssue.getProject().getVersion(currentElementText.toString());
+				Version version = currentIssue.getProject().getVersion(getCurrentElementText());
 				// TODO add better handling of unknown versions
 				if (version != null) {
-					// throw new SAXException("No version with name '" + currentElementText.toString() + "' found");
+					// throw new SAXException("No version with name '" + getCurrentElementText() + "' found");
 					if (currentFixVersions == null) {
 						currentFixVersions = new ArrayList<Version>();
 					}
@@ -666,26 +667,29 @@ public class RssContentHandler extends DefaultHandler {
 				if (currentIssue.getProject() == null) {
 					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 				}
-				Component component = currentIssue.getProject().getComponent(currentElementText.toString());
+				Component component = currentIssue.getProject().getComponent(getCurrentElementText());
 				// TODO add better handling of unknown components
 				if (component != null) {
-					// throw new SAXException("No component with name '" + currentElementText.toString() + "' found");
+					// throw new SAXException("No component with name '" + getCurrentElementText() + "' found");
 					if (currentComponents == null) {
 						currentComponents = new ArrayList<Component>();
 					}
 					currentComponents.add(component);
 				}
 			} else if (DUE.equals(localName)) {
-				currentIssue.setDue(convertToDueDate(currentElementText.toString()));
+				currentIssue.setDue(convertToDueDate(getCurrentElementText()));
 			} else if (VOTES.equals(localName)) {
-				// TODO check for number format exception
-				if (currentElementText.toString().length() > 0) {
-					currentIssue.setVotes(Integer.parseInt(currentElementText.toString()));
+				if (getCurrentElementText().length() > 0) {
+					try {
+						currentIssue.setVotes(Integer.parseInt(getCurrentElementText()));
+					} catch (NumberFormatException e) {
+						StatusHandler.log(e, "Error while parsing number of votes");
+					}
 				}
 			} else if (SECURITY.equals(localName)) {
 				SecurityLevel securityLevel = currentIssue.getSecurityLevel();
 				if (securityLevel != null) {
-					securityLevel.setName(currentElementText.toString());
+					securityLevel.setName(getCurrentElementText());
 				}
 			} else if (TYPE.equals(localName)) {
 
@@ -752,4 +756,20 @@ public class RssContentHandler extends DefaultHandler {
 			return null;
 		}
 	}
+	
+	private String getCurrentElementText() {
+		String unescaped = currentElementText.toString();
+		unescaped = StringEscapeUtils.unescapeXml(unescaped);
+		return unescaped;
+	}
+	
+	private String getCurrentElementTextEscapeHtml() {
+		String unescaped = currentElementText.toString();
+		unescaped = unescaped.replaceAll("\n", "");
+		unescaped = unescaped.replaceAll("<br/>", "\n");
+		unescaped = unescaped.replaceAll("&nbsp;", " ");
+		unescaped = StringEscapeUtils.unescapeXml(unescaped);
+		return unescaped;
+	}
+
 }

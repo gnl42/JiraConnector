@@ -8,8 +8,6 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +19,7 @@ import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -45,7 +44,6 @@ import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
-import org.eclipse.mylyn.internal.jira.ui.html.HTML2TextReader;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
@@ -254,9 +252,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, JiraUtils.dateToString(jiraIssue.getCreated()));
-		data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, convertHtml(jiraIssue.getSummary()));
-		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, convertHtml(jiraIssue.getDescription()));
-		data.setAttributeValue(RepositoryTaskAttribute.STATUS, convertHtml(jiraIssue.getStatus().getName()));
+		data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, jiraIssue.getSummary());
+		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, jiraIssue.getDescription());
+		data.setAttributeValue(RepositoryTaskAttribute.STATUS, jiraIssue.getStatus().getName());
 		data.setAttributeValue(RepositoryTaskAttribute.TASK_KEY, jiraIssue.getKey());
 		data.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, //
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getName());
@@ -322,7 +320,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		if (jiraIssue.getEnvironment() != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, convertHtml(jiraIssue.getEnvironment()));
+			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, jiraIssue.getEnvironment());
 		} else {
 			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
 		}
@@ -334,7 +332,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			// XXX ugly because AbstractTaskEditor is using USER_OWNER instead of COMMENT_AUTHOR
 			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_AUTHOR, createAuthorAttribute(comment.getAuthor()));
 
-			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, convertHtml(comment.getComment()));
+			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, comment.getComment());
 			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, formatDate(comment.getCreated()));
 			data.addComment(taskComment);
 		}
@@ -380,11 +378,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			attribute.setReadOnly(field.isReadOnly());
 
 			for (String value : field.getValues()) {
-				if (JiraFieldType.TEXTAREA.getKey().equals(type)) {
-					attribute.addValue(convertHtml(value));
-				} else {
-					attribute.addValue(value);
-				}
+				attribute.addValue(value);
 			}
 			data.addAttribute(attribute.getId(), attribute);
 		}
@@ -497,22 +491,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;
 	}
 
-	public static String convertHtml(String text) {
+	public static String convertHtml2(String text) {
 		if (text == null || text.length() == 0) {
 			return "";
 		}
-		StringReader stringReader = new StringReader(text);
-		HTML2TextReader html2TextReader = new HTML2TextReader(stringReader, null);
-		try {
-			char[] chars = new char[text.length()];
-			int len = html2TextReader.read(chars, 0, text.length());
-			if (len == -1) {
-				return "";
-			}
-			return new String(chars, 0, len);
-		} catch (IOException e) {
-			return text;
-		}
+		return StringEscapeUtils.unescapeXml(text);
 	}
 
 	public void addOperations(RepositoryTaskData data, Issue issue, JiraClient client, RepositoryTaskData oldTaskData)
