@@ -182,7 +182,9 @@ public class JiraWebIssueService {
 				for (CustomField customField : issue.getCustomFields()) {
 					for (String value : customField.getValues()) {
 						String key = customField.getKey();
-						if (key == null || !key.startsWith("com.atlassian.jira.toolkit")) {
+						if (key == null || //
+								(!key.startsWith("com.atlassian.jira.toolkit") && //
+								!key.startsWith("com.atlassian.jira.ext.charting"))) {
 							post.addParameter(customField.getId(), value == null ? "" : value);
 						}
 					}
