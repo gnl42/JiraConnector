@@ -58,6 +58,14 @@ public class JiraClientFacadeTest extends TestCase {
 		} catch (JiraServiceUnavailableException e) {
 		}
 
+		// not found		
+		try {
+			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/not-found", "user", "password"));
+			fail("Expected exception");
+		} catch (JiraServiceUnavailableException e) {
+			assertEquals("No JIRA repository found at location.", e.getMessage());
+		}
+
 		// RPC not enabled
 		try {
 			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-invalid", "user", "password"));
@@ -66,6 +74,7 @@ public class JiraClientFacadeTest extends TestCase {
 			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
 		}
 		
+		// HTTP error
 		try {
 			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-proxy-error", "user", "password"));
 			fail("Expected exception");

@@ -428,7 +428,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 				case HttpURLConnection.HTTP_UNAVAILABLE:
 					return ERROR_RPC_NOT_ENABLED;
 				case HttpURLConnection.HTTP_NOT_FOUND:
-					return "Web service endpoint not found.";
+					return "No JIRA repository found at location.";
 				case HttpURLConnection.HTTP_MOVED_PERM:
 					return "The location of the Jira server has moved.";
 				}
