@@ -224,11 +224,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 								ERROR_REPOSITORY_CONFIGURATION, null));						
 					}
 					
-					// for JIRA we all is returned by the query so no need to mark tasks as stale
+					// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 					monitor.subTask(issue.getKey() + " " + issue.getSummary());
 					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
 					RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData);
 					mylynFacade.saveIncoming(task, taskData);
+					updateTaskFromTaskData(repository, task, taskData);
 				}
 			}
 

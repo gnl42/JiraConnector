@@ -240,6 +240,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
 				new NullProgressMonitor());
 		taskList.addTask(task);
+
+		// make sure the second issue is created after the first one
+		Thread.sleep(1000);
+		
 		Issue issue2 = JiraTestUtils.createIssue(client, "testMarkStale2");
 		assertTrue(issue2.getUpdated().after(issue.getUpdated()));
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
@@ -252,6 +256,28 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(start).equals(
 				repository.getSynchronizationTimeStamp()));
 		assertEquals(issue2.getUpdated(), JiraUtils.getLastUpdate(repository));
+	}
+
+	public void testMarkStaleClosedTask() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		// create an issue
+		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");		
+		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
+				new NullProgressMonitor());
+		taskList.addTask(task);
+		assertFalse(task.isCompleted());
+		
+		// close issue
+		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
+		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
+		
+		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(issue.getCreated(), -5)));
+		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
+		tasks.add(task);
+		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
+		assertTrue(changed);
+		assertTrue(task.isCompleted());
 	}
 
 	public void testGetSynchronizationFilter() throws Exception {
