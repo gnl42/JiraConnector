@@ -46,8 +46,25 @@ public class JiraClientFacadeTest extends TestCase {
 		jiraFacade.logOutFromAll();
 	}
 
-	public void testLogin39() throws Exception {
+	public void testValidate39() throws Exception {
 		validate(JiraTestConstants.JIRA_39_URL);
+	}
+
+	public void testValidate() throws Exception {
+		// invalid URL		
+		try {
+			jiraFacade.validateConnection(new WebLocation("http://non.existant/repository", "user", "password"));
+			fail("Expected exception");
+		} catch (JiraServiceUnavailableException e) {
+		}
+
+		// RPC not enabled
+		try {
+			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-invalid", "user", "password"));
+			fail("Expected exception");
+		} catch (JiraServiceUnavailableException e) {
+			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
+		}
 	}
 
 	public void testChangeCredentials() throws Exception {
@@ -79,23 +96,9 @@ public class JiraClientFacadeTest extends TestCase {
 		// standard connect
 		jiraFacade.validateConnection(new WebLocation(url, credentials.username, credentials.password));
 
-		// invalid URL		
-		try {
-			jiraFacade.validateConnection(new WebLocation("http://non.existant/repository", credentials.username, credentials.password));
-			fail("Expected exception");
-		} catch (JiraServiceUnavailableException e) {
-		}
-
 		// invalid password
 		try {
 			jiraFacade.validateConnection(new WebLocation(url, credentials.username, "wrongpassword"));
-			fail("Expected exception");
-		} catch (JiraAuthenticationException e) {
-		}
-
-		// invalid username
-		try {
-			jiraFacade.validateConnection(new WebLocation(url, "wrongusername", credentials.password));
 			fail("Expected exception");
 		} catch (JiraAuthenticationException e) {
 		}
@@ -105,18 +108,18 @@ public class JiraClientFacadeTest extends TestCase {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setAuthenticationCredentials(credentials.username, credentials.password);
-		assertFalse(JiraUtils.getCharacterEncodingValidated(repository));		
+		assertFalse(JiraUtils.getCharacterEncodingValidated(repository));
 
 		JiraClient client = jiraFacade.getJiraClient(repository);
 		assertEquals("ISO-8859-1", client.getCharacterEncoding());
-		
+
 		repository.setCharacterEncoding("UTF-8");
-		jiraFacade.repositorySettingsChanged(repository);		
+		jiraFacade.repositorySettingsChanged(repository);
 		client = jiraFacade.getJiraClient(repository);
 		assertEquals("ISO-8859-1", client.getCharacterEncoding());
 
 		JiraUtils.setCharacterEncodingValidated(repository, true);
-		jiraFacade.repositorySettingsChanged(repository);		
+		jiraFacade.repositorySettingsChanged(repository);
 		client = jiraFacade.getJiraClient(repository);
 		assertEquals("UTF-8", client.getCharacterEncoding());
 	}

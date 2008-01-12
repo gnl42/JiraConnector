@@ -63,10 +63,11 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
-import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 // This class does not represent the data in a JIRA installation. It is merely
 // a helper to get any data that is missing in the cached JiraInstallation
@@ -86,6 +87,8 @@ import org.w3c.dom.Element;
  * @author Steffen Pingel
  */
 public class JiraRpcClient extends AbstractJiraClient {
+
+	private static final String REMOTE_ERROR_BAD_ENVELOPE_TAG = "Bad envelope tag:  html";
 
 	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2";
 
@@ -417,9 +420,9 @@ public class JiraRpcClient extends AbstractJiraClient {
 				int responseCode = Integer.parseInt(httpErrorElement.getFirstChild().getTextContent());
 				switch (responseCode) {
 				case HttpURLConnection.HTTP_INTERNAL_ERROR:
-					return "Internal Server Error. Please contact your Jira administrator.";
+					return "Internal Server Error. Please contact your JIRA administrator.";
 				case HttpURLConnection.HTTP_UNAVAILABLE:
-					return "Jira RPC interface is not enabled. Please contact your Jira administrator.";
+					return "JIRA RPC services are not enabled. Please contact your JIRA administrator.";
 				case HttpURLConnection.HTTP_NOT_FOUND:
 					return "Web service endpoint not found.";
 				case HttpURLConnection.HTTP_MOVED_PERM:
@@ -434,6 +437,10 @@ public class JiraRpcClient extends AbstractJiraClient {
 				return "Unknown host.";
 			} else if (cause instanceof ConnectException) {
 				return "Unable to connect to server.";
+			} else if (cause instanceof SAXException) {
+				if (REMOTE_ERROR_BAD_ENVELOPE_TAG.equals(cause.getMessage())) {
+					return "JIRA RPC services are not enabled. Please contact your JIRA administrator.";
+				}
 			}
 			return e.getCause().getLocalizedMessage();
 		}
