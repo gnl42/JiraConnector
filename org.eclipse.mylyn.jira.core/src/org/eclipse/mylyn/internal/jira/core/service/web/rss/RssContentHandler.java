@@ -577,7 +577,7 @@ public class RssContentHandler extends DefaultHandler {
 			if (COMMENTS.equals(localName)) {
 				state = IN_ITEM;
 			} else if (COMMENT.equals(localName)) {
-				Comment comment = new Comment(getCurrentElementText(), commentAuthor, commentLevel, commentDate);
+				Comment comment = new Comment(getCurrentElementTextEscapeHtml(), commentAuthor, commentLevel, commentDate);
 				currentComments.add(comment);
 			}
 			break;
