@@ -626,7 +626,8 @@ public class RssContentHandler extends DefaultHandler {
 				String projectKey = key.substring(0, key.lastIndexOf('-'));
 				Project project = client.getProjectByKey(projectKey);
 				if (project == null) {
-					throw new SAXException("No project with key '" + projectKey + "' found");
+					//throw new SAXException("No project with key '" + projectKey + "' found");
+					break;
 				}
 				currentIssue.setProject(project);
 			} else if (PARENT.equals(localName)) {
@@ -639,7 +640,8 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setUpdated(convertToDate(getCurrentElementText()));
 			} else if (VERSION.equals(localName)) {
 				if (currentIssue.getProject() == null) {
-					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+					//throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+					break;
 				}
 				Version version = currentIssue.getProject().getVersion(getCurrentElementText());
 				// TODO add better handling of unknown versions
@@ -652,7 +654,8 @@ public class RssContentHandler extends DefaultHandler {
 				}
 			} else if (FIX_VERSION.equals(localName)) {
 				if (currentIssue.getProject() == null) {
-					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+					//throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+					break;
 				}
 				Version version = currentIssue.getProject().getVersion(getCurrentElementText());
 				// TODO add better handling of unknown versions
@@ -665,7 +668,8 @@ public class RssContentHandler extends DefaultHandler {
 				}
 			} else if (COMPONENT.equals(localName)) {
 				if (currentIssue.getProject() == null) {
-					throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+					//throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
+					break;
 				}
 				Component component = currentIssue.getProject().getComponent(getCurrentElementText());
 				// TODO add better handling of unknown components

@@ -55,6 +55,8 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
+	private static final String ERROR_REPOSITORY_CONFIGURATION = "The repository returned an unknown project. Please update the repository attributes.";
+
 	private static final int MAX_MARK_STALE_QUERY_HITS = 500;
 
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/connector"));
@@ -117,25 +119,27 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			IProgressMonitor monitor, ITaskCollector resultCollector) {
 		monitor.beginTask("Running query", IProgressMonitor.UNKNOWN);
 		try {
-
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 
+			try {
+				if (!client.hasDetails()) {
+					client.refreshDetails(monitor);
+				}
+			} catch (JiraException e) {
+				return JiraCorePlugin.toStatus(repository, e);
+			}
+			
 			boolean isSearch = false;
 			Query filter;
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
 				try {
-					if (!client.hasDetails()) {
-						client.refreshDetails(monitor);
-					}
 					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
 					isSearch = ((JiraCustomQuery) repositoryQuery).isSearch();
-				} catch (JiraException e) {
-					return JiraCorePlugin.toStatus(repository, e);
 				} catch (InvalidJiraQueryException e) {
 					return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
-							"The query parameters do not match the repository configuration, please check the query properties; "
+							"The query parameters do not match the repository configuration, please check the query properties: "
 									+ e.getMessage(), null);
 				}
 			} else {
@@ -149,9 +153,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 				int n = 0;
 				for (Issue issue : issues) {
-					if (monitor.isCanceled())
+					if (monitor.isCanceled()) {
 						return Status.CANCEL_STATUS;
+					}
 
+					if (issue.getProject() == null) {
+						return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
+								ERROR_REPOSITORY_CONFIGURATION, null);						
+					}
+					
 					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
 					if (isSearch) {
 						AbstractTask task = taskList.getTask(repository.getUrl(), issue.getId());
@@ -209,6 +219,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			for (Issue issue : issues) {
 				AbstractTask task = mylynFacade.getTask(repository.getUrl(), issue.getId());
 				if (task != null) {
+					if (issue.getProject() == null) {
+						throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
+								ERROR_REPOSITORY_CONFIGURATION, null));						
+					}
+					
 					// for JIRA we all is returned by the query so no need to mark tasks as stale
 					monitor.subTask(issue.getKey() + " " + issue.getSummary());
 					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());

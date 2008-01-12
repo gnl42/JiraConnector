@@ -20,6 +20,7 @@ import java.util.List;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
+// API-3.0 rename to JIRA issue
 public class Issue implements Serializable {
 
 	private static final long serialVersionUID = 1L;
