@@ -88,6 +88,10 @@ import org.xml.sax.SAXException;
  */
 public class JiraRpcClient extends AbstractJiraClient {
 
+	private static final String ERROR_RPC_NOT_ENABLED = "JIRA RPC services are not enabled. Please contact your JIRA administrator.";
+
+	private static final String REMOTE_ERROR_BAD_ID = "White spaces are required between publicId and systemId.";
+
 	private static final String REMOTE_ERROR_BAD_ENVELOPE_TAG = "Bad envelope tag:  html";
 
 	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2";
@@ -422,7 +426,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 				case HttpURLConnection.HTTP_INTERNAL_ERROR:
 					return "Internal Server Error. Please contact your JIRA administrator.";
 				case HttpURLConnection.HTTP_UNAVAILABLE:
-					return "JIRA RPC services are not enabled. Please contact your JIRA administrator.";
+					return ERROR_RPC_NOT_ENABLED;
 				case HttpURLConnection.HTTP_NOT_FOUND:
 					return "Web service endpoint not found.";
 				case HttpURLConnection.HTTP_MOVED_PERM:
@@ -438,8 +442,9 @@ public class JiraRpcClient extends AbstractJiraClient {
 			} else if (cause instanceof ConnectException) {
 				return "Unable to connect to server.";
 			} else if (cause instanceof SAXException) {
-				if (REMOTE_ERROR_BAD_ENVELOPE_TAG.equals(cause.getMessage())) {
-					return "JIRA RPC services are not enabled. Please contact your JIRA administrator.";
+				if (REMOTE_ERROR_BAD_ENVELOPE_TAG.equals(cause.getMessage())
+						|| REMOTE_ERROR_BAD_ID.equals(cause.getMessage())) {
+					return ERROR_RPC_NOT_ENABLED;
 				}
 			}
 			return e.getCause().getLocalizedMessage();

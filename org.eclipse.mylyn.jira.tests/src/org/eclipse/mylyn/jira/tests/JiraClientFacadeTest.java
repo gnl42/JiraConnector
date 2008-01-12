@@ -65,6 +65,13 @@ public class JiraClientFacadeTest extends TestCase {
 		} catch (JiraServiceUnavailableException e) {
 			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
 		}
+		
+		try {
+			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-proxy-error", "user", "password"));
+			fail("Expected exception");
+		} catch (JiraServiceUnavailableException e) {
+			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
+		}		
 	}
 
 	public void testChangeCredentials() throws Exception {
