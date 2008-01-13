@@ -617,7 +617,7 @@ public class RssContentHandler extends DefaultHandler {
 			} else if (DESCRIPTION.equals(localName)) {
 				currentIssue.setDescription(getCurrentElementTextEscapeHtml());
 			} else if (ENVIRONMENT.equals(localName)) {
-				currentIssue.setEnvironment(getCurrentElementText());
+				currentIssue.setEnvironment(getCurrentElementTextEscapeHtml());
 			} else if (KEY.equals(localName)) {
 				String key = getCurrentElementText();
 				currentIssue.setKey(key);
@@ -769,8 +769,7 @@ public class RssContentHandler extends DefaultHandler {
 	
 	private String getCurrentElementTextEscapeHtml() {
 		String unescaped = currentElementText.toString();
-		unescaped = unescaped.replaceAll("\n", "");
-		unescaped = unescaped.replaceAll("<br/>", "\n");
+		unescaped = unescaped.replaceAll("<br/>\n", "\n");
 		unescaped = unescaped.replaceAll("&nbsp;", " ");
 		unescaped = StringEscapeUtils.unescapeXml(unescaped);
 		return unescaped;

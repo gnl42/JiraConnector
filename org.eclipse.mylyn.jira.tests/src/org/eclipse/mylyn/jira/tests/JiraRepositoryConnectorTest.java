@@ -272,7 +272,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
 		
-		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(issue.getCreated(), -5)));
+		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(new Date(), -1)));
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
 		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
