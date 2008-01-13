@@ -10,13 +10,16 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import java.util.Date;
 
+import org.eclipse.mylyn.internal.tasks.core.AbstractAttributeMapper;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
 /**
  * @author Mik Kersten
+ * @author Steffen Pingel
  */
+@SuppressWarnings("restriction")
 public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	private static final long serialVersionUID = 8000933300692372211L;
@@ -55,6 +58,12 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	public static final String TYPE_KEY = "type";
 
+	private final JiraAttributeMapper attributeMapper;
+
+	public JiraAttributeFactory() {
+		this.attributeMapper = new JiraAttributeMapper(this);
+	}
+	
 	@Override
 	public RepositoryTaskAttribute createAttribute(String key) {
 		RepositoryTaskAttribute attribute = super.createAttribute(key);
@@ -142,4 +151,17 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 		}
 	}
 
+	@Override
+	public AbstractAttributeMapper getAttributeMapper() {
+		return attributeMapper;
+	}
+	
+	private class JiraAttributeMapper extends AbstractAttributeMapper {
+
+		public JiraAttributeMapper(AbstractAttributeFactory attributeFactory) {
+			super(attributeFactory);
+		}
+		
+	}
+	
 }
