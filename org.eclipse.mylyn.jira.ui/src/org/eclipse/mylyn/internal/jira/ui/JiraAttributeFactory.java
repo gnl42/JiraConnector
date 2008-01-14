@@ -8,6 +8,7 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
+import java.util.Collection;
 import java.util.Date;
 
 import org.eclipse.mylyn.internal.tasks.core.AbstractAttributeMapper;
@@ -160,6 +161,34 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 		public JiraAttributeMapper(AbstractAttributeFactory attributeFactory) {
 			super(attributeFactory);
+		}
+
+		@Override
+		public String getType(RepositoryTaskAttribute taskAttribute) {
+			JiraFieldType type = JiraFieldType.valueByKey(taskAttribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY));
+			Collection<String> options = taskAttribute.getOptions();
+			if (type.equals(JiraFieldType.SELECT) && (options == null || options.isEmpty() || taskAttribute.isReadOnly())) {
+				type = JiraFieldType.TEXTFIELD;
+			} else if (type.equals(JiraFieldType.MULTISELECT) && (options == null || options.isEmpty())) {
+				type = JiraFieldType.TEXTFIELD;
+			}
+
+			switch (type) {
+			case DATEPICKER:
+				return RepositoryTaskAttribute.TYPE_DATE;
+			case ISSUELINK:
+				return RepositoryTaskAttribute.TYPE_TASK_DEPENDENCY;
+			case ISSUELINKS:
+				return RepositoryTaskAttribute.TYPE_TASK_DEPENDENCY;
+			case MULTISELECT:
+				return RepositoryTaskAttribute.TYPE_MULTI_SELECT;
+			case SELECT:
+				return RepositoryTaskAttribute.TYPE_SINGLE_SELECT;
+			case TEXTAREA:
+				return RepositoryTaskAttribute.TYPE_LONG_TEXT;
+			default:
+				return RepositoryTaskAttribute.TYPE_SHORT_TEXT;
+			}
 		}
 		
 	}
