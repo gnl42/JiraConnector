@@ -147,6 +147,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		addAttribute(data, RepositoryTaskAttribute.PRODUCT);
 
 		RepositoryTaskAttribute priorities = addAttribute(data, RepositoryTaskAttribute.PRIORITY);
+		priorities.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
 		Priority[] jiraPriorities = client.getPriorities();
 		for (int i = 0; i < jiraPriorities.length; i++) {
 			Priority priority = jiraPriorities[i];
@@ -157,6 +158,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		RepositoryTaskAttribute types = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE);
+		types.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
 		IssueType[] jiraIssueTypes = client.getIssueTypes();
 		for (int i = 0; i < jiraIssueTypes.length; i++) {
 			IssueType type = jiraIssueTypes[i];
@@ -175,21 +177,25 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
 
 		RepositoryTaskAttribute affectsVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+		affectsVersions.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.MULTISELECT.getKey());
 		for (Version version : project.getVersions()) {
 			affectsVersions.addOption(version.getName(), version.getId());
 		}
 
 		RepositoryTaskAttribute components = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+		components.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
 		for (Component component : project.getComponents()) {
 			components.addOption(component.getName(), component.getId());
 		}
 
 		RepositoryTaskAttribute fixVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+		fixVersions.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.MULTISELECT.getKey());
 		for (Version version : project.getVersions()) {
 			fixVersions.addOption(version.getName(), version.getId());
 		}
 
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
+		RepositoryTaskAttribute environment = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
+		environment.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.TEXTAREA.getKey());
 	}
 
 	private RepositoryTaskAttribute addAttribute(RepositoryTaskData data, String key) {
