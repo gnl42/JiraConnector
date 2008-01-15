@@ -520,7 +520,9 @@ public class RssContentHandler extends DefaultHandler {
 		case IN_CUSTOM_FIELD_VALUES:
 			if (CUSTOM_FIELD_VALUES.equals(localName)) {
 				if (customFieldValues.size() == 0) {
-					customFieldValues.add(getCurrentElementText());
+					// strip any line breaks and padding
+					String text = getCurrentElementTextEscapeHtml();
+					customFieldValues.add(text.trim());
 				}
 				state = IN_CUSTOM_FIELD;
 			}
@@ -601,8 +603,13 @@ public class RssContentHandler extends DefaultHandler {
 			if (COMMENTS.equals(localName)) {
 				state = IN_ITEM;
 			} else if (COMMENT.equals(localName)) {
+				boolean commentMarkupDetected = false;
+				if (hasMarkup(currentElementText.toString())) {
+					commentMarkupDetected = true;
+				}
 				Comment comment = new Comment(getCurrentElementTextEscapeHtml(), commentAuthor, commentLevel,
 						commentDate);
+				comment.setMarkupDetected(commentMarkupDetected);
 				currentComments.add(comment);
 			}
 			break;

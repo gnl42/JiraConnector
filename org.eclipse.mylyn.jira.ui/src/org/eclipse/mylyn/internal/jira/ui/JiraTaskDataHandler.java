@@ -337,7 +337,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			// XXX ugly because AbstractTaskEditor is using USER_OWNER instead of COMMENT_AUTHOR
 			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_AUTHOR, createAuthorAttribute(comment.getAuthor()));
 
-			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, stripTags(comment.getComment()));
+			String commentText = comment.getComment();
+			if (comment.isMarkupDetected()) {
+				commentText = stripTags(commentText);
+			}
+			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, commentText);
 			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, formatDate(comment.getCreated()));
 			data.addComment(taskComment);
 		}
@@ -531,10 +535,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			String value = oldTaskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
 			if (jiraIssue.getUpdated().equals(JiraUtils.stringToDate(value))) {
 				// use cached information
-				data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
-						oldTaskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
-				data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT,
-						oldTaskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
+				if (data.getAttribute(RepositoryTaskAttribute.DESCRIPTION) != null) {
+					data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
+							oldTaskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
+				}
+				if (data.getAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT) != null) {
+					data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT,
+							oldTaskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
+				}
 				for (CustomField field : jiraIssue.getCustomFields()) {
 					if (field.isMarkupDetected()) {
 						RepositoryTaskAttribute oldAttribute = oldTaskData.getAttribute(field.getId());
@@ -550,15 +558,29 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		// consider preserving HTML 
 		RemoteIssue remoteIssue = client.getRemoteIssueByKey(jiraIssue.getKey());
-		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, remoteIssue.getDescription());
-		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, remoteIssue.getEnvironment());
+		if (data.getAttribute(RepositoryTaskAttribute.DESCRIPTION) != null) {
+			if (remoteIssue.getDescription() == null) {
+				data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, "");
+			} else {
+				data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, remoteIssue.getDescription());
+			}
+		}
+		if (data.getAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT) != null) {
+			if (remoteIssue.getEnvironment() == null) {
+				data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "");
+			} else {
+				data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, remoteIssue.getEnvironment());
+			}
+		}
 		RemoteCustomFieldValue[] fields = remoteIssue.getCustomFieldValues();
 		for (CustomField field : jiraIssue.getCustomFields()) {
 			if (field.isMarkupDetected()) {
 				innerLoop: for (RemoteCustomFieldValue remoteField : fields) {
 					if (field.getId().equals(remoteField.getCustomfieldId())) {
 						RepositoryTaskAttribute attribute = data.getAttribute(field.getId());
-						attribute.setValues(Arrays.asList(remoteField.getValues()));
+						if (attribute != null) {
+							attribute.setValues(Arrays.asList(remoteField.getValues()));
+						}
 						break innerLoop;
 					}
 				}

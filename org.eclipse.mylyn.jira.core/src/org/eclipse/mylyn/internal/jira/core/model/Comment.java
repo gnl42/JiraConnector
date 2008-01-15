@@ -28,6 +28,8 @@ public final class Comment implements Serializable {
 
 	private final Date created;
 
+	private boolean markupDetected;
+	
 	public Comment(String comment, String author) {
 		this(comment, author, "", new Date()); //$NON-NLS-1$
 	}
@@ -68,4 +70,13 @@ public final class Comment implements Serializable {
 	public String toString() {
 		return this.author + ": " + this.comment;
 	}
+	
+	public boolean isMarkupDetected() {
+		return markupDetected;
+	}
+	
+	public void setMarkupDetected(boolean markupDetected) {
+		this.markupDetected = markupDetected;
+	}
+	
 }
