@@ -28,6 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.WebLocation;
@@ -246,6 +247,11 @@ public class MockJiraClient extends AbstractJiraClient {
 	public void deleteIssue(Issue issue) throws JiraException {
 		// ignore
 		
+	}
+
+	public RemoteIssue getRemoteIssueByKey(String key) throws JiraException {
+		// ignore
+		return null;
 	}
 	
 }

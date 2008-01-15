@@ -507,7 +507,7 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals("comment: \u00C4\u00D6\u00DC", issue.getComments()[0].getComment());
 	}
 
-	public void testUpdateIssueMultiLinesOfText() throws Exception {
+	public void testUpdateIssueMultipleLinesOfText() throws Exception {
 		updateIssueMultipleLinesOfText(JiraTestConstants.JIRA_39_URL);
 	}
 
@@ -527,6 +527,25 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals(description, issue.getDescription());
 	}
 
+	public void testUpdateIssueWithLinkInDescription() throws Exception {
+		updateIssueWithLinkInDescriptoin(JiraTestConstants.JIRA_39_URL);
+	}
+
+	private void updateIssueWithLinkInDescriptoin(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+
+		String summary = "updateIssueWithLinkInDescriptoin";
+		String description = "Link:\n\nhttp://mylyn.eclipse.org/";
+		
+		Issue issue = JiraTestUtils.createIssue(client, summary);
+		issue.setDescription(description);
+		assertEquals(summary, issue.getSummary());
+		
+		client.updateIssue(issue, "");
+		issue = client.getIssueByKey(issue.getKey());
+		assertEquals(description, issue.getDescription());
+	}
+
 	public void testUpdateIssueHtmlTag() throws Exception {
 		updateIssueHtmlTags(JiraTestConstants.JIRA_39_URL);
 	}
@@ -535,7 +554,7 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		String summary = "<b>bold</b>";
-		String description = "<head>123\n<pre>line1\nline2\n\nline4</pre>  &nbsp; ";
+		String description = "<head>123\n<pre>line1\nline2\n\nline4</pre>  &nbsp;&lt;&gt; ";
 		
 		Issue issue = JiraTestUtils.createIssue(client, summary);
 		issue.setDescription(description);

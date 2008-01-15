@@ -91,6 +91,8 @@ public class Issue implements Serializable {
 
 	private SecurityLevel securityLevel;
 	
+	private boolean markupDetected;
+	
 	public String getId() {
 		return id;
 	}
@@ -500,4 +502,12 @@ public class Issue implements Serializable {
 		this.securityLevel = securityLevel;
 	}
 	
+	public boolean isMarkupDetected() {
+		return markupDetected;
+	}
+	
+	public void setMarkupDetected(boolean markupDetected) {
+		this.markupDetected = markupDetected;
+	}
+
 }

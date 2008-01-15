@@ -30,6 +30,8 @@ public class CustomField implements Serializable {
 	private final List<String> values;
 
 	private boolean readOnly; 
+
+	private boolean markupDetected;
 	
 	public CustomField(String id, String key, String name, List<String> values) {
 		this.id = id;
@@ -61,5 +63,13 @@ public class CustomField implements Serializable {
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
+
+	public boolean isMarkupDetected() {
+		return markupDetected;
+	}
 	
+	public void setMarkupDetected(boolean markupDetected) {
+		this.markupDetected = markupDetected;
+	}
+
 }

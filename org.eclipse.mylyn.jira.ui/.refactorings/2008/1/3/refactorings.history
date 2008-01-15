@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 1 package(s) to &apos;org.eclipse.mylyn.jira.core/src&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.ui&apos;&#x0A;- Destination element: &apos;org.eclipse.mylyn.jira.core/src&apos;&#x0A;- Original element: &apos;org.eclipse.mylyn.jira.ui/src/org.eclipse.mylyn.internal.jira.ui.html&apos;" description="Move package" destination="=org.eclipse.mylyn.jira.core/src" element1="/src&lt;org.eclipse.mylyn.internal.jira.ui.html" flags="589830" fragments="1" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.movePackages" stamp="1200367978484" version="1.0"/>
+</session>

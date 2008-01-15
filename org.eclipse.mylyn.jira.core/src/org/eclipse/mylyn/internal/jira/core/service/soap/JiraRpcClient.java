@@ -311,6 +311,14 @@ public class JiraRpcClient extends AbstractJiraClient {
 		return getIssueByKey(issueKey);
 	}
 
+	public RemoteIssue getRemoteIssueByKey(final String key) throws JiraException {
+		return call(new RemoteRunnable<RemoteIssue>() {
+			public RemoteIssue run() throws java.rmi.RemoteException, JiraException {
+				return getSoapService().getIssue(loginToken.getCurrentValue(), key);
+			}
+		});		
+	}
+	
 	@Override
 	public Project[] getProjectsRemote() throws JiraException {
 		return call(new RemoteRunnable<Project[]>() {

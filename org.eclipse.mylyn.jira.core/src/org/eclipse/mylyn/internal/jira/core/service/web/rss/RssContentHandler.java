@@ -8,6 +8,8 @@
 
 package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.eclipse.mylyn.internal.jira.core.html.HTML2TextReader;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
@@ -100,9 +103,13 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class RssContentHandler extends DefaultHandler {
 
-	private static final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
+	private static final String CUSTOM_FIELD_TYPE_TEXTAREA = "com.atlassian.jira.plugin.system.customfieldtypes:textarea";
 
-	private static final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
+	private static final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat(
+			"E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
+
+	private static final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat(
+			"E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
 
 	private static final String CREATED_ATTR = "created"; //$NON-NLS-1$
 
@@ -305,6 +312,8 @@ public class RssContentHandler extends DefaultHandler {
 	private String attachmentAuthor;
 
 	private Date attachmentCreated;
+
+	private boolean markupDetected;
 
 	/**
 	 * Creates a new RSS reader that will create issues from the RSS information by querying the local Jira Server for
@@ -524,8 +533,23 @@ public class RssContentHandler extends DefaultHandler {
 			break;
 		case IN_CUSTOM_FIELD:
 			if (CUSTOM_FIELD.equals(localName)) {
-				currentCustomFields.add(new CustomField(customFieldId, customFieldKey, customFieldName,
-						customFieldValues));
+				boolean customFieldMarkupDetected = false;
+				if (CUSTOM_FIELD_TYPE_TEXTAREA.equals(customFieldKey)) {
+					for (int i = customFieldValues.size() - 1; i >= 0; i--) {
+						String value = customFieldValues.get(i);
+						if (hasMarkup(value)) {
+							customFieldMarkupDetected = true;
+						} else {
+							customFieldValues.set(i, stripTags(value));
+						}
+					}
+				}
+				markupDetected |= customFieldMarkupDetected;
+
+				CustomField customField = new CustomField(customFieldId, customFieldKey, customFieldName,
+						customFieldValues);
+				customField.setMarkupDetected(customFieldMarkupDetected);
+				currentCustomFields.add(customField);
 				customFieldId = null;
 				customFieldKey = null;
 				customFieldName = null;
@@ -577,7 +601,8 @@ public class RssContentHandler extends DefaultHandler {
 			if (COMMENTS.equals(localName)) {
 				state = IN_ITEM;
 			} else if (COMMENT.equals(localName)) {
-				Comment comment = new Comment(getCurrentElementTextEscapeHtml(), commentAuthor, commentLevel, commentDate);
+				Comment comment = new Comment(getCurrentElementTextEscapeHtml(), commentAuthor, commentLevel,
+						commentDate);
 				currentComments.add(comment);
 			}
 			break;
@@ -599,6 +624,7 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setCustomFields(currentCustomFields.toArray(new CustomField[currentCustomFields.size()]));
 				currentIssue.setSubtasks(currentSubtasks.toArray(new Subtask[currentSubtasks.size()]));
 				currentIssue.setIssueLinks(currentIssueLinks.toArray(new IssueLink[currentIssueLinks.size()]));
+				currentIssue.setMarkupDetected(markupDetected);
 				collector.collectIssue(currentIssue);
 				currentIssue = null;
 				currentIssueLinks.clear();
@@ -609,6 +635,7 @@ public class RssContentHandler extends DefaultHandler {
 				currentFixVersions = null;
 				currentReportedVersions = null;
 				currentComponents = null;
+				markupDetected = false;
 				state = LOOKING_FOR_ITEM;
 			} else if (TITLE.equals(localName)) {
 
@@ -760,19 +787,72 @@ public class RssContentHandler extends DefaultHandler {
 			return null;
 		}
 	}
-	
+
 	private String getCurrentElementText() {
 		String unescaped = currentElementText.toString();
 		unescaped = StringEscapeUtils.unescapeXml(unescaped);
 		return unescaped;
 	}
-	
+
 	private String getCurrentElementTextEscapeHtml() {
 		String unescaped = currentElementText.toString();
-		unescaped = unescaped.replaceAll("<br/>\n", "\n");
-		unescaped = unescaped.replaceAll("&nbsp;", " ");
-		unescaped = StringEscapeUtils.unescapeXml(unescaped);
+		if (hasMarkup(unescaped)) {
+			markupDetected = true;
+		} else {
+			unescaped = stripTags(unescaped);
+		}
 		return unescaped;
+	}
+
+	/**
+	 * Strips HTML tags from <code>text</code>. The RSS Feed enhances the output of certain fields such as
+	 * description, environment and comments with HTML tags:
+	 * 
+	 * <ul>
+	 * <li>for each line breaks a <code><br/>\n</code> or <code>\n<br/>\n</code> tag is added
+	 * <li>links are wrapped in <code><a></code> tags
+	 * </ul>
+	 * 
+	 * <p>
+	 * This method strips all HTML tags and not just the tags mentioned above. The implementation should be refactored
+	 * to ignore tags that were not added by the RSS feed.
+	 */
+	public static String stripTags(String text) {
+		if (text == null || text.length() == 0) {
+			return "";
+		}
+		StringReader stringReader = new StringReader(text);
+		HTML2TextReader html2TextReader = new HTML2TextReader(stringReader);
+		try {
+			char[] chars = new char[text.length()];
+			int len = html2TextReader.read(chars, 0, text.length());
+			if (len == -1) {
+				return "";
+			}
+			return new String(chars, 0, len);
+		} catch (IOException e) {
+			return text;
+		}
+	}
+
+	/**
+	 * Returns true if <code>unescaped</code> has HTML markup that can not be properly reverted to the original
+	 * representation.
+	 * 
+	 * <p>
+	 * Public for testing.
+	 */
+	public static boolean hasMarkup(String unescaped) {
+		// look for any tag that is not <br/> and not <a... or </a>
+		int i = unescaped.indexOf("<");
+		while (i != -1) {
+			if (!(unescaped.regionMatches(i + 1, "br/>", 0, 4) || unescaped.regionMatches(i + 1, "a ", 0, 1) || unescaped.regionMatches(
+					i + 1, "/a>", 0, 3))) {
+				return true;
+			}
+			i = unescaped.indexOf("<", i + 1);
+		}
+		return false;
 	}
 
 }

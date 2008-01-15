@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.web.core
 Eclipse-AutoStart: true
 Export-Package: org.eclipse.mylyn.internal.jira.core,
+ org.eclipse.mylyn.internal.jira.core.html,
  org.eclipse.mylyn.internal.jira.core.model,
  org.eclipse.mylyn.internal.jira.core.model.filter,
  org.eclipse.mylyn.internal.jira.core.service,

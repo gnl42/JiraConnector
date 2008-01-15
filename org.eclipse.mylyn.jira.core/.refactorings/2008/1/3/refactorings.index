@@ -1,0 +1,8 @@
+1200338209788	Extract constant 'BR'
+1200338264825	Extract constant 'NBSP'
+1200339051656	Extract method 'unescape'
+1200339095775	Extract local variable 'unescaped'
+1200339130993	Extract local variable 'customField'
+1200339639136	Extract constant 'COM_ATLASSIAN_JIRA_PLUGIN_SYSTEM_CUSTOMFIELDTYPES_TEXTAREA'
+1200367999469	Rename package 'org.eclipse.mylyn.internal.jira.ui.html'
+1200368263810	Delete element

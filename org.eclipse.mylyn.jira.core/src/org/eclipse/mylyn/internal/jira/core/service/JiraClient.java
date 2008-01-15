@@ -25,6 +25,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
@@ -364,5 +365,7 @@ public interface JiraClient {
 	AbstractWebLocation getLocation();
 
 	void deleteIssue(Issue issue) throws JiraException;
-	
+
+	RemoteIssue getRemoteIssueByKey(final String key) throws JiraException;
+
 }
