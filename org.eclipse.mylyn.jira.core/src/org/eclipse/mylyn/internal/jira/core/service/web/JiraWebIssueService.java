@@ -178,17 +178,7 @@ public class JiraWebIssueService {
 					post.addParameter("security", issue.getSecurityLevel().getId());
 				}
 
-				// custom fields
-				for (CustomField customField : issue.getCustomFields()) {
-					for (String value : customField.getValues()) {
-						String key = customField.getKey();
-						if (key == null || //
-								(!key.startsWith("com.atlassian.jira.toolkit") && //
-								!key.startsWith("com.atlassian.jira.ext.charting"))) {
-							post.addParameter(customField.getId(), value == null ? "" : value);
-						}
-					}
-				}
+				addCustomFields(issue, post);
 
 				try {
 					client.executeMethod(post);
@@ -548,6 +538,8 @@ public class JiraWebIssueService {
 				if (issue.getParentId() != null) {
 					post.addParameter("parentIssueId", issue.getParentId());
 				}
+				
+				addCustomFields(issue, post);
 
 				try {
 					client.executeMethod(post);
@@ -777,6 +769,17 @@ public class JiraWebIssueService {
 			sb.append(token.toString());
 		}
 		return sb.toString();
+	}
+
+	private void addCustomFields(final Issue issue, PostMethod post) {
+		for (CustomField customField : issue.getCustomFields()) {
+			for (String value : customField.getValues()) {
+				String key = customField.getKey();
+				if (key == null || !key.startsWith("com.atlassian.jira.toolkit")) {
+					post.addParameter(customField.getId(), value == null ? "" : value);
+				}
+			}
+		}
 	}
 
 }
