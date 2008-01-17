@@ -538,7 +538,7 @@ public class JiraWebIssueService {
 				if (issue.getParentId() != null) {
 					post.addParameter("parentIssueId", issue.getParentId());
 				}
-				
+
 				addCustomFields(issue, post);
 
 				try {
@@ -706,8 +706,7 @@ public class JiraWebIssueService {
 		}
 
 		if (response == null) {
-			throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(),
-					"");
+			throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(), "");
 		}
 
 		StringReader reader = new StringReader(response);
@@ -740,8 +739,7 @@ public class JiraWebIssueService {
 				throw new JiraRemoteMessageException(msg.toString());
 			}
 		} catch (ParseException e) {
-			throw new JiraRemoteMessageException("Error parsing JIRA response: " + method.getStatusCode(),
-					"");
+			throw new JiraRemoteMessageException("Error parsing JIRA response: " + method.getStatusCode(), "");
 		} finally {
 			reader.close();
 		}
@@ -775,7 +773,9 @@ public class JiraWebIssueService {
 		for (CustomField customField : issue.getCustomFields()) {
 			for (String value : customField.getValues()) {
 				String key = customField.getKey();
-				if (key == null || !key.startsWith("com.atlassian.jira.toolkit")) {
+				if (key == null || //
+						(!key.startsWith("com.atlassian.jira.toolkit") && //
+						!key.startsWith("com.atlassian.jira.ext.charting"))) {
 					post.addParameter(customField.getId(), value == null ? "" : value);
 				}
 			}
