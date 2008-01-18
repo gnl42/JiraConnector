@@ -54,7 +54,6 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	private static final int MULTI_COLUMN_WIDTH = 380;
 
-	@SuppressWarnings("restriction")
 	private class JiraAttributeEditorManager extends AbstractAttributeEditorManager {
 
 		public JiraAttributeEditorManager(RepositoryTaskEditorInput input) {

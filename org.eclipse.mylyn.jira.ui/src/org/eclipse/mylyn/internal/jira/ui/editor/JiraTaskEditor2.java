@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 @SuppressWarnings("restriction")
 public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 
-	@SuppressWarnings("restriction")
 	private class JiraAttributeEditorManager extends AbstractAttributeEditorManager {
 
 		public JiraAttributeEditorManager(RepositoryTaskEditorInput input) {
