@@ -728,8 +728,35 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	@Override
 	public boolean initializeTaskData(TaskRepository repository, RepositoryTaskData data, IProgressMonitor monitor)
 			throws CoreException {
-		// JIRA needs a project to create task data
-		return false;
+		String projectName = data.getAttributeValue(RepositoryTaskAttribute.PRODUCT);
+		if (projectName == null) {
+			return false;
+		}
+		
+		JiraClient client = clientFactory.getJiraClient(repository);
+		if(!client.hasDetails()) {
+			try {
+				client.refreshDetails(monitor);
+			} catch (JiraException ex) {
+				IStatus status = JiraCorePlugin.toStatus(repository, ex);
+				trace(status);
+				throw new CoreException(status);
+			}
+		}
+		
+		Project project = getProject(client, projectName);
+		if(project==null) {
+			project = client.getProjectByKey(projectName);
+		}
+		if (project == null) {
+			return false;
+		}
+
+		initializeTaskData(data, client, project);
+
+		data.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
+
+		return true;
 	}
 
 	@Override
@@ -850,11 +877,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 		}
 
-		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {
-			if (project.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT))) {
-				issue.setProject(project);
-				break;
-			}
+		Project project = getProject(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT));
+		if (project != null) {
+			issue.setProject(project);
 		}
 
 		// issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));

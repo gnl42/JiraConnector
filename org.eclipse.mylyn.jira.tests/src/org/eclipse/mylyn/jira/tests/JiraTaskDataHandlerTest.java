@@ -22,6 +22,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
@@ -489,6 +490,84 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertEquals("testEditClosed", taskData.getSummary());
+	}
+
+	public void testInitializeTaskData1() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getUrl(), null); 
+
+		boolean res = dataHandler.initializeTaskData(repository, data, new NullProgressMonitor());
+		assertFalse("Task data shouldn't be initialized without project", res);
+	}
+
+	public void testInitializeTaskDataWithProjectName() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+		JiraTestUtils.refreshDetails(client);
+		Project project = JiraTestUtils.getProject(client, JiraTestUtils.PROJECT1);
+
+		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getUrl(), project.getName());
+
+		boolean res = dataHandler.initializeTaskData(repository, data, new NullProgressMonitor());
+		assertTrue("Task data can't be initialized", res);
+
+		verifyTaskData(data, project);
+	}
+
+	public void testInitializeTaskDataWithProjectKey() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+		JiraTestUtils.refreshDetails(client);
+		Project project = JiraTestUtils.getProject(client, JiraTestUtils.PROJECT1);
+
+		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getUrl(),
+				JiraTestUtils.PROJECT1);
+
+		boolean res = dataHandler.initializeTaskData(repository, data, new NullProgressMonitor());
+		assertTrue("Task data can't be initialized", res);
+
+		verifyTaskData(data, project);
+	}
+
+	private RepositoryTaskData createTaskData(String type, String url, String project) {
+		AbstractAttributeFactory attributeFactory = dataHandler.getAttributeFactory(url, type,
+				AbstractTask.DEFAULT_TASK_KIND);
+
+		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, type, url, "NEW");
+		data.setNew(true);
+
+		if(project!=null) {
+			RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRODUCT, "Project:",
+					false);
+			attribute.addValue(project);
+			data.addAttribute(RepositoryTaskAttribute.PRODUCT, attribute);
+		}
+		
+		return data;
+	}
+
+	private void verifyTaskData(RepositoryTaskData data, Project project) {
+		RepositoryTaskAttribute projectAttr = data.getAttribute(RepositoryTaskAttribute.PRODUCT);
+		assertEquals(project.getName(), projectAttr.getValue());
+
+		RepositoryTaskAttribute priorityAttr = data.getAttribute(RepositoryTaskAttribute.PRIORITY);
+		assertNotNull(priorityAttr);
+		assertTrue(!priorityAttr.getOptions().isEmpty());
+
+		RepositoryTaskAttribute typesAttr = data.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+		assertNotNull(typesAttr);
+		assertTrue(!typesAttr.getOptions().isEmpty());
+
+		RepositoryTaskAttribute componentsAttr = data.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+		assertNotNull(componentsAttr);
+		assertTrue(!componentsAttr.getOptions().isEmpty());
+
+		RepositoryTaskAttribute fixVersionsAttr = data.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+		assertNotNull(fixVersionsAttr);
+		assertTrue(!fixVersionsAttr.getOptions().isEmpty());
+
+		RepositoryTaskAttribute affectsVersionsAttr = data.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+		assertNotNull(affectsVersionsAttr);
+		assertTrue(!affectsVersionsAttr.getOptions().isEmpty());
 	}
 
 }
