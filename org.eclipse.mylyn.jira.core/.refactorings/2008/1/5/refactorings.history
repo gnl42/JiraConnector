@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename field &apos;ID&apos; in &apos;org.eclipse.mylyn.internal.jira.core.JiraCorePlugin&apos; to &apos;ID_PLUGIN&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Original element: &apos;org.eclipse.mylyn.internal.jira.core.JiraCorePlugin.ID&apos;&#x0A;- Renamed element: &apos;org.eclipse.mylyn.internal.jira.core.JiraCorePlugin.ID_PLUGIN&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" delegate="false" deprecate="false" description="Rename field &apos;ID&apos;" flags="589830" getter="false" id="org.eclipse.jdt.ui.rename.field" input="/src&lt;org.eclipse.mylyn.internal.jira.core{JiraCorePlugin.java[JiraCorePlugin^ID" name="ID_PLUGIN" references="true" setter="false" stamp="1201656990505" textual="false" version="1.0"/>
+</session>

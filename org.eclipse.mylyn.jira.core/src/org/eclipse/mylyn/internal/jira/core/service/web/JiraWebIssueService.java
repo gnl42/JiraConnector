@@ -48,7 +48,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.web.core.HtmlStreamTokenizer;
 import org.eclipse.mylyn.web.core.HtmlTag;
 import org.eclipse.mylyn.web.core.HtmlStreamTokenizer.Token;
@@ -699,8 +698,8 @@ public class JiraWebIssueService {
 
 	protected void handleErrorMessage(HttpMethodBase method) throws IOException, JiraException {
 		String response = method.getResponseBodyAsString();
-		StatusHandler.log("JIRA error\n" + response, null);
-
+		// TODO consider logging the error
+		
 		if (method.getStatusCode() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
 			throw new JiraRemoteException("JIRA system error", null);
 		}

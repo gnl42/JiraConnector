@@ -96,7 +96,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (jiraIssue != null) {
 				return createTaskData(repository, client, jiraIssue, null);
 			}
-			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID, IStatus.OK,
+			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, IStatus.OK,
 					"JIRA ticket not found: " + taskId, null));
 
 		} catch (JiraException e) {
@@ -663,7 +663,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		JiraClient client = clientFactory.getJiraClient(repository);
 		if (client == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
-					JiraCorePlugin.ID, org.eclipse.core.runtime.Status.ERROR, "Unable to create Jira client", null));
+					JiraCorePlugin.ID_PLUGIN, org.eclipse.core.runtime.Status.ERROR, "Unable to create Jira client", null));
 		}
 
 		try {
@@ -680,7 +680,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 
 				if (issue == null) {
-					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
+					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
 							IStatus.OK, "Could not create ticket.", null));
 				}
 				// this is severely broken: should return id instead
@@ -772,7 +772,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			Project project = getProject(client, parentTaskData.getProduct());
 			if (project == null) {
-				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
 						IStatus.OK, "The parent task does not have a valid project.", null));
 			}
 
@@ -797,7 +797,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			List<String> options = typeAttribute.getOptions();
 			if (options.size() == 0) {
-				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID,
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
 						IStatus.OK, "The repository does not support subtasks.", null));
 			} else if (options.size() == 1) {
 				typeAttribute.setReadOnly(true);

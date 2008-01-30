@@ -34,7 +34,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
@@ -465,8 +464,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					break;
 				}
 			}
-		} else {
-			StatusHandler.log("Unable to update data for task of type " + repositoryTask.getClass().getName(), this);
 		}
 	}
 

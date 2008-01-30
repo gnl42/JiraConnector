@@ -257,9 +257,9 @@ public class JiraWebSession {
 				return;
 			}
 			
-			MultiStatus status = new MultiStatus(JiraCorePlugin.ID, 0, message, null);
+			MultiStatus status = new MultiStatus(JiraCorePlugin.ID_PLUGIN, 0, message, null);
 			for (RedirectInfo info : redirects) {
-				status.add(new Status(IStatus.WARNING, JiraCorePlugin.ID, 0, info.toString(), null));
+				status.add(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0, info.toString(), null));
 			}
 			JiraCorePlugin.log(status);
 		}

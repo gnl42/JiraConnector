@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
@@ -85,7 +87,7 @@ public class JiraClientManager {
 					clientDataByUrl.put(url, data);
 				}
 			} catch (Throwable e) {
-				StatusHandler.log("Reset JIRA repository configuration cache due to format update", false);
+				StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN, "Reset JIRA repository configuration cache due to format change"));
 			} finally {
 				if (in != null) {
 					try {

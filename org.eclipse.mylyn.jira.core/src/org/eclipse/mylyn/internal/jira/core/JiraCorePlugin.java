@@ -31,7 +31,7 @@ import org.osgi.framework.BundleContext;
  * @author Brock Janiczak
  */
 public class JiraCorePlugin extends Plugin {
-	public static final String ID = "org.eclipse.mylyn.internal.jira.core"; //$NON-NLS-1$
+	public static final String ID_PLUGIN = "org.eclipse.mylyn.internal.jira.core"; //$NON-NLS-1$
 
 	// The shared instance.
 	private static JiraCorePlugin plugin;
@@ -141,7 +141,7 @@ public class JiraCorePlugin extends Plugin {
 	}
 
 	public static void log(int severity, String message, Throwable e) {
-		getDefault().getLog().log(new Status(severity, ID, -1, message, e));
+		getDefault().getLog().log(new Status(severity, ID_PLUGIN, -1, message, e));
 	}
 
 	public static void log(IStatus status) {
@@ -151,16 +151,16 @@ public class JiraCorePlugin extends Plugin {
 	public static IStatus toStatus(TaskRepository repository, Throwable e) {
 		String url = repository.getUrl();
 		if (e instanceof JiraAuthenticationException) {
-			return RepositoryStatus.createLoginError(url, ID);
+			return RepositoryStatus.createLoginError(url, ID_PLUGIN);
 		} else if (e instanceof JiraServiceUnavailableException) {
-			return new RepositoryStatus(url, IStatus.ERROR, ID, RepositoryStatus.ERROR_IO, e.getMessage(), e);
+			return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_IO, e.getMessage(), e);
 		} else if (e instanceof JiraRemoteMessageException) {
-			return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID, RepositoryStatus.ERROR_REPOSITORY,
+			return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY,
 					e.getMessage(), ((JiraRemoteMessageException) e).getHtmlMessage());
 		} else if (e instanceof JiraException) {
-			return new RepositoryStatus(url, IStatus.ERROR, ID, RepositoryStatus.ERROR_REPOSITORY, e.getMessage(), e);
+			return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY, e.getMessage(), e);
 		} else {
-			return RepositoryStatus.createInternalError(ID, "Unexpected error", e);
+			return RepositoryStatus.createInternalError(ID_PLUGIN, "Unexpected error", e);
 		}
 	}
 
