@@ -17,6 +17,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.html.HTML2TextReader;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
@@ -721,7 +724,7 @@ public class RssContentHandler extends DefaultHandler {
 					try {
 						currentIssue.setVotes(Integer.parseInt(getCurrentElementText()));
 					} catch (NumberFormatException e) {
-						StatusHandler.log(e, "Error while parsing number of votes");
+						StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing number of votes", e));
 					}
 				}
 			} else if (SECURITY.equals(localName)) {
@@ -778,7 +781,7 @@ public class RssContentHandler extends DefaultHandler {
 		try {
 			return XML_DATE_FORMAT.parse(value);
 		} catch (ParseException e) {
-			StatusHandler.log(e, "Error while parsing date string " + value);
+			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing date: \"" + value + "\"", e));
 			return null;
 		}
 	}
@@ -790,7 +793,7 @@ public class RssContentHandler extends DefaultHandler {
 		try {
 			return XML_DUE_DATE_FORMAT.parse(value);
 		} catch (ParseException e) {
-			StatusHandler.log(e, "Error while parsing due date string " + value);
+			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \"" + value + "\"", e));
 			return null;
 		}
 	}

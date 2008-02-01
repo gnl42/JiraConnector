@@ -11,7 +11,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IOpenListener;
@@ -31,6 +33,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
@@ -193,7 +196,7 @@ public class JiraProjectPage extends WizardPage {
 				if (e.getCause() instanceof CoreException) {
 					setErrorMessage(((CoreException)e.getCause()).getMessage());
 				} else {
-					StatusHandler.fail(e.getCause(), "Error updating attributes", true);
+					StatusHandler.fail(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, "Error updating attributes", e));
 				}
 				return;
 			}

@@ -117,7 +117,7 @@ public class JiraClientManager {
 				out.writeObject(clientDataByUrl.get(url));
 			}
 		} catch (Throwable e) {
-			StatusHandler.fail(e, "Error writing JIRA repository configuration cache", false);
+			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error writing JIRA repository configuration cache", e));
 		} finally {
 			if (out != null) {
 				try {

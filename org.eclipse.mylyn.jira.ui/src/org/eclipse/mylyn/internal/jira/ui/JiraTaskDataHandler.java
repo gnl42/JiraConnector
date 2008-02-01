@@ -906,8 +906,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					comp.setName(compStr);
 					components.add(comp);
 				} else {
-					StatusHandler.fail(null,
-							"Error setting component for JIRA issue. Component id is null: " + compStr, false);
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Error setting component for JIRA issue. Component id is null: " + compStr));
 				}
 			}
 			issue.setComponents(components.toArray(new Component[components.size()]));
@@ -923,8 +922,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					version.setName(fixStr);
 					fixversions.add(version);
 				} else {
-					StatusHandler.fail(null, "Error setting fix version for JIRA issue. Version id is null: " + fixStr,
-							false);
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Error setting fix version for JIRA issue. Version id is null: " + fixStr));
 				}
 			}
 			issue.setFixVersions(fixversions.toArray(new Version[fixversions.size()]));
@@ -940,8 +938,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					version.setName(fixStr);
 					affectsversions.add(version);
 				} else {
-					StatusHandler.fail(null, "Error setting affects version for JIRA issue. Version id is null: "
-							+ fixStr, false);
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Error setting affects version for JIRA issue. Version id is null: "
+							+ fixStr));
 				}
 			}
 			issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));
