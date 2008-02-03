@@ -21,6 +21,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryQuery;
+import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
@@ -197,7 +198,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
 							"Could not download saved filters from Jira repository.\n"
 									+ "Please check repository settings in the Task Repositories view");
-					StatusHandler.log(e, status.getMessage());
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, status.getMessage(), e));
 					return Status.CANCEL_STATUS;
 				} finally {
 					showFilters(loadedFilters, status);

@@ -13,6 +13,7 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
+// API 3.0 rename to JiraStatus
 public class Status implements Serializable {
 	private static final long serialVersionUID = 1L;
 

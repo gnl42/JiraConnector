@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -1316,6 +1317,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		if (!server.hasDetails() || force) {
 			try {
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
+					// FIXME review error handling
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 						JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 						try {
@@ -1331,7 +1333,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 											+ "Please check repository settings in the Task Repositories view.", //
 									e.getMessage());
 							showWarning(msg);
-							StatusHandler.fail(e, msg, false);
+							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, msg, e));
 						}
 					}
 

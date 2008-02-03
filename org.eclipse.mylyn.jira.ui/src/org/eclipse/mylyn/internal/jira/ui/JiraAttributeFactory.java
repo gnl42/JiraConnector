@@ -11,6 +11,7 @@ package org.eclipse.mylyn.internal.jira.ui;
 import java.util.Collection;
 import java.util.Date;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylyn.internal.tasks.core.AbstractAttributeMapper;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
@@ -147,7 +148,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 			// RepositoryTaskAttribute.DATE_CREATION
 			return JiraUtils.stringToDate(dateString);
 		} catch (Exception e) {
-			StatusHandler.log(e, "Error while date for attribute " + attributeKey + ": " + dateString);
+			StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Error parsing date for attribute \"" + attributeKey + "\": \"" + dateString + "\"", e));
 			return null;
 		}
 	}
