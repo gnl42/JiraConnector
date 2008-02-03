@@ -94,6 +94,8 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 	private static final String REMOTE_ERROR_BAD_ENVELOPE_TAG = "Bad envelope tag:  html";
 
+	private static final String REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG = "Content is not allowed in prolog.";
+
 	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2";
 
 	/**
@@ -451,7 +453,8 @@ public class JiraRpcClient extends AbstractJiraClient {
 				return "Unable to connect to server.";
 			} else if (cause instanceof SAXException) {
 				if (REMOTE_ERROR_BAD_ENVELOPE_TAG.equals(cause.getMessage())
-						|| REMOTE_ERROR_BAD_ID.equals(cause.getMessage())) {
+						|| REMOTE_ERROR_BAD_ID.equals(cause.getMessage())
+						|| REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG.equals(cause.getMessage())) {
 					return ERROR_RPC_NOT_ENABLED;
 				}
 			}
