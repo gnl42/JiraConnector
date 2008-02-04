@@ -80,7 +80,20 @@ public class JiraProjectPage extends WizardPage {
 		composite.setLayout(new GridLayout());
 
 		// create the list of bug reports
-		projectTree = new FilteredTree(composite, SWT.SINGLE | SWT.BORDER, new PatternFilter());
+		projectTree = new FilteredTree(composite, SWT.SINGLE | SWT.BORDER, //
+				new PatternFilter() {  // matching on project keys
+					@Override
+					protected boolean isLeafMatch(Viewer viewer, Object element) {
+						if (element instanceof Project) {
+							Project project = (Project) element;
+							if (wordMatches(project.getKey())) {
+								return true;
+							}
+						}
+						return super.isLeafMatch(viewer, element);
+					}
+
+				});
 		projectTree.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).hint(
 				SWT.DEFAULT, 200).create());
 
@@ -125,7 +138,7 @@ public class JiraProjectPage extends WizardPage {
 
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (getSelectedProject() == null) {
-					setErrorMessage("You must select a product");
+					setErrorMessage("You must select a project");
 				} else {
 					setErrorMessage(null);
 				}
@@ -147,7 +160,6 @@ public class JiraProjectPage extends WizardPage {
 		Button updateButton = new Button(composite, SWT.LEFT | SWT.PUSH);
 		updateButton.setText(LABEL_UPDATE);
 		updateButton.setLayoutData(new GridData());
-
 		updateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
@@ -208,6 +220,8 @@ public class JiraProjectPage extends WizardPage {
 		
 		if (projects.length == 1 && projectTree.getViewer().getSelection().isEmpty()) {
 			projectTree.getViewer().setSelection(new StructuredSelection(projects[0]));
+		} else {
+			projectTree.setFocus();
 		}
 	}
 
