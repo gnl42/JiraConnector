@@ -109,14 +109,18 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	public void testGetTaskData() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		String commentText = "line1\nline2\n\nline4\n\n\n";
-		Issue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
+		Issue issue = JiraTestUtils.newIssue(client, "testUpdateTask");
+		issue.setInitialEstimate(600);
+		issue = client.createIssue(issue);
+		assertEquals(600, issue.getInitialEstimate());
 
+		String commentText = "line1\nline2\n\nline4\n\n\n";
 		client.addCommentToIssue(issue, commentText);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertEquals(1, taskData.getComments().size());
 		assertEquals(commentText, taskData.getComments().get(0).getText());
+		assertEquals("600", taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE));
 	}
 
 	public void testCreateTaskData() throws JiraException {
