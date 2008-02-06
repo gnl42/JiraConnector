@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
-	private static final String TITLE = "Jira Repository Settings";
+	private static final String TITLE = "JIRA Repository Settings";
 
 	private static final String DESCRIPTION = "Example: http://developer.atlassian.com/jira";
 
