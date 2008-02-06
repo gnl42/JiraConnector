@@ -120,7 +120,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertEquals(1, taskData.getComments().size());
 		assertEquals(commentText, taskData.getComments().get(0).getText());
-		assertEquals("600", taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE));
+		// this is in minutes
+		assertEquals("10", taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE));
 	}
 
 	public void testCreateTaskData() throws JiraException {
