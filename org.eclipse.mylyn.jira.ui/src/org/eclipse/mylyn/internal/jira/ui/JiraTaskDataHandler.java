@@ -374,6 +374,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, attachment.getAuthor());
 
+			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_SIZE,
+					String.valueOf(attachment.getSize()));
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE,
 					formatDate(attachment.getCreated()));
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_URL, //
@@ -732,9 +734,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (projectName == null) {
 			return false;
 		}
-		
+
 		JiraClient client = clientFactory.getJiraClient(repository);
-		if(!client.hasDetails()) {
+		if (!client.hasDetails()) {
 			try {
 				client.refreshDetails(monitor);
 			} catch (JiraException ex) {
@@ -743,9 +745,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				throw new CoreException(status);
 			}
 		}
-		
+
 		Project project = getProject(client, projectName);
-		if(project==null) {
+		if (project == null) {
 			project = client.getProjectByKey(projectName);
 		}
 		if (project == null) {
