@@ -116,6 +116,10 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 			return ATTRIBUTE_DUE_DATE;
 		}
 
+		if (RepositoryTaskAttribute.COMPONENT.equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_COMPONENTS;
+		}
+
 
 		if (key.startsWith("issueLink")) {
 			return ATTRIBUTE_LINK_PREFIX + key;
@@ -127,16 +131,16 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 		return key;
 	}
 
-	public String mapAttributeToKey(String key) {
-		JiraAttribute attribute = JiraAttribute.valueById(key);
-		if (!attribute.equals(JiraAttribute.UNKNOWN)) {
-			return attribute.getParamName();
-		}
-		if (key.startsWith(ATTRIBUTE_CUSTOM_PREFIX)) {
-			return key.substring(ATTRIBUTE_CUSTOM_PREFIX.length());
-		}
-		return key;
-	}
+//	public String mapAttributeToKey(String key) {
+//		JiraAttribute attribute = JiraAttribute.valueById(key);
+//		if (!attribute.equals(JiraAttribute.UNKNOWN)) {
+//			return attribute.getParamName();
+//		}
+//		if (key.startsWith(ATTRIBUTE_CUSTOM_PREFIX)) {
+//			return key.substring(ATTRIBUTE_CUSTOM_PREFIX.length());
+//		}
+//		return key;
+//	}
 
 	@Override
 	public Date getDateForAttributeType(String attributeKey, String dateString) {

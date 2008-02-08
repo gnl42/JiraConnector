@@ -68,7 +68,6 @@ public class JiraTask extends AbstractTask {
 
 	@Override
 	public boolean isLocal() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

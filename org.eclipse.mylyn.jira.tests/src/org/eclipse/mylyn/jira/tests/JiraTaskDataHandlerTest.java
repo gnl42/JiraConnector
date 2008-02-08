@@ -111,6 +111,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		Issue issue = JiraTestUtils.newIssue(client, "testUpdateTask");
 		issue.setInitialEstimate(600);
+		Component component = issue.getProject().getComponents()[0];
+		issue.setComponents(new Component[] { component });
 		issue = client.createIssue(issue);
 		assertEquals(600, issue.getInitialEstimate());
 
@@ -120,8 +122,9 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertEquals(1, taskData.getComments().size());
 		assertEquals(commentText, taskData.getComments().get(0).getText());
-		// this is in minutes
-		assertEquals("10", taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE));
+		// task data stores estimates is in minutes
+		assertEquals("10", taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE));	
+		assertEquals(component.getName(), taskData.getAttributeValue(RepositoryTaskAttribute.COMPONENT));
 	}
 
 	public void testCreateTaskData() throws JiraException {
