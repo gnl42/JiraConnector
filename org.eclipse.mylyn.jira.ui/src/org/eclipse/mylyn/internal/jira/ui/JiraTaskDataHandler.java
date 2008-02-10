@@ -196,6 +196,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		RepositoryTaskAttribute environment = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
 		environment.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.TEXTAREA.getKey());
+
+		RepositoryTaskAttribute newComment = addAttribute(data, RepositoryTaskAttribute.COMMENT_NEW);
+		newComment.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.TEXTAREA.getKey());
 	}
 
 	private RepositoryTaskAttribute addAttribute(RepositoryTaskData data, String key) {
@@ -440,14 +443,18 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.setHidden(false);
 			}
 
-			// make attributes read-only if can't find editing options
-			String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
-			Collection<String> options = attribute.getOptions();
-			if (JiraFieldType.SELECT.getKey().equals(key)
-					&& (options == null || options.isEmpty() || attribute.isReadOnly())) {
-				attribute.setReadOnly(true);
-			} else if (JiraFieldType.MULTISELECT.getKey().equals(key) && (options == null || options.isEmpty())) {
-				attribute.setReadOnly(true);
+			if (RepositoryTaskAttribute.COMMENT_NEW.equals(attribute.getId())) {
+				attribute.setReadOnly(false);
+			} else {			
+				// make attributes read-only if can't find editing options
+				String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
+				Collection<String> options = attribute.getOptions();
+				if (JiraFieldType.SELECT.getKey().equals(key)
+						&& (options == null || options.isEmpty() || attribute.isReadOnly())) {
+					attribute.setReadOnly(true);
+				} else if (JiraFieldType.MULTISELECT.getKey().equals(key) && (options == null || options.isEmpty())) {
+					attribute.setReadOnly(true);
+				}
 			}
 		}
 	}

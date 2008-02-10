@@ -170,6 +170,11 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 		@Override
 		public String getType(RepositoryTaskAttribute taskAttribute) {
+			if (RepositoryTaskAttribute.DATE_CREATION.equals(taskAttribute.getId())
+					|| RepositoryTaskAttribute.DATE_MODIFIED.equals(taskAttribute.getId())) {
+				return RepositoryTaskAttribute.TYPE_DATE;
+			}
+			
 			JiraFieldType type = JiraFieldType.valueByKey(taskAttribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY));
 			Collection<String> options = taskAttribute.getOptions();
 			if (type.equals(JiraFieldType.SELECT) && (options == null || options.isEmpty() || taskAttribute.isReadOnly())) {

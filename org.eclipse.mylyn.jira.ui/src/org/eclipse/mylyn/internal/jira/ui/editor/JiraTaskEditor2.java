@@ -9,15 +9,14 @@
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.mylyn.internal.tasks.ui.editors.AbstractAttributeEditorManager;
+import org.eclipse.jface.text.TextViewer;
+import org.eclipse.mylyn.internal.tasks.ui.editors.AbstractAttributeEditor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeManager;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorFactory;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorToolkit;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.editors.RepositoryTaskEditorInput;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 
@@ -29,43 +28,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 @SuppressWarnings("restriction")
 public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 
-	private class JiraAttributeEditorManager extends AbstractAttributeEditorManager {
-
-		public JiraAttributeEditorManager(RepositoryTaskEditorInput input) {
-			super(input);
-		}
-
-		@Override
-		public void addTextViewer(SourceViewer viewer) {
-			JiraTaskEditor2.this.textViewers.add(viewer);
-
-		}
-
-		@Override
-		public boolean attributeChanged(RepositoryTaskAttribute attribute) {
-			return JiraTaskEditor2.this.attributeChanged(attribute);
-		}
-
-		@Override
-		public void configureContextMenuManager(MenuManager menuManager) {
-			// TODO EDITOR
-		}
-
-		@Override
-		public Color getColorIncoming() {
-			return JiraTaskEditor2.this.getColorIncoming();
-		}
-
-		@Override
-		public TaskRepository getTaskRepository() {
-			return JiraTaskEditor2.this.getTaskRepository();
-		}
-
-	}
-
 	private AttributeEditorFactory attributeEditorFactory;
-
-	private JiraAttributeEditorManager attributeEditorManager;
 
 	private AttributeEditorToolkit attributeEditorToolkit;
 
@@ -75,8 +38,7 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
-		attributeEditorManager = new JiraAttributeEditorManager((RepositoryTaskEditorInput) getEditorInput());
-		attributeEditorFactory = new AttributeEditorFactory(attributeEditorManager);
+		attributeEditorFactory = new AttributeEditorFactory(getAttributeManager());
 		attributeEditorToolkit = new AttributeEditorToolkit() {
 
 //			@Override
@@ -98,6 +60,20 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 //				return super.hasContentAssist(attribute);
 //			}
 
+			@Override
+			public void adapt(AbstractAttributeEditor editor) {
+				super.adapt(editor);
+				
+				if (getAttributeManager().hasIncomingChanges(editor.getTaskAttribute())) {
+					editor.decorate(getColorIncoming());
+				}
+			}
+			
+			@Override
+			public void configureContextMenuManager(MenuManager menuManager, TextViewer textViewer) {
+				getParentEditor().configureContextMenuManager(menuManager, textViewer);
+			}
+
 		};
 
 		super.createFormContent(managedForm);
@@ -109,30 +85,28 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 	}
 
 	@Override
-	protected AbstractAttributeEditorManager getAttributeEditorManager() {
-		return attributeEditorManager;
-	}
-
-	@Override
 	public AttributeEditorToolkit getAttributeEditorToolkit() {
 		return attributeEditorToolkit;
 	}
 
 	@Override
 	protected String getHistoryUrl() {
-		if (taskData != null) {
-			String taskId = taskData.getTaskKey();
+		RepositoryTaskData taskData = getAttributeManager().getTaskData();
+			String taskKey = taskData.getTaskKey();
 			String repositoryUrl = taskData.getRepositoryUrl();
-			if (getConnector() != null && repositoryUrl != null && taskId != null) {
-				String url = getConnector().getTaskUrl(repositoryUrl, taskId);
-				//AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
+			if (getConnector() != null && repositoryUrl != null && taskKey != null) {
+				String url = getConnector().getTaskUrl(repositoryUrl, taskKey);
 				if (url != null) {
 					return url + "?page=history";
 				}
 			}
-		}
 
 		return super.getHistoryUrl();
+	}
+
+	@Override
+	protected AttributeManager createAttributeManager(TaskRepository taskRepository, String taskId) {
+		return new AttributeManager(taskRepository, taskId);
 	}
 
 }
