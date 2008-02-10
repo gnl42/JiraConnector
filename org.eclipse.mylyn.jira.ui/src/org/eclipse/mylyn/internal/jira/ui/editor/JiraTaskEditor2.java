@@ -11,10 +11,10 @@ package org.eclipse.mylyn.internal.jira.ui.editor;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AbstractAttributeEditor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeManager;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorFactory;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorToolkit;
+import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeManager;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.ui.forms.IManagedForm;
@@ -105,8 +105,8 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 	}
 
 	@Override
-	protected AttributeManager createAttributeManager(TaskRepository taskRepository, String taskId) {
-		return new AttributeManager(taskRepository, taskId);
+	protected AttributeManager createAttributeManager(TaskRepository taskRepository, String storageUrl, String storageId) {
+		return new AttributeManager(taskRepository, storageUrl, storageId);
 	}
 
 }
