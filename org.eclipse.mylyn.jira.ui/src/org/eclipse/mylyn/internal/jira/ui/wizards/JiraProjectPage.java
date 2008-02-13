@@ -101,9 +101,14 @@ public class JiraProjectPage extends WizardPage {
 		projectTreeViewer.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return (element instanceof Project) ? ((Project) element).getName() : "";
+				if (element instanceof Project) {
+					Project project = (Project) element;
+					return project.getName() + "  (" + project.getKey() + ")";
+				}
+				return "";
 			}
 		});
+
 		projectTreeViewer.setContentProvider(new ITreeContentProvider() {
 
 			public Object[] getChildren(Object parentElement) {
