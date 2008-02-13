@@ -139,12 +139,12 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	public IHyperlink[] findHyperlinks(TaskRepository repository, String text, int lineOffset, int regionOffset) {
 		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				repository.getConnectorKind());
-
+		
 		int startPos = lineOffset;
-		if(startPos<0) {
+		if (startPos < 0) {
 			startPos = 0;
-		} else  if(startPos>=text.length()) {
-			startPos = text.length()-1;
+		} else if (startPos >= text.length()) {
+			startPos = text.length() - 1;
 		}
 		while (startPos > 0) {
 			char c = text.charAt(startPos);
@@ -153,10 +153,10 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 			startPos--;
 		}
 		int endPos = lineOffset;
-		if(endPos<0) {
+		if (endPos < 0) {
 			endPos = 0;
-		} else if(endPos>=text.length()) {
-			endPos = text.length()-1;
+		} else if (endPos >= text.length()) {
+			endPos = text.length() - 1;
 		}
 		while (endPos < text.length()) {
 			char c = text.charAt(endPos);
