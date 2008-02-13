@@ -139,6 +139,9 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	public IHyperlink[] findHyperlinks(TaskRepository repository, String text, int lineOffset, int regionOffset) {
 		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				repository.getConnectorKind());
+		if (text.length() == 0) {
+			return null;
+		}
 		
 		int startPos = lineOffset;
 		if (startPos < 0) {
