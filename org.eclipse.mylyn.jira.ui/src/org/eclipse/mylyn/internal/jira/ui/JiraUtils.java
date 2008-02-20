@@ -18,16 +18,19 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
+/**
+ * @author Steffen Pingel
+ */
 public class JiraUtils {
 
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/general"));
 
 	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate";
-	
+
 	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated";
 
 	private static final String COMPRESSION_KEY = "compression";
-	
+
 	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration";
 
 	public static void setLastUpdate(TaskRepository repository, Date date) {
@@ -53,7 +56,7 @@ public class JiraUtils {
 	public static boolean getCharacterEncodingValidated(TaskRepository taskRepository) {
 		return Boolean.parseBoolean(taskRepository.getProperty(CHARACTER_ENCODING_VALIDATED));
 	}
-	
+
 	public static String dateToString(Date date) {
 		if (date == null) {
 			return "";
@@ -88,7 +91,7 @@ public class JiraUtils {
 	public static boolean getAutoRefreshConfiguration(TaskRepository repository) {
 		return Boolean.parseBoolean(repository.getProperty(REFRESH_CONFIGURATION_KEY));
 	}
-	
+
 	public static void setAutoRefreshConfiguration(TaskRepository repository, boolean autoRefreshConfiguration) {
 		repository.setProperty(REFRESH_CONFIGURATION_KEY, String.valueOf(autoRefreshConfiguration));
 	}

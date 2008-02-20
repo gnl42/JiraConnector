@@ -32,7 +32,7 @@ public class ContentFilter implements Filter, Serializable {
 	/**
 	 * 
 	 * @param queryString
-	 *            content beindg searched for
+	 *            content being searched for
 	 * @param searchSummary
 	 *            Search the issue's summary for matches of <code>queryString</code>
 	 * @param searchDescription
@@ -40,7 +40,7 @@ public class ContentFilter implements Filter, Serializable {
 	 * @param searchEnvironment
 	 *            Search the issue's environment for matches of </code>queryString</code>
 	 * @param searchComments
-	 *            Seatch the issue's comments for matches of </code>queryString</code>
+	 *            Search the issue's comments for matches of </code>queryString</code>
 	 */
 	public ContentFilter(String queryString, boolean searchSummary, boolean searchDescription,
 			boolean searchEnvironment, boolean searchComments) {

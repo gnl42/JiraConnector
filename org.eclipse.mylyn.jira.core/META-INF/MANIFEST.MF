@@ -19,6 +19,7 @@ Export-Package: org.eclipse.mylyn.internal.jira.core,
  org.eclipse.mylyn.internal.jira.core.service.soap,
  org.eclipse.mylyn.internal.jira.core.service.web,
  org.eclipse.mylyn.internal.jira.core.service.web.rss,
+ org.eclipse.mylyn.internal.jira.core.util,
  org.eclipse.mylyn.internal.jira.core.wsdl.beans,
  org.eclipse.mylyn.internal.jira.core.wsdl.soap
 Bundle-ClassPath: .,

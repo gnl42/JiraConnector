@@ -8,9 +8,6 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -38,21 +35,15 @@ public class JiraStackTraceDuplicateDetector extends AbstractDuplicateDetector {
 			return null;
 		}
 
-		try {
-			String encoding = repository.getCharacterEncoding();
+		String encoding = repository.getCharacterEncoding();
 
-			FilterDefinition filter = new FilterDefinition();
-			// this shouldn't be needed, but RssFilterConverter need serious face lift
-			filter.setContentFilter(new ContentFilter(URLEncoder.encode(searchString, encoding), //
-					false, true, false, true));
+		FilterDefinition filter = new FilterDefinition();
+		filter.setContentFilter(new ContentFilter(searchString, false, true, false, true));
 
-			JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, encoding);
+		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, encoding);
 
-			return new SearchHitCollector(TasksUiPlugin.getTaskListManager().getTaskList(), repository, query,
-					new TaskFactory(repository, false, false));
-		} catch (UnsupportedEncodingException ex) {
-			return null;
-		}
+		return new SearchHitCollector(TasksUiPlugin.getTaskListManager().getTaskList(), repository, query,
+				new TaskFactory(repository, false, false));
 	}
 
 }

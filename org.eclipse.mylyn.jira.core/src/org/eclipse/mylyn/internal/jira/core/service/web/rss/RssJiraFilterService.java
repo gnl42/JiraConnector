@@ -15,8 +15,8 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSession;
 
 /**
@@ -54,7 +54,7 @@ public class RssJiraFilterService {
 						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
 					}
 				}
-				rssUrlBuffer.append(RssJiraFilterConverterFactory.getConverter(server).convert(filterDefinition));
+				rssUrlBuffer.append(RssJiraFilterConverterFactory.getConverter(server).convert(filterDefinition, server.getCharacterEncoding()));
 
 				return rssUrlBuffer.toString();
 			}

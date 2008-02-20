@@ -36,6 +36,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
+import org.eclipse.mylyn.internal.jira.core.util.JiraCoreUtil;
 
 /**
  * @author Brock Janiczak
@@ -44,7 +45,7 @@ class RssFilterConverter {
 
 	private final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
 
-	String convert(FilterDefinition filterDefinition) {
+	String convert(FilterDefinition filterDefinition, String encoding) {
 		StringBuffer buffer = new StringBuffer();
 
 		if (filterDefinition.getProjectFilter() != null) {
@@ -73,7 +74,7 @@ class RssFilterConverter {
 		}
 
 		if (filterDefinition.getContentFilter() != null) {
-			buffer.append('&').append(convertContentFilter(filterDefinition.getContentFilter()));
+			buffer.append('&').append(convertContentFilter(filterDefinition.getContentFilter(), encoding));
 		}
 
 		if (filterDefinition.getIssueTypeFilter() != null) {
@@ -133,8 +134,8 @@ class RssFilterConverter {
 				.toString();
 	}
 
-	protected String convertContentFilter(ContentFilter contentFilter) {
-		return new StringBuffer().append("query=").append(contentFilter.getQueryString()) //$NON-NLS-1$
+	protected String convertContentFilter(ContentFilter contentFilter, String encoding) {
+		return new StringBuffer().append("query=").append(JiraCoreUtil.encode(contentFilter.getQueryString(), encoding)) //$NON-NLS-1$
 				.append("&summary=").append(contentFilter.isSearchingSummary()) //$NON-NLS-1$
 				.append("&description=").append(contentFilter.isSearchingDescription()) //$NON-NLS-1$
 				.append("&body=").append(contentFilter.isSearchingComments()) //$NON-NLS-1$

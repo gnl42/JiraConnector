@@ -24,6 +24,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -184,6 +185,27 @@ public class JiraRepositoryConnectorTest extends TestCase {
 			assertNotNull(task.getOwner());
 			assertTrue("Expected ", task.getOwner().length() > 0);
 		}
+	}
+
+	public void testPerformQuerySpaces() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		String summary = "test search for spaces " + System.currentTimeMillis();
+		JiraTestUtils.createIssue(client, summary);
+		
+		FilterDefinition filter = new FilterDefinition("test query");
+		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
+
+		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter,
+				repository.getCharacterEncoding());
+
+		TaskFactory taskFactory = new TaskFactory(repository, false, false);
+
+		ITaskCollector collector = new QueryHitCollector(taskFactory);
+		connector.performQuery(query, repository, new NullProgressMonitor(), collector);
+
+		Set<AbstractTask> tasks = collector.getTasks();
+		assertEquals(1, tasks.size());
 	}
 
 	public void testMarkStaleNoTasks() throws Exception {
