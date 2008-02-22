@@ -279,7 +279,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			GridData data = new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1);
 			data.horizontalSpan = 3;
 			data.widthHint = 380;
-			data.heightHint = 20;
+			//data.heightHint = 20;
 
 			StyledText text = viewer.getTextWidget();
 			text.setLayoutData(data);
