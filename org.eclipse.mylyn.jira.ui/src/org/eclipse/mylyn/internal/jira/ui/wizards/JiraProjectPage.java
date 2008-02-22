@@ -47,6 +47,7 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractRepositoryTaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -294,9 +295,15 @@ public class JiraProjectPage extends WizardPage {
 			IEditorInput editorInput = editor.getEditorInput();
 			if (editorInput instanceof TaskEditorInput) {
 				element = ((TaskEditorInput) editorInput).getTask();
+			} else if (editorInput instanceof AbstractRepositoryTaskEditorInput) {
+				element = ((AbstractRepositoryTaskEditorInput) editorInput).getOldTaskData();
 			} else {
 				return null;
 			}
+		}
+		
+		if (element == null) {
+			return null;
 		}
 
 		if (element instanceof JiraTask) {
@@ -336,14 +343,21 @@ public class JiraProjectPage extends WizardPage {
 //			}
 //		}
 
-		TaskSelection taskSelection = (TaskSelection) getAdapter(element, TaskSelection.class);
-		if (taskSelection != null) {
-			RepositoryTaskData taskData = taskSelection.getTaskData();
-			if (taskData != null && taskData.getRepositoryUrl().equals(repository.getUrl())) {
-				Project project = getProject(taskData);
-				if (project != null) {
-					return project;
-				}
+		RepositoryTaskData taskData = null;
+		if (element instanceof RepositoryTaskData) {
+			taskData = (RepositoryTaskData) getAdapter(element, RepositoryTaskData.class);
+		}
+		if (taskData == null) {
+			TaskSelection taskSelection = (TaskSelection) getAdapter(element, TaskSelection.class);
+			if (taskSelection != null) {
+				taskData = taskSelection.getTaskData();
+			}
+		}
+
+		if (taskData != null && taskData.getRepositoryUrl().equals(repository.getUrl())) {
+			Project project = getProject(taskData);
+			if (project != null) {
+				return project;
 			}
 		}
 
