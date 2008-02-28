@@ -166,15 +166,6 @@ public interface JiraClient {
 	Issue getIssueByKey(String issueKey) throws JiraException;
 
 	/**
-	 * Retrieve an issue using its unique id
-	 * 
-	 * @param issueKey
-	 *            Unique id of the issue to find
-	 * @return Matching issue or <code>null</code> if no matching issue could be found
-	 */
-	Issue getIssueById(String issue) throws JiraException;
-
-	/**
 	 * Returns the corresponding key for <code>issueId</code>.
 	 * 
 	 * @param issueId

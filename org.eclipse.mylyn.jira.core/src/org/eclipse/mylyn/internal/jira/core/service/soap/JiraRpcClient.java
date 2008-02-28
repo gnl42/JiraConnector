@@ -198,14 +198,15 @@ public class JiraRpcClient extends AbstractJiraClient {
 	public Issue getIssueByKey(String issueKey) throws JiraException {
 		SingleIssueCollector collector = new SingleIssueCollector();
 		filterService.getIssueByKey(issueKey, collector);
+		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
+			throw new JiraException("Repository returned an unknown project for issue '" + collector.getIssue().getKey() + "'");
+		}
 		return collector.getIssue();
 	}
 
-	public Issue getIssueById(String issueId) throws JiraException {
-		String issueKey = getKeyFromId(issueId);
-		return getIssueByKey(issueKey);
-	}
-
+	/**
+	 * It is recommended to use {@link #getIssueByKey(String)} instead.
+	 */
 	public String getKeyFromId(final String issueId) throws JiraException {
 		return call(new RemoteRunnable<String>() {
 			public String run() throws java.rmi.RemoteException, JiraException {

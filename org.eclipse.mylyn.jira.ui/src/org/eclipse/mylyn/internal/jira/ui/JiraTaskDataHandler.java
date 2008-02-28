@@ -114,7 +114,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (task != null) {
 				return client.getIssueByKey(task.getTaskKey());
 			} else {
-				return client.getIssueById(taskId);
+				String issueKey = client.getKeyFromId(taskId);
+				return client.getIssueByKey(issueKey);
 			}
 		} catch (NumberFormatException e) {
 			return client.getIssueByKey(taskId);
