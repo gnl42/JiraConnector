@@ -460,6 +460,11 @@ public class JiraRpcClient extends AbstractJiraClient {
 			}
 			return e.getCause().getLocalizedMessage();
 		}
+		
+		if (e instanceof AxisFault) {
+			return "Server error: " + e.getLocalizedMessage();
+		}
+		
 		return e.getLocalizedMessage();
 	}
 
