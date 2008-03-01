@@ -129,8 +129,8 @@ public class JiraWebIssueService {
 					if (components.length == 0) {
 						post.addParameter("components", "-1");
 					} else {
-						for (int i = 0; i < components.length; i++) {
-							post.addParameter("components", components[i].getId());
+						for (Component component : components) {
+							post.addParameter("components", component.getId());
 						}
 					}
 				}
@@ -140,8 +140,8 @@ public class JiraWebIssueService {
 					if (versions.length == 0) {
 						post.addParameter("versions", "-1");
 					} else {
-						for (int i = 0; i < versions.length; i++) {
-							post.addParameter("versions", versions[i].getId());
+						for (Version version : versions) {
+							post.addParameter("versions", version.getId());
 						}
 					}
 				}
@@ -151,8 +151,8 @@ public class JiraWebIssueService {
 					if (fixVersions.length == 0) {
 						post.addParameter("fixVersions", "-1");
 					} else {
-						for (int i = 0; i < fixVersions.length; i++) {
-							post.addParameter("fixVersions", fixVersions[i].getId());
+						for (Version fixVersion : fixVersions) {
+							post.addParameter("fixVersions", fixVersion.getId());
 						}
 					}
 				}
@@ -700,7 +700,7 @@ public class JiraWebIssueService {
 	protected void handleErrorMessage(HttpMethodBase method) throws IOException, JiraException {
 		String response = method.getResponseBodyAsString();
 		// TODO consider logging the error
-		
+
 		if (method.getStatusCode() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
 			throw new JiraRemoteException("JIRA system error", null);
 		}

@@ -30,7 +30,8 @@ public class JiraCoreUtil {
 				return URLEncoder.encode(text, JiraClient.DEFAULT_CHARSET);
 			} catch (UnsupportedEncodingException e1) {
 				// should never happen
-				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, "Could not encode text \"" + text + "\"", e));
+				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, "Could not encode text \""
+						+ text + "\"", e));
 				return text;
 			}
 		}

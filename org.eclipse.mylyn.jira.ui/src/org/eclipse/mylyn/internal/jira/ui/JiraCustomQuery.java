@@ -108,7 +108,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	private static final String COMPONENT_NONE = "-1";
 
-	private String encoding;
+	private final String encoding;
 
 	private boolean search;
 
@@ -532,4 +532,3 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		this.search = search;
 	}
 }
-

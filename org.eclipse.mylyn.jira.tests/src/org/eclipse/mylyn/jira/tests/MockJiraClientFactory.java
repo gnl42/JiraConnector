@@ -16,8 +16,8 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  * @author Eugene Kuleshov
  */
 public class MockJiraClientFactory implements IJiraClientFactory {
-	
-	private JiraClient client;
+
+	private final JiraClient client;
 
 	public MockJiraClientFactory(JiraClient client) {
 		this.client = client;
@@ -26,5 +26,5 @@ public class MockJiraClientFactory implements IJiraClientFactory {
 	public JiraClient getJiraClient(TaskRepository repository) {
 		return client;
 	}
-	
+
 }

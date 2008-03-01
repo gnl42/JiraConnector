@@ -77,11 +77,13 @@ public class IssueType implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
+		}
 
-		if (!(obj instanceof IssueType))
+		if (!(obj instanceof IssueType)) {
 			return false;
+		}
 
 		IssueType that = (IssueType) obj;
 

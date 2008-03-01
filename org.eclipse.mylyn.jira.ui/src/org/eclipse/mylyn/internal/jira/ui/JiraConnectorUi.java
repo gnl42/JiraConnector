@@ -142,7 +142,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		if (text.length() == 0) {
 			return null;
 		}
-		
+
 		int startPos = lineOffset;
 		if (startPos < 0) {
 			startPos = 0;
@@ -151,8 +151,9 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		}
 		while (startPos > 0) {
 			char c = text.charAt(startPos);
-			if (Character.isWhitespace(c) || ",.;[](){}".indexOf(c) > -1)
+			if (Character.isWhitespace(c) || ",.;[](){}".indexOf(c) > -1) {
 				break;
+			}
 			startPos--;
 		}
 		int endPos = lineOffset;
@@ -163,14 +164,16 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		}
 		while (endPos < text.length()) {
 			char c = text.charAt(endPos);
-			if (Character.isWhitespace(c) || ",.;[](){}".indexOf(c) > -1)
+			if (Character.isWhitespace(c) || ",.;[](){}".indexOf(c) > -1) {
 				break;
+			}
 			endPos++;
 		}
 
 		String[] taskIds = connector.getTaskIdsFromComment(repository, text.substring(startPos, endPos));
-		if (taskIds == null || taskIds.length == 0)
+		if (taskIds == null || taskIds.length == 0) {
 			return null;
+		}
 
 		IHyperlink[] links = new IHyperlink[taskIds.length];
 		for (int i = 0; i < taskIds.length; i++) {

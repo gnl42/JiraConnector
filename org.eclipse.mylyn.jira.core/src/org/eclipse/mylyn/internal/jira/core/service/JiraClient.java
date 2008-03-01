@@ -48,7 +48,7 @@ import org.eclipse.mylyn.web.core.AbstractWebLocation;
 public interface JiraClient {
 
 	String DEFAULT_CHARSET = "UTF-8";
-	
+
 	/**
 	 * Assign to the default user
 	 */
@@ -302,7 +302,7 @@ public interface JiraClient {
 	 * <code>parentIssueId</code> must be set.
 	 */
 	Issue createSubTask(Issue issue) throws JiraException;
-	
+
 	/**
 	 * Begin watching <code>issue</code>. Nothing will happen if the user is already watching the issue.
 	 * 

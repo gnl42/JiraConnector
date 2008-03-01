@@ -27,13 +27,16 @@ public class RemoteNamedObject extends org.eclipse.mylyn.internal.jira.core.wsdl
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof RemoteNamedObject))
+		if (!(obj instanceof RemoteNamedObject)) {
 			return false;
+		}
 		RemoteNamedObject other = (RemoteNamedObject) obj;
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (this == obj)
+		}
+		if (this == obj) {
 			return true;
+		}
 		if (__equalsCalc != null) {
 			return (__equalsCalc == obj);
 		}

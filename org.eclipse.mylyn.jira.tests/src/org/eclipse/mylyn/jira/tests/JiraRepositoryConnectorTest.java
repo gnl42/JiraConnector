@@ -192,7 +192,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		String summary = "test search for spaces " + System.currentTimeMillis();
 		JiraTestUtils.createIssue(client, summary);
-		
+
 		FilterDefinition filter = new FilterDefinition("test query");
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 
@@ -265,7 +265,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		// make sure the second issue is created after the first one
 		Thread.sleep(1000);
-		
+
 		Issue issue2 = JiraTestUtils.createIssue(client, "testMarkStale2");
 		assertTrue(issue2.getUpdated().after(issue.getUpdated()));
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
@@ -284,16 +284,16 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		// create an issue
-		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");		
+		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
 				new NullProgressMonitor());
 		taskList.addTask(task);
 		assertFalse(task.isCompleted());
-		
+
 		// close issue
 		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
-		
+
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(new Date(), -1)));
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);

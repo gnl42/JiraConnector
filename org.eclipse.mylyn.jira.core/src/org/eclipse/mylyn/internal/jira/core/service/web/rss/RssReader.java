@@ -15,8 +15,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;

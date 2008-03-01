@@ -18,7 +18,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Query;
  */
 public class SmartQuery implements Query {
 
-	private String keywords;
+	private final String keywords;
 
 	public SmartQuery(String keywords) {
 		this.keywords = keywords;

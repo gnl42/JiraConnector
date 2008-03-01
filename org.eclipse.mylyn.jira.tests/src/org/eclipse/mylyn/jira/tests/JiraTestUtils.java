@@ -40,10 +40,10 @@ public class JiraTestUtils {
 	private static Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
 
 	private static List<Issue> testIssues = new ArrayList<Issue>();
-	
+
 	public static void cleanup(JiraClient client) throws JiraException {
 		for (Issue issue : testIssues) {
-			client.deleteIssue(issue);			
+			client.deleteIssue(issue);
 		}
 		testIssues.clear();
 	}
@@ -102,13 +102,13 @@ public class JiraTestUtils {
 		Issue issue = newIssue(client, summary);
 		return createIssue(client, issue);
 	}
-	
+
 	public static Issue createIssue(JiraClient client, Issue issue) throws JiraException {
 		issue = client.createIssue(issue);
-		testIssues .add(issue);
+		testIssues.add(issue);
 		return issue;
 	}
- 
+
 	public static Issue newSubTask(JiraClient client, Issue parent, String summary) throws JiraException {
 		refreshDetails(client);
 
@@ -126,10 +126,10 @@ public class JiraTestUtils {
 		if (!client.hasDetails()) {
 			JiraClientData data = clientDataByUrl.get(client.getBaseUrl());
 			if (data != null) {
-				((AbstractJiraClient)client).setData(data);
+				((AbstractJiraClient) client).setData(data);
 			} else {
 				client.refreshDetails(new NullProgressMonitor());
-				clientDataByUrl.put(client.getBaseUrl(), ((AbstractJiraClient)client).getData());
+				clientDataByUrl.put(client.getBaseUrl(), ((AbstractJiraClient) client).getData());
 			}
 		}
 	}

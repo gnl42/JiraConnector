@@ -86,8 +86,8 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		int currentCol = 1;
 
 		for (final RepositoryTaskAttribute attribute : taskData.getAttributes()) {
-			if (attribute.isHidden() ||
-					(attribute.isReadOnly() && (attribute.getValue()==null || attribute.getValue().length()==0))) {
+			if (attribute.isHidden()
+					|| (attribute.isReadOnly() && (attribute.getValue() == null || attribute.getValue().length() == 0))) {
 				continue;
 			}
 

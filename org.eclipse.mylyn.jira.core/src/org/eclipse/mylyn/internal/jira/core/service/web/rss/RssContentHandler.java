@@ -270,7 +270,7 @@ public class RssContentHandler extends DefaultHandler {
 
 	private Date commentDate;
 
-	private ArrayList<Comment> currentComments = new ArrayList<Comment>();
+	private final ArrayList<Comment> currentComments = new ArrayList<Comment>();
 
 	private ArrayList<Version> currentFixVersions = null;
 
@@ -278,13 +278,13 @@ public class RssContentHandler extends DefaultHandler {
 
 	private ArrayList<Component> currentComponents = null;
 
-	private ArrayList<Attachment> currentAttachments = new ArrayList<Attachment>();
+	private final ArrayList<Attachment> currentAttachments = new ArrayList<Attachment>();
 
-	private ArrayList<CustomField> currentCustomFields = new ArrayList<CustomField>();
+	private final ArrayList<CustomField> currentCustomFields = new ArrayList<CustomField>();
 
 	private String currentSubtaskId;
 
-	private ArrayList<Subtask> currentSubtasks = new ArrayList<Subtask>();
+	private final ArrayList<Subtask> currentSubtasks = new ArrayList<Subtask>();
 
 	private String currentIssueLinkTypeId;
 
@@ -296,7 +296,7 @@ public class RssContentHandler extends DefaultHandler {
 
 	private String currentIssueLinkIssueId;
 
-	private ArrayList<IssueLink> currentIssueLinks = new ArrayList<IssueLink>();
+	private final ArrayList<IssueLink> currentIssueLinks = new ArrayList<IssueLink>();
 
 	private String customFieldId;
 
@@ -304,7 +304,7 @@ public class RssContentHandler extends DefaultHandler {
 
 	private String customFieldName;
 
-	private ArrayList<String> customFieldValues = new ArrayList<String>();
+	private final ArrayList<String> customFieldValues = new ArrayList<String>();
 
 	private String attachmentId;
 
@@ -729,7 +729,8 @@ public class RssContentHandler extends DefaultHandler {
 					try {
 						currentIssue.setVotes(Integer.parseInt(getCurrentElementText()));
 					} catch (NumberFormatException e) {
-						StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing number of votes", e));
+						StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+								"Error parsing number of votes", e));
 					}
 				}
 			} else if (SECURITY.equals(localName)) {
@@ -786,7 +787,8 @@ public class RssContentHandler extends DefaultHandler {
 		try {
 			return XML_DATE_FORMAT.parse(value);
 		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing date: \"" + value + "\"", e));
+			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing date: \"" + value
+					+ "\"", e));
 			return null;
 		}
 	}
@@ -798,7 +800,8 @@ public class RssContentHandler extends DefaultHandler {
 		try {
 			return XML_DUE_DATE_FORMAT.parse(value);
 		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \"" + value + "\"", e));
+			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \""
+					+ value + "\"", e));
 			return null;
 		}
 	}

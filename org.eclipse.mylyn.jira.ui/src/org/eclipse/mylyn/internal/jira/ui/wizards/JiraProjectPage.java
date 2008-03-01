@@ -100,7 +100,7 @@ public class JiraProjectPage extends WizardPage {
 
 		// create the list of bug reports
 		projectTree = new FilteredTree(composite, SWT.SINGLE | SWT.BORDER, //
-				new PatternFilter() {  // matching on project keys
+				new PatternFilter() { // matching on project keys
 					@Override
 					protected boolean isLeafMatch(Viewer viewer, Object element) {
 						if (element instanceof Project) {
@@ -227,7 +227,8 @@ public class JiraProjectPage extends WizardPage {
 							JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 							client.refreshDetails(monitor);
 						} catch (JiraException e) {
-							throw new InvocationTargetException(new CoreException(JiraCorePlugin.toStatus(repository, e)));
+							throw new InvocationTargetException(new CoreException(
+									JiraCorePlugin.toStatus(repository, e)));
 						} catch (OperationCanceledException e) {
 							// canceled
 							throw new InterruptedException();
@@ -236,7 +237,7 @@ public class JiraProjectPage extends WizardPage {
 						}
 					}
 				};
-				
+
 				if (getContainer().getShell().isVisible()) {
 					getContainer().run(true, true, runner);
 				} else {
@@ -247,7 +248,7 @@ public class JiraProjectPage extends WizardPage {
 				return;
 			} catch (InvocationTargetException e) {
 				if (e.getCause() instanceof CoreException) {
-					setErrorMessage(((CoreException)e.getCause()).getMessage());
+					setErrorMessage(((CoreException) e.getCause()).getMessage());
 				} else {
 					StatusHandler.fail(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, "Error updating attributes", e));
 				}
@@ -258,7 +259,7 @@ public class JiraProjectPage extends WizardPage {
 		Project[] projects = client.getProjects();
 		projectTree.getViewer().setInput(projects);
 		getWizard().getContainer().updateButtons();
-		
+
 		if (projects.length == 1 && projectTree.getViewer().getSelection().isEmpty()) {
 			projectTree.getViewer().setSelection(new StructuredSelection(projects[0]));
 		} else {
@@ -301,7 +302,7 @@ public class JiraProjectPage extends WizardPage {
 				return null;
 			}
 		}
-		
+
 		if (element == null) {
 			return null;
 		}

@@ -181,7 +181,7 @@ public class MockJiraClient extends AbstractJiraClient {
 	}
 
 	// factory methods
-	
+
 	public static Project createProject() {
 		Project project = new Project();
 		project.setId(JiraTestUtils.PROJECT1);
@@ -199,15 +199,15 @@ public class MockJiraClient extends AbstractJiraClient {
 
 		return project;
 	}
-	
+
 	public static IssueType createIssueType(String id, String name) {
 		IssueType issueType = new IssueType();
 		issueType.setId(id);
 		issueType.setName(name);
 		return issueType;
-		
+
 	}
-	
+
 	public static Version createVersion(String id, String name) {
 		Version version = new Version();
 		version.setId(id);
@@ -221,7 +221,7 @@ public class MockJiraClient extends AbstractJiraClient {
 		component.setName(name);
 		return component;
 	}
-	
+
 	public static Priority createPriority(String id, String name) {
 		Priority priority = new Priority();
 		priority.setId(id);
@@ -246,12 +246,12 @@ public class MockJiraClient extends AbstractJiraClient {
 
 	public void deleteIssue(Issue issue) throws JiraException {
 		// ignore
-		
+
 	}
 
 	public RemoteIssue getRemoteIssueByKey(String key) throws JiraException {
 		// ignore
 		return null;
 	}
-	
+
 }

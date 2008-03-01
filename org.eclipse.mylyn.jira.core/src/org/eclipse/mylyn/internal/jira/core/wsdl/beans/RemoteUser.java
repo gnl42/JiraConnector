@@ -89,13 +89,16 @@ public class RemoteUser extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof RemoteUser))
+		if (!(obj instanceof RemoteUser)) {
 			return false;
+		}
 		RemoteUser other = (RemoteUser) obj;
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (this == obj)
+		}
+		if (this == obj) {
 			return true;
+		}
 		if (__equalsCalc != null) {
 			return (__equalsCalc == obj);
 		}

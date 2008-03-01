@@ -87,11 +87,13 @@ public class Status implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
+		}
 
-		if (!(obj instanceof Status))
+		if (!(obj instanceof Status)) {
 			return false;
+		}
 
 		Status that = (Status) obj;
 

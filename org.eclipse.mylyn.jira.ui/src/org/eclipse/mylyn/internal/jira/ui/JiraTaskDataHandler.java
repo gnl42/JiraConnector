@@ -96,8 +96,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (jiraIssue != null) {
 				return createTaskData(repository, client, jiraIssue, null);
 			}
-			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, IStatus.OK,
-					"JIRA ticket not found: " + taskId, null));
+			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+					IStatus.OK, "JIRA ticket not found: " + taskId, null));
 
 		} catch (JiraException e) {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
@@ -237,9 +237,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		removeAttributes(data, JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX);
 		if (issueLinks != null && issueLinks.length > 0) {
 			HashMap<String, RepositoryTaskAttribute> links = new HashMap<String, RepositoryTaskAttribute>();
-			for (int i = 0; i < issueLinks.length; i++) {
-				IssueLink link = issueLinks[i];
-
+			for (IssueLink link : issueLinks) {
 				String key;
 				String desc;
 				if (link.getInwardDescription() == null) {
@@ -446,7 +444,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			if (RepositoryTaskAttribute.COMMENT_NEW.equals(attribute.getId())) {
 				attribute.setReadOnly(false);
-			} else {			
+			} else {
 				// make attributes read-only if can't find editing options
 				String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
 				Collection<String> options = attribute.getOptions();
@@ -672,8 +670,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			throws CoreException {
 		JiraClient client = clientFactory.getJiraClient(repository);
 		if (client == null) {
-			throw new CoreException(new org.eclipse.core.runtime.Status(org.eclipse.core.runtime.Status.ERROR,
-					JiraCorePlugin.ID_PLUGIN, org.eclipse.core.runtime.Status.ERROR, "Unable to create Jira client", null));
+			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+					IStatus.ERROR, "Unable to create Jira client", null));
 		}
 
 		try {
@@ -690,8 +688,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 
 				if (issue == null) {
-					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-							IStatus.OK, "Could not create ticket.", null));
+					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR,
+							JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create ticket.", null));
 				}
 				// this is severely broken: should return id instead
 				return issue.getKey();
@@ -798,8 +796,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			typeAttribute.clearOptions();
 
 			IssueType[] jiraIssueTypes = client.getIssueTypes();
-			for (int i = 0; i < jiraIssueTypes.length; i++) {
-				IssueType type = jiraIssueTypes[i];
+			for (IssueType type : jiraIssueTypes) {
 				if (type.isSubTaskType()) {
 					typeAttribute.addOption(type.getName(), type.getId());
 				}
@@ -916,7 +913,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					comp.setName(compStr);
 					components.add(comp);
 				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Error setting component for JIRA issue. Component id is null: " + compStr));
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID,
+							"Error setting component for JIRA issue. Component id is null: " + compStr));
 				}
 			}
 			issue.setComponents(components.toArray(new Component[components.size()]));
@@ -932,7 +930,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					version.setName(fixStr);
 					fixversions.add(version);
 				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Error setting fix version for JIRA issue. Version id is null: " + fixStr));
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID,
+							"Error setting fix version for JIRA issue. Version id is null: " + fixStr));
 				}
 			}
 			issue.setFixVersions(fixversions.toArray(new Version[fixversions.size()]));
@@ -948,8 +947,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					version.setName(fixStr);
 					affectsversions.add(version);
 				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Error setting affects version for JIRA issue. Version id is null: "
-							+ fixStr));
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID,
+							"Error setting affects version for JIRA issue. Version id is null: " + fixStr));
 				}
 			}
 			issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));

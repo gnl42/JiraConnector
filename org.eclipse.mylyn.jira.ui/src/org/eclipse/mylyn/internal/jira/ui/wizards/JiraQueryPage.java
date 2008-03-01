@@ -1333,7 +1333,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 											+ "Please check repository settings in the Task Repositories view.", //
 									e.getMessage());
 							showWarning(msg);
-							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, msg, e));
+							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.ERROR,
+									JiraUiPlugin.PLUGIN_ID, msg, e));
 						}
 					}
 

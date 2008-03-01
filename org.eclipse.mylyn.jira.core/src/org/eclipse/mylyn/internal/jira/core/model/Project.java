@@ -96,9 +96,9 @@ public class Project implements Serializable {
 	}
 
 	public Component getComponent(String name) {
-		for (int i = 0; i < this.components.length; i++) {
-			if (components[i].getName().equals(name)) {
-				return components[i];
+		for (Component component : this.components) {
+			if (component.getName().equals(name)) {
+				return component;
 			}
 		}
 		return null;
@@ -113,9 +113,9 @@ public class Project implements Serializable {
 	}
 
 	public Version getVersion(String name) {
-		for (int i = 0; i < this.versions.length; i++) {
-			if (versions[i].getName().equals(name)) {
-				return versions[i];
+		for (Version version : this.versions) {
+			if (version.getName().equals(name)) {
+				return version;
 			}
 		}
 		return null;
@@ -128,8 +128,7 @@ public class Project implements Serializable {
 	public Version[] getReleasedVersions() {
 		List<Version> releasedVersions = new ArrayList<Version>();
 
-		for (int i = 0; i < this.versions.length; i++) {
-			Version version = this.versions[i];
+		for (Version version : this.versions) {
 			if (version.isReleased()) {
 				releasedVersions.add(version);
 			}
@@ -141,8 +140,7 @@ public class Project implements Serializable {
 	public Version[] getUnreleasedVersions() {
 		List<Version> unreleasedVersions = new ArrayList<Version>();
 
-		for (int i = 0; i < this.versions.length; i++) {
-			Version version = this.versions[i];
+		for (Version version : this.versions) {
 			if (!version.isReleased()) {
 				unreleasedVersions.add(version);
 			}
@@ -154,8 +152,7 @@ public class Project implements Serializable {
 	public Version[] getArchivedVersions() {
 		List<Version> archivedVersions = new ArrayList<Version>();
 
-		for (int i = 0; i < this.versions.length; i++) {
-			Version version = this.versions[i];
+		for (Version version : this.versions) {
 			if (version.isArchived()) {
 				archivedVersions.add(version);
 			}
@@ -170,11 +167,13 @@ public class Project implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
+		}
 
-		if (!(obj instanceof Project))
+		if (!(obj instanceof Project)) {
 			return false;
+		}
 
 		Project that = (Project) obj;
 

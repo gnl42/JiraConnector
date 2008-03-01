@@ -88,13 +88,16 @@ public class RemoteProjectRole implements java.io.Serializable {
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof RemoteProjectRole))
+		if (!(obj instanceof RemoteProjectRole)) {
 			return false;
+		}
 		RemoteProjectRole other = (RemoteProjectRole) obj;
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (this == obj)
+		}
+		if (this == obj) {
 			return true;
+		}
 		if (__equalsCalc != null) {
 			return (__equalsCalc == obj);
 		}

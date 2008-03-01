@@ -23,13 +23,16 @@ public class RemoteValidationException extends org.eclipse.mylyn.internal.jira.c
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof RemoteValidationException))
+		if (!(obj instanceof RemoteValidationException)) {
 			return false;
+		}
 		RemoteValidationException other = (RemoteValidationException) obj;
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (this == obj)
+		}
+		if (this == obj) {
 			return true;
+		}
 		if (__equalsCalc != null) {
 			return (__equalsCalc == obj);
 		}

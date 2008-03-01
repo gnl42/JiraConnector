@@ -22,13 +22,16 @@ public class RemoteEntity implements java.io.Serializable {
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof RemoteEntity))
+		if (!(obj instanceof RemoteEntity)) {
 			return false;
+		}
 		RemoteEntity other = (RemoteEntity) obj;
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (this == obj)
+		}
+		if (this == obj) {
 			return true;
+		}
 		if (__equalsCalc != null) {
 			return (__equalsCalc == obj);
 		}

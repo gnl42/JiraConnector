@@ -91,8 +91,9 @@ public class HTML2TextReader extends SubstitutionTextReader {
 	@Override
 	public int read() throws IOException {
 		int c = super.read();
-		if (c != -1)
+		if (c != -1) {
 			++fCounter;
+		}
 		return c;
 	}
 
@@ -118,33 +119,37 @@ public class HTML2TextReader extends SubstitutionTextReader {
 	@Override
 	protected String computeSubstitution(int c) throws IOException {
 
-		if (c == '<')
+		if (c == '<') {
 			return processHTMLTag();
-		else if (fIgnore)
+		} else if (fIgnore) {
 			return EMPTY_STRING;
-		else if (c == '&')
+		} else if (c == '&') {
 			return processEntity();
-		else if (fIsPreformattedText)
+		} else if (fIsPreformattedText) {
 			return processPreformattedText(c);
-		else if (c == '\n')
+		} else if (c == '\n') {
 			return EMPTY_STRING;
+		}
 
 		return null;
 	}
 
 	private String html2Text(String html) {
 
-		if (html == null || html.length() == 0)
+		if (html == null || html.length() == 0) {
 			return EMPTY_STRING;
+		}
 
 		html = html.toLowerCase(Locale.ENGLISH);
 
 		String tag = html;
-		if ('/' == tag.charAt(0))
+		if ('/' == tag.charAt(0)) {
 			tag = tag.substring(1);
+		}
 
-		if (!fgTags.contains(tag))
+		if (!fgTags.contains(tag)) {
 			return EMPTY_STRING;
+		}
 
 		if ("pre".equals(html)) { //$NON-NLS-1$
 			startPreformattedText();
@@ -156,8 +161,9 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return EMPTY_STRING;
 		}
 
-		if (fIsPreformattedText)
+		if (fIsPreformattedText) {
 			return EMPTY_STRING;
+		}
 
 		if ("b".equals(html)) { //$NON-NLS-1$
 			startBold();
@@ -169,14 +175,17 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return EMPTY_STRING;
 		}
 
-		if ("dl".equals(html)) //$NON-NLS-1$
+		if ("dl".equals(html)) {
 			return LINE_DELIM;
+		}
 
-		if ("dd".equals(html)) //$NON-NLS-1$
+		if ("dd".equals(html)) {
 			return "\t"; //$NON-NLS-1$
+		}
 
-		if ("li".equals(html)) //$NON-NLS-1$
+		if ("li".equals(html)) {
 			return LINE_DELIM + "  - "; //$NON-NLS-1$
+		}
 
 		if ("/b".equals(html)) { //$NON-NLS-1$
 			stopBold();
@@ -188,8 +197,9 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return LINE_DELIM;
 		}
 
-		if ("br".equals(html) || "br/".equals(html) || "div".equals(html)) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		if ("br".equals(html) || "br/".equals(html) || "div".equals(html)) {
 			return LINE_DELIM;
+		}
 
 		if ("/p".equals(html)) { //$NON-NLS-1$
 			boolean inParagraph = fInParagraph;
@@ -202,8 +212,9 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return LINE_DELIM;
 		}
 
-		if ("/dd".equals(html)) //$NON-NLS-1$
+		if ("/dd".equals(html)) {
 			return LINE_DELIM;
+		}
 
 		if ("head".equals(html)) { //$NON-NLS-1$
 			fIgnore = true;
@@ -246,8 +257,9 @@ public class HTML2TextReader extends SubstitutionTextReader {
 				}
 			}
 
-			if (ch == -1)
+			if (ch == -1) {
 				return null;
+			}
 
 			int tagLen = buf.length();
 			// needs special treatment for comments
@@ -264,8 +276,9 @@ public class HTML2TextReader extends SubstitutionTextReader {
 	}
 
 	private String processPreformattedText(int c) {
-		if (c == '\r' || c == '\n')
+		if (c == '\r' || c == '\n') {
 			fCounter++;
+		}
 		return null;
 	}
 
@@ -305,12 +318,14 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			ch = nextChar();
 		}
 
-		if (ch == ';')
+		if (ch == ';') {
 			return entity2Text(buf.toString());
+		}
 
 		buf.insert(0, '&');
-		if (ch != -1)
+		if (ch != -1) {
 			buf.append((char) ch);
+		}
 		return buf.toString();
 	}
 }

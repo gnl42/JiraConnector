@@ -63,12 +63,12 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 			@Override
 			public void adapt(AbstractAttributeEditor editor) {
 				super.adapt(editor);
-				
+
 				if (getAttributeManager().hasIncomingChanges(editor.getTaskAttribute())) {
 					editor.decorate(getColorIncoming());
 				}
 			}
-			
+
 			@Override
 			public void configureContextMenuManager(MenuManager menuManager, TextViewer textViewer) {
 				getParentEditor().configureContextMenuManager(menuManager, textViewer);
@@ -92,14 +92,14 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 	@Override
 	protected String getHistoryUrl() {
 		RepositoryTaskData taskData = getAttributeManager().getTaskData();
-			String taskKey = taskData.getTaskKey();
-			String repositoryUrl = taskData.getRepositoryUrl();
-			if (getConnector() != null && repositoryUrl != null && taskKey != null) {
-				String url = getConnector().getTaskUrl(repositoryUrl, taskKey);
-				if (url != null) {
-					return url + "?page=history";
-				}
+		String taskKey = taskData.getTaskKey();
+		String repositoryUrl = taskData.getRepositoryUrl();
+		if (getConnector() != null && repositoryUrl != null && taskKey != null) {
+			String url = getConnector().getTaskUrl(repositoryUrl, taskKey);
+			if (url != null) {
+				return url + "?page=history";
 			}
+		}
 
 		return super.getHistoryUrl();
 	}

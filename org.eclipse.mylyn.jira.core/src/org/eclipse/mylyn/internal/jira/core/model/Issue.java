@@ -90,9 +90,9 @@ public class Issue implements Serializable {
 	private IssueLink[] issueLinks = new IssueLink[0];
 
 	private SecurityLevel securityLevel;
-	
+
 	private boolean markupDetected;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -348,9 +348,9 @@ public class Issue implements Serializable {
 	}
 
 	public Attachment getAttachmentById(String id) {
-		for (int i = 0; i < this.attachments.length; i++) {
-			if (attachments[i].getId().equals(id)) {
-				return attachments[i];
+		for (Attachment attachment : this.attachments) {
+			if (attachment.getId().equals(id)) {
+				return attachment;
 			}
 		}
 		return null;
@@ -443,14 +443,13 @@ public class Issue implements Serializable {
 				return new String[] { new SimpleDateFormat("dd/MMM/yy").format(due) };
 			}
 		} else if ("timetracking".equals(field)) {
-			return new String[] { Long.toString(getInitialEstimate()/60) + "m" };
+			return new String[] { Long.toString(getInitialEstimate() / 60) + "m" };
 		}
 
 		// TODO add other fields
 
 		if (field.startsWith("customfield_")) {
-			for (int i = 0; i < customFields.length; i++) {
-				CustomField customField = customFields[i];
+			for (CustomField customField : customFields) {
 				if (customField.getId().equals(field)) {
 					List<String> values = customField.getValues();
 					return values.toArray(new String[values.size()]);
@@ -497,15 +496,15 @@ public class Issue implements Serializable {
 	public SecurityLevel getSecurityLevel() {
 		return securityLevel;
 	}
-	
+
 	public void setSecurityLevel(SecurityLevel securityLevel) {
 		this.securityLevel = securityLevel;
 	}
-	
+
 	public boolean isMarkupDetected() {
 		return markupDetected;
 	}
-	
+
 	public void setMarkupDetected(boolean markupDetected) {
 		this.markupDetected = markupDetected;
 	}

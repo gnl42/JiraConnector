@@ -17,13 +17,13 @@ package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 @SuppressWarnings("all")
 public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stub implements
 		org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService {
-	private java.util.Vector cachedSerClasses = new java.util.Vector();
+	private final java.util.Vector cachedSerClasses = new java.util.Vector();
 
-	private java.util.Vector cachedSerQNames = new java.util.Vector();
+	private final java.util.Vector cachedSerQNames = new java.util.Vector();
 
-	private java.util.Vector cachedSerFactories = new java.util.Vector();
+	private final java.util.Vector cachedSerFactories = new java.util.Vector();
 
-	private java.util.Vector cachedDeserFactories = new java.util.Vector();
+	private final java.util.Vector cachedDeserFactories = new java.util.Vector();
 
 	static org.apache.axis.description.OperationDesc[] _operations;
 

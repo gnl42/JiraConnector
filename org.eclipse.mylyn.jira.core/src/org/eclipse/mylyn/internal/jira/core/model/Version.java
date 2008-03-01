@@ -80,11 +80,13 @@ public class Version implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
+		if (obj == null) {
 			return false;
+		}
 
-		if (!(obj instanceof Version))
+		if (!(obj instanceof Version)) {
 			return false;
+		}
 
 		Version that = (Version) obj;
 

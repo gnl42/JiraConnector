@@ -11,8 +11,6 @@
 
 package org.eclipse.mylyn.internal.jira.core.model;
 
-import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
-
 import junit.framework.TestCase;
 
 /**

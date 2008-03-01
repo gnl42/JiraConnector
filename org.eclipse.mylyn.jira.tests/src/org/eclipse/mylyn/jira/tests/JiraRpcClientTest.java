@@ -50,7 +50,7 @@ public class JiraRpcClientTest extends TestCase {
 			JiraTestUtils.cleanup(client);
 		}
 	}
-	
+
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
 		client = new JiraRpcClient(new WebLocation(url, credentials.username, credentials.password), false);
@@ -115,7 +115,7 @@ public class JiraRpcClientTest extends TestCase {
 
 		Resolution resolution = JiraTestUtils.getFixedResolution(client);
 		Issue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
-		
+
 		issue.setResolution(resolution);
 		issue.setFixVersions(new Version[0]);
 
@@ -169,7 +169,7 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.GUEST);
 
 		Issue issue = JiraTestUtils.createIssue(client, "getIdFromKey");
-		
+
 		String key = client.getKeyFromId(issue.getId());
 		assertEquals(issue.getKey(), key);
 
@@ -195,7 +195,7 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testReassign");
-		
+
 		issue.setAssignee("nonexistantuser");
 		try {
 			client.updateIssue(issue, "comment");
@@ -261,7 +261,7 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testAddComment");
-		
+
 		client.addCommentToIssue(issue, "comment 1");
 		issue = client.getIssueByKey(issue.getKey());
 		Comment comment = getComment(issue, "comment 1");
@@ -305,7 +305,8 @@ public class JiraRpcClientTest extends TestCase {
 		} catch (JiraRemoteMessageException e) {
 		}
 
-		client.attachFile(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' }, "application/binary");
+		client.attachFile(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' },
+				"application/binary");
 		issue = client.getIssueByKey(issue.getKey());
 		Attachment attachment = getAttachment(issue, "my.filename.1");
 		assertNotNull(attachment);
@@ -321,7 +322,7 @@ public class JiraRpcClientTest extends TestCase {
 		assertEquals(client.getUserName(), attachment.getAuthor());
 		assertEquals(1, attachment.getSize());
 		assertNotNull(attachment.getCreated());
-		
+
 		// non-USASCII in filename
 		// upload is rejected by JIRA: bug 203663
 //		client.attachFile(issue, "", "filename\u00C4\u00D6\u00DC", new byte[] { '1' }, "text/plain");
@@ -394,10 +395,10 @@ public class JiraRpcClientTest extends TestCase {
 		issue.setType(client.getIssueTypes()[5]);
 		issue.setParentId(parentIssue.getId());
 		issue.setSummary("testCreateSubTaskChild");
-		
+
 		Issue childIssue = client.createSubTask(issue);
 		assertEquals(parentIssue.getId(), childIssue.getParentId());
-		
+
 		parentIssue = client.getIssueByKey(parentIssue.getKey());
 		assertNotNull(parentIssue.getSubtasks());
 		assertEquals(1, parentIssue.getSubtasks().length);
@@ -413,7 +414,7 @@ public class JiraRpcClientTest extends TestCase {
 
 		String summary = "  testCreateIssueLeadingSpaces";
 		String description = "  leading spaces\n  more spaces";
-		
+
 		Issue issue = new Issue();
 		issue.setProject(client.getProjects()[0]);
 		issue.setType(client.getIssueTypes()[0]);
@@ -438,19 +439,19 @@ public class JiraRpcClientTest extends TestCase {
 
 	public void testUpdateIssueCustomOperation() throws Exception {
 		Issue issue = updateIssue(JiraTestConstants.JIRA_39_URL, "EDITABLEREPORTER");
-		
+
 		String operation = JiraTestUtils.getOperation(client, issue.getKey(), "custom");
 		assertNotNull("Unable to find Custom workflow action", operation);
-		
+
 		init(JiraTestConstants.JIRA_39_URL, PrivilegeLevel.USER);
 		client.advanceIssueWorkflow(issue, operation, "custom action test");
 	}
-	
+
 	private Issue updateIssue(String url, String projectKey) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
 		Project project = JiraTestUtils.getProject(client, projectKey);
-		
+
 		Issue issue = new Issue();
 		issue.setProject(project);
 		issue.setType(client.getIssueTypes()[0]);
@@ -481,7 +482,7 @@ public class JiraRpcClientTest extends TestCase {
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
-		
+
 		return issue;
 	}
 
@@ -494,11 +495,11 @@ public class JiraRpcClientTest extends TestCase {
 
 		String summary = "\u00C4\u00D6\u00DC\nnewline";
 		String description = "\"&\n\u00A9\\ ',><br/>&nbsp; ";
-		
+
 		Issue issue = JiraTestUtils.createIssue(client, summary);
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
-		
+
 		client.updateIssue(issue, "comment: \u00C4\u00D6\u00DC");
 		issue = client.getIssueByKey(issue.getKey());
 		assertEquals(summary, issue.getSummary());
@@ -516,11 +517,11 @@ public class JiraRpcClientTest extends TestCase {
 
 		String summary = "line1\nline2";
 		String description = "\nline2\n\nline4\n";
-		
+
 		Issue issue = JiraTestUtils.createIssue(client, summary);
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
-		
+
 		client.updateIssue(issue, "");
 		issue = client.getIssueByKey(issue.getKey());
 		assertEquals(summary, issue.getSummary());
@@ -536,11 +537,11 @@ public class JiraRpcClientTest extends TestCase {
 
 		String summary = "updateIssueWithLinkInDescriptoin";
 		String description = "Link:\n\nhttp://mylyn.eclipse.org/";
-		
+
 		Issue issue = JiraTestUtils.createIssue(client, summary);
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
-		
+
 		client.updateIssue(issue, "");
 		issue = client.getIssueByKey(issue.getKey());
 		assertEquals(description, issue.getDescription());
@@ -555,11 +556,11 @@ public class JiraRpcClientTest extends TestCase {
 
 		String summary = "<b>bold</b>";
 		String description = "<head>123\n<pre>line1\nline2\n\nline4</pre>  &nbsp;&lt;&gt; ";
-		
+
 		Issue issue = JiraTestUtils.createIssue(client, summary);
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
-		
+
 		client.updateIssue(issue, "");
 		issue = client.getIssueByKey(issue.getKey());
 		assertEquals(summary, issue.getSummary());
@@ -574,7 +575,7 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testWatchUnwatch");
-		
+
 		assertFalse(issue.isWatched());
 		client.watchIssue(issue);
 		issue = client.getIssueByKey(issue.getKey());
@@ -600,15 +601,15 @@ public class JiraRpcClientTest extends TestCase {
 		location.setCredentials(AuthenticationType.HTTP, httpCredentials.username, httpCredentials.password);
 		client = new JiraRpcClient(location, false);
 		assertNotNull(client.getServerInfo());
-		
+
 		client = new JiraRpcClient(new WebLocation(url, credentials.username, credentials.password), false);
 		try {
 			assertNotNull(client.getServerInfo());
 			fail("Expected JiraServiceUnavailableException");
-		} catch (JiraServiceUnavailableException expected) {			
+		} catch (JiraServiceUnavailableException expected) {
 		}
 	}
-	
+
 	public void testCharacterEncoding() throws Exception {
 		characterEncoding(JiraTestConstants.JIRA_39_URL);
 	}
@@ -639,7 +640,7 @@ public class JiraRpcClientTest extends TestCase {
 
 	private void getEditableFields(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
-		
+
 		Issue issue = JiraTestUtils.createIssue(client, "getEditableFields");
 
 		RepositoryTaskAttribute[] fields = client.getEditableAttributes(issue.getKey());

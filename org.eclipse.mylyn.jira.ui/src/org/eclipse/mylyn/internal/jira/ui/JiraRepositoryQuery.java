@@ -36,4 +36,3 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 		return filter;
 	}
 }
-

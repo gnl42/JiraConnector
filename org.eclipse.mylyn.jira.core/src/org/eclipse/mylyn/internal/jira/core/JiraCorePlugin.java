@@ -132,8 +132,9 @@ public class JiraCorePlugin extends Plugin {
 	 */
 	public ResourceBundle getResourceBundle() {
 		try {
-			if (resourceBundle == null)
+			if (resourceBundle == null) {
 				resourceBundle = ResourceBundle.getBundle("com.gbst.jira.core.JiraCorePluginResources"); //$NON-NLS-1$
+			}
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
@@ -158,7 +159,8 @@ public class JiraCorePlugin extends Plugin {
 			return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY,
 					e.getMessage(), ((JiraRemoteMessageException) e).getHtmlMessage());
 		} else if (e instanceof JiraException) {
-			return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY, e.getMessage(), e);
+			return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY,
+					e.getMessage(), e);
 		} else {
 			return RepositoryStatus.createInternalError(ID_PLUGIN, "Unexpected error", e);
 		}

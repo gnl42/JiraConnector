@@ -25,7 +25,7 @@ class JiraIssueCollector implements IssueCollector {
 
 	private boolean done = false;
 
-	private int maxHits;
+	private final int maxHits;
 
 	JiraIssueCollector(IProgressMonitor monitor, List<Issue> issues, int maxHits) {
 		this.monitor = monitor;

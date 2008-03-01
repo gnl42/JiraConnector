@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
@@ -63,7 +64,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	private Button compressionButton;
 
 	private boolean characterEncodingValidated;
-	
+
 	private Button autoRefreshConfigurationButton;
 
 	public JiraRepositorySettingsPage(AbstractRepositoryConnectorUi repositoryUi) {
@@ -159,7 +160,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				UrlSelectionDialog dialog = new UrlSelectionDialog(getShell(), urls.toArray(new String[0]));
 				dialog.setSelectedUrl(serverInfo.getBaseUrl());
 				int result = dialog.open();
-				if (result == Dialog.OK) {
+				if (result == Window.OK) {
 					setUrl(dialog.getSelectedUrl());
 				}
 			}
@@ -232,7 +233,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private static class UrlSelectionDialog extends Dialog {
 
-		private String[] locations;
+		private final String[] locations;
 
 		private String selectedUrl;
 
@@ -291,7 +292,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				public void widgetSelected(SelectionEvent e) {
 					Object source = e.getSource();
 					if (source instanceof Button && ((Button) source).getSelection()) {
-						setSelectedUrl((String) ((Button)source).getData());
+						setSelectedUrl((String) ((Button) source).getData());
 					}
 				}
 

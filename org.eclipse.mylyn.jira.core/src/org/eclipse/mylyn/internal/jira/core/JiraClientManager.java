@@ -50,11 +50,11 @@ public class JiraClientManager {
 	/** The directory that contains the repository configuration data. */
 	private final File cacheLocation;
 
-	private Map<String, AbstractJiraClient> clientByUrl = new HashMap<String, AbstractJiraClient>();
+	private final Map<String, AbstractJiraClient> clientByUrl = new HashMap<String, AbstractJiraClient>();
 
-	private Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
+	private final Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
 
-	private List<JiraClientListener> listeners = new ArrayList<JiraClientListener>();
+	private final List<JiraClientListener> listeners = new ArrayList<JiraClientListener>();
 
 	public JiraClientManager(File cacheLocation) {
 		this.cacheLocation = cacheLocation;
@@ -87,7 +87,8 @@ public class JiraClientManager {
 					clientDataByUrl.put(url, data);
 				}
 			} catch (Throwable e) {
-				StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN, "Reset JIRA repository configuration cache due to format change"));
+				StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN,
+						"Reset JIRA repository configuration cache due to format change"));
 			} finally {
 				if (in != null) {
 					try {
@@ -117,7 +118,8 @@ public class JiraClientManager {
 				out.writeObject(clientDataByUrl.get(url));
 			}
 		} catch (Throwable e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error writing JIRA repository configuration cache", e));
+			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+					"Error writing JIRA repository configuration cache", e));
 		} finally {
 			if (out != null) {
 				try {
@@ -179,16 +181,16 @@ public class JiraClientManager {
 			server.setData(data);
 		}
 		clientByUrl.put(location.getUrl(), server);
-		
+
 		fireClientAddded(server);
 
 		return server;
 	}
 
 	public void refreshClient() {
-		
+
 	}
-	
+
 	public void removeClient(JiraClient server) {
 		clientDataByUrl.remove(server.getBaseUrl());
 		clientByUrl.remove(server.getBaseUrl());

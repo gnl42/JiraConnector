@@ -9,8 +9,8 @@
 package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
-import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 
 /**
  * @author Brock Janiczak

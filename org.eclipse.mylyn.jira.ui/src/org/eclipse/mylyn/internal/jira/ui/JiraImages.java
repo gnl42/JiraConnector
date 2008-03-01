@@ -25,7 +25,7 @@ public class JiraImages {
 	private static ImageRegistry imageRegistry;
 
 	private static final String T_VIEW = "eview16";
-	
+
 	private static final URL baseURL = JiraUiPlugin.getDefault().getBundle().getEntry("/icons/");
 
 	public static final ImageDescriptor OVERLAY_JIRA = create(T_VIEW, "overlay-jira.gif");
@@ -39,7 +39,7 @@ public class JiraImages {
 	public static final ImageDescriptor OVERLAY_TASK = create(T_VIEW, "overlay-task.gif");
 
 	public static final ImageDescriptor OVERLAY_SUB_TASK = create(T_VIEW, "overlay-sub-task.gif");
-	
+
 	public static ImageDescriptor create(String prefix, String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
@@ -49,8 +49,9 @@ public class JiraImages {
 	}
 
 	private static URL makeIconFileURL(String prefix, String name) throws MalformedURLException {
-		if (baseURL == null)
+		if (baseURL == null) {
 			throw new MalformedURLException();
+		}
 
 		StringBuffer buffer = new StringBuffer(prefix);
 		buffer.append('/');

@@ -105,13 +105,13 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 	private JiraSoapService soapService = null;
 
-	private Lock soapServiceLock = new ReentrantLock();
+	private final Lock soapServiceLock = new ReentrantLock();
 
 	private JiraWebIssueService issueService = null;
 
 	private RssJiraFilterService filterService = null;
 
-	private LoginToken loginToken;
+	private final LoginToken loginToken;
 
 	public JiraRpcClient(AbstractWebLocation location, boolean useCompression) {
 		super(location, useCompression);
@@ -186,12 +186,12 @@ public class JiraRpcClient extends AbstractJiraClient {
 				return Converter.convert(getSoapService().getServerInfo(loginToken.getCurrentValue()));
 			}
 		});
-		
+
 		// get character encoding through web
 		WebServerInfo webServerInfo = issueService.getWebServerInfo();
 		serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
 		serverInfo.setWebBaseUrl(webServerInfo.getBaseUrl());
-		
+
 		return serverInfo;
 	}
 
@@ -199,7 +199,8 @@ public class JiraRpcClient extends AbstractJiraClient {
 		SingleIssueCollector collector = new SingleIssueCollector();
 		filterService.getIssueByKey(issueKey, collector);
 		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
-			throw new JiraException("Repository returned an unknown project for issue '" + collector.getIssue().getKey() + "'");
+			throw new JiraException("Repository returned an unknown project for issue '"
+					+ collector.getIssue().getKey() + "'");
 		}
 		return collector.getIssue();
 	}
@@ -270,19 +271,20 @@ public class JiraRpcClient extends AbstractJiraClient {
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0) {
 					add += 2;
 				}
-				
+
 				RepositoryTaskAttribute[] attributes = new RepositoryTaskAttribute[fields.length + add];
 				for (int i = 0; i < fields.length; i++) {
 					RemoteField field = fields[i];
 					attributes[i] = new RepositoryTaskAttribute(field.getId(), field.getName(), false);
 				}
-				
+
 				if (add > 0) {
 					// might also need to add: Reporter and Summary (http://jira.atlassian.com/browse/JRA-13703)
 					attributes[attributes.length - 2] = new RepositoryTaskAttribute("duedate", "Due Date", false);
-					attributes[attributes.length - 1] = new RepositoryTaskAttribute("fixVersions", "Fix Version/s", false);
+					attributes[attributes.length - 1] = new RepositoryTaskAttribute("fixVersions", "Fix Version/s",
+							false);
 				}
-				
+
 				return attributes;
 			}
 		});
@@ -319,9 +321,9 @@ public class JiraRpcClient extends AbstractJiraClient {
 			public RemoteIssue run() throws java.rmi.RemoteException, JiraException {
 				return getSoapService().getIssue(loginToken.getCurrentValue(), key);
 			}
-		});		
+		});
 	}
-	
+
 	@Override
 	public Project[] getProjectsRemote() throws JiraException {
 		return call(new RemoteRunnable<Project[]>() {
@@ -461,11 +463,11 @@ public class JiraRpcClient extends AbstractJiraClient {
 			}
 			return e.getCause().getLocalizedMessage();
 		}
-		
+
 		if (e instanceof AxisFault) {
 			return "Server error: " + e.getLocalizedMessage();
 		}
-		
+
 		return e.getLocalizedMessage();
 	}
 
@@ -626,7 +628,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 				expire();
 				credentials = newCredentials;
 			}
-			
+
 			if ((System.currentTimeMillis() - lastAccessed) >= timeout || token == null) {
 				expire();
 
@@ -663,10 +665,10 @@ public class JiraRpcClient extends AbstractJiraClient {
 		@Override
 		public String toString() {
 			long expiresIn = (timeout - (System.currentTimeMillis() - lastAccessed)) / 1000;
-			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid="
-					+ isValidToken() + ", expires=" + expiresIn + "]";
+			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid=" + isValidToken() + ", expires="
+					+ expiresIn + "]";
 		}
-		
+
 	}
 
 }

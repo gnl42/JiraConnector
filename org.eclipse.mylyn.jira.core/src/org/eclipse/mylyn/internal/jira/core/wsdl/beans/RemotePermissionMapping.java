@@ -68,13 +68,16 @@ public class RemotePermissionMapping implements java.io.Serializable {
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof RemotePermissionMapping))
+		if (!(obj instanceof RemotePermissionMapping)) {
 			return false;
+		}
 		RemotePermissionMapping other = (RemotePermissionMapping) obj;
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (this == obj)
+		}
+		if (this == obj) {
 			return true;
+		}
 		if (__equalsCalc != null) {
 			return (__equalsCalc == obj);
 		}

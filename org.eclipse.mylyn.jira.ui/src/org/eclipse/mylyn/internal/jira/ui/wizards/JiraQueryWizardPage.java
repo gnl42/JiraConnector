@@ -67,7 +67,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 	private JiraQueryPage filterSummaryPage;
 
-	private AbstractRepositoryQuery query;
+	private final AbstractRepositoryQuery query;
 
 	public JiraQueryWizardPage(TaskRepository repository) {
 		this(repository, null);
@@ -190,15 +190,16 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 					filters = loadedFilters;
 
 				} catch (JiraException e) {
-					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-							"Could not download saved filters: " + e.getMessage() + "\n"
+					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR,
+							JiraCorePlugin.ID_PLUGIN, "Could not download saved filters: " + e.getMessage() + "\n"
 									+ "Please check repository settings in the Task Repositories view");
 					return Status.CANCEL_STATUS;
 				} catch (Exception e) {
-					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-							"Could not download saved filters from Jira repository.\n"
+					status = RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR,
+							JiraCorePlugin.ID_PLUGIN, "Could not download saved filters from Jira repository.\n"
 									+ "Please check repository settings in the Task Repositories view");
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, status.getMessage(), e));
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID,
+							status.getMessage(), e));
 					return Status.CANCEL_STATUS;
 				} finally {
 					showFilters(loadedFilters, status);

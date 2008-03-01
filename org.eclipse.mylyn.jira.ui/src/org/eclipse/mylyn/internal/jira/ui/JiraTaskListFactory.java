@@ -83,7 +83,8 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 			// TODO remove this at some point
 			FilterDefinition filter = decodeFilter(custom);
 			if (filter == null) {
-				StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Failed to restore custom query " + element.getAttribute(KEY_FILTER_ID)));
+				StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Failed to restore custom query "
+						+ element.getAttribute(KEY_FILTER_ID)));
 				return null;
 			}
 			filter.setName(element.getAttribute(KEY_FILTER_ID));

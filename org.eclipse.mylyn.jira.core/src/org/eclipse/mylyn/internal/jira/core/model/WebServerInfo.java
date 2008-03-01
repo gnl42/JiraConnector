@@ -14,26 +14,26 @@ package org.eclipse.mylyn.internal.jira.core.model;
 public class WebServerInfo {
 
 	private String baseUrl;
-	
+
 	private String characterEncoding;
-	
+
 	private boolean insecureRedirect;
-	
+
 	public WebServerInfo() {
 	}
 
 	public String getBaseUrl() {
 		return baseUrl;
 	}
-	
+
 	public void setBaseUrl(String baseUrl) {
 		this.baseUrl = baseUrl;
 	}
-	
+
 	public String getCharacterEncoding() {
 		return characterEncoding;
 	}
-	
+
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
@@ -41,9 +41,9 @@ public class WebServerInfo {
 	public boolean isInsecureRedirect() {
 		return insecureRedirect;
 	}
-	
+
 	public void setInsecureRedirect(boolean insecureRedirect) {
 		this.insecureRedirect = insecureRedirect;
 	}
-	
+
 }

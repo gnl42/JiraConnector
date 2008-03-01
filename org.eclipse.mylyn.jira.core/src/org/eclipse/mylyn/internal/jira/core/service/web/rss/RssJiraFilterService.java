@@ -54,7 +54,8 @@ public class RssJiraFilterService {
 						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
 					}
 				}
-				rssUrlBuffer.append(RssJiraFilterConverterFactory.getConverter(server).convert(filterDefinition, server.getCharacterEncoding()));
+				rssUrlBuffer.append(RssJiraFilterConverterFactory.getConverter(server).convert(filterDefinition,
+						server.getCharacterEncoding()));
 
 				return rssUrlBuffer.toString();
 			}

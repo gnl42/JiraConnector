@@ -366,8 +366,7 @@ class RssFilterConverter {
 	protected String convertOrdering(Order[] ordering) {
 		StringBuffer buffer = new StringBuffer();
 
-		for (int i = 0; i < ordering.length; i++) {
-			Order order = ordering[i];
+		for (Order order : ordering) {
 			String fieldName = getNameFromField(order.getField());
 			if (fieldName == null) {
 				continue;

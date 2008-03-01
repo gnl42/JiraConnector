@@ -40,7 +40,7 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	private TaskRepositoryLocationFactory taskRepositoryLocationFactory;
 
 	private boolean forceTaskRepositoryLocationFactory;
-	
+
 	private JiraClientFactory() {
 		this.taskRepositoryLocationFactory = new TaskRepositoryLocationFactory();
 		this.clientManager = JiraCorePlugin.getDefault().getServerManager();
@@ -86,8 +86,8 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	public synchronized void logOutFromAll() {
 		try {
 			JiraClient[] allServers = clientManager.getAllClients();
-			for (int i = 0; i < allServers.length; i++) {
-				allServers[i].logout();
+			for (JiraClient allServer : allServers) {
+				allServer.logout();
 			}
 		} catch (Exception e) {
 			// ignore
@@ -149,11 +149,12 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 		return taskRepositoryLocationFactory;
 	}
 
-	public void setTaskRepositoryLocationFactory(TaskRepositoryLocationFactory taskRepositoryLocationFactory, boolean force) {
+	public void setTaskRepositoryLocationFactory(TaskRepositoryLocationFactory taskRepositoryLocationFactory,
+			boolean force) {
 		if (forceTaskRepositoryLocationFactory) {
 			return;
 		}
-		
+
 		this.forceTaskRepositoryLocationFactory = force;
 		this.taskRepositoryLocationFactory = taskRepositoryLocationFactory;
 	}

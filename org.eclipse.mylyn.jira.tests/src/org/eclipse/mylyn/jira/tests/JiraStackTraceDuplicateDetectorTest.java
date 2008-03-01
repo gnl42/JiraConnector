@@ -107,7 +107,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		String stackTrace = sw.toString();
 
 		Issue issue1 = JiraTestUtils.createIssue(client, "testStackTraceDetector2");
-		
+
 		client.updateIssue(issue1, stackTrace);
 
 		verifyDuplicate(stackTrace, issue1);
@@ -118,7 +118,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		assertEquals(issue.getSummary(), task1.getSummary());
 		assertEquals(false, task1.isCompleted());
 		assertNull(task1.getDueDate());
-		
+
 		Issue issue2 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
 		issue2.setDescription(stackTrace);
 
@@ -142,5 +142,4 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		fail("Duplicated task not found " + issue.getId() + " : " + issue.getKey());
 	}
 
-	
 }

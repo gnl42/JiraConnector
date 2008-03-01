@@ -23,8 +23,8 @@ import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
-import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a
@@ -46,8 +46,8 @@ public abstract class AbstractJiraClient implements JiraClient {
 
 	private String characterEncoding;
 
-	private boolean attemptedToDetermineCharacterEncoding; 
-	
+	private boolean attemptedToDetermineCharacterEncoding;
+
 	public AbstractJiraClient(AbstractWebLocation location, boolean useCompression) {
 		if (location == null) {
 			throw new IllegalArgumentException("baseURL may not be null");
@@ -88,7 +88,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	public synchronized void refreshServerInfo(IProgressMonitor monitor) throws JiraException {
 		try {
 			monitor.beginTask("Getting server information", IProgressMonitor.UNKNOWN);
-			
+
 			initializeServerInfo(data);
 		} finally {
 			monitor.done();
@@ -118,7 +118,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	public AbstractWebLocation getLocation() {
 		return location;
 	}
-	
+
 	private void initializeProjects(JiraClientData data) throws JiraException {
 		String version = data.serverInfo.getVersion();
 		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_4) >= 0) {
@@ -130,8 +130,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 		data.projectsById = new HashMap<String, Project>(data.projects.length);
 		data.projectsByKey = new HashMap<String, Project>(data.projects.length);
 
-		for (int i = 0; i < data.projects.length; i++) {
-			Project project = data.projects[i];
+		for (Project project : data.projects) {
 			project.setComponents(getComponentsRemote(project.getKey()));
 			project.setVersions(getVersionsRemote(project.getKey()));
 
@@ -163,8 +162,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	private void initializePriorities(JiraClientData data) throws JiraException {
 		data.priorities = getPrioritiesRemote();
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
-		for (int i = 0; i < data.priorities.length; i++) {
-			Priority priority = data.priorities[i];
+		for (Priority priority : data.priorities) {
 			data.prioritiesById.put(priority.getId(), priority);
 		}
 	}
@@ -220,8 +218,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	private void initializeStatuses(JiraClientData data) throws JiraException {
 		data.statuses = getStatusesRemote();
 		data.statusesById = new HashMap<String, Status>(data.statuses.length);
-		for (int i = 0; i < data.statuses.length; i++) {
-			Status status = data.statuses[i];
+		for (Status status : data.statuses) {
 			data.statusesById.put(status.getId(), status);
 		}
 	}
@@ -239,8 +236,7 @@ public abstract class AbstractJiraClient implements JiraClient {
 	private void initializeResolutions(JiraClientData data) throws JiraException {
 		data.resolutions = getResolutionsRemote();
 		data.resolutionsById = new HashMap<String, Resolution>(data.resolutions.length);
-		for (int i = 0; i < data.resolutions.length; i++) {
-			Resolution resolution = data.resolutions[i];
+		for (Resolution resolution : data.resolutions) {
 			data.resolutionsById.put(resolution.getId(), resolution);
 		}
 	}
@@ -330,9 +326,9 @@ public abstract class AbstractJiraClient implements JiraClient {
 		}
 		return this.characterEncoding;
 	}
-	
+
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
-	
+
 }

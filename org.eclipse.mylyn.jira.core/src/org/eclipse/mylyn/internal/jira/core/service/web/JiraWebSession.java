@@ -30,9 +30,9 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.WebClientUtil;
-import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
 
 /**
@@ -49,17 +49,17 @@ public class JiraWebSession {
 
 	private String characterEncoding;
 
-	private boolean secure;
+	private final boolean secure;
 
 	private boolean insecureRedirect;
-	
+
 	private boolean logEnabled;
 
-	private AbstractWebLocation location;
+	private final AbstractWebLocation location;
 
 	protected static final String USER_AGENT = "JiraConnector";
-	
-	public JiraWebSession(JiraClient client, String baseUrl) { 
+
+	public JiraWebSession(JiraClient client, String baseUrl) {
 		this.client = client;
 		this.baseUrl = baseUrl;
 		this.secure = baseUrl.startsWith("https");
@@ -92,7 +92,7 @@ public class JiraWebSession {
 	protected String getContentType() throws JiraException {
 		return "application/x-www-form-urlencoded; charset=" + client.getCharacterEncoding();
 	}
-	
+
 	protected String getBaseURL() {
 		return baseUrl;
 	}
@@ -100,7 +100,7 @@ public class JiraWebSession {
 	protected boolean isInsecureRedirect() {
 		return insecureRedirect;
 	}
-	
+
 	protected boolean isSecure() {
 		return secure;
 	}
@@ -108,11 +108,11 @@ public class JiraWebSession {
 	protected boolean isLogEnabled() {
 		return logEnabled;
 	}
-	
+
 	protected void setLogEnabled(boolean logEnabled) {
 		this.logEnabled = logEnabled;
 	}
-	
+
 	private void login(HttpClient httpClient) throws JiraException {
 		RedirectTracker tracker = new RedirectTracker();
 
@@ -123,7 +123,7 @@ public class JiraWebSession {
 				// TODO prompt user?
 				credentials = new AuthenticationCredentials("", "");
 			}
-			
+
 			PostMethod login = new PostMethod(url);
 			login.setFollowRedirects(false);
 			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
@@ -132,7 +132,7 @@ public class JiraWebSession {
 			login.addParameter("os_destination", "/success"); //$NON-NLS-1$
 
 			tracker.addUrl(url);
-			
+
 			try {
 				int statusCode = httpClient.executeMethod(login);
 				if (needsReauthentication(httpClient, statusCode)) {
@@ -143,9 +143,9 @@ public class JiraWebSession {
 				}
 
 				tracker.addRedirect(url, login, statusCode);
-				
+
 				this.characterEncoding = login.getResponseCharSet();
-				
+
 				Header locationHeader = login.getResponseHeader("location");
 				if (locationHeader == null) {
 					throw new JiraServiceUnavailableException("Invalid redirect, missing location");
@@ -174,7 +174,7 @@ public class JiraWebSession {
 		}
 
 		tracker.log("Exceeded maximum number of allowed redirects during login to repository: " + client.getBaseUrl());
-		
+
 		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects during login");
 	}
 
@@ -196,7 +196,7 @@ public class JiraWebSession {
 
 		return true;
 	}
-	
+
 	private void logout(HttpClient httpClient) throws JiraException {
 		GetMethod logout = new GetMethod(baseUrl + "/logout"); //$NON-NLS-1$
 		logout.setFollowRedirects(false);
@@ -212,14 +212,14 @@ public class JiraWebSession {
 	}
 
 	protected boolean expectRedirect(HttpMethodBase method, Issue issue) throws JiraException {
-		return expectRedirect(method, "/browse/" + issue.getKey()); 
+		return expectRedirect(method, "/browse/" + issue.getKey());
 	}
-	
+
 	protected boolean expectRedirect(HttpMethodBase method, String page) throws JiraException {
 		if (method.getStatusCode() != HttpStatus.SC_MOVED_TEMPORARILY) {
 			return false;
 		}
-		
+
 		Header locationHeader = method.getResponseHeader("location");
 		if (locationHeader == null) {
 			throw new JiraServiceUnavailableException("Invalid server response, missing redirect location");
@@ -229,18 +229,20 @@ public class JiraWebSession {
 			throw new JiraException("Server redirected to unexpected location: " + url);
 		}
 		return true;
-	}	
-	
+	}
+
 	private class RedirectTracker {
 
 		ArrayList<RedirectInfo> redirects = new ArrayList<RedirectInfo>();
+
 		Set<String> urls = new HashSet<String>();
+
 		private boolean loggedCircle;
 
 		public void addUrl(String url) {
 			urls.add(url);
 		}
-		
+
 		public void checkForCircle(String url) {
 			if (!loggedCircle && urls.contains(url)) {
 				log("Circular redirect detected while login in to repository: " + client.getBaseUrl());
@@ -249,25 +251,25 @@ public class JiraWebSession {
 		}
 
 		public void addRedirect(String url, HttpMethodBase method, int statusCode) {
-			redirects.add(new RedirectInfo(url, statusCode, method.getResponseHeaders()));	
+			redirects.add(new RedirectInfo(url, statusCode, method.getResponseHeaders()));
 		}
-		
+
 		public void log(String message) {
 			if (!isLogEnabled()) {
 				return;
 			}
-			
+
 			MultiStatus status = new MultiStatus(JiraCorePlugin.ID_PLUGIN, 0, message, null);
 			for (RedirectInfo info : redirects) {
 				status.add(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0, info.toString(), null));
 			}
 			JiraCorePlugin.log(status);
 		}
-		
+
 	}
-	
+
 	private class RedirectInfo {
-		
+
 		final int statusCode;
 
 		final String url;
@@ -287,14 +289,13 @@ public class JiraWebSession {
 			sb.append("Status: ").append(statusCode).append('\n');
 			// log useful but insensitive headers
 			for (Header header : responseHeaders) {
-				if (header.getName().equalsIgnoreCase("Server")
-						|| header.getName().equalsIgnoreCase("Location")) {
+				if (header.getName().equalsIgnoreCase("Server") || header.getName().equalsIgnoreCase("Location")) {
 					sb.append(header.toExternalForm());
 				}
 			}
 			return sb.toString();
 		}
-		
+
 	}
 
 }

@@ -123,7 +123,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(1, taskData.getComments().size());
 		assertEquals(commentText, taskData.getComments().get(0).getText());
 		// task data stores estimates is in minutes
-		assertEquals("10", taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE));	
+		assertEquals("10", taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE));
 		assertEquals(component.getName(), taskData.getAttributeValue(RepositoryTaskAttribute.COMPONENT));
 	}
 
@@ -477,19 +477,19 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals("new comment", taskData.getComments().get(1).getText());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
 	}
-	
+
 	public void testClosedIssueNotEditable() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.createIssue(client, "testEditClosed");
-		
+
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
 		assertFalse(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS).isReadOnly());
 
 		// close
 		client.advanceIssueWorkflow(issue, "2", "");
-		
+
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));
 		assertTrue(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS).isReadOnly());
@@ -503,7 +503,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	public void testInitializeTaskData1() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getUrl(), null); 
+		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getUrl(), null);
 
 		boolean res = dataHandler.initializeTaskData(repository, data, new NullProgressMonitor());
 		assertFalse("Task data shouldn't be initialized without project", res);
@@ -543,13 +543,13 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, type, url, "NEW");
 		data.setNew(true);
 
-		if(project!=null) {
-			RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRODUCT, "Project:",
-					false);
+		if (project != null) {
+			RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(RepositoryTaskAttribute.PRODUCT,
+					"Project:", false);
 			attribute.addValue(project);
 			data.addAttribute(RepositoryTaskAttribute.PRODUCT, attribute);
 		}
-		
+
 		return data;
 	}
 

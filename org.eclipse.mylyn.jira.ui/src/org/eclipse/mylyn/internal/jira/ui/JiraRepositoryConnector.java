@@ -66,9 +66,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
 
-	private JiraTaskDataHandler offlineHandler;
+	private final JiraTaskDataHandler offlineHandler;
 
-	private JiraAttachmentHandler attachmentHandler;
+	private final JiraAttachmentHandler attachmentHandler;
 
 	private final TasksFacade mylynFacade;
 
@@ -127,7 +127,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			} catch (JiraException e) {
 				return JiraCorePlugin.toStatus(repository, e);
 			}
-			
+
 			boolean isSearch = false;
 			Query filter;
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
@@ -157,10 +157,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					}
 
 					if (issue.getProject() == null) {
-						return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
-								ERROR_REPOSITORY_CONFIGURATION, null);						
+						return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0, ERROR_REPOSITORY_CONFIGURATION,
+								null);
 					}
-					
+
 					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
 					if (isSearch) {
 						AbstractTask task = taskList.getTask(repository.getUrl(), issue.getId());
@@ -220,9 +220,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				if (task != null) {
 					if (issue.getProject() == null) {
 						throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
-								ERROR_REPOSITORY_CONFIGURATION, null));						
+								ERROR_REPOSITORY_CONFIGURATION, null));
 					}
-					
+
 					// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 					monitor.subTask(issue.getKey() + " " + issue.getSummary());
 					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
@@ -277,7 +277,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		// check if time stamp is skewed
 		if (lastSyncTime >= nowTime) {
-			trace(new Status(Status.WARNING, JiraUiPlugin.PLUGIN_ID, 0,
+			trace(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, 0,
 					"Synchronization time stamp clock skew detected for " + repository.getUrl() + ": " + lastSyncTime
 							+ " >= " + now, null));
 
@@ -543,7 +543,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public boolean hasCredentialsManagement() {
 		return true;
 	}
-	
+
 	public static class TasksFacade {
 
 		public AbstractTask getTask(String repositoryUrl, String taskId) {

@@ -81,7 +81,7 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		taskDataHandler.initializeTaskData(taskData, server, project);
 		if (taskSelection != null) {
 			taskDataHandler.cloneTaskData(taskSelection.getTaskData(), taskData);
-		}		
+		}
 		taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
 
 		NewTaskEditorInput editorInput = new NewTaskEditorInput(taskRepository, taskData);

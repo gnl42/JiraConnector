@@ -67,7 +67,7 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 //			call.setProperty(JiraHttpSender.PROXY, proxy);
 //		}
 		call.setProperty(JiraHttpSender.LOCATION, location);
-		
+
 		// some servers break with a 411 Length Required when chunked encoding
 		// is used
 		Map<String, Boolean> headers = new Hashtable<String, Boolean>();
@@ -87,9 +87,9 @@ public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLoc
 	public AbstractWebLocation getLocation() {
 		return location;
 	}
-	
+
 	public void setLocation(AbstractWebLocation location) {
 		this.location = location;
 	}
-	
+
 }

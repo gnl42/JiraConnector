@@ -25,9 +25,9 @@ public class JiraVersion implements Comparable<JiraVersion> {
 	public static final JiraVersion JIRA_3_4 = new JiraVersion("3.4");
 
 	public static final JiraVersion JIRA_3_7 = new JiraVersion("3.7");
-	
+
 	public static final JiraVersion JIRA_3_11 = new JiraVersion("3.11");
-	
+
 	public static final JiraVersion JIRA_3_12 = new JiraVersion("3.12");
 
 	private final int major;
@@ -86,6 +86,7 @@ public class JiraVersion implements Comparable<JiraVersion> {
 		return qualifier.compareTo(v.qualifier);
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(Integer.toString(major));

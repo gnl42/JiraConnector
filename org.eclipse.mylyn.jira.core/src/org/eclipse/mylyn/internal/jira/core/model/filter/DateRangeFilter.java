@@ -17,9 +17,9 @@ public class DateRangeFilter extends DateFilter {
 
 	private static final long serialVersionUID = 1L;
 
-	private Date fromDate;
+	private final Date fromDate;
 
-	private Date toDate;
+	private final Date toDate;
 
 	public DateRangeFilter(Date fromDate, Date toDate) {
 		this.fromDate = fromDate;

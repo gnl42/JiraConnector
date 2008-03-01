@@ -51,7 +51,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	private static final String TEST_TASK = "TestTask";
 
-	private TaskListManager manager = TasksUiPlugin.getTaskListManager();
+	private final TaskListManager manager = TasksUiPlugin.getTaskListManager();
 
 	private TaskRepository repository = null;
 
@@ -189,8 +189,9 @@ public class JiraTaskExternalizationTest extends TestCase {
 		}
 
 		assertNotNull(savedFilter);
-		if (savedFilter == null)
+		if (savedFilter == null) {
 			return;
+		}
 		assertEquals(savedFilter.getUrl(), filterUrl);
 
 		assertTrue(savedFilter.getChildren().size() > 0);

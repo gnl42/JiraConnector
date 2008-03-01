@@ -141,8 +141,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 		}
 
 		HeaderElement[] values = contentType.getElements();
-		for (int i = 0; i < values.length; i++) {
-			HeaderElement element = values[i];
+		for (HeaderElement element : values) {
 			if (element.getName().startsWith("text/xml")) { //$NON-NLS-1$
 				return true;
 			}

@@ -17,7 +17,7 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 
 	private static final long serialVersionUID = 4622602207502097037L;
 
-	private String htmlMessage;
+	private final String htmlMessage;
 
 	public JiraRemoteMessageException(String message, String htmlMessage) {
 		super(message);

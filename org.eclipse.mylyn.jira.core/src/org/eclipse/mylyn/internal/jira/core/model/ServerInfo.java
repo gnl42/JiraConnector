@@ -32,9 +32,9 @@ public class ServerInfo implements Serializable {
 	private String characterEncoding;
 
 	private String webBaseUrl;
-	
-	private transient boolean insecureRedirect; 
-	
+
+	private transient boolean insecureRedirect;
+
 	public String getBaseUrl() {
 		return this.baseUrl;
 	}
@@ -94,11 +94,11 @@ public class ServerInfo implements Serializable {
 	public boolean isInsecureRedirect() {
 		return insecureRedirect;
 	}
-	
+
 	public void setInsecureRedirect(boolean insecureRedirect) {
 		this.insecureRedirect = insecureRedirect;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.baseUrl + " - Jira " + this.edition + " " + this.version + "#" + this.buildNumber + " ("

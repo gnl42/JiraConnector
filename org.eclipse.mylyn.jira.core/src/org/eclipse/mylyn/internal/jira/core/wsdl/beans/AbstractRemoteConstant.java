@@ -70,13 +70,16 @@ public abstract class AbstractRemoteConstant extends
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof AbstractRemoteConstant))
+		if (!(obj instanceof AbstractRemoteConstant)) {
 			return false;
+		}
 		AbstractRemoteConstant other = (AbstractRemoteConstant) obj;
-		if (obj == null)
+		if (obj == null) {
 			return false;
-		if (this == obj)
+		}
+		if (this == obj) {
 			return true;
+		}
 		if (__equalsCalc != null) {
 			return (__equalsCalc == obj);
 		}
