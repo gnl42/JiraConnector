@@ -224,16 +224,25 @@ litigation.
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.monitor.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import feature="org.eclipse.mylyn_feature" version="2.3.0.I20080214-1200" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.jira.core" version="2.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.tasks.core" version="2.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.tasks.ui" version="2.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.context.core" version="2.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.monitor.core" version="2.3.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.web.core" version="2.3.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.web.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.core.net"/>
+      <import plugin="org.apache.commons.logging" version="1.0.4" match="greaterOrEqual"/>
+      <import plugin="org.apache.axis" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="javax.xml.rpc" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="javax.xml.rpc" version="1.1.0" match="compatible"/>
+      <import plugin="javax.xml.soap" version="1.2.0" match="compatible"/>
+      <import plugin="javax.wsdl" version="1.5.1" match="compatible"/>
+      <import plugin="org.apache.commons.discovery" version="0.2.0" match="compatible"/>
+      <import plugin="org.apache.ant" version="1.6.5" match="compatible"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.apache.commons.logging" version="1.0.4" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.0.0.qualifier" match="perfect"/>
    </requires>
 
    <plugin
@@ -248,6 +257,44 @@ litigation.
          download-size="0"
          install-size="0"
          version="3.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.axis"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="javax.wsdl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml.rpc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="javax.xml.soap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.commons.discovery"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.commons.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
