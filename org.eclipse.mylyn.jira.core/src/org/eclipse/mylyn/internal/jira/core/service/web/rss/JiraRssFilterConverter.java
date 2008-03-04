@@ -36,16 +36,20 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.util.JiraCoreUtil;
 
 /**
  * @author Brock Janiczak
  */
-class RssFilterConverter {
+public class JiraRssFilterConverter {
 
-	private final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
+	private final String DATE_FORMAT = "dd/MMM/yy"; //$NON-NLS-1$
 
-	String convert(FilterDefinition filterDefinition, String encoding) {
+	public JiraRssFilterConverter() {
+	}
+
+	public String convert(FilterDefinition filterDefinition, String encoding) {
 		StringBuffer buffer = new StringBuffer();
 
 		if (filterDefinition.getProjectFilter() != null) {
@@ -129,9 +133,41 @@ class RssFilterConverter {
 		return ""; //$NON-NLS-1$
 	}
 
-	protected String convertProjectFilter(ProjectFilter projectFilter) {
-		return new StringBuffer().append("pid=").append(projectFilter.getProject().getId()) //$NON-NLS-1$
-				.toString();
+	protected String convertAssignedToFilter(UserFilter assignedToFilter) {
+		StringBuffer buffer = new StringBuffer();
+		if (assignedToFilter instanceof NobodyFilter) {
+			buffer.append("assigneeSelect=unassigned"); //$NON-NLS-1$
+		} else if (assignedToFilter instanceof SpecificUserFilter) {
+			buffer.append("assigneeSelect=specificuser&assignee=") //$NON-NLS-1$
+					.append(((SpecificUserFilter) assignedToFilter).getUser());
+		} else if (assignedToFilter instanceof UserInGroupFilter) {
+			buffer.append("assigneeSelect=specificgroup&assignee=") //$NON-NLS-1$
+					.append(((UserInGroupFilter) assignedToFilter).getGroup());
+		} else if (assignedToFilter instanceof CurrentUserFilter) {
+			return "assigneeSelect=issue_current_user"; //$NON-NLS-1$
+		}
+
+		return buffer.toString();
+	}
+
+	protected String convertComponentFilter(ComponentFilter componentFilter) {
+		if (componentFilter.hasNoComponent()) {
+			return "component=-1"; //$NON-NLS-1$
+		}
+
+		StringBuffer buffer = new StringBuffer();
+		Component[] components = componentFilter.getComponents();
+		if (components.length == 0) {
+			return ""; //$NON-NLS-1$
+		}
+
+		buffer.append("component=").append(components[0].getId()); //$NON-NLS-1$
+
+		for (int i = 1; i < components.length; i++) {
+			buffer.append("&component=").append(components[i].getId()); //$NON-NLS-1$
+		}
+
+		return buffer.toString();
 	}
 
 	protected String convertContentFilter(ContentFilter contentFilter, String encoding) {
@@ -141,6 +177,32 @@ class RssFilterConverter {
 				.append("&body=").append(contentFilter.isSearchingComments()) //$NON-NLS-1$
 				.append("&environment=").append(contentFilter.isSearchingEnvironment()) //$NON-NLS-1$
 				.toString();
+	}
+
+	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
+		return createDateFilter(createdDateFilter, "created");
+	}
+
+	protected String convertDueDateFilter(DateFilter dueDateFilter) {
+		return createDateFilter(dueDateFilter, "duedate");
+	}
+
+	protected String convertEstimateVsActualFilter(EstimateVsActualFilter filter) {
+		StringBuffer buffer = new StringBuffer();
+		float min = filter.getMinVariation();
+		float max = filter.getMaxVariation();
+
+		if (min != 0L) {
+			buffer.append("minRatioLimit=").append(min); //$NON-NLS-1$
+		}
+
+		if (max != 0L) {
+			if (buffer.length() > 0) {
+				buffer.append('&');
+			}
+			buffer.append("maxRatioLimit=").append(max); //$NON-NLS-1$
+		}
+		return buffer.toString();
 	}
 
 	protected String convertIssueTypeFilter(IssueTypeFilter issueTypeFilter) {
@@ -165,6 +227,41 @@ class RssFilterConverter {
 		return buffer.toString();
 	}
 
+	protected String convertOrdering(Order[] ordering) {
+		StringBuffer buffer = new StringBuffer();
+
+		for (Order order : ordering) {
+			String fieldName = getNameFromField(order.getField());
+			if (fieldName == null) {
+				continue;
+			}
+			buffer.append("&sorter/field=").append(fieldName) //$NON-NLS-1$
+					.append("&sorter/order=").append(order.isAscending() ? "ASC" : "DESC"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
+		return buffer.toString();
+	}
+
+	protected String convertPriorityFilter(PriorityFilter priorityFilter) {
+		Priority[] priorities = priorityFilter.getPriorities();
+		if (priorities.length == 0) {
+			return ""; //$NON-NLS-1$
+		}
+
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("priority=").append(priorities[0].getId()); //$NON-NLS-1$
+
+		for (int i = 1; i < priorities.length; i++) {
+			buffer.append("&priority=").append(priorities[i].getId()); //$NON-NLS-1$
+		}
+
+		return buffer.toString();
+	}
+
+	protected String convertProjectFilter(ProjectFilter projectFilter) {
+		return new StringBuffer().append("pid=").append(projectFilter.getProject().getId()) //$NON-NLS-1$
+				.toString();
+	}
+
 	protected String convertReportedByFilter(UserFilter reportedByFilter) {
 		StringBuffer buffer = new StringBuffer();
 		if (reportedByFilter instanceof NobodyFilter) {
@@ -182,93 +279,44 @@ class RssFilterConverter {
 		return buffer.toString();
 	}
 
-	protected String convertAssignedToFilter(UserFilter assignedToFilter) {
-		StringBuffer buffer = new StringBuffer();
-		if (assignedToFilter instanceof NobodyFilter) {
-			buffer.append("assigneeSelect=unassigned"); //$NON-NLS-1$
-		} else if (assignedToFilter instanceof SpecificUserFilter) {
-			buffer.append("assigneeSelect=specificuser&assignee=") //$NON-NLS-1$
-					.append(((SpecificUserFilter) assignedToFilter).getUser());
-		} else if (assignedToFilter instanceof UserInGroupFilter) {
-			buffer.append("assigneeSelect=specificgroup&assignee=") //$NON-NLS-1$
-					.append(((UserInGroupFilter) assignedToFilter).getGroup());
-		} else if (assignedToFilter instanceof CurrentUserFilter) {
-			return "assigneeSelect=issue_current_user"; //$NON-NLS-1$
+	protected String convertResolutionFilter(ResolutionFilter resolutionFilter) {
+		if (resolutionFilter.isUnresolved()) {
+			return "resolution=-1"; //$NON-NLS-1$
 		}
 
-		return buffer.toString();
-	}
-
-	protected String convertPriorityFilter(PriorityFilter priorityFilter) {
-		StringBuffer buffer = new StringBuffer();
-		Priority[] priorities = priorityFilter.getPriorities();
-		if (priorities.length == 0) {
+		Resolution[] resolution = resolutionFilter.getResolutions();
+		if (resolution.length == 0) {
 			return ""; //$NON-NLS-1$
 		}
 
-		buffer.append("priorityIds=").append(priorities[0].getId()); //$NON-NLS-1$
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("resolution=").append(resolution[0].getId()); //$NON-NLS-1$
 
-		for (int i = 1; i < priorities.length; i++) {
-			buffer.append("&priorityIds=").append(priorities[i].getId()); //$NON-NLS-1$
+		for (int i = 1; i < resolution.length; i++) {
+			buffer.append("&resolution=").append(resolution[i].getId()); //$NON-NLS-1$
 		}
 
 		return buffer.toString();
 	}
 
 	protected String convertStatusFilter(StatusFilter statusFilter) {
-		StringBuffer buffer = new StringBuffer();
 		Status[] statuses = statusFilter.getStatuses();
 		if (statuses.length == 0) {
 			return ""; //$NON-NLS-1$
 		}
 
-		buffer.append("statusIds=").append(statuses[0].getId()); //$NON-NLS-1$
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("status=").append(statuses[0].getId()); //$NON-NLS-1$
 
 		for (int i = 1; i < statuses.length; i++) {
-			buffer.append("&statusIds=").append(statuses[i].getId()); //$NON-NLS-1$
+			buffer.append("&status=").append(statuses[i].getId()); //$NON-NLS-1$
 		}
 
 		return buffer.toString();
 	}
 
-	protected String convertResolutionFilter(ResolutionFilter resolutionFilter) {
-		if (resolutionFilter.isUnresolved()) {
-			return "resolutionIds=-1"; //$NON-NLS-1$
-		}
-
-		StringBuffer buffer = new StringBuffer();
-		Resolution[] resolution = resolutionFilter.getResolutions();
-		if (resolution.length == 0) {
-			return ""; //$NON-NLS-1$
-		}
-
-		buffer.append("resolutionIds=").append(resolution[0].getId()); //$NON-NLS-1$
-
-		for (int i = 1; i < resolution.length; i++) {
-			buffer.append("&resolutionIds=").append(resolution[i].getId()); //$NON-NLS-1$
-		}
-
-		return buffer.toString();
-	}
-
-	protected String convertComponentFilter(ComponentFilter componentFilter) {
-		if (componentFilter.hasNoComponent()) {
-			return "component=-1"; //$NON-NLS-1$
-		}
-
-		StringBuffer buffer = new StringBuffer();
-		Component[] components = componentFilter.getComponents();
-		if (components.length == 0) {
-			return ""; //$NON-NLS-1$
-		}
-
-		buffer.append("component=").append(components[0].getId()); //$NON-NLS-1$
-
-		for (int i = 1; i < components.length; i++) {
-			buffer.append("&component=").append(components[i].getId()); //$NON-NLS-1$
-		}
-
-		return buffer.toString();
+	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
+		return createDateFilter(updatedDateFilter, "updated");
 	}
 
 	protected String convertVersionFilter(String param, VersionFilter versionFilter) {
@@ -307,74 +355,50 @@ class RssFilterConverter {
 		return buffer.toString();
 	}
 
-	protected String convertEstimateVsActualFilter(EstimateVsActualFilter filter) {
+	private String createDateFilter(DateFilter dateFilter, String name) {
 		StringBuffer buffer = new StringBuffer();
-		float min = filter.getMinVariation();
-		float max = filter.getMaxVariation();
-
-		if (min != 0L) {
-			buffer.append("minRatioLimit=").append(min); //$NON-NLS-1$
-		}
-
-		if (max != 0L) {
-			if (buffer.length() > 0) {
-				buffer.append('&');
-			}
-			buffer.append("maxRatioLimit=").append(max); //$NON-NLS-1$
-		}
-		return buffer.toString();
-	}
-
-	protected String convertDueDateFilter(DateFilter dueDateFilter) {
-		return convertDateFilter(dueDateFilter, "duedate");
-	}
-
-	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
-		return convertDateFilter(updatedDateFilter, "updated");
-	}
-
-	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
-		return convertDateFilter(createdDateFilter, "created");
-	}
-
-	private String convertDateFilter(DateFilter dateFilter, String name) {
-		StringBuffer buffer = new StringBuffer();
-
 		if (dateFilter instanceof DateRangeFilter) {
 			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 			DateRangeFilter filter = (DateRangeFilter) dateFilter;
 			if (filter.getFromDate() != null) {
-				buffer.append("&" + name + "After=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
-			}
-			if (filter.getToDate() != null) {
-				buffer.append("&" + name + "Before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
-			}
-		} else if (dateFilter instanceof RelativeDateRangeFilter) {
-			RelativeDateRangeFilter relativeFilter = ((RelativeDateRangeFilter) dateFilter);
-			if (relativeFilter.previousMilliseconds() != 0L) {
-				buffer.append("&" + name + "Previous=").append(relativeFilter.previousMilliseconds()); //$NON-NLS-1$
+				buffer.append("&" + name + ":after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
 			}
 
-			if (relativeFilter.nextMilliseconds() != 0L) {
-				buffer.append("&" + name + "Next=").append(relativeFilter.nextMilliseconds()); //$NON-NLS-1$
+			if (filter.getToDate() != null) {
+				buffer.append("&" + name + ":before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
+			}
+
+		} else if (dateFilter instanceof RelativeDateRangeFilter) {
+			RelativeDateRangeFilter filter = ((RelativeDateRangeFilter) dateFilter);
+			if (filter.previousMilliseconds() != 0L) {
+				buffer.append("&" + name + ":previous=") //$NON-NLS-1$
+						.append(createRelativeDateString(filter.getPreviousRangeType(), filter.getPreviousCount()));
+			}
+
+			if (filter.nextMilliseconds() != 0L) {
+				buffer.append("&" + name + ":next=") //$NON-NLS-1$
+						.append(createRelativeDateString(filter.getNextRangeType(), filter.getNextCount()));
 			}
 		}
 
 		return buffer.toString();
 	}
 
-	protected String convertOrdering(Order[] ordering) {
-		StringBuffer buffer = new StringBuffer();
+	private String createRelativeDateString(RelativeDateRangeFilter.RangeType rangeType, long count) {
+		StringBuffer dateString = new StringBuffer(""); //$NON-NLS-1$
+		dateString.append(Long.toString(count));
 
-		for (Order order : ordering) {
-			String fieldName = getNameFromField(order.getField());
-			if (fieldName == null) {
-				continue;
-			}
-			buffer.append("&sorter/field=").append(fieldName) //$NON-NLS-1$
-					.append("&sorter/order=").append(order.isAscending() ? "ASC" : "DESC"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		if (RangeType.MINUTE.equals(rangeType)) {
+			dateString.append('m');
+		} else if (RangeType.HOUR.equals(rangeType)) {
+			dateString.append('h');
+		} else if (RangeType.DAY.equals(rangeType)) {
+			dateString.append('d');
+		} else if (RangeType.WEEK.equals(rangeType)) {
+			dateString.append('w');
 		}
-		return buffer.toString();
+
+		return dateString.toString();
 	}
 
 	// TODO there should be an easier way of doing this

@@ -36,7 +36,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion;
 /**
  * @author Brock Janiczak
  */
-class Converter {
+class JiraSoapConverter {
 
 	protected static Priority[] convert(RemotePriority[] remotePriorities) {
 		Priority[] priorities = new Priority[remotePriorities.length];

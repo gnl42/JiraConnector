@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.html.HTML2TextReader;
@@ -104,7 +105,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
-public class RssContentHandler extends DefaultHandler {
+public class JiraRssHandler extends DefaultHandler {
 
 	private static final String CUSTOM_FIELD_TYPE_TEXTAREA = "com.atlassian.jira.plugin.system.customfieldtypes:textarea";
 
@@ -330,7 +331,7 @@ public class RssContentHandler extends DefaultHandler {
 	 * @param baseUrl
 	 *            the base URL of the repository
 	 */
-	public RssContentHandler(JiraClient client, IssueCollector collector, String baseUrl) {
+	public JiraRssHandler(JiraClient client, IssueCollector collector, String baseUrl) {
 		this.client = client;
 		this.collector = collector;
 	}
@@ -356,7 +357,7 @@ public class RssContentHandler extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		currentElementText.setLength(0);
 		if (collector.isCancelled()) {
-			throw new ParseCancelledException("User canceled operation");
+			throw new OperationCanceledException();
 		}
 
 		switch (state) {

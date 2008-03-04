@@ -10,32 +10,32 @@ package org.eclipse.mylyn.internal.jira.core;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylyn.internal.jira.core.service.web.rss.RssContentHandler;
+import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssHandler;
 
 public class RssContentHandlerTest extends TestCase {
 
 	public void testUnescape() {
-		assertEquals("\n", RssContentHandler.stripTags("\n<br/>\n"));
-		assertEquals("\n\n", RssContentHandler.stripTags("\n<br/>\n<br/>\n"));
+		assertEquals("\n", JiraRssHandler.stripTags("\n<br/>\n"));
+		assertEquals("\n\n", JiraRssHandler.stripTags("\n<br/>\n<br/>\n"));
 	}
 
 	public void testHasMarkup() {
-		assertFalse(RssContentHandler.hasMarkup(""));
-		assertFalse(RssContentHandler.hasMarkup("abc"));
-		assertFalse(RssContentHandler.hasMarkup("  "));
-		assertFalse(RssContentHandler.hasMarkup("&nbsp;"));
-		assertFalse(RssContentHandler.hasMarkup("<br/>"));
-		assertFalse(RssContentHandler.hasMarkup("abc <br/>def"));
-		assertFalse(RssContentHandler.hasMarkup("abc <a href=\"ghi\">def</a>"));
-		assertFalse(RssContentHandler.hasMarkup("abc <br/> def <a href=\"ghi\">def</a>"));
-		assertFalse(RssContentHandler.hasMarkup("\n<br/>\r\n"));
+		assertFalse(JiraRssHandler.hasMarkup(""));
+		assertFalse(JiraRssHandler.hasMarkup("abc"));
+		assertFalse(JiraRssHandler.hasMarkup("  "));
+		assertFalse(JiraRssHandler.hasMarkup("&nbsp;"));
+		assertFalse(JiraRssHandler.hasMarkup("<br/>"));
+		assertFalse(JiraRssHandler.hasMarkup("abc <br/>def"));
+		assertFalse(JiraRssHandler.hasMarkup("abc <a href=\"ghi\">def</a>"));
+		assertFalse(JiraRssHandler.hasMarkup("abc <br/> def <a href=\"ghi\">def</a>"));
+		assertFalse(JiraRssHandler.hasMarkup("\n<br/>\r\n"));
 
-		assertTrue(RssContentHandler.hasMarkup("<br>"));
-		assertTrue(RssContentHandler.hasMarkup("<li>"));
-		assertTrue(RssContentHandler.hasMarkup("<b>"));
-		assertTrue(RssContentHandler.hasMarkup("<li><br>"));
-		assertTrue(RssContentHandler.hasMarkup("abc <br/> def <a href=\"ghi\">def</a> <br>"));
-		assertTrue(RssContentHandler.hasMarkup("\n<br/>\r\n<li>"));
+		assertTrue(JiraRssHandler.hasMarkup("<br>"));
+		assertTrue(JiraRssHandler.hasMarkup("<li>"));
+		assertTrue(JiraRssHandler.hasMarkup("<b>"));
+		assertTrue(JiraRssHandler.hasMarkup("<li><br>"));
+		assertTrue(JiraRssHandler.hasMarkup("abc <br/> def <a href=\"ghi\">def</a> <br>"));
+		assertTrue(JiraRssHandler.hasMarkup("\n<br/>\r\n<li>"));
 	}
 
 }

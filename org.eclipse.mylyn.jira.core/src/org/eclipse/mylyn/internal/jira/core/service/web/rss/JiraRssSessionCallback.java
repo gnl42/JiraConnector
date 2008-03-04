@@ -30,7 +30,7 @@ import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback {
+public abstract class JiraRssSessionCallback implements JiraWebSessionCallback {
 
 	private static final int MAX_REDIRECTS = 1;
 
@@ -38,7 +38,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 
 	private final IssueCollector collector;
 
-	public RssFeedProcessorCallback(boolean useCompression, IssueCollector collector) {
+	public JiraRssSessionCallback(boolean useCompression, IssueCollector collector) {
 		this.useCompression = useCompression;
 		this.collector = collector;
 	}
@@ -103,7 +103,7 @@ public abstract class RssFeedProcessorCallback implements JiraWebSessionCallback
 			if (isResponseGZipped(rssRequest)) {
 				in = new GZIPInputStream(rssRequest.getResponseBodyAsStream());
 			}
-			new RssReader(server, collector).readRssFeed(in, baseUrl);
+			new JiraRssReader(server, collector).readRssFeed(in, baseUrl);
 		} finally {
 			try {
 				in.close();

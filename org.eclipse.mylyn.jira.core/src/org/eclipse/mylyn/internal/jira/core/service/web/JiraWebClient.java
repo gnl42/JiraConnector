@@ -59,7 +59,7 @@ import org.eclipse.mylyn.web.core.HtmlStreamTokenizer.Token;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
-public class JiraWebIssueService {
+public class JiraWebClient {
 
 	public static final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
 
@@ -67,7 +67,7 @@ public class JiraWebIssueService {
 
 	private final JiraClient server;
 
-	public JiraWebIssueService(JiraClient server) {
+	public JiraWebClient(JiraClient server) {
 		this.server = server;
 	}
 

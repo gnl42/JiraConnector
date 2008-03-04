@@ -29,20 +29,20 @@ import org.eclipse.mylyn.web.core.AbstractWebLocation;
  * @author Steffen Pingel
  */
 @SuppressWarnings("serial")
-public class GZipJiraSoapServiceServiceLocator extends JiraSoapServiceServiceLocator {
+public class JiraSoapServiceLocator extends JiraSoapServiceServiceLocator {
 
 	private AbstractWebLocation location;
 
 	private boolean compression;
 
-	public GZipJiraSoapServiceServiceLocator() {
+	public JiraSoapServiceLocator() {
 	}
 
-	public GZipJiraSoapServiceServiceLocator(org.apache.axis.EngineConfiguration config) {
+	public JiraSoapServiceLocator(org.apache.axis.EngineConfiguration config) {
 		super(config);
 	}
 
-	public GZipJiraSoapServiceServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName)
+	public JiraSoapServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName)
 			throws javax.xml.rpc.ServiceException {
 		super(wsdlLoc, sName);
 	}

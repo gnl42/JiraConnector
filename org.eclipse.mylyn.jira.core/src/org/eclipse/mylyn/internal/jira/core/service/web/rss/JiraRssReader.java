@@ -25,14 +25,14 @@ import org.xml.sax.XMLReader;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-class RssReader {
+class JiraRssReader {
 
-	private final JiraClient server;
+	private final JiraClient client;
 
 	private final IssueCollector collector;
 
-	public RssReader(JiraClient server, IssueCollector collector) {
-		this.server = server;
+	public JiraRssReader(JiraClient client, IssueCollector collector) {
+		this.client = client;
 		this.collector = collector;
 	}
 
@@ -44,13 +44,11 @@ class RssReader {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			XMLReader reader = factory.newSAXParser().getXMLReader();
-			reader.setContentHandler(new RssContentHandler(server, collector, baseUrl));
+			reader.setContentHandler(new JiraRssHandler(client, collector, baseUrl));
 			InputSource inputSource = new InputSource(feed);
-			inputSource.setEncoding(server.getCharacterEncoding());
+			inputSource.setEncoding(client.getCharacterEncoding());
 			reader.parse(inputSource);
 			collector.done();
-		} catch (ParseCancelledException e) {
-			// User requested this action, so don't log anything
 		} catch (SAXException e) {
 			throw new JiraException("Error parsing server response: " + e.getMessage(), e);
 		} catch (ParserConfigurationException e) {

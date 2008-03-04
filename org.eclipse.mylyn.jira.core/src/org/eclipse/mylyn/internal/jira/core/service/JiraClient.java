@@ -34,9 +34,9 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylyn.internal.jira.core.model.filter.SmartQuery;
-import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
-import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebIssueService;
-import org.eclipse.mylyn.internal.jira.core.service.web.rss.RssJiraFilterService;
+import org.eclipse.mylyn.internal.jira.core.service.soap.JiraSoapClient;
+import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebClient;
+import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssClient;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
@@ -99,13 +99,13 @@ public class JiraClient {
 
 	private String characterEncoding;
 
-	private final RssJiraFilterService filterService;
+	private final JiraRssClient filterService;
 
-	private final JiraWebIssueService issueService;
+	private final JiraWebClient issueService;
 
 	private final AbstractWebLocation location;
 
-	private final JiraRpcClient soapService;
+	private final JiraSoapClient soapService;
 
 	private final boolean useCompression;
 
@@ -118,9 +118,9 @@ public class JiraClient {
 
 		this.cache = new JiraClientCache(this);
 
-		this.filterService = new RssJiraFilterService(this);
-		this.issueService = new JiraWebIssueService(this);
-		this.soapService = new JiraRpcClient(this);
+		this.filterService = new JiraRssClient(this);
+		this.issueService = new JiraWebClient(this);
+		this.soapService = new JiraSoapClient(this);
 	}
 
 	public void addCommentToIssue(Issue issue, String comment) throws JiraException {
@@ -356,7 +356,7 @@ public class JiraClient {
 		return serverInfo;
 	}
 
-	public JiraRpcClient getSoapClient() {
+	public JiraSoapClient getSoapClient() {
 		return soapService;
 	}
 

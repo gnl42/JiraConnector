@@ -21,24 +21,26 @@ import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSession;
 
 /**
  * @author Brock Janiczak
+ * @author Steffen Pingel
  */
-public class RssJiraFilterService {
+public class JiraRssClient {
 
 	private final JiraClient jiraClient;
 
 	private final boolean useGZipCompression;
 
-	public RssJiraFilterService(JiraClient server) {
+	private final JiraRssFilterConverter filterService;
+
+	public JiraRssClient(JiraClient server) {
 		this.jiraClient = server;
 		this.useGZipCompression = server.useCompression();
+		this.filterService = new JiraRssFilterConverter();
 	}
 
 	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector)
 			throws JiraException {
 		JiraWebSession session = new JiraWebSession(jiraClient);
-
-		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
-
+		session.doInSession(new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
@@ -54,8 +56,7 @@ public class RssJiraFilterService {
 						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
 					}
 				}
-				rssUrlBuffer.append(RssJiraFilterConverterFactory.getConverter(jiraClient).convert(filterDefinition,
-						jiraClient.getCharacterEncoding()));
+				rssUrlBuffer.append(filterService.convert(filterDefinition, jiraClient.getCharacterEncoding()));
 
 				return rssUrlBuffer.toString();
 			}
@@ -64,9 +65,7 @@ public class RssJiraFilterService {
 
 	public void executeNamedFilter(final NamedFilter filter, final IssueCollector collector) throws JiraException {
 		JiraWebSession session = new JiraWebSession(jiraClient);
-
-		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
-
+		session.doInSession(new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
@@ -91,9 +90,7 @@ public class RssJiraFilterService {
 
 	public void quickSearch(final String searchString, final IssueCollector collector) throws JiraException {
 		JiraWebSession session = new JiraWebSession(jiraClient);
-
-		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
-
+		session.doInSession(new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
@@ -117,7 +114,7 @@ public class RssJiraFilterService {
 
 	public void getIssueByKey(final String issueKey, final IssueCollector collector) throws JiraException {
 		JiraWebSession session = new JiraWebSession(jiraClient);
-		session.doInSession(new RssFeedProcessorCallback(useGZipCompression, collector) {
+		session.doInSession(new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
