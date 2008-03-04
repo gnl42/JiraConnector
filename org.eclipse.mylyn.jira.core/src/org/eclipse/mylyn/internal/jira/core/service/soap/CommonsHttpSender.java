@@ -25,6 +25,7 @@
  *     org.eclipse.mylyn.internal.jira.core.service.soap 
  *   - changed visibility of addContextInfo() from private to protected
  *   - reformatted source and added @SuppressWarnings annotation
+ *   - commented calls to commons logging out 
  */
 package org.eclipse.mylyn.internal.jira.core.service.soap;
 
@@ -50,7 +51,6 @@ import org.apache.axis.AxisFault;
 import org.apache.axis.Constants;
 import org.apache.axis.Message;
 import org.apache.axis.MessageContext;
-import org.apache.axis.components.logger.LogFactory;
 import org.apache.axis.components.net.CommonsHTTPClientProperties;
 import org.apache.axis.components.net.CommonsHTTPClientPropertiesFactory;
 import org.apache.axis.components.net.TransportClientProperties;
@@ -80,7 +80,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.logging.Log;
 
 /**
  * This class uses Jakarta Commons's HttpClient to call a SOAP server.
@@ -94,8 +93,7 @@ import org.apache.commons.logging.Log;
 public class CommonsHttpSender extends BasicHandler {
 
 	/** Field log */
-	protected static Log log = LogFactory.getLog(CommonsHttpSender.class.getName());
-
+	//protected static Log log = LogFactory.getLog(CommonsHTTPSender.class.getName());
 	protected HttpConnectionManager connectionManager;
 
 	protected CommonsHTTPClientProperties clientProperties;
@@ -133,9 +131,9 @@ public class CommonsHttpSender extends BasicHandler {
 	 */
 	public void invoke(MessageContext msgContext) throws AxisFault {
 		HttpMethodBase method = null;
-		if (log.isDebugEnabled()) {
-			log.debug(Messages.getMessage("enter00", "CommonsHTTPSender::invoke"));
-		}
+//		if (log.isDebugEnabled()) {
+//			log.debug(Messages.getMessage("enter00", "CommonsHTTPSender::invoke"));
+//		}
 		try {
 			URL targetURL = new URL(msgContext.getStrProp(MessageContext.TRANS_URL));
 
@@ -207,7 +205,7 @@ public class CommonsHttpSender extends BasicHandler {
 
 			String contentType = getHeader(method, HTTPConstants.HEADER_CONTENT_TYPE);
 			String contentLocation = getHeader(method, HTTPConstants.HEADER_CONTENT_LOCATION);
-			String contentLength = getHeader(method, HTTPConstants.HEADER_CONTENT_LENGTH);
+//			String contentLength = getHeader(method, HTTPConstants.HEADER_CONTENT_LENGTH);
 
 			if ((returnCode > 199) && (returnCode < 300)) {
 
@@ -257,14 +255,14 @@ public class CommonsHttpSender extends BasicHandler {
 			}
 			outMsg.setMessageType(Message.RESPONSE);
 			msgContext.setResponseMessage(outMsg);
-			if (log.isDebugEnabled()) {
-				if (null == contentLength) {
-					log.debug("\n" + Messages.getMessage("no00", "Content-Length"));
-				}
-				log.debug("\n" + Messages.getMessage("xmlRecd00"));
-				log.debug("-----------------------------------------------");
-				log.debug(outMsg.getSOAPPartAsString());
-			}
+//			if (log.isDebugEnabled()) {
+//				if (null == contentLength) {
+//					log.debug("\n" + Messages.getMessage("no00", "Content-Length"));
+//				}
+//				log.debug("\n" + Messages.getMessage("xmlRecd00"));
+//				log.debug("-----------------------------------------------");
+//				log.debug(outMsg.getSOAPPartAsString());
+//			}
 
 			// if we are maintaining session state,
 			// handle cookies (if any)
@@ -287,13 +285,13 @@ public class CommonsHttpSender extends BasicHandler {
 			}
 
 		} catch (Exception e) {
-			log.debug(e);
+//			log.debug(e);
 			throw AxisFault.makeFault(e);
 		}
 
-		if (log.isDebugEnabled()) {
-			log.debug(Messages.getMessage("exit00", "CommonsHTTPSender::invoke"));
-		}
+//		if (log.isDebugEnabled()) {
+//			log.debug(Messages.getMessage("exit00", "CommonsHTTPSender::invoke"));
+//		}
 	}
 
 	/**
@@ -591,9 +589,9 @@ public class CommonsHttpSender extends BasicHandler {
 		while (tokenizer.hasMoreTokens()) {
 			String pattern = tokenizer.nextToken();
 
-			if (log.isDebugEnabled()) {
-				log.debug(Messages.getMessage("match00", new String[] { "HTTPSender", host, pattern }));
-			}
+//			if (log.isDebugEnabled()) {
+//				log.debug(Messages.getMessage("match00", new String[] { "HTTPSender", host, pattern }));
+//			}
 			if (match(pattern, host, false)) {
 				return true;
 			}

@@ -170,7 +170,11 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 	public void login() throws JiraException {
 		loginToken.expire();
-		loginToken.getCurrentValue();
+		call(new RemoteRunnable<Object>() {
+			public Object run() throws java.rmi.RemoteException, JiraException {
+				return loginToken.getCurrentValue();
+			}
+		});
 	}
 
 	public Group getGroup(final String name) throws JiraException {
@@ -605,6 +609,8 @@ public class JiraRpcClient extends AbstractJiraClient {
 			throw new JiraServiceUnavailableException(e.getMessage());
 		} catch (java.rmi.RemoteException e) {
 			throw new JiraServiceUnavailableException(unwrapRemoteException(e));
+		} catch (JiraException e) {
+			throw e;
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Error e) {
@@ -655,7 +661,8 @@ public class JiraRpcClient extends AbstractJiraClient {
 			this.lastAccessed = -1L;
 		}
 
-		public synchronized String getCurrentValue() throws JiraException {
+		public synchronized String getCurrentValue() throws JiraException, RemoteAuthenticationException,
+				RemoteException, java.rmi.RemoteException {
 			AuthenticationCredentials newCredentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (newCredentials == null) {
 				expire();
@@ -668,12 +675,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 			if ((System.currentTimeMillis() - lastAccessed) >= timeout || token == null) {
 				expire();
 
-				this.token = callOnce(new RemoteRunnable<String>() {
-					public String run() throws java.rmi.RemoteException, JiraException {
-						return getSoapService().login(credentials.getUserName(), credentials.getPassword());
-					}
-				}, null);
-
+				this.token = getSoapService().login(credentials.getUserName(), credentials.getPassword());
 				this.lastAccessed = System.currentTimeMillis();
 			}
 
