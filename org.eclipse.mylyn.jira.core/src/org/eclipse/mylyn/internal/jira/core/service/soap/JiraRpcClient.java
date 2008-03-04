@@ -24,6 +24,7 @@ import javax.xml.rpc.ServiceException;
 import org.apache.axis.AxisFault;
 import org.apache.axis.configuration.FileProvider;
 import org.apache.commons.httpclient.methods.multipart.PartSource;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
@@ -65,6 +66,8 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
+import org.eclipse.mylyn.web.core.Policy;
+import org.eclipse.mylyn.web.core.WebClientUtil;
 import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -562,37 +565,70 @@ public class JiraRpcClient extends AbstractJiraClient {
 		issueService.deleteIssue(issue);
 	}
 
-	private <T> T call(RemoteRunnable<T> runnable, boolean retry) throws JiraException {
-		// retry in case login token is expired
-		for (int i = 0; i < 2; i++) {
-			try {
-				return runnable.run();
-			} catch (RemotePermissionException e) {
-				throw new JiraInsufficientPermissionException(e.getMessage());
-			} catch (RemoteAuthenticationException e) {
-				if (!retry || i > 0) {
-					throw new JiraAuthenticationException(e.getMessage());
-				}
-				loginToken.expire();
-			} catch (RemoteException e) {
-				throw new JiraServiceUnavailableException(e.getMessage());
-			} catch (java.rmi.RemoteException e) {
-				throw new JiraServiceUnavailableException(unwrapRemoteException(e));
-			}
+	private <T> T callWithRetry(RemoteRunnable<T> runnable, IProgressMonitor monitor) throws JiraException {
+		try {
+			return callOnce(runnable, monitor);
+		} catch (JiraAuthenticationException e) {
+			loginToken.expire();
+			return callOnce(runnable, monitor);
 		}
-		throw new RuntimeException("Invalid section of code reached");
 	}
 
-	private <T> T call(RemoteRunnable<T> runnable) throws JiraException {
+	private <T> T callOnce(final RemoteRunnable<T> runnable, IProgressMonitor monitor) throws JiraException,
+			JiraInsufficientPermissionException, JiraAuthenticationException, JiraServiceUnavailableException {
+		try {
+			monitor = Policy.monitorFor(monitor);
+
+			final JiraRequest request = new JiraRequest(monitor);
+
+			return WebClientUtil.poll(monitor, new WebClientUtil.AbortableCallable<T>() {
+
+				public void abort() {
+					request.cancel();
+				}
+
+				public T call() throws Exception {
+					try {
+						JiraRequest.setCurrentRequest(request);
+						return runnable.run();
+					} finally {
+						request.done();
+					}
+				}
+
+			});
+		} catch (RemotePermissionException e) {
+			throw new JiraInsufficientPermissionException(e.getMessage());
+		} catch (RemoteAuthenticationException e) {
+			throw new JiraAuthenticationException(e.getMessage());
+		} catch (RemoteException e) {
+			throw new JiraServiceUnavailableException(e.getMessage());
+		} catch (java.rmi.RemoteException e) {
+			throw new JiraServiceUnavailableException(unwrapRemoteException(e));
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Error e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private <T> T call(RemoteRunnable<T> runnable, IProgressMonitor monitor) throws JiraException {
 		while (true) {
 			try {
-				return call(runnable, true);
+				return callWithRetry(runnable, monitor);
 			} catch (JiraAuthenticationException e) {
 				if (getLocation().requestCredentials(AuthenticationType.REPOSITORY, null) == ResultType.NOT_SUPPORTED) {
 					throw e;
 				}
 			}
 		}
+	}
+
+	// API 3.0 remove
+	private <T> T call(RemoteRunnable<T> runnable) throws JiraException {
+		return call(runnable, JiraRequest.getCurrentMonitor());
 	}
 
 	private interface RemoteRunnable<T> {
@@ -632,11 +668,11 @@ public class JiraRpcClient extends AbstractJiraClient {
 			if ((System.currentTimeMillis() - lastAccessed) >= timeout || token == null) {
 				expire();
 
-				this.token = call(new RemoteRunnable<String>() {
+				this.token = callOnce(new RemoteRunnable<String>() {
 					public String run() throws java.rmi.RemoteException, JiraException {
 						return getSoapService().login(credentials.getUserName(), credentials.getPassword());
 					}
-				}, false);
+				}, null);
 
 				this.lastAccessed = System.currentTimeMillis();
 			}

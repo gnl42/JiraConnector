@@ -11,17 +11,18 @@ package org.eclipse.mylyn.internal.jira.core.service.soap;
 import java.net.URL;
 
 import org.apache.axis.MessageContext;
-import org.apache.axis.transport.http.CommonsHTTPSender;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethodBase;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.WebClientUtil;
 
 /**
  * @author Steffen Pingel
  */
-@SuppressWarnings("serial")
-public class JiraHttpSender extends CommonsHTTPSender {
+public class JiraHttpSender extends CommonsHttpSender {
+
+	private static final long serialVersionUID = 1L;
 
 	public static final String PROXY = "org.eclipse.mylyn.jira.proxy";
 
@@ -35,11 +36,17 @@ public class JiraHttpSender extends CommonsHTTPSender {
 
 	@Override
 	protected HostConfiguration getHostConfiguration(HttpClient client, MessageContext context, URL url) {
-//		Proxy proxy = (Proxy) context.getProperty(PROXY);
-//		String httpUser = (String) context.getProperty(HTTP_USER);
-//		String httpPassword = (String) context.getProperty(HTTP_PASSWORD);
 		AbstractWebLocation location = (AbstractWebLocation) context.getProperty(LOCATION);
-		WebClientUtil.setupHttpClient(client, USER_AGENT, location);
-		return client.getHostConfiguration();
+		JiraRequest request = JiraRequest.getCurrentRequest();
+		return WebClientUtil.createHostConfiguration(client, USER_AGENT, location, request.getMonitor());
+	}
+
+	@Override
+	protected void addContextInfo(HttpMethodBase method, HttpClient httpClient, MessageContext msgContext, URL tmpURL)
+			throws Exception {
+		super.addContextInfo(method, httpClient, msgContext, tmpURL);
+
+		JiraRequest request = JiraRequest.getCurrentRequest();
+		request.setMethod(method);
 	}
 }

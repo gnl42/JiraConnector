@@ -22,6 +22,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRequest;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -61,28 +62,33 @@ public abstract class AbstractJiraClient implements JiraClient {
 	}
 
 	public synchronized void refreshDetails(IProgressMonitor monitor) throws JiraException {
-		// use UNKNOWN since some of the update operations block for a long time
-		monitor.beginTask("Updating repository configuration", IProgressMonitor.UNKNOWN);
+		try {
+			// use UNKNOWN since some of the update operations block for a long time
+			// TODO use InfiniteSubProgressMonitor
+			monitor.beginTask("Updating repository configuration", IProgressMonitor.UNKNOWN);
+			JiraRequest.setCurrentMonitor(monitor);
 
-		JiraClientData newData = new JiraClientData();
+			JiraClientData newData = new JiraClientData();
 
-		initializeServerInfo(newData);
-		advance(monitor, 1);
-		initializeProjects(newData);
-		advance(monitor, 1);
-		initializePriorities(newData);
-		advance(monitor, 1);
-		initializeIssueTypes(newData);
-		advance(monitor, 1);
-		initializeResolutions(newData);
-		advance(monitor, 1);
-		initializeStatuses(newData);
-		advance(monitor, 1);
+			initializeServerInfo(newData);
+			advance(monitor, 1);
+			initializeProjects(newData);
+			advance(monitor, 1);
+			initializePriorities(newData);
+			advance(monitor, 1);
+			initializeIssueTypes(newData);
+			advance(monitor, 1);
+			initializeResolutions(newData);
+			advance(monitor, 1);
+			initializeStatuses(newData);
+			advance(monitor, 1);
 
-		newData.lastUpdate = System.currentTimeMillis();
-		this.data = newData;
-
-		monitor.done();
+			newData.lastUpdate = System.currentTimeMillis();
+			this.data = newData;
+		} finally {
+			JiraRequest.setCurrentMonitor(null);
+			monitor.done();
+		}
 	}
 
 	public synchronized void refreshServerInfo(IProgressMonitor monitor) throws JiraException {
