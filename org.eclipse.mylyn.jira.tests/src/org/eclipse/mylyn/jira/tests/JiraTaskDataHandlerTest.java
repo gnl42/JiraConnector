@@ -372,7 +372,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Issue issue = JiraTestUtils.newIssue(client, "testSecurityLevel");
-		issue.setProject(client.getProjectByKey("SECURITY"));
+		issue.setProject(client.getCache().getProjectByKey("SECURITY"));
 		issue = JiraTestUtils.createIssue(client, issue);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());

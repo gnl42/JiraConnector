@@ -9,9 +9,9 @@ package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.net.Proxy;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
@@ -26,161 +26,36 @@ import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.WebLocation;
 
-public class MockJiraClient extends AbstractJiraClient {
+public class MockJiraClient extends JiraClient {
 
-	public MockJiraClient(String baseUrl) {
-		super(new WebLocation(baseUrl), false);
+	public static Component createComponent(String id, String name) {
+		Component component = new Component();
+		component.setId(id);
+		component.setName(name);
+		return component;
 	}
 
-	@Override
-	public Component[] getComponentsRemote(String key) throws JiraException {
-		return null;
+	public static IssueType createIssueType(String id, String name) {
+		IssueType issueType = new IssueType();
+		issueType.setId(id);
+		issueType.setName(name);
+		return issueType;
+
 	}
 
-	@Override
-	public IssueType[] getIssueTypesRemote() throws JiraException {
-		return null;
+	public static Priority createPriority(String id, String name) {
+		Priority priority = new Priority();
+		priority.setId(id);
+		priority.setName(name);
+		return priority;
 	}
-
-	@Override
-	public Priority[] getPrioritiesRemote() throws JiraException {
-		return null;
-	}
-
-	@Override
-	public Project[] getProjectsRemote() throws JiraException {
-		return null;
-	}
-
-	@Override
-	public Project[] getProjectsRemoteNoSchemes() throws JiraException {
-		return null;
-	}
-
-	@Override
-	public Resolution[] getResolutionsRemote() throws JiraException {
-		return null;
-	}
-
-	@Override
-	public ServerInfo getServerInfoRemote() throws JiraException {
-		return null;
-	}
-
-	@Override
-	public Status[] getStatusesRemote() throws JiraException {
-		return null;
-	}
-
-	@Override
-	public IssueType[] getSubTaskIssueTypesRemote() throws JiraException {
-		return null;
-	}
-
-	@Override
-	public Version[] getVersionsRemote(String key) throws JiraException {
-		return null;
-	}
-
-	public void addCommentToIssue(Issue issue, String comment) throws JiraException {
-	}
-
-	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException {
-	}
-
-	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType)
-			throws JiraException {
-	}
-
-	public void attachFile(Issue issue, String comment, String filename, File file, String contentType)
-			throws JiraException {
-	}
-
-	public Issue createIssue(Issue issue) throws JiraException {
-		return null;
-	}
-
-	public Issue createSubTask(Issue issue) throws JiraException {
-		return null;
-	}
-
-	public Issue getIssueById(String issue) throws JiraException {
-		return null;
-	}
-
-	public Issue getIssueByKey(String issueKey) throws JiraException {
-		return null;
-	}
-
-	public String getKeyFromId(String issueId) throws JiraException {
-		return null;
-	}
-
-	public NamedFilter[] getNamedFilters() throws JiraException {
-		return null;
-	}
-
-	public void login() throws JiraException {
-	}
-
-	public void logout() {
-	}
-
-	public byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException {
-		return null;
-	}
-
-	public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
-	}
-
-	public void search(Query query, IssueCollector collector) throws JiraException {
-	}
-
-	public void unvoteIssue(Issue issue) throws JiraException {
-	}
-
-	public void unwatchIssue(Issue issue) throws JiraException {
-	}
-
-	public void updateIssue(Issue issue, String comment) throws JiraException {
-	}
-
-	public void voteIssue(Issue issue) throws JiraException {
-	}
-
-	public void watchIssue(Issue issue) throws JiraException {
-	}
-
-	public RepositoryOperation[] getAvailableOperations(String issueKey) throws JiraException {
-		return null;
-	}
-
-	public RepositoryTaskAttribute[] getEditableAttributes(String issueKey) throws JiraException {
-		return null;
-	}
-
-	public String[] getActionFields(String issueKey, String actionId) throws JiraException {
-		return null;
-	}
-
-	public CustomField[] getCustomAttributes() throws JiraException {
-		return null;
-	}
-
-	public void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException {
-	}
-
-	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
-	}
-
-	// factory methods
 
 	public static Project createProject() {
 		Project project = new Project();
@@ -200,14 +75,6 @@ public class MockJiraClient extends AbstractJiraClient {
 		return project;
 	}
 
-	public static IssueType createIssueType(String id, String name) {
-		IssueType issueType = new IssueType();
-		issueType.setId(id);
-		issueType.setName(name);
-		return issueType;
-
-	}
-
 	public static Version createVersion(String id, String name) {
 		Version version = new Version();
 		version.setId(id);
@@ -215,43 +82,185 @@ public class MockJiraClient extends AbstractJiraClient {
 		return version;
 	}
 
-	public static Component createComponent(String id, String name) {
-		Component component = new Component();
-		component.setId(id);
-		component.setName(name);
-		return component;
+	private JiraClientCache cache;
+
+	public MockJiraClient(String baseUrl) {
+		super(new WebLocation(baseUrl), false);
+		this.cache = super.getCache();
 	}
 
-	public static Priority createPriority(String id, String name) {
-		Priority priority = new Priority();
-		priority.setId(id);
-		priority.setName(name);
-		return priority;
+	@Override
+	public JiraClientCache getCache() {
+		return this.cache;
 	}
 
-	public String getHttpPassword() {
-		// ignore
+	public void setCache(JiraClientCache cache) {
+		this.cache = cache;
+	}
+
+	@Override
+	public void addCommentToIssue(Issue issue, String comment) throws JiraException {
+	}
+
+	@Override
+	public void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException {
+	}
+
+	@Override
+	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException {
+	}
+
+	@Override
+	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
+	}
+
+	@Override
+	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType)
+			throws JiraException {
+	}
+
+	@Override
+	public void attachFile(Issue issue, String comment, String filename, File file, String contentType)
+			throws JiraException {
+	}
+
+	@Override
+	public Issue createIssue(Issue issue) throws JiraException {
 		return null;
 	}
 
-	public String getHttpUser() {
-		// ignore
+	@Override
+	public Issue createSubTask(Issue issue) throws JiraException {
 		return null;
 	}
 
-	public Proxy getProxy() {
-		// ignore
-		return null;
-	}
-
+	@Override
 	public void deleteIssue(Issue issue) throws JiraException {
-		// ignore
-
 	}
 
-	public RemoteIssue getRemoteIssueByKey(String key) throws JiraException {
-		// ignore
+	@Override
+	public String[] getActionFields(String issueKey, String actionId) throws JiraException {
 		return null;
+	}
+
+	@Override
+	public RepositoryOperation[] getAvailableOperations(String issueKey) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public Component[] getComponents(String key) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public CustomField[] getCustomAttributes() throws JiraException {
+		return null;
+	}
+
+	@Override
+	public RepositoryTaskAttribute[] getEditableAttributes(String issueKey) throws JiraException {
+		return null;
+	}
+
+	public Issue getIssueById(String issue) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public Issue getIssueByKey(String issueKey) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public IssueType[] getIssueTypes() throws JiraException {
+		return null;
+	}
+
+	@Override
+	public String getKeyFromId(String issueId) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public NamedFilter[] getNamedFilters() throws JiraException {
+		return null;
+	}
+
+	@Override
+	public Priority[] getPriorities() throws JiraException {
+		return null;
+	}
+
+	@Override
+	public Project[] getProjects() throws JiraException {
+		return null;
+	}
+
+	@Override
+	public Resolution[] getResolutions() throws JiraException {
+		return null;
+	}
+
+	@Override
+	public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public Status[] getStatuses() throws JiraException {
+		return null;
+	}
+
+	@Override
+	public IssueType[] getSubTaskIssueTypes() throws JiraException {
+		return null;
+	}
+
+	@Override
+	public Version[] getVersions(String key) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public void login() throws JiraException {
+	}
+
+	@Override
+	public void logout() {
+	}
+
+	@Override
+	public byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
+	}
+
+	@Override
+	public void search(Query query, IssueCollector collector) throws JiraException {
+	}
+
+	@Override
+	public void unvoteIssue(Issue issue) throws JiraException {
+	}
+
+	@Override
+	public void unwatchIssue(Issue issue) throws JiraException {
+	}
+
+	@Override
+	public void updateIssue(Issue issue, String comment) throws JiraException {
+	}
+
+	@Override
+	public void voteIssue(Issue issue) throws JiraException {
+	}
+
+	@Override
+	public void watchIssue(Issue issue) throws JiraException {
 	}
 
 }

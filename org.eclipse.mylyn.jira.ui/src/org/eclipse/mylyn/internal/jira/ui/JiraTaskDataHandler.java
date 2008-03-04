@@ -89,8 +89,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			throws CoreException {
 		try {
 			JiraClient client = clientFactory.getJiraClient(repository);
-			if (!client.hasDetails()) {
-				client.refreshDetails(new NullProgressMonitor());
+			if (!client.getCache().hasDetails()) {
+				client.getCache().refreshDetails(new NullProgressMonitor());
 			}
 			Issue jiraIssue = getJiraIssue(client, taskId, repository.getUrl());
 			if (jiraIssue != null) {
@@ -149,7 +149,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		RepositoryTaskAttribute priorities = addAttribute(data, RepositoryTaskAttribute.PRIORITY);
 		priorities.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
-		Priority[] jiraPriorities = client.getPriorities();
+		Priority[] jiraPriorities = client.getCache().getPriorities();
 		for (int i = 0; i < jiraPriorities.length; i++) {
 			Priority priority = jiraPriorities[i];
 			priorities.addOption(priority.getName(), priority.getId());
@@ -160,7 +160,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		RepositoryTaskAttribute types = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE);
 		types.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
-		IssueType[] jiraIssueTypes = client.getIssueTypes();
+		IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
 		for (int i = 0; i < jiraIssueTypes.length; i++) {
 			IssueType type = jiraIssueTypes[i];
 			if (!type.isSubTaskType()) {
@@ -571,7 +571,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		// consider preserving HTML 
-		RemoteIssue remoteIssue = client.getRemoteIssueByKey(jiraIssue.getKey());
+		RemoteIssue remoteIssue = client.getSoapClient().getIssueByKey(jiraIssue.getKey());
 		if (data.getAttribute(RepositoryTaskAttribute.DESCRIPTION) != null) {
 			if (remoteIssue.getDescription() == null) {
 				data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, "");
@@ -647,7 +647,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private void addResolutions(JiraClient client, RepositoryOperation operation) {
-		Resolution[] resolutions = client.getResolutions();
+		Resolution[] resolutions = client.getCache().getResolutions();
 		if (resolutions.length > 0) {
 			for (Resolution resolution : resolutions) {
 				operation.addOption(resolution.getName(), resolution.getId());
@@ -675,8 +675,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		try {
-			if (!client.hasDetails()) {
-				client.refreshDetails(new NullProgressMonitor());
+			if (!client.getCache().hasDetails()) {
+				client.getCache().refreshDetails(new NullProgressMonitor());
 			}
 
 			Issue issue = buildJiraIssue(taskData, client);
@@ -742,9 +742,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		JiraClient client = clientFactory.getJiraClient(repository);
-		if (!client.hasDetails()) {
+		if (!client.getCache().hasDetails()) {
 			try {
-				client.refreshDetails(monitor);
+				client.getCache().refreshDetails(monitor);
 			} catch (JiraException ex) {
 				IStatus status = JiraCorePlugin.toStatus(repository, ex);
 				trace(status);
@@ -754,7 +754,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		Project project = getProject(client, projectName);
 		if (project == null) {
-			project = client.getProjectByKey(projectName);
+			project = client.getCache().getProjectByKey(projectName);
 		}
 		if (project == null) {
 			return false;
@@ -774,8 +774,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			monitor.beginTask("Creating subtask", IProgressMonitor.UNKNOWN);
 
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-			if (!client.hasDetails()) {
-				client.refreshDetails(new SubProgressMonitor(monitor, 1));
+			if (!client.getCache().hasDetails()) {
+				client.getCache().refreshDetails(new SubProgressMonitor(monitor, 1));
 			}
 
 			Project project = getProject(client, parentTaskData.getProduct());
@@ -795,7 +795,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			RepositoryTaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
 			typeAttribute.clearOptions();
 
-			IssueType[] jiraIssueTypes = client.getIssueTypes();
+			IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
 			for (IssueType type : jiraIssueTypes) {
 				if (type.isSubTaskType()) {
 					typeAttribute.addOption(type.getName(), type.getId());
@@ -834,7 +834,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private Project getProject(JiraClient client, String projectName) {
-		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getProjects()) {
+		for (org.eclipse.mylyn.internal.jira.core.model.Project project : client.getCache().getProjects()) {
 			if (project.getName().equals(projectName)) {
 				return project;
 			}
@@ -891,13 +891,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		// issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));
 
-		for (IssueType type : client.getIssueTypes()) {
+		for (IssueType type : client.getCache().getIssueTypes()) {
 			if (type.getName().equals(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE))) {
 				issue.setType(type);
 				break;
 			}
 		}
-		for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getStatuses()) {
+		for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getCache().getStatuses()) {
 			if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 				issue.setStatus(status);
 				break;
@@ -965,7 +965,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setAssignee(JiraRepositoryConnector.getAssigneeFromAttribute(assignee));
 
 		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
-		for (Priority priority : client.getPriorities()) {
+		for (Priority priority : client.getCache().getPriorities()) {
 			if (priority.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY))) {
 				issue.setPriority(priority);
 				break;

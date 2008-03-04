@@ -382,11 +382,11 @@ public class RssContentHandler extends DefaultHandler {
 			} else if (PARENT.equals(localName)) {
 				currentIssue.setParentId(attributes.getValue(ID_ATTR));
 			} else if (TYPE.equals(localName)) {
-				currentIssue.setType(client.getIssueTypeById(attributes.getValue(ID_ATTR)));
+				currentIssue.setType(client.getCache().getIssueTypeById(attributes.getValue(ID_ATTR)));
 			} else if (PRIORITY.equals(localName)) {
-				currentIssue.setPriority(client.getPriorityById(attributes.getValue(ID_ATTR)));
+				currentIssue.setPriority(client.getCache().getPriorityById(attributes.getValue(ID_ATTR)));
 			} else if (STATUS.equals(localName)) {
-				currentIssue.setStatus(client.getStatusById(attributes.getValue(ID_ATTR)));
+				currentIssue.setStatus(client.getCache().getStatusById(attributes.getValue(ID_ATTR)));
 			} else if (ASSIGNEE.equals(localName)) {
 				String assigneeName = attributes.getValue(USERNAME_ATTR);
 				currentIssue.setAssignee(assigneeName);
@@ -395,7 +395,8 @@ public class RssContentHandler extends DefaultHandler {
 				currentIssue.setReporter(reporterName);
 			} else if (RESOLUTION.equals(localName)) {
 				String resolutionId = attributes.getValue(ID_ATTR);
-				currentIssue.setResolution(resolutionId != null ? client.getResolutionById(resolutionId) : null);
+				currentIssue.setResolution(resolutionId != null ? client.getCache().getResolutionById(resolutionId)
+						: null);
 			} else if (ORIGINAL_ESTIMATE.equals(localName)) {
 				currentIssue.setInitialEstimate(Long.parseLong(attributes.getValue(SECONDS_ATTR)));
 			} else if (CURRENT_ESTIMATE.equals(localName)) {
@@ -666,7 +667,7 @@ public class RssContentHandler extends DefaultHandler {
 					break;
 				}
 				String projectKey = key.substring(0, i);
-				Project project = client.getProjectByKey(projectKey);
+				Project project = client.getCache().getProjectByKey(projectKey);
 				if (project == null) {
 					//throw new SAXException("No project with key '" + projectKey + "' found");
 					break;

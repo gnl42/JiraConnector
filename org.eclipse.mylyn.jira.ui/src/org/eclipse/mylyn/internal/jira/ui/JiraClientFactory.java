@@ -10,6 +10,7 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import java.net.Proxy;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.JiraClientManager;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
@@ -127,6 +128,8 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	/**
 	 * Validate the server URL and user credentials
 	 * 
+	 * @param monitor
+	 * 
 	 * @param serverUrl
 	 *            Location of the Jira Server
 	 * @param user
@@ -136,8 +139,8 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	 * @return
 	 * @return String describing validation failure or null if the details are valid
 	 */
-	public ServerInfo validateConnection(AbstractWebLocation location) throws JiraException {
-		ServerInfo info = clientManager.validateConnection(location);
+	public ServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
+		ServerInfo info = clientManager.validateConnection(location, monitor);
 		JiraVersion serverVersion = new JiraVersion(info.getVersion());
 		if (JiraVersion.MIN_VERSION.compareTo(serverVersion) > 0) {
 			throw new JiraException("JIRA connector requires server " + JiraVersion.MIN_VERSION + " or later");

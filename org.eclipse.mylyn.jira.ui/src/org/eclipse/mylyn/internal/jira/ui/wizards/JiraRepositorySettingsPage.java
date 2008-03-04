@@ -220,7 +220,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 			AbstractWebLocation location = new TaskRepositoryLocationFactory().createWebLocation(repository);
 			try {
-				this.serverInfo = JiraClientFactory.getDefault().validateConnection(location);
+				this.serverInfo = JiraClientFactory.getDefault().validateConnection(location, monitor);
 			} catch (JiraAuthenticationException e) {
 				throw new CoreException(RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR,
 						JiraUiPlugin.PLUGIN_ID, INVALID_LOGIN));

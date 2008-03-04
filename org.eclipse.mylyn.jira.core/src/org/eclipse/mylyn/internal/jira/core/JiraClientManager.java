@@ -21,17 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 
@@ -50,7 +48,7 @@ public class JiraClientManager {
 	/** The directory that contains the repository configuration data. */
 	private final File cacheLocation;
 
-	private final Map<String, AbstractJiraClient> clientByUrl = new HashMap<String, AbstractJiraClient>();
+	private final Map<String, JiraClient> clientByUrl = new HashMap<String, JiraClient>();
 
 	private final Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
 
@@ -105,7 +103,7 @@ public class JiraClientManager {
 
 		// update data map from servers
 		for (String url : clientByUrl.keySet()) {
-			clientDataByUrl.put(url, clientByUrl.get(url).getData());
+			clientDataByUrl.put(url, clientByUrl.get(url).getCache().getData());
 		}
 
 		ObjectOutputStream out = null;
@@ -134,6 +132,8 @@ public class JiraClientManager {
 	 * Tests the connection to a server. If the URL is invalid ot the username and password are invalid this method will
 	 * return with a exceptions carrying the failure reason.
 	 * 
+	 * @param monitor
+	 * 
 	 * @param baseUrl
 	 *            Base URL of the jira installation
 	 * @param username
@@ -146,10 +146,9 @@ public class JiraClientManager {
 	 * @throws JiraServiceUnavailableException
 	 *             URL was not valid
 	 */
-	public ServerInfo validateConnection(AbstractWebLocation location) throws JiraException {
-		JiraClient server = createClient(location, false);
-		server.refreshServerInfo(new NullProgressMonitor());
-		return server.getServerInfo();
+	public ServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
+		JiraClient client = createClient(location, false);
+		return client.getServerInfo(monitor);
 	}
 
 	public JiraClient getClient(String url) {
@@ -160,13 +159,13 @@ public class JiraClientManager {
 		return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
 	}
 
-	private AbstractJiraClient createClient(AbstractWebLocation location, boolean useCompression) {
+	private JiraClient createClient(AbstractWebLocation location, boolean useCompression) {
 //		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 //			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 //		}
 
-		JiraRpcClient server = new JiraRpcClient(location, useCompression);
-		return server;
+		JiraClient clienht = new JiraClient(location, useCompression);
+		return clienht;
 	}
 
 	public JiraClient addClient(AbstractWebLocation location, String characterEncoding, boolean useCompression) {
@@ -174,11 +173,11 @@ public class JiraClientManager {
 			throw new RuntimeException("A server with that name already exists");
 		}
 
-		AbstractJiraClient server = createClient(location, useCompression);
+		JiraClient server = createClient(location, useCompression);
 		server.setCharacterEncoding(characterEncoding);
 		JiraClientData data = clientDataByUrl.get(location.getUrl());
 		if (data != null) {
-			server.setData(data);
+			server.getCache().setData(data);
 		}
 		clientByUrl.put(location.getUrl(), server);
 

@@ -166,7 +166,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 		List<String> projectIds = getIds(params, PROJECT_KEY);
 		for (String projectId : projectIds) {
-			Project project = jiraServer.getProjectById(projectId);
+			Project project = jiraServer.getCache().getProjectById(projectId);
 			if (project == null) {
 				if (validate) {
 					// safeguard
@@ -201,7 +201,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		List<String> typeIds = getIds(params, TYPE_KEY);
 		List<IssueType> issueTypes = new ArrayList<IssueType>();
 		for (String typeId : typeIds) {
-			IssueType issueType = jiraServer.getIssueTypeById(typeId);
+			IssueType issueType = jiraServer.getCache().getIssueTypeById(typeId);
 			if (issueType != null) {
 				issueTypes.add(issueType);
 			} else if (validate) {
@@ -215,7 +215,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		List<String> statusIds = getIds(params, STATUS_KEY);
 		List<Status> statuses = new ArrayList<Status>();
 		for (String statusId : statusIds) {
-			Status status = jiraServer.getStatusById(statusId);
+			Status status = jiraServer.getCache().getStatusById(statusId);
 			if (status != null) {
 				statuses.add(status);
 			} else if (validate) {
@@ -231,7 +231,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		boolean unresolved = false;
 		for (String resolutionId : resolutionIds) {
 			if (!UNRESOLVED.equals(resolutionId)) {
-				Resolution resolution = jiraServer.getResolutionById(resolutionId);
+				Resolution resolution = jiraServer.getCache().getResolutionById(resolutionId);
 				if (resolution != null) {
 					resolutions.add(resolution);
 				} else if (validate) {
@@ -250,7 +250,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		List<String> priorityIds = getIds(params, PRIORITY_KEY);
 		List<Priority> priorities = new ArrayList<Priority>();
 		for (String priorityId : priorityIds) {
-			Priority priority = jiraServer.getPriorityById(priorityId);
+			Priority priority = jiraServer.getCache().getPriorityById(priorityId);
 			if (priority != null) {
 				priorities.add(priority);
 			} else if (validate) {

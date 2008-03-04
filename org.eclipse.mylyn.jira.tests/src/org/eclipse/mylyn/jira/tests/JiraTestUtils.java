@@ -26,7 +26,6 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -51,7 +50,7 @@ public class JiraTestUtils {
 	public static Resolution getFixedResolution(JiraClient server) throws JiraException {
 		refreshDetails(server);
 
-		Resolution[] resolutions = server.getResolutions();
+		Resolution[] resolutions = server.getCache().getResolutions();
 		for (Resolution resolution : resolutions) {
 			if (Resolution.FIXED_ID.equals(resolution.getId())) {
 				return resolution;
@@ -92,7 +91,7 @@ public class JiraTestUtils {
 
 		Issue issue = new Issue();
 		issue.setProject(getProject(client, PROJECT1));
-		issue.setType(client.getIssueTypes()[0]);
+		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary(summary);
 		issue.setAssignee(client.getUserName());
 		return issue;
@@ -114,7 +113,7 @@ public class JiraTestUtils {
 
 		Issue issue = new Issue();
 		issue.setProject(getProject(client, PROJECT1));
-		issue.setType(client.getIssueTypes()[5]);
+		issue.setType(client.getCache().getIssueTypes()[5]);
 		issue.setParentId(parent.getId());
 		issue.setSummary(summary);
 		issue.setAssignee(client.getUserName());
@@ -123,19 +122,19 @@ public class JiraTestUtils {
 	}
 
 	public static void refreshDetails(JiraClient client) throws JiraException {
-		if (!client.hasDetails()) {
+		if (!client.getCache().hasDetails()) {
 			JiraClientData data = clientDataByUrl.get(client.getBaseUrl());
 			if (data != null) {
-				((AbstractJiraClient) client).setData(data);
+				client.getCache().setData(data);
 			} else {
-				client.refreshDetails(new NullProgressMonitor());
-				clientDataByUrl.put(client.getBaseUrl(), ((AbstractJiraClient) client).getData());
+				client.getCache().refreshDetails(new NullProgressMonitor());
+				clientDataByUrl.put(client.getBaseUrl(), client.getCache().getData());
 			}
 		}
 	}
 
 	public static Project getProject(JiraClient client, String projectKey) {
-		Project project = client.getProjectByKey(projectKey);
+		Project project = client.getCache().getProjectByKey(projectKey);
 		if (project == null) {
 			throw new AssertionFailedError("Project '" + projectKey + "' not found");
 		}

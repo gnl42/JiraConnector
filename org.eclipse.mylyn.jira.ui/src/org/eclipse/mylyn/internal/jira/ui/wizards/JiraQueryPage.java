@@ -1315,14 +1315,14 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	}
 
 	private void updateAttributesFromRepository(final boolean force) {
-		if (!server.hasDetails() || force) {
+		if (!server.getCache().hasDetails() || force) {
 			try {
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
 					// FIXME review error handling
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 						JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 						try {
-							client.refreshDetails(monitor);
+							client.getCache().refreshDetails(monitor);
 						} catch (OperationCanceledException e) {
 							throw new InterruptedException();
 						} catch (JiraException e) {
@@ -1379,9 +1379,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 			public Object[] getElements(Object inputElement) {
 				JiraClient server = (JiraClient) inputElement;
-				Object[] elements = new Object[server.getProjects().length + 1];
+				Object[] elements = new Object[server.getCache().getProjects().length + 1];
 				elements[0] = new Placeholder("All Projects");
-				System.arraycopy(server.getProjects(), 0, elements, 1, server.getProjects().length);
+				System.arraycopy(server.getCache().getProjects(), 0, elements, 1,
+						server.getCache().getProjects().length);
 				return elements;
 			}
 
@@ -1398,9 +1399,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 			public Object[] getElements(Object inputElement) {
 				JiraClient server = (JiraClient) inputElement;
-				Object[] elements = new Object[server.getIssueTypes().length + 1];
+				Object[] elements = new Object[server.getCache().getIssueTypes().length + 1];
 				elements[0] = ANY_ISSUE_TYPE;
-				System.arraycopy(server.getIssueTypes(), 0, elements, 1, server.getIssueTypes().length);
+				System.arraycopy(server.getCache().getIssueTypes(), 0, elements, 1,
+						server.getCache().getIssueTypes().length);
 
 				return elements;
 			}
@@ -1417,9 +1419,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 			public Object[] getElements(Object inputElement) {
 				JiraClient server = (JiraClient) inputElement;
-				Object[] elements = new Object[server.getStatuses().length + 1];
+				Object[] elements = new Object[server.getCache().getStatuses().length + 1];
 				elements[0] = ANY_STATUS;
-				System.arraycopy(server.getStatuses(), 0, elements, 1, server.getStatuses().length);
+				System.arraycopy(server.getCache().getStatuses(), 0, elements, 1,
+						server.getCache().getStatuses().length);
 
 				return elements;
 			}
@@ -1436,10 +1439,11 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 			public Object[] getElements(Object inputElement) {
 				JiraClient server = (JiraClient) inputElement;
-				Object[] elements = new Object[server.getResolutions().length + 2];
+				Object[] elements = new Object[server.getCache().getResolutions().length + 2];
 				elements[0] = ANY_RESOLUTION;
 				elements[1] = UNRESOLVED;
-				System.arraycopy(server.getResolutions(), 0, elements, 2, server.getResolutions().length);
+				System.arraycopy(server.getCache().getResolutions(), 0, elements, 2,
+						server.getCache().getResolutions().length);
 
 				return elements;
 			}
@@ -1455,10 +1459,11 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				JiraClient server = (JiraClient) inputElement;
-				Object[] elements = new Object[server.getPriorities().length + 1];
+				JiraClient client = (JiraClient) inputElement;
+				Object[] elements = new Object[client.getCache().getPriorities().length + 1];
 				elements[0] = ANY_PRIORITY;
-				System.arraycopy(server.getPriorities(), 0, elements, 1, server.getPriorities().length);
+				System.arraycopy(client.getCache().getPriorities(), 0, elements, 1,
+						client.getCache().getPriorities().length);
 
 				return elements;
 			}
@@ -1476,7 +1481,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 		if (visible && firstTime) {
 			firstTime = false;
-			if (!server.hasDetails()) {
+			if (!server.getCache().hasDetails()) {
 				// delay the execution so the dialog's progress bar is visible
 				// when the attributes are updated
 				Display.getDefault().asyncExec(new Runnable() {

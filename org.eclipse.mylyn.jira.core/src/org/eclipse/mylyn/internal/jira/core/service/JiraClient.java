@@ -12,11 +12,15 @@ import java.io.File;
 import java.io.OutputStream;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
+import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -24,13 +28,26 @@ import org.eclipse.mylyn.internal.jira.core.model.Query;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
+import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
+import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
+import org.eclipse.mylyn.internal.jira.core.model.filter.SmartQuery;
+import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
+import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebIssueService;
+import org.eclipse.mylyn.internal.jira.core.service.web.rss.RssJiraFilterService;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 
 /**
+ * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a
+ * {@link JiraClientData} object to persist the repository configuration. It has life-cycle methods to allow data in the
+ * cache to be reloaded.
+ * 
  * This interface exposes the full set of services available from a Jira installation. It provides a unified inferface
  * for the SOAP and Web/RSS services available.
  * 
@@ -45,230 +62,93 @@ import org.eclipse.mylyn.web.core.AbstractWebLocation;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public interface JiraClient {
-
-	String DEFAULT_CHARSET = "UTF-8";
-
-	/**
-	 * Assign to the default user
-	 */
-	int ASSIGNEE_DEFAULT = 1;
+public class JiraClient {
 
 	/**
 	 * Leave the assignee field as is (this does not apply when performing an assign to action)
 	 */
-	int ASSIGNEE_CURRENT = 2;
+	public final static int ASSIGNEE_CURRENT = 2;
+
+	/**
+	 * Assign to the default user
+	 */
+	public final static int ASSIGNEE_DEFAULT = 1;
 
 	/**
 	 * Assign to nobody
 	 */
-	int ASSIGNEE_NONE = 3;
-
-	/**
-	 * Assign to a specific user. To get the name of the assignee call {@link #getAssignee()}
-	 */
-	int ASSIGNEE_USER = 4;
+	public final static int ASSIGNEE_NONE = 3;
 
 	/**
 	 * Assign to the current user
 	 */
-	int ASSIGNEE_SELF = 5;
-
-	boolean useCompression();
-
-	String getBaseUrl();
-
-	String getUserName();
+	public final static int ASSIGNEE_SELF = 5;
 
 	/**
-	 * Force a login to the remote repository.
-	 * 
-	 * @deprecated There is no need to call this method as all services should automatically login when the session is
-	 *             about to expire. If you need to check if the credentials are valid, call
-	 *             {@link org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
+	 * Assign to a specific user. To get the name of the assignee call {@link #getAssignee()}
 	 */
-	@Deprecated
-	void login() throws JiraException;
+	public final static int ASSIGNEE_USER = 4;
 
-	/**
-	 * Force the current session to be closed. This method should only be called during application shutdown and then
-	 * only out of courtesy to the server. Jira will automatically expire sessions after a set amount of time.
-	 */
-	void logout();
+	public final static String DEFAULT_CHARSET = "UTF-8";
 
-	Project getProjectById(String id);
+	private boolean attemptedToDetermineCharacterEncoding;
 
-	Project getProjectByKey(String key);
+	private final String baseUrl;
 
-	Project[] getProjects();
+	private final JiraClientCache cache;
 
-	Priority getPriorityById(String id);
+	private String characterEncoding;
 
-	Priority[] getPriorities();
+	private final RssJiraFilterService filterService;
 
-	IssueType getIssueTypeById(String id);
+	private final JiraWebIssueService issueService;
 
-	IssueType[] getIssueTypes();
+	private final AbstractWebLocation location;
 
-	Status getStatusById(String id);
+	private final JiraRpcClient soapService;
 
-	Status[] getStatuses();
+	private final boolean useCompression;
 
-	Resolution getResolutionById(String id);
+	public JiraClient(AbstractWebLocation location, boolean useCompression) {
+		Assert.isNotNull(location);
 
-	Resolution[] getResolutions();
+		this.baseUrl = location.getUrl();
+		this.location = location;
+		this.useCompression = useCompression;
 
-	// disabled since these methods will not return correct results
-//	User getUserByName(String name);
-//
-//	User[] getUsers();
+		this.cache = new JiraClientCache(this);
 
-	// disabled deprecated API
-//	/**
-//	 * Finds all issues matching <code>searchString</code> using server
-//	 * defined matching rules. This query supports smart tags in the expression
-//	 * 
-//	 * @deprecated Use {@link #search(Query, IssueCollector) instead
-//	 * @param searchString
-//	 *            Value to search for
-//	 * @param collector
-//	 *            Colelctor that will process the matching issues
-//	 */
-//	void quickSearch(String searchString, IssueCollector collector);
-//
-//	/**
-//	 * Finds issues given a user defined query string
-//	 * 
-//	 * @deprecated Use {@link #search(Query, IssueCollector) instead
-//	 * @param filter
-//	 *            Custom query to be executed
-//	 * @param collector
-//	 *            Reciever for the matching issues
-//	 */
-//	void findIssues(FilterDefinition filter, IssueCollector collector);
-//
-//	/**
-//	 * @deprecated Use {@link #search(Query, IssueCollector) instead
-//	 * @param filter
-//	 *            Server defined query to execute
-//	 * @param collector
-//	 *            Reciever for the matching issues
-//	 */
-//	void executeNamedFilter(NamedFilter filter, IssueCollector collector);
+		this.filterService = new RssJiraFilterService(this);
+		this.issueService = new JiraWebIssueService(this);
+		this.soapService = new JiraRpcClient(this);
+	}
 
-	/**
-	 * Retrieve an issue using its unique key
-	 * 
-	 * @param issueKey
-	 *            Unique key of the issue to find
-	 * @return Matching issue or <code>null</code> if no matching issue could be found
-	 */
-	Issue getIssueByKey(String issueKey) throws JiraException;
+	public void addCommentToIssue(Issue issue, String comment) throws JiraException {
+		issueService.addCommentToIssue(issue, comment);
+	}
 
-	/**
-	 * Returns the corresponding key for <code>issueId</code>.
-	 * 
-	 * @param issueId
-	 *            unique id of the issue
-	 * @return corresponding key or <code>null</code> if the id was not found
-	 */
-	String getKeyFromId(final String issueId) throws JiraException;
+	public void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException {
+		String[] fields = getActionFields(issue.getKey(), actionKey);
+		issueService.advanceIssueWorkflow(issue, actionKey, comment, fields);
+	}
 
-	/**
-	 * Returns available operations for <code>issueKey</code>
-	 * 
-	 * @param issueKey
-	 *            Unique key of the issue to find
-	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
-	 */
-	RepositoryOperation[] getAvailableOperations(final String issueKey) throws JiraException;
+	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException {
+		issueService.assignIssueTo(issue, assigneeType, user, comment);
+	}
 
-	/**
-	 * Returns fields for given action id
-	 * 
-	 * @param issueKey
-	 *            Unique key of the issue to find
-	 * @param actionId
-	 *            Unique id for action to get fields for
-	 * @return array of field ids for given actionId
-	 */
-	String[] getActionFields(final String issueKey, final String actionId) throws JiraException;
+	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
+		issueService.attachFile(issue, comment, partSource, contentType);
+	}
 
-	/**
-	 * Returns editable attributes for <code>issueKey</code>
-	 * 
-	 * @param issueKey
-	 *            Unique key of the issue to find
-	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>.
-	 */
-	RepositoryTaskAttribute[] getEditableAttributes(final String issueKey) throws JiraException;
+	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType)
+			throws JiraException {
+		issueService.attachFile(issue, comment, filename, contents, contentType);
+	}
 
-	CustomField[] getCustomAttributes() throws JiraException;
-
-	/**
-	 * @param query
-	 *            Query to be executed
-	 * @param collector
-	 *            Reciever for the matching issues
-	 */
-	void search(Query query, IssueCollector collector) throws JiraException;
-
-	ServerInfo getServerInfo() throws JiraException;
-
-	/**
-	 * Retrieve all locally defined filter definitions. These filters are not konwn to the server and can be seen as
-	 * 'quick' filters.
-	 * 
-	 * @return List of all locally defined filters for this server
-	 */
-//	FilterDefinition[] getLocalFilters();
-//
-//	void addLocalFilter(FilterDefinition filter);
-//
-//	void removeLocalFilter(String filterName);
-	/**
-	 * Retrieves all filters that are stored and run on the server. The client will never be aware of the definition for
-	 * the filter, only its name and description
-	 * 
-	 * @return List of all filters taht are stored and executed on the server
-	 */
-	NamedFilter[] getNamedFilters() throws JiraException;
-
-	void addCommentToIssue(Issue issue, String comment) throws JiraException;
-
-	void updateIssue(Issue issue, String comment) throws JiraException;
-
-	void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException;
-
-	void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException;
-
-//    @Deprecated
-//	void startIssue(Issue issue) throws JiraException;
-//
-//    @Deprecated
-//	void stopIssue(Issue issue) throws JiraException;
-//
-//    @Deprecated
-//	void resolveIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-//			int assigneeType, String user) throws JiraException;
-//
-//	@Deprecated
-//	void closeIssue(Issue issue, Resolution resolution, Version[] fixVersions, String comment,
-//			int assigneeType, String user) throws JiraException;
-//
-//	@Deprecated
-//	void reopenIssue(Issue issue, String comment, int assigneeType, String user) throws JiraException;
-
-	void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException;
-
-	void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType)
-			throws JiraException;
-
-	void attachFile(Issue issue, String comment, String filename, File file, String contentType) throws JiraException;
-
-	byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException;
-
-	void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException;
+	public void attachFile(Issue issue, String comment, String filename, File file, String contentType)
+			throws JiraException {
+		issueService.attachFile(issue, comment, filename, file, contentType);
+	}
 
 	/**
 	 * Creates an issue with the details specified in <code>issue</code>. The following fields are mandatory:
@@ -295,40 +175,273 @@ public interface JiraClient {
 	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.Issue} containing the details of the
 	 *         new issue
 	 */
-	Issue createIssue(Issue issue) throws JiraException;
+	public Issue createIssue(Issue issue) throws JiraException {
+		String issueKey = issueService.createIssue(issue);
+		return getIssueByKey(issueKey);
+	}
 
 	/**
 	 * See {@link #createIssue(Issue)} for mandatory attributes of <code>issue</code>. Additionally the
 	 * <code>parentIssueId</code> must be set.
 	 */
-	Issue createSubTask(Issue issue) throws JiraException;
+	public Issue createSubTask(Issue issue) throws JiraException {
+		String issueKey = issueService.createSubTask(issue);
+		return getIssueByKey(issueKey);
+	}
+
+	public void deleteIssue(Issue issue) throws JiraException {
+		issueService.deleteIssue(issue);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof JiraClient) {
+			return getBaseUrl().equals(((JiraClient) obj).getBaseUrl());
+		}
+		return false;
+	}
+
+	public void executeNamedFilter(NamedFilter filter, IssueCollector collector) throws JiraException {
+		filterService.executeNamedFilter(filter, collector);
+	}
+
+	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector) throws JiraException {
+		filterService.findIssues(filterDefinition, collector);
+	}
 
 	/**
-	 * Begin watching <code>issue</code>. Nothing will happen if the user is already watching the issue.
+	 * Returns fields for given action id
 	 * 
-	 * @param issue
-	 *            Issue to begin watching
+	 * @param issueKey
+	 *            Unique key of the issue to find
+	 * @param actionId
+	 *            Unique id for action to get fields for
+	 * @return array of field ids for given actionId
 	 */
-	void watchIssue(Issue issue) throws JiraException;
+	public String[] getActionFields(final String issueKey, final String actionId) throws JiraException {
+		return soapService.getActionFields(issueKey, actionId);
+	}
 
 	/**
-	 * Stop watching <code>issue</code>. Nothing will happen if the user is not currently watching the issue.
+	 * Returns available operations for <code>issueKey</code>
 	 * 
-	 * @param issue
-	 *            Issue to stop watching
+	 * @param issueKey
+	 *            Unique key of the issue to find
+	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
 	 */
-	void unwatchIssue(Issue issue) throws JiraException;
+	public RepositoryOperation[] getAvailableOperations(final String issueKey) throws JiraException {
+		return soapService.getAvailableOperations(issueKey);
+	}
+
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
+	public JiraClientCache getCache() {
+		return cache;
+	}
+
+	public String getCharacterEncoding() throws JiraException {
+		if (this.characterEncoding == null) {
+			String serverEncoding = getCache().getServerInfo().getCharacterEncoding();
+			if (serverEncoding != null) {
+				return serverEncoding;
+			} else if (!attemptedToDetermineCharacterEncoding) {
+				getCache().refreshServerInfo(new NullProgressMonitor());
+				serverEncoding = getCache().getServerInfo().getCharacterEncoding();
+				if (serverEncoding != null) {
+					return serverEncoding;
+				}
+			}
+			// fallback
+			return DEFAULT_CHARSET;
+		}
+		return this.characterEncoding;
+	}
+
+	public Component[] getComponents(String projectKey) throws JiraException {
+		return soapService.getComponents(projectKey);
+	}
+
+	public CustomField[] getCustomAttributes() throws JiraException {
+		return soapService.getCustomAttributes();
+	}
 
 	/**
-	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
-	 * not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is not valid for the user to
-	 * vote for an issue this method will do nothing.
+	 * Returns editable attributes for <code>issueKey</code>
 	 * 
-	 * @param issue
-	 *            Issue to vote for
+	 * @param issueKey
+	 *            Unique key of the issue to find
+	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>.
 	 */
-	void voteIssue(Issue issue) throws JiraException;
+	public RepositoryTaskAttribute[] getEditableAttributes(final String issueKey) throws JiraException {
+		// work around for bug 205015
+		String version = getCache().getServerInfo().getVersion();
+		boolean workAround = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0);
+		return soapService.getEditableAttributes(issueKey, workAround);
+	}
+
+	/**
+	 * Retrieve an issue using its unique key
+	 * 
+	 * @param issueKey
+	 *            Unique key of the issue to find
+	 * @return Matching issue or <code>null</code> if no matching issue could be found
+	 */
+	public Issue getIssueByKey(String issueKey) throws JiraException {
+		SingleIssueCollector collector = new SingleIssueCollector();
+		filterService.getIssueByKey(issueKey, collector);
+		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
+			throw new JiraException("Repository returned an unknown project for issue '"
+					+ collector.getIssue().getKey() + "'");
+		}
+		return collector.getIssue();
+	}
+
+	public IssueType[] getIssueTypes() throws JiraException {
+		return soapService.getIssueTypes();
+	}
+
+	/**
+	 * Returns the corresponding key for <code>issueId</code>.
+	 * 
+	 * @param issueId
+	 *            unique id of the issue
+	 * @return corresponding key or <code>null</code> if the id was not found
+	 */
+	public String getKeyFromId(final String issueId) throws JiraException {
+		return soapService.getKeyFromId(issueId);
+	}
+
+	public AbstractWebLocation getLocation() {
+		return location;
+	}
+
+	/**
+	 * Retrieves all filters that are stored and run on the server. The client will never be aware of the definition for
+	 * the filter, only its name and description
+	 * 
+	 * @return List of all filters taht are stored and executed on the server
+	 */
+	public NamedFilter[] getNamedFilters() throws JiraException {
+		return soapService.getNamedFilters();
+	}
+
+	public Priority[] getPriorities() throws JiraException {
+		return soapService.getPriorities();
+	}
+
+	public Project[] getProjects() throws JiraException {
+		String version = getCache().getServerInfo().getVersion();
+		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_4) >= 0) {
+			return soapService.getProjectsNoSchemes();
+		} else {
+			return soapService.getProjects();
+		}
+	}
+
+	public Resolution[] getResolutions() throws JiraException {
+		return soapService.getResolutions();
+	}
+
+	public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
+		// get server information through SOAP
+		ServerInfo serverInfo = soapService.getServerInfo(monitor);
+
+		// get character encoding through web
+		WebServerInfo webServerInfo = issueService.getWebServerInfo();
+		serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
+		serverInfo.setWebBaseUrl(webServerInfo.getBaseUrl());
+
+		return serverInfo;
+	}
+
+	public JiraRpcClient getSoapClient() {
+		return soapService;
+	}
+
+	public Status[] getStatuses() throws JiraException {
+		return soapService.getStatuses();
+	}
+
+	public IssueType[] getSubTaskIssueTypes() throws JiraException {
+		return soapService.getSubTaskIssueTypes();
+	}
+
+	public String getUserName() {
+		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+		return (credentials != null) ? credentials.getUserName() : "";
+	}
+
+	public Version[] getVersions(String key) throws JiraException {
+		return soapService.getVersions(key);
+	}
+
+	@Override
+	public int hashCode() {
+		return getBaseUrl().hashCode();
+	}
+
+	/**
+	 * Force a login to the remote repository.
+	 * 
+	 * There is no need to call this method as all services should automatically login when the session is about to
+	 * expire. If you need to check if the credentials are valid, call
+	 * {@link org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
+	 */
+	public void login() throws JiraException {
+		soapService.login();
+	}
+
+	/**
+	 * Force the current session to be closed. This method should only be called during application shutdown and then
+	 * only out of courtesy to the server. Jira will automatically expire sessions after a set amount of time.
+	 */
+	public void logout() {
+		soapService.logout();
+	}
+
+	public void quickSearch(String searchString, IssueCollector collector) throws JiraException {
+		filterService.quickSearch(searchString, collector);
+
+	}
+
+	public byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException {
+		byte[] result = new byte[(int) attachment.getSize()];
+		issueService.retrieveFile(issue, attachment, result);
+		return result;
+	}
+
+	public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
+		issueService.retrieveFile(issue, attachment, out);
+	}
+
+	/**
+	 * @param query
+	 *            Query to be executed
+	 * @param collector
+	 *            Reciever for the matching issues
+	 */
+	public void search(Query query, IssueCollector collector) throws JiraException {
+		if (query instanceof SmartQuery) {
+			quickSearch(((SmartQuery) query).getKeywords(), collector);
+		} else if (query instanceof FilterDefinition) {
+			findIssues((FilterDefinition) query, collector);
+		} else if (query instanceof NamedFilter) {
+			executeNamedFilter((NamedFilter) query, collector);
+		} else {
+			throw new IllegalArgumentException("Unknown query type: " + query.getClass());
+		}
+	}
+
+	public void setCharacterEncoding(String characterEncoding) {
+		this.characterEncoding = characterEncoding;
+	}
+
+	@Override
+	public String toString() {
+		return getBaseUrl();
+	}
 
 	/**
 	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user
@@ -339,24 +452,49 @@ public interface JiraClient {
 	 * @param issue
 	 *            Issue to remove vote from
 	 */
-	void unvoteIssue(Issue issue) throws JiraException;
+	public void unvoteIssue(Issue issue) throws JiraException {
+		issueService.unvoteIssue(issue);
+	}
 
 	/**
-	 * Refresh any cached information with the latest values from the remote server. This operation may take a long time
-	 * to complete and should not be called from a UI thread.
+	 * Stop watching <code>issue</code>. Nothing will happen if the user is not currently watching the issue.
+	 * 
+	 * @param issue
+	 *            Issue to stop watching
 	 */
-	void refreshDetails(IProgressMonitor monitor) throws JiraException;
+	public void unwatchIssue(Issue issue) throws JiraException {
+		issueService.unwatchIssue(issue);
+	}
 
-	void refreshServerInfo(IProgressMonitor monitor) throws JiraException;
+	public void updateIssue(Issue issue, String comment) throws JiraException {
+		issueService.updateIssue(issue, comment);
+	}
 
-	boolean hasDetails();
+	public boolean useCompression() {
+		return useCompression;
+	}
 
-	String getCharacterEncoding() throws JiraException;
+	/**
+	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
+	 * not resolved. Before calling this method, ensure it is valid to vote by calling
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is not valid for the user to
+	 * vote for an issue this method will do nothing.
+	 * 
+	 * @param issue
+	 *            Issue to vote for
+	 */
+	public void voteIssue(Issue issue) throws JiraException {
+		issueService.voteIssue(issue);
+	}
 
-	AbstractWebLocation getLocation();
-
-	void deleteIssue(Issue issue) throws JiraException;
-
-	RemoteIssue getRemoteIssueByKey(final String key) throws JiraException;
+	/**
+	 * Begin watching <code>issue</code>. Nothing will happen if the user is already watching the issue.
+	 * 
+	 * @param issue
+	 *            Issue to begin watching
+	 */
+	public void watchIssue(Issue issue) throws JiraException {
+		issueService.watchIssue(issue);
+	}
 
 }

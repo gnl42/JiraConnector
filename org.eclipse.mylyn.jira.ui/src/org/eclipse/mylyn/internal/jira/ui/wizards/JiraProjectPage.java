@@ -219,13 +219,13 @@ public class JiraProjectPage extends WizardPage {
 
 	private void updateProjectsFromRepository(final boolean force) {
 		final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		if (!client.hasDetails() || force) {
+		if (!client.getCache().hasDetails() || force) {
 			try {
 				IRunnableWithProgress runner = new IRunnableWithProgress() {
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 						try {
 							JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-							client.refreshDetails(monitor);
+							client.getCache().refreshDetails(monitor);
 						} catch (JiraException e) {
 							throw new InvocationTargetException(new CoreException(
 									JiraCorePlugin.toStatus(repository, e)));
@@ -256,7 +256,7 @@ public class JiraProjectPage extends WizardPage {
 			}
 		}
 
-		Project[] projects = client.getProjects();
+		Project[] projects = client.getCache().getProjects();
 		projectTree.getViewer().setInput(projects);
 		getWizard().getContainer().updateButtons();
 
@@ -371,13 +371,13 @@ public class JiraProjectPage extends WizardPage {
 			if (projectName != null && projectName.length() > 0) {
 				JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 
-				for (Project project : client.getProjects()) {
+				for (Project project : client.getCache().getProjects()) {
 					if (projectName.equals(project.getName())) {
 						return project;
 					}
 				}
 
-				return client.getProjectByKey(projectName);
+				return client.getCache().getProjectByKey(projectName);
 			}
 		}
 		return null;

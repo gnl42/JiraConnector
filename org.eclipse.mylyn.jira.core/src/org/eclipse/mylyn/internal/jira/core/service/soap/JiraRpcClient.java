@@ -8,8 +8,6 @@
 
 package org.eclipse.mylyn.internal.jira.core.service.soap;
 
-import java.io.File;
-import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -23,37 +21,25 @@ import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.AxisFault;
 import org.apache.axis.configuration.FileProvider;
-import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
-import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
-import org.eclipse.mylyn.internal.jira.core.model.Query;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
-import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
-import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
-import org.eclipse.mylyn.internal.jira.core.model.filter.SmartQuery;
-import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebIssueService;
-import org.eclipse.mylyn.internal.jira.core.service.web.rss.RssJiraFilterService;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteField;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteNamedObject;
@@ -72,24 +58,11 @@ import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-// This class does not represent the data in a JIRA installation. It is merely
-// a helper to get any data that is missing in the cached JiraInstallation
-// object
-
-// TODO do we want the ability to have a non cached JiraInstallation? Might be
-// good
-// if they had an RMI interface
-// Make JiraInstallation an interface, implement a CachedInstallation which
-// requires
-// a concrete installation. The cached one can then forward on any requests it
-// has
-// not yet cached. Also need the ability to flush and fully re-load the cached
-// installation
 /**
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public class JiraRpcClient extends AbstractJiraClient {
+public class JiraRpcClient {
 
 	private static final String ERROR_RPC_NOT_ENABLED = "JIRA RPC services are not enabled. Please contact your JIRA administrator.";
 
@@ -110,18 +83,13 @@ public class JiraRpcClient extends AbstractJiraClient {
 
 	private final Lock soapServiceLock = new ReentrantLock();
 
-	private JiraWebIssueService issueService = null;
-
-	private RssJiraFilterService filterService = null;
-
 	private final LoginToken loginToken;
 
-	public JiraRpcClient(AbstractWebLocation location, boolean useCompression) {
-		super(location, useCompression);
+	private final JiraClient jiraClient;
 
-		this.loginToken = new LoginToken(location, DEFAULT_SESSION_TIMEOUT);
-		this.filterService = new RssJiraFilterService(this);
-		this.issueService = new JiraWebIssueService(this);
+	public JiraRpcClient(JiraClient jiraClient) {
+		this.jiraClient = jiraClient;
+		this.loginToken = new LoginToken(jiraClient.getLocation(), DEFAULT_SESSION_TIMEOUT);
 	}
 
 	private JiraSoapService getSoapService() throws JiraException {
@@ -130,11 +98,11 @@ public class JiraRpcClient extends AbstractJiraClient {
 			if (soapService == null) {
 				GZipJiraSoapServiceServiceLocator locator = new GZipJiraSoapServiceServiceLocator(new FileProvider(
 						this.getClass().getClassLoader().getResourceAsStream("client-config.wsdd")));
-				locator.setLocation(getLocation());
-				locator.setCompression(useCompression());
+				locator.setLocation(jiraClient.getLocation());
+				locator.setCompression(jiraClient.useCompression());
 
 				try {
-					soapService = locator.getJirasoapserviceV2(new URL(getBaseUrl() + SOAP_SERVICE_URL));
+					soapService = locator.getJirasoapserviceV2(new URL(jiraClient.getBaseUrl() + SOAP_SERVICE_URL));
 				} catch (ServiceException e) {
 					throw new JiraException(e);
 				} catch (MalformedURLException e) {
@@ -159,8 +127,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public Component[] getComponentsRemote(final String projectKey) throws JiraException {
+	public Component[] getComponents(final String projectKey) throws JiraException {
 		return call(new RemoteRunnable<Component[]>() {
 			public Component[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getComponents(loginToken.getCurrentValue(), projectKey));
@@ -185,31 +152,13 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public ServerInfo getServerInfoRemote() throws JiraException {
-		// get server information through SOAP
+	public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
 		ServerInfo serverInfo = call(new RemoteRunnable<ServerInfo>() {
 			public ServerInfo run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getServerInfo(loginToken.getCurrentValue()));
 			}
-		});
-
-		// get character encoding through web
-		WebServerInfo webServerInfo = issueService.getWebServerInfo();
-		serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
-		serverInfo.setWebBaseUrl(webServerInfo.getBaseUrl());
-
+		}, monitor);
 		return serverInfo;
-	}
-
-	public Issue getIssueByKey(String issueKey) throws JiraException {
-		SingleIssueCollector collector = new SingleIssueCollector();
-		filterService.getIssueByKey(issueKey, collector);
-		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
-			throw new JiraException("Repository returned an unknown project for issue '"
-					+ collector.getIssue().getKey() + "'");
-		}
-		return collector.getIssue();
 	}
 
 	/**
@@ -224,7 +173,6 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	// TODO need to cache those
 	public RepositoryOperation[] getAvailableOperations(final String taskKey) throws JiraException {
 		return call(new RemoteRunnable<RepositoryOperation[]>() {
 			public RepositoryOperation[] run() throws java.rmi.RemoteException, JiraException {
@@ -244,7 +192,6 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	// TODO need to cache those
 	public String[] getActionFields(final String taskKey, final String actionId) throws JiraException {
 		return call(new RemoteRunnable<String[]>() {
 			public String[] run() throws java.rmi.RemoteException, JiraException {
@@ -263,8 +210,8 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	// TODO need to cache those
-	public RepositoryTaskAttribute[] getEditableAttributes(final String taskKey) throws JiraException {
+	public RepositoryTaskAttribute[] getEditableAttributes(final String taskKey, final boolean workAroundBug205015)
+			throws JiraException {
 		return call(new RemoteRunnable<RepositoryTaskAttribute[]>() {
 			public RepositoryTaskAttribute[] run() throws java.rmi.RemoteException, JiraException {
 				RemoteField[] fields = getSoapService().getFieldsForEdit(loginToken.getCurrentValue(), taskKey);
@@ -272,10 +219,8 @@ public class JiraRpcClient extends AbstractJiraClient {
 					return new RepositoryTaskAttribute[0];
 				}
 
-				// work around for bug 205015
 				int add = 0;
-				String version = getServerInfo().getVersion();
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0) {
+				if (workAroundBug205015) {
 					add += 2;
 				}
 
@@ -297,7 +242,6 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	// TODO need to cache those
 	public CustomField[] getCustomAttributes() throws JiraException {
 		return call(new RemoteRunnable<CustomField[]>() {
 			public CustomField[] run() throws java.rmi.RemoteException, JiraException {
@@ -313,17 +257,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	public Issue createIssue(Issue issue) throws JiraException {
-		String issueKey = issueService.createIssue(issue);
-		return getIssueByKey(issueKey);
-	}
-
-	public Issue createSubTask(Issue issue) throws JiraException {
-		String issueKey = issueService.createSubTask(issue);
-		return getIssueByKey(issueKey);
-	}
-
-	public RemoteIssue getRemoteIssueByKey(final String key) throws JiraException {
+	public RemoteIssue getIssueByKey(final String key) throws JiraException {
 		return call(new RemoteRunnable<RemoteIssue>() {
 			public RemoteIssue run() throws java.rmi.RemoteException, JiraException {
 				return getSoapService().getIssue(loginToken.getCurrentValue(), key);
@@ -331,8 +265,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public Project[] getProjectsRemote() throws JiraException {
+	public Project[] getProjects() throws JiraException {
 		return call(new RemoteRunnable<Project[]>() {
 			public Project[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getProjects(loginToken.getCurrentValue()));
@@ -340,8 +273,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public Project[] getProjectsRemoteNoSchemes() throws JiraException {
+	public Project[] getProjectsNoSchemes() throws JiraException {
 		return call(new RemoteRunnable<Project[]>() {
 			public Project[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getProjectsNoSchemes(loginToken.getCurrentValue()));
@@ -349,8 +281,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public Status[] getStatusesRemote() throws JiraException {
+	public Status[] getStatuses() throws JiraException {
 		return call(new RemoteRunnable<Status[]>() {
 			public Status[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getStatuses(loginToken.getCurrentValue()));
@@ -358,8 +289,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public IssueType[] getIssueTypesRemote() throws JiraException {
+	public IssueType[] getIssueTypes() throws JiraException {
 		return call(new RemoteRunnable<IssueType[]>() {
 			public IssueType[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getIssueTypes(loginToken.getCurrentValue()));
@@ -367,8 +297,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public IssueType[] getSubTaskIssueTypesRemote() throws JiraException {
+	public IssueType[] getSubTaskIssueTypes() throws JiraException {
 		return call(new RemoteRunnable<IssueType[]>() {
 			public IssueType[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getSubTaskIssueTypes(loginToken.getCurrentValue()));
@@ -376,8 +305,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public Priority[] getPrioritiesRemote() throws JiraException {
+	public Priority[] getPriorities() throws JiraException {
 		return call(new RemoteRunnable<Priority[]>() {
 			public Priority[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getPriorities(loginToken.getCurrentValue()));
@@ -385,8 +313,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public Resolution[] getResolutionsRemote() throws JiraException {
+	public Resolution[] getResolutions() throws JiraException {
 		return call(new RemoteRunnable<Resolution[]>() {
 			public Resolution[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getResolutions(loginToken.getCurrentValue()));
@@ -394,7 +321,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	public Comment[] getCommentsRemote(String issueKey) throws JiraException {
+	public Comment[] getComments(String issueKey) throws JiraException {
 		return call(new RemoteRunnable<Comment[]>() {
 			public Comment[] run() throws java.rmi.RemoteException, JiraException {
 				// TODO implement
@@ -406,8 +333,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 		});
 	}
 
-	@Override
-	public Version[] getVersionsRemote(final String componentKey) throws JiraException {
+	public Version[] getVersions(final String componentKey) throws JiraException {
 		return call(new RemoteRunnable<Version[]>() {
 			public Version[] run() throws java.rmi.RemoteException, JiraException {
 				return Converter.convert(getSoapService().getVersions(loginToken.getCurrentValue(), componentKey));
@@ -478,97 +404,6 @@ public class JiraRpcClient extends AbstractJiraClient {
 		return e.getLocalizedMessage();
 	}
 
-	public void search(Query query, IssueCollector collector) throws JiraException {
-		if (query instanceof SmartQuery) {
-			quickSearch(((SmartQuery) query).getKeywords(), collector);
-		} else if (query instanceof FilterDefinition) {
-			findIssues((FilterDefinition) query, collector);
-		} else if (query instanceof NamedFilter) {
-			executeNamedFilter((NamedFilter) query, collector);
-		} else {
-			throw new IllegalArgumentException("Unknown query type: " + query.getClass());
-		}
-	}
-
-	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector) throws JiraException {
-		filterService.findIssues(filterDefinition, collector);
-	}
-
-	public void executeNamedFilter(NamedFilter filter, IssueCollector collector) throws JiraException {
-		filterService.executeNamedFilter(filter, collector);
-	}
-
-	public void quickSearch(String searchString, IssueCollector collector) throws JiraException {
-		filterService.quickSearch(searchString, collector);
-
-	}
-
-	public void addCommentToIssue(Issue issue, String comment) throws JiraException {
-		issueService.addCommentToIssue(issue, comment);
-	}
-
-	public void updateIssue(Issue issue, String comment) throws JiraException {
-		issueService.updateIssue(issue, comment);
-	}
-
-	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException {
-		issueService.assignIssueTo(issue, assigneeType, user, comment);
-	}
-
-//	public void advanceIssueWorkflow(Issue issue, String action, Resolution resolution, Version[] fixVersions,
-//			String comment, int assigneeType, String user) throws JiraException {
-//		issueService.advanceIssueWorkflow(issue, action, resolution, fixVersions, comment, assigneeType, user);
-//	}
-
-	public void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException {
-		String[] fields = getActionFields(issue.getKey(), actionKey);
-		issueService.advanceIssueWorkflow(issue, actionKey, comment, fields);
-	}
-
-	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
-		issueService.attachFile(issue, comment, partSource, contentType);
-	}
-
-	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType)
-			throws JiraException {
-		issueService.attachFile(issue, comment, filename, contents, contentType);
-	}
-
-	public void attachFile(Issue issue, String comment, String filename, File file, String contentType)
-			throws JiraException {
-		issueService.attachFile(issue, comment, filename, file, contentType);
-	}
-
-	public byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException {
-		byte[] result = new byte[(int) attachment.getSize()];
-		issueService.retrieveFile(issue, attachment, result);
-		return result;
-	}
-
-	public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
-		issueService.retrieveFile(issue, attachment, out);
-	}
-
-	public void watchIssue(Issue issue) throws JiraException {
-		issueService.watchIssue(issue);
-	}
-
-	public void unwatchIssue(Issue issue) throws JiraException {
-		issueService.unwatchIssue(issue);
-	}
-
-	public void voteIssue(Issue issue) throws JiraException {
-		issueService.voteIssue(issue);
-	}
-
-	public void unvoteIssue(Issue issue) throws JiraException {
-		issueService.unvoteIssue(issue);
-	}
-
-	public void deleteIssue(Issue issue) throws JiraException {
-		issueService.deleteIssue(issue);
-	}
-
 	private <T> T callWithRetry(RemoteRunnable<T> runnable, IProgressMonitor monitor) throws JiraException {
 		try {
 			return callOnce(runnable, monitor);
@@ -625,7 +460,7 @@ public class JiraRpcClient extends AbstractJiraClient {
 			try {
 				return callWithRetry(runnable, monitor);
 			} catch (JiraAuthenticationException e) {
-				if (getLocation().requestCredentials(AuthenticationType.REPOSITORY, null) == ResultType.NOT_SUPPORTED) {
+				if (jiraClient.getLocation().requestCredentials(AuthenticationType.REPOSITORY, null) == ResultType.NOT_SUPPORTED) {
 					throw e;
 				}
 			}

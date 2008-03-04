@@ -121,8 +121,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 
 			try {
-				if (!client.hasDetails()) {
-					client.refreshDetails(monitor);
+				if (!client.getCache().hasDetails()) {
+					client.getCache().refreshDetails(monitor);
 				}
 			} catch (JiraException e) {
 				return JiraCorePlugin.toStatus(repository, e);
@@ -355,7 +355,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public String[] getTaskIdsFromComment(TaskRepository repository, String comment) {
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		Project[] projects = client.getProjects();
+		Project[] projects = client.getCache().getProjects();
 		if (projects != null && projects.length > 0) {
 			// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
 			StringBuffer sb = new StringBuffer("(");
@@ -452,7 +452,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 			jiraTask.setPriority(getPriorityLevel(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
-			for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getStatuses()) {
+			for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getCache().getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(status)) {
 						jiraTask.setCompleted(true);
@@ -475,7 +475,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static PriorityLevel getPriorityLevel(JiraClient client, String jiraPriority) {
 		if (jiraPriority != null) {
-			for (Priority priority : client.getPriorities()) {
+			for (Priority priority : client.getCache().getPriorities()) {
 				if (jiraPriority.equals(priority.getName())) {
 					return getPriorityLevel(priority);
 				}
@@ -511,7 +511,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
 		try {
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-			client.refreshDetails(monitor);
+			client.getCache().refreshDetails(monitor);
 		} catch (JiraException e) {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
 			trace(status);

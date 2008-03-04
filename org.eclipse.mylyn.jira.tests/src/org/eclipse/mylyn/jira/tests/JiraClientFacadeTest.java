@@ -53,14 +53,15 @@ public class JiraClientFacadeTest extends TestCase {
 	public void testValidate() throws Exception {
 		// invalid URL		
 		try {
-			jiraFacade.validateConnection(new WebLocation("http://non.existant/repository", "user", "password"));
+			jiraFacade.validateConnection(new WebLocation("http://non.existant/repository", "user", "password"), null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 		}
 
 		// not found		
 		try {
-			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/not-found", "user", "password"));
+			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/not-found", "user", "password"),
+					null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 			assertEquals("No JIRA repository found at location.", e.getMessage());
@@ -68,7 +69,8 @@ public class JiraClientFacadeTest extends TestCase {
 
 		// RPC not enabled
 		try {
-			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-invalid", "user", "password"));
+			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-invalid", "user", "password"),
+					null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
@@ -77,7 +79,7 @@ public class JiraClientFacadeTest extends TestCase {
 		// HTTP error
 		try {
 			jiraFacade.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-proxy-error", "user",
-					"password"));
+					"password"), null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
@@ -111,11 +113,11 @@ public class JiraClientFacadeTest extends TestCase {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 
 		// standard connect
-		jiraFacade.validateConnection(new WebLocation(url, credentials.username, credentials.password));
+		jiraFacade.validateConnection(new WebLocation(url, credentials.username, credentials.password), null);
 
 		// invalid password
 		try {
-			jiraFacade.validateConnection(new WebLocation(url, credentials.username, "wrongpassword"));
+			jiraFacade.validateConnection(new WebLocation(url, credentials.username, "wrongpassword"), null);
 			fail("Expected exception");
 		} catch (JiraAuthenticationException e) {
 		}

@@ -229,50 +229,6 @@ public class JiraWebIssueService {
 		});
 	}
 
-//	public void advanceIssueWorkflow(final Issue issue, final String action, final Resolution resolution,
-//			final Version[] fixVersions, final String comment, final int assigneeType, final String user)
-//			throws JiraException {
-//		JiraWebSession s = new JiraWebSession(server);
-//		s.doInSession(new JiraWebSessionCallback() {
-//
-//			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
-//				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
-//				post.setRequestHeader("Content-Type", s.getContentType());
-//
-//				if (resolution != null) {
-//					post.addParameter("resolution", resolution.getId());
-//					if (fixVersions == null || fixVersions.length == 0) {
-//						post.addParameter("fixVersions", "-1");
-//					} else {
-//						for (int i = 0; i < fixVersions.length; i++) {
-//							post.addParameter("fixVersions", fixVersions[i].getId());
-//						}
-//					}
-//				}
-//
-//				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user));
-//
-//				if (comment != null) {
-//					post.addParameter("comment", comment);
-//				}
-//				post.addParameter("commentLevel", "");
-//				post.addParameter("action", action);
-//				post.addParameter("id", issue.getId());
-//
-//				try {
-//					int result = client.executeMethod(post);
-//					if (result != HttpStatus.SC_MOVED_TEMPORARILY) {
-//						handleErrorMessage(post, result);
-//					}
-//				} catch (IOException e) {
-//					throw new JiraException(e);
-//				} finally {
-//					post.releaseConnection();
-//				}
-//			}
-//		});
-//	}
-
 	public void advanceIssueWorkflow(final Issue issue, final String actionKey, final String comment,
 			final String[] fields) throws JiraException {
 		final JiraWebSession s = new JiraWebSession(server);

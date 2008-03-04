@@ -47,14 +47,9 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 	@Override
 	public IEditorPart createEditor(TaskEditor parentEditor, IEditorInput editorInput) {
 		if (editorInput instanceof RepositoryTaskEditorInput) {
-			RepositoryTaskEditorInput taskInput = (RepositoryTaskEditorInput) editorInput;
-			if (taskInput.getTaskData().isNew()) {
-				return new NewJiraTaskEditor(parentEditor);
-			} else {
-				return new JiraTaskEditor(parentEditor);
-			}
+			return new JiraTaskEditor2(parentEditor);
 		} else if (editorInput instanceof TaskEditorInput) {
-			return new JiraTaskEditor(parentEditor);
+			return new JiraTaskEditor2(parentEditor);			
 		}
 		return null;
 	}

@@ -8,9 +8,6 @@
 
 package org.eclipse.mylyn.jira.tests;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -34,6 +31,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
 import org.eclipse.mylyn.internal.jira.ui.InvalidJiraQueryException;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
@@ -138,33 +136,41 @@ public class JiraCustomQueryTest extends TestCase {
 
 		String queryUrl = customQuery.getUrl();
 
-		JiraClient jiraServer = (JiraClient) Proxy.newProxyInstance(getClass().getClassLoader(),
-				new Class[] { JiraClient.class }, new InvocationHandler() {
-					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-						String name = method.getName();
-						if ("getProjectById".equals(name)) {
-							return project;
-						} else if ("getIssueTypeById".equals(name)) {
-							IssueType issueType = new IssueType();
-							issueType.setId((String) args[0]);
-							return issueType;
-						} else if ("getStatusById".equals(name)) {
-							Status status = new Status();
-							status.setId((String) args[0]);
-							return status;
-						} else if ("getResolutionById".equals(name)) {
-							Resolution resolution = new Resolution();
-							resolution.setId((String) args[0]);
-							return resolution;
-						}
-						return null;
-					}
-				});
+		MockJiraClient client = new MockJiraClient("");
+
+		JiraClientCache cache = new JiraClientCache(client) {
+			@Override
+			public Project getProjectById(String id) {
+				return project;
+			}
+
+			@Override
+			public IssueType getIssueTypeById(String id) {
+				IssueType issueType = new IssueType();
+				issueType.setId(id);
+				return issueType;
+			};
+
+			@Override
+			public Status getStatusById(String id) {
+				Status status = new Status();
+				status.setId(id);
+				return status;
+			};
+
+			@Override
+			public Resolution getResolutionById(String id) {
+				Resolution resolution = new Resolution();
+				resolution.setId(id);
+				return resolution;
+			};
+		};
+		client.setCache(cache);
 
 		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl,
 				taskRepository.getCharacterEncoding());
 
-		FilterDefinition filter2 = customQuery2.getFilterDefinition(jiraServer, true);
+		FilterDefinition filter2 = customQuery2.getFilterDefinition(client, true);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();
 		assertEquals(project.getId(), projectFilter2.getProject().getId());

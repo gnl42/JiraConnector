@@ -127,7 +127,7 @@ public class JiraFilterTest extends TestCase {
 		String summary = "testCustomQuery" + System.currentTimeMillis();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		Issue issue = JiraTestUtils.newIssue(client, summary);
-		issue.setPriority(client.getPriorityById(Priority.BLOCKER_ID));
+		issue.setPriority(client.getCache().getPriorityById(Priority.BLOCKER_ID));
 		issue = JiraTestUtils.createIssue(client, issue);
 
 		FilterDefinition filter = new FilterDefinition();

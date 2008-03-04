@@ -26,12 +26,10 @@ import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.jira.core.service.AbstractJiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRpcClient;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.WebLocation;
@@ -42,7 +40,7 @@ import org.eclipse.mylyn.web.core.WebLocation;
  */
 public class JiraRpcClientTest extends TestCase {
 
-	private AbstractJiraClient client;
+	private JiraClient client;
 
 	@Override
 	protected void tearDown() throws Exception {
@@ -53,7 +51,7 @@ public class JiraRpcClientTest extends TestCase {
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
-		client = new JiraRpcClient(new WebLocation(url, credentials.username, credentials.password), false);
+		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password), false);
 
 		JiraTestUtils.refreshDetails(client);
 	}
@@ -62,14 +60,13 @@ public class JiraRpcClientTest extends TestCase {
 		login(JiraTestConstants.JIRA_39_URL);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void login(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
 		client.login();
 		client.logout();
 		// should automatically login
-		client.refreshDetails(new NullProgressMonitor());
+		client.getCache().refreshDetails(new NullProgressMonitor());
 
 		init(url, PrivilegeLevel.GUEST);
 		client.login();
@@ -351,8 +348,8 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = new Issue();
-		issue.setProject(client.getProjects()[0]);
-		issue.setType(client.getIssueTypes()[0]);
+		issue.setProject(client.getCache().getProjects()[0]);
+		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary("testCreateIssue");
 		issue.setAssignee(client.getUserName());
 
@@ -384,15 +381,15 @@ public class JiraRpcClientTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		Issue issue = new Issue();
-		issue.setProject(client.getProjects()[0]);
-		issue.setType(client.getIssueTypes()[0]);
+		issue.setProject(client.getCache().getProjects()[0]);
+		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary("testCreateSubTaskParent");
 
 		Issue parentIssue = JiraTestUtils.createIssue(client, issue);
 
 		issue = new Issue();
-		issue.setProject(client.getProjects()[0]);
-		issue.setType(client.getIssueTypes()[5]);
+		issue.setProject(client.getCache().getProjects()[0]);
+		issue.setType(client.getCache().getIssueTypes()[5]);
 		issue.setParentId(parentIssue.getId());
 		issue.setSummary("testCreateSubTaskChild");
 
@@ -416,8 +413,8 @@ public class JiraRpcClientTest extends TestCase {
 		String description = "  leading spaces\n  more spaces";
 
 		Issue issue = new Issue();
-		issue.setProject(client.getProjects()[0]);
-		issue.setType(client.getIssueTypes()[0]);
+		issue.setProject(client.getCache().getProjects()[0]);
+		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary(summary);
 		issue.setDescription(description);
 		issue.setAssignee(client.getUserName());
@@ -454,7 +451,7 @@ public class JiraRpcClientTest extends TestCase {
 
 		Issue issue = new Issue();
 		issue.setProject(project);
-		issue.setType(client.getIssueTypes()[0]);
+		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary("testUpdateIssue");
 		issue.setAssignee(client.getUserName());
 
@@ -599,12 +596,12 @@ public class JiraRpcClientTest extends TestCase {
 		Credentials httpCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		WebLocation location = new WebLocation(url, credentials.username, credentials.password);
 		location.setCredentials(AuthenticationType.HTTP, httpCredentials.username, httpCredentials.password);
-		client = new JiraRpcClient(location, false);
-		assertNotNull(client.getServerInfo());
+		client = new JiraClient(location, false);
+		assertNotNull(client.getCache().getServerInfo());
 
-		client = new JiraRpcClient(new WebLocation(url, credentials.username, credentials.password), false);
+		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password), false);
 		try {
-			assertNotNull(client.getServerInfo());
+			assertNotNull(client.getCache().getServerInfo());
 			fail("Expected JiraServiceUnavailableException");
 		} catch (JiraServiceUnavailableException expected) {
 		}
@@ -627,7 +624,7 @@ public class JiraRpcClientTest extends TestCase {
 
 	private void getServerInfo(String url, String version, String buildNumber) throws Exception {
 		init(url, PrivilegeLevel.USER);
-		ServerInfo serverInfo = client.getServerInfo();
+		ServerInfo serverInfo = client.getCache().getServerInfo();
 		assertEquals(version, serverInfo.getVersion());
 		assertEquals(buildNumber, serverInfo.getBuildNumber());
 		assertEquals("ISO-8859-1", serverInfo.getCharacterEncoding());
