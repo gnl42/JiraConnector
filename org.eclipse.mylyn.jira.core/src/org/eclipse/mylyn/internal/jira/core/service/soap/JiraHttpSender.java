@@ -38,7 +38,8 @@ public class JiraHttpSender extends CommonsHttpSender {
 	protected HostConfiguration getHostConfiguration(HttpClient client, MessageContext context, URL url) {
 		AbstractWebLocation location = (AbstractWebLocation) context.getProperty(LOCATION);
 		JiraRequest request = JiraRequest.getCurrentRequest();
-		return WebClientUtil.createHostConfiguration(client, USER_AGENT, location, request.getMonitor());
+		WebClientUtil.configureHttpClient(client, USER_AGENT);
+		return WebClientUtil.createHostConfiguration(client, location, request.getMonitor());
 	}
 
 	@Override
