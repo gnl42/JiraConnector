@@ -17,8 +17,8 @@ import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorToolkit;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeManager;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
  * NOTE: This class is work in progress and currently not used.
@@ -32,7 +32,7 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 
 	private AttributeEditorToolkit attributeEditorToolkit;
 
-	public JiraTaskEditor2(FormEditor editor) {
+	public JiraTaskEditor2(TaskEditor editor) {
 		super(editor);
 	}
 
