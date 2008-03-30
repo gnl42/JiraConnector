@@ -116,11 +116,6 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public IWizard getNewTaskWizard(TaskRepository taskRepository) {
-		return new NewJiraTaskWizard(taskRepository, null);
-	}
-
-	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository, TaskSelection taskSelection) {
 		return new NewJiraTaskWizard(taskRepository, taskSelection);
 	}
