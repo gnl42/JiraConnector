@@ -35,10 +35,6 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  */
 public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 
-	public final static String CONTEXT_ATTACHEMNT_FILENAME = AbstractAttachmentHandler.MYLAR_CONTEXT_FILENAME;
-
-	public final static String CONTEXT_ATTACHEMNT_FILENAME_LEGACY = "mylar-context.zip";
-
 	public JiraAttachmentHandler() {
 	}
 

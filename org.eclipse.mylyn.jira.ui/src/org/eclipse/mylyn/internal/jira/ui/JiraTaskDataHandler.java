@@ -50,7 +50,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
@@ -69,6 +68,14 @@ import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
  * @author Steffen Pingel
  */
 public class JiraTaskDataHandler extends AbstractTaskDataHandler {
+
+	private static final String CONTEXT_ATTACHEMENT_FILENAME = "mylyn-context.zip";
+
+	private static final String CONTEXT_ATTACHEMENT_FILENAME_LEGACY = "mylar-context.zip";
+
+	private static final String CONTEXT_ATTACHMENT_DESCRIPTION = "mylyn/context/zip";
+
+	private static final String CONTEXT_ATTACHMENT_DESCRIPTION_LEGACY = "mylar/context/zip";
 
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/dataHandler"));
 
@@ -364,12 +371,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID, attachment.getId());
 			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_FILENAME, attachment.getName());
 
-			if (JiraAttachmentHandler.CONTEXT_ATTACHEMNT_FILENAME.equals(attachment.getName())) {
+			if (CONTEXT_ATTACHEMENT_FILENAME.equals(attachment.getName())) {
+				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, CONTEXT_ATTACHMENT_DESCRIPTION);
+			} else if (CONTEXT_ATTACHEMENT_FILENAME_LEGACY.equals(attachment.getName())) {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
-						AbstractAttachmentHandler.MYLAR_CONTEXT_DESCRIPTION);
-			} else if (JiraAttachmentHandler.CONTEXT_ATTACHEMNT_FILENAME_LEGACY.equals(attachment.getName())) {
-				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
-						AbstractAttachmentHandler.MYLAR_CONTEXT_DESCRIPTION_LEGACY);
+						CONTEXT_ATTACHMENT_DESCRIPTION_LEGACY);
 			} else {
 				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, attachment.getName());
 			}

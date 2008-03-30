@@ -37,6 +37,7 @@ import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.ui.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
+import org.eclipse.mylyn.internal.tasks.ui.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -132,16 +133,16 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraTestUtils.writeFile(sourceContextFile, "Mylyn".getBytes());
 		sourceContextFile.deleteOnExit();
 
-		assertTrue(connector.getAttachmentHandler().attachContext(repository, task, "", new NullProgressMonitor()));
+		assertTrue(AttachmentUtil.attachContext(connector.getAttachmentHandler(), repository, task, "",
+				new NullProgressMonitor()));
 
 		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
 
-		Set<RepositoryAttachment> contextAttachments = connector.getAttachmentHandler().getContextAttachments(
-				repository, task);
+		Set<RepositoryAttachment> contextAttachments = AttachmentUtil.getContextAttachments(repository, task);
 		assertEquals(1, contextAttachments.size());
 
 		RepositoryAttachment attachment = contextAttachments.iterator().next();
-		assertTrue(connector.getAttachmentHandler().retrieveContext(repository, task, attachment,
+		assertTrue(AttachmentUtil.retrieveContext(connector.getAttachmentHandler(), repository, task, attachment,
 				System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
 	}
 
