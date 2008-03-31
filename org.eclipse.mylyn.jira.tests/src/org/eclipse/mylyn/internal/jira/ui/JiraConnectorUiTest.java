@@ -13,6 +13,10 @@ import junit.framework.TestCase;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.tests.connector.MockRepositoryConnector;
 
+/**
+ * @author Eugene Kuleshov
+ * @author Steffen Pingel
+ */
 public class JiraConnectorUiTest extends TestCase {
 
 	public void testFindHyperlinks() {
@@ -36,6 +40,14 @@ public class JiraConnectorUiTest extends TestCase {
 		connectorUi.findHyperlinks(repository, "foo boo", 7, 0);
 		connectorUi.findHyperlinks(repository, "foo boo", 8, 0);
 		connectorUi.findHyperlinks(repository, "foo boo", 9, 0);
+	}
+
+	public void testGetTaskHistoryUrl() {
+		TaskRepository repository = new TaskRepository(MockRepositoryConnector.REPOSITORY_KIND,
+				"http://mylyn.eclipse.org");
+		JiraConnectorUi connectorUi = new JiraConnectorUi();
+		assertEquals("http://mylyn.eclipse.org/browse/ABC-123?page=history", connectorUi.getTaskHistoryUrl(repository,
+				"ABC-123"));
 	}
 
 }

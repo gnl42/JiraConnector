@@ -194,4 +194,9 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		return super.supportsDueDates(task);
 	}
 
+	@Override
+	public String getTaskHistoryUrl(TaskRepository taskRepository, String taskKey) {
+		return taskRepository.getUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + taskKey + "?page=history";
+	}
+
 }

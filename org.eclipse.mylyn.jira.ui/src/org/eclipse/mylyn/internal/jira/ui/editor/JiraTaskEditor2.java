@@ -15,7 +15,6 @@ import org.eclipse.mylyn.internal.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorFactory;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorToolkit;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeManager;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.ui.forms.IManagedForm;
@@ -87,21 +86,6 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 	@Override
 	public AttributeEditorToolkit getAttributeEditorToolkit() {
 		return attributeEditorToolkit;
-	}
-
-	@Override
-	protected String getHistoryUrl() {
-		RepositoryTaskData taskData = getAttributeManager().getTaskData();
-		String taskKey = taskData.getTaskKey();
-		String repositoryUrl = taskData.getRepositoryUrl();
-		if (getConnector() != null && repositoryUrl != null && taskKey != null) {
-			String url = getConnector().getTaskUrl(repositoryUrl, taskKey);
-			if (url != null) {
-				return url + "?page=history";
-			}
-		}
-
-		return super.getHistoryUrl();
 	}
 
 	@Override
