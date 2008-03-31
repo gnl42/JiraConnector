@@ -29,7 +29,7 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 		}
 
 		RepositoryTaskData taskData = input.getTaskData();
-		return taskData != null && taskData.getRepositoryKind().equals(JiraUiPlugin.REPOSITORY_KIND);
+		return taskData != null && taskData.getConnectorKind().equals(JiraUiPlugin.REPOSITORY_KIND);
 	}
 
 	@Override
