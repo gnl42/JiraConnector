@@ -17,6 +17,9 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.web.core,
  org.eclipse.mylyn.tasks.tests,
  org.eclipse.mylyn.context.ui
-Export-Package: org.eclipse.mylyn.jira.tests
+Export-Package: org.eclipse.mylyn.internal.jira.core;x-internal:=true,
+ org.eclipse.mylyn.internal.jira.core.model;x-internal:=true,
+ org.eclipse.mylyn.internal.jira.ui;x-internal:=true,
+ org.eclipse.mylyn.jira.tests;x-internal:=true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Eclipse.org

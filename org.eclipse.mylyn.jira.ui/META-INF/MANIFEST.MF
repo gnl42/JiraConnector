@@ -21,6 +21,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors
 Eclipse-AutoStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.eclipse.mylyn.internal.jira.ui,
- org.eclipse.mylyn.internal.jira.ui.editor,
- org.eclipse.mylyn.internal.jira.ui.wizards
+Export-Package: org.eclipse.mylyn.internal.jira.ui;x-internal:=true,
+ org.eclipse.mylyn.internal.jira.ui.editor;x-internal:=true,
+ org.eclipse.mylyn.internal.jira.ui.wizards;x-internal:=true
