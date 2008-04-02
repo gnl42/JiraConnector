@@ -11,7 +11,7 @@ package org.eclipse.mylyn.internal.jira.ui;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 
 /**
@@ -21,13 +21,13 @@ class JiraIssueCollector implements IssueCollector {
 
 	private final IProgressMonitor monitor;
 
-	private final List<Issue> issues;
+	private final List<JiraIssue> issues;
 
 	private boolean done = false;
 
 	private final int maxHits;
 
-	JiraIssueCollector(IProgressMonitor monitor, List<Issue> issues, int maxHits) {
+	JiraIssueCollector(IProgressMonitor monitor, List<JiraIssue> issues, int maxHits) {
 		this.monitor = monitor;
 		this.issues = issues;
 		this.maxHits = maxHits;
@@ -44,7 +44,7 @@ class JiraIssueCollector implements IssueCollector {
 		return monitor.isCanceled();
 	}
 
-	public void collectIssue(Issue issue) {
+	public void collectIssue(JiraIssue issue) {
 		issues.add(issue);
 	}
 

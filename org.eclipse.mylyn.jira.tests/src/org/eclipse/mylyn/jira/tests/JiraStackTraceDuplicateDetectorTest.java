@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
@@ -92,7 +92,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		new Exception().printStackTrace(new PrintWriter(sw));
 		String stackTrace = sw.toString();
 
-		Issue issue1 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
+		JiraIssue issue1 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
 		issue1.setDescription(stackTrace);
 		issue1 = JiraTestUtils.createIssue(client, issue1);
 
@@ -106,20 +106,20 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		new Exception().printStackTrace(new PrintWriter(sw));
 		String stackTrace = sw.toString();
 
-		Issue issue1 = JiraTestUtils.createIssue(client, "testStackTraceDetector2");
+		JiraIssue issue1 = JiraTestUtils.createIssue(client, "testStackTraceDetector2");
 
 		client.updateIssue(issue1, stackTrace);
 
 		verifyDuplicate(stackTrace, issue1);
 	}
 
-	private void verifyDuplicate(String stackTrace, Issue issue) throws JiraException, CoreException {
+	private void verifyDuplicate(String stackTrace, JiraIssue issue) throws JiraException, CoreException {
 		AbstractTask task1 = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals(issue.getSummary(), task1.getSummary());
 		assertEquals(false, task1.isCompleted());
 		assertNull(task1.getDueDate());
 
-		Issue issue2 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
+		JiraIssue issue2 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
 		issue2.setDescription(stackTrace);
 
 		RepositoryTaskData data = new RepositoryTaskData(dataHandler.getAttributeFactory(null, null, null),

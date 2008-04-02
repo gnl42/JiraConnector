@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -211,7 +211,7 @@ public class JiraWebSession {
 		}
 	}
 
-	protected boolean expectRedirect(HttpMethodBase method, Issue issue) throws JiraException {
+	protected boolean expectRedirect(HttpMethodBase method, JiraIssue issue) throws JiraException {
 		return expectRedirect(method, "/browse/" + issue.getKey());
 	}
 

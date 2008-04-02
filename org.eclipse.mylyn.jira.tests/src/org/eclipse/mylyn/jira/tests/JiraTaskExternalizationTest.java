@@ -13,7 +13,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
@@ -161,7 +161,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraRepositoryQuery jiraRepositoryQuery = new JiraRepositoryQuery(repository.getUrl(), namedFilter);
 		String filterUrl = jiraRepositoryQuery.getUrl();
 
-		Issue jiraIssue = new Issue();
+		JiraIssue jiraIssue = new JiraIssue();
 		jiraIssue.setKey(ISSUE_KEY);
 		jiraIssue.setDescription(ISSUE_DESCRIPTION);
 		jiraIssue.setSummary(ISSUE_SUMMARY);

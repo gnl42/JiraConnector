@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
@@ -54,7 +54,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
-			Issue issue = server.getIssueByKey(key);
+			JiraIssue issue = server.getIssueByKey(key);
 			Attachment jiraAttachment = issue.getAttachmentById(id);
 			server.retrieveFile(issue, jiraAttachment, out);
 		} catch (JiraException e) {
@@ -75,7 +75,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 			String comment, IProgressMonitor monitor) throws CoreException {
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
-			Issue issue = server.getIssueByKey(task.getTaskKey());
+			JiraIssue issue = server.getIssueByKey(task.getTaskKey());
 			server.attachFile(issue, comment, new AttachmentPartSource(attachment), attachment.getContentType());
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));

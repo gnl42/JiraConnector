@@ -20,8 +20,7 @@ import java.util.List;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
-// API-3.0 rename to JIRA issue
-public class Issue implements Serializable {
+public class JiraIssue implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,7 +44,7 @@ public class Issue implements Serializable {
 
 	private Priority priority;
 
-	private Status status;
+	private JiraStatus status;
 
 	private Resolution resolution;
 
@@ -197,11 +196,11 @@ public class Issue implements Serializable {
 		this.resolution = resolution;
 	}
 
-	public Status getStatus() {
+	public JiraStatus getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(JiraStatus status) {
 		this.status = status;
 	}
 

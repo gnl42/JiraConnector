@@ -10,7 +10,7 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 
 /**
  * @author Brock Janiczak
@@ -18,16 +18,16 @@ import org.eclipse.mylyn.internal.jira.core.model.Status;
 public class StatusFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final Status[] statuses;
+	private final JiraStatus[] statuses;
 
-	public StatusFilter(Status[] statuses) {
+	public StatusFilter(JiraStatus[] statuses) {
 		assert (statuses != null);
 		assert (statuses.length > 0);
 
 		this.statuses = statuses;
 	}
 
-	public Status[] getStatuses() {
+	public JiraStatus[] getStatuses() {
 		return this.statuses;
 	}
 

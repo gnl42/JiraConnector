@@ -13,21 +13,9 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
-// API 3.0 rename to JiraStatus
-public class Status implements Serializable {
+public class JiraStatus implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-
-	public static final String OPEN_ID = "1"; //$NON-NLS-1$
-
-	public static final String ASSIGNED_ID = "2"; //$NON-NLS-1$
-
-	public static final String STARTED_ID = "3"; //$NON-NLS-1$
-
-	public static final String REOPENED_ID = "4"; //$NON-NLS-1$
-
-	public static final String RESOLVED_ID = "5"; //$NON-NLS-1$
-
-	public static final String CLOSED_ID = "6"; //$NON-NLS-1$
 
 	private String id;
 
@@ -69,33 +57,17 @@ public class Status implements Serializable {
 		this.name = name;
 	}
 
-	public boolean isStarted() {
-		return STARTED_ID.equals(id);
-	}
-
-	public boolean isReopened() {
-		return REOPENED_ID.equals(id);
-	}
-
-	public boolean isResolved() {
-		return RESOLVED_ID.equals(id);
-	}
-
-	public boolean isClosed() {
-		return CLOSED_ID.equals(id);
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
 		}
 
-		if (!(obj instanceof Status)) {
+		if (!(obj instanceof JiraStatus)) {
 			return false;
 		}
 
-		Status that = (Status) obj;
+		JiraStatus that = (JiraStatus) obj;
 
 		return this.id.equals(that.id);
 	}

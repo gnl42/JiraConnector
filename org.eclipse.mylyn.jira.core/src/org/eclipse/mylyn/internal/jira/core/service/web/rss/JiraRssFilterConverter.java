@@ -15,7 +15,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
@@ -300,7 +300,7 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertStatusFilter(StatusFilter statusFilter) {
-		Status[] statuses = statusFilter.getStatuses();
+		JiraStatus[] statuses = statusFilter.getStatuses();
 		if (statuses.length == 0) {
 			return ""; //$NON-NLS-1$
 		}

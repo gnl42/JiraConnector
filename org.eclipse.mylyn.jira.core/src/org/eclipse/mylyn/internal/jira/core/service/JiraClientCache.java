@@ -17,7 +17,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRequest;
 import org.eclipse.mylyn.web.core.Policy;
 
@@ -35,11 +35,11 @@ public class JiraClientCache {
 		this.data = new JiraClientData();
 	}
 
-	public Status getStatusById(String id) {
+	public JiraStatus getStatusById(String id) {
 		return data.statusesById.get(id);
 	}
 
-	public Status[] getStatuses() {
+	public JiraStatus[] getStatuses() {
 		return data.statuses;
 	}
 
@@ -126,8 +126,8 @@ public class JiraClientCache {
 
 	private void initializeStatuses(JiraClientData data) throws JiraException {
 		data.statuses = jiraClient.getStatuses();
-		data.statusesById = new HashMap<String, Status>(data.statuses.length);
-		for (Status status : data.statuses) {
+		data.statusesById = new HashMap<String, JiraStatus>(data.statuses.length);
+		for (JiraStatus status : data.statuses) {
 			data.statusesById.put(status.getId(), status);
 		}
 	}

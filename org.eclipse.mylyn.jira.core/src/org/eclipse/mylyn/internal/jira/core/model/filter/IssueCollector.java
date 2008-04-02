@@ -8,7 +8,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.model.filter;
 
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 
 /**
  * @author Brock Janiczak
@@ -22,7 +22,7 @@ public interface IssueCollector {
 	 */
 	public void start();
 
-	public void collectIssue(Issue issue);
+	public void collectIssue(JiraIssue issue);
 
 	/**
 	 * Determine if the collector doesn't want to receive issue notifications anymore

@@ -10,14 +10,14 @@ package org.eclipse.mylyn.internal.jira.core.service.soap;
 
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent;
@@ -57,16 +57,16 @@ class JiraSoapConverter {
 		return priority;
 	}
 
-	protected static Status[] convert(RemoteStatus[] remoteStatuses) {
-		Status[] statuses = new Status[remoteStatuses.length];
+	protected static JiraStatus[] convert(RemoteStatus[] remoteStatuses) {
+		JiraStatus[] statuses = new JiraStatus[remoteStatuses.length];
 		for (int i = 0; i < remoteStatuses.length; i++) {
 			statuses[i] = convert(remoteStatuses[i]);
 		}
 		return statuses;
 	}
 
-	protected static Status convert(RemoteStatus remoteStatus) {
-		Status status = new Status();
+	protected static JiraStatus convert(RemoteStatus remoteStatus) {
+		JiraStatus status = new JiraStatus();
 		status.setDescription(remoteStatus.getDescription());
 		status.setIcon(remoteStatus.getIcon());
 		status.setId(remoteStatus.getId());
@@ -214,8 +214,8 @@ class JiraSoapConverter {
 	}
 
 	// TODO reconcile this
-	protected static Issue convert(RemoteIssue remoteIssue) {
-		Issue issue = new Issue();
+	protected static JiraIssue convert(RemoteIssue remoteIssue) {
+		JiraIssue issue = new JiraIssue();
 		return issue;
 	}
 

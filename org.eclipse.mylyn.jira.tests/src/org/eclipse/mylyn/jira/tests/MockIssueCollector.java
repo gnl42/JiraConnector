@@ -13,18 +13,18 @@ package org.eclipse.mylyn.jira.tests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 
 public class MockIssueCollector implements IssueCollector {
 
-	List<Issue> issues = new ArrayList<Issue>();
+	List<JiraIssue> issues = new ArrayList<JiraIssue>();
 
 	boolean done;
 
 	boolean started;
 
-	public void collectIssue(Issue issue) {
+	public void collectIssue(JiraIssue issue) {
 		issues.add(issue);
 	}
 

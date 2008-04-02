@@ -26,7 +26,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
@@ -263,7 +263,7 @@ public class JiraRssHandler extends DefaultHandler {
 
 	private final IssueCollector collector;
 
-	private Issue currentIssue;
+	private JiraIssue currentIssue;
 
 	private String commentAuthor;
 
@@ -374,7 +374,7 @@ public class JiraRssHandler extends DefaultHandler {
 		case LOOKING_FOR_ITEM:
 			if (ITEM.equals(localName)) {
 				state = IN_ITEM;
-				currentIssue = new Issue();
+				currentIssue = new JiraIssue();
 			}
 			break;
 		case IN_ITEM:

@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
@@ -27,7 +27,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Query;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -123,29 +123,29 @@ public class JiraClient {
 		this.soapService = new JiraSoapClient(this);
 	}
 
-	public void addCommentToIssue(Issue issue, String comment) throws JiraException {
+	public void addCommentToIssue(JiraIssue issue, String comment) throws JiraException {
 		issueService.addCommentToIssue(issue, comment);
 	}
 
-	public void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException {
+	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment) throws JiraException {
 		String[] fields = getActionFields(issue.getKey(), actionKey);
 		issueService.advanceIssueWorkflow(issue, actionKey, comment, fields);
 	}
 
-	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException {
+	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment) throws JiraException {
 		issueService.assignIssueTo(issue, assigneeType, user, comment);
 	}
 
-	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
+	public void attachFile(JiraIssue issue, String comment, PartSource partSource, String contentType) throws JiraException {
 		issueService.attachFile(issue, comment, partSource, contentType);
 	}
 
-	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType)
+	public void attachFile(JiraIssue issue, String comment, String filename, byte[] contents, String contentType)
 			throws JiraException {
 		issueService.attachFile(issue, comment, filename, contents, contentType);
 	}
 
-	public void attachFile(Issue issue, String comment, String filename, File file, String contentType)
+	public void attachFile(JiraIssue issue, String comment, String filename, File file, String contentType)
 			throws JiraException {
 		issueService.attachFile(issue, comment, filename, file, contentType);
 	}
@@ -172,24 +172,24 @@ public class JiraClient {
 	 * 
 	 * @param issue
 	 *            Prototype issue used to create the new issue
-	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.Issue} containing the details of the
+	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue} containing the details of the
 	 *         new issue
 	 */
-	public Issue createIssue(Issue issue) throws JiraException {
+	public JiraIssue createIssue(JiraIssue issue) throws JiraException {
 		String issueKey = issueService.createIssue(issue);
 		return getIssueByKey(issueKey);
 	}
 
 	/**
-	 * See {@link #createIssue(Issue)} for mandatory attributes of <code>issue</code>. Additionally the
+	 * See {@link #createIssue(JiraIssue)} for mandatory attributes of <code>issue</code>. Additionally the
 	 * <code>parentIssueId</code> must be set.
 	 */
-	public Issue createSubTask(Issue issue) throws JiraException {
+	public JiraIssue createSubTask(JiraIssue issue) throws JiraException {
 		String issueKey = issueService.createSubTask(issue);
 		return getIssueByKey(issueKey);
 	}
 
-	public void deleteIssue(Issue issue) throws JiraException {
+	public void deleteIssue(JiraIssue issue) throws JiraException {
 		issueService.deleteIssue(issue);
 	}
 
@@ -288,7 +288,7 @@ public class JiraClient {
 	 *            Unique key of the issue to find
 	 * @return Matching issue or <code>null</code> if no matching issue could be found
 	 */
-	public Issue getIssueByKey(String issueKey) throws JiraException {
+	public JiraIssue getIssueByKey(String issueKey) throws JiraException {
 		SingleIssueCollector collector = new SingleIssueCollector();
 		filterService.getIssueByKey(issueKey, collector);
 		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
@@ -360,7 +360,7 @@ public class JiraClient {
 		return soapService;
 	}
 
-	public Status[] getStatuses() throws JiraException {
+	public JiraStatus[] getStatuses() throws JiraException {
 		return soapService.getStatuses();
 	}
 
@@ -406,13 +406,13 @@ public class JiraClient {
 
 	}
 
-	public byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException {
+	public byte[] retrieveFile(JiraIssue issue, Attachment attachment) throws JiraException {
 		byte[] result = new byte[(int) attachment.getSize()];
 		issueService.retrieveFile(issue, attachment, result);
 		return result;
 	}
 
-	public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
+	public void retrieveFile(JiraIssue issue, Attachment attachment, OutputStream out) throws JiraException {
 		issueService.retrieveFile(issue, attachment, out);
 	}
 
@@ -446,13 +446,13 @@ public class JiraClient {
 	/**
 	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user
 	 * and is not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is not valid for the user to
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user to
 	 * vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
 	 *            Issue to remove vote from
 	 */
-	public void unvoteIssue(Issue issue) throws JiraException {
+	public void unvoteIssue(JiraIssue issue) throws JiraException {
 		issueService.unvoteIssue(issue);
 	}
 
@@ -462,11 +462,11 @@ public class JiraClient {
 	 * @param issue
 	 *            Issue to stop watching
 	 */
-	public void unwatchIssue(Issue issue) throws JiraException {
+	public void unwatchIssue(JiraIssue issue) throws JiraException {
 		issueService.unwatchIssue(issue);
 	}
 
-	public void updateIssue(Issue issue, String comment) throws JiraException {
+	public void updateIssue(JiraIssue issue, String comment) throws JiraException {
 		issueService.updateIssue(issue, comment);
 	}
 
@@ -477,13 +477,13 @@ public class JiraClient {
 	/**
 	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
 	 * not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylyn.internal.jira.core.model.Issue#canUserVote(String)}. If it is not valid for the user to
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user to
 	 * vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
 	 *            Issue to vote for
 	 */
-	public void voteIssue(Issue issue) throws JiraException {
+	public void voteIssue(JiraIssue issue) throws JiraException {
 		issueService.voteIssue(issue);
 	}
 
@@ -493,7 +493,7 @@ public class JiraClient {
 	 * @param issue
 	 *            Issue to begin watching
 	 */
-	public void watchIssue(Issue issue) throws JiraException {
+	public void watchIssue(JiraIssue issue) throws JiraException {
 		issueService.watchIssue(issue);
 	}
 

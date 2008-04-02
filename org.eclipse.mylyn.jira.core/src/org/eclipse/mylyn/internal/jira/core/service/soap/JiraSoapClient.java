@@ -27,12 +27,12 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
@@ -96,8 +96,9 @@ public class JiraSoapClient {
 		soapServiceLock.lock();
 		try {
 			if (soapService == null) {
-				JiraSoapServiceLocator locator = new JiraSoapServiceLocator(new FileProvider(
-						this.getClass().getClassLoader().getResourceAsStream("client-config.wsdd")));
+				JiraSoapServiceLocator locator = new JiraSoapServiceLocator(new FileProvider(this.getClass()
+						.getClassLoader()
+						.getResourceAsStream("client-config.wsdd")));
 				locator.setLocation(jiraClient.getLocation());
 				locator.setCompression(jiraClient.useCompression());
 
@@ -130,7 +131,8 @@ public class JiraSoapClient {
 	public Component[] getComponents(final String projectKey) throws JiraException {
 		return call(new RemoteRunnable<Component[]>() {
 			public Component[] run() throws java.rmi.RemoteException, JiraException {
-				return JiraSoapConverter.convert(getSoapService().getComponents(loginToken.getCurrentValue(), projectKey));
+				return JiraSoapConverter.convert(getSoapService().getComponents(loginToken.getCurrentValue(),
+						projectKey));
 			}
 		});
 	}
@@ -281,9 +283,9 @@ public class JiraSoapClient {
 		});
 	}
 
-	public Status[] getStatuses() throws JiraException {
-		return call(new RemoteRunnable<Status[]>() {
-			public Status[] run() throws java.rmi.RemoteException, JiraException {
+	public JiraStatus[] getStatuses() throws JiraException {
+		return call(new RemoteRunnable<JiraStatus[]>() {
+			public JiraStatus[] run() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getStatuses(loginToken.getCurrentValue()));
 			}
 		});
@@ -336,7 +338,8 @@ public class JiraSoapClient {
 	public Version[] getVersions(final String componentKey) throws JiraException {
 		return call(new RemoteRunnable<Version[]>() {
 			public Version[] run() throws java.rmi.RemoteException, JiraException {
-				return JiraSoapConverter.convert(getSoapService().getVersions(loginToken.getCurrentValue(), componentKey));
+				return JiraSoapConverter.convert(getSoapService().getVersions(loginToken.getCurrentValue(),
+						componentKey));
 			}
 		});
 	}

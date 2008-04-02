@@ -41,7 +41,7 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -71,7 +71,7 @@ public class JiraWebClient {
 		this.server = server;
 	}
 
-	public void addCommentToIssue(final Issue issue, final String comment) throws JiraException {
+	public void addCommentToIssue(final JiraIssue issue, final String comment) throws JiraException {
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -101,7 +101,7 @@ public class JiraWebClient {
 	}
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
-	public void updateIssue(final Issue issue, final String comment) throws JiraException {
+	public void updateIssue(final JiraIssue issue, final String comment) throws JiraException {
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -194,7 +194,7 @@ public class JiraWebClient {
 		});
 	}
 
-	public void assignIssueTo(final Issue issue, final int assigneeType, final String user, final String comment)
+	public void assignIssueTo(final JiraIssue issue, final int assigneeType, final String user, final String comment)
 			throws JiraException {
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
@@ -229,7 +229,7 @@ public class JiraWebClient {
 		});
 	}
 
-	public void advanceIssueWorkflow(final Issue issue, final String actionKey, final String comment,
+	public void advanceIssueWorkflow(final JiraIssue issue, final String actionKey, final String comment,
 			final String[] fields) throws JiraException {
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
@@ -271,17 +271,17 @@ public class JiraWebClient {
 		});
 	}
 
-	public void attachFile(final Issue issue, final String comment, final PartSource partSource,
+	public void attachFile(final JiraIssue issue, final String comment, final PartSource partSource,
 			final String contentType) throws JiraException {
 		attachFile(issue, comment, new FilePart("filename.1", partSource), contentType);
 	}
 
-	public void attachFile(final Issue issue, final String comment, final String filename, final byte[] contents,
+	public void attachFile(final JiraIssue issue, final String comment, final String filename, final byte[] contents,
 			final String contentType) throws JiraException {
 		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)), contentType);
 	}
 
-	public void attachFile(final Issue issue, final String comment, final String filename, final File file,
+	public void attachFile(final JiraIssue issue, final String comment, final String filename, final File file,
 			final String contentType) throws JiraException {
 		try {
 			FilePartSource partSource = new FilePartSource(filename, file);
@@ -291,7 +291,7 @@ public class JiraWebClient {
 		}
 	}
 
-	public void attachFile(final Issue issue, final String comment, final FilePart filePart, final String contentType)
+	public void attachFile(final JiraIssue issue, final String comment, final FilePart filePart, final String contentType)
 			throws JiraException {
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
@@ -348,7 +348,7 @@ public class JiraWebClient {
 		});
 	}
 
-	public void retrieveFile(final Issue issue, final Attachment attachment, final byte[] attachmentData)
+	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final byte[] attachmentData)
 			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
@@ -387,7 +387,7 @@ public class JiraWebClient {
 		});
 	}
 
-	public void retrieveFile(final Issue issue, final Attachment attachment, final OutputStream out)
+	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final OutputStream out)
 			throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
@@ -421,16 +421,16 @@ public class JiraWebClient {
 		});
 	}
 
-	public String createIssue(final Issue issue) throws JiraException {
+	public String createIssue(final JiraIssue issue) throws JiraException {
 		return createIssue("/secure/CreateIssueDetails.jspa", issue);
 	}
 
-	public String createSubTask(final Issue issue) throws JiraException {
+	public String createSubTask(final JiraIssue issue) throws JiraException {
 		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue);
 	}
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
-	private String createIssue(final String url, final Issue issue) throws JiraException {
+	private String createIssue(final String url, final JiraIssue issue) throws JiraException {
 		final String[] issueKey = new String[1];
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
@@ -525,15 +525,15 @@ public class JiraWebClient {
 		return issueKey[0];
 	}
 
-	public void watchIssue(final Issue issue) throws JiraException {
+	public void watchIssue(final JiraIssue issue) throws JiraException {
 		watchUnwatchIssue(issue, true);
 	}
 
-	public void unwatchIssue(final Issue issue) throws JiraException {
+	public void unwatchIssue(final JiraIssue issue) throws JiraException {
 		watchUnwatchIssue(issue, false);
 	}
 
-	private void watchUnwatchIssue(final Issue issue, final boolean watch) throws JiraException {
+	private void watchUnwatchIssue(final JiraIssue issue, final boolean watch) throws JiraException {
 		JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -558,15 +558,15 @@ public class JiraWebClient {
 		});
 	}
 
-	public void voteIssue(final Issue issue) throws JiraException {
+	public void voteIssue(final JiraIssue issue) throws JiraException {
 		voteUnvoteIssue(issue, true);
 	}
 
-	public void unvoteIssue(final Issue issue) throws JiraException {
+	public void unvoteIssue(final JiraIssue issue) throws JiraException {
 		voteUnvoteIssue(issue, false);
 	}
 
-	private void voteUnvoteIssue(final Issue issue, final boolean vote) throws JiraException {
+	private void voteUnvoteIssue(final JiraIssue issue, final boolean vote) throws JiraException {
 		if (!issue.canUserVote(this.server.getUserName())) {
 			return;
 		}
@@ -595,7 +595,7 @@ public class JiraWebClient {
 		});
 	}
 
-	public void deleteIssue(final Issue issue) throws JiraException {
+	public void deleteIssue(final JiraIssue issue) throws JiraException {
 		final JiraWebSession s = new JiraWebSession(server);
 		s.doInSession(new JiraWebSessionCallback() {
 
@@ -636,7 +636,7 @@ public class JiraWebClient {
 		return webServerInfo;
 	}
 
-	private String getAssigneeParam(JiraClient server, Issue issue, int assigneeType, String user) {
+	private String getAssigneeParam(JiraClient server, JiraIssue issue, int assigneeType, String user) {
 		switch (assigneeType) {
 		case JiraClient.ASSIGNEE_CURRENT:
 			return issue.getAssignee();
@@ -725,7 +725,7 @@ public class JiraWebClient {
 		return sb.toString();
 	}
 
-	private void addCustomFields(final Issue issue, PostMethod post) {
+	private void addCustomFields(final JiraIssue issue, PostMethod post) {
 		for (CustomField customField : issue.getCustomFields()) {
 			for (String value : customField.getValues()) {
 				String key = customField.getKey();

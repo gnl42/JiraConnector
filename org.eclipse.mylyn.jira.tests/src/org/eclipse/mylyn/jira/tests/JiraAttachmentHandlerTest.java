@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
@@ -92,7 +92,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 	private void attachFile(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Issue issue = JiraTestUtils.createIssue(client, "testAttachFile");
+		JiraIssue issue = JiraTestUtils.createIssue(client, "testAttachFile");
 
 		File file = File.createTempFile("attachment", null);
 		file.deleteOnExit();
