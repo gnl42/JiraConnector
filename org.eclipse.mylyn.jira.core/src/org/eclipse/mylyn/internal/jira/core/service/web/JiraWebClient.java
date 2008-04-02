@@ -122,7 +122,7 @@ public class JiraWebClient {
 				} else {
 					post.addParameter("duedate", "");
 				}
-				post.addParameter("timetracking", Long.toString(issue.getInitialEstimate() / 60) + "m");
+				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m");
 
 				Component[] components = issue.getComponents();
 				if (components != null) {
@@ -452,7 +452,7 @@ public class JiraWebClient {
 					post.addParameter("duedate",
 							new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
 				}
-				post.addParameter("timetracking", Long.toString(issue.getInitialEstimate() / 60) + "m");
+				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m");
 
 				if (issue.getComponents() != null) {
 					for (int i = 0; i < issue.getComponents().length; i++) {

@@ -13,6 +13,7 @@ import junit.framework.TestSuite;
 
 import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUiTest;
+import org.eclipse.mylyn.internal.jira.ui.JiraTimeFormatTest;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 /**
@@ -27,6 +28,7 @@ public class AllJiraTests {
 		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationFactory(), true);
 
 		// $JUnit-BEGIN$
+		suite.addTestSuite(JiraTimeFormatTest.class);
 		suite.addTestSuite(JiraCustomQueryTest.class);
 		suite.addTestSuite(JiraTaskTest.class);
 		suite.addTestSuite(JiraClientFacadeTest.class);

@@ -17,32 +17,50 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 public enum JiraAttribute {
 	ISSUE_KEY(RepositoryTaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Issue ID:"),
 
-	SUMMARY(RepositoryTaskAttribute.SUMMARY, JiraFieldType.TEXTFIELD, "Summary:", true, false, "summary"), DESCRIPTION(
-			RepositoryTaskAttribute.DESCRIPTION, JiraFieldType.TEXTFIELD, "Description:", true, false, "description"), STATUS(
-			RepositoryTaskAttribute.STATUS, JiraFieldType.SELECT, "Status:"), RESOLUTION(
-			RepositoryTaskAttribute.RESOLUTION, JiraFieldType.SELECT, "Resolution:", true, false, "resolution"),
+	SUMMARY(RepositoryTaskAttribute.SUMMARY, JiraFieldType.TEXTFIELD, "Summary:", true, false, "summary"),
 
-	DATE_CREATION(RepositoryTaskAttribute.DATE_CREATION, JiraFieldType.TEXTFIELD, "Created:"), DATE_MODIFIED(
-			RepositoryTaskAttribute.DATE_MODIFIED, JiraFieldType.TEXTFIELD, "Modified:"),
+	DESCRIPTION(RepositoryTaskAttribute.DESCRIPTION, JiraFieldType.TEXTFIELD, "Description:", true, false,
+			"description"),
+
+	STATUS(RepositoryTaskAttribute.STATUS, JiraFieldType.SELECT, "Status:"),
+
+	RESOLUTION(RepositoryTaskAttribute.RESOLUTION, JiraFieldType.SELECT, "Resolution:", true, false, "resolution"),
+
+	DATE_CREATION(RepositoryTaskAttribute.DATE_CREATION, JiraFieldType.TEXTFIELD, "Created:"),
+
+	DATE_MODIFIED(RepositoryTaskAttribute.DATE_MODIFIED, JiraFieldType.TEXTFIELD, "Modified:"),
 
 	USER_ASSIGNED(RepositoryTaskAttribute.USER_ASSIGNED, JiraFieldType.USERPICKER, "Assigned to:", true, false,
-			"assignee"), USER_REPORTER(RepositoryTaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, "Reported by:"),
+			"assignee"),
 
-	PRODUCT(RepositoryTaskAttribute.PRODUCT, JiraFieldType.PROJECT, "Project:", false, true), PRIORITY(
-			RepositoryTaskAttribute.PRIORITY, JiraFieldType.SELECT, "Priority:", false, false, "priority"),
+	USER_REPORTER(RepositoryTaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, "Reported by:"),
 
-	TYPE(JiraAttributeFactory.ATTRIBUTE_TYPE, JiraFieldType.SELECT, "Type:", false, false, "issuetype"), PARENT_KEY(
-			JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.ISSUELINK, "Parent:", false, true),
+	PRODUCT(RepositoryTaskAttribute.PRODUCT, JiraFieldType.PROJECT, "Project:", false, true),
+
+	PRIORITY(RepositoryTaskAttribute.PRIORITY, JiraFieldType.SELECT, "Priority:", false, false, "priority"),
+
+	TYPE(JiraAttributeFactory.ATTRIBUTE_TYPE, JiraFieldType.SELECT, "Type:", false, false, "issuetype"),
+
+	PARENT_KEY(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.ISSUELINK, "Parent:", false, true),
 
 	PARENT_ID(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID, JiraFieldType.ISSUELINK, "Parent ID:", true, true),
 
 	COMPONENTS(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, JiraFieldType.MULTISELECT, "Components:", false, false,
-			"components"), AFFECTSVERSIONS(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT,
-			"Affects Versions:", false, false, "versions"), FIXVERSIONS(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS,
-			JiraFieldType.MULTISELECT, "Fix Versions:", false, false, "fixVersions"),
+			"components"),
+
+	AFFECTSVERSIONS(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT, "Affects Versions:",
+			false, false, "versions"),
+
+	FIXVERSIONS(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, JiraFieldType.MULTISELECT, "Fix Versions:", false, false,
+			"fixVersions"),
 
 	ESTIMATE(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, JiraFieldType.TEXTFIELD, "Estimate:", false, false,
 			"timetracking"),
+
+	INITIAL_ESTIMATE(JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE, JiraFieldType.TEXTFIELD, "Original Estimate:",
+			false, true),
+
+	ACTUAL(JiraAttributeFactory.ATTRIBUTE_ACTUAL, JiraFieldType.TEXTFIELD, "Time Spent:", false, true, "timespent"),
 
 	DUE(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraFieldType.TEXTFIELD, "Due Date:", true, false, "duedate"),
 
@@ -51,12 +69,15 @@ public enum JiraAttribute {
 
 	COMMENT_NEW(RepositoryTaskAttribute.COMMENT_NEW, JiraFieldType.TEXTAREA, "New Comment:", true, false, "comment"),
 
-	COMMENT_AUTHOR(RepositoryTaskAttribute.COMMENT_AUTHOR, JiraFieldType.TEXTAREA, "Author:"), COMMENT_TEXT(
-			RepositoryTaskAttribute.COMMENT_TEXT, JiraFieldType.TEXTAREA, "Comment:"), COMMENT_DATE(
-			RepositoryTaskAttribute.COMMENT_DATE, JiraFieldType.TEXTAREA, "Date:"),
+	COMMENT_AUTHOR(RepositoryTaskAttribute.COMMENT_AUTHOR, JiraFieldType.TEXTAREA, "Author:"),
 
-	SUBTASK_IDS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, "Subtask ids:", true, true), SUBTASK_KEYS(
-			JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Subtasks:", false, true),
+	COMMENT_TEXT(RepositoryTaskAttribute.COMMENT_TEXT, JiraFieldType.TEXTAREA, "Comment:"),
+
+	COMMENT_DATE(RepositoryTaskAttribute.COMMENT_DATE, JiraFieldType.TEXTAREA, "Date:"),
+
+	SUBTASK_IDS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, "Subtask ids:", true, true),
+
+	SUBTASK_KEYS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Subtasks:", false, true),
 
 	SECURITY_LEVEL(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT, "Security Level:", false, true),
 

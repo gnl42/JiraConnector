@@ -42,6 +42,10 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	public static final String ATTRIBUTE_ESTIMATE = "attribute.jira.estimate";
 
+	public static final String ATTRIBUTE_INITIAL_ESTIMATE = "attribute.jira.initialestimate";
+
+	public static final String ATTRIBUTE_ACTUAL = "attribute.jira.actual";
+
 	public static final String ATTRIBUTE_DUE_DATE = "attribute.jira.due";
 
 	public static final String ATTRIBUTE_SUBTASK_IDS = "attribute.jira.subtask_ids";

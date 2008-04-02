@@ -443,7 +443,7 @@ public class Issue implements Serializable {
 				return new String[] { new SimpleDateFormat("dd/MMM/yy").format(due) };
 			}
 		} else if ("timetracking".equals(field)) {
-			return new String[] { Long.toString(getInitialEstimate() / 60) + "m" };
+			return new String[] { Long.toString(getEstimate() / 60) + "m" };
 		}
 
 		// TODO add other fields

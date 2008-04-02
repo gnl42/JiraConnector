@@ -183,6 +183,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
 		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
+		if (!data.isNew()) {
+			addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ACTUAL);
+			addAttribute(data, JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
+		}
 
 		RepositoryTaskAttribute affectsVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
 		affectsVersions.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.MULTISELECT.getKey());
@@ -310,7 +314,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
 		}
 
-		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, Long.toString(jiraIssue.getEstimate() / 60));
+		JiraTimeFormat timeFormat = new JiraTimeFormat();
+		if (jiraIssue.getActual() > 0) {
+			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE,
+					timeFormat.format(jiraIssue.getInitialEstimate()));
+		} else {
+			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
+		}
+		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, timeFormat.format(jiraIssue.getEstimate()));
+		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ACTUAL, timeFormat.format(jiraIssue.getActual()));
 
 		if (jiraIssue.getDue() != null) {
 			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraUtils.dateToString(jiraIssue.getDue()));
@@ -883,19 +895,20 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		String estimate = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
 		if (estimate != null) {
-			try {
-				issue.setInitialEstimate(Long.parseLong(estimate) * 60); // in minutes
-			} catch (NumberFormatException ex) {
-				// ignore
-			}
+			JiraTimeFormat timeFormat = new JiraTimeFormat();
+			issue.setEstimate(timeFormat.parse(estimate));
+		}
+
+		estimate = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
+		if (estimate != null) {
+			JiraTimeFormat timeFormat = new JiraTimeFormat();
+			issue.setInitialEstimate(timeFormat.parse(estimate));
 		}
 
 		Project project = getProject(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT));
 		if (project != null) {
 			issue.setProject(project);
 		}
-
-		// issue.setEstimate(Long.parseLong(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE)));
 
 		for (IssueType type : client.getCache().getIssueTypes()) {
 			if (type.getName().equals(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE))) {
