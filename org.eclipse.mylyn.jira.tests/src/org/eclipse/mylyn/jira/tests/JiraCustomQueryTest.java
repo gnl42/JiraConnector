@@ -16,7 +16,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
@@ -98,10 +98,10 @@ public class JiraCustomQueryTest extends TestCase {
 		issueTypes[1] = new IssueType();
 		issueTypes[1].setId("issue1");
 
-		Status[] statuses = new Status[2];
-		statuses[0] = new Status();
+		JiraStatus[] statuses = new JiraStatus[2];
+		statuses[0] = new JiraStatus();
 		statuses[0].setId("status0");
-		statuses[1] = new Status();
+		statuses[1] = new JiraStatus();
 		statuses[1].setId("status1");
 
 		Resolution[] resolutions = new Resolution[2];
@@ -152,8 +152,8 @@ public class JiraCustomQueryTest extends TestCase {
 			};
 
 			@Override
-			public Status getStatusById(String id) {
-				Status status = new Status();
+			public JiraStatus getStatusById(String id) {
+				JiraStatus status = new JiraStatus();
 				status.setId(id);
 				return status;
 			};
@@ -195,7 +195,7 @@ public class JiraCustomQueryTest extends TestCase {
 		assertEquals(issueTypes[0].getId(), issueTypes2[0].getId());
 		assertEquals(issueTypes[1].getId(), issueTypes2[1].getId());
 
-		Status[] statuses2 = filter2.getStatusFilter().getStatuses();
+		JiraStatus[] statuses2 = filter2.getStatusFilter().getStatuses();
 		assertEquals(2, statuses2.length);
 		assertEquals(statuses[0].getId(), statuses2[0].getId());
 		assertEquals(statuses[1].getId(), statuses2[1].getId());

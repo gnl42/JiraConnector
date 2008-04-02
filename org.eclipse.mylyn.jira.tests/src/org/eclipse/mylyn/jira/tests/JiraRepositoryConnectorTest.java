@@ -23,7 +23,8 @@ import org.eclipse.mylyn.context.core.ContextCorePlugin;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
+import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
@@ -124,7 +125,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testAttachContext() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Issue issue = JiraTestUtils.createIssue(client, "testAttachContext");
+		JiraIssue issue = JiraTestUtils.createIssue(client, "testAttachContext");
 
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testAttachContext", task.getSummary());
@@ -171,7 +172,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Set<AbstractTask> tasks1 = collector1.getTasks();
 		// assertEquals(-1, tasks.size());
 
-		Issue issue = JiraTestUtils.newIssue(client, "testDueDateFilter");
+		JiraIssue issue = JiraTestUtils.newIssue(client, "testDueDateFilter");
 		issue.setDue(fromDate);
 		issue = JiraTestUtils.createIssue(client, issue);
 		assertNotNull(issue);
@@ -191,11 +192,15 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testPerformQuerySpaces() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		String summary = "test search for spaces " + System.currentTimeMillis();
-		JiraTestUtils.createIssue(client, summary);
+		long currentTimeMillis = System.currentTimeMillis();
+		String summary1 = "test search for spaces " + currentTimeMillis;
+		JiraTestUtils.createIssue(client, summary1);
+		String summary2 = "test search for spaces " + (currentTimeMillis + 1);
+		JiraTestUtils.createIssue(client, summary2);
 
+		String queryString = currentTimeMillis + " " + (currentTimeMillis + 1);
 		FilterDefinition filter = new FilterDefinition("test query");
-		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
+		filter.setContentFilter(new ContentFilter(queryString, true, false, false, false));
 
 		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter,
 				repository.getCharacterEncoding());
@@ -206,7 +211,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		connector.performQuery(query, repository, new NullProgressMonitor(), collector);
 
 		Set<AbstractTask> tasks = collector.getTasks();
-		assertEquals(1, tasks.size());
+		assertEquals(2, tasks.size());
 	}
 
 	public void testMarkStaleNoTasks() throws Exception {
@@ -221,7 +226,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testMarkStaleOneTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");
+		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
 
 		Date start = new Date();
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
@@ -259,7 +264,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		// create two issues, the first one is added to the task list
 		Date start = new Date();
-		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");
+		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
 				new NullProgressMonitor());
 		taskList.addTask(task);
@@ -267,7 +272,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		// make sure the second issue is created after the first one
 		Thread.sleep(1000);
 
-		Issue issue2 = JiraTestUtils.createIssue(client, "testMarkStale2");
+		JiraIssue issue2 = JiraTestUtils.createIssue(client, "testMarkStale2");
 		assertTrue(issue2.getUpdated().after(issue.getUpdated()));
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
 
@@ -285,7 +290,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		// create an issue
-		Issue issue = JiraTestUtils.createIssue(client, "testMarkStale");
+		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
 				new NullProgressMonitor());
 		taskList.addTask(task);
@@ -293,6 +298,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		// close issue
 		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
+		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
 
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(new Date(), -1)));
@@ -371,7 +377,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testCreateTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Issue issue = JiraTestUtils.createIssue(client, "testCreateTask");
+		JiraIssue issue = JiraTestUtils.createIssue(client, "testCreateTask");
 
 		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testCreateTask", task.getSummary());
@@ -380,7 +386,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(issue.getCreated(), task.getCreationDate());
 
 		// close issue
+		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, "2", "");
+		
 		issue = client.getIssueByKey(issue.getKey());
 		task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertTrue(task.isCompleted());

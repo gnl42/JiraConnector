@@ -36,7 +36,7 @@ import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
@@ -360,7 +360,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 							return ((Placeholder) element).getText();
 						}
 
-						return ((Status) element).getName();
+						return ((JiraStatus) element).getName();
 					}
 
 				});
@@ -1229,14 +1229,14 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		} else {
 			boolean isAnyStatusSelected = false;
 
-			List<Status> selectedStatuses = new ArrayList<Status>();
+			List<JiraStatus> selectedStatuses = new ArrayList<JiraStatus>();
 
 			for (Iterator i = statusSelection.iterator(); i.hasNext();) {
 				Object selection = i.next();
 				if (ANY_STATUS.equals(selection)) {
 					isAnyStatusSelected = true;
-				} else if (selection instanceof Status) {
-					selectedStatuses.add((Status) selection);
+				} else if (selection instanceof JiraStatus) {
+					selectedStatuses.add((JiraStatus) selection);
 				}
 			}
 
@@ -1244,7 +1244,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				workingCopy.setStatusFilter(null);
 			} else {
 				workingCopy.setStatusFilter(new StatusFilter(
-						selectedStatuses.toArray(new Status[selectedStatuses.size()])));
+						selectedStatuses.toArray(new JiraStatus[selectedStatuses.size()])));
 			}
 		}
 

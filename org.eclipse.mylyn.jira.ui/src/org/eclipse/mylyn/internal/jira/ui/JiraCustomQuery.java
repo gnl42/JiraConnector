@@ -25,7 +25,7 @@ import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
@@ -213,9 +213,9 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		}
 
 		List<String> statusIds = getIds(params, STATUS_KEY);
-		List<Status> statuses = new ArrayList<Status>();
+		List<JiraStatus> statuses = new ArrayList<JiraStatus>();
 		for (String statusId : statusIds) {
-			Status status = jiraServer.getCache().getStatusById(statusId);
+			JiraStatus status = jiraServer.getCache().getStatusById(statusId);
 			if (status != null) {
 				statuses.add(status);
 			} else if (validate) {
@@ -223,7 +223,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 			}
 		}
 		if (!statuses.isEmpty()) {
-			filter.setStatusFilter(new StatusFilter(statuses.toArray(new Status[statuses.size()])));
+			filter.setStatusFilter(new StatusFilter(statuses.toArray(new JiraStatus[statuses.size()])));
 		}
 
 		List<String> resolutionIds = getIds(params, RESOLUTION_KEY);
@@ -439,7 +439,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		// TODO
 		StatusFilter statusFilter = filter.getStatusFilter();
 		if (statusFilter != null) {
-			for (Status status : statusFilter.getStatuses()) {
+			for (JiraStatus status : statusFilter.getStatuses()) {
 				addParameter(sb, STATUS_KEY, status.getId());
 			}
 		}

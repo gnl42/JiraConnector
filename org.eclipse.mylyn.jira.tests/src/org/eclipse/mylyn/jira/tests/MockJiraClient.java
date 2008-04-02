@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -23,7 +23,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Query;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -99,43 +99,43 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void addCommentToIssue(Issue issue, String comment) throws JiraException {
+	public void addCommentToIssue(JiraIssue issue, String comment) throws JiraException {
 	}
 
 	@Override
-	public void advanceIssueWorkflow(Issue issue, String actionKey, String comment) throws JiraException {
+	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment) throws JiraException {
 	}
 
 	@Override
-	public void assignIssueTo(Issue issue, int assigneeType, String user, String comment) throws JiraException {
+	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment) throws JiraException {
 	}
 
 	@Override
-	public void attachFile(Issue issue, String comment, PartSource partSource, String contentType) throws JiraException {
+	public void attachFile(JiraIssue issue, String comment, PartSource partSource, String contentType) throws JiraException {
 	}
 
 	@Override
-	public void attachFile(Issue issue, String comment, String filename, byte[] contents, String contentType)
+	public void attachFile(JiraIssue issue, String comment, String filename, byte[] contents, String contentType)
 			throws JiraException {
 	}
 
 	@Override
-	public void attachFile(Issue issue, String comment, String filename, File file, String contentType)
+	public void attachFile(JiraIssue issue, String comment, String filename, File file, String contentType)
 			throws JiraException {
 	}
 
 	@Override
-	public Issue createIssue(Issue issue) throws JiraException {
+	public JiraIssue createIssue(JiraIssue issue) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public Issue createSubTask(Issue issue) throws JiraException {
+	public JiraIssue createSubTask(JiraIssue issue) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public void deleteIssue(Issue issue) throws JiraException {
+	public void deleteIssue(JiraIssue issue) throws JiraException {
 	}
 
 	@Override
@@ -163,12 +163,12 @@ public class MockJiraClient extends JiraClient {
 		return null;
 	}
 
-	public Issue getIssueById(String issue) throws JiraException {
+	public JiraIssue getIssueById(String issue) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public Issue getIssueByKey(String issueKey) throws JiraException {
+	public JiraIssue getIssueByKey(String issueKey) throws JiraException {
 		return null;
 	}
 
@@ -208,7 +208,7 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public Status[] getStatuses() throws JiraException {
+	public JiraStatus[] getStatuses() throws JiraException {
 		return null;
 	}
 
@@ -231,12 +231,12 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public byte[] retrieveFile(Issue issue, Attachment attachment) throws JiraException {
+	public byte[] retrieveFile(JiraIssue issue, Attachment attachment) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public void retrieveFile(Issue issue, Attachment attachment, OutputStream out) throws JiraException {
+	public void retrieveFile(JiraIssue issue, Attachment attachment, OutputStream out) throws JiraException {
 	}
 
 	@Override
@@ -244,23 +244,23 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void unvoteIssue(Issue issue) throws JiraException {
+	public void unvoteIssue(JiraIssue issue) throws JiraException {
 	}
 
 	@Override
-	public void unwatchIssue(Issue issue) throws JiraException {
+	public void unwatchIssue(JiraIssue issue) throws JiraException {
 	}
 
 	@Override
-	public void updateIssue(Issue issue, String comment) throws JiraException {
+	public void updateIssue(JiraIssue issue, String comment) throws JiraException {
 	}
 
 	@Override
-	public void voteIssue(Issue issue) throws JiraException {
+	public void voteIssue(JiraIssue issue) throws JiraException {
 	}
 
 	@Override
-	public void watchIssue(Issue issue) throws JiraException {
+	public void watchIssue(JiraIssue issue) throws JiraException {
 	}
 
 }

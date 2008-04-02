@@ -23,7 +23,7 @@ import junit.framework.AssertionFailedError;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -38,10 +38,10 @@ public class JiraTestUtils {
 	// persist caching across test runs
 	private static Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
 
-	private static List<Issue> testIssues = new ArrayList<Issue>();
+	private static List<JiraIssue> testIssues = new ArrayList<JiraIssue>();
 
 	public static void cleanup(JiraClient client) throws JiraException {
-		for (Issue issue : testIssues) {
+		for (JiraIssue issue : testIssues) {
 			client.deleteIssue(issue);
 		}
 		testIssues.clear();
@@ -86,10 +86,10 @@ public class JiraTestUtils {
 		return null;
 	}
 
-	public static Issue newIssue(JiraClient client, String summary) throws JiraException {
+	public static JiraIssue newIssue(JiraClient client, String summary) throws JiraException {
 		refreshDetails(client);
 
-		Issue issue = new Issue();
+		JiraIssue issue = new JiraIssue();
 		issue.setProject(getProject(client, PROJECT1));
 		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary(summary);
@@ -97,21 +97,21 @@ public class JiraTestUtils {
 		return issue;
 	}
 
-	public static Issue createIssue(JiraClient client, String summary) throws JiraException {
-		Issue issue = newIssue(client, summary);
+	public static JiraIssue createIssue(JiraClient client, String summary) throws JiraException {
+		JiraIssue issue = newIssue(client, summary);
 		return createIssue(client, issue);
 	}
 
-	public static Issue createIssue(JiraClient client, Issue issue) throws JiraException {
+	public static JiraIssue createIssue(JiraClient client, JiraIssue issue) throws JiraException {
 		issue = client.createIssue(issue);
 		testIssues.add(issue);
 		return issue;
 	}
 
-	public static Issue newSubTask(JiraClient client, Issue parent, String summary) throws JiraException {
+	public static JiraIssue newSubTask(JiraClient client, JiraIssue parent, String summary) throws JiraException {
 		refreshDetails(client);
 
-		Issue issue = new Issue();
+		JiraIssue issue = new JiraIssue();
 		issue.setProject(getProject(client, PROJECT1));
 		issue.setType(client.getCache().getIssueTypes()[5]);
 		issue.setParentId(parent.getId());

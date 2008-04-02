@@ -34,14 +34,13 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
-import org.eclipse.mylyn.internal.jira.core.model.Status;
 import org.eclipse.mylyn.internal.jira.core.model.Subtask;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -99,7 +98,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (!client.getCache().hasDetails()) {
 				client.getCache().refreshDetails(new NullProgressMonitor());
 			}
-			Issue jiraIssue = getJiraIssue(client, taskId, repository.getUrl());
+			JiraIssue jiraIssue = getJiraIssue(client, taskId, repository.getUrl());
 			if (jiraIssue != null) {
 				return createTaskData(repository, client, jiraIssue, null);
 			}
@@ -113,7 +112,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private Issue getJiraIssue(JiraClient client, String taskId, String repositoryUrl) //
+	private JiraIssue getJiraIssue(JiraClient client, String taskId, String repositoryUrl) //
 			throws CoreException, JiraException {
 		try {
 			int id = Integer.parseInt(taskId);
@@ -129,7 +128,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	public RepositoryTaskData createTaskData(TaskRepository repository, JiraClient client, Issue jiraIssue,
+	public RepositoryTaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
 			RepositoryTaskData oldTaskData) throws JiraException {
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
 				repository.getUrl(), jiraIssue.getId());
@@ -218,7 +217,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return data.getAttribute(key);
 	}
 
-	private void updateTaskData(RepositoryTaskData data, Issue jiraIssue, JiraClient client,
+	private void updateTaskData(RepositoryTaskData data, JiraIssue jiraIssue, JiraClient client,
 			RepositoryTaskData oldTaskData) throws JiraException {
 		String parentKey = jiraIssue.getParentKey();
 		if (parentKey != null) {
@@ -423,7 +422,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		updateMarkup(data, jiraIssue, client, oldTaskData);
 
 		HashSet<String> editableKeys = new HashSet<String>();
-		if (!jiraIssue.getStatus().isClosed()) {
+		if (!JiraRepositoryConnector.isClosed(jiraIssue)) {
 			if (useCachedInformation(jiraIssue, oldTaskData)) {
 				// avoid server round-trips
 				for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
@@ -476,7 +475,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private boolean useCachedInformation(Issue issue, RepositoryTaskData oldTaskData) {
+	private boolean useCachedInformation(JiraIssue issue, RepositoryTaskData oldTaskData) {
 		return oldTaskData != null && oldTaskData.getStatus().equals(issue.getStatus().getName());
 	}
 
@@ -530,7 +529,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return attr;
 	}
 
-	private String getAssignee(Issue jiraIssue) {
+	private String getAssignee(JiraIssue jiraIssue) {
 		String assignee = jiraIssue.getAssignee();
 		return assignee == null || JiraTask.UNASSIGNED_USER.equals(assignee) ? "" : assignee;
 	}
@@ -557,7 +556,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	 * Replaces the values in fields that are suspected to contain rendered markup with the source values retrieved
 	 * through SOAP.
 	 */
-	private void updateMarkup(RepositoryTaskData data, Issue jiraIssue, JiraClient client,
+	private void updateMarkup(RepositoryTaskData data, JiraIssue jiraIssue, JiraClient client,
 			RepositoryTaskData oldTaskData) throws JiraException {
 		if (!jiraIssue.isMarkupDetected()) {
 			return;
@@ -621,7 +620,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	}
 
-	public void addOperations(RepositoryTaskData data, Issue issue, JiraClient client, RepositoryTaskData oldTaskData)
+	public void addOperations(RepositoryTaskData data, JiraIssue issue, JiraClient client, RepositoryTaskData oldTaskData)
 			throws JiraException {
 		// avoid server round-trips
 		if (useCachedInformation(issue, oldTaskData)) {
@@ -631,16 +630,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			return;
 		}
 
-		Status status = issue.getStatus();
-
 		RepositoryOperation leaveOperation = new RepositoryOperation(LEAVE_OPERATION, "Leave as "
 				+ issue.getStatus().getName());
 		leaveOperation.setChecked(true);
 		data.addOperation(leaveOperation);
 
 		// TODO need more accurate status matching
-		if (status.getId().equals(Status.OPEN_ID) || status.getId().equals(Status.STARTED_ID)
-				|| status.getId().equals(Status.REOPENED_ID)) {
+		if (!JiraRepositoryConnector.isCompleted(data)) {
 			RepositoryOperation reassignOperation = new RepositoryOperation(REASSIGN_OPERATION, "Reassign to");
 			reassignOperation.setInputName(JiraAttribute.USER_ASSIGNED.getParamName());
 			reassignOperation.setInputValue(client.getUserName());
@@ -670,6 +666,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			for (Resolution resolution : resolutions) {
 				operation.addOption(resolution.getName(), resolution.getId());
 				if (Resolution.FIXED_ID.equals(resolution.getId())) {
+					// set fixed as default
 					operation.setOptionSelection(resolution.getName());
 				}
 			}
@@ -697,7 +694,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				client.getCache().refreshDetails(new NullProgressMonitor());
 			}
 
-			Issue issue = buildJiraIssue(taskData, client);
+			JiraIssue issue = buildJiraIssue(taskData, client);
 			if (taskData.isNew()) {
 				if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
 					issue = client.createSubTask(issue);
@@ -732,7 +729,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 				if (LEAVE_OPERATION.equals(operation.getKnobName())
 						|| REASSIGN_OPERATION.equals(operation.getKnobName())) {
-					if (!issue.getStatus().isClosed()
+					if (!JiraRepositoryConnector.isClosed(issue)
 							&& taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
 						client.updateIssue(issue, taskData.getNewComment());
 					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
@@ -871,8 +868,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return getAttributeFactory(taskData.getRepositoryUrl(), taskData.getConnectorKind(), taskData.getTaskKind());
 	}
 
-	private Issue buildJiraIssue(RepositoryTaskData taskData, JiraClient client) {
-		Issue issue = new Issue();
+	private JiraIssue buildJiraIssue(RepositoryTaskData taskData, JiraClient client) {
+		JiraIssue issue = new JiraIssue();
 		issue.setId(taskData.getId());
 		issue.setKey(taskData.getTaskKey());
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
@@ -916,7 +913,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				break;
 			}
 		}
-		for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getCache().getStatuses()) {
+		for (org.eclipse.mylyn.internal.jira.core.model.JiraStatus status : client.getCache().getStatuses()) {
 			if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 				issue.setStatus(status);
 				break;

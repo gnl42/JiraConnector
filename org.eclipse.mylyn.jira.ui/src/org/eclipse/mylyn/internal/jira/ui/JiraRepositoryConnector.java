@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Query;
@@ -147,11 +147,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 
 			try {
-				List<Issue> issues = new ArrayList<Issue>();
+				List<JiraIssue> issues = new ArrayList<JiraIssue>();
 				client.search(filter, new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS));
 
 				int n = 0;
-				for (Issue issue : issues) {
+				for (JiraIssue issue : issues) {
 					if (monitor.isCanceled()) {
 						return Status.CANCEL_STATUS;
 					}
@@ -201,7 +201,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return true;
 		}
 
-		List<Issue> issues = new ArrayList<Issue>();
+		List<JiraIssue> issues = new ArrayList<JiraIssue>();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		// unlimited maxHits can create crazy amounts of traffic
 		JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues,
@@ -215,7 +215,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				return false;
 			}
 
-			for (Issue issue : issues) {
+			for (JiraIssue issue : issues) {
 				AbstractTask task = mylynFacade.getTask(repository.getUrl(), issue.getId());
 				if (task != null) {
 					if (issue.getProject() == null) {
@@ -380,7 +380,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return super.getTaskIdsFromComment(repository, comment);
 	}
 
-	public static void updateTaskFromIssue(String repositoryUrl, JiraTask task, Issue issue) {
+	public static void updateTaskFromIssue(String repositoryUrl, JiraTask task, JiraIssue issue) {
 		if (issue.getKey() != null) {
 			task.setTaskKey(issue.getKey());
 			task.setUrl(getTaskUrlFromKey(repositoryUrl, issue.getKey()));
@@ -389,7 +389,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		}
 		task.setCreationDate(issue.getCreated());
-		if (isCompleted(issue.getStatus())) {
+		if (isCompleted(issue)) {
 			task.setCompleted(true);
 			task.setCompletionDate(issue.getUpdated());
 		} else {
@@ -407,8 +407,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return repositoryUrl + JiraRepositoryConnector.ISSUE_URL_PREFIX + key;
 	}
 
-	private static boolean isCompleted(org.eclipse.mylyn.internal.jira.core.model.Status status) {
-		return status != null && (status.isClosed() || status.isResolved());
+	public static boolean isCompleted(RepositoryTaskData taskData) {
+		return taskData.getAttributeValue(RepositoryTaskAttribute.RESOLUTION).length() > 0;
+	}
+
+	public static boolean isCompleted(JiraIssue issue) {
+		return issue.getResolution() != null;
+	}
+
+	public static boolean isClosed(JiraIssue issue) {
+		// TODO find a more robust way to determine if a status is closed
+		return issue.getStatus() != null && "6".equals(issue.getStatus().getId());
 	}
 
 	@Override
@@ -452,9 +461,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 			jiraTask.setPriority(getPriorityLevel(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
-			for (org.eclipse.mylyn.internal.jira.core.model.Status status : client.getCache().getStatuses()) {
+			for (org.eclipse.mylyn.internal.jira.core.model.JiraStatus status : client.getCache().getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
-					if (isCompleted(status)) {
+					if (isCompleted(taskData)) {
 						jiraTask.setCompleted(true);
 						jiraTask.setCompletionDate(JiraUtils.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED)));
 					} else {

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
-import org.eclipse.mylyn.internal.jira.core.model.Issue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
@@ -96,7 +96,7 @@ public class JiraFilterTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		Issue issue = JiraTestUtils.newIssue(client, "testFilterRefresh");
+		JiraIssue issue = JiraTestUtils.newIssue(client, "testFilterRefresh");
 		issue.setAssignee(client.getUserName());
 		JiraTestUtils.createIssue(client, issue);
 
@@ -126,7 +126,7 @@ public class JiraFilterTest extends TestCase {
 
 		String summary = "testCustomQuery" + System.currentTimeMillis();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		Issue issue = JiraTestUtils.newIssue(client, summary);
+		JiraIssue issue = JiraTestUtils.newIssue(client, summary);
 		issue.setPriority(client.getCache().getPriorityById(Priority.BLOCKER_ID));
 		issue = JiraTestUtils.createIssue(client, issue);
 
@@ -154,7 +154,7 @@ public class JiraFilterTest extends TestCase {
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		JiraTestUtils.createIssue(client, summary + " 1");
 
-		Issue issue2 = JiraTestUtils.newIssue(client, summary + " 2");
+		JiraIssue issue2 = JiraTestUtils.newIssue(client, summary + " 2");
 		assertTrue(issue2.getProject().getComponents().length > 0);
 		issue2.setComponents(issue2.getProject().getComponents());
 		JiraTestUtils.createIssue(client, issue2);
