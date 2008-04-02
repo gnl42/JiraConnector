@@ -53,7 +53,7 @@ import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.Policy;
-import org.eclipse.mylyn.web.core.WebClientUtil;
+import org.eclipse.mylyn.web.core.WebUtil;
 import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -420,7 +420,7 @@ public class JiraSoapClient {
 
 			final JiraRequest request = new JiraRequest(monitor);
 
-			return WebClientUtil.poll(monitor, new WebClientUtil.AbortableCallable<T>() {
+			return WebUtil.poll(monitor, new WebUtil.AbortableCallable<T>() {
 
 				public void abort() {
 					request.cancel();

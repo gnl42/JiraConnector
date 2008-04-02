@@ -15,7 +15,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
-import org.eclipse.mylyn.web.core.WebClientUtil;
+import org.eclipse.mylyn.web.core.WebUtil;
 
 /**
  * @author Steffen Pingel
@@ -38,8 +38,8 @@ public class JiraHttpSender extends CommonsHttpSender {
 	protected HostConfiguration getHostConfiguration(HttpClient client, MessageContext context, URL url) {
 		AbstractWebLocation location = (AbstractWebLocation) context.getProperty(LOCATION);
 		JiraRequest request = JiraRequest.getCurrentRequest();
-		WebClientUtil.configureHttpClient(client, USER_AGENT);
-		return WebClientUtil.createHostConfiguration(client, location, request.getMonitor());
+		WebUtil.configureHttpClient(client, USER_AGENT);
+		return WebUtil.createHostConfiguration(client, location, request.getMonitor());
 	}
 
 	@Override
