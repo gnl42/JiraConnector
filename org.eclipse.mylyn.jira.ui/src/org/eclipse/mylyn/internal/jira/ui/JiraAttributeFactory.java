@@ -64,6 +64,8 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	public static final String TYPE_KEY = "type";
 
+	public static final String LINKED_IDS = "attribute.jira.link_ids";
+
 	private final JiraAttributeMapper attributeMapper;
 
 	public JiraAttributeFactory() {

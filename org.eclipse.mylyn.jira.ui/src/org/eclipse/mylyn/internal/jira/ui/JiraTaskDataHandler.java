@@ -34,9 +34,9 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
@@ -267,6 +267,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					links.put(key, attribute);
 				}
 				attribute.addValue(link.getIssueKey());
+
+				if (link.getInwardDescription() != null) {
+					data.addAttributeValue(JiraAttributeFactory.LINKED_IDS, link.getIssueId());
+				}
 			}
 
 			for (RepositoryTaskAttribute attribute : links.values()) {
@@ -620,8 +624,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	}
 
-	public void addOperations(RepositoryTaskData data, JiraIssue issue, JiraClient client, RepositoryTaskData oldTaskData)
-			throws JiraException {
+	public void addOperations(RepositoryTaskData data, JiraIssue issue, JiraClient client,
+			RepositoryTaskData oldTaskData) throws JiraException {
 		// avoid server round-trips
 		if (useCachedInformation(issue, oldTaskData)) {
 			for (RepositoryOperation operation : oldTaskData.getOperations()) {
@@ -1006,10 +1010,17 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	@Override
 	public Set<String> getSubTaskIds(RepositoryTaskData taskData) {
 		Set<String> subIds = new HashSet<String>();
+
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttribute.SUBTASK_IDS.getId());
 		if (attribute != null) {
 			subIds.addAll(attribute.getValues());
 		}
+
+		attribute = taskData.getAttribute(JiraAttribute.LINKED_IDS.getId());
+		if (attribute != null) {
+			subIds.addAll(attribute.getValues());
+		}
+
 		return subIds;
 	}
 

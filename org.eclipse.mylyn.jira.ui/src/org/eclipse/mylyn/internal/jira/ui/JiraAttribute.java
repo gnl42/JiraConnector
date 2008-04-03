@@ -81,6 +81,8 @@ public enum JiraAttribute {
 
 	SECURITY_LEVEL(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT, "Security Level:", false, true),
 
+	LINKED_IDS(JiraAttributeFactory.LINKED_IDS, JiraFieldType.TEXTFIELD, "Linked ids:", true, true),
+
 	UNKNOWN(null, JiraFieldType.UNKNOWN, "unknown:", true, true);
 
 	private final String id;
