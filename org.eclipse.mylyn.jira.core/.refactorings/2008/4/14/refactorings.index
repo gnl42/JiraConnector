@@ -1,2 +1,4 @@
 1207165852873	Rename type 'Status'
 1207169554288	Rename type 'Issue'
+1207183875477	Rename type 'IssueCollector'
+1207185021576	Rename type 'JiraIssueCollector'

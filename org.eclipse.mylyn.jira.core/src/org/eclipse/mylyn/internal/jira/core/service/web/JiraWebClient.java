@@ -65,14 +65,14 @@ public class JiraWebClient {
 
 	public static final String DUE_DATE_FORMAT = "dd/MMM/yy"; //$NON-NLS-1$
 
-	private final JiraClient server;
+	private final JiraClient client;
 
 	public JiraWebClient(JiraClient server) {
-		this.server = server;
+		this.client = server;
 	}
 
 	public void addCommentToIssue(final JiraIssue issue, final String comment) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -102,7 +102,7 @@ public class JiraWebClient {
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
 	public void updateIssue(final JiraIssue issue, final String comment) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -196,7 +196,7 @@ public class JiraWebClient {
 
 	public void assignIssueTo(final JiraIssue issue, final int assigneeType, final String user, final String comment)
 			throws JiraException {
-		final JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -231,7 +231,7 @@ public class JiraWebClient {
 
 	public void advanceIssueWorkflow(final JiraIssue issue, final String actionKey, final String comment,
 			final String[] fields) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
 				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
@@ -291,9 +291,9 @@ public class JiraWebClient {
 		}
 	}
 
-	public void attachFile(final JiraIssue issue, final String comment, final FilePart filePart, final String contentType)
-			throws JiraException {
-		final JiraWebSession s = new JiraWebSession(server);
+	public void attachFile(final JiraIssue issue, final String comment, final FilePart filePart,
+			final String contentType) throws JiraException {
+		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -350,7 +350,7 @@ public class JiraWebClient {
 
 	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final byte[] attachmentData)
 			throws JiraException {
-		JiraWebSession s = new JiraWebSession(server);
+		JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -389,7 +389,7 @@ public class JiraWebClient {
 
 	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final OutputStream out)
 			throws JiraException {
-		JiraWebSession s = new JiraWebSession(server);
+		JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -432,7 +432,7 @@ public class JiraWebClient {
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
 	private String createIssue(final String url, final JiraIssue issue) throws JiraException {
 		final String[] issueKey = new String[1];
-		final JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -507,7 +507,7 @@ public class JiraWebClient {
 						String location = locationHeader.getValue();
 						int i = location.lastIndexOf("/");
 						if (i != -1) {
-							issueKey[0] = location.substring(i);
+							issueKey[0] = location.substring(i + 1);
 						} else {
 							throw new JiraException(
 									"The server redirected to an unexpected location while creating an issue: "
@@ -534,7 +534,7 @@ public class JiraWebClient {
 	}
 
 	private void watchUnwatchIssue(final JiraIssue issue, final boolean watch) throws JiraException {
-		JiraWebSession s = new JiraWebSession(server);
+		JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -567,11 +567,11 @@ public class JiraWebClient {
 	}
 
 	private void voteUnvoteIssue(final JiraIssue issue, final boolean vote) throws JiraException {
-		if (!issue.canUserVote(this.server.getUserName())) {
+		if (!issue.canUserVote(this.client.getUserName())) {
 			return;
 		}
 
-		JiraWebSession s = new JiraWebSession(server);
+		JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -596,7 +596,7 @@ public class JiraWebClient {
 	}
 
 	public void deleteIssue(final JiraIssue issue) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
 			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
@@ -623,7 +623,7 @@ public class JiraWebClient {
 
 	public WebServerInfo getWebServerInfo() throws JiraException {
 		final WebServerInfo webServerInfo = new WebServerInfo();
-		final JiraWebSession s = new JiraWebSession(server);
+		final JiraWebSession s = new JiraWebSession(client);
 		s.setLogEnabled(true);
 		s.doInSession(new JiraWebSessionCallback() {
 

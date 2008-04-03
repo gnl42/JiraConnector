@@ -38,7 +38,7 @@ import org.eclipse.mylyn.web.core.WebLocation;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
-public class JiraRpcClientTest extends TestCase {
+public class JiraClientTest extends TestCase {
 
 	private JiraClient client;
 

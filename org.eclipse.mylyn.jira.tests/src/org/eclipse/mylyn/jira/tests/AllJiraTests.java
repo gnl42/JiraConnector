@@ -36,7 +36,8 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraFilterTest.class);
 		suite.addTestSuite(JiraTaskArchiveTest.class);
 		suite.addTestSuite(JiraRepositoryConnectorTest.class);
-		suite.addTestSuite(JiraRpcClientTest.class);
+		suite.addTestSuite(JiraClientTest.class);
+		suite.addTestSuite(JiraWebClientTest.class);
 		suite.addTestSuite(JiraAttachmentHandlerTest.class);
 		suite.addTestSuite(JiraTaskDataHandlerTest.class);
 		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
