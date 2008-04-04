@@ -346,8 +346,14 @@ public class JiraSoapClient {
 		});
 	}
 
-	public void logout(IProgressMonitor monitor) {
-		loginToken.expire();
+	public void logout(IProgressMonitor monitor) throws JiraException {
+		callOnce(monitor, new RemoteRunnable<Object>() {
+			public Object run() throws java.rmi.RemoteException, JiraException {
+				loginToken.expire();
+				return null;
+			}
+
+		});
 	}
 
 	public NamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
@@ -409,16 +415,16 @@ public class JiraSoapClient {
 		return e.getLocalizedMessage();
 	}
 
-	private <T> T callWithRetry(RemoteRunnable<T> runnable, IProgressMonitor monitor) throws JiraException {
+	private <T> T callWithRetry(IProgressMonitor monitor, RemoteRunnable<T> runnable) throws JiraException {
 		try {
-			return callOnce(runnable, monitor);
+			return callOnce(monitor, runnable);
 		} catch (JiraAuthenticationException e) {
 			loginToken.expire();
-			return callOnce(runnable, monitor);
+			return callOnce(monitor, runnable);
 		}
 	}
 
-	private <T> T callOnce(final RemoteRunnable<T> runnable, IProgressMonitor monitor) throws JiraException,
+	private <T> T callOnce(IProgressMonitor monitor, final RemoteRunnable<T> runnable) throws JiraException,
 			JiraInsufficientPermissionException, JiraAuthenticationException, JiraServiceUnavailableException {
 		try {
 			monitor = Policy.monitorFor(monitor);
@@ -462,7 +468,7 @@ public class JiraSoapClient {
 	private <T> T call(IProgressMonitor monitor, RemoteRunnable<T> runnable) throws JiraException {
 		while (true) {
 			try {
-				return callWithRetry(runnable, monitor);
+				return callWithRetry(monitor, runnable);
 			} catch (JiraAuthenticationException e) {
 				if (jiraClient.getLocation().requestCredentials(AuthenticationType.REPOSITORY, null) == ResultType.NOT_SUPPORTED) {
 					throw e;

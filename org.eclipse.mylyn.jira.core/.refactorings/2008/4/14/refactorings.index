@@ -4,3 +4,5 @@
 1207185021576	Rename type 'JiraIssueCollector'
 1207288034441	Change method 'run'
 1207289934271	Change method 'call'
+1207291831468	Change method 'callOnce'
+1207291839967	Change method 'callWithRetry'

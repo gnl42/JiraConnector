@@ -85,13 +85,13 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	}
 
 	public synchronized void logOutFromAll() {
-		try {
-			JiraClient[] allServers = clientManager.getAllClients();
-			for (JiraClient allServer : allServers) {
-				allServer.logout(null);
+		JiraClient[] clients = clientManager.getAllClients();
+		for (JiraClient client : clients) {
+			try {
+				client.logout(null);
+			} catch (JiraException e) {
+				// ignore
 			}
-		} catch (Exception e) {
-			// ignore
 		}
 	}
 
@@ -121,7 +121,11 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	private synchronized void removeServer(JiraClient server) {
 		if (server != null) {
 			// FIXME run this in a job
-			server.logout(null);
+			try {
+				server.logout(null);
+			} catch (JiraException e) {
+				// ignore
+			}
 			clientManager.removeClient(server);
 		}
 	}

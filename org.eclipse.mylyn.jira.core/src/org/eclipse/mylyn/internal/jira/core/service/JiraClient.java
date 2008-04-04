@@ -405,7 +405,7 @@ public class JiraClient {
 	 * Force the current session to be closed. This method should only be called during application shutdown and then
 	 * only out of courtesy to the server. Jira will automatically expire sessions after a set amount of time.
 	 */
-	public void logout(IProgressMonitor monitor) {
+	public void logout(IProgressMonitor monitor) throws JiraException {
 		soapClient.logout(monitor);
 	}
 
