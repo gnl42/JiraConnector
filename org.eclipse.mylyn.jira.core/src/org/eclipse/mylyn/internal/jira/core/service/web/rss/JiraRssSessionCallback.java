@@ -14,7 +14,6 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HeaderElement;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -30,7 +29,7 @@ import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public abstract class JiraRssSessionCallback implements JiraWebSessionCallback {
+public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 
 	private static final int MAX_REDIRECTS = 1;
 
@@ -43,7 +42,8 @@ public abstract class JiraRssSessionCallback implements JiraWebSessionCallback {
 		this.collector = collector;
 	}
 
-	public final void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException, IOException {
+	@Override
+	public final void run(JiraClient client, String baseUrl) throws JiraException, IOException {
 		String rssUrl = getRssUrl(baseUrl);
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
 			GetMethod rssRequest = new GetMethod(rssUrl);
@@ -54,7 +54,7 @@ public abstract class JiraRssSessionCallback implements JiraWebSessionCallback {
 			}
 
 			try {
-				int code = client.executeMethod(rssRequest);
+				int code = execute(rssRequest);
 
 				// TODO refactor, code was copied from JiraWebSession.expectRedirect()
 				if (code == HttpStatus.SC_MOVED_TEMPORARILY) {
@@ -85,7 +85,7 @@ public abstract class JiraRssSessionCallback implements JiraWebSessionCallback {
 					return;
 				}
 
-				parseResult(server, baseUrl, rssRequest);
+				parseResult(client, baseUrl, rssRequest);
 
 				// success
 				return;
@@ -97,13 +97,13 @@ public abstract class JiraRssSessionCallback implements JiraWebSessionCallback {
 		throw new JiraException("Maximum number of query redirects exceeded: " + rssUrl);
 	}
 
-	private void parseResult(JiraClient server, String baseUrl, GetMethod rssRequest) throws IOException, JiraException {
+	private void parseResult(JiraClient client, String baseUrl, GetMethod rssRequest) throws IOException, JiraException {
 		InputStream in = rssRequest.getResponseBodyAsStream();
 		try {
 			if (isResponseGZipped(rssRequest)) {
 				in = new GZIPInputStream(rssRequest.getResponseBodyAsStream());
 			}
-			new JiraRssReader(server, collector).readRssFeed(in, baseUrl);
+			new JiraRssReader(client, collector).readRssFeed(in, baseUrl);
 		} finally {
 			try {
 				in.close();

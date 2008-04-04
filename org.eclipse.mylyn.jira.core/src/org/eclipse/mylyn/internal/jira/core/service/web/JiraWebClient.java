@@ -24,7 +24,6 @@ import java.util.Locale;
 import javax.swing.text.html.HTML.Tag;
 
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -67,31 +66,28 @@ public class JiraWebClient {
 
 	private final JiraClient client;
 
-	public JiraWebClient(JiraClient server) {
-		this.client = server;
+	public JiraWebClient(JiraClient client) {
+		this.client = client;
 	}
 
 	public void addCommentToIssue(final JiraIssue issue, final String comment) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
-
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+		doInSession(new JiraWebSessionCallback() {
+			@Override
+			public void run(JiraClient client, String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/AddComment.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", s.getContentType());
+				post.setRequestHeader("Content-Type", getContentType());
 				post.addParameter("comment", comment);
 				post.addParameter("commentLevel", "");
 				post.addParameter("id", issue.getId());
 
 				try {
-					client.executeMethod(post);
-					if (!s.expectRedirect(post, issue)) {
+					execute(post);
+					if (!expectRedirect(post, issue)) {
 						handleErrorMessage(post);
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
@@ -100,17 +96,20 @@ public class JiraWebClient {
 		});
 	}
 
+	private String getContentType() throws JiraException {
+		return "application/x-www-form-urlencoded; charset=" + client.getCharacterEncoding();
+	}
+
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
 	public void updateIssue(final JiraIssue issue, final String comment) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
-
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+		doInSession(new JiraWebSessionCallback() {
+			@Override
+			public void run(JiraClient client, String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/EditIssue.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", s.getContentType());
+				post.setRequestHeader("Content-Type", getContentType());
 				post.addParameter("summary", issue.getSummary());
 				post.addParameter("issuetype", issue.getType().getId());
 				if (issue.getPriority() != null) {
@@ -180,12 +179,10 @@ public class JiraWebClient {
 				addCustomFields(issue, post);
 
 				try {
-					client.executeMethod(post);
-					if (!s.expectRedirect(post, issue)) {
+					execute(post);
+					if (!expectRedirect(post, issue)) {
 						handleErrorMessage(post);
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
@@ -196,15 +193,14 @@ public class JiraWebClient {
 
 	public void assignIssueTo(final JiraIssue issue, final int assigneeType, final String user, final String comment)
 			throws JiraException {
-		final JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
-
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+		doInSession(new JiraWebSessionCallback() {
+			@Override
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/AssignIssue.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", s.getContentType());
+				post.setRequestHeader("Content-Type", getContentType());
 
 				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user));
 
@@ -215,12 +211,10 @@ public class JiraWebClient {
 				post.addParameter("id", issue.getId());
 
 				try {
-					client.executeMethod(post);
-					if (!s.expectRedirect(post, issue)) {
+					execute(post);
+					if (!expectRedirect(post, issue)) {
 						handleErrorMessage(post);
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
@@ -233,9 +227,10 @@ public class JiraWebClient {
 			final String[] fields) throws JiraException {
 		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+			@Override
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
-				post.setRequestHeader("Content-Type", s.getContentType());
+				post.setRequestHeader("Content-Type", getContentType());
 
 				post.addParameter("id", issue.getId());
 				post.addParameter("action", actionKey);
@@ -258,12 +253,10 @@ public class JiraWebClient {
 				}
 
 				try {
-					client.executeMethod(post);
-					if (!s.expectRedirect(post, issue)) {
+					execute(post);
+					if (!expectRedirect(post, issue)) {
 						handleErrorMessage(post);
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
@@ -296,7 +289,8 @@ public class JiraWebClient {
 		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+			@Override
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(baseUrl);
 				attachFileURLBuffer.append("/secure/AttachFile.jspa");
 
@@ -335,12 +329,10 @@ public class JiraWebClient {
 						post.getParams()));
 
 				try {
-					client.executeMethod(post);
-					if (!s.expectRedirect(post, "/secure/ManageAttachments.jspa?id=" + issue.getId())) {
+					execute(post);
+					if (!expectRedirect(post, "/secure/ManageAttachments.jspa?id=" + issue.getId())) {
 						handleErrorMessage(post);
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
@@ -353,7 +345,8 @@ public class JiraWebClient {
 		JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+			@Override
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
@@ -366,7 +359,7 @@ public class JiraWebClient {
 
 				GetMethod get = new GetMethod(rssUrlBuffer.toString());
 				try {
-					int result = client.executeMethod(get);
+					int result = execute(get);
 					if (result != HttpStatus.SC_OK) {
 						handleErrorMessage(get);
 					} else {
@@ -392,7 +385,8 @@ public class JiraWebClient {
 		JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+			@Override
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
@@ -405,7 +399,7 @@ public class JiraWebClient {
 
 				GetMethod get = new GetMethod(rssUrlBuffer.toString());
 				try {
-					int result = client.executeMethod(get);
+					int result = execute(get);
 					if (result != HttpStatus.SC_OK) {
 						handleErrorMessage(get);
 					} else {
@@ -435,12 +429,13 @@ public class JiraWebClient {
 		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+			@Override
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(baseUrl);
 				attachFileURLBuffer.append(url);
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
-				post.setRequestHeader("Content-Type", s.getContentType());
+				post.setRequestHeader("Content-Type", getContentType());
 
 				post.addParameter("pid", issue.getProject().getId());
 				post.addParameter("issuetype", issue.getType().getId());
@@ -498,8 +493,8 @@ public class JiraWebClient {
 				addCustomFields(issue, post);
 
 				try {
-					client.executeMethod(post);
-					if (!s.expectRedirect(post, "/browse/")) {
+					execute(post);
+					if (!expectRedirect(post, "/browse/")) {
 						handleErrorMessage(post);
 					} else {
 						final Header locationHeader = post.getResponseHeader("location");
@@ -514,8 +509,6 @@ public class JiraWebClient {
 											+ location);
 						}
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					post.releaseConnection();
 				}
@@ -537,19 +530,17 @@ public class JiraWebClient {
 		JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(baseUrl);
 				urlBuffer.append("/browse/").append(issue.getKey());
 				urlBuffer.append("?watch=").append(Boolean.toString(watch));
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
 				try {
-					int result = client.executeMethod(head);
+					int result = execute(head);
 					if (result != HttpStatus.SC_OK) {
 						throw new JiraException("Changing watch status failed. Return code: " + result);
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					head.releaseConnection();
 				}
@@ -574,19 +565,17 @@ public class JiraWebClient {
 		JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(baseUrl);
 				urlBuffer.append("/browse/").append(issue.getKey());
 				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote");
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
 				try {
-					int result = client.executeMethod(head);
+					int result = execute(head);
 					if (result != HttpStatus.SC_OK) {
 						throw new JiraException("Changing vote failed. Return code: " + result);
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					head.releaseConnection();
 				}
@@ -599,7 +588,7 @@ public class JiraWebClient {
 		final JiraWebSession s = new JiraWebSession(client);
 		s.doInSession(new JiraWebSessionCallback() {
 
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(baseUrl);
 				urlBuffer.append("/secure/DeleteIssue.jspa");
 				urlBuffer.append("?id=").append(issue.getId());
@@ -607,12 +596,10 @@ public class JiraWebClient {
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
 				try {
-					int result = client.executeMethod(head);
+					int result = execute(head);
 					if (result != HttpStatus.SC_OK) {
 						throw new JiraException("Deleting issue failed. Return code: " + result);
 					}
-				} catch (IOException e) {
-					throw new JiraException(e);
 				} finally {
 					head.releaseConnection();
 				}
@@ -626,9 +613,8 @@ public class JiraWebClient {
 		final JiraWebSession s = new JiraWebSession(client);
 		s.setLogEnabled(true);
 		s.doInSession(new JiraWebSessionCallback() {
-
-			public void execute(HttpClient client, JiraClient server, String baseUrl) throws JiraException {
-				webServerInfo.setCharacterEncoding(s.getBaseURL());
+			public void run(JiraClient server, String baseUrl) throws JiraException {
+				webServerInfo.setBaseUrl(s.getBaseURL());
 				webServerInfo.setCharacterEncoding(s.getCharacterEncoding());
 				webServerInfo.setInsecureRedirect(s.isInsecureRedirect());
 			}
@@ -653,51 +639,55 @@ public class JiraWebClient {
 		}
 	}
 
-	protected void handleErrorMessage(HttpMethodBase method) throws IOException, JiraException {
-		String response = method.getResponseBodyAsString();
-		// TODO consider logging the error
-
-		if (method.getStatusCode() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
-			throw new JiraRemoteException("JIRA system error", null);
-		}
-
-		if (response == null) {
-			throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(), "");
-		}
-
-		StringReader reader = new StringReader(response);
+	protected void handleErrorMessage(HttpMethodBase method) throws JiraException {
 		try {
-			StringBuilder msg = new StringBuilder();
-			HtmlStreamTokenizer tokenizer = new HtmlStreamTokenizer(reader, null);
-			for (Token token = tokenizer.nextToken(); token.getType() != Token.EOF; token = tokenizer.nextToken()) {
-				if (token.getType() == Token.TAG) {
-					HtmlTag tag = (HtmlTag) token.getValue();
+			String response = method.getResponseBodyAsString();
+			// TODO consider logging the error
 
-					String classValue = tag.getAttribute("class");
-					if (classValue != null) {
-						if (tag.getTagType() == HtmlTag.Type.DIV) {
-							if (classValue.startsWith("infoBox")) {
-								throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
-							} else if (classValue.startsWith("errorArea")) {
-								throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
-							}
-						} else if (tag.getTagType() == HtmlTag.Type.SPAN) {
-							if (classValue.startsWith("errMsg")) {
-								msg.append(getContent(tokenizer, HtmlTag.Type.SPAN));
+			if (method.getStatusCode() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+				throw new JiraRemoteException("JIRA system error", null);
+			}
+
+			if (response == null) {
+				throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(), "");
+			}
+
+			StringReader reader = new StringReader(response);
+			try {
+				StringBuilder msg = new StringBuilder();
+				HtmlStreamTokenizer tokenizer = new HtmlStreamTokenizer(reader, null);
+				for (Token token = tokenizer.nextToken(); token.getType() != Token.EOF; token = tokenizer.nextToken()) {
+					if (token.getType() == Token.TAG) {
+						HtmlTag tag = (HtmlTag) token.getValue();
+
+						String classValue = tag.getAttribute("class");
+						if (classValue != null) {
+							if (tag.getTagType() == HtmlTag.Type.DIV) {
+								if (classValue.startsWith("infoBox")) {
+									throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
+								} else if (classValue.startsWith("errorArea")) {
+									throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
+								}
+							} else if (tag.getTagType() == HtmlTag.Type.SPAN) {
+								if (classValue.startsWith("errMsg")) {
+									msg.append(getContent(tokenizer, HtmlTag.Type.SPAN));
+								}
 							}
 						}
 					}
 				}
+				if (msg.length() == 0) {
+					throw new JiraRemoteMessageException(response);
+				} else {
+					throw new JiraRemoteMessageException(msg.toString());
+				}
+			} catch (ParseException e) {
+				throw new JiraRemoteMessageException("Error parsing JIRA response: " + method.getStatusCode(), "");
+			} finally {
+				reader.close();
 			}
-			if (msg.length() == 0) {
-				throw new JiraRemoteMessageException(response);
-			} else {
-				throw new JiraRemoteMessageException(msg.toString());
-			}
-		} catch (ParseException e) {
-			throw new JiraRemoteMessageException("Error parsing JIRA response: " + method.getStatusCode(), "");
-		} finally {
-			reader.close();
+		} catch (IOException e) {
+			throw new JiraException(e);
 		}
 	}
 
@@ -736,6 +726,11 @@ public class JiraWebClient {
 				}
 			}
 		}
+	}
+
+	private void doInSession(JiraWebSessionCallback callback) throws JiraException {
+		JiraWebSession session = new JiraWebSession(client);
+		session.doInSession(callback);
 	}
 
 }

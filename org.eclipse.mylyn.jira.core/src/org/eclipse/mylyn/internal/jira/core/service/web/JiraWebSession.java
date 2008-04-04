@@ -14,17 +14,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -32,7 +33,8 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableExcept
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
-import org.eclipse.mylyn.web.core.WebClientUtil;
+import org.eclipse.mylyn.web.core.Policy;
+import org.eclipse.mylyn.web.core.WebUtil;
 import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
 
 /**
@@ -73,24 +75,19 @@ public class JiraWebSession {
 	public void doInSession(JiraWebSessionCallback callback) throws JiraException {
 		HttpClient httpClient = new HttpClient();
 
-		WebClientUtil.setupHttpClient(httpClient, USER_AGENT, location);
-
-		login(httpClient);
+		HostConfiguration hostConfiguration = login(httpClient, Policy.monitorFor(null));
 		try {
-			callback.execute(httpClient, client, baseUrl);
+			callback.configure(httpClient, hostConfiguration, baseUrl);
+			callback.run(client, baseUrl);
 		} catch (IOException e) {
 			throw new JiraException(e);
 		} finally {
-			logout(httpClient);
+			logout(httpClient, hostConfiguration, Policy.monitorFor(null));
 		}
 	}
 
 	protected String getCharacterEncoding() {
 		return characterEncoding;
-	}
-
-	protected String getContentType() throws JiraException {
-		return "application/x-www-form-urlencoded; charset=" + client.getCharacterEncoding();
 	}
 
 	protected String getBaseURL() {
@@ -113,7 +110,7 @@ public class JiraWebSession {
 		this.logEnabled = logEnabled;
 	}
 
-	private void login(HttpClient httpClient) throws JiraException {
+	private HostConfiguration login(HttpClient httpClient, IProgressMonitor monitor) throws JiraException {
 		RedirectTracker tracker = new RedirectTracker();
 
 		String url = baseUrl + "/login.jsp";
@@ -134,7 +131,8 @@ public class JiraWebSession {
 			tracker.addUrl(url);
 
 			try {
-				int statusCode = httpClient.executeMethod(login);
+				HostConfiguration hostConfiguration = WebUtil.createHostConfiguration(httpClient, location, monitor);
+				int statusCode = WebUtil.execute(httpClient, hostConfiguration, login, monitor);
 				if (needsReauthentication(httpClient, statusCode)) {
 					continue;
 				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
@@ -159,7 +157,8 @@ public class JiraWebSession {
 				if (url.endsWith("/success")) {
 					String newBaseUrl = url.substring(0, url.lastIndexOf("/success"));
 					if (baseUrl.equals(newBaseUrl)) {
-						return;
+						// success
+						return hostConfiguration;
 					} else {
 						// need to login to make sure HttpClient picks up the session cookie
 						baseUrl = newBaseUrl;
@@ -192,43 +191,21 @@ public class JiraWebSession {
 			throw new JiraAuthenticationException("Login failed.");
 		}
 
-		WebClientUtil.setupHttpClient(httpClient, USER_AGENT, location);
-
 		return true;
 	}
 
-	private void logout(HttpClient httpClient) throws JiraException {
+	private void logout(HttpClient httpClient, HostConfiguration hostConfiguration, IProgressMonitor monitor)
+			throws JiraException {
 		GetMethod logout = new GetMethod(baseUrl + "/logout"); //$NON-NLS-1$
 		logout.setFollowRedirects(false);
-
 		try {
-			httpClient.executeMethod(logout);
+			WebUtil.execute(httpClient, hostConfiguration, logout, monitor);
 		} catch (IOException e) {
 			// It doesn't matter if the logout fails. The server will clean up
 			// the session eventually
 		} finally {
 			logout.releaseConnection();
 		}
-	}
-
-	protected boolean expectRedirect(HttpMethodBase method, JiraIssue issue) throws JiraException {
-		return expectRedirect(method, "/browse/" + issue.getKey());
-	}
-
-	protected boolean expectRedirect(HttpMethodBase method, String page) throws JiraException {
-		if (method.getStatusCode() != HttpStatus.SC_MOVED_TEMPORARILY) {
-			return false;
-		}
-
-		Header locationHeader = method.getResponseHeader("location");
-		if (locationHeader == null) {
-			throw new JiraServiceUnavailableException("Invalid server response, missing redirect location");
-		}
-		String url = locationHeader.getValue();
-		if (!url.startsWith(baseUrl + page)) {
-			throw new JiraException("Server redirected to unexpected location: " + url);
-		}
-		return true;
 	}
 
 	private class RedirectTracker {
