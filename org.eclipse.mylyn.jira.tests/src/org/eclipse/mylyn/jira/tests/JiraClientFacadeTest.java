@@ -101,7 +101,7 @@ public class JiraClientFacadeTest extends TestCase {
 		jiraFacade.repositoryRemoved(repository);
 
 		try {
-			jiraFacade.getJiraClient(repository).getNamedFilters();
+			jiraFacade.getJiraClient(repository).getNamedFilters(null);
 			fail("Expected to fail on bogus user");
 		} catch (JiraException e) {
 			// ignore
@@ -111,7 +111,7 @@ public class JiraClientFacadeTest extends TestCase {
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 		jiraFacade.repositoryRemoved(repository);
-		jiraFacade.getJiraClient(repository).getNamedFilters();
+		jiraFacade.getJiraClient(repository).getNamedFilters(null);
 	}
 
 	protected void validate(String url) throws Exception {

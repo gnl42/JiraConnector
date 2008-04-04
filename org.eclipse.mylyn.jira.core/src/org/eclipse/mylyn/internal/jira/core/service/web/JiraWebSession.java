@@ -72,17 +72,17 @@ public class JiraWebSession {
 		this(client, client.getBaseUrl());
 	}
 
-	public void doInSession(JiraWebSessionCallback callback) throws JiraException {
+	public void doInSession(JiraWebSessionCallback callback, IProgressMonitor monitor) throws JiraException {
+		monitor = Policy.monitorFor(monitor);
 		HttpClient httpClient = new HttpClient();
-
-		HostConfiguration hostConfiguration = login(httpClient, Policy.monitorFor(null));
+		HostConfiguration hostConfiguration = login(httpClient, monitor);
 		try {
 			callback.configure(httpClient, hostConfiguration, baseUrl);
-			callback.run(client, baseUrl);
+			callback.run(client, baseUrl, monitor);
 		} catch (IOException e) {
 			throw new JiraException(e);
 		} finally {
-			logout(httpClient, hostConfiguration, Policy.monitorFor(null));
+			logout(httpClient, hostConfiguration, monitor);
 		}
 	}
 

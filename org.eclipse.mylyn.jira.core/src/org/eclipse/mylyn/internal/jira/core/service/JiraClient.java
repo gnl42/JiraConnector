@@ -18,8 +18,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -27,7 +28,6 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Query;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -99,13 +99,13 @@ public class JiraClient {
 
 	private String characterEncoding;
 
-	private final JiraRssClient filterService;
+	private final JiraRssClient rssClient;
 
-	private final JiraWebClient issueService;
+	private final JiraWebClient webClient;
 
 	private final AbstractWebLocation location;
 
-	private final JiraSoapClient soapService;
+	private final JiraSoapClient soapClient;
 
 	private final boolean useCompression;
 
@@ -118,36 +118,39 @@ public class JiraClient {
 
 		this.cache = new JiraClientCache(this);
 
-		this.filterService = new JiraRssClient(this);
-		this.issueService = new JiraWebClient(this);
-		this.soapService = new JiraSoapClient(this);
+		this.rssClient = new JiraRssClient(this);
+		this.webClient = new JiraWebClient(this);
+		this.soapClient = new JiraSoapClient(this);
 	}
 
-	public void addCommentToIssue(JiraIssue issue, String comment) throws JiraException {
-		issueService.addCommentToIssue(issue, comment);
+	public void addCommentToIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
+		webClient.addCommentToIssue(issue, comment, monitor);
 	}
 
-	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment) throws JiraException {
-		String[] fields = getActionFields(issue.getKey(), actionKey);
-		issueService.advanceIssueWorkflow(issue, actionKey, comment, fields);
-	}
-
-	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment) throws JiraException {
-		issueService.assignIssueTo(issue, assigneeType, user, comment);
-	}
-
-	public void attachFile(JiraIssue issue, String comment, PartSource partSource, String contentType) throws JiraException {
-		issueService.attachFile(issue, comment, partSource, contentType);
-	}
-
-	public void attachFile(JiraIssue issue, String comment, String filename, byte[] contents, String contentType)
+	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
 			throws JiraException {
-		issueService.attachFile(issue, comment, filename, contents, contentType);
+		String[] fields = getActionFields(issue.getKey(), actionKey, monitor);
+		webClient.advanceIssueWorkflow(issue, actionKey, comment, fields, monitor);
 	}
 
-	public void attachFile(JiraIssue issue, String comment, String filename, File file, String contentType)
+	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment, IProgressMonitor monitor)
 			throws JiraException {
-		issueService.attachFile(issue, comment, filename, file, contentType);
+		webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
+	}
+
+	public void attachFile(JiraIssue issue, String comment, PartSource partSource, String contentType,
+			IProgressMonitor monitor) throws JiraException {
+		webClient.attachFile(issue, comment, partSource, contentType, monitor);
+	}
+
+	public void attachFile(JiraIssue issue, String comment, String filename, byte[] contents, String contentType,
+			IProgressMonitor monitor) throws JiraException {
+		webClient.attachFile(issue, comment, filename, contents, contentType, monitor);
+	}
+
+	public void attachFile(JiraIssue issue, String comment, String filename, File file, String contentType,
+			IProgressMonitor monitor) throws JiraException {
+		webClient.attachFile(issue, comment, filename, file, contentType, monitor);
 	}
 
 	/**
@@ -172,25 +175,25 @@ public class JiraClient {
 	 * 
 	 * @param issue
 	 *            Prototype issue used to create the new issue
-	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue} containing the details of the
-	 *         new issue
+	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue} containing the details of
+	 *         the new issue
 	 */
-	public JiraIssue createIssue(JiraIssue issue) throws JiraException {
-		String issueKey = issueService.createIssue(issue);
-		return getIssueByKey(issueKey);
+	public JiraIssue createIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		String issueKey = webClient.createIssue(issue, monitor);
+		return getIssueByKey(issueKey, monitor);
 	}
 
 	/**
 	 * See {@link #createIssue(JiraIssue)} for mandatory attributes of <code>issue</code>. Additionally the
 	 * <code>parentIssueId</code> must be set.
 	 */
-	public JiraIssue createSubTask(JiraIssue issue) throws JiraException {
-		String issueKey = issueService.createSubTask(issue);
-		return getIssueByKey(issueKey);
+	public JiraIssue createSubTask(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		String issueKey = webClient.createSubTask(issue, monitor);
+		return getIssueByKey(issueKey, monitor);
 	}
 
-	public void deleteIssue(JiraIssue issue) throws JiraException {
-		issueService.deleteIssue(issue);
+	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		webClient.deleteIssue(issue, monitor);
 	}
 
 	@Override
@@ -201,12 +204,14 @@ public class JiraClient {
 		return false;
 	}
 
-	public void executeNamedFilter(NamedFilter filter, IssueCollector collector) throws JiraException {
-		filterService.executeNamedFilter(filter, collector);
+	public void executeNamedFilter(NamedFilter filter, IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		rssClient.executeNamedFilter(filter, collector, monitor);
 	}
 
-	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector) throws JiraException {
-		filterService.findIssues(filterDefinition, collector);
+	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		rssClient.findIssues(filterDefinition, collector, monitor);
 	}
 
 	/**
@@ -218,8 +223,9 @@ public class JiraClient {
 	 *            Unique id for action to get fields for
 	 * @return array of field ids for given actionId
 	 */
-	public String[] getActionFields(final String issueKey, final String actionId) throws JiraException {
-		return soapService.getActionFields(issueKey, actionId);
+	public String[] getActionFields(final String issueKey, final String actionId, IProgressMonitor monitor)
+			throws JiraException {
+		return soapClient.getActionFields(issueKey, actionId, monitor);
 	}
 
 	/**
@@ -229,8 +235,9 @@ public class JiraClient {
 	 *            Unique key of the issue to find
 	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
 	 */
-	public RepositoryOperation[] getAvailableOperations(final String issueKey) throws JiraException {
-		return soapService.getAvailableOperations(issueKey);
+	public RepositoryOperation[] getAvailableOperations(final String issueKey, IProgressMonitor monitor)
+			throws JiraException {
+		return soapClient.getAvailableOperations(issueKey, monitor);
 	}
 
 	public String getBaseUrl() {
@@ -259,12 +266,12 @@ public class JiraClient {
 		return this.characterEncoding;
 	}
 
-	public Component[] getComponents(String projectKey) throws JiraException {
-		return soapService.getComponents(projectKey);
+	public Component[] getComponents(String projectKey, IProgressMonitor monitor) throws JiraException {
+		return soapClient.getComponents(projectKey, monitor);
 	}
 
-	public CustomField[] getCustomAttributes() throws JiraException {
-		return soapService.getCustomAttributes();
+	public CustomField[] getCustomAttributes(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getCustomAttributes(monitor);
 	}
 
 	/**
@@ -274,11 +281,12 @@ public class JiraClient {
 	 *            Unique key of the issue to find
 	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>.
 	 */
-	public RepositoryTaskAttribute[] getEditableAttributes(final String issueKey) throws JiraException {
+	public RepositoryTaskAttribute[] getEditableAttributes(final String issueKey, IProgressMonitor monitor)
+			throws JiraException {
 		// work around for bug 205015
 		String version = getCache().getServerInfo().getVersion();
 		boolean workAround = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0);
-		return soapService.getEditableAttributes(issueKey, workAround);
+		return soapClient.getEditableAttributes(issueKey, workAround, monitor);
 	}
 
 	/**
@@ -288,9 +296,9 @@ public class JiraClient {
 	 *            Unique key of the issue to find
 	 * @return Matching issue or <code>null</code> if no matching issue could be found
 	 */
-	public JiraIssue getIssueByKey(String issueKey) throws JiraException {
+	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
 		SingleIssueCollector collector = new SingleIssueCollector();
-		filterService.getIssueByKey(issueKey, collector);
+		rssClient.getIssueByKey(issueKey, collector, monitor);
 		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
 			throw new JiraException("Repository returned an unknown project for issue '"
 					+ collector.getIssue().getKey() + "'");
@@ -298,8 +306,8 @@ public class JiraClient {
 		return collector.getIssue();
 	}
 
-	public IssueType[] getIssueTypes() throws JiraException {
-		return soapService.getIssueTypes();
+	public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getIssueTypes(monitor);
 	}
 
 	/**
@@ -309,8 +317,8 @@ public class JiraClient {
 	 *            unique id of the issue
 	 * @return corresponding key or <code>null</code> if the id was not found
 	 */
-	public String getKeyFromId(final String issueId) throws JiraException {
-		return soapService.getKeyFromId(issueId);
+	public String getKeyFromId(final String issueId, IProgressMonitor monitor) throws JiraException {
+		return soapClient.getKeyFromId(issueId, monitor);
 	}
 
 	public AbstractWebLocation getLocation() {
@@ -323,33 +331,33 @@ public class JiraClient {
 	 * 
 	 * @return List of all filters taht are stored and executed on the server
 	 */
-	public NamedFilter[] getNamedFilters() throws JiraException {
-		return soapService.getNamedFilters();
+	public NamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getNamedFilters(monitor);
 	}
 
-	public Priority[] getPriorities() throws JiraException {
-		return soapService.getPriorities();
+	public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getPriorities(monitor);
 	}
 
-	public Project[] getProjects() throws JiraException {
+	public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
 		String version = getCache().getServerInfo().getVersion();
 		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_4) >= 0) {
-			return soapService.getProjectsNoSchemes();
+			return soapClient.getProjectsNoSchemes(monitor);
 		} else {
-			return soapService.getProjects();
+			return soapClient.getProjects(monitor);
 		}
 	}
 
-	public Resolution[] getResolutions() throws JiraException {
-		return soapService.getResolutions();
+	public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getResolutions(monitor);
 	}
 
-	public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
+	public ServerInfo getServerInfo(final IProgressMonitor monitor) throws JiraException {
 		// get server information through SOAP
-		ServerInfo serverInfo = soapService.getServerInfo(monitor);
+		ServerInfo serverInfo = soapClient.getServerInfo(monitor);
 
 		// get character encoding through web
-		WebServerInfo webServerInfo = issueService.getWebServerInfo();
+		WebServerInfo webServerInfo = webClient.getWebServerInfo(monitor);
 		serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
 		serverInfo.setWebBaseUrl(webServerInfo.getBaseUrl());
 
@@ -357,15 +365,15 @@ public class JiraClient {
 	}
 
 	public JiraSoapClient getSoapClient() {
-		return soapService;
+		return soapClient;
 	}
 
-	public JiraStatus[] getStatuses() throws JiraException {
-		return soapService.getStatuses();
+	public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getStatuses(monitor);
 	}
 
-	public IssueType[] getSubTaskIssueTypes() throws JiraException {
-		return soapService.getSubTaskIssueTypes();
+	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getSubTaskIssueTypes(monitor);
 	}
 
 	public String getUserName() {
@@ -373,8 +381,8 @@ public class JiraClient {
 		return (credentials != null) ? credentials.getUserName() : "";
 	}
 
-	public Version[] getVersions(String key) throws JiraException {
-		return soapService.getVersions(key);
+	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
+		return soapClient.getVersions(key, monitor);
 	}
 
 	@Override
@@ -389,31 +397,33 @@ public class JiraClient {
 	 * expire. If you need to check if the credentials are valid, call
 	 * {@link org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
 	 */
-	public void login() throws JiraException {
-		soapService.login();
+	public void login(IProgressMonitor monitor) throws JiraException {
+		soapClient.login(monitor);
 	}
 
 	/**
 	 * Force the current session to be closed. This method should only be called during application shutdown and then
 	 * only out of courtesy to the server. Jira will automatically expire sessions after a set amount of time.
 	 */
-	public void logout() {
-		soapService.logout();
+	public void logout(IProgressMonitor monitor) {
+		soapClient.logout(monitor);
 	}
 
-	public void quickSearch(String searchString, IssueCollector collector) throws JiraException {
-		filterService.quickSearch(searchString, collector);
+	public void quickSearch(String searchString, IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		rssClient.quickSearch(searchString, collector, monitor);
 
 	}
 
-	public byte[] retrieveFile(JiraIssue issue, Attachment attachment) throws JiraException {
+	public byte[] retrieveFile(JiraIssue issue, Attachment attachment, IProgressMonitor monitor) throws JiraException {
 		byte[] result = new byte[(int) attachment.getSize()];
-		issueService.retrieveFile(issue, attachment, result);
+		webClient.retrieveFile(issue, attachment, result, monitor);
 		return result;
 	}
 
-	public void retrieveFile(JiraIssue issue, Attachment attachment, OutputStream out) throws JiraException {
-		issueService.retrieveFile(issue, attachment, out);
+	public void retrieveFile(JiraIssue issue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
+			throws JiraException {
+		webClient.retrieveFile(issue, attachment, out, monitor);
 	}
 
 	/**
@@ -422,13 +432,13 @@ public class JiraClient {
 	 * @param collector
 	 *            Reciever for the matching issues
 	 */
-	public void search(Query query, IssueCollector collector) throws JiraException {
+	public void search(Query query, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
 		if (query instanceof SmartQuery) {
-			quickSearch(((SmartQuery) query).getKeywords(), collector);
+			quickSearch(((SmartQuery) query).getKeywords(), collector, monitor);
 		} else if (query instanceof FilterDefinition) {
-			findIssues((FilterDefinition) query, collector);
+			findIssues((FilterDefinition) query, collector, monitor);
 		} else if (query instanceof NamedFilter) {
-			executeNamedFilter((NamedFilter) query, collector);
+			executeNamedFilter((NamedFilter) query, collector, monitor);
 		} else {
 			throw new IllegalArgumentException("Unknown query type: " + query.getClass());
 		}
@@ -446,14 +456,14 @@ public class JiraClient {
 	/**
 	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user
 	 * and is not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user to
-	 * vote for an issue this method will do nothing.
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the
+	 * user to vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
 	 *            Issue to remove vote from
 	 */
-	public void unvoteIssue(JiraIssue issue) throws JiraException {
-		issueService.unvoteIssue(issue);
+	public void unvoteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		webClient.unvoteIssue(issue, monitor);
 	}
 
 	/**
@@ -462,12 +472,12 @@ public class JiraClient {
 	 * @param issue
 	 *            Issue to stop watching
 	 */
-	public void unwatchIssue(JiraIssue issue) throws JiraException {
-		issueService.unwatchIssue(issue);
+	public void unwatchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		webClient.unwatchIssue(issue, monitor);
 	}
 
-	public void updateIssue(JiraIssue issue, String comment) throws JiraException {
-		issueService.updateIssue(issue, comment);
+	public void updateIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
+		webClient.updateIssue(issue, comment, monitor);
 	}
 
 	public boolean useCompression() {
@@ -477,14 +487,14 @@ public class JiraClient {
 	/**
 	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
 	 * not resolved. Before calling this method, ensure it is valid to vote by calling
-	 * {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user to
-	 * vote for an issue this method will do nothing.
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the
+	 * user to vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
 	 *            Issue to vote for
 	 */
-	public void voteIssue(JiraIssue issue) throws JiraException {
-		issueService.voteIssue(issue);
+	public void voteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		webClient.voteIssue(issue, monitor);
 	}
 
 	/**
@@ -493,8 +503,8 @@ public class JiraClient {
 	 * @param issue
 	 *            Issue to begin watching
 	 */
-	public void watchIssue(JiraIssue issue) throws JiraException {
-		issueService.watchIssue(issue);
+	public void watchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		webClient.watchIssue(issue, monitor);
 	}
 
 }

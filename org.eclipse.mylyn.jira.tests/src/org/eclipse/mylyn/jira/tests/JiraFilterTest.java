@@ -103,7 +103,7 @@ public class JiraFilterTest extends TestCase {
 		issue.setAssignee(client.getUserName());
 		JiraTestUtils.createIssue(client, issue);
 
-		NamedFilter[] filters = client.getNamedFilters();
+		NamedFilter[] filters = client.getNamedFilters(null);
 		assertTrue(filters.length > 1);
 
 		NamedFilter filter = filters[1];

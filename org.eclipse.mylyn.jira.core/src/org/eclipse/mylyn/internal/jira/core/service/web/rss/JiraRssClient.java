@@ -11,6 +11,7 @@ package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -18,6 +19,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSession;
+import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
 
 /**
  * @author Brock Janiczak
@@ -25,51 +27,30 @@ import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSession;
  */
 public class JiraRssClient {
 
-	private final JiraClient jiraClient;
-
-	private final boolean useGZipCompression;
+	private final JiraClient client;
 
 	private final JiraRssFilterConverter filterService;
 
-	public JiraRssClient(JiraClient server) {
-		this.jiraClient = server;
-		this.useGZipCompression = server.useCompression();
+	private final boolean useGZipCompression;
+
+	public JiraRssClient(JiraClient client) {
+		this.client = client;
+		this.useGZipCompression = client.useCompression();
 		this.filterService = new JiraRssFilterConverter();
 	}
 
-	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector)
-			throws JiraException {
-		JiraWebSession session = new JiraWebSession(jiraClient);
-		session.doInSession(new JiraRssSessionCallback(useGZipCompression, collector) {
-			@Override
-			protected String getRssUrl(String baseUrl) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
-				String version = jiraClient.getCache().getServerInfo().getVersion();
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
-					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?decorator=none&reset=true&");
-					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
-						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
-					}
-				} else {
-					rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&reset=true&");
-					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
-						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
-					}
-				}
-				rssUrlBuffer.append(filterService.convert(filterDefinition, jiraClient.getCharacterEncoding()));
-
-				return rssUrlBuffer.toString();
-			}
-		});
+	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {
+		JiraWebSession session = new JiraWebSession(client);
+		session.doInSession(callback, monitor);
 	}
 
-	public void executeNamedFilter(final NamedFilter filter, final IssueCollector collector) throws JiraException {
-		JiraWebSession session = new JiraWebSession(jiraClient);
-		session.doInSession(new JiraRssSessionCallback(useGZipCompression, collector) {
+	public void executeNamedFilter(final NamedFilter filter, final IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
-				String version = jiraClient.getCache().getServerInfo().getVersion();
+				String version = client.getCache().getServerInfo().getVersion();
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
 					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append(
 							"/SearchRequest-").append(filter.getId()).append(".xml");
@@ -88,9 +69,57 @@ public class JiraRssClient {
 		});
 	}
 
-	public void quickSearch(final String searchString, final IssueCollector collector) throws JiraException {
-		JiraWebSession session = new JiraWebSession(jiraClient);
-		session.doInSession(new JiraRssSessionCallback(useGZipCompression, collector) {
+	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector,
+			IProgressMonitor monitor) throws JiraException {
+		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
+			@Override
+			protected String getRssUrl(String baseUrl) throws JiraException {
+				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				String version = client.getCache().getServerInfo().getVersion();
+				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
+					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?decorator=none&reset=true&");
+					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
+					}
+				} else {
+					rssUrlBuffer.append("/secure/IssueNavigator.jspa?view=rss&decorator=none&reset=true&");
+					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
+						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&');
+					}
+				}
+				rssUrlBuffer.append(filterService.convert(filterDefinition, client.getCharacterEncoding()));
+
+				return rssUrlBuffer.toString();
+			}
+		});
+	}
+
+	public void getIssueByKey(final String issueKey, final IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
+			@Override
+			protected String getRssUrl(String baseUrl) throws JiraException {
+				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				String version = client.getCache().getServerInfo().getVersion();
+				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
+					rssUrlBuffer.append("/si/jira.issueviews:issue-xml/");
+					rssUrlBuffer.append(issueKey);
+					rssUrlBuffer.append("/");
+					rssUrlBuffer.append(issueKey);
+					rssUrlBuffer.append(".xml");
+				} else {
+					rssUrlBuffer.append("/browse/");
+					rssUrlBuffer.append(issueKey);
+					rssUrlBuffer.append("?view=rss&decorator=none&reset=true&tempMax=1");
+				}
+				return rssUrlBuffer.toString();
+			}
+		});
+	}
+
+	public void quickSearch(final String searchString, final IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
@@ -110,29 +139,6 @@ public class JiraRssClient {
 			}
 		});
 
-	}
-
-	public void getIssueByKey(final String issueKey, final IssueCollector collector) throws JiraException {
-		JiraWebSession session = new JiraWebSession(jiraClient);
-		session.doInSession(new JiraRssSessionCallback(useGZipCompression, collector) {
-			@Override
-			protected String getRssUrl(String baseUrl) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
-				String version = jiraClient.getCache().getServerInfo().getVersion();
-				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
-					rssUrlBuffer.append("/si/jira.issueviews:issue-xml/");
-					rssUrlBuffer.append(issueKey);
-					rssUrlBuffer.append("/");
-					rssUrlBuffer.append(issueKey);
-					rssUrlBuffer.append(".xml");
-				} else {
-					rssUrlBuffer.append("/browse/");
-					rssUrlBuffer.append(issueKey);
-					rssUrlBuffer.append("?view=rss&decorator=none&reset=true&tempMax=1");
-				}
-				return rssUrlBuffer.toString();
-			}
-		});
 	}
 
 }

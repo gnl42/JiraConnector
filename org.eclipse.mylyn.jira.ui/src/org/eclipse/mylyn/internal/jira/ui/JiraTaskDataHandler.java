@@ -98,9 +98,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (!client.getCache().hasDetails()) {
 				client.getCache().refreshDetails(new NullProgressMonitor());
 			}
-			JiraIssue jiraIssue = getJiraIssue(client, taskId, repository.getUrl());
+			JiraIssue jiraIssue = getJiraIssue(client, taskId, repository.getUrl(), monitor);
 			if (jiraIssue != null) {
-				return createTaskData(repository, client, jiraIssue, null);
+				return createTaskData(repository, client, jiraIssue, null, monitor);
 			}
 			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
 					IStatus.OK, "JIRA ticket not found: " + taskId, null));
@@ -112,29 +112,29 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private JiraIssue getJiraIssue(JiraClient client, String taskId, String repositoryUrl) //
+	private JiraIssue getJiraIssue(JiraClient client, String taskId, String repositoryUrl, IProgressMonitor monitor) //
 			throws CoreException, JiraException {
 		try {
 			int id = Integer.parseInt(taskId);
 			AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
 			if (task != null) {
-				return client.getIssueByKey(task.getTaskKey());
+				return client.getIssueByKey(task.getTaskKey(), monitor);
 			} else {
-				String issueKey = client.getKeyFromId(taskId);
-				return client.getIssueByKey(issueKey);
+				String issueKey = client.getKeyFromId(taskId, monitor);
+				return client.getIssueByKey(issueKey, monitor);
 			}
 		} catch (NumberFormatException e) {
-			return client.getIssueByKey(taskId);
+			return client.getIssueByKey(taskId, monitor);
 		}
 	}
 
 	public RepositoryTaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
-			RepositoryTaskData oldTaskData) throws JiraException {
+			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
 				repository.getUrl(), jiraIssue.getId());
 		initializeTaskData(data, client, jiraIssue.getProject());
-		updateTaskData(data, jiraIssue, client, oldTaskData);
-		addOperations(data, jiraIssue, client, oldTaskData);
+		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
+		addOperations(data, jiraIssue, client, oldTaskData, monitor);
 		return data;
 	}
 
@@ -218,7 +218,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private void updateTaskData(RepositoryTaskData data, JiraIssue jiraIssue, JiraClient client,
-			RepositoryTaskData oldTaskData) throws JiraException {
+			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		String parentKey = jiraIssue.getParentKey();
 		if (parentKey != null) {
 			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentKey);
@@ -423,7 +423,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.addAttribute(attribute.getId(), attribute);
 		}
 
-		updateMarkup(data, jiraIssue, client, oldTaskData);
+		updateMarkup(data, jiraIssue, client, oldTaskData, monitor);
 
 		HashSet<String> editableKeys = new HashSet<String>();
 		if (!JiraRepositoryConnector.isClosed(jiraIssue)) {
@@ -441,7 +441,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 			} else {
 				try {
-					RepositoryTaskAttribute[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey());
+					RepositoryTaskAttribute[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(),
+							monitor);
 					if (editableAttributes != null) {
 						for (RepositoryTaskAttribute attribute : editableAttributes) {
 							editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getId()));
@@ -561,7 +562,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	 * through SOAP.
 	 */
 	private void updateMarkup(RepositoryTaskData data, JiraIssue jiraIssue, JiraClient client,
-			RepositoryTaskData oldTaskData) throws JiraException {
+			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		if (!jiraIssue.isMarkupDetected()) {
 			return;
 		}
@@ -592,7 +593,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		// consider preserving HTML 
-		RemoteIssue remoteIssue = client.getSoapClient().getIssueByKey(jiraIssue.getKey());
+		RemoteIssue remoteIssue = client.getSoapClient().getIssueByKey(jiraIssue.getKey(), monitor);
 		if (data.getAttribute(RepositoryTaskAttribute.DESCRIPTION) != null) {
 			if (remoteIssue.getDescription() == null) {
 				data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, "");
@@ -625,7 +626,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	public void addOperations(RepositoryTaskData data, JiraIssue issue, JiraClient client,
-			RepositoryTaskData oldTaskData) throws JiraException {
+			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		// avoid server round-trips
 		if (useCachedInformation(issue, oldTaskData)) {
 			for (RepositoryOperation operation : oldTaskData.getOperations()) {
@@ -647,10 +648,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.addOperation(reassignOperation);
 		}
 
-		RepositoryOperation[] availableOperations = client.getAvailableOperations(issue.getKey());
+		RepositoryOperation[] availableOperations = client.getAvailableOperations(issue.getKey(), monitor);
 		if (availableOperations != null) {
 			for (RepositoryOperation operation : availableOperations) {
-				String[] fields = client.getActionFields(issue.getKey(), operation.getKnobName());
+				String[] fields = client.getActionFields(issue.getKey(), operation.getKnobName(), monitor);
 				for (String field : fields) {
 					if (RepositoryTaskAttribute.RESOLUTION.equals(attributeFactory.mapCommonAttributeKey(field))) {
 						operation.setInputName(field);
@@ -701,9 +702,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			JiraIssue issue = buildJiraIssue(taskData, client);
 			if (taskData.isNew()) {
 				if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
-					issue = client.createSubTask(issue);
+					issue = client.createSubTask(issue, monitor);
 				} else {
-					issue = client.createIssue(issue);
+					issue = client.createIssue(issue, monitor);
 				}
 
 				if (issue == null) {
@@ -735,12 +736,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						|| REASSIGN_OPERATION.equals(operation.getKnobName())) {
 					if (!JiraRepositoryConnector.isClosed(issue)
 							&& taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
-						client.updateIssue(issue, taskData.getNewComment());
+						client.updateIssue(issue, taskData.getNewComment(), monitor);
 					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
-						client.addCommentToIssue(issue, taskData.getNewComment());
+						client.addCommentToIssue(issue, taskData.getNewComment(), monitor);
 					}
 				} else {
-					client.advanceIssueWorkflow(issue, operation.getKnobName(), taskData.getNewComment());
+					client.advanceIssueWorkflow(issue, operation.getKnobName(), taskData.getNewComment(), monitor);
 				}
 
 				return "";

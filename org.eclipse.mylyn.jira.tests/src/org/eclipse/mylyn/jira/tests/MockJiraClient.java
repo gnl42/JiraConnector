@@ -15,16 +15,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
-import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Query;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
@@ -90,76 +91,97 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
+	public void addCommentToIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
+			throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment, IProgressMonitor monitor)
+			throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public void attachFile(JiraIssue issue, String comment, PartSource partSource, String contentType,
+			IProgressMonitor monitor) throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public void attachFile(JiraIssue issue, String comment, String filename, byte[] contents, String contentType,
+			IProgressMonitor monitor) throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public void attachFile(JiraIssue issue, String comment, String filename, File file, String contentType,
+			IProgressMonitor monitor) throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public JiraIssue createIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		// ignore
+		return null;
+	}
+
+	@Override
+	public JiraIssue createSubTask(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		// ignore
+		return null;
+	}
+
+	@Override
+	public void deleteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public void executeNamedFilter(NamedFilter filter, IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public void findIssues(FilterDefinition filterDefinition, IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public String[] getActionFields(String issueKey, String actionId, IProgressMonitor monitor) throws JiraException {
+		return null;
+	}
+
+	@Override
+	public RepositoryOperation[] getAvailableOperations(String issueKey, IProgressMonitor monitor) throws JiraException {
+		return null;
+	}
+
+	@Override
 	public JiraClientCache getCache() {
 		return this.cache;
 	}
 
-	public void setCache(JiraClientCache cache) {
-		this.cache = cache;
+	@Override
+	public Component[] getComponents(String key, IProgressMonitor monitor) throws JiraException {
+		return null;
 	}
 
 	@Override
-	public void addCommentToIssue(JiraIssue issue, String comment) throws JiraException {
+	public CustomField[] getCustomAttributes(IProgressMonitor monitor) throws JiraException {
+		return null;
 	}
 
 	@Override
-	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment) throws JiraException {
-	}
-
-	@Override
-	public void assignIssueTo(JiraIssue issue, int assigneeType, String user, String comment) throws JiraException {
-	}
-
-	@Override
-	public void attachFile(JiraIssue issue, String comment, PartSource partSource, String contentType) throws JiraException {
-	}
-
-	@Override
-	public void attachFile(JiraIssue issue, String comment, String filename, byte[] contents, String contentType)
+	public RepositoryTaskAttribute[] getEditableAttributes(String issueKey, IProgressMonitor monitor)
 			throws JiraException {
-	}
-
-	@Override
-	public void attachFile(JiraIssue issue, String comment, String filename, File file, String contentType)
-			throws JiraException {
-	}
-
-	@Override
-	public JiraIssue createIssue(JiraIssue issue) throws JiraException {
-		return null;
-	}
-
-	@Override
-	public JiraIssue createSubTask(JiraIssue issue) throws JiraException {
-		return null;
-	}
-
-	@Override
-	public void deleteIssue(JiraIssue issue) throws JiraException {
-	}
-
-	@Override
-	public String[] getActionFields(String issueKey, String actionId) throws JiraException {
-		return null;
-	}
-
-	@Override
-	public RepositoryOperation[] getAvailableOperations(String issueKey) throws JiraException {
-		return null;
-	}
-
-	@Override
-	public Component[] getComponents(String key) throws JiraException {
-		return null;
-	}
-
-	@Override
-	public CustomField[] getCustomAttributes() throws JiraException {
-		return null;
-	}
-
-	@Override
-	public RepositoryTaskAttribute[] getEditableAttributes(String issueKey) throws JiraException {
 		return null;
 	}
 
@@ -168,37 +190,38 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public JiraIssue getIssueByKey(String issueKey) throws JiraException {
+	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
+		// ignore
 		return null;
 	}
 
 	@Override
-	public IssueType[] getIssueTypes() throws JiraException {
+	public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public String getKeyFromId(String issueId) throws JiraException {
+	public String getKeyFromId(String issueId, IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public NamedFilter[] getNamedFilters() throws JiraException {
+	public NamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public Priority[] getPriorities() throws JiraException {
+	public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public Project[] getProjects() throws JiraException {
+	public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public Resolution[] getResolutions() throws JiraException {
+	public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
@@ -208,59 +231,78 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public JiraStatus[] getStatuses() throws JiraException {
+	public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public IssueType[] getSubTaskIssueTypes() throws JiraException {
+	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public Version[] getVersions(String key) throws JiraException {
+	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
 	@Override
-	public void login() throws JiraException {
+	public void login(IProgressMonitor monitor) throws JiraException {
 	}
 
 	@Override
-	public void logout() {
+	public void logout(IProgressMonitor monitor) {
 	}
 
 	@Override
-	public byte[] retrieveFile(JiraIssue issue, Attachment attachment) throws JiraException {
+	public void quickSearch(String searchString, IssueCollector collector, IProgressMonitor monitor)
+			throws JiraException {
+		// ignore
+	}
+
+	@Override
+	public byte[] retrieveFile(JiraIssue issue, Attachment attachment, IProgressMonitor monitor) throws JiraException {
+		// ignore
 		return null;
 	}
 
 	@Override
-	public void retrieveFile(JiraIssue issue, Attachment attachment, OutputStream out) throws JiraException {
+	public void retrieveFile(JiraIssue issue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
+			throws JiraException {
+		// ignore
 	}
 
 	@Override
-	public void search(Query query, IssueCollector collector) throws JiraException {
+	public void search(Query query, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
+		// ignore
+	}
+
+	public void setCache(JiraClientCache cache) {
+		this.cache = cache;
 	}
 
 	@Override
-	public void unvoteIssue(JiraIssue issue) throws JiraException {
+	public void unvoteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		// ignore
 	}
 
 	@Override
-	public void unwatchIssue(JiraIssue issue) throws JiraException {
+	public void unwatchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		// ignore
 	}
 
 	@Override
-	public void updateIssue(JiraIssue issue, String comment) throws JiraException {
+	public void updateIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
+		// ignore
 	}
 
 	@Override
-	public void voteIssue(JiraIssue issue) throws JiraException {
+	public void voteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		// ignore
 	}
 
 	@Override
-	public void watchIssue(JiraIssue issue) throws JiraException {
+	public void watchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		// ignore
 	}
 
 }

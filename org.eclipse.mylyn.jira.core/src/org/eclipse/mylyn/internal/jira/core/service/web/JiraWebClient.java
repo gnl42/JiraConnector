@@ -37,6 +37,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartBase;
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
@@ -70,10 +71,11 @@ public class JiraWebClient {
 		this.client = client;
 	}
 
-	public void addCommentToIssue(final JiraIssue issue, final String comment) throws JiraException {
-		doInSession(new JiraWebSessionCallback() {
+	public void addCommentToIssue(final JiraIssue issue, final String comment, IProgressMonitor monitor)
+			throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
-			public void run(JiraClient client, String baseUrl) throws JiraException {
+			public void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/AddComment.jspa");
 
@@ -101,10 +103,10 @@ public class JiraWebClient {
 	}
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
-	public void updateIssue(final JiraIssue issue, final String comment) throws JiraException {
-		doInSession(new JiraWebSessionCallback() {
+	public void updateIssue(final JiraIssue issue, final String comment, IProgressMonitor monitor) throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
-			public void run(JiraClient client, String baseUrl) throws JiraException {
+			public void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/EditIssue.jspa");
 
@@ -191,11 +193,11 @@ public class JiraWebClient {
 		});
 	}
 
-	public void assignIssueTo(final JiraIssue issue, final int assigneeType, final String user, final String comment)
-			throws JiraException {
-		doInSession(new JiraWebSessionCallback() {
+	public void assignIssueTo(final JiraIssue issue, final int assigneeType, final String user, final String comment,
+			IProgressMonitor monitor) throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/AssignIssue.jspa");
 
@@ -224,11 +226,10 @@ public class JiraWebClient {
 	}
 
 	public void advanceIssueWorkflow(final JiraIssue issue, final String actionKey, final String comment,
-			final String[] fields) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
+			final String[] fields, IProgressMonitor monitor) throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
 				post.setRequestHeader("Content-Type", getContentType());
 
@@ -265,32 +266,31 @@ public class JiraWebClient {
 	}
 
 	public void attachFile(final JiraIssue issue, final String comment, final PartSource partSource,
-			final String contentType) throws JiraException {
-		attachFile(issue, comment, new FilePart("filename.1", partSource), contentType);
+			final String contentType, IProgressMonitor monitor) throws JiraException {
+		attachFile(issue, comment, new FilePart("filename.1", partSource), contentType, monitor);
 	}
 
 	public void attachFile(final JiraIssue issue, final String comment, final String filename, final byte[] contents,
-			final String contentType) throws JiraException {
-		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)), contentType);
+			final String contentType, IProgressMonitor monitor) throws JiraException {
+		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)),
+				contentType, monitor);
 	}
 
 	public void attachFile(final JiraIssue issue, final String comment, final String filename, final File file,
-			final String contentType) throws JiraException {
+			final String contentType, IProgressMonitor monitor) throws JiraException {
 		try {
 			FilePartSource partSource = new FilePartSource(filename, file);
-			attachFile(issue, comment, new FilePart("filename.1", partSource), contentType);
+			attachFile(issue, comment, new FilePart("filename.1", partSource), contentType, monitor);
 		} catch (FileNotFoundException e) {
 			throw new JiraException(e);
 		}
 	}
 
 	public void attachFile(final JiraIssue issue, final String comment, final FilePart filePart,
-			final String contentType) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
-
+			final String contentType, IProgressMonitor monitor) throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(baseUrl);
 				attachFileURLBuffer.append("/secure/AttachFile.jspa");
 
@@ -340,13 +340,11 @@ public class JiraWebClient {
 		});
 	}
 
-	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final byte[] attachmentData)
-			throws JiraException {
-		JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
-
+	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final byte[] attachmentData,
+			IProgressMonitor monitor) throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
@@ -380,13 +378,12 @@ public class JiraWebClient {
 		});
 	}
 
-	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final OutputStream out)
-			throws JiraException {
-		JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
+	public void retrieveFile(final JiraIssue issue, final Attachment attachment, final OutputStream out,
+			IProgressMonitor monitor) throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 
 			@Override
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
@@ -415,22 +412,20 @@ public class JiraWebClient {
 		});
 	}
 
-	public String createIssue(final JiraIssue issue) throws JiraException {
-		return createIssue("/secure/CreateIssueDetails.jspa", issue);
+	public String createIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		return createIssue("/secure/CreateIssueDetails.jspa", issue, monitor);
 	}
 
-	public String createSubTask(final JiraIssue issue) throws JiraException {
-		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue);
+	public String createSubTask(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue, monitor);
 	}
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
-	private String createIssue(final String url, final JiraIssue issue) throws JiraException {
+	private String createIssue(final String url, final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		final String[] issueKey = new String[1];
-		final JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
-
+		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer attachFileURLBuffer = new StringBuffer(baseUrl);
 				attachFileURLBuffer.append(url);
 
@@ -518,19 +513,18 @@ public class JiraWebClient {
 		return issueKey[0];
 	}
 
-	public void watchIssue(final JiraIssue issue) throws JiraException {
-		watchUnwatchIssue(issue, true);
+	public void watchIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		watchUnwatchIssue(issue, true, monitor);
 	}
 
-	public void unwatchIssue(final JiraIssue issue) throws JiraException {
-		watchUnwatchIssue(issue, false);
+	public void unwatchIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		watchUnwatchIssue(issue, false, monitor);
 	}
 
-	private void watchUnwatchIssue(final JiraIssue issue, final boolean watch) throws JiraException {
-		JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
-
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+	private void watchUnwatchIssue(final JiraIssue issue, final boolean watch, IProgressMonitor monitor)
+			throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(baseUrl);
 				urlBuffer.append("/browse/").append(issue.getKey());
 				urlBuffer.append("?watch=").append(Boolean.toString(watch));
@@ -549,23 +543,19 @@ public class JiraWebClient {
 		});
 	}
 
-	public void voteIssue(final JiraIssue issue) throws JiraException {
-		voteUnvoteIssue(issue, true);
+	public void voteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		voteUnvoteIssue(issue, true, monitor);
 	}
 
-	public void unvoteIssue(final JiraIssue issue) throws JiraException {
-		voteUnvoteIssue(issue, false);
+	public void unvoteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		voteUnvoteIssue(issue, false, monitor);
 	}
 
-	private void voteUnvoteIssue(final JiraIssue issue, final boolean vote) throws JiraException {
-		if (!issue.canUserVote(this.client.getUserName())) {
-			return;
-		}
+	private void voteUnvoteIssue(final JiraIssue issue, final boolean vote, IProgressMonitor monitor)
+			throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 
-		JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
-
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(baseUrl);
 				urlBuffer.append("/browse/").append(issue.getKey());
 				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote");
@@ -584,11 +574,10 @@ public class JiraWebClient {
 		});
 	}
 
-	public void deleteIssue(final JiraIssue issue) throws JiraException {
-		final JiraWebSession s = new JiraWebSession(client);
-		s.doInSession(new JiraWebSessionCallback() {
+	public void deleteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
+		doInSession(monitor, new JiraWebSessionCallback() {
 
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuffer urlBuffer = new StringBuffer(baseUrl);
 				urlBuffer.append("/secure/DeleteIssue.jspa");
 				urlBuffer.append("?id=").append(issue.getId());
@@ -608,17 +597,17 @@ public class JiraWebClient {
 		});
 	}
 
-	public WebServerInfo getWebServerInfo() throws JiraException {
+	public WebServerInfo getWebServerInfo(IProgressMonitor monitor) throws JiraException {
 		final WebServerInfo webServerInfo = new WebServerInfo();
 		final JiraWebSession s = new JiraWebSession(client);
 		s.setLogEnabled(true);
 		s.doInSession(new JiraWebSessionCallback() {
-			public void run(JiraClient server, String baseUrl) throws JiraException {
+			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				webServerInfo.setBaseUrl(s.getBaseURL());
 				webServerInfo.setCharacterEncoding(s.getCharacterEncoding());
 				webServerInfo.setInsecureRedirect(s.isInsecureRedirect());
 			}
-		});
+		}, monitor);
 		return webServerInfo;
 	}
 
@@ -728,9 +717,9 @@ public class JiraWebClient {
 		}
 	}
 
-	private void doInSession(JiraWebSessionCallback callback) throws JiraException {
+	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {
 		JiraWebSession session = new JiraWebSession(client);
-		session.doInSession(callback);
+		session.doInSession(callback, monitor);
 	}
 
 }

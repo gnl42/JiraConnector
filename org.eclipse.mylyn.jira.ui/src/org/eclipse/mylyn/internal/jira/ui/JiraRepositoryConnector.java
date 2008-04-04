@@ -148,7 +148,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			try {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
-				client.search(filter, new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS));
+				client.search(filter, new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS), monitor);
 
 				int n = 0;
 				for (JiraIssue issue : issues) {
@@ -172,7 +172,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						resultCollector.accept(task);
 					} else {
 						RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
-						resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData));
+						resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData,
+								monitor));
 					}
 				}
 				return Status.OK_STATUS;
@@ -207,7 +208,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues,
 				MAX_MARK_STALE_QUERY_HITS);
 		try {
-			client.search(changedFilter, issueCollector);
+			client.search(changedFilter, issueCollector, monitor);
 
 			if (issues.isEmpty()) {
 				// repository is unchanged
@@ -226,7 +227,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 					monitor.subTask(issue.getKey() + " " + issue.getSummary());
 					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
-					RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData);
+					RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData,
+							monitor);
 					mylynFacade.saveIncoming(task, taskData);
 					updateTaskFromTaskData(repository, task, taskData);
 				}

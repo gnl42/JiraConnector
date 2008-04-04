@@ -117,11 +117,11 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		issue.setEstimate(600);
 		Component component = issue.getProject().getComponents()[0];
 		issue.setComponents(new Component[] { component });
-		issue = client.createIssue(issue);
+		issue = client.createIssue(issue, null);
 		assertEquals(600, issue.getInitialEstimate());
 
 		String commentText = "line1\nline2\n\nline4\n\n\n";
-		client.addCommentToIssue(issue, commentText);
+		client.addCommentToIssue(issue, commentText, null);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertEquals(1, taskData.getComments().size());
@@ -167,7 +167,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, "http://jira.codehaus.org/");
 		MockJiraClient client = new MockJiraClient(repository.getUrl());
 		JiraTaskDataHandler dataHandler = new JiraTaskDataHandler(new MockJiraClientFactory(client));
-		RepositoryTaskData data = dataHandler.createTaskData(repository, client, issue, null);
+		RepositoryTaskData data = dataHandler.createTaskData(repository, client, issue, null, null);
 
 		assertValues(data, RepositoryTaskAttribute.TASK_KEY, "FOO-1");
 		assertValues(data, RepositoryTaskAttribute.STATUS, "open");
@@ -221,7 +221,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 
-		issue = client.getIssueByKey(issueKey);
+		issue = client.getIssueByKey(issueKey, null);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
 
 		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
@@ -248,7 +248,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		assertTrue("Invalid task due date " + task.getDueDate(), today.equals(task.getDueDate()));
 
-		issue = client.getIssueByKey(issueKey);
+		issue = client.getIssueByKey(issueKey, null);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
 
 		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
@@ -272,7 +272,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(true, task.isCompleted());
 		assertNotNull(task.getCompletionDate());
 
-		issue = client.getIssueByKey(issueKey);
+		issue = client.getIssueByKey(issueKey, null);
 		assertCustomField(issue, customFieldId, customFieldName, "foo");
 
 		assertTrue("Invalid issue due date " + issue.getDue(), today.equals(issue.getDue()));
@@ -293,7 +293,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		JiraIssue parentIssue = JiraTestUtils.createIssue(client, "testSubTask");
 
 		JiraIssue subTaskIssue = JiraTestUtils.newSubTask(client, parentIssue, "testSubTaskChild");
-		subTaskIssue = client.createSubTask(subTaskIssue);
+		subTaskIssue = client.createSubTask(subTaskIssue, null);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, parentIssue.getId(),
 				new NullProgressMonitor());
@@ -318,7 +318,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		JiraIssue parentIssue = JiraTestUtils.createIssue(client, "testUpdateSubTask");
 
 		JiraIssue subTaskIssue = JiraTestUtils.newSubTask(client, parentIssue, "testUpdateSubTaskChild");
-		subTaskIssue = client.createSubTask(subTaskIssue);
+		subTaskIssue = client.createSubTask(subTaskIssue, null);
 
 		RepositoryTaskData taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(),
 				new NullProgressMonitor());
@@ -327,7 +327,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		taskData.setDescription("new description");
 		dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 
-		JiraIssue updatedSubTaskIssue = client.getIssueByKey(taskData.getTaskKey());
+		JiraIssue updatedSubTaskIssue = client.getIssueByKey(taskData.getTaskKey(), null);
 		assertEquals(subTaskIssue.getId(), updatedSubTaskIssue.getId());
 		assertEquals("new description", updatedSubTaskIssue.getDescription());
 	}
@@ -365,7 +365,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		SecurityLevel securityLevel = new SecurityLevel();
 		securityLevel.setId("10000");
 		issue.setSecurityLevel(securityLevel);
-		client.updateIssue(issue, "");
+		client.updateIssue(issue, "", null);
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
@@ -405,21 +405,21 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		// resolve issue
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
-		client.advanceIssueWorkflow(issue, "5", "");
-		issue = client.getIssueByKey(issue.getKey());
+		client.advanceIssueWorkflow(issue, "5", "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 
-		RepositoryTaskData newTaskData = dataHandler.createTaskData(repository, client, issue, taskData);
+		RepositoryTaskData newTaskData = dataHandler.createTaskData(repository, client, issue, taskData, null);
 		operations = newTaskData.getOperations();
 		assertNotNull(operations);
 		assertEquals(3, operations.size());
 		assertEquals("3", operations.get(2).getKnobName());
 
 		issue.setSummary("changed");
-		client.updateIssue(issue, "");
+		client.updateIssue(issue, "", null);
 		newTaskData.getOperations().remove(0);
 
 		// make sure cached operations are used
-		newTaskData = dataHandler.createTaskData(repository, client, issue, newTaskData);
+		newTaskData = dataHandler.createTaskData(repository, client, issue, newTaskData, null);
 		operations = newTaskData.getOperations();
 		assertNotNull(operations);
 		assertEquals(2, operations.size());
@@ -473,7 +473,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertFalse(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS).isReadOnly());
 
 		// close
-		client.advanceIssueWorkflow(issue, "2", "");
+		client.advanceIssueWorkflow(issue, "2", "", null);
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		assertNull(taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY));

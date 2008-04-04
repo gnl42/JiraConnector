@@ -54,9 +54,9 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
-			JiraIssue issue = server.getIssueByKey(key);
+			JiraIssue issue = server.getIssueByKey(key, monitor);
 			Attachment jiraAttachment = issue.getAttachmentById(id);
-			server.retrieveFile(issue, jiraAttachment, out);
+			server.retrieveFile(issue, jiraAttachment, out, monitor);
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}
@@ -75,8 +75,9 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 			String comment, IProgressMonitor monitor) throws CoreException {
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
-			JiraIssue issue = server.getIssueByKey(task.getTaskKey());
-			server.attachFile(issue, comment, new AttachmentPartSource(attachment), attachment.getContentType());
+			JiraIssue issue = server.getIssueByKey(task.getTaskKey(), monitor);
+			server.attachFile(issue, comment, new AttachmentPartSource(attachment), attachment.getContentType(),
+					monitor);
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}

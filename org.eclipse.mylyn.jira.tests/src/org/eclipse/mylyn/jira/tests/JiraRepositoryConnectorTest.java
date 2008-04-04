@@ -302,7 +302,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		// close issue
 		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
-		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
+		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(new Date(), -1)));
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
@@ -390,9 +390,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		// close issue
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
-		client.advanceIssueWorkflow(issue, "2", "");
+		client.advanceIssueWorkflow(issue, "2", "", null);
 
-		issue = client.getIssueByKey(issue.getKey());
+		issue = client.getIssueByKey(issue.getKey(), null);
 		task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertTrue(task.isCompleted());
 		assertEquals(issue.getUpdated(), task.getCompletionDate());

@@ -88,7 +88,7 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 		try {
 			JiraClient[] allServers = clientManager.getAllClients();
 			for (JiraClient allServer : allServers) {
-				allServer.logout();
+				allServer.logout(null);
 			}
 		} catch (Exception e) {
 			// ignore
@@ -120,7 +120,8 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 
 	private synchronized void removeServer(JiraClient server) {
 		if (server != null) {
-			server.logout();
+			// FIXME run this in a job
+			server.logout(null);
 			clientManager.removeClient(server);
 		}
 	}

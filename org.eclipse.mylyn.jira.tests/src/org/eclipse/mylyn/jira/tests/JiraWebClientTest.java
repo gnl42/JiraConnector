@@ -53,13 +53,13 @@ public class JiraWebClientTest extends TestCase {
 		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary("testCreateIssue");
 
-		String key = webClient.createIssue(issue);
+		String key = webClient.createIssue(issue, null);
 		try {
 			String projectName = project.getKey();
 			assertEquals(projectName, key.substring(0, projectName.length()));
 		} finally {
 			try {
-				client.deleteIssue(client.getIssueByKey(key));
+				client.deleteIssue(client.getIssueByKey(key, null), null);
 			} catch (Exception e) {
 				// ignore
 			}

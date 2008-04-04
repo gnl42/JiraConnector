@@ -63,13 +63,13 @@ public class JiraClientTest extends TestCase {
 	private void login(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		client.login();
-		client.logout();
+		client.login(null);
+		client.logout(null);
 		// should automatically login
 		client.getCache().refreshDetails(new NullProgressMonitor());
 
 		init(url, PrivilegeLevel.GUEST);
-		client.login();
+		client.login(null);
 	}
 
 	public void testStartStopIssue() throws Exception {
@@ -83,9 +83,9 @@ public class JiraClientTest extends TestCase {
 
 		String startOperation = JiraTestUtils.getOperation(client, issue.getKey(), "start");
 
-		client.advanceIssueWorkflow(issue, startOperation, null);
+		client.advanceIssueWorkflow(issue, startOperation, null, null);
 		try {
-			client.advanceIssueWorkflow(issue, startOperation, null);
+			client.advanceIssueWorkflow(issue, startOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
@@ -93,14 +93,14 @@ public class JiraClientTest extends TestCase {
 
 		String stopOperation = JiraTestUtils.getOperation(client, issue.getKey(), "stop");
 
-		client.advanceIssueWorkflow(issue, stopOperation, null);
+		client.advanceIssueWorkflow(issue, stopOperation, null, null);
 		try {
-			client.advanceIssueWorkflow(issue, stopOperation, null);
+			client.advanceIssueWorkflow(issue, stopOperation, null, null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
-		client.advanceIssueWorkflow(issue, startOperation, null);
+		client.advanceIssueWorkflow(issue, startOperation, null, null);
 	}
 
 	public void testResolveCloseReopenIssue() throws Exception {
@@ -118,13 +118,13 @@ public class JiraClientTest extends TestCase {
 
 		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
 
-		client.advanceIssueWorkflow(issue, resolveOperation, "comment");
+		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
-		issue = client.getIssueByKey(issue.getKey());
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals("Resolved", issue.getStatus().getName());
 
 		try {
-			client.advanceIssueWorkflow(issue, resolveOperation, "comment");
+			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
@@ -133,19 +133,19 @@ public class JiraClientTest extends TestCase {
 		// have to get "close" operation after resolving issue
 		String closeOperation = JiraTestUtils.getOperation(client, issue.getKey(), "close");
 
-		client.advanceIssueWorkflow(issue, closeOperation, "comment");
-		issue = client.getIssueByKey(issue.getKey());
+		client.advanceIssueWorkflow(issue, closeOperation, "comment", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals("Closed", issue.getStatus().getName());
 
 		try {
-			client.advanceIssueWorkflow(issue, resolveOperation, "comment");
+			client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
 
 		try {
-			client.advanceIssueWorkflow(issue, closeOperation, "comment");
+			client.advanceIssueWorkflow(issue, closeOperation, "comment", null);
 			fail("Expected JiraRemoteMessageException");
 		} catch (JiraException e) {
 			assertEquals("Workflow Action Invalid", e.getMessage());
@@ -153,8 +153,8 @@ public class JiraClientTest extends TestCase {
 
 		String reopenOperation = JiraTestUtils.getOperation(client, issue.getKey(), "reopen");
 
-		client.advanceIssueWorkflow(issue, reopenOperation, "comment");
-		issue = client.getIssueByKey(issue.getKey());
+		client.advanceIssueWorkflow(issue, reopenOperation, "comment", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals("Reopened", issue.getStatus().getName());
 	}
 
@@ -167,17 +167,17 @@ public class JiraClientTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "getIdFromKey");
 
-		String key = client.getKeyFromId(issue.getId());
+		String key = client.getKeyFromId(issue.getId(), null);
 		assertEquals(issue.getKey(), key);
 
 		try {
-			key = client.getKeyFromId("invalid");
+			key = client.getKeyFromId("invalid", null);
 			fail("Expected JiraException, got: " + key);
 		} catch (JiraException e) {
 		}
 
 		try {
-			key = client.getKeyFromId("1");
+			key = client.getKeyFromId("1", null);
 			fail("Expected JiraException, got: " + key);
 		} catch (JiraException e) {
 		}
@@ -195,43 +195,43 @@ public class JiraClientTest extends TestCase {
 
 		issue.setAssignee("nonexistantuser");
 		try {
-			client.updateIssue(issue, "comment");
+			client.updateIssue(issue, "comment", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("User 'nonexistantuser' cannot be assigned issues.", e.getHtmlMessage());
 		}
 
 		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_NONE, "", "");
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_NONE, "", "", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Issues must be assigned.", e.getHtmlMessage());
 		}
 
 		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("Issue already assigned to Developer (" + client.getUserName() + ").", e.getHtmlMessage());
 		}
 
 		String guestUsername = TestUtil.readCredentials(PrivilegeLevel.GUEST).username;
 		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "");
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, guestUsername, "", null);
 		} catch (JiraRemoteMessageException e) {
 			assertEquals("User 'guest@mylyn.eclipse.org' cannot be assigned issues.", e.getHtmlMessage());
 		}
 
-		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "");
-		issue = client.getIssueByKey(issue.getKey());
+		client.assignIssueTo(issue, JiraClient.ASSIGNEE_DEFAULT, "", "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals("admin@mylyn.eclipse.org", issue.getAssignee());
 
-		client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
-		issue = client.getIssueByKey(issue.getKey());
+		client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(client.getUserName(), issue.getAssignee());
 
 		init(url, PrivilegeLevel.GUEST);
 		try {
-			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "");
+			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
 			fail("Expected JiraException");
 		} catch (JiraException e) {
 		}
@@ -246,7 +246,7 @@ public class JiraClientTest extends TestCase {
 
 		FilterDefinition filter = new FilterDefinition();
 		MockIssueCollector collector = new MockIssueCollector();
-		client.search(filter, collector);
+		client.search(filter, collector, null);
 		assertTrue(collector.done);
 	}
 
@@ -259,16 +259,16 @@ public class JiraClientTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testAddComment");
 
-		client.addCommentToIssue(issue, "comment 1");
-		issue = client.getIssueByKey(issue.getKey());
+		client.addCommentToIssue(issue, "comment 1", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		Comment comment = getComment(issue, "comment 1");
 		assertNotNull(comment);
 		assertEquals(client.getUserName(), comment.getAuthor());
 
 		init(url, PrivilegeLevel.GUEST);
 
-		client.addCommentToIssue(issue, "comment guest");
-		issue = client.getIssueByKey(issue.getKey());
+		client.addCommentToIssue(issue, "comment guest", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		comment = getComment(issue, "comment guest");
 		assertNotNull(comment);
 		assertEquals(client.getUserName(), comment.getAuthor());
@@ -297,14 +297,14 @@ public class JiraClientTest extends TestCase {
 
 		// test attaching an empty file
 		try {
-			client.attachFile(issue, "", file.getName(), file, "application/binary");
+			client.attachFile(issue, "", file.getName(), file, "application/binary", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
 
 		client.attachFile(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' },
-				"application/binary");
-		issue = client.getIssueByKey(issue.getKey());
+				"application/binary", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		Attachment attachment = getAttachment(issue, "my.filename.1");
 		assertNotNull(attachment);
 		assertEquals(client.getUserName(), attachment.getAuthor());
@@ -312,8 +312,8 @@ public class JiraClientTest extends TestCase {
 		assertNotNull(attachment.getCreated());
 
 		// spaces in filename
-		client.attachFile(issue, "", "file name with spaces", new byte[] { '1' }, "text/html");
-		issue = client.getIssueByKey(issue.getKey());
+		client.attachFile(issue, "", "file name with spaces", new byte[] { '1' }, "text/html", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		attachment = getAttachment(issue, "file name with spaces");
 		assertNotNull(attachment);
 		assertEquals(client.getUserName(), attachment.getAuthor());
@@ -393,10 +393,10 @@ public class JiraClientTest extends TestCase {
 		issue.setParentId(parentIssue.getId());
 		issue.setSummary("testCreateSubTaskChild");
 
-		JiraIssue childIssue = client.createSubTask(issue);
+		JiraIssue childIssue = client.createSubTask(issue, null);
 		assertEquals(parentIssue.getId(), childIssue.getParentId());
 
-		parentIssue = client.getIssueByKey(parentIssue.getKey());
+		parentIssue = client.getIssueByKey(parentIssue.getKey(), null);
 		assertNotNull(parentIssue.getSubtasks());
 		assertEquals(1, parentIssue.getSubtasks().length);
 		assertEquals(childIssue.getId(), parentIssue.getSubtasks()[0].getIssueId());
@@ -420,13 +420,13 @@ public class JiraClientTest extends TestCase {
 		issue.setAssignee(client.getUserName());
 
 		issue = JiraTestUtils.createIssue(client, issue);
-		issue = client.getIssueByKey(issue.getKey());
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(description, issue.getDescription());
 		assertEquals(summary, issue.getSummary());
 
 		issue.setDescription(issue.getDescription());
-		client.updateIssue(issue, "");
-		issue = client.getIssueByKey(issue.getKey());
+		client.updateIssue(issue, "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(description, issue.getDescription());
 	}
 
@@ -441,7 +441,7 @@ public class JiraClientTest extends TestCase {
 		assertNotNull("Unable to find Custom workflow action", operation);
 
 		init(JiraTestConstants.JIRA_39_URL, PrivilegeLevel.USER);
-		client.advanceIssueWorkflow(issue, operation, "custom action test");
+		client.advanceIssueWorkflow(issue, operation, "custom action test", null);
 	}
 
 	private JiraIssue updateIssue(String url, String projectKey) throws Exception {
@@ -457,14 +457,14 @@ public class JiraClientTest extends TestCase {
 
 		issue = JiraTestUtils.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueChanged");
-		client.updateIssue(issue, "");
-		issue = client.getIssueByKey(issue.getKey());
+		client.updateIssue(issue, "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals("testUpdateIssueChanged", issue.getSummary());
 		assertNotNull(issue.getUpdated());
 
 		init(url, PrivilegeLevel.GUEST);
 		try {
-			client.updateIssue(issue, "");
+			client.updateIssue(issue, "", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
@@ -475,7 +475,7 @@ public class JiraClientTest extends TestCase {
 		issue = JiraTestUtils.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueGuestChanged");
 		try {
-			client.updateIssue(issue, "");
+			client.updateIssue(issue, "", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
@@ -497,8 +497,8 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
-		client.updateIssue(issue, "comment: \u00C4\u00D6\u00DC");
-		issue = client.getIssueByKey(issue.getKey());
+		client.updateIssue(issue, "comment: \u00C4\u00D6\u00DC", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(summary, issue.getSummary());
 		assertEquals(description, issue.getDescription());
 		assertEquals(1, issue.getComments().length);
@@ -519,8 +519,8 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
-		client.updateIssue(issue, "");
-		issue = client.getIssueByKey(issue.getKey());
+		client.updateIssue(issue, "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(summary, issue.getSummary());
 		assertEquals(description, issue.getDescription());
 	}
@@ -539,8 +539,8 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
-		client.updateIssue(issue, "");
-		issue = client.getIssueByKey(issue.getKey());
+		client.updateIssue(issue, "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(description, issue.getDescription());
 	}
 
@@ -558,8 +558,8 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
-		client.updateIssue(issue, "");
-		issue = client.getIssueByKey(issue.getKey());
+		client.updateIssue(issue, "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(summary, issue.getSummary());
 		assertEquals(description, issue.getDescription());
 	}
@@ -574,16 +574,16 @@ public class JiraClientTest extends TestCase {
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testWatchUnwatch");
 
 		assertFalse(issue.isWatched());
-		client.watchIssue(issue);
-		issue = client.getIssueByKey(issue.getKey());
+		client.watchIssue(issue, null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		// flag is never set
 //		assertTrue(issue.isWatched());
 
-		client.unwatchIssue(issue);
-		issue = client.getIssueByKey(issue.getKey());
+		client.unwatchIssue(issue, null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertFalse(issue.isWatched());
-		client.unwatchIssue(issue);
-		issue = client.getIssueByKey(issue.getKey());
+		client.unwatchIssue(issue, null);
+		issue = client.getIssueByKey(issue.getKey(), null);
 		assertFalse(issue.isWatched());
 	}
 
@@ -640,7 +640,7 @@ public class JiraClientTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "getEditableFields");
 
-		RepositoryTaskAttribute[] fields = client.getEditableAttributes(issue.getKey());
+		RepositoryTaskAttribute[] fields = client.getEditableAttributes(issue.getKey(), null);
 		Set<String> ids = new HashSet<String>();
 		for (RepositoryTaskAttribute repositoryTaskAttribute : fields) {
 			ids.add(repositoryTaskAttribute.getId());

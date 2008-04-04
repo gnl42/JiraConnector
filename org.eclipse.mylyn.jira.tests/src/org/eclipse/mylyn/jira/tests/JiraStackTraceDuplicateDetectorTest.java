@@ -111,7 +111,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 		JiraIssue issue1 = JiraTestUtils.createIssue(client, "testStackTraceDetector2");
 
-		client.updateIssue(issue1, stackTrace);
+		client.updateIssue(issue1, stackTrace, null);
 
 		verifyDuplicate(stackTrace, issue1);
 	}

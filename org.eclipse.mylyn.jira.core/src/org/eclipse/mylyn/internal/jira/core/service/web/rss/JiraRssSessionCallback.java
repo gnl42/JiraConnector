@@ -18,6 +18,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -43,7 +44,7 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 	}
 
 	@Override
-	public final void run(JiraClient client, String baseUrl) throws JiraException, IOException {
+	public final void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException, IOException {
 		String rssUrl = getRssUrl(baseUrl);
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
 			GetMethod rssRequest = new GetMethod(rssUrl);

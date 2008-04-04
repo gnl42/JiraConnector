@@ -2,3 +2,5 @@
 1207169554288	Rename type 'Issue'
 1207183875477	Rename type 'IssueCollector'
 1207185021576	Rename type 'JiraIssueCollector'
+1207288034441	Change method 'run'
+1207289934271	Change method 'call'

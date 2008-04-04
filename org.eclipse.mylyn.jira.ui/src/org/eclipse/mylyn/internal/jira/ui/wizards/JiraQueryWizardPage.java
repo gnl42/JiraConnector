@@ -186,7 +186,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 				IStatus status = Status.OK_STATUS;
 				try {
 					JiraClient jiraServer = JiraClientFactory.getDefault().getJiraClient(repository);
-					loadedFilters = jiraServer.getNamedFilters();
+					loadedFilters = jiraServer.getNamedFilters(monitor);
 					filters = loadedFilters;
 
 				} catch (JiraException e) {

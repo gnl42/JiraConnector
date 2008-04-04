@@ -53,7 +53,7 @@ public abstract class JiraWebSessionCallback {
 		}
 	}
 
-	public abstract void run(JiraClient client, String baseUrl) throws JiraException, IOException;
+	public abstract void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException, IOException;
 
 	protected boolean expectRedirect(HttpMethodBase method, JiraIssue issue) throws JiraException {
 		return expectRedirect(method, "/browse/" + issue.getKey());

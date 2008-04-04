@@ -12,12 +12,12 @@ import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRequest;
 import org.eclipse.mylyn.web.core.Policy;
 
@@ -55,15 +55,15 @@ public class JiraClientCache {
 		return data.lastUpdate != 0;
 	}
 
-	private void initializeProjects(JiraClientData data) throws JiraException {
-		data.projects = jiraClient.getProjects();
+	private void initializeProjects(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		data.projects = jiraClient.getProjects(monitor);
 
 		data.projectsById = new HashMap<String, Project>(data.projects.length);
 		data.projectsByKey = new HashMap<String, Project>(data.projects.length);
 
 		for (Project project : data.projects) {
-			project.setComponents(jiraClient.getComponents(project.getKey()));
-			project.setVersions(jiraClient.getVersions(project.getKey()));
+			project.setComponents(jiraClient.getComponents(project.getKey(), monitor));
+			project.setVersions(jiraClient.getVersions(project.getKey(), monitor));
 
 			data.projectsById.put(project.getId(), project);
 			data.projectsByKey.put(project.getKey(), project);
@@ -82,8 +82,8 @@ public class JiraClientCache {
 		return data.projects;
 	}
 
-	private void initializePriorities(JiraClientData data) throws JiraException {
-		data.priorities = jiraClient.getPriorities();
+	private void initializePriorities(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		data.priorities = jiraClient.getPriorities(monitor);
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
 		for (Priority priority : data.priorities) {
 			data.prioritiesById.put(priority.getId(), priority);
@@ -98,12 +98,12 @@ public class JiraClientCache {
 		return data.priorities;
 	}
 
-	private void initializeIssueTypes(JiraClientData data) throws JiraException {
-		IssueType[] issueTypes = jiraClient.getIssueTypes();
+	private void initializeIssueTypes(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		IssueType[] issueTypes = jiraClient.getIssueTypes(monitor);
 		IssueType[] subTaskIssueTypes;
 		String version = data.serverInfo.getVersion();
 		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_3) >= 0) {
-			subTaskIssueTypes = jiraClient.getSubTaskIssueTypes();
+			subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(monitor);
 		} else {
 			subTaskIssueTypes = new IssueType[0];
 		}
@@ -124,16 +124,16 @@ public class JiraClientCache {
 		System.arraycopy(subTaskIssueTypes, 0, data.issueTypes, issueTypes.length, subTaskIssueTypes.length);
 	}
 
-	private void initializeStatuses(JiraClientData data) throws JiraException {
-		data.statuses = jiraClient.getStatuses();
+	private void initializeStatuses(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		data.statuses = jiraClient.getStatuses(monitor);
 		data.statusesById = new HashMap<String, JiraStatus>(data.statuses.length);
 		for (JiraStatus status : data.statuses) {
 			data.statusesById.put(status.getId(), status);
 		}
 	}
 
-	private void initializeResolutions(JiraClientData data) throws JiraException {
-		data.resolutions = jiraClient.getResolutions();
+	private void initializeResolutions(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		data.resolutions = jiraClient.getResolutions(monitor);
 		data.resolutionsById = new HashMap<String, Resolution>(data.resolutions.length);
 		for (Resolution resolution : data.resolutions) {
 			data.resolutionsById.put(resolution.getId(), resolution);
@@ -170,15 +170,15 @@ public class JiraClientCache {
 			data.serverInfo = newData.serverInfo = jiraClient.getServerInfo(monitor);
 
 			Policy.advance(monitor, 1);
-			initializeProjects(newData);
+			initializeProjects(newData, monitor);
 			Policy.advance(monitor, 1);
-			initializePriorities(newData);
+			initializePriorities(newData, monitor);
 			Policy.advance(monitor, 1);
-			initializeIssueTypes(newData);
+			initializeIssueTypes(newData, monitor);
 			Policy.advance(monitor, 1);
-			initializeResolutions(newData);
+			initializeResolutions(newData, monitor);
 			Policy.advance(monitor, 1);
-			initializeStatuses(newData);
+			initializeStatuses(newData, monitor);
 			Policy.advance(monitor, 1);
 
 			newData.lastUpdate = System.currentTimeMillis();

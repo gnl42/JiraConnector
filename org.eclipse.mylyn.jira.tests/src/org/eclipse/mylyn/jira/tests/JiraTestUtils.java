@@ -42,7 +42,7 @@ public class JiraTestUtils {
 
 	public static void cleanup(JiraClient client) throws JiraException {
 		for (JiraIssue issue : testIssues) {
-			client.deleteIssue(issue);
+			client.deleteIssue(issue, null);
 		}
 		testIssues.clear();
 	}
@@ -63,7 +63,7 @@ public class JiraTestUtils {
 		refreshDetails(server);
 
 		ArrayList<String> names = new ArrayList<String>();
-		RepositoryOperation[] operations = server.getAvailableOperations(issueKey);
+		RepositoryOperation[] operations = server.getAvailableOperations(issueKey, null);
 		for (RepositoryOperation operation : operations) {
 			names.add(operation.getOperationName());
 			if (operation.getOperationName().toLowerCase().startsWith(name)) {
@@ -77,7 +77,7 @@ public class JiraTestUtils {
 	public static String getCustomField(JiraClient server, String name) throws JiraException {
 		refreshDetails(server);
 
-		CustomField[] fields = server.getCustomAttributes();
+		CustomField[] fields = server.getCustomAttributes(null);
 		for (CustomField field : fields) {
 			if (field.getName().toLowerCase().startsWith(name.toLowerCase())) {
 				return field.getId();
@@ -103,7 +103,7 @@ public class JiraTestUtils {
 	}
 
 	public static JiraIssue createIssue(JiraClient client, JiraIssue issue) throws JiraException {
-		issue = client.createIssue(issue);
+		issue = client.createIssue(issue, null);
 		testIssues.add(issue);
 		return issue;
 	}
