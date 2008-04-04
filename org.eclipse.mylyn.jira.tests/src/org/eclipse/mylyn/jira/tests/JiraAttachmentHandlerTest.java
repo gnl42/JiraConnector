@@ -30,6 +30,8 @@ import org.eclipse.mylyn.tasks.core.FileAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 
 /**
  * @author Steffen Pingel
@@ -75,7 +77,8 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		}
 
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
-		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
+				credentials.password), false);
 		repository.setCharacterEncoding(JiraClient.DEFAULT_CHARSET);
 
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,

@@ -22,6 +22,8 @@ import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.WebLocation;
 
 /**
@@ -89,11 +91,13 @@ public class JiraClientFacadeTest extends TestCase {
 	public void testChangeCredentials() throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
-		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
+				credentials.password), false);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		repository.setAuthenticationCredentials("Bogus User", "Bogus Password");
+		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("Bogus User",
+				"Bogus Password"), false);
 		jiraFacade.repositoryRemoved(repository);
 
 		try {
@@ -104,7 +108,8 @@ public class JiraClientFacadeTest extends TestCase {
 		}
 
 		// check that it works after putting the right password in
-		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
+				credentials.password), false);
 		jiraFacade.repositoryRemoved(repository);
 		jiraFacade.getJiraClient(repository).getNamedFilters();
 	}
@@ -126,7 +131,8 @@ public class JiraClientFacadeTest extends TestCase {
 	public void testCharacterEncoding() throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
-		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
+				credentials.password), false);
 		assertFalse(JiraUtils.getCharacterEncodingValidated(repository));
 
 		JiraClient client = jiraFacade.getJiraClient(repository);

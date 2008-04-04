@@ -50,6 +50,8 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
@@ -94,7 +96,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		repository = new TaskRepository(kind, url);
-		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
+				credentials.password), false);
 
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
@@ -388,7 +391,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		// close issue
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, "2", "");
-		
+
 		issue = client.getIssueByKey(issue.getKey());
 		task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
 		assertTrue(task.isCompleted());

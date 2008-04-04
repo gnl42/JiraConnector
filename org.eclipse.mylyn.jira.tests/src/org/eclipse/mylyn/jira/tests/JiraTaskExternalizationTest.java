@@ -29,6 +29,8 @@ import org.eclipse.mylyn.tasks.core.TaskList;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TaskListManager;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -61,7 +63,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, SERVER_URL);
-		repository.setAuthenticationCredentials(USER, PASSWORD);
+		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(USER, PASSWORD), false);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		TasksUiPlugin.getTaskListManager().resetTaskList();

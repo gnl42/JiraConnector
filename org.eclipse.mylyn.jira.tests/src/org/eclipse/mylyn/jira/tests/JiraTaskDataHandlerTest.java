@@ -43,6 +43,8 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.web.core.AuthenticationCredentials;
+import org.eclipse.mylyn.web.core.AuthenticationType;
 
 /**
  * @author Steffen Pingel
@@ -89,7 +91,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		Credentials credentials = TestUtil.readCredentials(level);
 
 		repository = new TaskRepository(kind, url);
-		repository.setAuthenticationCredentials(credentials.username, credentials.password);
+		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
+				credentials.password), false);
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
 		connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(kind);
