@@ -49,6 +49,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
 import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.web.core.WebRequest;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -430,7 +431,7 @@ public class JiraSoapClient {
 			monitor = Policy.monitorFor(monitor);
 
 			final JiraRequest request = new JiraRequest(monitor);
-			return WebUtil.poll(monitor, new WebUtil.AbortableCallable<T>() {
+			return WebUtil.execute(monitor, new WebRequest<T>() {
 
 				public void abort() {
 					request.cancel();
