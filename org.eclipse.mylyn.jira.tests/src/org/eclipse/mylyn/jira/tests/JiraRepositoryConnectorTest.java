@@ -42,13 +42,14 @@ import org.eclipse.mylyn.internal.tasks.ui.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.ITaskCollector;
 import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
+import org.eclipse.mylyn.tasks.core.SynchronizationEvent;
 import org.eclipse.mylyn.tasks.core.TaskList;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.tasks.ui.TaskFactory;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -104,7 +105,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		connector = (JiraRepositoryConnector) manager.getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
-		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
+		TasksUi.setForceSyncExec(true);
 
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
 	}
@@ -140,7 +141,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(AttachmentUtil.attachContext(connector.getAttachmentHandler(), repository, task, "",
 				new NullProgressMonitor()));
 
-		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+		TasksUi.synchronize(connector, task, true, null);
 
 		Set<RepositoryAttachment> contextAttachments = AttachmentUtil.getContextAttachments(repository, task);
 		assertEquals(1, contextAttachments.size());
@@ -169,8 +170,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		TaskFactory taskFactory = new TaskFactory(repository, false, false);
 
-		ITaskCollector collector1 = new QueryHitCollector(taskFactory);
-		connector.performQuery(query, repository, new NullProgressMonitor(), collector1);
+		QueryHitCollector collector1 = new QueryHitCollector(taskFactory);
+		connector.performQuery(repository, query, collector1, null, new NullProgressMonitor());
 
 		Set<AbstractTask> tasks1 = collector1.getTasks();
 		// assertEquals(-1, tasks.size());
@@ -180,8 +181,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		issue = JiraTestUtils.createIssue(client, issue);
 		assertNotNull(issue);
 
-		ITaskCollector collector2 = new QueryHitCollector(taskFactory);
-		connector.performQuery(query, repository, new NullProgressMonitor(), collector2);
+		QueryHitCollector collector2 = new QueryHitCollector(taskFactory);
+		connector.performQuery(repository, query, collector2, null, new NullProgressMonitor());
 		Set<AbstractTask> tasks2 = collector2.getTasks();
 
 		assertEquals(tasks1.size() + 1, tasks2.size());
@@ -210,8 +211,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		TaskFactory taskFactory = new TaskFactory(repository, false, false);
 
-		ITaskCollector collector = new QueryHitCollector(taskFactory);
-		connector.performQuery(query, repository, new NullProgressMonitor(), collector);
+		QueryHitCollector collector = new QueryHitCollector(taskFactory);
+		connector.performQuery(repository, query, collector, null, new NullProgressMonitor());
 
 		Set<AbstractTask> tasks = collector.getTasks();
 		assertEquals(2, tasks.size());
@@ -221,8 +222,12 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		repository.setSynchronizationTimeStamp(null);
-		boolean changed = connector.markStaleTasks(repository, new HashSet<AbstractTask>(), new NullProgressMonitor());
-		assertTrue(changed);
+		SynchronizationEvent event = new SynchronizationEvent();
+		event.tasks = new HashSet<AbstractTask>();
+		event.taskRepository = repository;
+		event.fullSynchronization = true;
+		connector.preSynchronization(event, null);
+		assertTrue(event.performQueries);
 		assertNotNull(repository.getSynchronizationTimeStamp());
 	}
 
@@ -241,9 +246,13 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
+		SynchronizationEvent event = new SynchronizationEvent();
+		event.tasks = tasks;
+		event.taskRepository = repository;
+		event.fullSynchronization = true;
 
-		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
-		assertTrue(changed);
+		connector.preSynchronization(event, null);
+		assertTrue(event.performQueries);
 		assertFalse(task.isStale());
 		assertNotNull(repository.getSynchronizationTimeStamp());
 		Date timestamp = JiraUtils.stringToDate(repository.getSynchronizationTimeStamp());
@@ -253,8 +262,8 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference
 
-		changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
-		assertFalse(changed);
+		connector.preSynchronization(event, null);
+		assertFalse(event.performQueries);
 		assertNotNull(repository.getSynchronizationTimeStamp());
 		assertFalse(task.isStale());
 		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(timestamp).equals(
@@ -282,8 +291,12 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
 
-		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
-		assertTrue(changed);
+		SynchronizationEvent event = new SynchronizationEvent();
+		event.tasks = tasks;
+		event.taskRepository = repository;
+		event.fullSynchronization = true;
+		connector.preSynchronization(event, null);
+		assertTrue(event.performQueries);
 		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(start).equals(
 				repository.getSynchronizationTimeStamp()));
 		assertEquals(issue2.getUpdated(), JiraUtils.getLastUpdate(repository));
@@ -307,8 +320,12 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(new Date(), -1)));
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
-		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
-		assertTrue(changed);
+		SynchronizationEvent event = new SynchronizationEvent();
+		event.tasks = tasks;
+		event.taskRepository = repository;
+		event.fullSynchronization = true;
+		connector.preSynchronization(event, null);
+		assertTrue(event.performQueries);
 		assertTrue(task.isCompleted());
 	}
 
@@ -353,8 +370,12 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertNull(filter);
 		assertEquals("Expected unchanged timestamp", future, repository.getSynchronizationTimeStamp());
 
-		boolean changed = connector.markStaleTasks(repository, tasks, new NullProgressMonitor());
-		assertTrue(changed);
+		SynchronizationEvent event = new SynchronizationEvent();
+		event.tasks = tasks;
+		event.taskRepository = repository;
+		event.fullSynchronization = true;
+		connector.preSynchronization(event, null);
+		assertTrue(event.performQueries);
 		assertNotNull(repository.getSynchronizationTimeStamp());
 		assertTrue("Expected updated timestamp", !future.equals(repository.getSynchronizationTimeStamp()));
 	}

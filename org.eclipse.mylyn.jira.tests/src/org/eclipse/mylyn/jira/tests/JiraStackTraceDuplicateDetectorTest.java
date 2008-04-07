@@ -31,6 +31,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryManager;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.ui.search.SearchHitCollector;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
@@ -81,7 +82,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		connector = manager.getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
-		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
+		TasksUi.setForceSyncExec(true);
 
 		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 

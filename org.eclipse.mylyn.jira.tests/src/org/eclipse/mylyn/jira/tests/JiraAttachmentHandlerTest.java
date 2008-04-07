@@ -29,6 +29,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.FileAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -48,7 +49,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		TasksUiPlugin.getSynchronizationManager().setForceSyncExec(true);
+		TasksUi.setForceSyncExec(true);
 
 		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		JiraClientFactory.getDefault().clearClients();
@@ -106,7 +107,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		attachment.setContentType("text/plain");
 		attachmentHandler.uploadAttachment(repository, task, attachment, "", new NullProgressMonitor());
 
-		TasksUiPlugin.getSynchronizationManager().synchronize(connector, task, true, null);
+		TasksUi.synchronize(connector, task, true, null);
 		RepositoryTaskData taskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(task.getRepositoryUrl(),
 				task.getTaskId());
 		assertNotNull(taskData);

@@ -13,6 +13,7 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
@@ -52,7 +53,7 @@ public class NewJiraQueryWizard extends Wizard {
 			AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 					repository.getConnectorKind());
 			if (connector != null) {
-				TasksUiPlugin.getSynchronizationManager().synchronize(connector, query, null, true);
+				TasksUi.synchronize(connector, query, null, true);
 			}
 		}
 		return true;

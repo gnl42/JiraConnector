@@ -38,14 +38,15 @@ import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.AbstractTaskCollector;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
-import org.eclipse.mylyn.tasks.core.ITaskCollector;
-import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
+import org.eclipse.mylyn.tasks.core.SynchronizationEvent;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.web.core.Policy;
 
 /**
  * @author Mik Kersten
@@ -114,8 +115,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public IStatus performQuery(AbstractRepositoryQuery repositoryQuery, TaskRepository repository,
-			IProgressMonitor monitor, ITaskCollector resultCollector) {
+	public IStatus performQuery(TaskRepository repository, AbstractRepositoryQuery repositoryQuery,
+			AbstractTaskCollector resultCollector, SynchronizationEvent event, IProgressMonitor monitor) {
 		monitor.beginTask("Running query", IProgressMonitor.UNKNOWN);
 		try {
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
@@ -128,14 +129,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				return JiraCorePlugin.toStatus(repository, e);
 			}
 
-			boolean isSearch = false;
 			Query filter;
 			if (repositoryQuery instanceof JiraRepositoryQuery) {
 				filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
 			} else if (repositoryQuery instanceof JiraCustomQuery) {
 				try {
 					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
-					isSearch = ((JiraCustomQuery) repositoryQuery).isSearch();
 				} catch (InvalidJiraQueryException e) {
 					return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
 							"The query parameters do not match the repository configuration, please check the query properties: "
@@ -148,7 +147,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			try {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
-				client.search(filter, new JiraIssueCollector(monitor, issues, QueryHitCollector.MAX_HITS), monitor);
+				client.search(filter, new JiraIssueCollector(monitor, issues, AbstractTaskCollector.MAX_HITS), monitor);
 
 				int n = 0;
 				for (JiraIssue issue : issues) {
@@ -162,27 +161,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					}
 
 					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-					if (isSearch) {
-						AbstractTask task = taskList.getTask(repository.getUrl(), issue.getId());
-						if (!(task instanceof JiraTask)) {
-							task = createTask(repository.getUrl(), issue.getId(), issue.getSummary());
-							updateTaskFromIssue(repository.getUrl(), (JiraTask) task, issue);
-						}
-						// TODO we could update the task if it already exists in the task list
-						resultCollector.accept(task);
-					} else {
-						RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
-						resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData,
-								monitor));
-					}
+					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
+					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData,
+							monitor));
 				}
 				return Status.OK_STATUS;
 			} catch (JiraException e) {
 				IStatus status = JiraCorePlugin.toStatus(repository, e);
-				trace(status);
-				return status;
-			} catch (CoreException e) {
-				IStatus status = e.getStatus();
 				trace(status);
 				return status;
 			}
@@ -192,14 +177,20 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean markStaleTasks(TaskRepository repository, Set<AbstractTask> tasks, IProgressMonitor monitor)
-			throws CoreException {
+	public void preSynchronization(SynchronizationEvent event, IProgressMonitor monitor) throws CoreException {
+		if (!event.fullSynchronization) {
+			return;
+		}
+
+		monitor = Policy.monitorFor(monitor);
+
 		Date now = new Date();
-		FilterDefinition changedFilter = getSynchronizationFilter(repository, tasks, now);
+		TaskRepository repository = event.taskRepository;
+		FilterDefinition changedFilter = getSynchronizationFilter(repository, event.tasks, now);
 		if (changedFilter == null) {
 			// could not determine last time, rerun queries
 			repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
-			return true;
+			return;
 		}
 
 		List<JiraIssue> issues = new ArrayList<JiraIssue>();
@@ -213,7 +204,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			if (issues.isEmpty()) {
 				// repository is unchanged
 				repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
-				return false;
+				event.performQueries = false;
+				return;
 			}
 
 			for (JiraIssue issue : issues) {
@@ -240,20 +232,23 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			Date repositoryUpdateTimeStamp = JiraUtils.getLastUpdate(repository);
 			if (repositoryUpdateTimeStamp != null && repositoryUpdateTimeStamp.equals(lastUpdate)) {
 				// didn't see any new changes
-				return false;
+				event.performQueries = false;
 			} else {
+				// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
 				if (lastUpdate != null) {
 					JiraUtils.setLastUpdate(repository, lastUpdate);
 				}
-
-				// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
-				return true;
 			}
 		} catch (JiraException e) {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
 			trace(status);
 			throw new CoreException(status);
 		}
+	}
+
+	@Override
+	public void postSynchronization(SynchronizationEvent event, IProgressMonitor monitor) throws CoreException {
+		// ignore
 	}
 
 	/* Public for testing. */
@@ -313,12 +308,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// make sure it's sorted so the most recent changes are returned in case the query maximum is hit
 		changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
 		return changedFilter;
-	}
-
-	@Override
-	public String getSynchronizationTimestamp(TaskRepository repository, Set<AbstractTask> changedTasks) {
-		// the timestamp is updated in markStaleTasks()
-		return repository.getSynchronizationTimeStamp();
 	}
 
 	@Override
@@ -430,7 +419,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateTaskFromTaskData(TaskRepository repository, AbstractTask repositoryTask,
+	public boolean updateTaskFromTaskData(TaskRepository repository, AbstractTask repositoryTask,
 			RepositoryTaskData taskData) {
 		if (repositoryTask instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) repositoryTask;
@@ -476,11 +465,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				}
 			}
 		}
-	}
-
-	@Override
-	public boolean updateTaskFromQueryHit(TaskRepository repository, AbstractTask existingTask, AbstractTask newTask) {
-		// updating of tasks is done by TaskFacotory which invokes updateFromTaskData()
 		return false;
 	}
 
