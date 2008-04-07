@@ -165,7 +165,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		filter.setDueDateFilter(dueDateFilter);
 
 		// AbstractRepositoryQuery query = new JiraCustomQuery("test query", queryUrl, repository.getUrl(), repository.getCharacterEncoding());
-		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter,
+		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
 
 		TaskFactory taskFactory = new TaskFactory(repository, false, false);
@@ -206,7 +206,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		FilterDefinition filter = new FilterDefinition("test query");
 		filter.setContentFilter(new ContentFilter(queryString, true, false, false, false));
 
-		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getUrl(), filter,
+		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
 
 		TaskFactory taskFactory = new TaskFactory(repository, false, false);
@@ -385,7 +385,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		Date now = new Date();
 		HashSet<AbstractTask> tasks = new HashSet<AbstractTask>();
-		JiraTask task = new JiraTask(repository.getUrl(), "1", "");
+		JiraTask task = new JiraTask(repository.getRepositoryUrl(), "1", "");
 		task.setLastReadTimeStamp(JiraUtils.dateToString(now));
 		tasks.add(task);
 

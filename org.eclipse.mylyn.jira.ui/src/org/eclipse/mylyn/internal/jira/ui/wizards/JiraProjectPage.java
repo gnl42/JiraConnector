@@ -310,9 +310,9 @@ public class JiraProjectPage extends WizardPage {
 		if (element instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) element;
 			// API 3.0 need to provide public access to the task data
-			if (jiraTask.getRepositoryUrl().equals(repository.getUrl())) {
+			if (jiraTask.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
 				TaskDataManager taskDataManager = TasksUiPlugin.getTaskDataManager();
-				Project project = getProject(taskDataManager.getNewTaskData(repository.getUrl(), jiraTask.getTaskId()));
+				Project project = getProject(taskDataManager.getNewTaskData(repository.getRepositoryUrl(), jiraTask.getTaskId()));
 				if (project != null) {
 					return project;
 				}
@@ -321,7 +321,7 @@ public class JiraProjectPage extends WizardPage {
 
 		if (element instanceof JiraCustomQuery) {
 			JiraCustomQuery query = (JiraCustomQuery) element;
-			if (query.getRepositoryUrl().equals(repository.getUrl())) {
+			if (query.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
 				JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 				FilterDefinition filter = query.getFilterDefinition(client, false);
 				if (filter != null) {
@@ -355,7 +355,7 @@ public class JiraProjectPage extends WizardPage {
 			}
 		}
 
-		if (taskData != null && taskData.getRepositoryUrl().equals(repository.getUrl())) {
+		if (taskData != null && taskData.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
 			Project project = getProject(taskData);
 			if (project != null) {
 				return project;

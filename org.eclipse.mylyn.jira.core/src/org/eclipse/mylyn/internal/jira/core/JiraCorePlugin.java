@@ -150,7 +150,7 @@ public class JiraCorePlugin extends Plugin {
 	}
 
 	public static IStatus toStatus(TaskRepository repository, Throwable e) {
-		String url = repository.getUrl();
+		String url = repository.getRepositoryUrl();
 		if (e instanceof JiraAuthenticationException) {
 			return RepositoryStatus.createLoginError(url, ID_PLUGIN);
 		} else if (e instanceof JiraServiceUnavailableException) {

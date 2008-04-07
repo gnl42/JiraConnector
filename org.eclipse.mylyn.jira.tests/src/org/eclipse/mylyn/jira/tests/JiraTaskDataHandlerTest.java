@@ -166,7 +166,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		issue.setPriority(MockJiraClient.createPriority(Priority.BLOCKER_ID, "blocker"));
 
 		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, "http://jira.codehaus.org/");
-		MockJiraClient client = new MockJiraClient(repository.getUrl());
+		MockJiraClient client = new MockJiraClient(repository.getRepositoryUrl());
 		JiraTaskDataHandler dataHandler = new JiraTaskDataHandler(new MockJiraClientFactory(client));
 		RepositoryTaskData data = dataHandler.createTaskData(repository, client, issue, null, null);
 
@@ -306,7 +306,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(subTaskIssue.getId(), ids.iterator().next());
 
 		taskData = dataHandler.getTaskData(repository, subTaskIssue.getId(), new NullProgressMonitor());
-		assertEquals(subTaskIssue.getId(), taskData.getId());
+		assertEquals(subTaskIssue.getId(), taskData.getTaskId());
 		assertEquals(subTaskIssue.getKey(), taskData.getTaskKey());
 		typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
 		assertTrue(typeAttribute.isReadOnly());
@@ -341,10 +341,10 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		RepositoryTaskData parentTaskData = dataHandler.getTaskData(repository, parentIssue.getId(),
 				new NullProgressMonitor());
 
-		AbstractAttributeFactory attributeFactory = dataHandler.getAttributeFactory(repository.getUrl(),
+		AbstractAttributeFactory attributeFactory = dataHandler.getAttributeFactory(repository.getRepositoryUrl(),
 				repository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
 		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
-				repository.getUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
+				repository.getRepositoryUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
 
 		dataHandler.initializeSubTaskData(repository, taskData, parentTaskData, new NullProgressMonitor());
 
@@ -489,7 +489,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	public void testInitializeTaskData1() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getUrl(), null);
+		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getRepositoryUrl(), null);
 
 		boolean res = dataHandler.initializeTaskData(repository, data, new NullProgressMonitor());
 		assertFalse("Task data shouldn't be initialized without project", res);
@@ -500,7 +500,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		JiraTestUtils.refreshDetails(client);
 		Project project = JiraTestUtils.getProject(client, JiraTestUtils.PROJECT1);
 
-		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getUrl(), project.getName());
+		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getRepositoryUrl(), project.getName());
 
 		boolean res = dataHandler.initializeTaskData(repository, data, new NullProgressMonitor());
 		assertTrue("Task data can't be initialized", res);
@@ -513,7 +513,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		JiraTestUtils.refreshDetails(client);
 		Project project = JiraTestUtils.getProject(client, JiraTestUtils.PROJECT1);
 
-		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getUrl(),
+		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getRepositoryUrl(),
 				JiraTestUtils.PROJECT1);
 
 		boolean res = dataHandler.initializeTaskData(repository, data, new NullProgressMonitor());

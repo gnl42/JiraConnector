@@ -65,7 +65,7 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	 * @see #validateConnection(String, String, String, Proxy, String, String)
 	 */
 	public synchronized JiraClient getJiraClient(TaskRepository repository) {
-		JiraClient server = clientManager.getClient(repository.getUrl());
+		JiraClient server = clientManager.getClient(repository.getRepositoryUrl());
 		if (server == null) {
 			AbstractWebLocation location = taskRepositoryLocationFactory.createWebLocation(repository);
 			String characterEncoding = null;
@@ -101,14 +101,14 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 
 	public synchronized void repositoryAdded(TaskRepository repository) {
 		if (repository.getConnectorKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
-			assert clientManager.getClient(repository.getUrl()) == null;
+			assert clientManager.getClient(repository.getRepositoryUrl()) == null;
 			getJiraClient(repository);
 		}
 	}
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
 		if (repository.getConnectorKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
-			JiraClient server = clientManager.getClient(repository.getUrl());
+			JiraClient server = clientManager.getClient(repository.getRepositoryUrl());
 			removeServer(server);
 		}
 	}

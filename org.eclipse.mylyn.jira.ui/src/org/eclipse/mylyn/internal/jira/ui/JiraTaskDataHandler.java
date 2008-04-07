@@ -98,7 +98,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (!client.getCache().hasDetails()) {
 				client.getCache().refreshDetails(new NullProgressMonitor());
 			}
-			JiraIssue jiraIssue = getJiraIssue(client, taskId, repository.getUrl(), monitor);
+			JiraIssue jiraIssue = getJiraIssue(client, taskId, repository.getRepositoryUrl(), monitor);
 			if (jiraIssue != null) {
 				return createTaskData(repository, client, jiraIssue, null, monitor);
 			}
@@ -131,7 +131,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	public RepositoryTaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
 			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
-				repository.getUrl(), jiraIssue.getId());
+				repository.getRepositoryUrl(), jiraIssue.getId());
 		initializeTaskData(data, client, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
 		addOperations(data, jiraIssue, client, oldTaskData, monitor);
@@ -833,7 +833,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			// set parent id
 			RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
-			attribute.setValue(parentTaskData.getId());
+			attribute.setValue(parentTaskData.getTaskId());
 
 			attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
 			attribute.setValue(parentTaskData.getTaskKey());
@@ -875,7 +875,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private JiraIssue buildJiraIssue(RepositoryTaskData taskData, JiraClient client) {
 		JiraIssue issue = new JiraIssue();
-		issue.setId(taskData.getId());
+		issue.setId(taskData.getTaskId());
 		issue.setKey(taskData.getTaskKey());
 		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));

@@ -206,13 +206,13 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		}
 
 		public String getRepositoryUrl() {
-			return repository.getUrl();
+			return repository.getRepositoryUrl();
 		}
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
 			try {
-				new URL(repository.getUrl());
+				new URL(repository.getRepositoryUrl());
 			} catch (MalformedURLException ex) {
 				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
 						INVALID_REPOSITORY_URL, null));
@@ -222,7 +222,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			try {
 				this.serverInfo = JiraClientFactory.getDefault().validateConnection(location, monitor);
 			} catch (JiraAuthenticationException e) {
-				throw new CoreException(RepositoryStatus.createStatus(repository.getUrl(), IStatus.ERROR,
+				throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
 						JiraUiPlugin.PLUGIN_ID, INVALID_LOGIN));
 			} catch (Exception e) {
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));

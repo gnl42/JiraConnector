@@ -71,10 +71,10 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 				JiraUiPlugin.REPOSITORY_KIND);
 
 		JiraTaskDataHandler taskDataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
-		AbstractAttributeFactory attributeFactory = taskDataHandler.getAttributeFactory(taskRepository.getUrl(),
+		AbstractAttributeFactory attributeFactory = taskDataHandler.getAttributeFactory(taskRepository.getRepositoryUrl(),
 				taskRepository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
 		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
-				taskRepository.getUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
+				taskRepository.getRepositoryUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
 		taskData.setNew(true);
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(taskRepository);
 		Project project = projectPage.getSelectedProject();

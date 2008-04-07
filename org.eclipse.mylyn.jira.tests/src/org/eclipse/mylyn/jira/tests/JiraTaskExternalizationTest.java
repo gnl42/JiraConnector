@@ -86,7 +86,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testNamedFilterNotRenamed() {
 		NamedFilter filter = new NamedFilter();
 		filter.setName("f-name");
-		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter);
+		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getRepositoryUrl(), filter);
 		taskList.addQuery(query);
 		query.setHandleIdentifier("q-name");
 
@@ -104,7 +104,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testCustomQueryRename() {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setName("f-name");
-		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
+		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, repository.getCharacterEncoding());
 		taskList.addQuery(query);
 		query.setHandleIdentifier("q-name");
 
@@ -160,7 +160,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		namedFilter.setName("Test Filter");
 		namedFilter.setId("123456");
 		namedFilter.setDescription("Test Filter Description");
-		JiraRepositoryQuery jiraRepositoryQuery = new JiraRepositoryQuery(repository.getUrl(), namedFilter);
+		JiraRepositoryQuery jiraRepositoryQuery = new JiraRepositoryQuery(repository.getRepositoryUrl(), namedFilter);
 		String filterUrl = jiraRepositoryQuery.getUrl();
 
 		JiraIssue jiraIssue = new JiraIssue();
@@ -169,7 +169,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraIssue.setSummary(ISSUE_SUMMARY);
 		JiraTask jiraTask = new JiraTask(SERVER_URL, "" + 123, ISSUE_DESCRIPTION);
 		taskList.addTask(jiraTask);
-		JiraRepositoryConnector.updateTaskFromIssue(repository.getUrl(), jiraTask, jiraIssue);
+		JiraRepositoryConnector.updateTaskFromIssue(repository.getRepositoryUrl(), jiraTask, jiraIssue);
 		TasksUiPlugin.getTaskListManager().getTaskList().addTask(jiraTask);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
 

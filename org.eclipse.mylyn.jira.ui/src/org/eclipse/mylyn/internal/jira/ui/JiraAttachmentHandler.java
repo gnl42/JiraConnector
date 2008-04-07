@@ -44,12 +44,12 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
 		if (id == null) {
 			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL,
-					"Attachment download from " + repository.getUrl() + " failed, missing attachment id.", null));
+					"Attachment download from " + repository.getRepositoryUrl() + " failed, missing attachment id.", null));
 		}
 		String key = attachment.getTaskId();
 		if (key == null) {
 			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL,
-					"Attachment download from " + repository.getUrl() + " failed, missing attachment key.", null));
+					"Attachment download from " + repository.getRepositoryUrl() + " failed, missing attachment key.", null));
 		}
 
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);

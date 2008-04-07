@@ -41,7 +41,7 @@ public class JiraStackTraceDuplicateDetector extends AbstractDuplicateDetector {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(searchString, false, true, false, true));
 
-		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, encoding);
+		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, encoding);
 
 		return new SearchHitCollector(TasksUiPlugin.getTaskListManager().getTaskList(), repository, query,
 				new TaskFactory(repository, false, false));
