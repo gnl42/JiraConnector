@@ -36,7 +36,6 @@ import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -73,33 +72,21 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		setNeedsHttpAuth(true);
 	}
 
+	@Override
+	protected void repositoryTemplateSelected(RepositoryTemplate template) {
+		repositoryLabelEditor.setStringValue(template.label);
+		setUrl(template.repositoryUrl);
+		getContainer().updateButtons();
+	}
+
 	/** Create a button to validate the specified repository settings */
 	@Override
 	protected void createAdditionalControls(Composite parent) {
-		for (RepositoryTemplate template : connector.getTemplates()) {
-			serverUrlCombo.add(template.label);
-		}
+		addRepositoryTemplatesToServerUrlCombo();
 
 		if (repository != null) {
 			this.characterEncodingValidated = JiraUtils.getCharacterEncodingValidated(repository);
 		}
-
-		serverUrlCombo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				String text = serverUrlCombo.getText();
-				RepositoryTemplate template = connector.getTemplate(text);
-				if (template != null) {
-					repositoryLabelEditor.setStringValue(template.label);
-					setUrl(nvl(template.repositoryUrl));
-					getContainer().updateButtons();
-				}
-			}
-
-			private String nvl(String s) {
-				return s == null ? "" : s;
-			}
-		});
 
 		Label compressionLabel = new Label(parent, SWT.NONE);
 		compressionLabel.setText("Compression:");
