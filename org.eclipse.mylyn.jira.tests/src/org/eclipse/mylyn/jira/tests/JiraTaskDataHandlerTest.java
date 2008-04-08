@@ -44,6 +44,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 
@@ -203,7 +204,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
 
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(false, task.isCompleted());
 		assertNull(task.getDueDate());
@@ -500,7 +501,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		JiraTestUtils.refreshDetails(client);
 		Project project = JiraTestUtils.getProject(client, JiraTestUtils.PROJECT1);
 
-		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getRepositoryUrl(), project.getName());
+		RepositoryTaskData data = createTaskData(repository.getConnectorKind(), repository.getRepositoryUrl(),
+				project.getName());
 
 		boolean res = dataHandler.initializeTaskData(repository, data, new NullProgressMonitor());
 		assertTrue("Task data can't be initialized", res);

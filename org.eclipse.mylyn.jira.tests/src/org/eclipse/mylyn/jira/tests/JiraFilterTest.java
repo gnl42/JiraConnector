@@ -110,7 +110,7 @@ public class JiraFilterTest extends TestCase {
 		NamedFilter filter = filters[1];
 		assertEquals("My Issues", filter.getName());
 
-		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getUrl(), filter);
+		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getRepositoryUrl(), filter);
 		taskList.addQuery(query);
 		assertTrue(query.getChildren().size() == 0);
 
@@ -137,7 +137,7 @@ public class JiraFilterTest extends TestCase {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 
-		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
+		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, repository.getCharacterEncoding());
 
 		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
 
@@ -168,7 +168,7 @@ public class JiraFilterTest extends TestCase {
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
 
-		JiraCustomQuery query = new JiraCustomQuery(repository.getUrl(), filter, repository.getCharacterEncoding());
+		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, repository.getCharacterEncoding());
 		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
 		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
 		assertEquals(1, hitCollector.getTasks().size());

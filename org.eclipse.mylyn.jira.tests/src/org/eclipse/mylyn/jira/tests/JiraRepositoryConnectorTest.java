@@ -51,6 +51,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.swt.widgets.Shell;
@@ -131,7 +132,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testAttachContext");
 
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testAttachContext", task.getSummary());
 
 		File sourceContextFile = ContextCorePlugin.getContextManager().getFileForContext(task.getHandleIdentifier());
@@ -238,8 +239,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		Date start = new Date();
 		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
-				new NullProgressMonitor());
+		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		taskList.addTask(task);
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference 
 		assertNull(JiraUtils.getLastUpdate(repository));
@@ -277,8 +277,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		// create two issues, the first one is added to the task list
 		Date start = new Date();
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
-				new NullProgressMonitor());
+		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		taskList.addTask(task);
 
 		// make sure the second issue is created after the first one
@@ -307,8 +306,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		// create an issue
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), false,
-				new NullProgressMonitor());
+		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		taskList.addTask(task);
 		assertFalse(task.isCompleted());
 
@@ -403,7 +401,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testCreateTask");
 
-		AbstractTask task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testCreateTask", task.getSummary());
 		assertEquals(null, task.getCompletionDate());
 		assertFalse(task.isCompleted());
@@ -414,7 +412,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		client.advanceIssueWorkflow(issue, "2", "", null);
 
 		issue = client.getIssueByKey(issue.getKey(), null);
-		task = connector.createTaskFromExistingId(repository, issue.getKey(), new NullProgressMonitor());
+		task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertTrue(task.isCompleted());
 		assertEquals(issue.getUpdated(), task.getCompletionDate());
 		assertEquals(issue.getCreated(), task.getCreationDate());

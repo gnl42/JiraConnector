@@ -196,7 +196,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public String getTaskHistoryUrl(TaskRepository taskRepository, String taskKey) {
-		return taskRepository.getUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + taskKey + "?page=history";
+		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + taskKey + "?page=history";
 	}
 
 }

@@ -161,7 +161,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					}
 
 					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
+					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getRepositoryUrl(),
+							issue.getId());
 					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData,
 							monitor));
 				}
@@ -209,7 +210,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 
 			for (JiraIssue issue : issues) {
-				AbstractTask task = mylynFacade.getTask(repository.getUrl(), issue.getId());
+				AbstractTask task = mylynFacade.getTask(repository.getRepositoryUrl(), issue.getId());
 				if (task != null) {
 					if (issue.getProject() == null) {
 						throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
@@ -218,7 +219,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 					// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 					monitor.subTask(issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getUrl(), issue.getId());
+					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getRepositoryUrl(),
+							issue.getId());
 					RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData,
 							monitor);
 					mylynFacade.saveIncoming(task, taskData);
@@ -275,8 +277,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// check if time stamp is skewed
 		if (lastSyncTime >= nowTime) {
 			trace(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, 0,
-					"Synchronization time stamp clock skew detected for " + repository.getUrl() + ": " + lastSyncTime
-							+ " >= " + now, null));
+					"Synchronization time stamp clock skew detected for " + repository.getRepositoryUrl() + ": "
+							+ lastSyncTime + " >= " + now, null));
 
 			// use the timestamp on the task that was modified last
 			lastSyncDate = null;
@@ -313,11 +315,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public boolean canCreateNewTask(TaskRepository repository) {
 		return true;
-	}
-
-	@Override
-	public void updateTaskFromRepository(TaskRepository repository, AbstractTask repositoryTask,
-			IProgressMonitor monitor) {
 	}
 
 	@Override
@@ -446,7 +443,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED));
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
 			jiraTask.setTaskKind(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE));
-			jiraTask.setUrl(getTaskUrlFromKey(repository.getUrl(), repositoryTask.getTaskKey()));
+			jiraTask.setUrl(getTaskUrlFromKey(repository.getRepositoryUrl(), repositoryTask.getTaskKey()));
 			jiraTask.setCreationDate(JiraUtils.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_CREATION)));
 			jiraTask.setDueDate(JiraUtils.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
 
@@ -554,6 +551,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			TasksUiPlugin.getSynchronizationManager().saveIncoming(task, taskData, false);
 		}
 
+	}
+
+	@Override
+	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
+			throws CoreException {
+		return getTaskDataHandler().getTaskData(repository, taskId, monitor);
 	}
 
 }

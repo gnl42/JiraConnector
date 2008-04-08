@@ -1526,12 +1526,12 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	private boolean restoreWidgetValues() {
 		IDialogSettings settings = getDialogSettings();
 
-		String searchUrl = settings.get(SEARCH_URL_ID + "." + repository.getUrl());
+		String searchUrl = settings.get(SEARCH_URL_ID + "." + repository.getRepositoryUrl());
 		if (searchUrl == null) {
 			return false;
 		}
 
-		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getUrl(),
+		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getRepositoryUrl(),
 				repository.getCharacterEncoding());
 		workingCopy = query.getFilterDefinition(server, false);
 		return true;
@@ -1539,7 +1539,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public void saveState() {
-		String repoId = "." + repository.getUrl();
+		String repoId = "." + repository.getRepositoryUrl();
 		IDialogSettings settings = getDialogSettings();
 		applyChanges();
 		settings.put(SEARCH_URL_ID + repoId, getQuery().getUrl());
@@ -1638,7 +1638,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	public AbstractRepositoryQuery getQuery() {
 		this.applyChanges();
 
-		String url = repository.getUrl();
+		String url = repository.getRepositoryUrl();
 		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding());
 		query.setSearch(inSearchContainer());
 		return query;
