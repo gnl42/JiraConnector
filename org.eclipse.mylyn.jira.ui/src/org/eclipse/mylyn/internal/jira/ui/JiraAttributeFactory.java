@@ -12,9 +12,9 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.mylyn.internal.tasks.core.AbstractAttributeMapper;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
+import org.eclipse.mylyn.tasks.core.AbstractAttributeMapper;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
 /**
