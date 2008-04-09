@@ -71,22 +71,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private final JiraAttachmentHandler attachmentHandler;
 
-	private final TasksFacade mylynFacade;
-
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
 	public static final int RETURN_ALL_HITS = -1;
 
-	public JiraRepositoryConnector(TasksFacade mylynFacade) {
-		this.mylynFacade = mylynFacade;
-
+	public JiraRepositoryConnector() {
 		offlineHandler = new JiraTaskDataHandler(JiraClientFactory.getDefault());
 		attachmentHandler = new JiraAttachmentHandler();
-	}
-
-	public JiraRepositoryConnector() {
-		this(new TasksFacade());
 	}
 
 	@Override
@@ -161,7 +153,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					}
 
 					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getRepositoryUrl(),
+					RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(repository.getRepositoryUrl(),
 							issue.getId());
 					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData,
 							monitor));
@@ -210,7 +202,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 
 			for (JiraIssue issue : issues) {
-				AbstractTask task = mylynFacade.getTask(repository.getRepositoryUrl(), issue.getId());
+				AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(
+						repository.getRepositoryUrl(), issue.getId());
 				if (task != null) {
 					if (issue.getProject() == null) {
 						throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
@@ -219,11 +212,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 					// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 					monitor.subTask(issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = mylynFacade.getNewTaskData(repository.getRepositoryUrl(),
+					RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(repository.getRepositoryUrl(),
 							issue.getId());
 					RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData,
 							monitor);
-					mylynFacade.saveIncoming(task, taskData);
+					getSynchronizationManager().saveIncoming(task, taskData, false);
 					updateTaskFromTaskData(repository, task, taskData);
 				}
 			}
@@ -534,23 +527,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public boolean hasCredentialsManagement() {
 		return true;
-	}
-
-	public static class TasksFacade {
-
-		public AbstractTask getTask(String repositoryUrl, String taskId) {
-			return TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
-		}
-
-		@SuppressWarnings("restriction")
-		public RepositoryTaskData getNewTaskData(String repositoryUrl, String id) {
-			return TasksUiPlugin.getTaskDataManager().getNewTaskData(repositoryUrl, id);
-		}
-
-		public void saveIncoming(AbstractTask task, RepositoryTaskData taskData) {
-			TasksUiPlugin.getSynchronizationManager().saveIncoming(task, taskData, false);
-		}
-
 	}
 
 	@Override

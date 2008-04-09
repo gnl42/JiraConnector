@@ -41,8 +41,8 @@ import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.ui.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.tasks.core.TaskDataManager;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
+import org.eclipse.mylyn.tasks.core.ITaskDataManager;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
@@ -71,7 +71,6 @@ import org.eclipse.ui.progress.UIJob;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
-@SuppressWarnings("restriction")
 public class JiraProjectPage extends WizardPage {
 
 	private static final String DESCRIPTION = "Pick a project to open the new bug editor.\n"
@@ -311,8 +310,9 @@ public class JiraProjectPage extends WizardPage {
 			JiraTask jiraTask = (JiraTask) element;
 			// API 3.0 need to provide public access to the task data
 			if (jiraTask.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
-				TaskDataManager taskDataManager = TasksUiPlugin.getTaskDataManager();
-				Project project = getProject(taskDataManager.getNewTaskData(repository.getRepositoryUrl(), jiraTask.getTaskId()));
+				ITaskDataManager taskDataManager = TasksUiPlugin.getTaskDataManager();
+				Project project = getProject(taskDataManager.getNewTaskData(repository.getRepositoryUrl(),
+						jiraTask.getTaskId()));
 				if (project != null) {
 					return project;
 				}
