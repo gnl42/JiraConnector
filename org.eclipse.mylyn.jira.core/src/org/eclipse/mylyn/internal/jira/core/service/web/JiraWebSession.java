@@ -34,8 +34,8 @@ import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.Policy;
+import org.eclipse.mylyn.web.core.UnsupportedRequestException;
 import org.eclipse.mylyn.web.core.WebUtil;
-import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
 
 /**
  * @author Brock Janiczak
@@ -133,7 +133,7 @@ public class JiraWebSession {
 			try {
 				HostConfiguration hostConfiguration = WebUtil.createHostConfiguration(httpClient, location, monitor);
 				int statusCode = WebUtil.execute(httpClient, hostConfiguration, login, monitor);
-				if (needsReauthentication(httpClient, statusCode)) {
+				if (needsReauthentication(httpClient, statusCode, monitor)) {
 					continue;
 				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
 						&& statusCode != HttpStatus.SC_MOVED_PERMANENTLY) {
@@ -177,7 +177,8 @@ public class JiraWebSession {
 		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects during login");
 	}
 
-	private boolean needsReauthentication(HttpClient httpClient, int code) throws JiraAuthenticationException {
+	private boolean needsReauthentication(HttpClient httpClient, int code, IProgressMonitor monitor)
+			throws JiraAuthenticationException {
 		final AuthenticationType authenticationType;
 		if (code == HttpStatus.SC_OK) {
 			authenticationType = AuthenticationType.REPOSITORY;
@@ -187,7 +188,9 @@ public class JiraWebSession {
 			return false;
 		}
 
-		if (location.requestCredentials(authenticationType, null) == ResultType.NOT_SUPPORTED) {
+		try {
+			location.requestCredentials(authenticationType, null, monitor);
+		} catch (UnsupportedRequestException ignored) {
 			throw new JiraAuthenticationException("Login failed.");
 		}
 

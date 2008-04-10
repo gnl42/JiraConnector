@@ -53,9 +53,9 @@ import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.Policy;
+import org.eclipse.mylyn.web.core.UnsupportedRequestException;
 import org.eclipse.mylyn.web.core.WebRequest;
 import org.eclipse.mylyn.web.core.WebUtil;
-import org.eclipse.mylyn.web.core.AbstractWebLocation.ResultType;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -433,6 +433,7 @@ public class JiraSoapClient {
 			final JiraRequest request = new JiraRequest(monitor);
 			return WebUtil.execute(monitor, new WebRequest<T>() {
 
+				@Override
 				public void abort() {
 					request.cancel();
 				}
@@ -471,7 +472,9 @@ public class JiraSoapClient {
 			try {
 				return callWithRetry(monitor, runnable);
 			} catch (JiraAuthenticationException e) {
-				if (jiraClient.getLocation().requestCredentials(AuthenticationType.REPOSITORY, null) == ResultType.NOT_SUPPORTED) {
+				try {
+					jiraClient.getLocation().requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
+				} catch (UnsupportedRequestException ignored) {
 					throw e;
 				}
 			}
