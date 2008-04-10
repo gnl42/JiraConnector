@@ -59,6 +59,7 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskComment;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.web.core.Policy;
 
 /**
  * @author Mik Kersten
@@ -93,10 +94,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	@Override
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
+		monitor = Policy.monitorFor(monitor);
 		try {
+			monitor.beginTask("Getting task", IProgressMonitor.UNKNOWN);
+
 			JiraClient client = clientFactory.getJiraClient(repository);
 			if (!client.getCache().hasDetails()) {
-				client.getCache().refreshDetails(new NullProgressMonitor());
+				client.getCache().refreshDetails(monitor);
 			}
 			JiraIssue jiraIssue = getJiraIssue(client, taskId, repository.getRepositoryUrl(), monitor);
 			if (jiraIssue != null) {
@@ -109,6 +113,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
 			trace(status);
 			throw new CoreException(status);
+		} finally {
+			monitor.done();
 		}
 	}
 

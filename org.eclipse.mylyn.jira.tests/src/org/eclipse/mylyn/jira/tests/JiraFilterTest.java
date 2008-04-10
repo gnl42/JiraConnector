@@ -53,8 +53,6 @@ public class JiraFilterTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		TasksUi.setForceSyncExec(true);
-
 		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		JiraClientFactory.getDefault().clearClients();
 
@@ -114,7 +112,7 @@ public class JiraFilterTest extends TestCase {
 		taskList.addQuery(query);
 		assertTrue(query.getChildren().size() == 0);
 
-		TasksUi.synchronize(connector, query, null, false);
+		TasksUi.synchronizeQuery(connector, query, null, false);
 
 		assertTrue(query.getChildren().size() > 0);
 		JiraTask hit = (JiraTask) query.getChildren().iterator().next();
@@ -137,7 +135,8 @@ public class JiraFilterTest extends TestCase {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 
-		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, repository.getCharacterEncoding());
+		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
+				repository.getCharacterEncoding());
 
 		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
 
@@ -168,7 +167,8 @@ public class JiraFilterTest extends TestCase {
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
 
-		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, repository.getCharacterEncoding());
+		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
+				repository.getCharacterEncoding());
 		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
 		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
 		assertEquals(1, hitCollector.getTasks().size());

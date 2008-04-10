@@ -50,8 +50,6 @@ public class JiraAttachmentHandlerTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		TasksUi.setForceSyncExec(true);
-
 		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		JiraClientFactory.getDefault().clearClients();
 
@@ -108,7 +106,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		attachment.setContentType("text/plain");
 		attachmentHandler.uploadAttachment(repository, task, attachment, "", new NullProgressMonitor());
 
-		TasksUi.synchronize(connector, task, true, null);
+		TasksUi.synchronizeTask(connector, task, true, null);
 		RepositoryTaskData taskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(task.getRepositoryUrl(),
 				task.getTaskId());
 		assertNotNull(taskData);

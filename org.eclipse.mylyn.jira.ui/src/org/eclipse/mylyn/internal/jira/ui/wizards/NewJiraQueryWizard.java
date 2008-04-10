@@ -53,7 +53,7 @@ public class NewJiraQueryWizard extends Wizard {
 			AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 					repository.getConnectorKind());
 			if (connector != null) {
-				TasksUi.synchronize(connector, query, null, true);
+				TasksUi.synchronizeQuery(connector, query, null, true);
 			}
 		}
 		return true;

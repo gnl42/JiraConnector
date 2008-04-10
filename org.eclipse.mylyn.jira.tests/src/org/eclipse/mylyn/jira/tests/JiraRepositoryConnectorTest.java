@@ -106,8 +106,6 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		connector = (JiraRepositoryConnector) manager.getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
-		TasksUi.setForceSyncExec(true);
-
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
 	}
 
@@ -142,7 +140,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(AttachmentUtil.attachContext(connector.getAttachmentHandler(), repository, task, "",
 				new NullProgressMonitor()));
 
-		TasksUi.synchronize(connector, task, true, null);
+		TasksUi.synchronizeTask(connector, task, true, null);
 
 		Set<RepositoryAttachment> contextAttachments = AttachmentUtil.getContextAttachments(repository, task);
 		assertEquals(1, contextAttachments.size());

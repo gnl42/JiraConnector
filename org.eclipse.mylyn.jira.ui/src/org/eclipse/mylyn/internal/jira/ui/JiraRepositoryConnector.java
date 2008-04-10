@@ -109,8 +109,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public IStatus performQuery(TaskRepository repository, AbstractRepositoryQuery repositoryQuery,
 			AbstractTaskCollector resultCollector, SynchronizationEvent event, IProgressMonitor monitor) {
-		monitor.beginTask("Running query", IProgressMonitor.UNKNOWN);
 		try {
+			monitor.beginTask("Query Repository", IProgressMonitor.UNKNOWN);
+
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 
 			try {
@@ -141,7 +142,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
 				client.search(filter, new JiraIssueCollector(monitor, issues, AbstractTaskCollector.MAX_HITS), monitor);
 
-				int n = 0;
 				for (JiraIssue issue : issues) {
 					if (monitor.isCanceled()) {
 						return Status.CANCEL_STATUS;
@@ -152,7 +152,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 								null);
 					}
 
-					monitor.subTask(++n + "/" + issues.size() + " " + issue.getKey() + " " + issue.getSummary());
+					monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
 					RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(repository.getRepositoryUrl(),
 							issue.getId());
 					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData,
@@ -171,73 +171,80 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void preSynchronization(SynchronizationEvent event, IProgressMonitor monitor) throws CoreException {
-		if (!event.fullSynchronization) {
-			return;
-		}
-
 		monitor = Policy.monitorFor(monitor);
-
-		Date now = new Date();
-		TaskRepository repository = event.taskRepository;
-		FilterDefinition changedFilter = getSynchronizationFilter(repository, event.tasks, now);
-		if (changedFilter == null) {
-			// could not determine last time, rerun queries
-			repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
-			return;
-		}
-
-		List<JiraIssue> issues = new ArrayList<JiraIssue>();
-		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		// unlimited maxHits can create crazy amounts of traffic
-		JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues,
-				MAX_MARK_STALE_QUERY_HITS);
 		try {
-			client.search(changedFilter, issueCollector, monitor);
+			monitor.beginTask("Getting changed tasks", IProgressMonitor.UNKNOWN);
 
-			if (issues.isEmpty()) {
-				// repository is unchanged
-				repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
-				event.performQueries = false;
+			event.performQueries = true;
+
+			if (!event.fullSynchronization) {
 				return;
 			}
 
-			for (JiraIssue issue : issues) {
-				AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(
-						repository.getRepositoryUrl(), issue.getId());
-				if (task != null) {
-					if (issue.getProject() == null) {
-						throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
-								ERROR_REPOSITORY_CONFIGURATION, null));
+			Date now = new Date();
+			TaskRepository repository = event.taskRepository;
+			FilterDefinition changedFilter = getSynchronizationFilter(repository, event.tasks, now);
+			if (changedFilter == null) {
+				// could not determine last time, rerun queries
+				repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
+				return;
+			}
+
+			List<JiraIssue> issues = new ArrayList<JiraIssue>();
+			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+			// unlimited maxHits can create crazy amounts of traffic
+			JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues,
+					MAX_MARK_STALE_QUERY_HITS);
+			try {
+				client.search(changedFilter, issueCollector, monitor);
+
+				if (issues.isEmpty()) {
+					// repository is unchanged
+					repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
+					event.performQueries = false;
+					return;
+				}
+
+				for (JiraIssue issue : issues) {
+					AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(
+							repository.getRepositoryUrl(), issue.getId());
+					if (task != null) {
+						if (issue.getProject() == null) {
+							throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
+									ERROR_REPOSITORY_CONFIGURATION, null));
+						}
+
+						// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
+						monitor.subTask(issue.getKey() + " " + issue.getSummary());
+						RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(
+								repository.getRepositoryUrl(), issue.getId());
+						RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue,
+								oldTaskData, monitor);
+						getSynchronizationManager().saveIncoming(task, taskData, false);
+						updateTaskFromTaskData(repository, task, taskData);
 					}
-
-					// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
-					monitor.subTask(issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(repository.getRepositoryUrl(),
-							issue.getId());
-					RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue, oldTaskData,
-							monitor);
-					getSynchronizationManager().saveIncoming(task, taskData, false);
-					updateTaskFromTaskData(repository, task, taskData);
 				}
-			}
 
-			repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
+				repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
 
-			Date lastUpdate = issues.get(0).getUpdated();
-			Date repositoryUpdateTimeStamp = JiraUtils.getLastUpdate(repository);
-			if (repositoryUpdateTimeStamp != null && repositoryUpdateTimeStamp.equals(lastUpdate)) {
-				// didn't see any new changes
-				event.performQueries = false;
-			} else {
-				// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
-				if (lastUpdate != null) {
-					JiraUtils.setLastUpdate(repository, lastUpdate);
+				Date lastUpdate = issues.get(0).getUpdated();
+				Date repositoryUpdateTimeStamp = JiraUtils.getLastUpdate(repository);
+				if (repositoryUpdateTimeStamp != null && repositoryUpdateTimeStamp.equals(lastUpdate)) {
+					// didn't see any new changes
+					event.performQueries = false;
+				} else {
+					// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
+					if (lastUpdate != null) {
+						JiraUtils.setLastUpdate(repository, lastUpdate);
+					}
 				}
+			} catch (JiraException e) {
+				IStatus status = JiraCorePlugin.toStatus(repository, e);
+				trace(status);
+				throw new CoreException(status);
 			}
-		} catch (JiraException e) {
-			IStatus status = JiraCorePlugin.toStatus(repository, e);
-			trace(status);
-			throw new CoreException(status);
+		} finally {
+			monitor.done();
 		}
 	}
 

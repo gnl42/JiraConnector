@@ -100,8 +100,6 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
-		TasksUi.setForceSyncExec(true);
-
 		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
@@ -243,7 +241,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 			dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 		}
 
-		TasksUi.synchronize(connector, task, true, null);
+		TasksUi.synchronizeTask(connector, task, true, null);
 		assertEquals("testUpdateTask", task.getSummary());
 		assertTrue(task.isCompleted());
 		assertNotNull(task.getCompletionDate());
@@ -269,7 +267,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 			taskData.setSelectedOperation(resolveOperation);
 			dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 		}
-		TasksUi.synchronize(connector, task, true, null);
+		TasksUi.synchronizeTask(connector, task, true, null);
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(true, task.isCompleted());
 		assertNotNull(task.getCompletionDate());
