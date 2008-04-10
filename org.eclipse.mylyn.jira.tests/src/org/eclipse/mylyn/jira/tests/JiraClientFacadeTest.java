@@ -13,13 +13,13 @@ import junit.framework.TestCase;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
@@ -90,7 +90,7 @@ public class JiraClientFacadeTest extends TestCase {
 
 	public void testChangeCredentials() throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
@@ -130,10 +130,10 @@ public class JiraClientFacadeTest extends TestCase {
 
 	public void testCharacterEncoding() throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
-		assertFalse(JiraUtils.getCharacterEncodingValidated(repository));
+		assertFalse(JiraUtil.getCharacterEncodingValidated(repository));
 
 		JiraClient client = jiraFacade.getJiraClient(repository);
 		assertEquals("ISO-8859-1", client.getCharacterEncoding());
@@ -143,7 +143,7 @@ public class JiraClientFacadeTest extends TestCase {
 		client = jiraFacade.getJiraClient(repository);
 		assertEquals("ISO-8859-1", client.getCharacterEncoding());
 
-		JiraUtils.setCharacterEncodingValidated(repository, true);
+		JiraUtil.setCharacterEncodingValidated(repository, true);
 		jiraFacade.repositorySettingsChanged(repository);
 		client = jiraFacade.getJiraClient(repository);
 		assertEquals("UTF-8", client.getCharacterEncoding());

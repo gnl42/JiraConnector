@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraStackTraceDuplicateDetector;
-import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
@@ -70,7 +70,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 	}
 
 	protected void init(String url) throws Exception {
-		String kind = JiraUiPlugin.REPOSITORY_KIND;
+		String kind = JiraCorePlugin.REPOSITORY_KIND;
 
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		repository = new TaskRepository(kind, url);

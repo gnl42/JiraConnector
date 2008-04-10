@@ -17,6 +17,12 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.wizards.EditJiraQueryWizard;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraQueryPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
@@ -122,7 +128,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public String getConnectorKind() {
-		return JiraUiPlugin.REPOSITORY_KIND;
+		return JiraCorePlugin.REPOSITORY_KIND;
 	}
 
 	@Override

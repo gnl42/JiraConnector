@@ -14,6 +14,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -22,12 +28,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
-import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
-import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryQuery;
-import org.eclipse.mylyn.internal.jira.ui.JiraTask;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.TaskList;
@@ -59,7 +59,7 @@ public class JiraFilterTest extends TestCase {
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
 
 		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraUiPlugin.REPOSITORY_KIND);
+				JiraCorePlugin.REPOSITORY_KIND);
 		connector = (JiraRepositoryConnector) abstractConnector;
 
 		repository = null;
@@ -81,7 +81,7 @@ public class JiraFilterTest extends TestCase {
 					TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		}
 
-		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
+		repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 		repository.setCharacterEncoding(JiraClient.DEFAULT_CHARSET);

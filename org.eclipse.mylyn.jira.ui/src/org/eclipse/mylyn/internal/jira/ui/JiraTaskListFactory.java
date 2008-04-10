@@ -15,6 +15,10 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
@@ -83,7 +87,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 			// TODO remove this at some point
 			FilterDefinition filter = decodeFilter(custom);
 			if (filter == null) {
-				StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, "Failed to restore custom query "
+				StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to restore custom query "
 						+ element.getAttribute(KEY_FILTER_ID)));
 				return null;
 			}
@@ -91,10 +95,10 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
 			query = new JiraCustomQuery(repositoryUrl, filter, TasksUiPlugin.getRepositoryManager().getRepository(
-					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding());
+					JiraCorePlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding());
 		} else if (customUrl != null && customUrl.length() > 0) {
 			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
-					JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
+					JiraCorePlugin.REPOSITORY_KIND, repositoryUrl);
 			if (repository != null) {
 				query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl,
 						repository.getCharacterEncoding());

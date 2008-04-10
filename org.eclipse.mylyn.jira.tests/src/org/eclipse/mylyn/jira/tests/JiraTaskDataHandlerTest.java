@@ -18,6 +18,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
+import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
@@ -29,11 +33,7 @@ import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.ui.JiraAttributeFactory;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
-import org.eclipse.mylyn.internal.jira.ui.JiraTaskDataHandler;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -88,7 +88,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
-		String kind = JiraUiPlugin.REPOSITORY_KIND;
+		String kind = JiraCorePlugin.REPOSITORY_KIND;
 
 		Credentials credentials = TestUtil.readCredentials(level);
 
@@ -164,7 +164,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		issue.setPriority(MockJiraClient.createPriority(Priority.BLOCKER_ID, "blocker"));
 
-		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, "http://jira.codehaus.org/");
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, "http://jira.codehaus.org/");
 		MockJiraClient client = new MockJiraClient(repository.getRepositoryUrl());
 		JiraTaskDataHandler dataHandler = new JiraTaskDataHandler(new MockJiraClientFactory(client));
 		RepositoryTaskData data = dataHandler.createTaskData(repository, client, issue, null, null);
@@ -175,7 +175,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertValues(data, RepositoryTaskAttribute.PRODUCT, "Prone");
 		assertValues(data, JiraAttributeFactory.ATTRIBUTE_TYPE, "task");
 
-		assertValues(data, RepositoryTaskAttribute.DATE_CREATION, JiraUtils.dateToString(issue.getCreated()));
+		assertValues(data, RepositoryTaskAttribute.DATE_CREATION, JiraUtil.dateToString(issue.getCreated()));
 
 		assertValues(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS, "component2", "component3");
 		assertValues(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, "1.0", "2.0");
@@ -198,7 +198,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Date today = new SimpleDateFormat("dd/MMM/yy").parse("1/Jun/06");
-		String dueDate = JiraUtils.dateToString(today);
+		String dueDate = JiraUtil.dateToString(today);
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
 
@@ -342,7 +342,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		AbstractAttributeFactory attributeFactory = dataHandler.getAttributeFactory(repository.getRepositoryUrl(),
 				repository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
-		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
+		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraCorePlugin.REPOSITORY_KIND,
 				repository.getRepositoryUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
 
 		dataHandler.initializeSubTaskData(repository, taskData, parentTaskData, new NullProgressMonitor());

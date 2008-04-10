@@ -23,6 +23,11 @@ import org.eclipse.mylyn.context.core.ContextCore;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
@@ -32,12 +37,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
-import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
-import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.ui.JiraTask;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.ui.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
@@ -94,7 +94,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	protected void init(String url) throws Exception {
-		String kind = JiraUiPlugin.REPOSITORY_KIND;
+		String kind = JiraCorePlugin.REPOSITORY_KIND;
 
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		repository = new TaskRepository(kind, url);
@@ -236,11 +236,11 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
 
 		Date start = new Date();
-		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
 		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		taskList.addTask(task);
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference 
-		assertNull(JiraUtils.getLastUpdate(repository));
+		assertNull(JiraUtil.getLastUpdate(repository));
 
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
@@ -253,10 +253,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(event.performQueries);
 		assertFalse(task.isStale());
 		assertNotNull(repository.getSynchronizationTimeStamp());
-		Date timestamp = JiraUtils.stringToDate(repository.getSynchronizationTimeStamp());
+		Date timestamp = JiraUtil.stringToDate(repository.getSynchronizationTimeStamp());
 		assertTrue(timestamp.after(start));
 		assertTrue(timestamp.before(new Date()));
-		assertEquals(issue.getUpdated(), JiraUtils.getLastUpdate(repository));
+		assertEquals(issue.getUpdated(), JiraUtil.getLastUpdate(repository));
 
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference
 
@@ -264,9 +264,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertFalse(event.performQueries);
 		assertNotNull(repository.getSynchronizationTimeStamp());
 		assertFalse(task.isStale());
-		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(timestamp).equals(
+		assertFalse("Expected updated synchronization timestamp", JiraUtil.dateToString(timestamp).equals(
 				repository.getSynchronizationTimeStamp()));
-		assertEquals(issue.getUpdated(), JiraUtils.getLastUpdate(repository));
+		assertEquals(issue.getUpdated(), JiraUtil.getLastUpdate(repository));
 	}
 
 	public void testMarkStaleRepositoryChanged() throws Exception {
@@ -283,7 +283,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		JiraIssue issue2 = JiraTestUtils.createIssue(client, "testMarkStale2");
 		assertTrue(issue2.getUpdated().after(issue.getUpdated()));
-		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(start));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
 
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
@@ -294,9 +294,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		event.fullSynchronization = true;
 		connector.preSynchronization(event, null);
 		assertTrue(event.performQueries);
-		assertFalse("Expected updated synchronization timestamp", JiraUtils.dateToString(start).equals(
+		assertFalse("Expected updated synchronization timestamp", JiraUtil.dateToString(start).equals(
 				repository.getSynchronizationTimeStamp()));
-		assertEquals(issue2.getUpdated(), JiraUtils.getLastUpdate(repository));
+		assertEquals(issue2.getUpdated(), JiraUtil.getLastUpdate(repository));
 	}
 
 	public void testMarkStaleClosedTask() throws Exception {
@@ -313,7 +313,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
-		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(new Date(), -1)));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(new Date(), -1)));
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
 		SynchronizationEvent event = new SynchronizationEvent();
@@ -332,7 +332,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		tasks.add(new JiraTask(JiraTestConstants.JIRA_39_URL, "1", ""));
 
 		Date now = new Date();
-		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
 		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, addSecondsToDate(now, 1));
 		assertNotNull(filter);
 		assertTrue(filter.getUpdatedDateFilter() instanceof RelativeDateRangeFilter);
@@ -342,7 +342,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(RangeType.NONE, dateFilter.getNextRangeType());
 		assertEquals(0, dateFilter.getNextCount());
 
-		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(now, -121)));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(now, -121)));
 		filter = connector.getSynchronizationFilter(repository, tasks, now);
 		assertNotNull(filter);
 		assertTrue(filter.getUpdatedDateFilter() instanceof RelativeDateRangeFilter);
@@ -360,7 +360,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		tasks.add(new JiraTask(JiraTestConstants.JIRA_39_URL, "1", ""));
 
 		Date now = new Date();
-		String future = JiraUtils.dateToString(addSecondsToDate(now, 20));
+		String future = JiraUtil.dateToString(addSecondsToDate(now, 20));
 		repository.setSynchronizationTimeStamp(future);
 		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, now);
 		assertNull(filter);
@@ -382,15 +382,15 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Date now = new Date();
 		HashSet<AbstractTask> tasks = new HashSet<AbstractTask>();
 		JiraTask task = new JiraTask(repository.getRepositoryUrl(), "1", "");
-		task.setLastReadTimeStamp(JiraUtils.dateToString(now));
+		task.setLastReadTimeStamp(JiraUtil.dateToString(now));
 		tasks.add(task);
 
-		repository.setSynchronizationTimeStamp(JiraUtils.dateToString(addSecondsToDate(new Date(), 121)));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(new Date(), 121)));
 		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, now);
 		assertNotNull(filter);
 		assertTrue(filter.getUpdatedDateFilter() instanceof DateRangeFilter);
 		DateRangeFilter dateFilter = (DateRangeFilter) filter.getUpdatedDateFilter();
-		assertEquals(JiraUtils.stringToDate(task.getLastReadTimeStamp()), dateFilter.getFromDate());
+		assertEquals(JiraUtil.stringToDate(task.getLastReadTimeStamp()), dateFilter.getFromDate());
 		assertEquals(null, dateFilter.getToDate());
 	}
 

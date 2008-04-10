@@ -12,11 +12,14 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.eclipse.mylyn.internal.jira.core.InvalidJiraQueryException;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
@@ -32,9 +35,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
-import org.eclipse.mylyn.internal.jira.ui.InvalidJiraQueryException;
-import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**
@@ -129,7 +129,7 @@ public class JiraCustomQueryTest extends TestCase {
 		filter.setUpdatedDateFilter(new DateRangeFilter(new Date(20), new Date(22)));
 		filter.setDueDateFilter(new DateRangeFilter(new Date(30), new Date(32)));
 
-		TaskRepository taskRepository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, repositoryUrl);
+		TaskRepository taskRepository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
 
 		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskRepository.getCharacterEncoding());

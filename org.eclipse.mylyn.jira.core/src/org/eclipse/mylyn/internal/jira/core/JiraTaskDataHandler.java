@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.html.HTML2TextReader;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
@@ -46,6 +45,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
@@ -58,7 +58,6 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskComment;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.web.core.Policy;
 
 /**
@@ -122,13 +121,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			throws CoreException, JiraException {
 		try {
 			int id = Integer.parseInt(taskId);
-			AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
-			if (task != null) {
-				return client.getIssueByKey(task.getTaskKey(), monitor);
-			} else {
-				String issueKey = client.getKeyFromId(taskId, monitor);
-				return client.getIssueByKey(issueKey, monitor);
-			}
+			// TODO consider keeping a cache of id -> key in the JIRA core plug-in
+//			AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, "" + id);
+//			if (task != null) {
+//				return client.getIssueByKey(task.getTaskKey(), monitor);
+//			} else {
+			String issueKey = client.getKeyFromId(id + "", monitor);
+			return client.getIssueByKey(issueKey, monitor);
+//			}
 		} catch (NumberFormatException e) {
 			return client.getIssueByKey(taskId, monitor);
 		}
@@ -136,7 +136,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	public RepositoryTaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
 			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
-		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraUiPlugin.REPOSITORY_KIND,
+		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraCorePlugin.REPOSITORY_KIND,
 				repository.getRepositoryUrl(), jiraIssue.getId());
 		initializeTaskData(data, client, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
@@ -284,14 +284,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 		}
 
-		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, JiraUtils.dateToString(jiraIssue.getCreated()));
+		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, JiraUtil.dateToString(jiraIssue.getCreated()));
 		data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, jiraIssue.getSummary());
 		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, jiraIssue.getDescription());
 		data.setAttributeValue(RepositoryTaskAttribute.STATUS, jiraIssue.getStatus().getName());
 		data.setAttributeValue(RepositoryTaskAttribute.TASK_KEY, jiraIssue.getKey());
 		data.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, //
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getName());
-		data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, JiraUtils.dateToString(jiraIssue.getUpdated()));
+		data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, JiraUtil.dateToString(jiraIssue.getUpdated()));
 
 		data.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
 		data.setAttributeValue(RepositoryTaskAttribute.USER_REPORTER, jiraIssue.getReporter());
@@ -334,7 +334,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ACTUAL, timeFormat.format(jiraIssue.getActual()));
 
 		if (jiraIssue.getDue() != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraUtils.dateToString(jiraIssue.getDue()));
+			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraUtil.dateToString(jiraIssue.getDue()));
 		} else {
 			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
 		}
@@ -385,7 +385,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (Attachment attachment : jiraIssue.getAttachments()) {
 			RepositoryAttachment taskAttachment = new RepositoryAttachment(attributeFactory);
 			taskAttachment.setCreator(attachment.getAuthor());
-			taskAttachment.setRepositoryKind(JiraUiPlugin.REPOSITORY_KIND);
+			taskAttachment.setRepositoryKind(JiraCorePlugin.REPOSITORY_KIND);
 			taskAttachment.setRepositoryUrl(client.getBaseUrl());
 			taskAttachment.setTaskId(jiraIssue.getKey());
 
@@ -575,7 +575,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		if (jiraIssue.getUpdated() != null && oldTaskData != null) {
 			String value = oldTaskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
-			if (jiraIssue.getUpdated().equals(JiraUtils.stringToDate(value))) {
+			if (jiraIssue.getUpdated().equals(JiraUtil.stringToDate(value))) {
 				// use cached information
 				if (data.getAttribute(RepositoryTaskAttribute.DESCRIPTION) != null) {
 					data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
@@ -887,7 +887,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
 
 		// TODO sync due date between jira and local planning
-		issue.setDue(JiraUtils.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
+		issue.setDue(JiraUtil.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
 
 		String parentId = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
 		if (parentId != null) {
@@ -940,7 +940,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					comp.setName(compStr);
 					components.add(comp);
 				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID,
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
 							"Error setting component for JIRA issue. Component id is null: " + compStr));
 				}
 			}
@@ -957,7 +957,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					version.setName(fixStr);
 					fixversions.add(version);
 				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID,
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
 							"Error setting fix version for JIRA issue. Version id is null: " + fixStr));
 				}
 			}
@@ -974,7 +974,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					version.setName(fixStr);
 					affectsversions.add(version);
 				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID,
+					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
 							"Error setting affects version for JIRA issue. Version id is null: " + fixStr));
 				}
 			}
@@ -1033,7 +1033,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static void trace(IStatus status) {
 		if (TRACE_ENABLED) {
-			JiraUiPlugin.getDefault().getLog().log(status);
+			JiraCorePlugin.getDefault().getLog().log(status);
 		}
 	}
 

@@ -6,8 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.core.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,14 +18,18 @@ import java.util.Locale;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**
  * @author Steffen Pingel
  */
-public class JiraUtils {
+public class JiraUtil {
 
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/general"));
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general"));
 
 	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate";
 
@@ -34,11 +40,11 @@ public class JiraUtils {
 	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration";
 
 	public static void setLastUpdate(TaskRepository repository, Date date) {
-		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtils.dateToString(date));
+		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtil.dateToString(date));
 	}
 
 	public static Date getLastUpdate(TaskRepository repository) {
-		return JiraUtils.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
+		return JiraUtil.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
 	}
 
 	public static void setCompression(TaskRepository taskRepository, boolean compression) {
@@ -75,7 +81,7 @@ public class JiraUtils {
 			try {
 				return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
 			} catch (ParseException e) {
-				trace(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, 0, "Error while parsing date string "
+				trace(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0, "Error while parsing date string "
 						+ dateString, e));
 				return null;
 			}
@@ -84,7 +90,7 @@ public class JiraUtils {
 
 	public static void trace(IStatus status) {
 		if (TRACE_ENABLED) {
-			JiraUiPlugin.getDefault().getLog().log(status);
+			JiraCorePlugin.getDefault().getLog().log(status);
 		}
 	}
 
@@ -94,6 +100,21 @@ public class JiraUtils {
 
 	public static void setAutoRefreshConfiguration(TaskRepository repository, boolean autoRefreshConfiguration) {
 		repository.setProperty(REFRESH_CONFIGURATION_KEY, String.valueOf(autoRefreshConfiguration));
+	}
+
+	public static String encode(String text, String encoding) {
+		try {
+			return URLEncoder.encode(text, encoding);
+		} catch (UnsupportedEncodingException e) {
+			try {
+				return URLEncoder.encode(text, JiraClient.DEFAULT_CHARSET);
+			} catch (UnsupportedEncodingException e1) {
+				// should never happen
+				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, "Could not encode text \""
+						+ text + "\"", e));
+				return text;
+			}
+		}
 	}
 
 }

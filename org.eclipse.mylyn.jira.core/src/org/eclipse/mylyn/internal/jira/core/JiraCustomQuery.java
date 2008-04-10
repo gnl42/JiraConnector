@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -22,10 +22,10 @@ import java.util.Map;
 
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
@@ -128,7 +128,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	@Override
 	public String getRepositoryKind() {
-		return JiraUiPlugin.REPOSITORY_KIND;
+		return JiraCorePlugin.REPOSITORY_KIND;
 	}
 
 	public FilterDefinition getFilterDefinition(JiraClient jiraServer, boolean validate) {

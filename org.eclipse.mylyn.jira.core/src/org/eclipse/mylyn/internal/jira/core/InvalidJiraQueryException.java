@@ -6,16 +6,17 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
-
-import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
+package org.eclipse.mylyn.internal.jira.core;
 
 /**
- * @author Eugene Kuleshov
+ * @author Steffen Pingel
  */
-public interface IJiraClientFactory {
+public class InvalidJiraQueryException extends RuntimeException {
 
-	public JiraClient getJiraClient(TaskRepository repository);
+	private static final long serialVersionUID = -9151805689314153246L;
+
+	public InvalidJiraQueryException(String string) {
+		super(string);
+	}
 
 }

@@ -10,8 +10,8 @@ package org.eclipse.mylyn.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylyn.internal.jira.ui.JiraTask;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskList;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -45,7 +45,7 @@ public class JiraTaskArchiveTest extends TestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraUiPlugin.REPOSITORY_KIND);
+				JiraCorePlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 //		taskList.clearArchive();
 //		MylynTaskListPlugin.getTaskListManager().getTaskList().clear();
@@ -57,10 +57,10 @@ public class JiraTaskArchiveTest extends TestCase {
 
 	public void testJiraTaskRegistry() {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraUiPlugin.REPOSITORY_KIND);
+				JiraCorePlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 
-		TaskRepository repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, "repo");
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, "repo");
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 

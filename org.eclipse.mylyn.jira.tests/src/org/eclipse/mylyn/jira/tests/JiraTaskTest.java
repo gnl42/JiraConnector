@@ -10,8 +10,8 @@ package org.eclipse.mylyn.jira.tests;
 
 import junit.framework.TestCase;
 
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
-import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
 
 /**

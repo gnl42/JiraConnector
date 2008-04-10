@@ -6,10 +6,11 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.core;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -34,6 +34,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
@@ -45,7 +46,6 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.SynchronizationEvent;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
-import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.web.core.Policy;
 
 /**
@@ -83,12 +83,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public String getLabel() {
-		return JiraUiPlugin.JIRA_CLIENT_LABEL;
+		return JiraCorePlugin.JIRA_CLIENT_LABEL;
 	}
 
 	@Override
 	public String getConnectorKind() {
-		return JiraUiPlugin.REPOSITORY_KIND;
+		return JiraCorePlugin.REPOSITORY_KIND;
 	}
 
 	@Override
@@ -129,12 +129,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				try {
 					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
 				} catch (InvalidJiraQueryException e) {
-					return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
+					return new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0,
 							"The query parameters do not match the repository configuration, please check the query properties: "
 									+ e.getMessage(), null);
 				}
 			} else {
-				return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0, //
+				return new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, //
 						"Invalid query type: " + repositoryQuery.getClass(), null);
 			}
 
@@ -148,7 +148,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					}
 
 					if (issue.getProject() == null) {
-						return new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0, ERROR_REPOSITORY_CONFIGURATION,
+						return new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION,
 								null);
 					}
 
@@ -186,7 +186,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			FilterDefinition changedFilter = getSynchronizationFilter(repository, event.tasks, now);
 			if (changedFilter == null) {
 				// could not determine last time, rerun queries
-				repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
+				repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
 				return;
 			}
 
@@ -200,17 +200,20 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 				if (issues.isEmpty()) {
 					// repository is unchanged
-					repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
+					repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
 					event.performQueries = false;
 					return;
 				}
 
+				HashMap<String, AbstractTask> taskById = new HashMap<String, AbstractTask>();
+				for (AbstractTask task : event.tasks) {
+					taskById.put(task.getTaskId(), task);
+				}
 				for (JiraIssue issue : issues) {
-					AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(
-							repository.getRepositoryUrl(), issue.getId());
+					AbstractTask task = taskById.get(issue.getId());
 					if (task != null) {
 						if (issue.getProject() == null) {
-							throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, 0,
+							throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0,
 									ERROR_REPOSITORY_CONFIGURATION, null));
 						}
 
@@ -225,17 +228,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					}
 				}
 
-				repository.setSynchronizationTimeStamp(JiraUtils.dateToString(now));
+				repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
 
 				Date lastUpdate = issues.get(0).getUpdated();
-				Date repositoryUpdateTimeStamp = JiraUtils.getLastUpdate(repository);
+				Date repositoryUpdateTimeStamp = JiraUtil.getLastUpdate(repository);
 				if (repositoryUpdateTimeStamp != null && repositoryUpdateTimeStamp.equals(lastUpdate)) {
 					// didn't see any new changes
 					event.performQueries = false;
 				} else {
 					// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
 					if (lastUpdate != null) {
-						JiraUtils.setLastUpdate(repository, lastUpdate);
+						JiraUtil.setLastUpdate(repository, lastUpdate);
 					}
 				}
 			} catch (JiraException e) {
@@ -260,7 +263,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return null;
 		}
 
-		Date lastSyncDate = JiraUtils.stringToDate(repository.getSynchronizationTimeStamp());
+		Date lastSyncDate = JiraUtil.stringToDate(repository.getSynchronizationTimeStamp());
 
 		// repository was never synchronized, update all tasks
 		if (lastSyncDate == null) {
@@ -276,14 +279,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		// check if time stamp is skewed
 		if (lastSyncTime >= nowTime) {
-			trace(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, 0,
+			trace(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0,
 					"Synchronization time stamp clock skew detected for " + repository.getRepositoryUrl() + ": "
 							+ lastSyncTime + " >= " + now, null));
 
 			// use the timestamp on the task that was modified last
 			lastSyncDate = null;
 			for (AbstractTask task : tasks) {
-				Date date = JiraUtils.stringToDate(task.getLastReadTimeStamp());
+				Date date = JiraUtil.stringToDate(task.getLastReadTimeStamp());
 				if (lastSyncDate == null || (date != null && date.after(lastSyncDate))) {
 					lastSyncDate = date;
 				}
@@ -378,10 +381,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 		task.setCreationDate(issue.getCreated());
 		if (isCompleted(issue)) {
-			task.setCompleted(true);
 			task.setCompletionDate(issue.getUpdated());
 		} else {
-			task.setCompleted(false);
 			task.setCompletionDate(null);
 		}
 		if (issue.getType() != null) {
@@ -444,18 +445,16 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
 			jiraTask.setTaskKind(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE));
 			jiraTask.setUrl(getTaskUrlFromKey(repository.getRepositoryUrl(), repositoryTask.getTaskKey()));
-			jiraTask.setCreationDate(JiraUtils.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_CREATION)));
-			jiraTask.setDueDate(JiraUtils.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
+			jiraTask.setCreationDate(JiraUtil.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_CREATION)));
+			jiraTask.setDueDate(JiraUtil.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
 
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 			jiraTask.setPriority(getPriorityLevel(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
 			for (org.eclipse.mylyn.internal.jira.core.model.JiraStatus status : client.getCache().getStatuses()) {
 				if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
 					if (isCompleted(taskData)) {
-						jiraTask.setCompleted(true);
-						jiraTask.setCompletionDate(JiraUtils.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED)));
+						jiraTask.setCompletionDate(JiraUtil.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED)));
 					} else {
-						jiraTask.setCompleted(false);
 						jiraTask.setCompletionDate(null);
 					}
 					break;
@@ -522,13 +521,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private void trace(IStatus status) {
 		if (TRACE_ENABLED) {
-			JiraUiPlugin.getDefault().getLog().log(status);
+			JiraCorePlugin.getDefault().getLog().log(status);
 		}
 	}
 
 	@Override
 	public boolean isRepositoryConfigurationStale(TaskRepository repository) throws CoreException {
-		return JiraUtils.getAutoRefreshConfiguration(repository);
+		return JiraUtil.getAutoRefreshConfiguration(repository);
 	}
 
 	@Override

@@ -8,8 +8,8 @@
 
 package org.eclipse.mylyn.jira.tests;
 
+import org.eclipse.mylyn.internal.jira.core.IJiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.jira.ui.IJiraClientFactory;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**

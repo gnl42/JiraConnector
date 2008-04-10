@@ -13,9 +13,9 @@ import java.util.Locale;
 
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
@@ -37,7 +37,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import org.eclipse.mylyn.internal.jira.core.util.JiraCoreUtil;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 
 /**
  * @author Brock Janiczak
@@ -171,7 +171,7 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertContentFilter(ContentFilter contentFilter, String encoding) {
-		return new StringBuffer().append("query=").append(JiraCoreUtil.encode(contentFilter.getQueryString(), encoding)) //$NON-NLS-1$
+		return new StringBuffer().append("query=").append(JiraUtil.encode(contentFilter.getQueryString(), encoding)) //$NON-NLS-1$
 				.append("&summary=").append(contentFilter.isSearchingSummary()) //$NON-NLS-1$
 				.append("&description=").append(contentFilter.isSearchingDescription()) //$NON-NLS-1$
 				.append("&body=").append(contentFilter.isSearchingComments()) //$NON-NLS-1$

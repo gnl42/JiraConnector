@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -43,20 +42,22 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 			IProgressMonitor monitor) throws CoreException {
 		String id = attachment.getAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID);
 		if (id == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL,
-					"Attachment download from " + repository.getRepositoryUrl() + " failed, missing attachment id.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+					RepositoryStatus.ERROR_INTERNAL, "Attachment download from " + repository.getRepositoryUrl()
+							+ " failed, missing attachment id.", null));
 		}
 		String key = attachment.getTaskId();
 		if (key == null) {
-			throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, RepositoryStatus.ERROR_INTERNAL,
-					"Attachment download from " + repository.getRepositoryUrl() + " failed, missing attachment key.", null));
+			throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+					RepositoryStatus.ERROR_INTERNAL, "Attachment download from " + repository.getRepositoryUrl()
+							+ " failed, missing attachment key.", null));
 		}
 
-		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
+		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
-			JiraIssue issue = server.getIssueByKey(key, monitor);
+			JiraIssue issue = client.getIssueByKey(key, monitor);
 			Attachment jiraAttachment = issue.getAttachmentById(id);
-			server.retrieveFile(issue, jiraAttachment, out, monitor);
+			client.retrieveFile(issue, jiraAttachment, out, monitor);
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 		}

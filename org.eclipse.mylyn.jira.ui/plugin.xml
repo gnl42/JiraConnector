@@ -21,7 +21,7 @@
          point="org.eclipse.mylyn.tasks.ui.repositories">
 
       <connectorCore
-            class="org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector"
+            class="org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector"
             id="org.eclipse.mylyn.jira.tasklist.repositories"
             name="JIRA Repository Connector"
             type="jira"/>

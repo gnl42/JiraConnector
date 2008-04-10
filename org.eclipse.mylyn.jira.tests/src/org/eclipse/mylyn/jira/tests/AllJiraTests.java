@@ -11,7 +11,7 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUiTest;
 import org.eclipse.mylyn.internal.jira.ui.JiraTimeFormatTest;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;

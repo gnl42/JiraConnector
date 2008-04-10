@@ -13,14 +13,14 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
+import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.jira.ui.JiraCustomQuery;
-import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.ui.JiraRepositoryQuery;
-import org.eclipse.mylyn.internal.jira.ui.JiraTask;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
@@ -62,7 +62,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		repository = new TaskRepository(JiraUiPlugin.REPOSITORY_KIND, SERVER_URL);
+		repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, SERVER_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(USER, PASSWORD), false);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
@@ -74,7 +74,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraUiPlugin.REPOSITORY_KIND);
+				JiraCorePlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 		// taskList.clearArchive();
 		TasksUiPlugin.getTaskListManager().resetTaskList();
@@ -207,7 +207,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertEquals(handle, savedHit.getHandleIdentifier());
 
 		AbstractRepositoryConnector client = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraUiPlugin.REPOSITORY_KIND);
+				JiraCorePlugin.REPOSITORY_KIND);
 		assertNotNull(client);
 		assertNotNull(taskList.getTask(savedHit.getHandleIdentifier()));
 	}

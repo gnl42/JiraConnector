@@ -10,7 +10,8 @@ package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.internal.jira.ui.JiraTask;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -39,7 +40,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 		if (input instanceof RepositoryTaskEditorInput) {
 			RepositoryTaskEditorInput existingInput = (RepositoryTaskEditorInput) input;
 			return existingInput.getTaskData() != null
-					&& JiraUiPlugin.REPOSITORY_KIND.equals(existingInput.getRepository().getConnectorKind());
+					&& JiraCorePlugin.REPOSITORY_KIND.equals(existingInput.getRepository().getConnectorKind());
 		}
 		return false;
 	}
@@ -62,12 +63,12 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 	@Override
 	public IEditorInput createEditorInput(AbstractTask task) {
 		JiraTask jiraTask = (JiraTask) task;
-		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(JiraUiPlugin.REPOSITORY_KIND,
+		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(JiraCorePlugin.REPOSITORY_KIND,
 				jiraTask.getRepositoryUrl());
 		try {
 			return new RepositoryTaskEditorInput(repository, jiraTask.getTaskId(), jiraTask.getUrl());
 		} catch (Exception e) {
-			StatusHandler.fail(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, "Could not create JIRA editor input",
+			StatusHandler.fail(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, "Could not create JIRA editor input",
 					e));
 		}
 		return null;

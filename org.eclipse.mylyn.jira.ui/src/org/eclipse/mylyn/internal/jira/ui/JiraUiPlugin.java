@@ -5,51 +5,29 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-
 package org.eclipse.mylyn.internal.jira.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
+import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
+ * @author Steffen Pingel
  */
 public class JiraUiPlugin extends AbstractUIPlugin {
 
-	public static final String PLUGIN_ID = "org.eclipse.mylyn.jira.ui";
+	public static final String ID_PLUGIN = "org.eclipse.mylyn.jira.ui";
 
-	private static JiraUiPlugin INSTANCE;
-
-	public final static String REPOSITORY_KIND = "jira";
-
-	public final static String JIRA_CLIENT_LABEL = "JIRA (supports 3.3.3 and later)";
-
-	public final static String TITLE_MESSAGE_DIALOG = "Mylyn JIRA Client";
-
-	public JiraUiPlugin() {
-		INSTANCE = this;
-	}
-
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-
-		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationUiFactory(), false);
-	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-		INSTANCE = null;
-		JiraClientFactory.getDefault().logOutFromAll();
-	}
+	private static JiraUiPlugin instance;
 
 	public static JiraUiPlugin getDefault() {
-		return INSTANCE;
+		return instance;
 	}
 
 	/**
@@ -63,13 +41,29 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.mylyn.jira", path);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
-	 */
+	public JiraUiPlugin() {
+	}
+
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
 		reg.put("icons/obj16/comment.gif", getImageDescriptor("icons/obj16/comment.gif"));
 		reg.put("icons/obj16/jira.png", getImageDescriptor("icons/obj16/jira.png"));
-
 	}
+
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		instance = this;
+		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationUiFactory(), false);
+		TasksUiPlugin.getRepositoryManager().addListener(JiraClientFactory.getDefault());
+	}
+
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		TasksUiPlugin.getRepositoryManager().removeListener(JiraClientFactory.getDefault());
+		JiraClientFactory.getDefault().logOutFromAll();
+		instance = null;
+		super.stop(context);
+	}
+
 }

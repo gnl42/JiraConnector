@@ -6,21 +6,19 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.core;
 
 import java.net.Proxy;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.mylyn.internal.jira.core.JiraClientManager;
-import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
-import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 
 /**
@@ -45,8 +43,6 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	private JiraClientFactory() {
 		this.taskRepositoryLocationFactory = new TaskRepositoryLocationFactory();
 		this.clientManager = JiraCorePlugin.getDefault().getServerManager();
-
-		TasksUiPlugin.getRepositoryManager().addListener(this);
 	}
 
 	/* For testing. */
@@ -69,10 +65,10 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 		if (server == null) {
 			AbstractWebLocation location = taskRepositoryLocationFactory.createWebLocation(repository);
 			String characterEncoding = null;
-			if (JiraUtils.getCharacterEncodingValidated(repository)) {
+			if (JiraUtil.getCharacterEncodingValidated(repository)) {
 				characterEncoding = repository.getCharacterEncoding();
 			}
-			server = clientManager.addClient(location, characterEncoding, JiraUtils.getCompression(repository));
+			server = clientManager.addClient(location, characterEncoding, JiraUtil.getCompression(repository));
 		}
 		return server;
 	}
@@ -100,14 +96,14 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	}
 
 	public synchronized void repositoryAdded(TaskRepository repository) {
-		if (repository.getConnectorKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
+		if (repository.getConnectorKind().equals(JiraCorePlugin.REPOSITORY_KIND)) {
 			assert clientManager.getClient(repository.getRepositoryUrl()) == null;
 			getJiraClient(repository);
 		}
 	}
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
-		if (repository.getConnectorKind().equals(JiraUiPlugin.REPOSITORY_KIND)) {
+		if (repository.getConnectorKind().equals(JiraCorePlugin.REPOSITORY_KIND)) {
 			JiraClient server = clientManager.getClient(repository.getRepositoryUrl());
 			removeServer(server);
 		}

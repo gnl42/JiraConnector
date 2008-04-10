@@ -6,12 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.internal.jira.core;
 
 import java.util.Collection;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeMapper;
@@ -21,7 +22,6 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
  * @author Mik Kersten
  * @author Steffen Pingel
  */
-@SuppressWarnings("restriction")
 public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	private static final long serialVersionUID = 8000933300692372211L;
@@ -155,9 +155,9 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 		try {
 			// RepositoryTaskAttribute.DATE_MODIFIED
 			// RepositoryTaskAttribute.DATE_CREATION
-			return JiraUtils.stringToDate(dateString);
+			return JiraUtil.stringToDate(dateString);
 		} catch (Exception e) {
-			StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID,
+			StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
 					"Error parsing date for attribute \"" + attributeKey + "\": \"" + dateString + "\"", e));
 			return null;
 		}

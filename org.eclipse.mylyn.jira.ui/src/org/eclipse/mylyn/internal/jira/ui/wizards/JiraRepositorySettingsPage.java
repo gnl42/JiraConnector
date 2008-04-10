@@ -22,12 +22,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.window.Window;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
-import org.eclipse.mylyn.internal.jira.ui.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.jira.ui.JiraUtils;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -85,14 +85,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		addRepositoryTemplatesToServerUrlCombo();
 
 		if (repository != null) {
-			this.characterEncodingValidated = JiraUtils.getCharacterEncodingValidated(repository);
+			this.characterEncodingValidated = JiraUtil.getCharacterEncodingValidated(repository);
 		}
 
 		Label compressionLabel = new Label(parent, SWT.NONE);
 		compressionLabel.setText("Compression:");
 		compressionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
 		if (repository != null) {
-			compressionButton.setSelection(JiraUtils.getCompression(repository));
+			compressionButton.setSelection(JiraUtil.getCompression(repository));
 		}
 
 		Label label = new Label(parent, SWT.NONE);
@@ -100,7 +100,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		autoRefreshConfigurationButton = new Button(parent, SWT.CHECK | SWT.LEFT);
 		autoRefreshConfigurationButton.setToolTipText("If checked Mylyn will periodically update the the repository attributes. Note: This can cause a significant load on the repository if it has many projects.");
 		if (repository != null) {
-			autoRefreshConfigurationButton.setSelection(JiraUtils.getAutoRefreshConfiguration(repository));
+			autoRefreshConfigurationButton.setSelection(JiraUtil.getAutoRefreshConfiguration(repository));
 		}
 	}
 
@@ -123,10 +123,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	@Override
 	public void updateProperties(TaskRepository repository) {
-		JiraUtils.setCompression(repository, compressionButton.getSelection());
-		JiraUtils.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
+		JiraUtil.setCompression(repository, compressionButton.getSelection());
+		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
 		if (characterEncodingValidated) {
-			JiraUtils.setCharacterEncodingValidated(repository, true);
+			JiraUtil.setCharacterEncodingValidated(repository, true);
 		}
 	}
 
@@ -159,14 +159,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 				jiraValidator.setStatus(new Status(
 						IStatus.WARNING,
-						JiraUiPlugin.PLUGIN_ID,
+						JiraUiPlugin.ID_PLUGIN,
 						IStatus.OK,
 						"Authentication credentials are valid. Note: The character encoding could not be determined, verify 'Additional Settings'.",
 						null));
 			}
 
 			if (serverInfo.isInsecureRedirect()) {
-				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
+				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
 						"Authentication credentials are valid. Note: The server redirected to an insecure location.",
 						null));
 			}
@@ -201,7 +201,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			try {
 				new URL(repository.getRepositoryUrl());
 			} catch (MalformedURLException ex) {
-				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.PLUGIN_ID, IStatus.OK,
+				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
 						INVALID_REPOSITORY_URL, null));
 			}
 
@@ -210,7 +210,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 				this.serverInfo = JiraClientFactory.getDefault().validateConnection(location, monitor);
 			} catch (JiraAuthenticationException e) {
 				throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
-						JiraUiPlugin.PLUGIN_ID, INVALID_LOGIN));
+						JiraUiPlugin.ID_PLUGIN, INVALID_LOGIN));
 			} catch (Exception e) {
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 			}
