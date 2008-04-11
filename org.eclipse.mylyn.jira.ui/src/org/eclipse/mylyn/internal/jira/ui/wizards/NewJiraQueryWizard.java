@@ -49,7 +49,7 @@ public class NewJiraQueryWizard extends Wizard {
 	public boolean performFinish() {
 		AbstractRepositoryQuery query = queryPage.getQuery();
 		if (query != null) {
-			TasksUiPlugin.getTaskListManager().getTaskList().addQuery(query);
+			TasksUi.getTaskListManager().getTaskList().addQuery(query);
 			AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 					repository.getConnectorKind());
 			if (connector != null) {
