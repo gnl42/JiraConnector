@@ -10,11 +10,11 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 
 /**
  * Wizard that allows the user to select one of their named Jira filters on the server

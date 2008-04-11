@@ -28,6 +28,7 @@ import org.eclipse.mylyn.internal.jira.ui.wizards.JiraQueryPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -37,7 +38,6 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
-import org.eclipse.mylyn.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 
 /**
