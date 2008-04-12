@@ -21,12 +21,12 @@ import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskListFactory;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.w3c.dom.Element;
 
 /**
@@ -94,10 +94,10 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 			filter.setName(element.getAttribute(KEY_FILTER_ID));
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
-			query = new JiraCustomQuery(repositoryUrl, filter, TasksUiPlugin.getRepositoryManager().getRepository(
+			query = new JiraCustomQuery(repositoryUrl, filter, TasksUi.getRepositoryManager().getRepository(
 					JiraCorePlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding());
 		} else if (customUrl != null && customUrl.length() > 0) {
-			TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(
+			TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
 					JiraCorePlugin.REPOSITORY_KIND, repositoryUrl);
 			if (repository != null) {
 				query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl,

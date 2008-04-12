@@ -13,10 +13,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorFactory;
 import org.eclipse.mylyn.tasks.ui.editors.RepositoryTaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
@@ -63,7 +63,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 	@Override
 	public IEditorInput createEditorInput(AbstractTask task) {
 		JiraTask jiraTask = (JiraTask) task;
-		TaskRepository repository = TasksUiPlugin.getRepositoryManager().getRepository(JiraCorePlugin.REPOSITORY_KIND,
+		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.REPOSITORY_KIND,
 				jiraTask.getRepositoryUrl());
 		try {
 			return new RepositoryTaskEditorInput(repository, jiraTask.getTaskId(), jiraTask.getUrl());

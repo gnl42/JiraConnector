@@ -8,9 +8,9 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
-import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
-
 import junit.framework.TestCase;
+
+import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
 
 /**
  * @author Eugene Kuleshov

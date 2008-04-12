@@ -24,6 +24,7 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.NewTaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
@@ -67,7 +68,7 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+		AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
 				JiraCorePlugin.REPOSITORY_KIND);
 
 		JiraTaskDataHandler taskDataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();

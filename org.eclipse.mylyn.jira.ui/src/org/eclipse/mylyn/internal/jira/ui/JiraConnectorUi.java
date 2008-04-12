@@ -38,6 +38,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 
 /**
@@ -138,7 +139,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public IHyperlink[] findHyperlinks(TaskRepository repository, String text, int lineOffset, int regionOffset) {
-		AbstractRepositoryConnector connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+		AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
 				repository.getConnectorKind());
 		if (text.length() == 0) {
 			return null;
