@@ -39,13 +39,13 @@ import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.AbstractTaskCollector;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.SynchronizationEvent;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
+import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataCollector;
+import org.eclipse.mylyn.tasks.core.sync.SynchronizationEvent;
 import org.eclipse.mylyn.web.core.Policy;
 
 /**
@@ -108,7 +108,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IStatus performQuery(TaskRepository repository, AbstractRepositoryQuery repositoryQuery,
-			AbstractTaskCollector resultCollector, SynchronizationEvent event, IProgressMonitor monitor) {
+			AbstractTaskDataCollector resultCollector, SynchronizationEvent event, IProgressMonitor monitor) {
 		try {
 			monitor.beginTask("Query Repository", IProgressMonitor.UNKNOWN);
 
@@ -140,7 +140,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			try {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
-				client.search(filter, new JiraIssueCollector(monitor, issues, AbstractTaskCollector.MAX_HITS), monitor);
+				client.search(filter, new JiraIssueCollector(monitor, issues, AbstractTaskDataCollector.MAX_HITS), monitor);
 
 				for (JiraIssue issue : issues) {
 					if (monitor.isCanceled()) {
