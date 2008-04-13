@@ -140,7 +140,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			try {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
-				client.search(filter, new JiraIssueCollector(monitor, issues, AbstractTaskDataCollector.MAX_HITS), monitor);
+				client.search(filter, new JiraIssueCollector(monitor, issues, AbstractTaskDataCollector.MAX_HITS),
+						monitor);
 
 				for (JiraIssue issue : issues) {
 					if (monitor.isCanceled()) {
@@ -499,7 +500,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void updateAttributes(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
+	public void updateRepositoryConfiguration(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
 		try {
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 			client.getCache().refreshDetails(monitor);
@@ -528,11 +529,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public boolean isRepositoryConfigurationStale(TaskRepository repository) throws CoreException {
 		return JiraUtil.getAutoRefreshConfiguration(repository);
-	}
-
-	@Override
-	public boolean hasCredentialsManagement() {
-		return true;
 	}
 
 	@Override
