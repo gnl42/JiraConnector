@@ -30,8 +30,8 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.ITaskList;
 import org.eclipse.mylyn.tasks.core.QueryHitCollector;
-import org.eclipse.mylyn.tasks.core.TaskList;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -49,7 +49,7 @@ public class JiraFilterTest extends TestCase {
 
 	private JiraRepositoryConnector connector;
 
-	private TaskList taskList;
+	private ITaskList taskList;
 
 	@Override
 	protected void setUp() throws Exception {
