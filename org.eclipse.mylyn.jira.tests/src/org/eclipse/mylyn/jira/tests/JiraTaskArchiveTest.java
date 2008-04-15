@@ -71,7 +71,7 @@ public class JiraTaskArchiveTest extends TestCase {
 		taskList.addTask(task1);
 		taskList.addTask(task2);
 
-		assertEquals(1, taskList.getOrphanContainer("repo").getChildren().size());
+		assertEquals(1, taskList.getUnmatchedContainer("repo").getChildren().size());
 		assertEquals(taskList.getTask("repo-" + HANDLE1), task1);
 
 		TasksUiPlugin.getRepositoryManager().removeRepository(repository,
