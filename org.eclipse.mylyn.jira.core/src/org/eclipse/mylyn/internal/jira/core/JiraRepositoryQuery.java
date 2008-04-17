@@ -28,7 +28,7 @@ public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 	}
 
 	@Override
-	public String getRepositoryKind() {
+	public String getConnectorKind() {
 		return JiraCorePlugin.REPOSITORY_KIND;
 	}
 

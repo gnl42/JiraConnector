@@ -127,7 +127,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	}
 
 	@Override
-	public String getRepositoryKind() {
+	public String getConnectorKind() {
 		return JiraCorePlugin.REPOSITORY_KIND;
 	}
 
