@@ -52,6 +52,7 @@ import org.eclipse.mylyn.web.core.Policy;
  * @author Mik Kersten
  * @author Steffen Pingel
  * @author Eugene Kuleshov
+ * @since 3.0
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 

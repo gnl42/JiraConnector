@@ -51,6 +51,7 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
  * 
  * @author Mik Kersten
  * @author Eugene Kuleshov
+ * @since 3.0
  */
 public class JiraCustomQuery extends AbstractRepositoryQuery {
 

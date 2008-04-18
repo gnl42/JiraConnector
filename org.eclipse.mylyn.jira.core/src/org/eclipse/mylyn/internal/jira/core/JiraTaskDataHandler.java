@@ -65,6 +65,7 @@ import org.eclipse.mylyn.web.core.Policy;
  * @author Rob Elves
  * @author Eugene Kuleshov
  * @author Steffen Pingel
+ * @since 3.0
  */
 public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 

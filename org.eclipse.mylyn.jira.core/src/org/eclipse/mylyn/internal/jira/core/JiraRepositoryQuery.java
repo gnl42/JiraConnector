@@ -15,6 +15,7 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
  * A JiraRepositoryQuery represents a server-side query for Jira repository.
  * 
  * @author Mik Kersten
+ * @since 3.0
  */
 public class JiraRepositoryQuery extends AbstractRepositoryQuery {
 
