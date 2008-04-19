@@ -77,20 +77,19 @@ Java and all Java-based trademarks are trademarks of Sun Microsystems, Inc. in t
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.web.core" version="3.0.0" match="compatible"/>
-      <import plugin="org.apache.axis" version="1.4.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.discovery" version="0.2.0" match="compatible"/>
-      <import plugin="org.apache.ant" version="1.6.5" match="compatible"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.apache.commons.logging" version="1.0.4" match="compatible"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.0.0.qualifier" match="perfect"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="javax.xml.soap" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.axis" version="1.4.0" match="greaterOrEqual"/>
       <import plugin="javax.xml.rpc" version="1.1.0" match="compatible"/>
       <import plugin="javax.xml.soap" version="1.2.0" match="compatible"/>
       <import plugin="javax.wsdl" version="1.5.1" match="compatible"/>
+      <import plugin="org.apache.commons.discovery" version="0.2.0" match="compatible"/>
+      <import plugin="org.apache.ant" version="1.6.5" match="compatible"/>
       <import plugin="javax.mail"/>
       <import plugin="javax.activation"/>
-      <import plugin="javax.servlet"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.apache.commons.logging" version="1.0.4" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.0.0.qualifier" match="perfect"/>
    </requires>
 
    <plugin
@@ -140,6 +139,13 @@ Java and all Java-based trademarks are trademarks of Sun Microsystems, Inc. in t
 
    <plugin
          id="org.apache.commons.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
