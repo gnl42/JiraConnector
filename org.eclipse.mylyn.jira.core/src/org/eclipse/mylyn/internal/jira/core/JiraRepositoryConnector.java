@@ -351,7 +351,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		Project[] projects = client.getCache().getProjects();
 		if (projects != null && projects.length > 0) {
 			// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
-			StringBuffer sb = new StringBuffer("(");
+			StringBuilder sb = new StringBuilder("(");
 			String sep = "";
 			for (Project project : projects) {
 				sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)");

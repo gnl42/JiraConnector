@@ -64,7 +64,7 @@ public abstract class SingleCharReader extends Reader {
 	 *                in case reading fails
 	 */
 	public String getString() throws IOException {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		int ch;
 		while ((ch = read()) != -1) {
 			buf.append((char) ch);

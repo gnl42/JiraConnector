@@ -257,7 +257,7 @@ public class JiraRssHandler extends DefaultHandler {
 
 	int state = START;
 
-	private StringBuffer currentElementText;
+	private StringBuilder currentElementText;
 
 	private final JiraClient client;
 
@@ -339,7 +339,7 @@ public class JiraRssHandler extends DefaultHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		state = START;
-		currentElementText = new StringBuffer(256);
+		currentElementText = new StringBuilder(256);
 		collector.start();
 	}
 

@@ -50,7 +50,7 @@ public class JiraRssFilterConverter {
 	}
 
 	public String convert(FilterDefinition filterDefinition, String encoding) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		if (filterDefinition.getProjectFilter() != null) {
 			buffer.append('&').append(convertProjectFilter(filterDefinition.getProjectFilter()));
@@ -134,7 +134,7 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertAssignedToFilter(UserFilter assignedToFilter) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (assignedToFilter instanceof NobodyFilter) {
 			buffer.append("assigneeSelect=unassigned"); //$NON-NLS-1$
 		} else if (assignedToFilter instanceof SpecificUserFilter) {
@@ -155,7 +155,7 @@ public class JiraRssFilterConverter {
 			return "component=-1"; //$NON-NLS-1$
 		}
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		Component[] components = componentFilter.getComponents();
 		if (components.length == 0) {
 			return ""; //$NON-NLS-1$
@@ -171,7 +171,7 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertContentFilter(ContentFilter contentFilter, String encoding) {
-		return new StringBuffer().append("query=").append(JiraUtil.encode(contentFilter.getQueryString(), encoding)) //$NON-NLS-1$
+		return new StringBuilder().append("query=").append(JiraUtil.encode(contentFilter.getQueryString(), encoding)) //$NON-NLS-1$
 				.append("&summary=").append(contentFilter.isSearchingSummary()) //$NON-NLS-1$
 				.append("&description=").append(contentFilter.isSearchingDescription()) //$NON-NLS-1$
 				.append("&body=").append(contentFilter.isSearchingComments()) //$NON-NLS-1$
@@ -188,7 +188,7 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertEstimateVsActualFilter(EstimateVsActualFilter filter) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		float min = filter.getMinVariation();
 		float max = filter.getMaxVariation();
 
@@ -206,7 +206,7 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertIssueTypeFilter(IssueTypeFilter issueTypeFilter) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		if (issueTypeFilter.isStandardTypes()) {
 			buffer.append("type=").append("-2"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -228,7 +228,7 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertOrdering(Order[] ordering) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		for (Order order : ordering) {
 			String fieldName = getNameFromField(order.getField());
@@ -247,7 +247,7 @@ public class JiraRssFilterConverter {
 			return ""; //$NON-NLS-1$
 		}
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("priority=").append(priorities[0].getId()); //$NON-NLS-1$
 
 		for (int i = 1; i < priorities.length; i++) {
@@ -258,12 +258,12 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertProjectFilter(ProjectFilter projectFilter) {
-		return new StringBuffer().append("pid=").append(projectFilter.getProject().getId()) //$NON-NLS-1$
+		return new StringBuilder().append("pid=").append(projectFilter.getProject().getId()) //$NON-NLS-1$
 				.toString();
 	}
 
 	protected String convertReportedByFilter(UserFilter reportedByFilter) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (reportedByFilter instanceof NobodyFilter) {
 			return "reporterSelect=unassigned"; //$NON-NLS-1$
 		} else if (reportedByFilter instanceof SpecificUserFilter) {
@@ -289,7 +289,7 @@ public class JiraRssFilterConverter {
 			return ""; //$NON-NLS-1$
 		}
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("resolution=").append(resolution[0].getId()); //$NON-NLS-1$
 
 		for (int i = 1; i < resolution.length; i++) {
@@ -305,7 +305,7 @@ public class JiraRssFilterConverter {
 			return ""; //$NON-NLS-1$
 		}
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("status=").append(statuses[0].getId()); //$NON-NLS-1$
 
 		for (int i = 1; i < statuses.length; i++) {
@@ -336,7 +336,7 @@ public class JiraRssFilterConverter {
 			return param + "=-3"; //$NON-NLS-1$
 		}
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		Version[] versions = versionFilter.getVersions();
 		if (versions.length == 0) {
 			return ""; //$NON-NLS-1$
@@ -356,7 +356,7 @@ public class JiraRssFilterConverter {
 	}
 
 	private String createDateFilter(DateFilter dateFilter, String name) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (dateFilter instanceof DateRangeFilter) {
 			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 			DateRangeFilter filter = (DateRangeFilter) dateFilter;
@@ -385,7 +385,7 @@ public class JiraRssFilterConverter {
 	}
 
 	private String createRelativeDateString(RelativeDateRangeFilter.RangeType rangeType, long count) {
-		StringBuffer dateString = new StringBuffer(""); //$NON-NLS-1$
+		StringBuilder dateString = new StringBuilder(""); //$NON-NLS-1$
 		dateString.append(Long.toString(count));
 
 		if (RangeType.MINUTE.equals(rangeType)) {

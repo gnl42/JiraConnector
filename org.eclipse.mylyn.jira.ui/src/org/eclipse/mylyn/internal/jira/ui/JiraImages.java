@@ -53,7 +53,7 @@ public class JiraImages {
 			throw new MalformedURLException();
 		}
 
-		StringBuffer buffer = new StringBuffer(prefix);
+		StringBuilder buffer = new StringBuilder(prefix);
 		buffer.append('/');
 		buffer.append(name);
 		return new URL(baseURL, buffer.toString());

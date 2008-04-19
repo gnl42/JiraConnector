@@ -49,7 +49,7 @@ public class JiraRssClient {
 		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				String version = client.getCache().getServerInfo().getVersion();
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
 					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append(
@@ -74,7 +74,7 @@ public class JiraRssClient {
 		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				String version = client.getCache().getServerInfo().getVersion();
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
 					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?decorator=none&reset=true&");
@@ -99,7 +99,7 @@ public class JiraRssClient {
 		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				String version = client.getCache().getServerInfo().getVersion();
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
 					rssUrlBuffer.append("/si/jira.issueviews:issue-xml/");
@@ -122,7 +122,7 @@ public class JiraRssClient {
 		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				rssUrlBuffer.append("/secure/QuickSearch.jspa?view=rss&decorator=none&reset=true&");
 
 				if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {

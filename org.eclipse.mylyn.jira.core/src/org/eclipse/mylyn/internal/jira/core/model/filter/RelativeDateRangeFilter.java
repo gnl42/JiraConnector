@@ -68,7 +68,7 @@ public class RelativeDateRangeFilter extends DateFilter {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("from "); //$NON-NLS-1$
 		if (RangeType.NONE == this.previousRangeType) {
 			sb.append("whenever"); //$NON-NLS-1$

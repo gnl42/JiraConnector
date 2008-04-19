@@ -76,7 +76,7 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				rssUrlBuffer.append("/secure/AddComment.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
@@ -107,7 +107,7 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				rssUrlBuffer.append("/secure/EditIssue.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
@@ -198,7 +198,7 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				rssUrlBuffer.append("/secure/AssignIssue.jspa");
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
@@ -291,7 +291,7 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer attachFileURLBuffer = new StringBuffer(baseUrl);
+				StringBuilder attachFileURLBuffer = new StringBuilder(baseUrl);
 				attachFileURLBuffer.append("/secure/AttachFile.jspa");
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
@@ -345,7 +345,7 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
 				rssUrlBuffer.append("/");
@@ -384,7 +384,7 @@ public class JiraWebClient {
 
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer rssUrlBuffer = new StringBuffer(baseUrl);
+				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
 				rssUrlBuffer.append("/secure/attachment/");
 				rssUrlBuffer.append(attachment.getId());
 				rssUrlBuffer.append("/");
@@ -426,7 +426,7 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer attachFileURLBuffer = new StringBuffer(baseUrl);
+				StringBuilder attachFileURLBuffer = new StringBuilder(baseUrl);
 				attachFileURLBuffer.append(url);
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
@@ -525,7 +525,7 @@ public class JiraWebClient {
 			throws JiraException {
 		doInSession(monitor, new JiraWebSessionCallback() {
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer urlBuffer = new StringBuffer(baseUrl);
+				StringBuilder urlBuffer = new StringBuilder(baseUrl);
 				urlBuffer.append("/browse/").append(issue.getKey());
 				urlBuffer.append("?watch=").append(Boolean.toString(watch));
 
@@ -556,7 +556,7 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer urlBuffer = new StringBuffer(baseUrl);
+				StringBuilder urlBuffer = new StringBuilder(baseUrl);
 				urlBuffer.append("/browse/").append(issue.getKey());
 				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote");
 
@@ -578,7 +578,7 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				StringBuffer urlBuffer = new StringBuffer(baseUrl);
+				StringBuilder urlBuffer = new StringBuilder(baseUrl);
 				urlBuffer.append("/secure/DeleteIssue.jspa");
 				urlBuffer.append("?id=").append(issue.getId());
 				urlBuffer.append("&confirm=true");
@@ -681,7 +681,7 @@ public class JiraWebClient {
 	}
 
 	private String getContent(HtmlStreamTokenizer tokenizer, Tag closingTag) throws IOException, ParseException {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int count = 0;
 		for (Token token = tokenizer.nextToken(); token.getType() != Token.EOF; token = tokenizer.nextToken()) {
 			if (token.getType() == Token.TAG) {

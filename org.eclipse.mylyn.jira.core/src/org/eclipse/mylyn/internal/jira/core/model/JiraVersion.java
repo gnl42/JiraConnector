@@ -88,7 +88,7 @@ public class JiraVersion implements Comparable<JiraVersion> {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(Integer.toString(major));
 		sb.append(".").append(Integer.toString(minor));
 		if (micro > 0) {

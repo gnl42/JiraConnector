@@ -370,7 +370,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 	}
 
 	private String getQueryParams(FilterDefinition filter) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		ProjectFilter projectFilter = filter.getProjectFilter();
 		if (projectFilter != null) {
@@ -494,7 +494,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		return sb.toString();
 	}
 
-	private void addDateFilter(StringBuffer sb, DateFilter filter, String type) {
+	private void addDateFilter(StringBuilder sb, DateFilter filter, String type) {
 		if (filter instanceof DateRangeFilter) {
 			SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US);
 			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
@@ -503,7 +503,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		}
 	}
 
-	private void addUserFilter(StringBuffer sb, UserFilter filter, String type) {
+	private void addUserFilter(StringBuilder sb, UserFilter filter, String type) {
 		if (filter instanceof NobodyFilter) {
 			addParameter(sb, type + "Select", ISSUE_NO_REPORTER);
 		} else if (filter instanceof CurrentUserFilter) {
@@ -517,7 +517,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 		}
 	}
 
-	private void addParameter(StringBuffer sb, String name, String value) {
+	private void addParameter(StringBuilder sb, String name, String value) {
 		try {
 			sb.append('&').append(name).append('=').append(URLEncoder.encode(value, encoding));
 		} catch (UnsupportedEncodingException ex) {

@@ -234,7 +234,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 	 */
 	private String processHTMLTag() throws IOException {
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		int ch;
 		do {
 
@@ -311,7 +311,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 	 * A '&' has been read. Process a entity
 	 */
 	private String processEntity() throws IOException {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		int ch = nextChar();
 		while (Character.isLetterOrDigit((char) ch) || ch == '#') {
 			buf.append((char) ch);
