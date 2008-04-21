@@ -15,7 +15,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractDuplicateDetector;
-import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractNewRepositoryTaskEditor;
 import org.eclipse.mylyn.tasks.ui.search.SearchHitCollector;
@@ -44,8 +43,7 @@ public class JiraStackTraceDuplicateDetector extends AbstractDuplicateDetector {
 
 		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, encoding);
 
-		return new SearchHitCollector(TasksUi.getTaskListManager().getTaskList(), repository, query,
-				new TaskFactory(repository, false, false));
+		return new SearchHitCollector(TasksUi.getTaskListManager().getTaskList(), repository, query);
 	}
 
 }
