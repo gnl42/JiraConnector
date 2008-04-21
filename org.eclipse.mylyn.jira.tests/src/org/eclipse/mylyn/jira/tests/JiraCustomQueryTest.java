@@ -129,7 +129,7 @@ public class JiraCustomQueryTest extends TestCase {
 		filter.setUpdatedDateFilter(new DateRangeFilter(new Date(20), new Date(22)));
 		filter.setDueDateFilter(new DateRangeFilter(new Date(30), new Date(32)));
 
-		TaskRepository taskRepository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, repositoryUrl);
+		TaskRepository taskRepository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
 
 		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskRepository.getCharacterEncoding());

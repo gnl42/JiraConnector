@@ -137,7 +137,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	public RepositoryTaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
 			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
-		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraCorePlugin.REPOSITORY_KIND,
+		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraCorePlugin.CONNECTOR_KIND,
 				repository.getRepositoryUrl(), jiraIssue.getId());
 		initializeTaskData(data, client, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
@@ -386,7 +386,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (Attachment attachment : jiraIssue.getAttachments()) {
 			RepositoryAttachment taskAttachment = new RepositoryAttachment(attributeFactory);
 			taskAttachment.setCreator(attachment.getAuthor());
-			taskAttachment.setRepositoryKind(JiraCorePlugin.REPOSITORY_KIND);
+			taskAttachment.setRepositoryKind(JiraCorePlugin.CONNECTOR_KIND);
 			taskAttachment.setRepositoryUrl(client.getBaseUrl());
 			taskAttachment.setTaskId(jiraIssue.getKey());
 

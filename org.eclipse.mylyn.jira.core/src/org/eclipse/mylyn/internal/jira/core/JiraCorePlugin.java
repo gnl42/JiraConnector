@@ -41,9 +41,9 @@ public class JiraCorePlugin extends Plugin {
 
 	private JiraClientManager serverManager;
 
-	public final static String REPOSITORY_KIND = "jira";
+	public final static String CONNECTOR_KIND = "jira";
 
-	public final static String JIRA_CLIENT_LABEL = "JIRA (supports 3.3.3 and later)";
+	public final static String LABEL = "JIRA (supports 3.3.3 and later)";
 
 	/**
 	 * The constructor.

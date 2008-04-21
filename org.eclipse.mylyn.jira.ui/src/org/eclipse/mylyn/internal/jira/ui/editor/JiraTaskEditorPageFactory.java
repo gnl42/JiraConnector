@@ -10,7 +10,7 @@ package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
@@ -24,12 +24,11 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
 	@Override
 	public boolean canCreatePageFor(TaskEditorInput input) {
-		if (input.getTaskRepository().getConnectorKind().equals(JiraCorePlugin.REPOSITORY_KIND)) {
+		if (input.getTaskRepository().getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
 			return true;
 		}
 
-		RepositoryTaskData taskData = input.getTaskData();
-		return taskData != null && taskData.getConnectorKind().equals(JiraCorePlugin.REPOSITORY_KIND);
+		return TasksUi.getTaskDataManager().hasTaskData(input.getTask(), JiraCorePlugin.CONNECTOR_KIND);
 	}
 
 	@Override

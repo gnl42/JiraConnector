@@ -96,14 +96,14 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	}
 
 	public synchronized void repositoryAdded(TaskRepository repository) {
-		if (repository.getConnectorKind().equals(JiraCorePlugin.REPOSITORY_KIND)) {
+		if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
 			assert clientManager.getClient(repository.getRepositoryUrl()) == null;
 			getJiraClient(repository);
 		}
 	}
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
-		if (repository.getConnectorKind().equals(JiraCorePlugin.REPOSITORY_KIND)) {
+		if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
 			JiraClient server = clientManager.getClient(repository.getRepositoryUrl());
 			removeServer(server);
 		}

@@ -10,6 +10,7 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import junit.framework.TestCase;
 
+import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.tests.connector.MockRepositoryConnector;
 
@@ -46,8 +47,9 @@ public class JiraConnectorUiTest extends TestCase {
 		TaskRepository repository = new TaskRepository(MockRepositoryConnector.REPOSITORY_KIND,
 				"http://mylyn.eclipse.org");
 		JiraConnectorUi connectorUi = new JiraConnectorUi();
+		JiraTask task = new JiraTask(repository.getRepositoryUrl(), "ABC-12", "");
 		assertEquals("http://mylyn.eclipse.org/browse/ABC-123?page=history", connectorUi.getTaskHistoryUrl(repository,
-				"ABC-123"));
+				task));
 	}
 
 }

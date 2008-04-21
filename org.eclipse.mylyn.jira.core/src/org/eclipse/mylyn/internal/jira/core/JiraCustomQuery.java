@@ -129,7 +129,7 @@ public class JiraCustomQuery extends AbstractRepositoryQuery {
 
 	@Override
 	public String getConnectorKind() {
-		return JiraCorePlugin.REPOSITORY_KIND;
+		return JiraCorePlugin.CONNECTOR_KIND;
 	}
 
 	public FilterDefinition getFilterDefinition(JiraClient jiraServer, boolean validate) {

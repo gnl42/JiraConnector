@@ -94,7 +94,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	protected void init(String url) throws Exception {
-		String kind = JiraCorePlugin.REPOSITORY_KIND;
+		String kind = JiraCorePlugin.CONNECTOR_KIND;
 
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		repository = new TaskRepository(kind, url);

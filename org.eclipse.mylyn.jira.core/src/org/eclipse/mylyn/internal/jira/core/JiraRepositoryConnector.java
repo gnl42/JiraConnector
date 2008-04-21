@@ -84,12 +84,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public String getLabel() {
-		return JiraCorePlugin.JIRA_CLIENT_LABEL;
+		return JiraCorePlugin.LABEL;
 	}
 
 	@Override
 	public String getConnectorKind() {
-		return JiraCorePlugin.REPOSITORY_KIND;
+		return JiraCorePlugin.CONNECTOR_KIND;
 	}
 
 	@Override

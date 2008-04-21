@@ -40,7 +40,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 		if (input instanceof RepositoryTaskEditorInput) {
 			RepositoryTaskEditorInput existingInput = (RepositoryTaskEditorInput) input;
 			return existingInput.getTaskData() != null
-					&& JiraCorePlugin.REPOSITORY_KIND.equals(existingInput.getRepository().getConnectorKind());
+					&& JiraCorePlugin.CONNECTOR_KIND.equals(existingInput.getRepository().getConnectorKind());
 		}
 		return false;
 	}
@@ -63,7 +63,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 	@Override
 	public IEditorInput createEditorInput(AbstractTask task) {
 		JiraTask jiraTask = (JiraTask) task;
-		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.REPOSITORY_KIND,
+		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
 				jiraTask.getRepositoryUrl());
 		try {
 			return new RepositoryTaskEditorInput(repository, jiraTask.getTaskId(), jiraTask.getUrl());

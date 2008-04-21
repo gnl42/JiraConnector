@@ -90,7 +90,7 @@ public class JiraClientFacadeTest extends TestCase {
 
 	public void testChangeCredentials() throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		TaskRepository repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository,
@@ -130,7 +130,7 @@ public class JiraClientFacadeTest extends TestCase {
 
 	public void testCharacterEncoding() throws Exception {
 		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		TaskRepository repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 		assertFalse(JiraUtil.getCharacterEncodingValidated(repository));

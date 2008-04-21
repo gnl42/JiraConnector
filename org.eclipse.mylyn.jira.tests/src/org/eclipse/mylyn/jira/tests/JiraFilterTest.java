@@ -59,7 +59,7 @@ public class JiraFilterTest extends TestCase {
 		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
 
 		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraCorePlugin.REPOSITORY_KIND);
+				JiraCorePlugin.CONNECTOR_KIND);
 		connector = (JiraRepositoryConnector) abstractConnector;
 
 		repository = null;
@@ -81,7 +81,7 @@ public class JiraFilterTest extends TestCase {
 					TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		}
 
-		repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, JiraTestConstants.JIRA_39_URL);
+		repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, JiraTestConstants.JIRA_39_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 		repository.setCharacterEncoding(JiraClient.DEFAULT_CHARSET);

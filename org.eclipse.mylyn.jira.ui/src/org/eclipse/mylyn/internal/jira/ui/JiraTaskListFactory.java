@@ -95,10 +95,10 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
 
 			query = new JiraCustomQuery(repositoryUrl, filter, TasksUi.getRepositoryManager().getRepository(
-					JiraCorePlugin.REPOSITORY_KIND, repositoryUrl).getCharacterEncoding());
+					JiraCorePlugin.CONNECTOR_KIND, repositoryUrl).getCharacterEncoding());
 		} else if (customUrl != null && customUrl.length() > 0) {
 			TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
-					JiraCorePlugin.REPOSITORY_KIND, repositoryUrl);
+					JiraCorePlugin.CONNECTOR_KIND, repositoryUrl);
 			if (repository != null) {
 				query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl,
 						repository.getCharacterEncoding());

@@ -54,11 +54,6 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public String getTaskKindLabel(RepositoryTaskData taskData) {
-		return "Issue";
-	}
-
-	@Override
 	public List<AbstractTaskContainer> getLegendItems() {
 		List<AbstractTaskContainer> legendItems = new ArrayList<AbstractTaskContainer>();
 
@@ -129,7 +124,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public String getConnectorKind() {
-		return JiraCorePlugin.REPOSITORY_KIND;
+		return JiraCorePlugin.CONNECTOR_KIND;
 	}
 
 	@Override
@@ -202,8 +197,9 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public String getTaskHistoryUrl(TaskRepository taskRepository, String taskKey) {
-		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + taskKey + "?page=history";
+	public String getTaskHistoryUrl(TaskRepository taskRepository, AbstractTask task) {
+		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
+				+ "?page=history";
 	}
 
 }

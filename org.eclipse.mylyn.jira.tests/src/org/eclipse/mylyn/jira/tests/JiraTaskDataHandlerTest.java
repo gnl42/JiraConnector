@@ -88,7 +88,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
-		String kind = JiraCorePlugin.REPOSITORY_KIND;
+		String kind = JiraCorePlugin.CONNECTOR_KIND;
 
 		Credentials credentials = TestUtil.readCredentials(level);
 
@@ -164,7 +164,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		issue.setPriority(MockJiraClient.createPriority(Priority.BLOCKER_ID, "blocker"));
 
-		TaskRepository repository = new TaskRepository(JiraCorePlugin.REPOSITORY_KIND, "http://jira.codehaus.org/");
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "http://jira.codehaus.org/");
 		MockJiraClient client = new MockJiraClient(repository.getRepositoryUrl());
 		JiraTaskDataHandler dataHandler = new JiraTaskDataHandler(new MockJiraClientFactory(client));
 		RepositoryTaskData data = dataHandler.createTaskData(repository, client, issue, null, null);
@@ -342,7 +342,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		AbstractAttributeFactory attributeFactory = dataHandler.getAttributeFactory(repository.getRepositoryUrl(),
 				repository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
-		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraCorePlugin.REPOSITORY_KIND,
+		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraCorePlugin.CONNECTOR_KIND,
 				repository.getRepositoryUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
 
 		dataHandler.initializeSubTaskData(repository, taskData, parentTaskData, new NullProgressMonitor());

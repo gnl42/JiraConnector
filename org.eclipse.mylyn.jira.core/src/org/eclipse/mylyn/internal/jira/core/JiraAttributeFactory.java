@@ -8,14 +8,12 @@
 
 package org.eclipse.mylyn.internal.jira.core;
 
-import java.util.Collection;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
-import org.eclipse.mylyn.tasks.core.AbstractAttributeMapper;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
 /**
@@ -66,10 +64,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	public static final String LINKED_IDS = "attribute.jira.link_ids";
 
-	private final JiraAttributeMapper attributeMapper;
-
 	public JiraAttributeFactory() {
-		this.attributeMapper = new JiraAttributeMapper(this);
 	}
 
 	@Override
@@ -161,53 +156,6 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 					"Error parsing date for attribute \"" + attributeKey + "\": \"" + dateString + "\"", e));
 			return null;
 		}
-	}
-
-	@Override
-	public AbstractAttributeMapper getAttributeMapper() {
-		return attributeMapper;
-	}
-
-	private class JiraAttributeMapper extends AbstractAttributeMapper {
-
-		public JiraAttributeMapper(AbstractAttributeFactory attributeFactory) {
-			super(attributeFactory);
-		}
-
-		@Override
-		public String getType(RepositoryTaskAttribute taskAttribute) {
-			if (RepositoryTaskAttribute.DATE_CREATION.equals(taskAttribute.getId())
-					|| RepositoryTaskAttribute.DATE_MODIFIED.equals(taskAttribute.getId())) {
-				return RepositoryTaskAttribute.TYPE_DATE;
-			}
-
-			JiraFieldType type = JiraFieldType.valueByKey(taskAttribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY));
-			Collection<String> options = taskAttribute.getOptions();
-			if (type.equals(JiraFieldType.SELECT)
-					&& (options == null || options.isEmpty() || taskAttribute.isReadOnly())) {
-				type = JiraFieldType.TEXTFIELD;
-			} else if (type.equals(JiraFieldType.MULTISELECT) && (options == null || options.isEmpty())) {
-				type = JiraFieldType.TEXTFIELD;
-			}
-
-			switch (type) {
-			case DATEPICKER:
-				return RepositoryTaskAttribute.TYPE_DATE;
-			case ISSUELINK:
-				return RepositoryTaskAttribute.TYPE_TASK_DEPENDENCY;
-			case ISSUELINKS:
-				return RepositoryTaskAttribute.TYPE_TASK_DEPENDENCY;
-			case MULTISELECT:
-				return RepositoryTaskAttribute.TYPE_MULTI_SELECT;
-			case SELECT:
-				return RepositoryTaskAttribute.TYPE_SINGLE_SELECT;
-			case TEXTAREA:
-				return RepositoryTaskAttribute.TYPE_LONG_TEXT;
-			default:
-				return RepositoryTaskAttribute.TYPE_SHORT_TEXT;
-			}
-		}
-
 	}
 
 }
