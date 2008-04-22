@@ -29,9 +29,11 @@ import org.eclipse.mylyn.internal.jira.ui.JiraStackTraceDuplicateDetector;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.search.SearchHitCollector;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
@@ -130,7 +132,10 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		data.setDescription(stackTrace);
 
 		JiraStackTraceDuplicateDetector detector = new JiraStackTraceDuplicateDetector();
-		SearchHitCollector collector = detector.getSearchHitCollector(repository, data);
+		AbstractRepositoryQuery duplicatesQuery = detector.getDiplicatesQuery(repository, data);
+		SearchHitCollector collector = new SearchHitCollector(TasksUi.getTaskListManager().getTaskList(), repository,
+				duplicatesQuery);
+
 		collector.run(new NullProgressMonitor());
 
 		Set<AbstractTask> tasks = collector.getTasks();

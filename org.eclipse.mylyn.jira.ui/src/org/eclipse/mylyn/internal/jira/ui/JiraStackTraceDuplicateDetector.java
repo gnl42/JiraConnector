@@ -12,12 +12,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.tasks.core.AbstractDuplicateDetector;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.AbstractDuplicateDetector;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.mylyn.tasks.ui.editors.AbstractNewRepositoryTaskEditor;
-import org.eclipse.mylyn.tasks.ui.search.SearchHitCollector;
 
 /**
  * Stack Trace duplicate detector
@@ -29,8 +27,8 @@ public class JiraStackTraceDuplicateDetector extends AbstractDuplicateDetector {
 	private static final String NO_STACK_MESSAGE = "Unable to locate a stack trace in the description text.";
 
 	@Override
-	public SearchHitCollector getSearchHitCollector(TaskRepository repository, RepositoryTaskData taskData) {
-		String searchString = AbstractNewRepositoryTaskEditor.getStackTraceFromDescription(taskData.getDescription());
+	public AbstractRepositoryQuery getDiplicatesQuery(TaskRepository repository, RepositoryTaskData taskData) {
+		String searchString = AbstractDuplicateDetector.getStackTraceFromDescription(taskData.getDescription());
 		if (searchString == null) {
 			MessageDialog.openWarning(null, "No Stack Trace Found", NO_STACK_MESSAGE);
 			return null;
@@ -43,7 +41,8 @@ public class JiraStackTraceDuplicateDetector extends AbstractDuplicateDetector {
 
 		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, encoding);
 
-		return new SearchHitCollector(TasksUi.getTaskListManager().getTaskList(), repository, query);
+		return query;
+		//return new SearchHitCollector(TasksUi.getTaskListManager().getTaskList(), repository, query);
 	}
 
 }
