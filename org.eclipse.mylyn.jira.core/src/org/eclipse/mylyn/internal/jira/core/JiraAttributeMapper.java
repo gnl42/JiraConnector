@@ -27,14 +27,16 @@ public class JiraAttributeMapper extends AbstractAttributeMapper {
 		if (TaskAttribute.DATE_CREATION.equals(taskAttribute.getId())
 				|| TaskAttribute.DATE_MODIFIED.equals(taskAttribute.getId())) {
 			return TaskAttribute.TYPE_DATE;
+		} else if (TaskAttribute.COMMENT_TEXT.equals(taskAttribute.getId())) {
+			return TaskAttribute.TYPE_RICH_TEXT;
 		}
 
 		JiraFieldType type = JiraFieldType.valueByKey(taskAttribute.getMetaData(JiraAttributeFactory.TYPE_KEY));
 		Map<String, String> options = taskAttribute.getOptions();
 		if (type.equals(JiraFieldType.SELECT)
-				&& (options == null || options.isEmpty() || taskAttribute.getMetaData(TaskAttribute.META_READ_ONLY) != null)) {
+				&& (options.isEmpty() || Boolean.parseBoolean(taskAttribute.getMetaData(TaskAttribute.META_READ_ONLY)))) {
 			type = JiraFieldType.TEXTFIELD;
-		} else if (type.equals(JiraFieldType.MULTISELECT) && (options == null || options.isEmpty())) {
+		} else if (type.equals(JiraFieldType.MULTISELECT) && options.isEmpty()) {
 			type = JiraFieldType.TEXTFIELD;
 		}
 
@@ -52,8 +54,10 @@ public class JiraAttributeMapper extends AbstractAttributeMapper {
 		case TEXTAREA:
 			return TaskAttribute.TYPE_LONG_TEXT;
 		default:
+			if (!options.isEmpty() && !Boolean.parseBoolean(taskAttribute.getMetaData(TaskAttribute.META_READ_ONLY))) {
+				return TaskAttribute.TYPE_SINGLE_SELECT;
+			}
 			return TaskAttribute.TYPE_SHORT_TEXT;
 		}
 	}
-
 }

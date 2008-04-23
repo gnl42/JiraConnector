@@ -132,7 +132,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		data.setDescription(stackTrace);
 
 		JiraStackTraceDuplicateDetector detector = new JiraStackTraceDuplicateDetector();
-		AbstractRepositoryQuery duplicatesQuery = detector.getDiplicatesQuery(repository, data);
+		AbstractRepositoryQuery duplicatesQuery = detector.getDuplicatesQuery(repository, data);
 		SearchHitCollector collector = new SearchHitCollector(TasksUi.getTaskListManager().getTaskList(), repository,
 				duplicatesQuery);
 

@@ -27,7 +27,7 @@ public class JiraStackTraceDuplicateDetector extends AbstractDuplicateDetector {
 	private static final String NO_STACK_MESSAGE = "Unable to locate a stack trace in the description text.";
 
 	@Override
-	public AbstractRepositoryQuery getDiplicatesQuery(TaskRepository repository, RepositoryTaskData taskData) {
+	public AbstractRepositoryQuery getDuplicatesQuery(TaskRepository repository, RepositoryTaskData taskData) {
 		String searchString = AbstractDuplicateDetector.getStackTraceFromDescription(taskData.getDescription());
 		if (searchString == null) {
 			MessageDialog.openWarning(null, "No Stack Trace Found", NO_STACK_MESSAGE);

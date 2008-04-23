@@ -40,6 +40,7 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
+import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler2;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -68,9 +69,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
 
-	private final JiraTaskDataHandler offlineHandler;
+	private final JiraTaskDataHandler taskDataHandler;
 
 	private final JiraAttachmentHandler attachmentHandler;
+
+	private final JiraTaskDataHandler2 taskDataHandler2;
 
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
@@ -78,7 +81,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static final int RETURN_ALL_HITS = -1;
 
 	public JiraRepositoryConnector() {
-		offlineHandler = new JiraTaskDataHandler(JiraClientFactory.getDefault());
+		taskDataHandler = new JiraTaskDataHandler(JiraClientFactory.getDefault());
+		taskDataHandler2 = new JiraTaskDataHandler2(JiraClientFactory.getDefault());
 		attachmentHandler = new JiraAttachmentHandler();
 	}
 
@@ -99,7 +103,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public AbstractTaskDataHandler getTaskDataHandler() {
-		return offlineHandler;
+		return taskDataHandler;
 	}
 
 	@Override
@@ -157,7 +161,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
 					RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(repository.getRepositoryUrl(),
 							issue.getId());
-					resultCollector.accept(offlineHandler.createTaskData(repository, client, issue, oldTaskData,
+					resultCollector.accept(taskDataHandler.createTaskData(repository, client, issue, oldTaskData,
 							monitor));
 				}
 				return Status.OK_STATUS;
@@ -223,7 +227,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						monitor.subTask(issue.getKey() + " " + issue.getSummary());
 						RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(
 								repository.getRepositoryUrl(), issue.getId());
-						RepositoryTaskData taskData = offlineHandler.createTaskData(repository, client, issue,
+						RepositoryTaskData taskData = taskDataHandler.createTaskData(repository, client, issue,
 								oldTaskData, monitor);
 						getSynchronizationManager().saveIncoming(task, taskData, false);
 						updateTaskFromTaskData(repository, task, taskData);
@@ -528,7 +532,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean isRepositoryConfigurationStale(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
+	public boolean isRepositoryConfigurationStale(TaskRepository repository, IProgressMonitor monitor)
+			throws CoreException {
 		return JiraUtil.getAutoRefreshConfiguration(repository);
 	}
 
@@ -536,6 +541,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
 		return getTaskDataHandler().getTaskData(repository, taskId, monitor);
+	}
+
+	@Override
+	public AbstractTaskDataHandler2 getTaskDataHandler2() {
+		return taskDataHandler2;
 	}
 
 }
