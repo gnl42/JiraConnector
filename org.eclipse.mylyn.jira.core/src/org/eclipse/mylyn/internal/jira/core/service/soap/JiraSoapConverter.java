@@ -11,7 +11,6 @@ package org.eclipse.mylyn.internal.jira.core.service.soap;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
-import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -23,7 +22,6 @@ import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteGroup;
-import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssueType;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePriority;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject;
@@ -209,19 +207,11 @@ class JiraSoapConverter {
 		serverInfo.setBuildNumber(remoteServerInfo.getBuildNumber());
 		serverInfo.setEdition(remoteServerInfo.getEdition());
 		serverInfo.setVersion(remoteServerInfo.getVersion());
-
 		return serverInfo;
-	}
-
-	// TODO reconcile this
-	protected static JiraIssue convert(RemoteIssue remoteIssue) {
-		JiraIssue issue = new JiraIssue();
-		return issue;
 	}
 
 	public static NamedFilter[] convert(RemoteFilter[] savedFilters) {
 		NamedFilter[] namedFilters = new NamedFilter[savedFilters.length];
-
 		for (int i = 0; i < savedFilters.length; i++) {
 			RemoteFilter savedFilter = savedFilters[i];
 			NamedFilter filter = new NamedFilter();
@@ -233,7 +223,6 @@ class JiraSoapConverter {
 
 			namedFilters[i] = filter;
 		}
-
 		return namedFilters;
 	}
 }

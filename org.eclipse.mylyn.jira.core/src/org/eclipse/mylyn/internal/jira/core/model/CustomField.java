@@ -8,24 +8,20 @@
 
 package org.eclipse.mylyn.internal.jira.core.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Custom field container
+ * Custom field container.
  * 
  * @author Eugene Kuleshov
+ * @author Steffen Pingel
  */
-public class CustomField implements Serializable {
+public class CustomField extends JiraField {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String id;
-
 	private final String key;
-
-	private final String name;
 
 	private final List<String> values;
 
@@ -34,22 +30,13 @@ public class CustomField implements Serializable {
 	private boolean markupDetected;
 
 	public CustomField(String id, String key, String name, List<String> values) {
-		this.id = id;
+		super(id, name);
 		this.key = key;
-		this.name = name;
 		this.values = new ArrayList<String>(values);
-	}
-
-	public String getId() {
-		return id;
 	}
 
 	public String getKey() {
 		return key;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public List<String> getValues() {

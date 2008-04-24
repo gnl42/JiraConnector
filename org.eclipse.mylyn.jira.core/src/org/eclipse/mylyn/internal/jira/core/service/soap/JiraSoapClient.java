@@ -27,6 +27,8 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
+import org.eclipse.mylyn.internal.jira.core.model.JiraField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -47,8 +49,6 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
-import org.eclipse.mylyn.tasks.core.RepositoryOperation;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -176,20 +176,19 @@ public class JiraSoapClient {
 		});
 	}
 
-	public RepositoryOperation[] getAvailableOperations(final String taskKey, IProgressMonitor monitor)
-			throws JiraException {
-		return call(monitor, new RemoteRunnable<RepositoryOperation[]>() {
-			public RepositoryOperation[] run() throws java.rmi.RemoteException, JiraException {
+	public JiraAction[] getAvailableActions(final String taskKey, IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new RemoteRunnable<JiraAction[]>() {
+			public JiraAction[] run() throws java.rmi.RemoteException, JiraException {
 				RemoteNamedObject[] actions = getSoapService().getAvailableActions(loginToken.getCurrentValue(),
 						taskKey);
 				if (actions == null) {
-					return new RepositoryOperation[0];
+					return new JiraAction[0];
 				}
 
-				RepositoryOperation[] operations = new RepositoryOperation[actions.length];
+				JiraAction[] operations = new JiraAction[actions.length];
 				for (int i = 0; i < actions.length; i++) {
 					RemoteNamedObject action = actions[i];
-					operations[i] = new RepositoryOperation(action.getId(), action.getName());
+					operations[i] = new JiraAction(action.getId(), action.getName());
 				}
 				return operations;
 			}
@@ -215,13 +214,13 @@ public class JiraSoapClient {
 		});
 	}
 
-	public RepositoryTaskAttribute[] getEditableAttributes(final String taskKey, final boolean workAroundBug205015,
+	public JiraField[] getEditableAttributes(final String taskKey, final boolean workAroundBug205015,
 			IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<RepositoryTaskAttribute[]>() {
-			public RepositoryTaskAttribute[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new RemoteRunnable<JiraField[]>() {
+			public JiraField[] run() throws java.rmi.RemoteException, JiraException {
 				RemoteField[] fields = getSoapService().getFieldsForEdit(loginToken.getCurrentValue(), taskKey);
 				if (fields == null) {
-					return new RepositoryTaskAttribute[0];
+					return new JiraField[0];
 				}
 
 				int add = 0;
@@ -229,17 +228,16 @@ public class JiraSoapClient {
 					add += 2;
 				}
 
-				RepositoryTaskAttribute[] attributes = new RepositoryTaskAttribute[fields.length + add];
+				JiraField[] attributes = new JiraField[fields.length + add];
 				for (int i = 0; i < fields.length; i++) {
 					RemoteField field = fields[i];
-					attributes[i] = new RepositoryTaskAttribute(field.getId(), field.getName(), false);
+					attributes[i] = new JiraField(field.getId(), field.getName());
 				}
 
 				if (add > 0) {
 					// might also need to add: Reporter and Summary (http://jira.atlassian.com/browse/JRA-13703)
-					attributes[attributes.length - 2] = new RepositoryTaskAttribute("duedate", "Due Date", false);
-					attributes[attributes.length - 1] = new RepositoryTaskAttribute("fixVersions", "Fix Version/s",
-							false);
+					attributes[attributes.length - 2] = new JiraField("duedate", "Due Date");
+					attributes[attributes.length - 1] = new JiraField("fixVersions", "Fix Version/s");
 				}
 
 				return attributes;

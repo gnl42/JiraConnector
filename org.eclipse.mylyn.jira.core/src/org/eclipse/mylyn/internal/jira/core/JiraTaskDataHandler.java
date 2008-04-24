@@ -35,6 +35,8 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
+import org.eclipse.mylyn.internal.jira.core.model.JiraField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -448,10 +450,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 			} else {
 				try {
-					RepositoryTaskAttribute[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(),
-							monitor);
+					JiraField[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(), monitor);
 					if (editableAttributes != null) {
-						for (RepositoryTaskAttribute attribute : editableAttributes) {
+						for (JiraField attribute : editableAttributes) {
 							editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getId()));
 						}
 					}
@@ -655,10 +656,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			data.addOperation(reassignOperation);
 		}
 
-		RepositoryOperation[] availableOperations = client.getAvailableOperations(issue.getKey(), monitor);
+		JiraAction[] availableOperations = client.getAvailableActions(issue.getKey(), monitor);
 		if (availableOperations != null) {
-			for (RepositoryOperation operation : availableOperations) {
-				String[] fields = client.getActionFields(issue.getKey(), operation.getKnobName(), monitor);
+			for (JiraAction action : availableOperations) {
+				RepositoryOperation operation = new RepositoryOperation(action.getId(), action.getName());
+				String[] fields = client.getActionFields(issue.getKey(), action.getId(), monitor);
 				for (String field : fields) {
 					if (RepositoryTaskAttribute.RESOLUTION.equals(attributeFactory.mapCommonAttributeKey(field))) {
 						operation.setInputName(field);

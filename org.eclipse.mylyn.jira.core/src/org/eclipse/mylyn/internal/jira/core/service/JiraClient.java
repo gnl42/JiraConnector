@@ -19,6 +19,8 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
+import org.eclipse.mylyn.internal.jira.core.model.JiraField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
@@ -37,8 +39,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.SmartQuery;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraSoapClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssClient;
-import org.eclipse.mylyn.tasks.core.RepositoryOperation;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AbstractWebLocation;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -235,9 +235,8 @@ public class JiraClient {
 	 *            Unique key of the issue to find
 	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
 	 */
-	public RepositoryOperation[] getAvailableOperations(final String issueKey, IProgressMonitor monitor)
-			throws JiraException {
-		return soapClient.getAvailableOperations(issueKey, monitor);
+	public JiraAction[] getAvailableActions(final String issueKey, IProgressMonitor monitor) throws JiraException {
+		return soapClient.getAvailableActions(issueKey, monitor);
 	}
 
 	public String getBaseUrl() {
@@ -281,8 +280,7 @@ public class JiraClient {
 	 *            Unique key of the issue to find
 	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>.
 	 */
-	public RepositoryTaskAttribute[] getEditableAttributes(final String issueKey, IProgressMonitor monitor)
-			throws JiraException {
+	public JiraField[] getEditableAttributes(final String issueKey, IProgressMonitor monitor) throws JiraException {
 		// work around for bug 205015
 		String version = getCache().getServerInfo().getVersion();
 		boolean workAround = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0);

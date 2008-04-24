@@ -46,6 +46,8 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataCollector;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationEvent;
 import org.eclipse.mylyn.web.core.Policy;
 
@@ -404,6 +406,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public static boolean isCompleted(RepositoryTaskData taskData) {
 		return taskData.getAttributeValue(RepositoryTaskAttribute.RESOLUTION).length() > 0;
+	}
+
+	public static boolean isCompleted(TaskData taskData) {
+		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(RepositoryTaskAttribute.RESOLUTION);
+		return attribute != null && attribute.getValue().length() > 0;
 	}
 
 	public static boolean isCompleted(JiraIssue issue) {

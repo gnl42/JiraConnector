@@ -47,7 +47,8 @@ public class JiraConnectorUiTest extends TestCase {
 		TaskRepository repository = new TaskRepository(MockRepositoryConnector.REPOSITORY_KIND,
 				"http://mylyn.eclipse.org");
 		JiraConnectorUi connectorUi = new JiraConnectorUi();
-		JiraTask task = new JiraTask(repository.getRepositoryUrl(), "ABC-12", "");
+		JiraTask task = new JiraTask(repository.getRepositoryUrl(), "456", "");
+		task.setTaskKey("ABC-123");
 		assertEquals("http://mylyn.eclipse.org/browse/ABC-123?page=history", connectorUi.getTaskHistoryUrl(repository,
 				task));
 	}

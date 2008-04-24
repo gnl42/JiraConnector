@@ -30,6 +30,14 @@ public class Version implements Serializable {
 
 	private long sequence;
 
+	public Version(String id) {
+		this.id = id;
+	}
+
+	@Deprecated
+	public Version() {
+	}
+
 	public boolean isArchived() {
 		return this.archived;
 	}

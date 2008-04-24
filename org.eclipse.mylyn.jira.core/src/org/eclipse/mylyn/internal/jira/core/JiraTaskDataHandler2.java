@@ -10,16 +10,11 @@ package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +31,8 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
+import org.eclipse.mylyn.internal.jira.core.model.JiraField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -49,19 +46,19 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
-import org.eclipse.mylyn.monitor.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler2;
-import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
-import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.TaskComment;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractAttributeMapper;
+import org.eclipse.mylyn.tasks.core.data.ITaskDataState;
+import org.eclipse.mylyn.tasks.core.data.RepositoryPerson;
+import org.eclipse.mylyn.tasks.core.data.TaskAttachment;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
+import org.eclipse.mylyn.tasks.core.data.TaskComment;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.core.data.TaskOperation;
 import org.eclipse.mylyn.web.core.Policy;
 
 /**
@@ -87,8 +84,6 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 
 	private static final String LEAVE_OPERATION = "leave";
 
-	private static final JiraAttributeFactory attributeFactory = new JiraAttributeFactory();
-
 	private static final String TASK_DATA_VERSION_1_0 = "1.0";
 
 	private static final String TASK_DATA_VERSION_2_0 = "2.0";
@@ -99,7 +94,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		this.clientFactory = clientFactory;
 	}
 
-	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
+	public TaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
@@ -142,9 +137,9 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		}
 	}
 
-	public RepositoryTaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
-			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
-		RepositoryTaskData data = new RepositoryTaskData(attributeFactory, JiraCorePlugin.CONNECTOR_KIND,
+	public TaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
+			TaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
+		TaskData data = new TaskData(getAttributeMapper(repository), JiraCorePlugin.CONNECTOR_KIND,
 				repository.getRepositoryUrl(), jiraIssue.getId());
 		initializeTaskData(data, client, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
@@ -152,115 +147,131 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		return data;
 	}
 
-	public void initializeTaskData(RepositoryTaskData data, JiraClient client, Project project) {
-		data.removeAllAttributes();
+	public void initializeTaskData(TaskData data, JiraClient client, Project project) {
+		createAttribute(data, TaskAttribute.DATE_CREATION);
+		createAttribute(data, TaskAttribute.SUMMARY);
+		createAttribute(data, TaskAttribute.DESCRIPTION);
+		createAttribute(data, TaskAttribute.STATUS);
+		createAttribute(data, TaskAttribute.TASK_KEY);
+		createAttribute(data, TaskAttribute.USER_ASSIGNED);
+		createAttribute(data, TaskAttribute.USER_REPORTER);
+		createAttribute(data, TaskAttribute.DATE_MODIFIED);
 
-		addAttribute(data, RepositoryTaskAttribute.DATE_CREATION);
-		addAttribute(data, RepositoryTaskAttribute.SUMMARY);
-		addAttribute(data, RepositoryTaskAttribute.DESCRIPTION);
-		addAttribute(data, RepositoryTaskAttribute.STATUS);
-		addAttribute(data, RepositoryTaskAttribute.TASK_KEY);
-		addAttribute(data, RepositoryTaskAttribute.RESOLUTION);
-		addAttribute(data, RepositoryTaskAttribute.USER_ASSIGNED);
-		addAttribute(data, RepositoryTaskAttribute.USER_REPORTER);
-		addAttribute(data, RepositoryTaskAttribute.DATE_MODIFIED);
+		createAttribute(data, TaskAttribute.PRODUCT);
 
-		addAttribute(data, RepositoryTaskAttribute.PRODUCT);
+		TaskAttribute resolutions = createAttribute(data, TaskAttribute.RESOLUTION);
+		Resolution[] jiraResolutions = client.getCache().getResolutions();
+		if (jiraResolutions.length > 0) {
+			resolutions.setValue(jiraResolutions[0].getId());
+			for (Resolution resolution : jiraResolutions) {
+				resolutions.putOption(resolution.getId(), resolution.getName());
+				if (Resolution.FIXED_ID.equals(resolution.getId())) {
+					// set fixed as default
+					resolutions.setValue(resolution.getId());
+				}
+			}
+		} else {
+			resolutions.putOption(Resolution.FIXED_ID, "Fixed");
+			resolutions.putOption(Resolution.WONT_FIX_ID, "Won't Fix");
+			resolutions.putOption(Resolution.DUPLICATE_ID, "Duplicate");
+			resolutions.putOption(Resolution.INCOMPLETE_ID, "Incomplete");
+			resolutions.putOption(Resolution.CANNOT_REPRODUCE_ID, "Cannot Reproduce");
+			resolutions.setValue(Resolution.FIXED_ID);
+		}
 
-		RepositoryTaskAttribute priorities = addAttribute(data, RepositoryTaskAttribute.PRIORITY);
+		TaskAttribute priorities = createAttribute(data, TaskAttribute.PRIORITY);
 		priorities.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
 		Priority[] jiraPriorities = client.getCache().getPriorities();
 		for (int i = 0; i < jiraPriorities.length; i++) {
 			Priority priority = jiraPriorities[i];
-			priorities.addOption(priority.getName(), priority.getId());
+			priorities.putOption(priority.getId(), priority.getName());
 			if (i == (jiraPriorities.length / 2)) {
 				priorities.setValue(priority.getName());
 			}
 		}
 
-		RepositoryTaskAttribute types = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE);
+		TaskAttribute types = createAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE);
 		types.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
 		IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
 		for (int i = 0; i < jiraIssueTypes.length; i++) {
 			IssueType type = jiraIssueTypes[i];
 			if (!type.isSubTaskType()) {
-				types.addOption(type.getName(), type.getId());
+				types.putOption(type.getId(), type.getName());
 				if (i == 0) {
 					types.setValue(type.getName());
 				}
 			}
 		}
 
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
+		createAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+		createAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
 
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
-		addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
+		createAttribute(data, JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
+		createAttribute(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
 		if (!data.isNew()) {
-			addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ACTUAL);
-			addAttribute(data, JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
+			createAttribute(data, JiraAttributeFactory.ATTRIBUTE_ACTUAL);
+			createAttribute(data, JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
 		}
 
-		RepositoryTaskAttribute affectsVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+		TaskAttribute affectsVersions = createAttribute(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
 		affectsVersions.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.MULTISELECT.getKey());
 		for (Version version : project.getVersions()) {
-			affectsVersions.addOption(version.getName(), version.getId());
+			affectsVersions.putOption(version.getId(), version.getName());
 		}
 
-		RepositoryTaskAttribute components = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+		TaskAttribute components = createAttribute(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 		components.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
 		for (Component component : project.getComponents()) {
-			components.addOption(component.getName(), component.getId());
+			components.putOption(component.getId(), component.getName());
 		}
 
-		RepositoryTaskAttribute fixVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+		TaskAttribute fixVersions = createAttribute(data, JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
 		fixVersions.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.MULTISELECT.getKey());
 		for (Version version : project.getVersions()) {
-			fixVersions.addOption(version.getName(), version.getId());
+			fixVersions.putOption(version.getId(), version.getName());
 		}
 
-		RepositoryTaskAttribute environment = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
+		TaskAttribute environment = createAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
 		environment.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.TEXTAREA.getKey());
 
-		RepositoryTaskAttribute newComment = addAttribute(data, RepositoryTaskAttribute.COMMENT_NEW);
+		TaskAttribute newComment = createAttribute(data, TaskAttribute.COMMENT_NEW);
 		newComment.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.TEXTAREA.getKey());
 	}
 
-	private RepositoryTaskAttribute addAttribute(RepositoryTaskData data, String key) {
-		data.addAttribute(key, attributeFactory.createAttribute(key));
-		return data.getAttribute(key);
+	private TaskAttribute createAttribute(TaskData data, String key) {
+		return data.getRoot().createAttribute(key);
 	}
 
-	private void updateTaskData(RepositoryTaskData data, JiraIssue jiraIssue, JiraClient client,
-			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
+	private void updateTaskData(TaskData data, JiraIssue jiraIssue, JiraClient client, TaskData oldTaskData,
+			IProgressMonitor monitor) throws JiraException {
 		String parentKey = jiraIssue.getParentKey();
 		if (parentKey != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentKey);
+			setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, parentKey);
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+			removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
 		}
 
 		String parentId = jiraIssue.getParentId();
 		if (parentId != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID, parentId);
+			setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID, parentId);
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
+			removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
 		}
 
-		data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS);
-		data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS);
+		removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS);
+		removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS);
 		Subtask[] subtasks = jiraIssue.getSubtasks();
 		if (subtasks != null && subtasks.length > 0) {
 			for (Subtask subtask : subtasks) {
-				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, subtask.getIssueId());
-				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, subtask.getIssueKey());
+				addAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, subtask.getIssueId());
+				addAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, subtask.getIssueKey());
 			}
 		}
 
 		IssueLink[] issueLinks = jiraIssue.getIssueLinks();
 		removeAttributes(data, JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX);
 		if (issueLinks != null && issueLinks.length > 0) {
-			HashMap<String, RepositoryTaskAttribute> links = new HashMap<String, RepositoryTaskAttribute>();
+			HashMap<String, TaskAttribute> links = new HashMap<String, TaskAttribute>();
 			for (IssueLink link : issueLinks) {
 				String key;
 				String desc;
@@ -272,261 +283,268 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 					desc = link.getInwardDescription();
 				}
 				String label = capitalize(desc) + ":";
-				RepositoryTaskAttribute attribute = links.get(key);
+				TaskAttribute attribute = links.get(key);
 				if (attribute == null) {
-					attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX + key, label,
-							false);
-					attribute.setReadOnly(true);
+					attribute = createAttribute(data, JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX + key);
+					TaskAttributeProperties.defaults()
+							.setKind(TaskAttribute.META_KIND_DEFAULT)
+							.setLabel(label)
+							.applyTo(attribute);
 					attribute.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.ISSUELINKS.getKey());
 					links.put(key, attribute);
 				}
 				attribute.addValue(link.getIssueKey());
 
 				if (link.getInwardDescription() != null) {
-					data.addAttributeValue(JiraAttributeFactory.LINKED_IDS, link.getIssueId());
+					addAttributeValue(data, JiraAttributeFactory.LINKED_IDS, link.getIssueId());
 				}
-			}
-
-			for (RepositoryTaskAttribute attribute : links.values()) {
-				data.addAttribute(attribute.getId(), attribute);
 			}
 		}
 
-		data.setAttributeValue(RepositoryTaskAttribute.DATE_CREATION, JiraUtil.dateToString(jiraIssue.getCreated()));
-		data.setAttributeValue(RepositoryTaskAttribute.SUMMARY, jiraIssue.getSummary());
-		data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, jiraIssue.getDescription());
-		data.setAttributeValue(RepositoryTaskAttribute.STATUS, jiraIssue.getStatus().getName());
-		data.setAttributeValue(RepositoryTaskAttribute.TASK_KEY, jiraIssue.getKey());
-		data.setAttributeValue(RepositoryTaskAttribute.RESOLUTION, //
+		setAttributeValue(data, TaskAttribute.DATE_CREATION, JiraUtil.dateToString(jiraIssue.getCreated()));
+		setAttributeValue(data, TaskAttribute.SUMMARY, jiraIssue.getSummary());
+		setAttributeValue(data, TaskAttribute.DESCRIPTION, jiraIssue.getDescription());
+		setAttributeValue(data, TaskAttribute.STATUS, jiraIssue.getStatus().getName());
+		setAttributeValue(data, TaskAttribute.TASK_KEY, jiraIssue.getKey());
+		setAttributeValue(data, TaskAttribute.RESOLUTION, //
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getName());
-		data.setAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED, JiraUtil.dateToString(jiraIssue.getUpdated()));
+		setAttributeValue(data, TaskAttribute.DATE_MODIFIED, JiraUtil.dateToString(jiraIssue.getUpdated()));
 
-		data.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
-		data.setAttributeValue(RepositoryTaskAttribute.USER_REPORTER, jiraIssue.getReporter());
+		setAttributeValue(data, TaskAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
+		setAttributeValue(data, TaskAttribute.USER_REPORTER, jiraIssue.getReporter());
 
-		data.setAttributeValue(RepositoryTaskAttribute.PRODUCT, jiraIssue.getProject().getName());
+		setAttributeValue(data, TaskAttribute.PRODUCT, jiraIssue.getProject().getName());
 
 		if (jiraIssue.getPriority() != null) {
-			data.setAttributeValue(RepositoryTaskAttribute.PRIORITY, jiraIssue.getPriority().getName());
+			setAttributeValue(data, TaskAttribute.PRIORITY, jiraIssue.getPriority().getName());
 		} else {
-			data.removeAttribute(RepositoryTaskAttribute.PRIORITY);
+			removeAttribute(data, TaskAttribute.PRIORITY);
 		}
 
 		SecurityLevel securityLevel = jiraIssue.getSecurityLevel();
 		if (securityLevel != null) {
-			RepositoryTaskAttribute attribute = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
-			attribute.addOption(securityLevel.getName(), securityLevel.getId());
+			TaskAttribute attribute = createAttribute(data, JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
+			attribute.putOption(securityLevel.getId(), securityLevel.getName());
 			attribute.setValue(securityLevel.getName());
 		}
 
 		IssueType issueType = jiraIssue.getType();
 		if (issueType != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE, issueType.getName());
+			setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_TYPE, issueType.getName());
 			if (issueType.isSubTaskType()) {
-				RepositoryTaskAttribute attribute = data.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
-				attribute.setReadOnly(true);
+				TaskAttribute attribute = data.getRoot().getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+				setReadOnly(attribute, true);
 				attribute.clearOptions();
 			}
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+			removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE);
 		}
 
 		JiraTimeFormat timeFormat = new JiraTimeFormat();
 		if (jiraIssue.getActual() > 0) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE,
+			setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE,
 					timeFormat.format(jiraIssue.getInitialEstimate()));
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
+			removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
 		}
-		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, timeFormat.format(jiraIssue.getEstimate()));
-		data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ACTUAL, timeFormat.format(jiraIssue.getActual()));
+		setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_ESTIMATE, timeFormat.format(jiraIssue.getEstimate()));
+		setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_ACTUAL, timeFormat.format(jiraIssue.getActual()));
 
 		if (jiraIssue.getDue() != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraUtil.dateToString(jiraIssue.getDue()));
+			setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraUtil.dateToString(jiraIssue.getDue()));
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
+			removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_DUE_DATE);
 		}
 
 		removeAttributeValues(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 		if (jiraIssue.getComponents() != null) {
 			for (Component component : jiraIssue.getComponents()) {
-				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, component.getName());
+				addAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS, component.getName());
 			}
 		}
 
 		removeAttributeValues(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
 		if (jiraIssue.getReportedVersions() != null) {
 			for (Version version : jiraIssue.getReportedVersions()) {
-				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, version.getName());
+				addAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, version.getName());
 			}
 		}
 
 		removeAttributeValues(data, JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
 		if (jiraIssue.getFixVersions() != null) {
 			for (Version version : jiraIssue.getFixVersions()) {
-				data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, version.getName());
+				addAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, version.getName());
 			}
 		}
 
 		if (jiraIssue.getEnvironment() != null) {
-			data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, jiraIssue.getEnvironment());
+			setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, jiraIssue.getEnvironment());
 		} else {
-			data.removeAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
+			removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
 		}
 
+		addComments(data, jiraIssue);
+		addAttachments(data, jiraIssue, client);
+		addCustomFields(data, jiraIssue);
+
+		updateMarkup(data, jiraIssue, client, oldTaskData, monitor);
+
+		HashSet<String> editableKeys = getEditableKeys(data, jiraIssue, client, oldTaskData, monitor);
+		updateProperties(data, editableKeys);
+	}
+
+	private void addComments(TaskData data, JiraIssue jiraIssue) {
+		TaskAttribute commentContainer = createAttribute(data, TaskAttribute.CONTAINER_COMMENTS);
 		int x = 1;
 		for (Comment comment : jiraIssue.getComments()) {
-			TaskComment taskComment = new TaskComment(attributeFactory, x++);
-
-			// XXX ugly because AbstractTaskEditor is using USER_OWNER instead of COMMENT_AUTHOR
-			taskComment.addAttribute(RepositoryTaskAttribute.COMMENT_AUTHOR, createAuthorAttribute(comment.getAuthor()));
-
+			TaskAttribute attribute = commentContainer.createAttribute(x++ + "");
+			TaskComment taskComment = TaskComment.createFrom(attribute);
+			taskComment.setAuthor(new RepositoryPerson(data.getConnectorKind(), data.getRepositoryUrl(),
+					comment.getAuthor()));
 			String commentText = comment.getComment();
 			if (comment.isMarkupDetected()) {
 				commentText = stripTags(commentText);
 			}
-			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_TEXT, commentText);
-			taskComment.addAttributeValue(RepositoryTaskAttribute.COMMENT_DATE, formatDate(comment.getCreated()));
-			data.addComment(taskComment);
+			taskComment.setText(commentText);
+			taskComment.setCreationDate(comment.getCreated());
+			// TODO taskComment.setUrl()
+			taskComment.applyTo(attribute);
 		}
+	}
 
+	private void addAttachments(TaskData data, JiraIssue jiraIssue, JiraClient client) {
+		TaskAttribute attachmentContainer = createAttribute(data, TaskAttribute.CONTAINER_ATTACHMENTS);
 		for (Attachment attachment : jiraIssue.getAttachments()) {
-			RepositoryAttachment taskAttachment = new RepositoryAttachment(attributeFactory);
-			taskAttachment.setCreator(attachment.getAuthor());
-			taskAttachment.setRepositoryKind(JiraCorePlugin.CONNECTOR_KIND);
-			taskAttachment.setRepositoryUrl(client.getBaseUrl());
-			taskAttachment.setTaskId(jiraIssue.getKey());
-
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_ID, attachment.getId());
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_FILENAME, attachment.getName());
-
+			TaskAttribute attribute = attachmentContainer.createAttribute(attachment.getId());
+			TaskAttachment taskAttachment = TaskAttachment.createFrom(attribute);
+			taskAttachment.setAuthor(new RepositoryPerson(data.getConnectorKind(), data.getRepositoryUrl(),
+					attachment.getAuthor()));
+			taskAttachment.setFileName(attachment.getName());
 			if (CONTEXT_ATTACHEMENT_FILENAME.equals(attachment.getName())) {
-				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, CONTEXT_ATTACHMENT_DESCRIPTION);
+				taskAttachment.setDescription(CONTEXT_ATTACHMENT_DESCRIPTION);
 			} else if (CONTEXT_ATTACHEMENT_FILENAME_LEGACY.equals(attachment.getName())) {
-				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
-						CONTEXT_ATTACHMENT_DESCRIPTION_LEGACY);
+				taskAttachment.setDescription(CONTEXT_ATTACHMENT_DESCRIPTION_LEGACY);
 			} else {
-				taskAttachment.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, attachment.getName());
+				taskAttachment.setDescription(attachment.getName());
 			}
-
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, attachment.getAuthor());
-
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_SIZE,
-					String.valueOf(attachment.getSize()));
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_DATE,
-					formatDate(attachment.getCreated()));
-			taskAttachment.setAttributeValue(RepositoryTaskAttribute.ATTACHMENT_URL, //
-					client.getBaseUrl() + "/secure/attachment/" + attachment.getId() + "/" + attachment.getName());
-			data.addAttachment(taskAttachment);
+			taskAttachment.setLength(attachment.getSize());
+			taskAttachment.setCreationDate(attachment.getCreated());
+			taskAttachment.setUrl(client.getBaseUrl() + "/secure/attachment/" + attachment.getId() + "/"
+					+ attachment.getName());
+			taskAttachment.applyTo(attribute);
 		}
+	}
 
+	private void addCustomFields(TaskData data, JiraIssue jiraIssue) {
 		removeAttributes(data, JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX);
 		for (CustomField field : jiraIssue.getCustomFields()) {
-			String mappedKey = attributeFactory.mapCommonAttributeKey(field.getId());
+			String mappedKey = mapCommonAttributeKey(field.getId());
 			String name = field.getName().replace("&", "&&") + ":"; // mask & from SWT
-			RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(mappedKey, name,
-					attributeFactory.isHidden(mappedKey));
-
+			String kind = (JiraAttribute.valueById(mappedKey).isHidden()) ? null : TaskAttribute.META_KIND_DEFAULT;
 			String type = field.getKey();
-			attribute.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, type);
-			attribute.setReadOnly(field.isReadOnly());
 
+			TaskAttribute attribute = createAttribute(data, mappedKey);
+			TaskAttributeProperties.defaults().setKind(kind).setLabel(name).setReadOnly(field.isReadOnly()).applyTo(
+					attribute);
+			attribute.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, type);
 			for (String value : field.getValues()) {
 				attribute.addValue(value);
 			}
-			data.addAttribute(attribute.getId(), attribute);
 		}
+	}
 
-		updateMarkup(data, jiraIssue, client, oldTaskData, monitor);
-
+	private HashSet<String> getEditableKeys(TaskData data, JiraIssue jiraIssue, JiraClient client,
+			TaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		HashSet<String> editableKeys = new HashSet<String>();
 		if (!JiraRepositoryConnector.isClosed(jiraIssue)) {
 			if (useCachedInformation(jiraIssue, oldTaskData)) {
 				// avoid server round-trips
-				for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
-					if (!attribute.isReadOnly()) {
+				for (TaskAttribute attribute : oldTaskData.getRoot().getAttributes().values()) {
+					if (!TaskAttributeProperties.createFrom(attribute).isReadOnly()) {
 						editableKeys.add(attribute.getId());
 					}
 				}
 
-				RepositoryTaskAttribute attribute = oldTaskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY);
+				TaskAttribute attribute = oldTaskData.getRoot().getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY);
 				if (attribute != null) {
-					data.addAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, attribute);
+					data.getRoot().deepCopyFrom(attribute);
 				}
 			} else {
 				try {
-					RepositoryTaskAttribute[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(),
-							monitor);
+					JiraField[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(), monitor);
 					if (editableAttributes != null) {
-						for (RepositoryTaskAttribute attribute : editableAttributes) {
-							editableKeys.add(attributeFactory.mapCommonAttributeKey(attribute.getId()));
+						for (JiraField field : editableAttributes) {
+							editableKeys.add(mapCommonAttributeKey(field.getId()));
 						}
 					}
 				} catch (JiraInsufficientPermissionException ex) {
-					RepositoryTaskAttribute attribute = new RepositoryTaskAttribute(
-							JiraAttributeFactory.ATTRIBUTE_READ_ONLY, "Read-only", true);
-					data.addAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY, attribute);
+					// flag as read-only to avoid calling getEditableAttributes() on each sync
+					data.getRoot().createAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY);
 				}
 			}
 		}
+		return editableKeys;
+	}
 
-		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
+	private void updateProperties(TaskData data, HashSet<String> editableKeys) {
+		for (TaskAttribute attribute : data.getRoot().getAttributes().values()) {
+			TaskAttributeProperties properties = TaskAttributeProperties.createFrom(attribute);
 			boolean editable = editableKeys.contains(attribute.getId().toLowerCase());
-			attribute.setReadOnly(!editable);
 			if (editable && (attribute.getId().startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX) //
-					|| !attributeFactory.isHidden(attribute.getId()))) {
-				attribute.setHidden(false);
+					|| !JiraAttribute.valueById(attribute.getId()).isHidden())) {
+				properties.setKind(TaskAttribute.META_KIND_DEFAULT);
 			}
 
-			if (RepositoryTaskAttribute.COMMENT_NEW.equals(attribute.getId())) {
-				attribute.setReadOnly(false);
+			if (TaskAttribute.COMMENT_NEW.equals(attribute.getId())) {
+				properties.setReadOnly(false);
 			} else {
 				// make attributes read-only if can't find editing options
-				String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
-				Collection<String> options = attribute.getOptions();
-				if (JiraFieldType.SELECT.getKey().equals(key)
-						&& (options == null || options.isEmpty() || attribute.isReadOnly())) {
-					attribute.setReadOnly(true);
-				} else if (JiraFieldType.MULTISELECT.getKey().equals(key) && (options == null || options.isEmpty())) {
-					attribute.setReadOnly(true);
+				String key = attribute.getMetaData(JiraAttributeFactory.TYPE_KEY);
+				Map<String, String> options = attribute.getOptions();
+				if (JiraFieldType.SELECT.getKey().equals(key) && (options.isEmpty() || properties.isReadOnly())) {
+					properties.setReadOnly(true);
+				} else if (JiraFieldType.MULTISELECT.getKey().equals(key) && options.isEmpty()) {
+					properties.setReadOnly(true);
+				} else {
+					properties.setReadOnly(false);
 				}
 			}
+			properties.applyTo(attribute);
 		}
 	}
 
-	private boolean useCachedInformation(JiraIssue issue, RepositoryTaskData oldTaskData) {
-		return oldTaskData != null && oldTaskData.getStatus().equals(issue.getStatus().getName());
+	private void addAttributeValue(TaskData data, String attributeId, String value) {
+		data.getRoot().getAttribute(attributeId).addValue(value);
 	}
 
-	private String formatDate(Date date) {
-		if (date == null) {
-			return "";
-		} else {
-			return new SimpleDateFormat(JiraAttributeFactory.JIRA_DATE_FORMAT, Locale.US).format(date);
-		}
+	private void setAttributeValue(TaskData data, String attributeId, String value) {
+		data.getRoot().getAttribute(attributeId).setValue(value);
 	}
 
-	private void removeAttributes(RepositoryTaskData data, String keyPrefix) {
-		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
-			if (attribute.getName().startsWith(keyPrefix)) {
-				data.removeAttribute(attribute.getId());
+	private boolean useCachedInformation(JiraIssue issue, TaskData oldTaskData) {
+		TaskAttribute attribute = oldTaskData.getMappedAttribute(TaskAttribute.STATUS);
+		String status = (attribute != null) ? attribute.getValue() : "";
+		return oldTaskData != null && status.equals(issue.getStatus().getName());
+	}
+
+	private void removeAttributes(TaskData data, String keyPrefix) {
+		List<TaskAttribute> attributes = new ArrayList<TaskAttribute>(data.getRoot().getAttributes().values());
+		for (TaskAttribute attribute : attributes) {
+			if (attribute.getId().startsWith(keyPrefix)) {
+				removeAttribute(data, attribute.getId());
 			}
 		}
+	}
+
+	private void removeAttribute(TaskData data, String attributeId) {
+		data.getRoot().removeAttribute(attributeId);
 	}
 
 	/**
 	 * Removes attribute values without removing attribute to preserve order of attributes
 	 */
-	private void removeAttributeValues(RepositoryTaskData data, String keyPrefix) {
-		for (RepositoryTaskAttribute attribute : data.getAttributes()) {
-			if (attribute.getId().startsWith(keyPrefix)) {
-				ListIterator<String> it = attribute.getValues().listIterator();
-				while (it.hasNext()) {
-					it.next();
-					it.remove();
-				}
-			}
-		}
+	private void removeAttributeValues(TaskData data, String attributeId) {
+		data.getRoot().getAttribute(attributeId).clearValues();
 	}
 
 	private String capitalize(String s) {
@@ -538,14 +556,6 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			}
 		}
 		return s;
-	}
-
-	private RepositoryTaskAttribute createAuthorAttribute(String value) {
-		RepositoryTaskAttribute attr = attributeFactory.createAttribute(RepositoryTaskAttribute.COMMENT_AUTHOR);
-		attr.setHidden(true);
-		attr.setReadOnly(true);
-		attr.setValue(value);
-		return attr;
 	}
 
 	private String getAssignee(JiraIssue jiraIssue) {
@@ -575,30 +585,30 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 	 * Replaces the values in fields that are suspected to contain rendered markup with the source values retrieved
 	 * through SOAP.
 	 */
-	private void updateMarkup(RepositoryTaskData data, JiraIssue jiraIssue, JiraClient client,
-			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
+	private void updateMarkup(TaskData data, JiraIssue jiraIssue, JiraClient client, TaskData oldTaskData,
+			IProgressMonitor monitor) throws JiraException {
 		if (!jiraIssue.isMarkupDetected()) {
 			return;
 		}
 
 		if (jiraIssue.getUpdated() != null && oldTaskData != null) {
-			String value = oldTaskData.getAttributeValue(RepositoryTaskAttribute.DATE_MODIFIED);
+			String value = getAttributeValue(oldTaskData, TaskAttribute.DATE_MODIFIED);
 			if (jiraIssue.getUpdated().equals(JiraUtil.stringToDate(value))) {
 				// use cached information
-				if (data.getAttribute(RepositoryTaskAttribute.DESCRIPTION) != null) {
-					data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION,
-							oldTaskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
+				if (data.getRoot().getAttribute(TaskAttribute.DESCRIPTION) != null) {
+					setAttributeValue(data, TaskAttribute.DESCRIPTION, getAttributeValue(oldTaskData,
+							TaskAttribute.DESCRIPTION));
 				}
-				if (data.getAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT) != null) {
-					data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT,
-							oldTaskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
+				if (data.getRoot().getAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT) != null) {
+					setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, getAttributeValue(oldTaskData,
+							JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
 				}
 				for (CustomField field : jiraIssue.getCustomFields()) {
 					if (field.isMarkupDetected()) {
-						RepositoryTaskAttribute oldAttribute = oldTaskData.getAttribute(field.getId());
+						TaskAttribute oldAttribute = oldTaskData.getRoot().getAttribute(field.getId());
 						if (oldAttribute != null) {
-							RepositoryTaskAttribute attribute = data.getAttribute(field.getId());
-							attribute.setValues(new ArrayList<String>(oldAttribute.getValues()));
+							TaskAttribute attribute = data.getRoot().getAttribute(field.getId());
+							attribute.setValues(oldAttribute.getValues());
 						}
 					}
 				}
@@ -608,18 +618,18 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 
 		// consider preserving HTML 
 		RemoteIssue remoteIssue = client.getSoapClient().getIssueByKey(jiraIssue.getKey(), monitor);
-		if (data.getAttribute(RepositoryTaskAttribute.DESCRIPTION) != null) {
+		if (data.getRoot().getAttribute(TaskAttribute.DESCRIPTION) != null) {
 			if (remoteIssue.getDescription() == null) {
-				data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, "");
+				setAttributeValue(data, TaskAttribute.DESCRIPTION, "");
 			} else {
-				data.setAttributeValue(RepositoryTaskAttribute.DESCRIPTION, remoteIssue.getDescription());
+				setAttributeValue(data, TaskAttribute.DESCRIPTION, remoteIssue.getDescription());
 			}
 		}
-		if (data.getAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT) != null) {
+		if (data.getRoot().getAttribute(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT) != null) {
 			if (remoteIssue.getEnvironment() == null) {
-				data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "");
+				setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, "");
 			} else {
-				data.setAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, remoteIssue.getEnvironment());
+				setAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, remoteIssue.getEnvironment());
 			}
 		}
 		RemoteCustomFieldValue[] fields = remoteIssue.getCustomFieldValues();
@@ -627,7 +637,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			if (field.isMarkupDetected()) {
 				innerLoop: for (RemoteCustomFieldValue remoteField : fields) {
 					if (field.getId().equals(remoteField.getCustomfieldId())) {
-						RepositoryTaskAttribute attribute = data.getAttribute(field.getId());
+						TaskAttribute attribute = data.getRoot().getAttribute(field.getId());
 						if (attribute != null) {
 							attribute.setValues(Arrays.asList(remoteField.getValues()));
 						}
@@ -639,67 +649,62 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 
 	}
 
-	public void addOperations(RepositoryTaskData data, JiraIssue issue, JiraClient client,
-			RepositoryTaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
+	public void addOperations(TaskData data, JiraIssue issue, JiraClient client, TaskData oldTaskData,
+			IProgressMonitor monitor) throws JiraException {
+		TaskAttribute operationContainer = createAttribute(data, TaskAttribute.CONTAINER_OPERATIONS);
+
 		// avoid server round-trips
 		if (useCachedInformation(issue, oldTaskData)) {
-			for (RepositoryOperation operation : oldTaskData.getOperations()) {
-				data.addOperation(operation);
+			TaskAttribute oldOperationContainer = oldTaskData.getMappedAttribute(TaskAttribute.CONTAINER_OPERATIONS);
+			if (oldOperationContainer != null) {
+				// FIXME associated attributes?
+				operationContainer.deepCopyFrom(oldOperationContainer);
 			}
 			return;
 		}
 
-		RepositoryOperation leaveOperation = new RepositoryOperation(LEAVE_OPERATION, "Leave as "
-				+ issue.getStatus().getName());
-		leaveOperation.setChecked(true);
-		data.addOperation(leaveOperation);
+		TaskAttribute attribute = operationContainer.createAttribute(LEAVE_OPERATION);
+		TaskOperation operation = TaskOperation.createFrom(attribute);
+		operation.setLabel("Leave as " + issue.getStatus().getName());
+		operation.applyTo(attribute);
+
+		// set as default
+		operationContainer.setValue(LEAVE_OPERATION);
 
 		// TODO need more accurate status matching
-		if (!JiraRepositoryConnector.isCompleted(data)) {
-			RepositoryOperation reassignOperation = new RepositoryOperation(REASSIGN_OPERATION, "Reassign to");
-			reassignOperation.setInputName(JiraAttribute.USER_ASSIGNED.getParamName());
-			reassignOperation.setInputValue(client.getUserName());
-			data.addOperation(reassignOperation);
-		}
+//		if (!JiraRepositoryConnector.isCompleted(data)) {
+//			attribute = operationContainer.createAttribute(REASSIGN_OPERATION);
+//			operation = TaskOperation.createFrom(attribute);
+//			operation.setLabel("Reassign to");
+//			operation.applyTo(attribute);
+//
+//			String attributeId = REASSIGN_OPERATION + "::" + JiraAttribute.USER_ASSIGNED.getParamName();
+//			TaskAttribute associatedAttribute = createAttribute(data, attributeId);
+//			associatedAttribute.setValue(client.getUserName());
+//			attribute.putMetaDataValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID, attributeId);
+//		}
 
-		RepositoryOperation[] availableOperations = client.getAvailableOperations(issue.getKey(), monitor);
-		if (availableOperations != null) {
-			for (RepositoryOperation operation : availableOperations) {
-				String[] fields = client.getActionFields(issue.getKey(), operation.getKnobName(), monitor);
+		JiraAction[] availableActions = client.getAvailableActions(issue.getKey(), monitor);
+		if (availableActions != null) {
+			for (JiraAction action : availableActions) {
+				attribute = operationContainer.createAttribute(action.getId());
+				operation = TaskOperation.createFrom(attribute);
+				operation.setLabel(action.getName());
+				operation.applyTo(attribute);
+
+				String[] fields = client.getActionFields(issue.getKey(), action.getName(), monitor);
 				for (String field : fields) {
-					if (RepositoryTaskAttribute.RESOLUTION.equals(attributeFactory.mapCommonAttributeKey(field))) {
-						operation.setInputName(field);
-						operation.setUpOptions(field);
-						addResolutions(client, operation);
+					if (TaskAttribute.RESOLUTION.equals(mapCommonAttributeKey(field))) {
+						attribute.putMetaDataValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID, TaskAttribute.RESOLUTION);
 					}
 					// TODO handle other action fields
 				}
-				data.addOperation(operation);
 			}
 		}
 	}
 
-	private void addResolutions(JiraClient client, RepositoryOperation operation) {
-		Resolution[] resolutions = client.getCache().getResolutions();
-		if (resolutions.length > 0) {
-			for (Resolution resolution : resolutions) {
-				operation.addOption(resolution.getName(), resolution.getId());
-				if (Resolution.FIXED_ID.equals(resolution.getId())) {
-					// set fixed as default
-					operation.setOptionSelection(resolution.getName());
-				}
-			}
-		} else {
-			operation.addOption("Fixed", Resolution.FIXED_ID);
-			operation.addOption("Won't Fix", Resolution.WONT_FIX_ID);
-			operation.addOption("Duplicate", Resolution.DUPLICATE_ID);
-			operation.addOption("Incomplete", Resolution.INCOMPLETE_ID);
-			operation.addOption("Cannot Reproduce", Resolution.CANNOT_REPRODUCE_ID);
-			operation.setOptionSelection("Fixed");
-		}
-	}
-
-	public String postTaskData(TaskRepository repository, RepositoryTaskData taskData, IProgressMonitor monitor)
+	@Override
+	public String postTaskData(TaskRepository repository, ITaskDataState taskDataState, IProgressMonitor monitor)
 			throws CoreException {
 		JiraClient client = clientFactory.getJiraClient(repository);
 		if (client == null) {
@@ -712,6 +717,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				client.getCache().refreshDetails(new NullProgressMonitor());
 			}
 
+			TaskData taskData = taskDataState.getLocalData();
 			JiraIssue issue = buildJiraIssue(taskData, client);
 			if (taskData.isNew()) {
 				if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
@@ -727,34 +733,32 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				// this is severely broken: should return id instead
 				return issue.getKey();
 			} else {
-				RepositoryOperation operation = taskData.getSelectedOperation();
-				if (operation == null) {
-					operation = new RepositoryOperation(LEAVE_OPERATION, "");
+				TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.CONTAINER_OPERATIONS);
+				if (attribute == null) {
+					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR,
+							JiraCorePlugin.ID_PLUGIN, IStatus.OK, "No valid action selected", null));
 				}
 
-				String inputName = operation.getInputName();
-				if (inputName != null) {
-					String value;
-					if (operation.hasOptions()) {
-						value = operation.getOptionValue(operation.getOptionSelection());
-					} else {
-						value = operation.getInputValue();
-					}
-					if (value != null) {
-						issue.setValue(inputName, value);
-					}
+				String operationId = taskData.getAttributeMapper().getValue(attribute);
+				if (operationId.length() == 0) {
+					operationId = LEAVE_OPERATION;
 				}
 
-				if (LEAVE_OPERATION.equals(operation.getKnobName())
-						|| REASSIGN_OPERATION.equals(operation.getKnobName())) {
+				String newComment = "";
+				attribute = taskData.getMappedAttribute(TaskAttribute.COMMENT_NEW);
+				if (attribute != null) {
+					newComment = taskData.getAttributeMapper().getValue(attribute);
+				}
+
+				if (LEAVE_OPERATION.equals(operationId) || REASSIGN_OPERATION.equals(operationId)) {
 					if (!JiraRepositoryConnector.isClosed(issue)
-							&& taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
-						client.updateIssue(issue, taskData.getNewComment(), monitor);
-					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
-						client.addCommentToIssue(issue, taskData.getNewComment(), monitor);
+							&& taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
+						client.updateIssue(issue, newComment, monitor);
+					} else if (newComment.length() > 0) {
+						client.addCommentToIssue(issue, newComment, monitor);
 					}
 				} else {
-					client.advanceIssueWorkflow(issue, operation.getKnobName(), taskData.getNewComment(), monitor);
+					client.advanceIssueWorkflow(issue, operationId, newComment, monitor);
 				}
 
 				return "";
@@ -766,10 +770,11 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		}
 	}
 
-	public boolean initializeTaskData(TaskRepository repository, RepositoryTaskData data, IProgressMonitor monitor)
+	@Override
+	public boolean initializeTaskData(TaskRepository repository, TaskData data, IProgressMonitor monitor)
 			throws CoreException {
-		String projectName = data.getAttributeValue(RepositoryTaskAttribute.PRODUCT);
-		if (projectName == null) {
+		TaskAttribute projectAttribute = data.getRoot().getAttribute(TaskAttribute.PRODUCT);
+		if (projectAttribute == null) {
 			return false;
 		}
 
@@ -784,6 +789,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			}
 		}
 
+		String projectName = projectAttribute.getValue();
 		Project project = getProject(client, projectName);
 		if (project == null) {
 			project = client.getCache().getProjectByKey(projectName);
@@ -794,13 +800,14 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 
 		initializeTaskData(data, client, project);
 
-		data.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
+		setAttributeValue(data, TaskAttribute.PRODUCT, project.getName());
 
 		return true;
 	}
 
-	public boolean initializeSubTaskData(TaskRepository repository, RepositoryTaskData taskData,
-			RepositoryTaskData parentTaskData, IProgressMonitor monitor) throws CoreException {
+	@Override
+	public boolean initializeSubTaskData(TaskRepository repository, TaskData taskData, TaskData parentTaskData,
+			IProgressMonitor monitor) throws CoreException {
 		try {
 			monitor.beginTask("Creating subtask", IProgressMonitor.UNKNOWN);
 
@@ -809,45 +816,45 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				client.getCache().refreshDetails(new SubProgressMonitor(monitor, 1));
 			}
 
-			Project project = getProject(client, parentTaskData.getProduct());
-			if (project == null) {
-				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-						IStatus.OK, "The parent task does not have a valid project.", null));
-			}
-
-			initializeTaskData(taskData, client, project);
-			//cloneTaskData(parentTaskData, taskData);
-			taskData.setDescription("");
-			taskData.setSummary("");
-			taskData.setAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED, parentTaskData.getAssignedTo());
-			taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
-
-			// set subtask type
-			RepositoryTaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
-			typeAttribute.clearOptions();
-
-			IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
-			for (IssueType type : jiraIssueTypes) {
-				if (type.isSubTaskType()) {
-					typeAttribute.addOption(type.getName(), type.getId());
-				}
-			}
-
-			List<String> options = typeAttribute.getOptions();
-			if (options.size() == 0) {
-				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-						IStatus.OK, "The repository does not support subtasks.", null));
-			} else if (options.size() == 1) {
-				typeAttribute.setReadOnly(true);
-			}
-			typeAttribute.setValue(options.get(0));
-
-			// set parent id
-			RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
-			attribute.setValue(parentTaskData.getTaskId());
-
-			attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
-			attribute.setValue(parentTaskData.getTaskKey());
+//			Project project = getProject(client, parentTaskData.getProduct());
+//			if (project == null) {
+//				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+//						IStatus.OK, "The parent task does not have a valid project.", null));
+//			}
+//
+//			initializeTaskData(taskData, client, project);
+//			//cloneTaskData(parentTaskData, taskData);
+//			taskData.setDescription("");
+//			taskData.setSummary("");
+//			setAttributeValue(taskdata, TaskAttribute.USER_ASSIGNED, parentTaskData.getAssignedTo());
+//			setAttributeValue(taskdata, TaskAttribute.PRODUCT, project.getName());
+//
+//			// set subtask type
+//			TaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
+//			typeAttribute.clearOptions();
+//
+//			IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
+//			for (IssueType type : jiraIssueTypes) {
+//				if (type.isSubTaskType()) {
+//					typeAttribute.putOption(type.getName(), type.getId());
+//				}
+//			}
+//
+//			List<String> options = typeAttribute.getOptions();
+//			if (options.size() == 0) {
+//				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+//						IStatus.OK, "The repository does not support subtasks.", null));
+//			} else if (options.size() == 1) {
+//				setReadOnly(typeAttribute, true);
+//			}
+//			typeAttribute.setValue(options.get(0));
+//
+//			// set parent id
+//			TaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
+//			attribute.setValue(parentTaskData.getTaskId());
+//
+//			attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
+//			attribute.setValue(parentTaskData.getTaskKey());
 
 			return true;
 		} catch (JiraException e) {
@@ -859,7 +866,12 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		}
 	}
 
-	public boolean canInitializeSubTaskData(AbstractTask task, RepositoryTaskData parentTaskData) {
+	private void setReadOnly(TaskAttribute attribute, boolean readOnly) {
+		attribute.putMetaDataValue(TaskAttribute.META_READ_ONLY, Boolean.toString(readOnly));
+	}
+
+	@Override
+	public boolean canInitializeSubTaskData(AbstractTask task, TaskData parentTaskData) {
 		return true;
 	}
 
@@ -872,143 +884,103 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		return null;
 	}
 
-	@Override
-	public AbstractAttributeFactory getAttributeFactory(String repositoryUrl, String repositoryKind, String taskKind) {
-		// we don't care about the repository information right now
-		return attributeFactory;
-	}
-
-	public AbstractAttributeFactory getAttributeFactory(RepositoryTaskData taskData) {
-		return getAttributeFactory(taskData.getRepositoryUrl(), taskData.getConnectorKind(), taskData.getTaskKind());
-	}
-
-	private JiraIssue buildJiraIssue(RepositoryTaskData taskData, JiraClient client) {
+	private JiraIssue buildJiraIssue(TaskData taskData, JiraClient client) {
 		JiraIssue issue = new JiraIssue();
 		issue.setId(taskData.getTaskId());
-		issue.setKey(taskData.getTaskKey());
-		issue.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
-		issue.setDescription(taskData.getAttributeValue(RepositoryTaskAttribute.DESCRIPTION));
+		issue.setKey(getAttributeValue(taskData, TaskAttribute.TASK_KEY));
+		issue.setSummary(getAttributeValue(taskData, TaskAttribute.SUMMARY));
+		issue.setDescription(getAttributeValue(taskData, TaskAttribute.DESCRIPTION));
 
 		// TODO sync due date between jira and local planning
-		issue.setDue(JiraUtil.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
+		issue.setDue(JiraUtil.stringToDate(getAttributeValue(taskData, JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
 
-		String parentId = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
+		String parentId = getAttributeValue(taskData, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
 		if (parentId != null) {
 			issue.setParentId(parentId);
 		}
 
-		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
+		TaskAttribute attribute = taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL);
 		if (attribute != null) {
 			SecurityLevel securityLevel = new SecurityLevel();
-			securityLevel.setId(attribute.getOptionParameter(attribute.getValue()));
+			securityLevel.setId(attribute.getValue());
 			issue.setSecurityLevel(securityLevel);
 		}
 
-		String estimate = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
+		String estimate = getAttributeValue(taskData, JiraAttributeFactory.ATTRIBUTE_ESTIMATE);
 		if (estimate != null) {
 			JiraTimeFormat timeFormat = new JiraTimeFormat();
 			issue.setEstimate(timeFormat.parse(estimate));
 		}
 
-		estimate = taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
+		estimate = getAttributeValue(taskData, JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE);
 		if (estimate != null) {
 			JiraTimeFormat timeFormat = new JiraTimeFormat();
 			issue.setInitialEstimate(timeFormat.parse(estimate));
 		}
 
-		Project project = getProject(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRODUCT));
+		Project project = getProject(client, getAttributeValue(taskData, TaskAttribute.PRODUCT));
 		if (project != null) {
 			issue.setProject(project);
 		}
-
+		issue.setType(new IssueType());
 		for (IssueType type : client.getCache().getIssueTypes()) {
-			if (type.getName().equals(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE))) {
+			if (type.getName().equals(getAttributeValue(taskData, JiraAttributeFactory.ATTRIBUTE_TYPE))) {
 				issue.setType(type);
 				break;
 			}
 		}
 		for (org.eclipse.mylyn.internal.jira.core.model.JiraStatus status : client.getCache().getStatuses()) {
-			if (status.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.STATUS))) {
+			if (status.getName().equals(getAttributeValue(taskData, TaskAttribute.STATUS))) {
 				issue.setStatus(status);
 				break;
 			}
 		}
-		RepositoryTaskAttribute componentsAttr = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
+		TaskAttribute componentsAttr = taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
 		if (componentsAttr != null) {
 			ArrayList<Component> components = new ArrayList<Component>();
-			for (String compStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_COMPONENTS)) {
-				if (componentsAttr.getOptionParameter(compStr) != null) {
-					Component comp = new Component();
-					comp.setId(componentsAttr.getOptionParameter(compStr));
-					comp.setName(compStr);
-					components.add(comp);
-				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-							"Error setting component for JIRA issue. Component id is null: " + compStr));
-				}
+			for (String value : componentsAttr.getValues()) {
+				components.add(new Component(value));
 			}
 			issue.setComponents(components.toArray(new Component[components.size()]));
 		}
 
-		RepositoryTaskAttribute fixVersionAttr = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
+		TaskAttribute fixVersionAttr = taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
 		if (fixVersionAttr != null) {
-			ArrayList<Version> fixversions = new ArrayList<Version>();
-			for (String fixStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS)) {
-				if (fixVersionAttr.getOptionParameter(fixStr) != null) {
-					Version version = new Version();
-					version.setId(fixVersionAttr.getOptionParameter(fixStr));
-					version.setName(fixStr);
-					fixversions.add(version);
-				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-							"Error setting fix version for JIRA issue. Version id is null: " + fixStr));
-				}
+			ArrayList<Version> fixVersions = new ArrayList<Version>();
+			for (String value : fixVersionAttr.getValues()) {
+				fixVersions.add(new Version(value));
 			}
-			issue.setFixVersions(fixversions.toArray(new Version[fixversions.size()]));
+			issue.setFixVersions(fixVersions.toArray(new Version[fixVersions.size()]));
 		}
 
-		RepositoryTaskAttribute affectsVersionAttr = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
+		TaskAttribute affectsVersionAttr = taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
 		if (affectsVersionAttr != null) {
-			ArrayList<Version> affectsversions = new ArrayList<Version>();
-			for (String fixStr : taskData.getAttributeValues(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS)) {
-				if (affectsVersionAttr.getOptionParameter(fixStr) != null) {
-					Version version = new Version();
-					version.setId(affectsVersionAttr.getOptionParameter(fixStr));
-					version.setName(fixStr);
-					affectsversions.add(version);
-				} else {
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-							"Error setting affects version for JIRA issue. Version id is null: " + fixStr));
-				}
+			ArrayList<Version> affectsVersions = new ArrayList<Version>();
+			for (String value : affectsVersionAttr.getValues()) {
+				affectsVersions.add(new Version(value));
 			}
-			issue.setReportedVersions(affectsversions.toArray(new Version[affectsversions.size()]));
+			issue.setReportedVersions(affectsVersions.toArray(new Version[affectsVersions.size()]));
 		}
-		issue.setReporter(taskData.getAttributeValue(RepositoryTaskAttribute.USER_REPORTER));
 
-		RepositoryOperation operation = taskData.getSelectedOperation();
-		String assignee;
-		if (operation != null && REASSIGN_OPERATION.equals(operation.getKnobName())) {
-			assignee = operation.getInputValue();
-		} else {
-			assignee = taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED);
-		}
+		issue.setReporter(getAttributeValue(taskData, TaskAttribute.USER_REPORTER));
+
+		String assignee = getAttributeValue(taskData, TaskAttribute.USER_ASSIGNED);
 		issue.setAssignee(JiraRepositoryConnector.getAssigneeFromAttribute(assignee));
 
-		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
+		issue.setEnvironment(getAttributeValue(taskData, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
 		for (Priority priority : client.getCache().getPriorities()) {
-			if (priority.getName().equals(taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY))) {
+			if (priority.getName().equals(getAttributeValue(taskData, TaskAttribute.PRIORITY))) {
 				issue.setPriority(priority);
 				break;
 			}
 		}
 
 		ArrayList<CustomField> customFields = new ArrayList<CustomField>();
-		for (RepositoryTaskAttribute attr : taskData.getAttributes()) {
+		for (TaskAttribute attr : taskData.getRoot().getAttributes().values()) {
 			if (attr.getId().startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
 				String id = attr.getId().substring(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX.length());
-				CustomField field = new CustomField(id, attr.getMetaDataValue(JiraAttributeFactory.TYPE_KEY),
-						attr.getName(), attr.getValues());
-				field.setReadOnly(attr.isReadOnly());
+				CustomField field = new CustomField(id, attr.getMetaData(JiraAttributeFactory.TYPE_KEY), "",
+						attr.getValues());
 				customFields.add(field);
 			}
 		}
@@ -1017,15 +989,21 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		return issue;
 	}
 
-	public Set<String> getSubTaskIds(RepositoryTaskData taskData) {
+	private String getAttributeValue(TaskData taskData, String attributeId) {
+		TaskAttribute attribute = taskData.getRoot().getAttribute(attributeId);
+		return (attribute != null) ? attribute.getValue() : null;
+	}
+
+	@Override
+	public Set<String> getSubTaskIds(TaskData taskData) {
 		Set<String> subIds = new HashSet<String>();
 
-		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttribute.SUBTASK_IDS.getId());
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SUBTASK_IDS.getId());
 		if (attribute != null) {
 			subIds.addAll(attribute.getValues());
 		}
 
-		attribute = taskData.getAttribute(JiraAttribute.LINKED_IDS.getId());
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.getId());
 		if (attribute != null) {
 			subIds.addAll(attribute.getValues());
 		}
@@ -1042,20 +1020,6 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 	@Override
 	public AbstractAttributeMapper getAttributeMapper(TaskRepository taskRepository) {
 		return new JiraAttributeMapper(taskRepository);
-	}
-
-	@Override
-	public boolean initializeTaskData(TaskRepository repository, TaskData data, IProgressMonitor monitor)
-			throws CoreException {
-		// ignore
-		return false;
-	}
-
-	@Override
-	public String postTaskData(TaskRepository repository, TaskData taskData, IProgressMonitor monitor)
-			throws CoreException {
-		// ignore
-		return null;
 	}
 
 	@Override
@@ -1078,6 +1042,43 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			}
 			taskData.setVersion(TASK_DATA_VERSION_2_0);
 		}
+	}
+
+	private String mapCommonAttributeKey(String key) {
+		if ("summary".equals(key)) {
+			return RepositoryTaskAttribute.SUMMARY;
+		} else if ("description".equals(key)) {
+			return RepositoryTaskAttribute.DESCRIPTION;
+		} else if ("priority".equals(key)) {
+			return RepositoryTaskAttribute.PRIORITY;
+		} else if ("resolution".equals(key)) {
+			return RepositoryTaskAttribute.RESOLUTION;
+		} else if ("assignee".equals(key)) {
+			return RepositoryTaskAttribute.USER_ASSIGNED;
+		} else if ("environment".equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT;
+		} else if ("issuetype".equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_TYPE;
+		} else if ("components".equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_COMPONENTS;
+		} else if ("versions".equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS;
+		} else if ("fixVersions".equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS;
+		} else if ("timetracking".equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_ESTIMATE;
+		} else if ("duedate".equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_DUE_DATE;
+		}
+
+		if (key.startsWith("issueLink")) {
+			return JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX + key;
+		}
+		if (key.startsWith("customfield")) {
+			return JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX + key;
+		}
+
+		return key;
 	}
 
 }

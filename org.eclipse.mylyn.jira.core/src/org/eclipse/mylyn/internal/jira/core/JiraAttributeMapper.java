@@ -10,6 +10,7 @@ package org.eclipse.mylyn.internal.jira.core;
 
 import java.util.Map;
 
+import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -20,6 +21,14 @@ public class JiraAttributeMapper extends AbstractAttributeMapper {
 
 	public JiraAttributeMapper(TaskRepository taskRepository) {
 		this.taskRepository = taskRepository;
+	}
+
+	@Override
+	public String mapToRepositoryKey(TaskAttribute parent, String key) {
+		if (RepositoryTaskAttribute.COMPONENT.equals(key)) {
+			return JiraAttributeFactory.ATTRIBUTE_COMPONENTS;
+		}
+		return super.mapToRepositoryKey(parent, key);
 	}
 
 	@Override

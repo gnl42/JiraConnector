@@ -11,43 +11,27 @@ package org.eclipse.mylyn.internal.jira.core.model;
 import java.io.Serializable;
 
 /**
- * @author Brock Janiczak
+ * @author Steffen Pingel
  */
-public class Component implements Serializable {
+public class JiraField implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String id;
+	private final String id;
 
-	private String name;
+	private final String name;
 
-	public Component(String id) {
+	public JiraField(String id, String name) {
 		this.id = id;
-	}
-
-	@Deprecated
-	public Component() {
-	}
-
-	public String getId() {
-		return this.id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return this.name;
+	public String getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }

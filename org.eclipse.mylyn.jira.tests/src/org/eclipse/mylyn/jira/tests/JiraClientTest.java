@@ -20,6 +20,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
+import org.eclipse.mylyn.internal.jira.core.model.JiraField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
@@ -30,7 +31,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.mylyn.web.core.WebLocation;
 
@@ -640,10 +640,10 @@ public class JiraClientTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "getEditableFields");
 
-		RepositoryTaskAttribute[] fields = client.getEditableAttributes(issue.getKey(), null);
+		JiraField[] fields = client.getEditableAttributes(issue.getKey(), null);
 		Set<String> ids = new HashSet<String>();
-		for (RepositoryTaskAttribute repositoryTaskAttribute : fields) {
-			ids.add(repositoryTaskAttribute.getId());
+		for (JiraField field : fields) {
+			ids.add(field.getId());
 		}
 		assertFalse(ids.isEmpty());
 		assertTrue("Missing 'versions': " + ids, ids.contains("versions"));

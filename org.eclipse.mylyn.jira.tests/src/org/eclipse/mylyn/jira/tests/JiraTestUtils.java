@@ -23,13 +23,13 @@ import junit.framework.AssertionFailedError;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
+import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 
 public class JiraTestUtils {
 
@@ -63,11 +63,11 @@ public class JiraTestUtils {
 		refreshDetails(server);
 
 		ArrayList<String> names = new ArrayList<String>();
-		RepositoryOperation[] operations = server.getAvailableOperations(issueKey, null);
-		for (RepositoryOperation operation : operations) {
-			names.add(operation.getOperationName());
-			if (operation.getOperationName().toLowerCase().startsWith(name)) {
-				return operation.getKnobName();
+		JiraAction[] actions = server.getAvailableActions(issueKey, null);
+		for (JiraAction action : actions) {
+			names.add(action.getName());
+			if (action.getName().toLowerCase().startsWith(name)) {
+				return action.getId();
 			}
 		}
 

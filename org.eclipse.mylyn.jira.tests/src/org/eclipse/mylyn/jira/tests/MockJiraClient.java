@@ -16,6 +16,8 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
+import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
+import org.eclipse.mylyn.internal.jira.core.model.JiraField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
@@ -30,8 +32,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.tasks.core.RepositoryOperation;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.web.core.WebLocation;
 
 public class MockJiraClient extends JiraClient {
@@ -160,7 +160,7 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public RepositoryOperation[] getAvailableOperations(String issueKey, IProgressMonitor monitor) throws JiraException {
+	public JiraAction[] getAvailableActions(String issueKey, IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 
@@ -180,8 +180,7 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public RepositoryTaskAttribute[] getEditableAttributes(String issueKey, IProgressMonitor monitor)
-			throws JiraException {
+	public JiraField[] getEditableAttributes(String issueKey, IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 

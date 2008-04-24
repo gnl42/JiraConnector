@@ -1,3 +1,17 @@
 1208754731969	Rename field 'REPOSITORY_KIND'
 1208754741397	Rename field 'JIRA_CLIENT_LABEL'
 1208899716826	Copy compilation unit
+1208993405272	Inline local variable 'hidden'
+1208994000467	Rename field 'label'
+1208994687118	Extract method 'updateProperties'
+1208994735313	Extract method 'getEditableKeys'
+1208994802551	Extract method 'addCustomFields'
+1208994812232	Extract method 'addAttachments'
+1208994820493	Extract method 'addComments'
+1208996381582	Copy compilation unit
+1208996479423	Rename type 'JiraOperation'
+1208996493149	Rename method 'getAvailableOperations'
+1208996505682	Rename method 'getAvailableOperations'
+1208996910084	Extract local variable 'key2'
+1208997581423	Extract local variable 'mappedAttribute'
+1209000139885	Extract local variable 'attribute'
