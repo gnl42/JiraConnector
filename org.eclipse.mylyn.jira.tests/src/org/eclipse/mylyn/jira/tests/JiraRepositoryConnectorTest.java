@@ -43,13 +43,14 @@ import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
+import org.eclipse.mylyn.jira.tests.util.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
+import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationEvent;
-import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
@@ -167,28 +168,22 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
 
-		TaskFactory taskFactory = new TaskFactory(repository, false, false);
-
-		QueryHitCollector collector1 = new QueryHitCollector(taskFactory);
-		connector.performQuery(repository, query, collector1, null, new NullProgressMonitor());
-
-		Set<AbstractTask> tasks1 = collector1.getTasks();
-		// assertEquals(-1, tasks.size());
+		TaskDataCollector collector1 = new TaskDataCollector();
+		connector.performQuery(repository, query, collector1, null, null);
 
 		JiraIssue issue = JiraTestUtils.newIssue(client, "testDueDateFilter");
 		issue.setDue(fromDate);
 		issue = JiraTestUtils.createIssue(client, issue);
 		assertNotNull(issue);
 
-		QueryHitCollector collector2 = new QueryHitCollector(taskFactory);
+		TaskDataCollector collector2 = new TaskDataCollector();
 		connector.performQuery(repository, query, collector2, null, new NullProgressMonitor());
-		Set<AbstractTask> tasks2 = collector2.getTasks();
+		assertEquals(collector1.results.size() + 1, collector2.results.size());
 
-		assertEquals(tasks1.size() + 1, tasks2.size());
-
-		for (AbstractTask task : tasks2) {
-			assertNotNull(task.getOwner());
-			assertTrue("Expected ", task.getOwner().length() > 0);
+		for (RepositoryTaskData taskData : collector2.results) {
+			String owner = taskData.getAttributeValue(TaskAttribute.USER_OWNER);
+			assertNotNull(owner);
+			assertTrue(owner.length() > 0);
 		}
 	}
 
@@ -207,14 +202,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
-
-		TaskFactory taskFactory = new TaskFactory(repository, false, false);
-
-		QueryHitCollector collector = new QueryHitCollector(taskFactory);
+		TaskDataCollector collector = new TaskDataCollector();
 		connector.performQuery(repository, query, collector, null, new NullProgressMonitor());
-
-		Set<AbstractTask> tasks = collector.getTasks();
-		assertEquals(2, tasks.size());
+		assertEquals(2, collector.results.size());
 	}
 
 	public void testMarkStaleNoTasks() throws Exception {

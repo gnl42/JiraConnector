@@ -25,7 +25,6 @@ public class Component implements Serializable {
 		this.id = id;
 	}
 
-	@Deprecated
 	public Component() {
 	}
 

@@ -25,6 +25,13 @@ public class JiraStatus implements Serializable {
 
 	private String icon;
 
+	public JiraStatus(String id) {
+		this.id = id;
+	}
+
+	public JiraStatus() {
+	}
+
 	public String getDescription() {
 		return this.description;
 	}

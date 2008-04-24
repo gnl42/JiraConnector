@@ -37,6 +37,13 @@ public class Priority implements Serializable {
 
 	private String colour;
 
+	public Priority(String id) {
+		this.id = id;
+	}
+
+	public Priority() {
+	}
+
 	public String getColour() {
 		return this.colour;
 	}

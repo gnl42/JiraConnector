@@ -6,42 +6,24 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.core.model;
+package org.eclipse.mylyn.jira.tests.util;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
+import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataCollector;
 
 /**
  * @author Steffen Pingel
  */
-public class SecurityLevel implements Serializable {
+public class TaskDataCollector extends AbstractTaskDataCollector {
 
-	private static final long serialVersionUID = 1L;
+	public List<RepositoryTaskData> results = new ArrayList<RepositoryTaskData>();
 
-	private String id;
-
-	private String name;
-
-	public SecurityLevel(String id) {
-		this.id = id;
-	}
-
-	public SecurityLevel() {
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	@Override
+	public void accept(RepositoryTaskData taskData) {
+		results.add(taskData);
 	}
 
 }

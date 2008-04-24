@@ -39,6 +39,13 @@ public class Project implements Serializable {
 
 	private Version[] versions;
 
+	public Project(String id) {
+		this.id = id;
+	}
+
+	public Project() {
+	}
+
 	public String getDescription() {
 		return this.description;
 	}

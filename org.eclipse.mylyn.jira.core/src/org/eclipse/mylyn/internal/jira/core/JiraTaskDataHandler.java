@@ -163,7 +163,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		addAttribute(data, RepositoryTaskAttribute.PRODUCT);
 
 		RepositoryTaskAttribute priorities = addAttribute(data, RepositoryTaskAttribute.PRIORITY);
-		priorities.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
+		priorities.putMetaDataValue(JiraAttributeFactory.META_TYPE, JiraFieldType.SELECT.getKey());
 		Priority[] jiraPriorities = client.getCache().getPriorities();
 		for (int i = 0; i < jiraPriorities.length; i++) {
 			Priority priority = jiraPriorities[i];
@@ -174,7 +174,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		RepositoryTaskAttribute types = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_TYPE);
-		types.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
+		types.putMetaDataValue(JiraAttributeFactory.META_TYPE, JiraFieldType.SELECT.getKey());
 		IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
 		for (int i = 0; i < jiraIssueTypes.length; i++) {
 			IssueType type = jiraIssueTypes[i];
@@ -197,28 +197,28 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		RepositoryTaskAttribute affectsVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS);
-		affectsVersions.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.MULTISELECT.getKey());
+		affectsVersions.putMetaDataValue(JiraAttributeFactory.META_TYPE, JiraFieldType.MULTISELECT.getKey());
 		for (Version version : project.getVersions()) {
 			affectsVersions.addOption(version.getName(), version.getId());
 		}
 
 		RepositoryTaskAttribute components = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_COMPONENTS);
-		components.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.SELECT.getKey());
+		components.putMetaDataValue(JiraAttributeFactory.META_TYPE, JiraFieldType.SELECT.getKey());
 		for (Component component : project.getComponents()) {
 			components.addOption(component.getName(), component.getId());
 		}
 
 		RepositoryTaskAttribute fixVersions = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS);
-		fixVersions.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.MULTISELECT.getKey());
+		fixVersions.putMetaDataValue(JiraAttributeFactory.META_TYPE, JiraFieldType.MULTISELECT.getKey());
 		for (Version version : project.getVersions()) {
 			fixVersions.addOption(version.getName(), version.getId());
 		}
 
 		RepositoryTaskAttribute environment = addAttribute(data, JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT);
-		environment.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.TEXTAREA.getKey());
+		environment.putMetaDataValue(JiraAttributeFactory.META_TYPE, JiraFieldType.TEXTAREA.getKey());
 
 		RepositoryTaskAttribute newComment = addAttribute(data, RepositoryTaskAttribute.COMMENT_NEW);
-		newComment.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.TEXTAREA.getKey());
+		newComment.putMetaDataValue(JiraAttributeFactory.META_TYPE, JiraFieldType.TEXTAREA.getKey());
 	}
 
 	private RepositoryTaskAttribute addAttribute(RepositoryTaskData data, String key) {
@@ -272,13 +272,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					attribute = new RepositoryTaskAttribute(JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX + key, label,
 							false);
 					attribute.setReadOnly(true);
-					attribute.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, JiraFieldType.ISSUELINKS.getKey());
+					attribute.putMetaDataValue(JiraAttributeFactory.META_TYPE, JiraFieldType.ISSUELINKS.getKey());
 					links.put(key, attribute);
 				}
 				attribute.addValue(link.getIssueKey());
 
 				if (link.getInwardDescription() != null) {
-					data.addAttributeValue(JiraAttributeFactory.LINKED_IDS, link.getIssueId());
+					data.addAttributeValue(JiraAttributeFactory.ATTRIBUTE_LINKED_IDS, link.getIssueId());
 				}
 			}
 
@@ -423,7 +423,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					attributeFactory.isHidden(mappedKey));
 
 			String type = field.getKey();
-			attribute.putMetaDataValue(JiraAttributeFactory.TYPE_KEY, type);
+			attribute.putMetaDataValue(JiraAttributeFactory.META_TYPE, type);
 			attribute.setReadOnly(field.isReadOnly());
 
 			for (String value : field.getValues()) {
@@ -476,7 +476,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.setReadOnly(false);
 			} else {
 				// make attributes read-only if can't find editing options
-				String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
+				String key = attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE);
 				Collection<String> options = attribute.getOptions();
 				if (JiraFieldType.SELECT.getKey().equals(key)
 						&& (options == null || options.isEmpty() || attribute.isReadOnly())) {
@@ -1006,7 +1006,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (RepositoryTaskAttribute attr : taskData.getAttributes()) {
 			if (attr.getId().startsWith(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX)) {
 				String id = attr.getId().substring(JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX.length());
-				CustomField field = new CustomField(id, attr.getMetaDataValue(JiraAttributeFactory.TYPE_KEY),
+				CustomField field = new CustomField(id, attr.getMetaDataValue(JiraAttributeFactory.META_TYPE),
 						attr.getName(), attr.getValues());
 				field.setReadOnly(attr.isReadOnly());
 				customFields.add(field);

@@ -35,6 +35,14 @@ public class IssueType implements Serializable {
 
 	private boolean subTaskType;
 
+	public IssueType(String id, boolean subTaskType) {
+		this.id = id;
+		this.subTaskType = subTaskType;
+	}
+
+	public IssueType() {
+	}
+
 	public String getDescription() {
 		return this.description;
 	}

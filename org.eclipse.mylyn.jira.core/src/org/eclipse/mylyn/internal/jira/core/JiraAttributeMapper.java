@@ -8,12 +8,11 @@
 
 package org.eclipse.mylyn.internal.jira.core;
 
-import java.util.Map;
-
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
 
 public class JiraAttributeMapper extends AbstractAttributeMapper {
 
@@ -32,41 +31,29 @@ public class JiraAttributeMapper extends AbstractAttributeMapper {
 	}
 
 	@Override
-	public String getType(TaskAttribute taskAttribute) {
-		if (TaskAttribute.DATE_CREATION.equals(taskAttribute.getId())
-				|| TaskAttribute.DATE_MODIFIED.equals(taskAttribute.getId())) {
-			return TaskAttribute.TYPE_DATE;
-		} else if (TaskAttribute.COMMENT_TEXT.equals(taskAttribute.getId())) {
-			return TaskAttribute.TYPE_RICH_TEXT;
-		}
-
-		JiraFieldType type = JiraFieldType.valueByKey(taskAttribute.getMetaData(JiraAttributeFactory.TYPE_KEY));
-		Map<String, String> options = taskAttribute.getOptions();
-		if (type.equals(JiraFieldType.SELECT)
-				&& (options.isEmpty() || Boolean.parseBoolean(taskAttribute.getMetaData(TaskAttribute.META_READ_ONLY)))) {
-			type = JiraFieldType.TEXTFIELD;
-		} else if (type.equals(JiraFieldType.MULTISELECT) && options.isEmpty()) {
-			type = JiraFieldType.TEXTFIELD;
-		}
-
-		switch (type) {
-		case DATEPICKER:
-			return TaskAttribute.TYPE_DATE;
-		case ISSUELINK:
-			return TaskAttribute.TYPE_TASK_DEPENDENCY;
-		case ISSUELINKS:
-			return TaskAttribute.TYPE_TASK_DEPENDENCY;
-		case MULTISELECT:
-			return TaskAttribute.TYPE_MULTI_SELECT;
-		case SELECT:
-			return TaskAttribute.TYPE_SINGLE_SELECT;
-		case TEXTAREA:
-			return TaskAttribute.TYPE_LONG_TEXT;
-		default:
-			if (!options.isEmpty() && !Boolean.parseBoolean(taskAttribute.getMetaData(TaskAttribute.META_READ_ONLY))) {
-				return TaskAttribute.TYPE_SINGLE_SELECT;
+	public TaskAttribute getAssoctiatedAttribute(TaskAttribute taskAttribute) {
+		String id = taskAttribute.getMetaData(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID);
+		if (id != null) {
+			if (TaskAttribute.TYPE_OPERATION.equals(TaskAttributeProperties.from(taskAttribute).getType())) {
+				return taskAttribute.getTaskData().getRoot().getAttribute(id);
 			}
-			return TaskAttribute.TYPE_SHORT_TEXT;
+			return taskAttribute.getAttribute(id);
 		}
+		return null;
+	}
+
+	@Override
+	public String getType(TaskAttribute taskAttribute) {
+		TaskAttributeProperties properties = TaskAttributeProperties.from(taskAttribute);
+		if (properties.getType() != null) {
+			return properties.getType();
+		}
+
+		JiraFieldType type = JiraFieldType.fromKey(taskAttribute.getMetaData(JiraAttributeFactory.META_TYPE));
+		if (type.getTaskType() != null) {
+			return type.getTaskType();
+		}
+
+		return TaskAttribute.TYPE_SHORT_TEXT;
 	}
 }

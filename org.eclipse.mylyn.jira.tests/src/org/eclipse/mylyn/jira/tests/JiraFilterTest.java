@@ -29,11 +29,10 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.jira.tests.util.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.ITaskList;
-import org.eclipse.mylyn.tasks.core.QueryHitCollector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TaskFactory;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -138,11 +137,10 @@ public class JiraFilterTest extends TestCase {
 		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
 
-		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
-
-		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
-		assertEquals(1, hitCollector.getTasks().size());
-		assertEquals(issue.getSummary(), hitCollector.getTasks().iterator().next().getSummary());
+		TaskDataCollector hitCollector = new TaskDataCollector();
+		connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals(1, hitCollector.results.size());
+		assertEquals(issue.getSummary(), hitCollector.results.iterator().next().getSummary());
 		//assertEquals(PriorityLevel.P1.toString(), hitCollector.getTaskDataHits().iterator().next().getPriority());
 	}
 
@@ -169,16 +167,16 @@ public class JiraFilterTest extends TestCase {
 
 		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
-		QueryHitCollector hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
-		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
-		assertEquals(1, hitCollector.getTasks().size());
-		assertEquals(issue2.getSummary(), hitCollector.getTasks().iterator().next().getSummary());
+		TaskDataCollector hitCollector = new TaskDataCollector();
+		connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals(1, hitCollector.results.size());
+		assertEquals(issue2.getSummary(), hitCollector.results.iterator().next().getSummary());
 
-		hitCollector = new QueryHitCollector(new TaskFactory(repository, true, false));
+		hitCollector = new TaskDataCollector();
 		JiraClientFactory.getDefault().clearClientsAndConfigurationData();
 		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
-		assertEquals(1, hitCollector.getTasks().size());
-		assertEquals(issue2.getSummary(), hitCollector.getTasks().iterator().next().getSummary());
+		assertEquals(1, hitCollector.results.size());
+		assertEquals(issue2.getSummary(), hitCollector.results.iterator().next().getSummary());
 	}
 
 //	private class MockQueryHitCollector extends QueryHitCollector {

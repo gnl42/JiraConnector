@@ -60,9 +60,11 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
 
-	public static final String TYPE_KEY = "type";
+	public static final String META_TYPE = "type";
 
-	public static final String LINKED_IDS = "attribute.jira.link_ids";
+	public static final String ATTRIBUTE_LINKED_IDS = "attribute.jira.link_ids";
+
+	public static final String META_SUB_TASK_TYPE = null;
 
 	public JiraAttributeFactory() {
 	}
@@ -70,7 +72,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	@Override
 	public RepositoryTaskAttribute createAttribute(String key) {
 		RepositoryTaskAttribute attribute = super.createAttribute(key);
-		attribute.putMetaDataValue(TYPE_KEY, JiraAttribute.valueById(attribute.getId()).getKey());
+		attribute.putMetaDataValue(META_TYPE, JiraAttribute.valueById(attribute.getId()).getType().getKey());
 		return attribute;
 	}
 

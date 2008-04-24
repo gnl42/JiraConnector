@@ -34,7 +34,6 @@ public class Version implements Serializable {
 		this.id = id;
 	}
 
-	@Deprecated
 	public Version() {
 	}
 

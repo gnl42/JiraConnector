@@ -91,7 +91,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 				continue;
 			}
 
-			JiraFieldType type = JiraFieldType.valueByKey(attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY));
+			JiraFieldType type = JiraFieldType.fromKey(attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE));
 			Collection<String> options = attribute.getOptions();
 			if (type.equals(JiraFieldType.SELECT) && (options == null || options.isEmpty() || attribute.isReadOnly())) {
 				type = JiraFieldType.TEXTFIELD;
@@ -260,7 +260,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()
 					|| !JiraFieldType.ISSUELINKS.getKey().equals(
-							attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY))) {
+							attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE))) {
 				continue;
 			}
 
@@ -296,7 +296,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()
 					|| !JiraFieldType.TEXTAREA.getKey().equals(
-							attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY))
+							attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE))
 					// no need to show non-editable empty values
 					|| (attribute.isReadOnly() && (attribute.getValue() == null || attribute.getValue().length() == 0))) {
 				continue;
@@ -373,7 +373,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 
 	@Override
 	protected boolean hasContentAssist(RepositoryTaskAttribute attribute) {
-		String key = attribute.getMetaDataValue(JiraAttributeFactory.TYPE_KEY);
+		String key = attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE);
 		// TODO need more robust detection
 		if (JiraFieldType.USERPICKER.getKey().equals(key)) {
 			return true;

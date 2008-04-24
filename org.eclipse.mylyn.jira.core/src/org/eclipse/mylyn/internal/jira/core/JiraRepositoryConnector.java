@@ -117,6 +117,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public IStatus performQuery(TaskRepository repository, AbstractRepositoryQuery repositoryQuery,
 			AbstractTaskDataCollector resultCollector, SynchronizationEvent event, IProgressMonitor monitor) {
+		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Query Repository", IProgressMonitor.UNKNOWN);
 
