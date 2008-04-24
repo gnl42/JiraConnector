@@ -141,6 +141,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			TaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		TaskData data = new TaskData(getAttributeMapper(repository), JiraCorePlugin.CONNECTOR_KIND,
 				repository.getRepositoryUrl(), jiraIssue.getId());
+		data.setVersion(TASK_DATA_VERSION_2_0);
 		initializeTaskData(data, client, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
 		addOperations(data, jiraIssue, client, oldTaskData, monitor);
@@ -258,10 +259,10 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
 		}
 
-		removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS);
-		removeAttribute(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS);
 		Subtask[] subtasks = jiraIssue.getSubtasks();
 		if (subtasks != null && subtasks.length > 0) {
+			createAttribute(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS);
+			createAttribute(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS);
 			for (Subtask subtask : subtasks) {
 				addAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, subtask.getIssueId());
 				addAttributeValue(data, JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, subtask.getIssueKey());
@@ -522,9 +523,13 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 	}
 
 	private boolean useCachedInformation(JiraIssue issue, TaskData oldTaskData) {
-		TaskAttribute attribute = oldTaskData.getMappedAttribute(TaskAttribute.STATUS);
-		String status = (attribute != null) ? attribute.getValue() : "";
-		return oldTaskData != null && status.equals(issue.getStatus().getName());
+		if (oldTaskData != null && issue.getStatus() != null) {
+			TaskAttribute attribute = oldTaskData.getMappedAttribute(TaskAttribute.STATUS);
+			if (attribute != null) {
+				return attribute.getValue().equals(issue.getStatus().getName());
+			}
+		}
+		return false;
 	}
 
 	private void removeAttributes(TaskData data, String keyPrefix) {
@@ -692,7 +697,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				operation.setLabel(action.getName());
 				operation.applyTo(attribute);
 
-				String[] fields = client.getActionFields(issue.getKey(), action.getName(), monitor);
+				String[] fields = client.getActionFields(issue.getKey(), action.getId(), monitor);
 				for (String field : fields) {
 					if (TaskAttribute.RESOLUTION.equals(mapCommonAttributeKey(field))) {
 						attribute.putMetaDataValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID, TaskAttribute.RESOLUTION);

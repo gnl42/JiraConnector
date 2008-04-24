@@ -44,6 +44,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler2;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskScheme;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -553,6 +554,51 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public AbstractTaskDataHandler2 getTaskDataHandler2() {
 		return taskDataHandler2;
+	}
+
+	@Override
+	public boolean hasChanged(AbstractTask task, TaskData taskData) {
+		TaskScheme scheme = new TaskScheme(taskData);
+		Date repositoryDate = scheme.getModificationDate();
+
+		Date localDate = task.getModificationDate();
+		if (localDate == null) {
+			localDate = JiraUtil.stringToDate(task.getLastReadTimeStamp());
+		}
+
+		if (repositoryDate != null && repositoryDate.equals(localDate)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public TaskData getTaskData2(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
+			throws CoreException {
+		return taskDataHandler2.getTaskData(taskRepository, taskId, monitor);
+	}
+
+	@Override
+	public void updateTaskFromTaskData(TaskRepository repository, AbstractTask task, TaskData taskData) {
+		JiraTask jiraTask = (JiraTask) task;
+
+		TaskScheme scheme = new TaskScheme(taskData);
+		scheme.applyTo(task);
+
+		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+		TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.TASK_KEY);
+		if (attribute != null) {
+			jiraTask.setTaskKey(attribute.getValue());
+		}
+		attribute = taskData.getMappedAttribute(TaskAttribute.PRIORITY);
+		if (attribute != null) {
+			jiraTask.setPriority(getPriorityLevel(client, attribute.getValue()).toString());
+		}
+		if (isCompleted(taskData)) {
+			jiraTask.setCompletionDate(scheme.getModificationDate());
+		} else {
+			jiraTask.setCompletionDate(null);
+		}
 	}
 
 }
