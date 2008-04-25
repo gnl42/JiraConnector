@@ -187,7 +187,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		if (task instanceof JiraTask) {
 			// XXX This is only used in the planning editor, and if its input was set correctly as a RepositoryTaskEditorInput
 			// we wouldn't have to get the task data this way from here
-			RepositoryTaskData taskData = TasksUiPlugin.getTaskDataManager().getNewTaskData(task.getRepositoryUrl(),
+			RepositoryTaskData taskData = TasksUiPlugin.getTaskDataStorageManager().getNewTaskData(task.getRepositoryUrl(),
 					task.getTaskId());
 			if (taskData != null && taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_DUE_DATE) != null) {
 				return true;

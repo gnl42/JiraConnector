@@ -41,9 +41,9 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.tasks.core.TaskDataStorageManager;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.ITaskDataManager;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
@@ -310,7 +310,7 @@ public class JiraProjectPage extends WizardPage {
 			JiraTask jiraTask = (JiraTask) element;
 			// API 3.0 need to provide public access to the task data
 			if (jiraTask.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
-				ITaskDataManager taskDataManager = TasksUiPlugin.getTaskDataManager();
+				TaskDataStorageManager taskDataManager = TasksUiPlugin.getTaskDataStorageManager();
 				Project project = getProject(taskDataManager.getNewTaskData(repository.getRepositoryUrl(),
 						jiraTask.getTaskId()));
 				if (project != null) {

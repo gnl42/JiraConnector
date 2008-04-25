@@ -29,7 +29,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.jira.tests.util.TaskDataCollector;
+import org.eclipse.mylyn.jira.tests.util.ResultCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.ITaskList;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -137,7 +137,7 @@ public class JiraFilterTest extends TestCase {
 		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
 
-		TaskDataCollector hitCollector = new TaskDataCollector();
+		ResultCollector hitCollector = new ResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(1, hitCollector.results.size());
 		assertEquals(issue.getSummary(), hitCollector.results.iterator().next().getSummary());
@@ -167,12 +167,12 @@ public class JiraFilterTest extends TestCase {
 
 		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
-		TaskDataCollector hitCollector = new TaskDataCollector();
+		ResultCollector hitCollector = new ResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(1, hitCollector.results.size());
 		assertEquals(issue2.getSummary(), hitCollector.results.iterator().next().getSummary());
 
-		hitCollector = new TaskDataCollector();
+		hitCollector = new ResultCollector();
 		JiraClientFactory.getDefault().clearClientsAndConfigurationData();
 		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
 		assertEquals(1, hitCollector.results.size());

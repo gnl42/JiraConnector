@@ -50,8 +50,8 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler2;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.data.AbstractAttributeMapper;
-import org.eclipse.mylyn.tasks.core.data.ITaskDataState;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
+import org.eclipse.mylyn.tasks.core.data.ITaskDataWorkingCopy;
 import org.eclipse.mylyn.tasks.core.data.RepositoryPerson;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachment;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -712,7 +712,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 	}
 
 	@Override
-	public String postTaskData(TaskRepository repository, ITaskDataState taskDataState, IProgressMonitor monitor)
+	public String postTaskData(TaskRepository repository, ITaskDataWorkingCopy taskDataState, IProgressMonitor monitor)
 			throws CoreException {
 		JiraClient client = clientFactory.getJiraClient(repository);
 		if (client == null) {
@@ -996,7 +996,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 	}
 
 	@Override
-	public AbstractAttributeMapper getAttributeMapper(TaskRepository taskRepository) {
+	public TaskAttributeMapper getAttributeMapper(TaskRepository taskRepository) {
 		return new JiraAttributeMapper(taskRepository);
 	}
 

@@ -43,14 +43,14 @@ import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
-import org.eclipse.mylyn.jira.tests.util.TaskDataCollector;
+import org.eclipse.mylyn.jira.tests.util.ResultCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
-import org.eclipse.mylyn.tasks.core.sync.SynchronizationEvent;
+import org.eclipse.mylyn.tasks.core.sync.SynchronizationContext;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
@@ -168,7 +168,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
 
-		TaskDataCollector collector1 = new TaskDataCollector();
+		ResultCollector collector1 = new ResultCollector();
 		connector.performQuery(repository, query, collector1, null, null);
 
 		JiraIssue issue = JiraTestUtils.newIssue(client, "testDueDateFilter");
@@ -176,7 +176,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		issue = JiraTestUtils.createIssue(client, issue);
 		assertNotNull(issue);
 
-		TaskDataCollector collector2 = new TaskDataCollector();
+		ResultCollector collector2 = new ResultCollector();
 		connector.performQuery(repository, query, collector2, null, new NullProgressMonitor());
 		assertEquals(collector1.results.size() + 1, collector2.results.size());
 
@@ -202,7 +202,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		AbstractRepositoryQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
 				repository.getCharacterEncoding());
-		TaskDataCollector collector = new TaskDataCollector();
+		ResultCollector collector = new ResultCollector();
 		connector.performQuery(repository, query, collector, null, new NullProgressMonitor());
 		assertEquals(2, collector.results.size());
 	}
@@ -211,7 +211,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		repository.setSynchronizationTimeStamp(null);
-		SynchronizationEvent event = new SynchronizationEvent();
+		SynchronizationContext event = new SynchronizationContext();
 		event.tasks = new HashSet<AbstractTask>();
 		event.taskRepository = repository;
 		event.fullSynchronization = true;
@@ -234,7 +234,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
-		SynchronizationEvent event = new SynchronizationEvent();
+		SynchronizationContext event = new SynchronizationContext();
 		event.tasks = tasks;
 		event.taskRepository = repository;
 		event.fullSynchronization = true;
@@ -278,7 +278,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
 
-		SynchronizationEvent event = new SynchronizationEvent();
+		SynchronizationContext event = new SynchronizationContext();
 		event.tasks = tasks;
 		event.taskRepository = repository;
 		event.fullSynchronization = true;
@@ -306,7 +306,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(new Date(), -1)));
 		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
 		tasks.add(task);
-		SynchronizationEvent event = new SynchronizationEvent();
+		SynchronizationContext event = new SynchronizationContext();
 		event.tasks = tasks;
 		event.taskRepository = repository;
 		event.fullSynchronization = true;
@@ -356,7 +356,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertNull(filter);
 		assertEquals("Expected unchanged timestamp", future, repository.getSynchronizationTimeStamp());
 
-		SynchronizationEvent event = new SynchronizationEvent();
+		SynchronizationContext event = new SynchronizationContext();
 		event.tasks = tasks;
 		event.taskRepository = repository;
 		event.fullSynchronization = true;

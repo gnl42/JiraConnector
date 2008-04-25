@@ -46,10 +46,10 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskScheme;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
-import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataCollector;
+import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.eclipse.mylyn.tasks.core.sync.SynchronizationEvent;
+import org.eclipse.mylyn.tasks.core.sync.SynchronizationContext;
 import org.eclipse.mylyn.web.core.Policy;
 
 /**
@@ -116,7 +116,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IStatus performQuery(TaskRepository repository, AbstractRepositoryQuery repositoryQuery,
-			AbstractTaskDataCollector resultCollector, SynchronizationEvent event, IProgressMonitor monitor) {
+			TaskDataCollector resultCollector, SynchronizationContext event, IProgressMonitor monitor) {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Query Repository", IProgressMonitor.UNKNOWN);
@@ -149,7 +149,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			try {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
-				client.search(filter, new JiraIssueCollector(monitor, issues, AbstractTaskDataCollector.MAX_HITS),
+				client.search(filter, new JiraIssueCollector(monitor, issues, TaskDataCollector.MAX_HITS),
 						monitor);
 
 				for (JiraIssue issue : issues) {
@@ -180,7 +180,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void preSynchronization(SynchronizationEvent event, IProgressMonitor monitor) throws CoreException {
+	public void preSynchronization(SynchronizationContext event, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Getting changed tasks", IProgressMonitor.UNKNOWN);
@@ -233,7 +233,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 								repository.getRepositoryUrl(), issue.getId());
 						RepositoryTaskData taskData = taskDataHandler.createTaskData(repository, client, issue,
 								oldTaskData, monitor);
-						getSynchronizationManager().saveIncoming(task, taskData, false);
+						getTaskDataManager().saveIncoming(task, taskData, false);
 						updateTaskFromTaskData(repository, task, taskData);
 					}
 				}
@@ -262,7 +262,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void postSynchronization(SynchronizationEvent event, IProgressMonitor monitor) throws CoreException {
+	public void postSynchronization(SynchronizationContext event, IProgressMonitor monitor) throws CoreException {
 		// ignore
 	}
 

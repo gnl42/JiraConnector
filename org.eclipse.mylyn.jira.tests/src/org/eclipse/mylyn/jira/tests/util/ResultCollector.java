@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataCollector;
+import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 
 /**
  * @author Steffen Pingel
  */
-public class TaskDataCollector extends AbstractTaskDataCollector {
+public class ResultCollector extends TaskDataCollector {
 
 	public List<RepositoryTaskData> results = new ArrayList<RepositoryTaskData>();
 
