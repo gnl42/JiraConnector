@@ -21,22 +21,12 @@ public class JiraRequest {
 
 	private static ThreadLocal<JiraRequest> currentRequest = new ThreadLocal<JiraRequest>();
 
-	private static ThreadLocal<IProgressMonitor> currentMonitor = new ThreadLocal<IProgressMonitor>();
-
 	public static JiraRequest getCurrentRequest() {
 		return currentRequest.get();
 	}
 
 	public static void setCurrentRequest(JiraRequest request) {
 		currentRequest.set(request);
-	}
-
-	public static IProgressMonitor getCurrentMonitor() {
-		return currentMonitor.get();
-	}
-
-	public static void setCurrentMonitor(IProgressMonitor monitor) {
-		currentMonitor.set(monitor);
 	}
 
 	private volatile HttpMethodBase method;

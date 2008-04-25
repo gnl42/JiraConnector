@@ -18,7 +18,6 @@ import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.internal.jira.core.service.soap.JiraRequest;
 import org.eclipse.mylyn.web.core.Policy;
 
 /**
@@ -163,7 +162,6 @@ public class JiraClientCache {
 			// use UNKNOWN since some of the update operations block for a long time
 			// TODO use InfiniteSubProgressMonitor
 			monitor.beginTask("Updating repository configuration", IProgressMonitor.UNKNOWN);
-			JiraRequest.setCurrentMonitor(monitor);
 
 			JiraClientData newData = new JiraClientData();
 
@@ -184,7 +182,6 @@ public class JiraClientCache {
 			newData.lastUpdate = System.currentTimeMillis();
 			this.data = newData;
 		} finally {
-			JiraRequest.setCurrentMonitor(null);
 			monitor.done();
 		}
 	}
