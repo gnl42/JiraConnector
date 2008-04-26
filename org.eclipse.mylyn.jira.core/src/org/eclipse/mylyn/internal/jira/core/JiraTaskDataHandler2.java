@@ -48,13 +48,14 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler2;
+import org.eclipse.mylyn.tasks.core.RepositoryResponse;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
-import org.eclipse.mylyn.tasks.core.data.ITaskDataWorkingCopy;
+import org.eclipse.mylyn.tasks.core.RepositoryResponse.ResponseKind;
 import org.eclipse.mylyn.tasks.core.data.RepositoryPerson;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachment;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
 import org.eclipse.mylyn.tasks.core.data.TaskComment;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
@@ -712,8 +713,8 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 	}
 
 	@Override
-	public String postTaskData(TaskRepository repository, ITaskDataWorkingCopy taskDataState, IProgressMonitor monitor)
-			throws CoreException {
+	public RepositoryResponse postTaskData(TaskRepository repository, TaskData taskData,
+			Set<TaskAttribute> changedAttributes, IProgressMonitor monitor) throws CoreException {
 		JiraClient client = clientFactory.getJiraClient(repository);
 		if (client == null) {
 			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
@@ -725,7 +726,6 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				client.getCache().refreshDetails(new NullProgressMonitor());
 			}
 
-			TaskData taskData = taskDataState.getLocalData();
 			JiraIssue issue = buildJiraIssue(taskData, client);
 			if (taskData.isNew()) {
 				if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
@@ -739,7 +739,8 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 							JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create ticket.", null));
 				}
 				// this is severely broken: should return id instead
-				return issue.getKey();
+				//return issue.getKey();
+				return new RepositoryResponse(ResponseKind.TASK_CREATED, issue.getId());
 			} else {
 				TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.CONTAINER_OPERATIONS);
 				if (attribute == null) {
@@ -769,7 +770,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 					client.advanceIssueWorkflow(issue, operationId, newComment, monitor);
 				}
 
-				return "";
+				return null;
 			}
 		} catch (JiraException e) {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
