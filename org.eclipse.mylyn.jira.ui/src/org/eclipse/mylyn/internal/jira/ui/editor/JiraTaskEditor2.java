@@ -8,11 +8,25 @@
 
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler2;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.tasks.core.data.TaskDataUtil;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorFactory;
 import org.eclipse.mylyn.internal.tasks.ui.editors.AttributeEditorToolkit;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.ITaskDataWorkingCopy;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
+import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.handlers.IHandlerService;
 
@@ -49,6 +63,38 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 	@Override
 	public AttributeEditorToolkit getAttributeEditorToolkit() {
 		return attributeEditorToolkit;
+	}
+
+	@Override
+	protected TaskDataModel createModel(TaskEditorInput input) throws CoreException {
+		if (input.getData() instanceof JiraTaskInitializationData) {
+			// new task
+			JiraTaskInitializationData data = (JiraTaskInitializationData) input.getData();
+			TaskRepository taskRepository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
+					data.taskRepository.getRepositoryUrl());
+
+			AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
+					JiraCorePlugin.CONNECTOR_KIND);
+
+			JiraTaskDataHandler2 taskDataHandler = (JiraTaskDataHandler2) connector.getTaskDataHandler2();
+			TaskAttributeMapper mapper = taskDataHandler.getAttributeMapper(taskRepository);
+			TaskData taskData = new TaskData(mapper, JiraCorePlugin.CONNECTOR_KIND, taskRepository.getRepositoryUrl(),
+					"");
+			JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
+			taskDataHandler.initializeTaskData(taskData, client, data.project);
+			if (data.taskSelection != null) {
+				// FIXME EDITOR
+				TaskData source = TaskDataUtil.toTaskData(data.taskSelection.getTaskData(), mapper);
+				taskDataHandler.cloneTaskData(source, taskData);
+			}
+			taskData.getMappedAttribute(RepositoryTaskAttribute.PRODUCT).setValue(data.project.getId());
+
+			ITaskDataWorkingCopy workingCopy = TasksUi.getTaskDataManager().createWorkingCopy(input.getTask(),
+					taskData.getConnectorKind(), taskData);
+			return new TaskDataModel(workingCopy);
+		} else {
+			return super.createModel(input);
+		}
 	}
 
 }

@@ -78,7 +78,9 @@ public enum JiraAttribute {
 
 	USER_REPORTER(TaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, "Reported by:"),
 
-	TASK_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Task ID:");
+	TASK_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Task ID:"),
+
+	TASK_URL(TaskAttribute.TASK_URL, JiraFieldType.URL, "URL:");
 
 	public static JiraAttribute valueById(String id) {
 		for (JiraAttribute attribute : values()) {

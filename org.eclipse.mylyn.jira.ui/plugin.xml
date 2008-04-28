@@ -4,9 +4,6 @@
 
    <extension
          point="org.eclipse.mylyn.tasks.ui.editors">
-      <editorFactory
-            class="org.eclipse.mylyn.internal.jira.ui.editor.JiraTaskEditorFactory"
-            id="org.eclipse.mylyn.jira.ui.JiraTaskEditorFactory"/>
       <pageFactory
             class="org.eclipse.mylyn.internal.jira.ui.editor.JiraTaskEditorPageFactory"
             id="org.eclipse.mylyn.jira.ui.pageFactory">

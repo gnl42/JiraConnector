@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract method &apos;private String getOperationId(TaskData taskData,String operationId)&apos; from &apos;org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler2.postTaskData()&apos; to &apos;org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler2&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Method name: &apos;getOperationId&apos;&#x0A;- Destination type: &apos;org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler2&apos;&#x0A;- Declared visibility: &apos;private&apos;" comments="false" description="Extract method &apos;getOperationId&apos;" destination="0" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;org.eclipse.mylyn.internal.jira.core{JiraTaskDataHandler2.java" name="getOperationId" replace="false" selection="30448 268" stamp="1209363843051" version="1.0" visibility="2"/>
+</session>

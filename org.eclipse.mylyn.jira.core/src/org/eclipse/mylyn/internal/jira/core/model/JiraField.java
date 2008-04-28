@@ -34,4 +34,9 @@ public class JiraField implements Serializable {
 		return name;
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[id=" + id + "]";
+	}
+
 }

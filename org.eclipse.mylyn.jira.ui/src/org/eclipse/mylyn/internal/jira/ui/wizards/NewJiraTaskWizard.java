@@ -10,24 +10,16 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
-import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
-import org.eclipse.mylyn.internal.jira.core.model.Project;
-import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.ui.editor.JiraTaskInitializationData;
+import org.eclipse.mylyn.internal.tasks.core.LocalTask;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.core.AbstractTask.RepositoryTaskSyncState;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
-import org.eclipse.mylyn.tasks.ui.editors.NewTaskEditorInput;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
+import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -68,24 +60,16 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
-				JiraCorePlugin.CONNECTOR_KIND);
+		JiraTaskInitializationData data = new JiraTaskInitializationData();
+		data.project = projectPage.getSelectedProject();
+		data.taskRepository = taskRepository;
+		data.taskSelection = taskSelection;
 
-		JiraTaskDataHandler taskDataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
-		AbstractAttributeFactory attributeFactory = taskDataHandler.getAttributeFactory(taskRepository.getRepositoryUrl(),
-				taskRepository.getConnectorKind(), AbstractTask.DEFAULT_TASK_KIND);
-		RepositoryTaskData taskData = new RepositoryTaskData(attributeFactory, JiraCorePlugin.CONNECTOR_KIND,
-				taskRepository.getRepositoryUrl(), TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
-		taskData.setNew(true);
-		JiraClient server = JiraClientFactory.getDefault().getJiraClient(taskRepository);
-		Project project = projectPage.getSelectedProject();
-		taskDataHandler.initializeTaskData(taskData, server, project);
-		if (taskSelection != null) {
-			taskDataHandler.cloneTaskData(taskSelection.getTaskData(), taskData);
-		}
-		taskData.setAttributeValue(RepositoryTaskAttribute.PRODUCT, project.getName());
+		LocalTask task = TasksUiPlugin.getTaskListManager().createNewLocalTask(null);
+		task.setSynchronizationState(RepositoryTaskSyncState.OUTGOING);
 
-		NewTaskEditorInput editorInput = new NewTaskEditorInput(taskRepository, taskData);
+		TaskEditorInput editorInput = new TaskEditorInput(taskRepository, task);
+		editorInput.setData(data);
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		TasksUiUtil.openEditor(editorInput, TaskEditor.ID_EDITOR, page);
 		return true;

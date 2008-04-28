@@ -49,7 +49,6 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler2;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse.ResponseKind;
 import org.eclipse.mylyn.tasks.core.data.RepositoryPerson;
@@ -157,6 +156,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		createAttribute(data, JiraAttribute.DESCRIPTION);
 		createAttribute(data, JiraAttribute.STATUS);
 		createAttribute(data, JiraAttribute.TASK_KEY);
+		createAttribute(data, JiraAttribute.TASK_URL);
 		createAttribute(data, JiraAttribute.USER_ASSIGNED);
 		createAttribute(data, JiraAttribute.USER_REPORTER);
 		createAttribute(data, JiraAttribute.MODIFICATION_DATE);
@@ -168,17 +168,13 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				projectAttribute.putOption(jiraProject.getId(), jiraProject.getName());
 			}
 		}
+		projectAttribute.setValue(project.getId());
 
 		TaskAttribute resolutions = createAttribute(data, JiraAttribute.RESOLUTION);
 		Resolution[] jiraResolutions = client.getCache().getResolutions();
 		if (jiraResolutions.length > 0) {
-			resolutions.setValue(jiraResolutions[0].getId());
 			for (Resolution resolution : jiraResolutions) {
 				resolutions.putOption(resolution.getId(), resolution.getName());
-				if (Resolution.FIXED_ID.equals(resolution.getId())) {
-					// set fixed as default
-					resolutions.setValue(resolution.getId());
-				}
 			}
 		} else {
 			resolutions.putOption(Resolution.FIXED_ID, "Fixed");
@@ -186,7 +182,6 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			resolutions.putOption(Resolution.DUPLICATE_ID, "Duplicate");
 			resolutions.putOption(Resolution.INCOMPLETE_ID, "Incomplete");
 			resolutions.putOption(Resolution.CANNOT_REPRODUCE_ID, "Cannot Reproduce");
-			resolutions.setValue(Resolution.FIXED_ID);
 		}
 
 		TaskAttribute priorities = createAttribute(data, JiraAttribute.PRIORITY);
@@ -318,6 +313,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		setAttributeValue(data, JiraAttribute.DESCRIPTION, jiraIssue.getDescription());
 		setAttributeValue(data, JiraAttribute.STATUS, jiraIssue.getStatus().getName());
 		setAttributeValue(data, JiraAttribute.TASK_KEY, jiraIssue.getKey());
+		setAttributeValue(data, JiraAttribute.TASK_URL, jiraIssue.getUrl());
 		setAttributeValue(data, JiraAttribute.RESOLUTION, //
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getId());
 		setAttributeValue(data, JiraAttribute.MODIFICATION_DATE, JiraUtil.dateToString(jiraIssue.getUpdated()));
@@ -404,6 +400,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		int x = 1;
 		for (Comment comment : jiraIssue.getComments()) {
 			TaskAttribute attribute = commentContainer.createAttribute(x++ + "");
+			attribute.setValue(attribute.getId());
 			TaskComment taskComment = TaskComment.createFrom(attribute);
 			taskComment.setAuthor(new RepositoryPerson(data.getConnectorKind(), data.getRepositoryUrl(),
 					comment.getAuthor()));
@@ -422,6 +419,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		TaskAttribute attachmentContainer = data.getRoot().createAttribute(TaskAttribute.CONTAINER_ATTACHMENTS);
 		for (Attachment attachment : jiraIssue.getAttachments()) {
 			TaskAttribute attribute = attachmentContainer.createAttribute(attachment.getId());
+			attribute.setValue(attribute.getId());
 			TaskAttachment taskAttachment = TaskAttachment.createFrom(attribute);
 			taskAttachment.setAuthor(new RepositoryPerson(data.getConnectorKind(), data.getRepositoryUrl(),
 					attachment.getAuthor()));
@@ -501,7 +499,8 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				properties.setKind(TaskAttribute.KIND_DEFAULT);
 			}
 
-			if (TaskAttribute.COMMENT_NEW.equals(attribute.getId())) {
+			if (TaskAttribute.COMMENT_NEW.equals(attribute.getId())
+					|| TaskAttribute.RESOLUTION.equals(attribute.getId())) {
 				properties.setReadOnly(false);
 			} else {
 				// make attributes read-only if can't find editing options
@@ -512,7 +511,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				} else if (JiraFieldType.MULTISELECT.getKey().equals(key) && options.isEmpty()) {
 					properties.setReadOnly(true);
 				} else {
-					properties.setReadOnly(editable);
+					properties.setReadOnly(!editable);
 				}
 			}
 			properties.applyTo(attribute);
@@ -668,11 +667,12 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		if (useCachedInformation(issue, oldTaskData)) {
 			TaskAttribute oldOperationContainer = oldTaskData.getMappedAttribute(TaskAttribute.CONTAINER_OPERATIONS);
 			if (oldOperationContainer != null) {
-				// FIXME associated attributes?
 				operationContainer.deepCopyFrom(oldOperationContainer);
 			}
 			return;
 		}
+
+		TaskAttribute operationAttribute = data.getRoot().createAttribute(TaskAttribute.OPERATION);
 
 		TaskAttribute attribute = operationContainer.createAttribute(LEAVE_OPERATION);
 		TaskOperation operation = TaskOperation.createFrom(attribute);
@@ -680,7 +680,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		operation.applyTo(attribute);
 
 		// set as default
-		operationContainer.setValue(LEAVE_OPERATION);
+		operation.applyTo(operationAttribute);
 
 		// TODO need more accurate status matching
 //		if (!JiraRepositoryConnector.isCompleted(data)) {
@@ -699,6 +699,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		if (availableActions != null) {
 			for (JiraAction action : availableActions) {
 				attribute = operationContainer.createAttribute(action.getId());
+				attribute.setValue(action.getId());
 				operation = TaskOperation.createFrom(attribute);
 				operation.setLabel(action.getName());
 				operation.applyTo(attribute);
@@ -722,7 +723,6 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
 					IStatus.ERROR, "Unable to create Jira client", null));
 		}
-
 		try {
 			if (!client.getCache().hasDetails()) {
 				client.getCache().refreshDetails(new NullProgressMonitor());
@@ -735,32 +735,16 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				} else {
 					issue = client.createIssue(issue, monitor);
 				}
-
 				if (issue == null) {
 					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR,
-							JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create ticket.", null));
+							JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create issue.", null));
 				}
 				// this is severely broken: should return id instead
 				//return issue.getKey();
 				return new RepositoryResponse(ResponseKind.TASK_CREATED, issue.getId());
 			} else {
-				TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.CONTAINER_OPERATIONS);
-				if (attribute == null) {
-					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR,
-							JiraCorePlugin.ID_PLUGIN, IStatus.OK, "No valid action selected", null));
-				}
-
-				String operationId = taskData.getAttributeMapper().getValue(attribute);
-				if (operationId.length() == 0) {
-					operationId = LEAVE_OPERATION;
-				}
-
-				String newComment = "";
-				attribute = taskData.getMappedAttribute(TaskAttribute.COMMENT_NEW);
-				if (attribute != null) {
-					newComment = taskData.getAttributeMapper().getValue(attribute);
-				}
-
+				String operationId = getOperationId(taskData);
+				String newComment = getNewComment(taskData);
 				if (LEAVE_OPERATION.equals(operationId) || REASSIGN_OPERATION.equals(operationId)) {
 					if (!JiraRepositoryConnector.isClosed(issue)
 							&& taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
@@ -771,7 +755,6 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 				} else {
 					client.advanceIssueWorkflow(issue, operationId, newComment, monitor);
 				}
-
 				return new RepositoryResponse(ResponseKind.TASK_UPDATED, issue.getId());
 			}
 		} catch (JiraException e) {
@@ -779,6 +762,27 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 			trace(status);
 			throw new CoreException(status);
 		}
+	}
+
+	private String getNewComment(TaskData taskData) {
+		String newComment = "";
+		TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.COMMENT_NEW);
+		if (attribute != null) {
+			newComment = taskData.getAttributeMapper().getValue(attribute);
+		}
+		return newComment;
+	}
+
+	private String getOperationId(TaskData taskData) {
+		String operationId = "";
+		TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.OPERATION);
+		if (attribute != null) {
+			operationId = taskData.getAttributeMapper().getValue(attribute);
+		}
+		if (operationId.length() == 0) {
+			operationId = LEAVE_OPERATION;
+		}
+		return operationId;
 	}
 
 	@Override
@@ -1027,38 +1031,36 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 
 	private String mapCommonAttributeKey(String key) {
 		if ("summary".equals(key)) {
-			return RepositoryTaskAttribute.SUMMARY;
+			return JiraAttribute.SUMMARY.getId();
 		} else if ("description".equals(key)) {
-			return RepositoryTaskAttribute.DESCRIPTION;
+			return JiraAttribute.DESCRIPTION.getId();
 		} else if ("priority".equals(key)) {
-			return RepositoryTaskAttribute.PRIORITY;
+			return JiraAttribute.PRIORITY.getId();
 		} else if ("resolution".equals(key)) {
-			return RepositoryTaskAttribute.RESOLUTION;
+			return JiraAttribute.RESOLUTION.getId();
 		} else if ("assignee".equals(key)) {
-			return RepositoryTaskAttribute.USER_ASSIGNED;
+			return JiraAttribute.USER_ASSIGNED.getId();
 		} else if ("environment".equals(key)) {
-			return JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT;
+			return JiraAttribute.ENVIRONMENT.getId();
 		} else if ("issuetype".equals(key)) {
-			return JiraAttributeFactory.ATTRIBUTE_TYPE;
+			return JiraAttribute.TYPE.getId();
 		} else if ("components".equals(key)) {
-			return JiraAttributeFactory.ATTRIBUTE_COMPONENTS;
+			return JiraAttribute.COMPONENTS.getId();
 		} else if ("versions".equals(key)) {
-			return JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS;
+			return JiraAttribute.AFFECTSVERSIONS.getId();
 		} else if ("fixVersions".equals(key)) {
-			return JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS;
+			return JiraAttribute.FIXVERSIONS.getId();
 		} else if ("timetracking".equals(key)) {
-			return JiraAttributeFactory.ATTRIBUTE_ESTIMATE;
+			return JiraAttribute.ESTIMATE.getId();
 		} else if ("duedate".equals(key)) {
-			return JiraAttributeFactory.ATTRIBUTE_DUE_DATE;
+			return JiraAttribute.DUE_DATE.getId();
 		}
-
 		if (key.startsWith("issueLink")) {
 			return JiraAttributeFactory.ATTRIBUTE_LINK_PREFIX + key;
 		}
 		if (key.startsWith("customfield")) {
 			return JiraAttributeFactory.ATTRIBUTE_CUSTOM_PREFIX + key;
 		}
-
 		return key;
 	}
 
