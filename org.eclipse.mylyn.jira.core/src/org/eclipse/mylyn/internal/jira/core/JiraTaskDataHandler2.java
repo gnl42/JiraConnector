@@ -151,7 +151,9 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 
 	public void initializeTaskData(TaskData data, JiraClient client, Project project) {
 		createAttribute(data, JiraAttribute.CREATION_DATE);
-		createAttribute(data, JiraAttribute.SUMMARY);
+		TaskAttribute summaryAttribute = createAttribute(data, JiraAttribute.SUMMARY);
+		TaskAttributeProperties.from(summaryAttribute).setType(TaskAttribute.TYPE_SHORT_RICH_TEXT).applyTo(
+				summaryAttribute);
 		createAttribute(data, JiraAttribute.DESCRIPTION);
 		createAttribute(data, JiraAttribute.STATUS);
 		createAttribute(data, JiraAttribute.TASK_KEY);
