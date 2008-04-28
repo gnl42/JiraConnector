@@ -64,7 +64,7 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	public static final String ATTRIBUTE_LINKED_IDS = "attribute.jira.link_ids";
 
-	public static final String META_SUB_TASK_TYPE = null;
+	public static final String META_SUB_TASK_TYPE = "isSubtaskType";
 
 	public JiraAttributeFactory() {
 	}

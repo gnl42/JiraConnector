@@ -34,7 +34,7 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
-		attributeEditorFactory = new AttributeEditorFactory(getAttributeManager(), getTaskRepository());
+		attributeEditorFactory = new AttributeEditorFactory(getModel(), getTaskRepository());
 		IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 		attributeEditorToolkit = new AttributeEditorToolkit(handlerService, getEditorSite().getActionBarContributor());
 

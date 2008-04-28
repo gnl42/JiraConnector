@@ -770,7 +770,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 					client.advanceIssueWorkflow(issue, operationId, newComment, monitor);
 				}
 
-				return null;
+				return new RepositoryResponse(ResponseKind.TASK_UPDATED, issue.getId());
 			}
 		} catch (JiraException e) {
 			IStatus status = JiraCorePlugin.toStatus(repository, e);
