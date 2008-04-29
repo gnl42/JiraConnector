@@ -59,10 +59,12 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPreferenceConstants;
 import org.eclipse.mylyn.monitor.core.StatusHandler;
+import org.eclipse.mylyn.provisional.workbench.ui.DatePicker;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.DatePicker;
 import org.eclipse.mylyn.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -615,8 +617,11 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			composite.setLayout(fillLayout);
 			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
-			createdStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
-			createdEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
+			createdStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>", true,
+					TasksUiPlugin.getDefault().getPreferenceStore().getInt(TasksUiPreferenceConstants.PLANNING_ENDHOUR));
+			createdEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>", true, TasksUiPlugin.getDefault()
+					.getPreferenceStore()
+					.getInt(TasksUiPreferenceConstants.PLANNING_ENDHOUR));
 		}
 
 		{
@@ -629,8 +634,11 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			composite.setLayout(fillLayout);
 			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
-			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
-			updatedEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
+			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>", true,
+					TasksUiPlugin.getDefault().getPreferenceStore().getInt(TasksUiPreferenceConstants.PLANNING_ENDHOUR));
+			updatedEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>", true, TasksUiPlugin.getDefault()
+					.getPreferenceStore()
+					.getInt(TasksUiPreferenceConstants.PLANNING_ENDHOUR));
 		}
 
 		{
@@ -643,8 +651,12 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 			composite.setLayout(fillLayout);
 			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
-			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>");
-			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>");
+			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>", true, TasksUiPlugin.getDefault()
+					.getPreferenceStore()
+					.getInt(TasksUiPreferenceConstants.PLANNING_ENDHOUR));
+			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>", true, TasksUiPlugin.getDefault()
+					.getPreferenceStore()
+					.getInt(TasksUiPreferenceConstants.PLANNING_ENDHOUR));
 		}
 
 		{

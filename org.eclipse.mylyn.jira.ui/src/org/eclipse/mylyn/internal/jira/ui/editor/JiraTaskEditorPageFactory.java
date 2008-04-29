@@ -10,6 +10,7 @@ package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
+import org.eclipse.mylyn.provisional.workbench.ui.CommonImages;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
@@ -47,7 +48,7 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
 	@Override
 	public Image getPageImage() {
-		return TasksUiImages.getImage(TasksUiImages.REPOSITORY);
+		return CommonImages.getImage(TasksUiImages.REPOSITORY);
 	}
 
 	@Override
