@@ -18,10 +18,10 @@ import java.util.Locale;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**

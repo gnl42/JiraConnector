@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.html.HTML2TextReader;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
@@ -50,7 +51,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
-import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;

@@ -11,8 +11,8 @@ package org.eclipse.mylyn.internal.jira.core;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
-import org.eclipse.mylyn.monitor.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 
