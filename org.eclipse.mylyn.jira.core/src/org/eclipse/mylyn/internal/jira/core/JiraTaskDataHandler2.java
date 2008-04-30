@@ -163,10 +163,8 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 
 		TaskAttribute projectAttribute = createAttribute(data, JiraAttribute.PROJECT);
 		Project[] jiraProjects = client.getCache().getProjects();
-		if (jiraProjects.length > 0) {
-			for (Project jiraProject : jiraProjects) {
-				projectAttribute.putOption(jiraProject.getId(), jiraProject.getName());
-			}
+		for (Project jiraProject : jiraProjects) {
+			projectAttribute.putOption(jiraProject.getId(), jiraProject.getName());
 		}
 		projectAttribute.setValue(project.getId());
 
@@ -1004,7 +1002,8 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 
 	@Override
 	public TaskAttributeMapper getAttributeMapper(TaskRepository taskRepository) {
-		return new JiraAttributeMapper(taskRepository);
+		JiraClient client = clientFactory.getJiraClient(taskRepository);
+		return new JiraAttributeMapper(client);
 	}
 
 	@Override

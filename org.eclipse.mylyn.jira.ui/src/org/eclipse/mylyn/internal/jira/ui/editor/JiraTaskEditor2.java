@@ -9,13 +9,13 @@
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler2;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.tasks.core.data.TaskDataUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.ITaskDataWorkingCopy;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
@@ -87,7 +87,7 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 				TaskData source = TaskDataUtil.toTaskData(data.taskSelection.getTaskData(), mapper);
 				taskDataHandler.cloneTaskData(source, taskData);
 			}
-			taskData.getMappedAttribute(RepositoryTaskAttribute.PRODUCT).setValue(data.project.getId());
+			taskData.getMappedAttribute(JiraAttribute.PROJECT.getId()).setValue(data.project.getId());
 
 			ITaskDataWorkingCopy workingCopy = TasksUi.getTaskDataManager().createWorkingCopy(input.getTask(),
 					taskData.getConnectorKind(), taskData);
