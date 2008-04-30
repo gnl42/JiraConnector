@@ -9,6 +9,7 @@
 package org.eclipse.mylyn.jira.tests;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -104,7 +105,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testCustomQueryRename() {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setName("f-name");
-		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, repository.getCharacterEncoding());
+		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
+				repository.getCharacterEncoding());
 		taskList.addQuery(query);
 		query.setHandleIdentifier("q-name");
 
@@ -121,7 +123,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	public void testCompletionSave() {
 		JiraTask jiraTask = new JiraTask(SERVER_URL, TEST_TASK, TEST_LABEL);
-		jiraTask.setCompleted(true);
+		jiraTask.setCompletionDate(new Date());
 		manager.getTaskList().addTask(jiraTask);
 
 		manager.saveTaskList();
