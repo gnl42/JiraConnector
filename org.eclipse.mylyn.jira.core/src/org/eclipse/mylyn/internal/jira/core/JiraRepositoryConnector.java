@@ -41,12 +41,12 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
-import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler2;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskScheme;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
+import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler2;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
@@ -78,6 +78,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private final JiraTaskDataHandler2 taskDataHandler2;
 
+	private final JiraTaskAttachmentHandler attachmentHandler2;
+
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
@@ -87,6 +89,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		taskDataHandler = new JiraTaskDataHandler(JiraClientFactory.getDefault());
 		taskDataHandler2 = new JiraTaskDataHandler2(JiraClientFactory.getDefault());
 		attachmentHandler = new JiraAttachmentHandler();
+		attachmentHandler2 = new JiraTaskAttachmentHandler();
 	}
 
 	@Override
@@ -149,8 +152,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			try {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
-				client.search(filter, new JiraIssueCollector(monitor, issues, TaskDataCollector.MAX_HITS),
-						monitor);
+				client.search(filter, new JiraIssueCollector(monitor, issues, TaskDataCollector.MAX_HITS), monitor);
 
 				for (JiraIssue issue : issues) {
 					if (monitor.isCanceled()) {
@@ -600,6 +602,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		} else {
 			jiraTask.setCompletionDate(null);
 		}
+	}
+
+	@Override
+	public JiraTaskAttachmentHandler getTaskAttachmentHandler() {
+		return attachmentHandler2;
 	}
 
 }
