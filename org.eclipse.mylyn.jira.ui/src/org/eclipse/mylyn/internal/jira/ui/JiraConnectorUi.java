@@ -36,6 +36,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
+import org.eclipse.mylyn.tasks.core.data.TaskComment;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -187,8 +188,8 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		if (task instanceof JiraTask) {
 			// XXX This is only used in the planning editor, and if its input was set correctly as a RepositoryTaskEditorInput
 			// we wouldn't have to get the task data this way from here
-			RepositoryTaskData taskData = TasksUiPlugin.getTaskDataStorageManager().getNewTaskData(task.getRepositoryUrl(),
-					task.getTaskId());
+			RepositoryTaskData taskData = TasksUiPlugin.getTaskDataStorageManager().getNewTaskData(
+					task.getRepositoryUrl(), task.getTaskId());
 			if (taskData != null && taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_DUE_DATE) != null) {
 				return true;
 			}
@@ -200,6 +201,18 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	public String getTaskHistoryUrl(TaskRepository taskRepository, AbstractTask task) {
 		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
 				+ "?page=history";
+	}
+
+	@Override
+	public String getReply(TaskRepository taskRepository, AbstractTask task, TaskComment taskComment,
+			boolean includeTask) {
+		if (taskComment == null) {
+			return "In reply to " + task.getTaskKey() + ":";
+		} else if (includeTask) {
+			return "In reply to " + task.getTaskKey() + " comment #" + taskComment.getNumber() + ":";
+		} else {
+			return "In reply to comment #" + taskComment.getNumber() + ":";
+		}
 	}
 
 }
