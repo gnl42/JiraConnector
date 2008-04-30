@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -50,7 +51,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationContext;
-import org.eclipse.mylyn.web.core.Policy;
 
 /**
  * @author Mik Kersten

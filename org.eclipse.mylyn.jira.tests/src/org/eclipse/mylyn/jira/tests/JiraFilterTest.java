@@ -11,6 +11,8 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
@@ -34,8 +36,6 @@ import org.eclipse.mylyn.jira.tests.util.ResultCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.ITaskList;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.web.core.AuthenticationCredentials;
-import org.eclipse.mylyn.web.core.AuthenticationType;
 
 /**
  * @author Wesley Coelho (initial integration patch)

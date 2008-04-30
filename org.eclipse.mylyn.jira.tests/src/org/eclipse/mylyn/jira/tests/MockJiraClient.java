@@ -12,6 +12,7 @@ import java.io.OutputStream;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
@@ -32,7 +33,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.web.core.WebLocation;
 
 public class MockJiraClient extends JiraClient {
 

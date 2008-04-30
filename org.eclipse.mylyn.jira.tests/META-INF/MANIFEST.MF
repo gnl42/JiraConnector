@@ -14,7 +14,7 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.context.core,
  org.eclipse.jface.text,
  org.eclipse.mylyn,
- org.eclipse.mylyn.web.core,
+ org.eclipse.mylyn.commons.net,
  org.eclipse.mylyn.tasks.tests,
  org.eclipse.mylyn.context.ui
 Export-Package: org.eclipse.mylyn.internal.jira.core;x-internal:=true,

@@ -14,8 +14,8 @@ import org.apache.axis.MessageContext;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
-import org.eclipse.mylyn.web.core.AbstractWebLocation;
-import org.eclipse.mylyn.web.core.WebUtil;
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.net.WebUtil;
 
 /**
  * @author Steffen Pingel

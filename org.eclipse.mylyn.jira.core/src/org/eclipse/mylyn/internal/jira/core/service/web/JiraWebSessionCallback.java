@@ -17,12 +17,12 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.commons.net.Policy;
+import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.web.core.Policy;
-import org.eclipse.mylyn.web.core.WebUtil;
 
 /**
  * @author Steffen Pingel

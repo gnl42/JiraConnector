@@ -14,6 +14,8 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
@@ -30,8 +32,6 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.web.core.AuthenticationCredentials;
-import org.eclipse.mylyn.web.core.AuthenticationType;
 
 /**
  * @author Wesley Coelho (initial integration patch)

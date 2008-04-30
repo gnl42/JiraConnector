@@ -10,6 +10,7 @@ package org.eclipse.mylyn.jira.tests;
 
 import junit.framework.TestCase;
 
+import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
@@ -17,7 +18,6 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebClient;
-import org.eclipse.mylyn.web.core.WebLocation;
 
 public class JiraWebClientTest extends TestCase {
 

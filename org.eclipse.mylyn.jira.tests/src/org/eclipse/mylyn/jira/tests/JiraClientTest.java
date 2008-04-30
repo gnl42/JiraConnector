@@ -15,6 +15,8 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
+import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
@@ -31,8 +33,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.web.core.AuthenticationType;
-import org.eclipse.mylyn.web.core.WebLocation;
 
 /**
  * @author Steffen Pingel

@@ -15,6 +15,9 @@ import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
@@ -39,9 +42,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.SmartQuery;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraSoapClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssClient;
-import org.eclipse.mylyn.web.core.AbstractWebLocation;
-import org.eclipse.mylyn.web.core.AuthenticationCredentials;
-import org.eclipse.mylyn.web.core.AuthenticationType;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a

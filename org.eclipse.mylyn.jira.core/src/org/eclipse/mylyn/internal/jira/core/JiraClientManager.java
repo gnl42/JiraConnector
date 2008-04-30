@@ -25,13 +25,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.web.core.AbstractWebLocation;
 
 /**
  * Note: This class is not thread safe.

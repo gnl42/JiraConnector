@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.jira.core.html.HTML2TextReader;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
@@ -59,7 +60,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
 import org.eclipse.mylyn.tasks.core.data.TaskComment;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskOperation;
-import org.eclipse.mylyn.web.core.Policy;
 
 /**
  * @author Mik Kersten

@@ -21,8 +21,8 @@ import javax.xml.rpc.Call;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.transport.http.HTTPConstants;
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
-import org.eclipse.mylyn.web.core.AbstractWebLocation;
 
 /**
  * @author Brock Janiczak

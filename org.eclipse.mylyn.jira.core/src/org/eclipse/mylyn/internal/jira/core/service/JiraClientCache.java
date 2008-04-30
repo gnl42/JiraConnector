@@ -11,6 +11,7 @@ package org.eclipse.mylyn.internal.jira.core.service;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
@@ -18,7 +19,6 @@ import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
-import org.eclipse.mylyn.web.core.Policy;
 
 /**
  * @author Steffen Pingel

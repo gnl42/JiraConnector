@@ -19,6 +19,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.context.core.ContextCore;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
@@ -53,8 +55,6 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationContext;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
-import org.eclipse.mylyn.web.core.AuthenticationCredentials;
-import org.eclipse.mylyn.web.core.AuthenticationType;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 

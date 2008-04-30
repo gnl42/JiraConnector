@@ -25,17 +25,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
+import org.eclipse.mylyn.commons.net.Policy;
+import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
+import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
-import org.eclipse.mylyn.web.core.AbstractWebLocation;
-import org.eclipse.mylyn.web.core.AuthenticationCredentials;
-import org.eclipse.mylyn.web.core.AuthenticationType;
-import org.eclipse.mylyn.web.core.Policy;
-import org.eclipse.mylyn.web.core.UnsupportedRequestException;
-import org.eclipse.mylyn.web.core.WebUtil;
 
 /**
  * @author Brock Janiczak

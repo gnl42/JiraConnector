@@ -11,6 +11,7 @@ package org.eclipse.mylyn.internal.jira.core;
 import java.net.Proxy;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -19,7 +20,6 @@ import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.ITaskRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
-import org.eclipse.mylyn.web.core.AbstractWebLocation;
 
 /**
  * This class acts as a layer of indirection between clients in this project and the server API implemented by the Jira
