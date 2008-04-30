@@ -108,19 +108,19 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void attachFile(JiraIssue issue, String comment, PartSource partSource, String contentType,
+	public void addAttachment(JiraIssue issue, String comment, PartSource partSource, String contentType,
 			IProgressMonitor monitor) throws JiraException {
 		// ignore
 	}
 
 	@Override
-	public void attachFile(JiraIssue issue, String comment, String filename, byte[] contents, String contentType,
+	public void addAttachment(JiraIssue issue, String comment, String filename, byte[] contents, String contentType,
 			IProgressMonitor monitor) throws JiraException {
 		// ignore
 	}
 
 	@Override
-	public void attachFile(JiraIssue issue, String comment, String filename, File file, String contentType,
+	public void addAttachment(JiraIssue issue, String comment, String filename, File file, String contentType,
 			IProgressMonitor monitor) throws JiraException {
 		// ignore
 	}
@@ -259,13 +259,13 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public byte[] retrieveFile(JiraIssue issue, Attachment attachment, IProgressMonitor monitor) throws JiraException {
+	public byte[] getAttachment(JiraIssue issue, Attachment attachment, IProgressMonitor monitor) throws JiraException {
 		// ignore
 		return null;
 	}
 
 	@Override
-	public void retrieveFile(JiraIssue issue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
+	public void getAttachment(JiraIssue issue, Attachment attachment, OutputStream out, IProgressMonitor monitor)
 			throws JiraException {
 		// ignore
 	}

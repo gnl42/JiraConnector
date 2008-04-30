@@ -36,7 +36,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
-import org.eclipse.mylyn.tasks.core.data.TaskComment;
+import org.eclipse.mylyn.tasks.core.data.ITaskComment;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -204,7 +204,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public String getReply(TaskRepository taskRepository, AbstractTask task, TaskComment taskComment,
+	public String getReply(TaskRepository taskRepository, AbstractTask task, ITaskComment taskComment,
 			boolean includeTask) {
 		if (taskComment == null) {
 			return "In reply to " + task.getTaskKey() + ":";

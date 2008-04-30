@@ -297,12 +297,12 @@ public class JiraClientTest extends TestCase {
 
 		// test attaching an empty file
 		try {
-			client.attachFile(issue, "", file.getName(), file, "application/binary", null);
+			client.addAttachment(issue, "", file.getName(), file, "application/binary", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
 
-		client.attachFile(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' },
+		client.addAttachment(issue, "comment", "my.filename.1", new byte[] { 'M', 'y', 'l', 'y', 'n' },
 				"application/binary", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		Attachment attachment = getAttachment(issue, "my.filename.1");
@@ -312,7 +312,7 @@ public class JiraClientTest extends TestCase {
 		assertNotNull(attachment.getCreated());
 
 		// spaces in filename
-		client.attachFile(issue, "", "file name with spaces", new byte[] { '1' }, "text/html", null);
+		client.addAttachment(issue, "", "file name with spaces", new byte[] { '1' }, "text/html", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		attachment = getAttachment(issue, "file name with spaces");
 		assertNotNull(attachment);
@@ -324,7 +324,7 @@ public class JiraClientTest extends TestCase {
 		// upload is rejected by JIRA: bug 203663
 //		client.attachFile(issue, "", "filename\u00C4\u00D6\u00DC", new byte[] { '1' }, "text/plain");
 //		issue = client.getIssueByKey(issue.getKey());
-//		attachment = getAttachment(issue, "filename\u00C4\u00D6\u00DC");
+//		attachment = JiraClient(issue, "filename\u00C4\u00D6\u00DC");
 //		assertNotNull(attachment);
 //		assertEquals(client.getUserName(), attachment.getAuthor());
 //		assertEquals(1, attachment.getSize());
