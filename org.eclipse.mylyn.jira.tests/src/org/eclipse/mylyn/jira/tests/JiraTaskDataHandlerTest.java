@@ -36,6 +36,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
@@ -43,7 +44,6 @@ import org.eclipse.mylyn.tasks.core.RepositoryOperation;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -241,7 +241,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 			dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 		}
 
-		TasksUi.synchronizeTask(connector, task, true, null);
+		TasksUiInternal.synchronizeTask(connector, task, true, null);
 		assertEquals("testUpdateTask", task.getSummary());
 		assertTrue(task.isCompleted());
 		assertNotNull(task.getCompletionDate());
@@ -267,7 +267,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 			taskData.setSelectedOperation(resolveOperation);
 			dataHandler.postTaskData(repository, taskData, new NullProgressMonitor());
 		}
-		TasksUi.synchronizeTask(connector, task, true, null);
+		TasksUiInternal.synchronizeTask(connector, task, true, null);
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(true, task.isCompleted());
 		assertNotNull(task.getCompletionDate());

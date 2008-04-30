@@ -29,11 +29,11 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.jira.tests.util.ResultCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.ITaskList;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
 
@@ -111,7 +111,7 @@ public class JiraFilterTest extends TestCase {
 		taskList.addQuery(query);
 		assertTrue(query.getChildren().size() == 0);
 
-		TasksUi.synchronizeQuery(connector, query, null, false);
+		TasksUiInternal.synchronizeQuery(connector, query, null, false);
 
 		assertTrue(query.getChildren().size() > 0);
 		JiraTask hit = (JiraTask) query.getChildren().iterator().next();

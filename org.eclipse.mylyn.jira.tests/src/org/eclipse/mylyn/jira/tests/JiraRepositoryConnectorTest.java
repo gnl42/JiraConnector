@@ -42,6 +42,7 @@ import org.eclipse.mylyn.internal.tasks.core.TaskList;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylyn.jira.tests.util.ResultCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
@@ -51,7 +52,6 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationContext;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.web.core.AuthenticationCredentials;
 import org.eclipse.mylyn.web.core.AuthenticationType;
@@ -141,7 +141,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(AttachmentUtil.attachContext(connector.getAttachmentHandler(), repository, task, "",
 				new NullProgressMonitor()));
 
-		TasksUi.synchronizeTask(connector, task, true, null);
+		TasksUiInternal.synchronizeTask(connector, task, true, null);
 
 		Set<RepositoryAttachment> contextAttachments = AttachmentUtil.getContextAttachments(repository, task);
 		assertEquals(1, contextAttachments.size());
