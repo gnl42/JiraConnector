@@ -16,6 +16,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
@@ -37,10 +38,12 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
 import org.eclipse.mylyn.tasks.core.data.ITaskComment;
+import org.eclipse.mylyn.tasks.core.data.TaskAttachmentModel;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
 
 /**
  * @author Mik Kersten
@@ -213,6 +216,13 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		} else {
 			return "In reply to comment #" + taskComment.getNumber() + ":";
 		}
+	}
+
+	@Override
+	public IWizardPage getAttachmentPage(TaskAttachmentModel model) {
+		TaskAttachmentPage page = new TaskAttachmentPage(model);
+		page.setNeedsDescription(false);
+		return page;
 	}
 
 }

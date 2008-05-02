@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract local variable &apos;taskAttachmentPage&apos; from expression &apos;new TaskAttachmentPage(model)&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.ui&apos;&#x0A;- Variable name: &apos;taskAttachmentPage&apos;&#x0A;- Destination method: &apos;org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi.getAttachmentPage()&apos;&#x0A;- Variable expression: &apos;new TaskAttachmentPage(model)&apos;&#x0A;- Replace occurrences of expression with variable" description="Extract local variable &apos;taskAttachmentPage&apos;" final="false" id="org.eclipse.jdt.ui.extract.temp" input="/src&lt;org.eclipse.mylyn.internal.jira.ui{JiraConnectorUi.java" name="taskAttachmentPage" replace="true" selection="8101 29" stamp="1209709025694" version="1.0"/>
+</session>

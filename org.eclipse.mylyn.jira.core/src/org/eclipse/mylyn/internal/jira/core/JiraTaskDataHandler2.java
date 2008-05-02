@@ -716,49 +716,54 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 	@Override
 	public RepositoryResponse postTaskData(TaskRepository repository, TaskData taskData,
 			Set<TaskAttribute> changedAttributes, IProgressMonitor monitor) throws CoreException {
-		JiraClient client = clientFactory.getJiraClient(repository);
-		if (client == null) {
-			throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-					IStatus.ERROR, "Unable to create Jira client", null));
-		}
 		try {
-			if (!client.getCache().hasDetails()) {
-				client.getCache().refreshDetails(new NullProgressMonitor());
+			monitor.beginTask("Sending task", IProgressMonitor.UNKNOWN);
+			JiraClient client = clientFactory.getJiraClient(repository);
+			if (client == null) {
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+						IStatus.ERROR, "Unable to create Jira client", null));
 			}
+			try {
+				if (!client.getCache().hasDetails()) {
+					client.getCache().refreshDetails(new NullProgressMonitor());
+				}
 
-			JiraIssue issue = buildJiraIssue(taskData, client);
-			if (taskData.isNew()) {
-				if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
-					issue = client.createSubTask(issue, monitor);
-				} else {
-					issue = client.createIssue(issue, monitor);
-				}
-				if (issue == null) {
-					throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR,
-							JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create issue.", null));
-				}
-				// this is severely broken: should return id instead
-				//return issue.getKey();
-				return new RepositoryResponse(ResponseKind.TASK_CREATED, issue.getId());
-			} else {
-				String operationId = getOperationId(taskData);
-				String newComment = getNewComment(taskData);
-				if (LEAVE_OPERATION.equals(operationId) || REASSIGN_OPERATION.equals(operationId)) {
-					if (!JiraRepositoryConnector.isClosed(issue)
-							&& taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
-						client.updateIssue(issue, newComment, monitor);
-					} else if (newComment.length() > 0) {
-						client.addCommentToIssue(issue, newComment, monitor);
+				JiraIssue issue = buildJiraIssue(taskData, client);
+				if (taskData.isNew()) {
+					if (issue.getType().isSubTaskType() && issue.getParentId() != null) {
+						issue = client.createSubTask(issue, monitor);
+					} else {
+						issue = client.createIssue(issue, monitor);
 					}
+					if (issue == null) {
+						throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR,
+								JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create issue.", null));
+					}
+					// this is severely broken: should return id instead
+					//return issue.getKey();
+					return new RepositoryResponse(ResponseKind.TASK_CREATED, issue.getId());
 				} else {
-					client.advanceIssueWorkflow(issue, operationId, newComment, monitor);
+					String operationId = getOperationId(taskData);
+					String newComment = getNewComment(taskData);
+					if (LEAVE_OPERATION.equals(operationId) || REASSIGN_OPERATION.equals(operationId)) {
+						if (!JiraRepositoryConnector.isClosed(issue)
+								&& taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
+							client.updateIssue(issue, newComment, monitor);
+						} else if (newComment.length() > 0) {
+							client.addCommentToIssue(issue, newComment, monitor);
+						}
+					} else {
+						client.advanceIssueWorkflow(issue, operationId, newComment, monitor);
+					}
+					return new RepositoryResponse(ResponseKind.TASK_UPDATED, issue.getId());
 				}
-				return new RepositoryResponse(ResponseKind.TASK_UPDATED, issue.getId());
+			} catch (JiraException e) {
+				IStatus status = JiraCorePlugin.toStatus(repository, e);
+				trace(status);
+				throw new CoreException(status);
 			}
-		} catch (JiraException e) {
-			IStatus status = JiraCorePlugin.toStatus(repository, e);
-			trace(status);
-			throw new CoreException(status);
+		} finally {
+			monitor.done();
 		}
 	}
 

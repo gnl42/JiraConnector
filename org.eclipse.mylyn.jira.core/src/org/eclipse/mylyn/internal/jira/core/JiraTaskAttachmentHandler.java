@@ -91,21 +91,31 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 	@Override
 	public InputStream getContent(TaskRepository repository, AbstractTask task, TaskAttribute attachmentAttribute,
 			IProgressMonitor monitor) throws CoreException {
-		TaskAttachment attachment = TaskAttachment.createFrom(attachmentAttribute);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		downloadAttachment(repository, task, attachment.getAttachmentId(), out, monitor);
-		return new ByteArrayInputStream(out.toByteArray());
+		try {
+			monitor.beginTask("Getting attachment", IProgressMonitor.UNKNOWN);
+			TaskAttachment attachment = TaskAttachment.createFrom(attachmentAttribute);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			downloadAttachment(repository, task, attachment.getAttachmentId(), out, monitor);
+			return new ByteArrayInputStream(out.toByteArray());
+		} finally {
+			monitor.done();
+		}
 	}
 
 	@Override
 	public void postContent(TaskRepository repository, AbstractTask task, AbstractTaskAttachmentSource source,
 			String comment, TaskAttribute attachmentAttribute, IProgressMonitor monitor) throws CoreException {
-		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
-			JiraIssue issue = server.getIssueByKey(task.getTaskKey(), monitor);
-			server.addAttachment(issue, comment, new AttachmentPartSource(source), source.getContentType(), monitor);
-		} catch (JiraException e) {
-			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
+			monitor.beginTask("Sending attachment", IProgressMonitor.UNKNOWN);
+			JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
+			try {
+				JiraIssue issue = server.getIssueByKey(task.getTaskKey(), monitor);
+				server.addAttachment(issue, comment, new AttachmentPartSource(source), source.getContentType(), monitor);
+			} catch (JiraException e) {
+				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
+			}
+		} finally {
+			monitor.done();
 		}
 	}
 
