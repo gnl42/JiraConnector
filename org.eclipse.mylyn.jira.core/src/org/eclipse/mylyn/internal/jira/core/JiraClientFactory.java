@@ -132,11 +132,11 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 	 * @param monitor
 	 * 
 	 * @param serverUrl
-	 *            Location of the Jira Server
+	 * 		Location of the Jira Server
 	 * @param user
-	 *            Username
+	 * 		Username
 	 * @param password
-	 *            Password
+	 * 		Password
 	 * @return
 	 * @return String describing validation failure or null if the details are valid
 	 */
@@ -161,6 +161,10 @@ public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFa
 
 		this.forceTaskRepositoryLocationFactory = force;
 		this.taskRepositoryLocationFactory = taskRepositoryLocationFactory;
+	}
+
+	public void repositoryUrlChanged(TaskRepository repository, String oldUrl) {
+		// ignore
 	}
 
 }
