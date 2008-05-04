@@ -13,7 +13,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.internal.jira.ui.editor.JiraTaskInitializationData;
 import org.eclipse.mylyn.internal.tasks.core.LocalTask;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskSelection;
 import org.eclipse.mylyn.tasks.core.AbstractTask.SynchronizationState;
@@ -65,7 +65,7 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		data.taskRepository = taskRepository;
 		data.taskSelection = taskSelection;
 
-		LocalTask task = TasksUiPlugin.getTaskListManager().createNewLocalTask(null);
+		LocalTask task = TasksUiInternal.createNewLocalTask(null);
 		task.setSynchronizationState(SynchronizationState.OUTGOING);
 
 		TaskEditorInput editorInput = new TaskEditorInput(taskRepository, task);
