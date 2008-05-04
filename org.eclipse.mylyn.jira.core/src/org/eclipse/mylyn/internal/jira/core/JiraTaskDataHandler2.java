@@ -52,12 +52,11 @@ import org.eclipse.mylyn.tasks.core.RepositoryResponse;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse.ResponseKind;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler2;
-import org.eclipse.mylyn.tasks.core.data.RepositoryPerson;
-import org.eclipse.mylyn.tasks.core.data.TaskAttachment;
+import org.eclipse.mylyn.tasks.core.data.TaskAttachmentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
-import org.eclipse.mylyn.tasks.core.data.TaskComment;
+import org.eclipse.mylyn.tasks.core.data.TaskCommentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskOperation;
 
@@ -399,9 +398,8 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		for (Comment comment : jiraIssue.getComments()) {
 			TaskAttribute attribute = commentContainer.createAttribute(x++ + "");
 			attribute.setValue(attribute.getId());
-			TaskComment taskComment = TaskComment.createFrom(attribute);
-			taskComment.setAuthor(new RepositoryPerson(data.getConnectorKind(), data.getRepositoryUrl(),
-					comment.getAuthor()));
+			TaskCommentMapper taskComment = TaskCommentMapper.createFrom(attribute);
+			taskComment.setAuthor(data.getAttributeMapper().getTaskRepository().createPerson(comment.getAuthor()));
 			String commentText = comment.getComment();
 			if (comment.isMarkupDetected()) {
 				commentText = stripTags(commentText);
@@ -418,9 +416,8 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 		for (Attachment attachment : jiraIssue.getAttachments()) {
 			TaskAttribute attribute = attachmentContainer.createAttribute(attachment.getId());
 			attribute.setValue(attribute.getId());
-			TaskAttachment taskAttachment = TaskAttachment.createFrom(attribute);
-			taskAttachment.setAuthor(new RepositoryPerson(data.getConnectorKind(), data.getRepositoryUrl(),
-					attachment.getAuthor()));
+			TaskAttachmentMapper taskAttachment = TaskAttachmentMapper.createFrom(attribute);
+			taskAttachment.setAuthor(data.getAttributeMapper().getTaskRepository().createPerson(attachment.getAuthor()));
 			taskAttachment.setFileName(attachment.getName());
 			if (CONTEXT_ATTACHEMENT_FILENAME.equals(attachment.getName())) {
 				taskAttachment.setDescription(CONTEXT_ATTACHMENT_DESCRIPTION);
@@ -1008,7 +1005,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
 	@Override
 	public TaskAttributeMapper getAttributeMapper(TaskRepository taskRepository) {
 		JiraClient client = clientFactory.getJiraClient(taskRepository);
-		return new JiraAttributeMapper(client);
+		return new JiraAttributeMapper(taskRepository, client);
 	}
 
 	@Override

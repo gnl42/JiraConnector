@@ -91,7 +91,7 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 
 			ITaskDataWorkingCopy workingCopy = TasksUi.getTaskDataManager().createWorkingCopy(input.getTask(),
 					taskData.getConnectorKind(), taskData);
-			return new TaskDataModel(workingCopy);
+			return new TaskDataModel(taskRepository, input.getTask(), workingCopy);
 		} else {
 			return super.createModel(input);
 		}

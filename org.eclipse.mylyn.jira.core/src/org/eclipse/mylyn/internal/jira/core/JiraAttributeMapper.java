@@ -18,6 +18,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
@@ -29,7 +30,8 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 
 	private final JiraClient client;
 
-	public JiraAttributeMapper(JiraClient client) {
+	public JiraAttributeMapper(TaskRepository taskRepository, JiraClient client) {
+		super(taskRepository);
 		this.client = client;
 	}
 

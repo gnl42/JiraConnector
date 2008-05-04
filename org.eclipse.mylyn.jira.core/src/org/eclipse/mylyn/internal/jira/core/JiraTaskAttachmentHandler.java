@@ -28,7 +28,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentSource;
-import org.eclipse.mylyn.tasks.core.data.TaskAttachment;
+import org.eclipse.mylyn.tasks.core.data.TaskAttachmentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
@@ -93,7 +93,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 			IProgressMonitor monitor) throws CoreException {
 		try {
 			monitor.beginTask("Getting attachment", IProgressMonitor.UNKNOWN);
-			TaskAttachment attachment = TaskAttachment.createFrom(attachmentAttribute);
+			TaskAttachmentMapper attachment = TaskAttachmentMapper.createFrom(attachmentAttribute);
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			downloadAttachment(repository, task, attachment.getAttachmentId(), out, monitor);
 			return new ByteArrayInputStream(out.toByteArray());

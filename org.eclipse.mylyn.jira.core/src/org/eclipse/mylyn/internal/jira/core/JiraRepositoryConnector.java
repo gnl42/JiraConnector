@@ -44,7 +44,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.TaskScheme;
+import org.eclipse.mylyn.tasks.core.TaskMapper;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler2;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -561,7 +561,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public boolean hasChanged(AbstractTask task, TaskData taskData) {
-		TaskScheme scheme = new TaskScheme(taskData);
+		TaskMapper scheme = new TaskMapper(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 
 		Date localDate = task.getModificationDate();
@@ -585,7 +585,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public void updateTaskFromTaskData(TaskRepository repository, AbstractTask task, TaskData taskData) {
 		JiraTask jiraTask = (JiraTask) task;
 
-		TaskScheme scheme = new TaskScheme(taskData);
+		TaskMapper scheme = new TaskMapper(taskData);
 		scheme.applyTo(task);
 
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
