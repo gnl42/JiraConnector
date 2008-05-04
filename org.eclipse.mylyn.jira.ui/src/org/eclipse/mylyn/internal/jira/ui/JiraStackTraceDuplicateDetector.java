@@ -42,7 +42,7 @@ public class JiraStackTraceDuplicateDetector extends AbstractDuplicateDetector {
 		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter, encoding);
 
 		return query;
-		//return new SearchHitCollector(TasksUi.getTaskListManager().getTaskList(), repository, query);
+		//return new SearchHitCollector(TasksUi.getTaskList(), repository, query);
 	}
 
 }
