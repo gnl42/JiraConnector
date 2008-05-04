@@ -9,8 +9,8 @@
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.TaskSelection;
 
 public class JiraTaskInitializationData {
 

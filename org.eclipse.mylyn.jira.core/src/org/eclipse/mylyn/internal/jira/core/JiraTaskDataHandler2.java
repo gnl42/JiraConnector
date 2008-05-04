@@ -51,7 +51,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse.ResponseKind;
-import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler2;
+import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
@@ -67,7 +67,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskOperation;
  * @author Steffen Pingel
  * @since 3.0
  */
-public class JiraTaskDataHandler2 extends AbstractTaskDataHandler2 {
+public class JiraTaskDataHandler2 extends AbstractTaskDataHandler {
 
 	private static final String CONTEXT_ATTACHEMENT_FILENAME = "mylyn-context.zip";
 

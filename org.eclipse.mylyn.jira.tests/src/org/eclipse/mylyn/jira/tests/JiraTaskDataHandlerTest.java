@@ -37,14 +37,14 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttributeFactory;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryOperation;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.RepositoryOperation;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 
@@ -60,7 +60,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	private JiraClient client;
 
-	private AbstractRepositoryConnector connector;
+	private AbstractLegacyRepositoryConnector connector;
 
 	private String customFieldId;
 
@@ -97,10 +97,11 @@ public class JiraTaskDataHandlerTest extends TestCase {
 				credentials.password), false);
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		connector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(kind);
+		connector = (AbstractLegacyRepositoryConnector) TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
+				kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
-		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
+		dataHandler = (JiraTaskDataHandler) connector.getLegacyTaskDataHandler();
 
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
 

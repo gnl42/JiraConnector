@@ -9,9 +9,9 @@
 package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -50,8 +50,8 @@ public class NewJiraQueryWizard extends Wizard {
 		AbstractRepositoryQuery query = queryPage.getQuery();
 		if (query != null) {
 			TasksUi.getTaskListManager().getTaskList().addQuery(query);
-			AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
-					repository.getConnectorKind());
+			AbstractLegacyRepositoryConnector connector = (AbstractLegacyRepositoryConnector) TasksUi.getRepositoryManager()
+					.getRepositoryConnector(repository.getConnectorKind());
 			if (connector != null) {
 				TasksUiInternal.synchronizeQuery(connector, query, null, true);
 			}

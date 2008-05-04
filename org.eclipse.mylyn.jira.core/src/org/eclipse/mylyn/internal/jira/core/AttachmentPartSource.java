@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
-import org.eclipse.mylyn.tasks.core.ITaskAttachment;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.ITaskAttachment;
 
 /**
  * @author Steffen Pingel

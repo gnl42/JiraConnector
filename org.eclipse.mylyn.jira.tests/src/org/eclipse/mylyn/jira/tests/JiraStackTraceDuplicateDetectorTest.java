@@ -29,12 +29,12 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraStackTraceDuplicateDetector;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.search.SearchHitCollector;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
@@ -48,7 +48,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 	private TaskRepositoryManager manager;
 
-	private AbstractRepositoryConnector connector;
+	private AbstractLegacyRepositoryConnector connector;
 
 	private JiraTaskDataHandler dataHandler;
 
@@ -81,10 +81,10 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		connector = manager.getRepositoryConnector(kind);
+		connector = (AbstractLegacyRepositoryConnector) manager.getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
-		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
+		dataHandler = (JiraTaskDataHandler) connector.getLegacyTaskDataHandler();
 
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
 	}

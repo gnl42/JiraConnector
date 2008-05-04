@@ -36,17 +36,18 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
-import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManager;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttachmentHandler;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractTaskDataHandler;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.LegacyTaskDataCollector;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskMapper;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
-import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler2;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
@@ -58,7 +59,7 @@ import org.eclipse.mylyn.tasks.core.sync.SynchronizationContext;
  * @author Eugene Kuleshov
  * @since 3.0
  */
-public class JiraRepositoryConnector extends AbstractRepositoryConnector {
+public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 
 	private static final String ERROR_REPOSITORY_CONFIGURATION = "The repository returned an unknown project. Please update the repository attributes.";
 
@@ -108,7 +109,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public AbstractTaskDataHandler getTaskDataHandler() {
+	public AbstractTaskDataHandler getLegacyTaskDataHandler() {
 		return taskDataHandler;
 	}
 
@@ -165,10 +166,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					}
 
 					monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(repository.getRepositoryUrl(),
-							issue.getId());
-					resultCollector.accept(taskDataHandler.createTaskData(repository, client, issue, oldTaskData,
-							monitor));
+					RepositoryTaskData oldTaskData = ((TaskDataManager) getTaskDataManager()).getNewTaskData(
+							repository.getRepositoryUrl(), issue.getId());
+					((LegacyTaskDataCollector) resultCollector).accept(taskDataHandler.createTaskData(repository,
+							client, issue, oldTaskData, monitor));
 				}
 				return Status.OK_STATUS;
 			} catch (JiraException e) {
@@ -231,11 +232,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 						// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
 						monitor.subTask(issue.getKey() + " " + issue.getSummary());
-						RepositoryTaskData oldTaskData = getTaskDataManager().getNewTaskData(
+						RepositoryTaskData oldTaskData = ((TaskDataManager) getTaskDataManager()).getNewTaskData(
 								repository.getRepositoryUrl(), issue.getId());
 						RepositoryTaskData taskData = taskDataHandler.createTaskData(repository, client, issue,
 								oldTaskData, monitor);
-						getTaskDataManager().saveIncoming(task, taskData, false);
+						((TaskDataManager) getTaskDataManager()).saveIncoming(task, taskData, false);
 						updateTaskFromTaskData(repository, task, taskData);
 					}
 				}
@@ -551,11 +552,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
-		return getTaskDataHandler().getTaskData(repository, taskId, monitor);
+		return getLegacyTaskDataHandler().getTaskData(repository, taskId, monitor);
 	}
 
 	@Override
-	public AbstractTaskDataHandler2 getTaskDataHandler2() {
+	public org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler getTaskDataHandler2() {
 		return taskDataHandler2;
 	}
 

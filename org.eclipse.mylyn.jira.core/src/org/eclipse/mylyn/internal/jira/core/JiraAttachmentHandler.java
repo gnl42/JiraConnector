@@ -21,12 +21,12 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.tasks.core.AbstractAttachmentHandler;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttachmentHandler;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.ITaskAttachment;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryAttachment;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.ITaskAttachment;
-import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**

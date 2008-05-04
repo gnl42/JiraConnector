@@ -52,14 +52,14 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
-import org.eclipse.mylyn.tasks.core.AbstractAttributeFactory;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttributeFactory;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractTaskDataHandler;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryAttachment;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryOperation;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskComment;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.AbstractTaskDataHandler;
-import org.eclipse.mylyn.tasks.core.RepositoryAttachment;
-import org.eclipse.mylyn.tasks.core.RepositoryOperation;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskAttribute;
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.TaskComment;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**

@@ -11,13 +11,13 @@ package org.eclipse.mylyn.jira.tests.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.LegacyTaskDataCollector;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 
 /**
  * @author Steffen Pingel
  */
-public class ResultCollector extends TaskDataCollector {
+public class ResultCollector extends LegacyTaskDataCollector {
 
 	public List<RepositoryTaskData> results = new ArrayList<RepositoryTaskData>();
 
