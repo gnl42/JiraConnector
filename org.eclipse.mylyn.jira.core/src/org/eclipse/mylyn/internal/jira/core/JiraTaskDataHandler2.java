@@ -47,7 +47,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse.ResponseKind;
@@ -876,7 +876,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler {
 	}
 
 	@Override
-	public boolean canInitializeSubTaskData(AbstractTask task, TaskData parentTaskData) {
+	public boolean canInitializeSubTaskData(ITask task, TaskData parentTaskData) {
 		return true;
 	}
 

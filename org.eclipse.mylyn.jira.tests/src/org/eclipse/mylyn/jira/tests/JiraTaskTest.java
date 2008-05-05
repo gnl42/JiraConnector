@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
-import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask.PriorityLevel;
 
 /**
  * @author Mik Kersten

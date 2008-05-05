@@ -24,7 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentSource;
@@ -67,16 +67,16 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 	}
 
 	@Override
-	public boolean canGetContent(TaskRepository repository, AbstractTask task) {
+	public boolean canGetContent(TaskRepository repository, ITask task) {
 		return true;
 	}
 
 	@Override
-	public boolean canPostContent(TaskRepository repository, AbstractTask task) {
+	public boolean canPostContent(TaskRepository repository, ITask task) {
 		return true;
 	}
 
-	private void downloadAttachment(TaskRepository repository, AbstractTask task, String attachmentId,
+	private void downloadAttachment(TaskRepository repository, ITask task, String attachmentId,
 			OutputStream out, IProgressMonitor monitor) throws CoreException {
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
@@ -89,7 +89,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 	}
 
 	@Override
-	public InputStream getContent(TaskRepository repository, AbstractTask task, TaskAttribute attachmentAttribute,
+	public InputStream getContent(TaskRepository repository, ITask task, TaskAttribute attachmentAttribute,
 			IProgressMonitor monitor) throws CoreException {
 		try {
 			monitor.beginTask("Getting attachment", IProgressMonitor.UNKNOWN);
@@ -103,7 +103,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 	}
 
 	@Override
-	public void postContent(TaskRepository repository, AbstractTask task, AbstractTaskAttachmentSource source,
+	public void postContent(TaskRepository repository, ITask task, AbstractTaskAttachmentSource source,
 			String comment, TaskAttribute attachmentAttribute, IProgressMonitor monitor) throws CoreException {
 		try {
 			monitor.beginTask("Sending attachment", IProgressMonitor.UNKNOWN);

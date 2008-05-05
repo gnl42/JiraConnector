@@ -8,7 +8,7 @@
 
 package org.eclipse.mylyn.internal.jira.core;
 
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 
 /**
  * @author Mik Kersten

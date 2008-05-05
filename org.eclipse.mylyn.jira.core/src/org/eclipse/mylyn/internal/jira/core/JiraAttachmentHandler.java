@@ -25,7 +25,7 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttachmentHandle
 import org.eclipse.mylyn.internal.tasks.core.deprecated.ITaskAttachment;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryAttachment;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
@@ -72,7 +72,7 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 	}
 
 	@Override
-	public void uploadAttachment(TaskRepository repository, AbstractTask task, ITaskAttachment attachment,
+	public void uploadAttachment(TaskRepository repository, ITask task, ITaskAttachment attachment,
 			String comment, IProgressMonitor monitor) throws CoreException {
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
@@ -85,12 +85,12 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 	}
 
 	@Override
-	public boolean canDownloadAttachment(TaskRepository repository, AbstractTask task) {
+	public boolean canDownloadAttachment(TaskRepository repository, ITask task) {
 		return true;
 	}
 
 	@Override
-	public boolean canUploadAttachment(TaskRepository repository, AbstractTask task) {
+	public boolean canUploadAttachment(TaskRepository repository, ITask task) {
 		return true;
 	}
 

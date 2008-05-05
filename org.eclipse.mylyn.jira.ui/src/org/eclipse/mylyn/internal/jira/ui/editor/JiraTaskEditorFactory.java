@@ -15,7 +15,7 @@ import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.deprecated.RepositoryTaskEditorInput;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorFactory;
@@ -31,7 +31,7 @@ import org.eclipse.ui.IEditorPart;
 public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 
 	@Override
-	public boolean canCreateEditorFor(AbstractTask task) {
+	public boolean canCreateEditorFor(ITask task) {
 		return task instanceof JiraTask;
 	}
 
@@ -61,7 +61,7 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 	}
 
 	@Override
-	public IEditorInput createEditorInput(AbstractTask task) {
+	public IEditorInput createEditorInput(ITask task) {
 		JiraTask jiraTask = (JiraTask) task;
 		TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
 				jiraTask.getRepositoryUrl());

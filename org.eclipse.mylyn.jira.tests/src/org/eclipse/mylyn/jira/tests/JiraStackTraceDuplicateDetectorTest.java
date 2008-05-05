@@ -28,13 +28,14 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraStackTraceDuplicateDetector;
+import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.search.SearchHitCollector;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
@@ -118,7 +119,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 	}
 
 	private void verifyDuplicate(String stackTrace, JiraIssue issue) throws JiraException, CoreException {
-		AbstractTask task1 = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		ITask task1 = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals(issue.getSummary(), task1.getSummary());
 		assertEquals(false, task1.isCompleted());
 		assertNull(task1.getDueDate());
@@ -141,7 +142,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		Set<AbstractTask> tasks = collector.getTasks();
 		assertTrue("Expected duplicated task " + issue.getId() + " : " + issue.getKey(), tasks.size() > 0);
 
-		for (AbstractTask task : tasks) {
+		for (ITask task : tasks) {
 			if (task.getTaskId().equals(issue.getId())) {
 				return;
 			}

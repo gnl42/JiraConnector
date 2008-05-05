@@ -40,6 +40,8 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
+import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.TaskList;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryAttachment;
@@ -49,8 +51,7 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylyn.jira.tests.util.ResultCollector;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationContext;
@@ -212,7 +213,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		repository.setSynchronizationTimeStamp(null);
 		SynchronizationContext event = new SynchronizationContext();
-		event.tasks = new HashSet<AbstractTask>();
+		event.tasks = new HashSet<ITask>();
 		event.taskRepository = repository;
 		event.fullSynchronization = true;
 		connector.preSynchronization(event, null);
@@ -232,7 +233,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference 
 		assertNull(JiraUtil.getLastUpdate(repository));
 
-		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
+		Set<ITask> tasks = new HashSet<ITask>();
 		tasks.add(task);
 		SynchronizationContext event = new SynchronizationContext();
 		event.tasks = tasks;
@@ -275,7 +276,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertTrue(issue2.getUpdated().after(issue.getUpdated()));
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
 
-		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
+		Set<ITask> tasks = new HashSet<ITask>();
 		tasks.add(task);
 
 		SynchronizationContext event = new SynchronizationContext();
@@ -304,7 +305,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(new Date(), -1)));
-		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
+		Set<ITask> tasks = new HashSet<ITask>();
 		tasks.add(task);
 		SynchronizationContext event = new SynchronizationContext();
 		event.tasks = tasks;
@@ -318,7 +319,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testGetSynchronizationFilter() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
+		Set<ITask> tasks = new HashSet<ITask>();
 		tasks.add(new JiraTask(JiraTestConstants.JIRA_39_URL, "1", ""));
 
 		Date now = new Date();
@@ -346,7 +347,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	public void testGetSynchronizationFilterTimeStampInTheFuture() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Set<AbstractTask> tasks = new HashSet<AbstractTask>();
+		Set<ITask> tasks = new HashSet<ITask>();
 		tasks.add(new JiraTask(JiraTestConstants.JIRA_39_URL, "1", ""));
 
 		Date now = new Date();
@@ -370,7 +371,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Date now = new Date();
-		HashSet<AbstractTask> tasks = new HashSet<AbstractTask>();
+		HashSet<ITask> tasks = new HashSet<ITask>();
 		JiraTask task = new JiraTask(repository.getRepositoryUrl(), "1", "");
 		task.setLastReadTimeStamp(JiraUtil.dateToString(now));
 		tasks.add(task);
@@ -389,7 +390,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testCreateTask");
 
-		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		ITask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testCreateTask", task.getSummary());
 		assertEquals(null, task.getCompletionDate());
 		assertFalse(task.isCompleted());

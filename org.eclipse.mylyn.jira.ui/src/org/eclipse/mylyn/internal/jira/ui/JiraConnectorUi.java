@@ -29,13 +29,13 @@ import org.eclipse.mylyn.internal.jira.ui.wizards.JiraQueryPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
+import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.AbstractTaskContainer;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskComment;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentModel;
@@ -53,7 +53,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
-	public String getTaskKindLabel(AbstractTask repositoryTask) {
+	public String getTaskKindLabel(ITask repositoryTask) {
 		return "Issue";
 	}
 
@@ -85,7 +85,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public ImageDescriptor getTaskKindOverlay(AbstractTask repositoryTask) {
+	public ImageDescriptor getTaskKindOverlay(ITask repositoryTask) {
 		if (repositoryTask instanceof JiraTask) {
 			JiraTask task = (JiraTask) repositoryTask;
 			if (JiraTask.Kind.BUG.toString().equals(task.getTaskKind())) {
@@ -187,7 +187,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@SuppressWarnings("restriction")
 	@Override
-	public boolean supportsDueDates(AbstractTask task) {
+	public boolean supportsDueDates(ITask task) {
 		if (task instanceof JiraTask) {
 			// XXX This is only used in the planning editor, and if its input was set correctly as a RepositoryTaskEditorInput
 			// we wouldn't have to get the task data this way from here
@@ -201,13 +201,13 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public String getTaskHistoryUrl(TaskRepository taskRepository, AbstractTask task) {
+	public String getTaskHistoryUrl(TaskRepository taskRepository, ITask task) {
 		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
 				+ "?page=history";
 	}
 
 	@Override
-	public String getReply(TaskRepository taskRepository, AbstractTask task, ITaskComment taskComment,
+	public String getReply(TaskRepository taskRepository, ITask task, ITaskComment taskComment,
 			boolean includeTask) {
 		if (taskComment == null) {
 			return "In reply to " + task.getTaskKey() + ":";

@@ -36,6 +36,9 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
+import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask.PriorityLevel;
 import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttachmentHandler;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
@@ -43,11 +46,9 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractTaskDataHandler;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.LegacyTaskDataCollector;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskMapper;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.AbstractTask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
@@ -218,12 +219,12 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 					return;
 				}
 
-				HashMap<String, AbstractTask> taskById = new HashMap<String, AbstractTask>();
-				for (AbstractTask task : event.tasks) {
+				HashMap<String, ITask> taskById = new HashMap<String, ITask>();
+				for (ITask task : event.tasks) {
 					taskById.put(task.getTaskId(), task);
 				}
 				for (JiraIssue issue : issues) {
-					AbstractTask task = taskById.get(issue.getId());
+					ITask task = taskById.get(issue.getId());
 					if (task != null) {
 						if (issue.getProject() == null) {
 							throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0,
@@ -270,7 +271,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	/* Public for testing. */
-	public FilterDefinition getSynchronizationFilter(TaskRepository repository, Set<AbstractTask> tasks, Date now) {
+	public FilterDefinition getSynchronizationFilter(TaskRepository repository, Set<ITask> tasks, Date now) {
 		// there are no JIRA tasks in the task list, skip contacting the repository
 		if (tasks.isEmpty()) {
 			return null;
@@ -280,7 +281,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 
 		// repository was never synchronized, update all tasks
 		if (lastSyncDate == null) {
-			for (AbstractTask task : tasks) {
+			for (ITask task : tasks) {
 				task.setStale(true);
 			}
 			return null;
@@ -298,7 +299,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 
 			// use the timestamp on the task that was modified last
 			lastSyncDate = null;
-			for (AbstractTask task : tasks) {
+			for (ITask task : tasks) {
 				Date date = JiraUtil.stringToDate(task.getLastReadTimeStamp());
 				if (lastSyncDate == null || (date != null && date.after(lastSyncDate))) {
 					lastSyncDate = date;
@@ -435,8 +436,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	@Override
-	public boolean updateTaskFromTaskData(TaskRepository repository, AbstractTask repositoryTask,
-			RepositoryTaskData taskData) {
+	public boolean updateTaskFromTaskData(TaskRepository repository, ITask repositoryTask, RepositoryTaskData taskData) {
 		if (repositoryTask instanceof JiraTask) {
 			JiraTask jiraTask = (JiraTask) repositoryTask;
 
@@ -561,7 +561,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	@Override
-	public boolean hasChanged(AbstractTask task, TaskData taskData) {
+	public boolean hasChanged(ITask task, TaskData taskData) {
 		TaskMapper scheme = new TaskMapper(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 
@@ -583,7 +583,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	@Override
-	public void updateTaskFromTaskData(TaskRepository repository, AbstractTask task, TaskData taskData) {
+	public void updateTaskFromTaskData(TaskRepository repository, ITask task, TaskData taskData) {
 		JiraTask jiraTask = (JiraTask) task;
 
 		TaskMapper scheme = new TaskMapper(taskData);

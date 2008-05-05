@@ -59,7 +59,7 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryOperation;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskComment;
-import org.eclipse.mylyn.tasks.core.AbstractTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**
@@ -858,7 +858,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	@Override
-	public boolean canInitializeSubTaskData(AbstractTask task, RepositoryTaskData parentTaskData) {
+	public boolean canInitializeSubTaskData(ITask task, RepositoryTaskData parentTaskData) {
 		return true;
 	}
 
