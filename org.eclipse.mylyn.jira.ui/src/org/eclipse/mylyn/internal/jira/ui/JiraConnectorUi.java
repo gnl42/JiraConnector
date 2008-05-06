@@ -17,7 +17,6 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
@@ -43,6 +42,7 @@ import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.mylyn.tasks.ui.wizards.ITaskSearchPage;
 import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
 
 /**
@@ -104,7 +104,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public WizardPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
+	public ITaskSearchPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
 		return new JiraQueryPage(repository);
 	}
 
@@ -207,8 +207,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public String getReply(TaskRepository taskRepository, ITask task, ITaskComment taskComment,
-			boolean includeTask) {
+	public String getReply(TaskRepository taskRepository, ITask task, ITaskComment taskComment, boolean includeTask) {
 		if (taskComment == null) {
 			return "In reply to " + task.getTaskKey() + ":";
 		} else if (includeTask) {

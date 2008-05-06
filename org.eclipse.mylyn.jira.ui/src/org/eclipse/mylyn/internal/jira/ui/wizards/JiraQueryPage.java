@@ -199,9 +199,10 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 	private boolean firstTime = true;
 
+	private Text title;
+
 	public JiraQueryPage(TaskRepository repository, JiraCustomQuery query) {
-		super(TITLE_PAGE);
-		this.repository = repository;
+		super(TITLE_PAGE, repository);
 		this.server = JiraClientFactory.getDefault().getJiraClient(repository);
 		if (query != null) {
 			this.workingCopy = query.getFilterDefinition(server, false);
@@ -217,7 +218,6 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 		this(repository, null);
 	}
 
-	@Override
 	public void createControl(final Composite parent) {
 		Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new GridLayout(3, false));
@@ -1320,7 +1320,7 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
 					// FIXME review error handling
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+						JiraClient client = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
 						try {
 							client.getCache().refreshDetails(monitor);
 						} catch (OperationCanceledException e) {
@@ -1352,8 +1352,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 
 				if (getContainer() != null) {
 					getContainer().run(true, true, runnable);
-				} else if (scontainer != null) {
-					scontainer.getRunnableContext().run(true, true, runnable);
+				} else if (getSearchContainer() != null) {
+					getSearchContainer().getRunnableContext().run(true, true, runnable);
 				} else {
 					IProgressService service = PlatformUI.getWorkbench().getProgressService();
 					service.busyCursorWhile(runnable);
@@ -1475,8 +1475,8 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 
-		if (scontainer != null) {
-			scontainer.setPerformActionEnabled(true);
+		if (getSearchContainer() != null) {
+			getSearchContainer().setPerformActionEnabled(true);
 		}
 
 		if (visible && firstTime) {
@@ -1526,32 +1526,32 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	private boolean restoreWidgetValues() {
 		IDialogSettings settings = getDialogSettings();
 
-		String searchUrl = settings.get(SEARCH_URL_ID + "." + repository.getRepositoryUrl());
+		String searchUrl = settings.get(SEARCH_URL_ID + "." + getTaskRepository().getRepositoryUrl());
 		if (searchUrl == null) {
 			return false;
 		}
 
-		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, repository.getRepositoryUrl(),
-				repository.getCharacterEncoding());
+		JiraCustomQuery query = new JiraCustomQuery("", searchUrl, getTaskRepository().getRepositoryUrl(),
+				getTaskRepository().getCharacterEncoding());
 		workingCopy = query.getFilterDefinition(server, false);
 		return true;
 	}
 
 	@Override
 	public void saveState() {
-		String repoId = "." + repository.getRepositoryUrl();
+		String repoId = "." + getTaskRepository().getRepositoryUrl();
 		IDialogSettings settings = getDialogSettings();
 		applyChanges();
 		settings.put(SEARCH_URL_ID + repoId, getQuery().getUrl());
 	}
 
 	@Override
-	public boolean performAction() {
+	public boolean performSearch() {
 		if (inSearchContainer()) {
 			saveState();
 		}
 
-		return super.performAction();
+		return super.performSearch();
 	}
 
 	final static class ComponentLabelProvider implements ILabelProvider {
@@ -1638,9 +1638,14 @@ public class JiraQueryPage extends AbstractRepositoryQueryPage {
 	public AbstractRepositoryQuery getQuery() {
 		this.applyChanges();
 
-		String url = repository.getRepositoryUrl();
-		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, repository.getCharacterEncoding());
+		String url = getTaskRepository().getRepositoryUrl();
+		JiraCustomQuery query = new JiraCustomQuery(url, workingCopy, getTaskRepository().getCharacterEncoding());
 		query.setSearch(inSearchContainer());
 		return query;
+	}
+
+	@Override
+	public String getQueryTitle() {
+		return (title != null) ? title.getText() : null;
 	}
 }
