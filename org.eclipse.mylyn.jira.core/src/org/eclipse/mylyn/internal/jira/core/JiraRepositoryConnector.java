@@ -38,7 +38,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
-import org.eclipse.mylyn.internal.tasks.core.AbstractTask.PriorityLevel;
 import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttachmentHandler;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
@@ -49,6 +48,7 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskMapper;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
@@ -550,13 +550,13 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	@Override
-	public RepositoryTaskData getTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
+	public RepositoryTaskData getLegacyTaskData(TaskRepository repository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
 		return getLegacyTaskDataHandler().getTaskData(repository, taskId, monitor);
 	}
 
 	@Override
-	public org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler getTaskDataHandler2() {
+	public org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler getTaskDataHandler() {
 		return taskDataHandler2;
 	}
 
@@ -577,7 +577,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	@Override
-	public TaskData getTaskData2(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
+	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
 		return taskDataHandler2.getTaskData(taskRepository, taskId, monitor);
 	}

@@ -76,7 +76,7 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 			AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
 					JiraCorePlugin.CONNECTOR_KIND);
 
-			JiraTaskDataHandler2 taskDataHandler = (JiraTaskDataHandler2) connector.getTaskDataHandler2();
+			JiraTaskDataHandler2 taskDataHandler = (JiraTaskDataHandler2) connector.getTaskDataHandler();
 			TaskAttributeMapper mapper = taskDataHandler.getAttributeMapper(taskRepository);
 			TaskData taskData = new TaskData(mapper, JiraCorePlugin.CONNECTOR_KIND, taskRepository.getRepositoryUrl(),
 					"");
