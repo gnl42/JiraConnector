@@ -101,7 +101,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		file.deleteOnExit();
 		JiraTestUtils.writeFile(file, "Mylyn".getBytes());
 
-		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		FileAttachment attachment = new FileAttachment(file);
 		attachment.setContentType("text/plain");
 		attachmentHandler.uploadAttachment(repository, task, attachment, "", new NullProgressMonitor());

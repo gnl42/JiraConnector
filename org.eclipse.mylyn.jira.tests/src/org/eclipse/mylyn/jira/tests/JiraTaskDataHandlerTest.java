@@ -203,7 +203,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
 
-		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(false, task.isCompleted());
 		assertNull(task.getDueDate());

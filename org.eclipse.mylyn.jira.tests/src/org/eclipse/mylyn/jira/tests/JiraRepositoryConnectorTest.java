@@ -132,7 +132,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testAttachContext");
 
-		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testAttachContext", task.getSummary());
 
 		File sourceContextFile = ContextCore.getContextManager().getFileForContext(task.getHandleIdentifier());
@@ -228,7 +228,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		Date start = new Date();
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
-		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		taskList.addTask(task);
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference 
 		assertNull(JiraUtil.getLastUpdate(repository));
@@ -266,7 +266,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		// create two issues, the first one is added to the task list
 		Date start = new Date();
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		taskList.addTask(task);
 
 		// make sure the second issue is created after the first one
@@ -295,7 +295,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		// create an issue
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-		AbstractTask task = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		taskList.addTask(task);
 		assertFalse(task.isCompleted());
 
