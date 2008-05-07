@@ -39,7 +39,7 @@ public class JiraTaskArchiveTest extends TestCase {
 //		MylynTaskListPlugin.getRepositoryManager().addRepository(jiraRepository);
 //		jiraFacade = JiraServerFacade.getDefault();
 		TasksUiPlugin.getTaskListManager().resetTaskList();
-		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
+		taskList = TasksUiPlugin.getTaskList();
 	}
 
 	@Override

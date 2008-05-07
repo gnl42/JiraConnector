@@ -82,7 +82,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		manager = TasksUiPlugin.getRepositoryManager();
 		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		taskList = TasksUiPlugin.getTaskListManager().getTaskList();
+		taskList = TasksUiPlugin.getTaskList();
 		taskList.reset();
 
 		JiraClientFactory.getDefault().clearClients();

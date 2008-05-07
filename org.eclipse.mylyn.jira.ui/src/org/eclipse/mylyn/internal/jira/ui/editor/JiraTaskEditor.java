@@ -361,7 +361,7 @@ public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
 			String repositoryUrl = taskData.getRepositoryUrl();
 			if (getConnector() != null && repositoryUrl != null && taskId != null) {
 				String url = getConnector().getTaskUrl(repositoryUrl, taskId);
-				//AbstractTask task = TasksUiPlugin.getTaskListManager().getTaskList().getTask(repositoryUrl, taskId);
+				//AbstractTask task = TasksUiPlugin.getTaskList().getTask(repositoryUrl, taskId);
 				if (url != null) {
 					return url + "?page=history";
 				}
