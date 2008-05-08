@@ -22,9 +22,10 @@ import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractTaskListFactory;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -70,7 +71,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 	}
 
 	@Override
-	public boolean canCreate(AbstractRepositoryQuery category) {
+	public boolean canCreate(IRepositoryQuery category) {
 		return category instanceof JiraRepositoryQuery || category instanceof JiraCustomQuery;
 	}
 
@@ -80,10 +81,10 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 	}
 
 	@Override
-	public AbstractRepositoryQuery createQuery(String repositoryUrl, String queryString, String label, Element element) {
+	public RepositoryQuery createQuery(String repositoryUrl, String queryString, String label, Element element) {
 		String custom = element.getAttribute(KEY_FILTER_CUSTOM);
 		String customUrl = element.getAttribute(KEY_FILTER_CUSTOM_URL);
-		AbstractRepositoryQuery query;
+		RepositoryQuery query;
 		if (custom != null && custom.length() > 0) {
 			// TODO remove this at some point
 			FilterDefinition filter = decodeFilter(custom);
@@ -119,7 +120,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 	}
 
 	@Override
-	public void setAdditionalAttributes(AbstractRepositoryQuery query, Element node) {
+	public void setAdditionalAttributes(IRepositoryQuery query, Element node) {
 //		String queryTagName = getQueryElementName(query);
 		if (query instanceof JiraRepositoryQuery) {
 			NamedFilter filter = ((JiraRepositoryQuery) query).getNamedFilter();
@@ -167,7 +168,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 	}
 
 	@Override
-	public String getQueryElementName(AbstractRepositoryQuery query) {
+	public String getQueryElementName(IRepositoryQuery query) {
 		if (query instanceof JiraRepositoryQuery) {
 			return KEY_JIRA_QUERY;
 		} else if (query instanceof JiraCustomQuery) {

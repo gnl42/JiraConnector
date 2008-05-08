@@ -9,19 +9,19 @@
 package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.wizards.AbstractEditQueryWizard;
+import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositoryQueryWizard;
 
 /**
  * @author Rob Elves
  * @author Mik Kersten
  */
-public class EditJiraQueryWizard extends AbstractEditQueryWizard {
+public class EditJiraQueryWizard extends AbstractRepositoryQueryWizard {
 
 //	private JiraQueryWizardPage queryPage;
 
-	public EditJiraQueryWizard(TaskRepository repository, AbstractRepositoryQuery query) {
+	public EditJiraQueryWizard(TaskRepository repository, IRepositoryQuery query) {
 		super(repository, query);
 		setForcePreviousAndNextButtons(true);
 //		this.repository = repository;

@@ -9,7 +9,7 @@
 package org.eclipse.mylyn.internal.jira.core;
 
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 
 /**
  * A JiraRepositoryQuery represents a server-side query for Jira repository.
@@ -17,7 +17,7 @@ import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
  * @author Mik Kersten
  * @since 3.0
  */
-public class JiraRepositoryQuery extends AbstractRepositoryQuery {
+public class JiraRepositoryQuery extends RepositoryQuery {
 
 	protected NamedFilter filter = null;
 

@@ -24,7 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.internal.tasks.core.TaskList;
@@ -184,9 +184,9 @@ public class JiraTaskExternalizationTest extends TestCase {
 		manager.resetTaskList();
 		manager.readExistingOrCreateNewList();
 
-		Set<AbstractRepositoryQuery> queries = manager.getTaskList().getQueries();
+		Set<RepositoryQuery> queries = manager.getTaskList().getQueries();
 		JiraRepositoryQuery savedFilter = null;
-		for (AbstractRepositoryQuery query : queries) {
+		for (RepositoryQuery query : queries) {
 			if (query.getHandleIdentifier().equals(jiraRepositoryQuery.getHandleIdentifier())) {
 				savedFilter = (JiraRepositoryQuery) query;
 				break;

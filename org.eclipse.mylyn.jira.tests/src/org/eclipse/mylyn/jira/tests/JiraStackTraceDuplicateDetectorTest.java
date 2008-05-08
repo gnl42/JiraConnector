@@ -28,7 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraStackTraceDuplicateDetector;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
@@ -133,7 +133,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		data.setDescription(stackTrace);
 
 		JiraStackTraceDuplicateDetector detector = new JiraStackTraceDuplicateDetector();
-		AbstractRepositoryQuery duplicatesQuery = detector.getDuplicatesQuery(repository, data);
+		RepositoryQuery duplicatesQuery = detector.getDuplicatesQuery(repository, data);
 		SearchHitCollector collector = new SearchHitCollector(TasksUi.getTaskList(), repository,
 				duplicatesQuery);
 

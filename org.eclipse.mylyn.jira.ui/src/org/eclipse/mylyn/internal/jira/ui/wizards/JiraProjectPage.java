@@ -351,7 +351,7 @@ public class JiraProjectPage extends WizardPage {
 		if (taskData == null) {
 			TaskSelection taskSelection = (TaskSelection) getAdapter(element, TaskSelection.class);
 			if (taskSelection != null) {
-				taskData = taskSelection.getTaskData();
+				taskData = taskSelection.getLegacyTaskData();
 			}
 		}
 

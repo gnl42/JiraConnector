@@ -23,7 +23,8 @@ import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositoryQueryPage;
@@ -67,13 +68,13 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 
 	private JiraQueryPage filterSummaryPage;
 
-	private final AbstractRepositoryQuery query;
+	private final IRepositoryQuery query;
 
 	public JiraQueryWizardPage(TaskRepository repository) {
 		this(repository, null);
 	}
 
-	public JiraQueryWizardPage(TaskRepository repository, AbstractRepositoryQuery query) {
+	public JiraQueryWizardPage(TaskRepository repository, IRepositoryQuery query) {
 		super(TITLE, repository);
 		this.query = query;
 		setTitle(TITLE);
@@ -275,7 +276,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 	}
 
 	@Override
-	public AbstractRepositoryQuery getQuery() {
+	public RepositoryQuery getQuery() {
 		if (buttonSaved.getSelection()) {
 			return new JiraRepositoryQuery(getTaskRepository().getRepositoryUrl(), getSelectedFilter());
 		}

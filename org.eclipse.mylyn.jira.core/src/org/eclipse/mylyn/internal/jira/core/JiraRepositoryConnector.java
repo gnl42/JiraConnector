@@ -36,7 +36,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttachmentHandler;
@@ -45,14 +44,15 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractTaskDataHandler;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.LegacyTaskDataCollector;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.TaskMapper;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
-import org.eclipse.mylyn.tasks.core.sync.SynchronizationContext;
+import org.eclipse.mylyn.tasks.core.data.TaskMapper;
+import org.eclipse.mylyn.tasks.core.sync.ISynchronizationContext;
 
 /**
  * @author Mik Kersten
@@ -120,8 +120,8 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	@Override
-	public IStatus performQuery(TaskRepository repository, AbstractRepositoryQuery repositoryQuery,
-			TaskDataCollector resultCollector, SynchronizationContext event, IProgressMonitor monitor) {
+	public IStatus performQuery(TaskRepository repository, IRepositoryQuery repositoryQuery,
+			TaskDataCollector resultCollector, ISynchronizationContext event, IProgressMonitor monitor) {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Query Repository", IProgressMonitor.UNKNOWN);
@@ -184,20 +184,20 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	@Override
-	public void preSynchronization(SynchronizationContext event, IProgressMonitor monitor) throws CoreException {
+	public void preSynchronization(ISynchronizationContext event, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Getting changed tasks", IProgressMonitor.UNKNOWN);
 
-			event.performQueries = true;
+			event.setNeedsPerformQueries(true);
 
-			if (!event.fullSynchronization) {
+			if (!event.isFullSynchronization()) {
 				return;
 			}
 
 			Date now = new Date();
-			TaskRepository repository = event.taskRepository;
-			FilterDefinition changedFilter = getSynchronizationFilter(repository, event.tasks, now);
+			TaskRepository repository = event.getTaskRepository();
+			FilterDefinition changedFilter = getSynchronizationFilter(repository, event.getTasks(), now);
 			if (changedFilter == null) {
 				// could not determine last time, rerun queries
 				repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
@@ -215,12 +215,12 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 				if (issues.isEmpty()) {
 					// repository is unchanged
 					repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
-					event.performQueries = false;
+					event.setNeedsPerformQueries(false);
 					return;
 				}
 
 				HashMap<String, ITask> taskById = new HashMap<String, ITask>();
-				for (ITask task : event.tasks) {
+				for (ITask task : event.getTasks()) {
 					taskById.put(task.getTaskId(), task);
 				}
 				for (JiraIssue issue : issues) {
@@ -248,7 +248,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 				Date repositoryUpdateTimeStamp = JiraUtil.getLastUpdate(repository);
 				if (repositoryUpdateTimeStamp != null && repositoryUpdateTimeStamp.equals(lastUpdate)) {
 					// didn't see any new changes
-					event.performQueries = false;
+					event.setNeedsPerformQueries(false);
 				} else {
 					// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
 					if (lastUpdate != null) {
@@ -266,7 +266,7 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 	}
 
 	@Override
-	public void postSynchronization(SynchronizationContext event, IProgressMonitor monitor) throws CoreException {
+	public void postSynchronization(ISynchronizationContext event, IProgressMonitor monitor) throws CoreException {
 		// ignore
 	}
 

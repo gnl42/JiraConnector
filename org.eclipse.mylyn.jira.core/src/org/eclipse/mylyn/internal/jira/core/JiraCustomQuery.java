@@ -44,7 +44,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.
@@ -53,7 +53,7 @@ import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
  * @author Eugene Kuleshov
  * @since 3.0
  */
-public class JiraCustomQuery extends AbstractRepositoryQuery {
+public class JiraCustomQuery extends RepositoryQuery {
 
 	private static final String PROJECT_KEY = "pid";
 

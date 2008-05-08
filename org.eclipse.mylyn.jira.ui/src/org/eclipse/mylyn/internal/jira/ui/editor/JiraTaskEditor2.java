@@ -14,7 +14,6 @@ import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler2;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.tasks.core.data.TaskDataUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.ITaskDataWorkingCopy;
@@ -83,9 +82,7 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
 			taskDataHandler.initializeTaskData(taskData, client, data.project);
 			if (data.taskSelection != null) {
-				// FIXME EDITOR
-				TaskData source = TaskDataUtil.toTaskData(data.taskSelection.getTaskData(), mapper);
-				taskDataHandler.cloneTaskData(source, taskData);
+				taskDataHandler.cloneTaskData(data.taskSelection, taskData);
 			}
 			taskData.getMappedAttribute(JiraAttribute.PROJECT.getId()).setValue(data.project.getId());
 

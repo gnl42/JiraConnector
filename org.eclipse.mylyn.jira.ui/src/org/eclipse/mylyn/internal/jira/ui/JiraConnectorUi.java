@@ -28,14 +28,14 @@ import org.eclipse.mylyn.internal.jira.ui.wizards.JiraQueryPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
-import org.eclipse.mylyn.internal.tasks.core.AbstractRepositoryQuery;
-import org.eclipse.mylyn.internal.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskComment;
+import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentModel;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
@@ -58,8 +58,8 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public List<AbstractTaskContainer> getLegendItems() {
-		List<AbstractTaskContainer> legendItems = new ArrayList<AbstractTaskContainer>();
+	public List<ITask> getLegendItems() {
+		List<ITask> legendItems = new ArrayList<ITask>();
 
 		JiraTask bug = new JiraTask("", "bug", "Bug");
 		bug.setTaskKind(JiraTask.Kind.BUG.toString());
@@ -114,7 +114,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public IWizard getQueryWizard(TaskRepository repository, AbstractRepositoryQuery query) {
+	public IWizard getQueryWizard(TaskRepository repository, IRepositoryQuery query) {
 		if (query instanceof JiraRepositoryQuery || query instanceof JiraCustomQuery) {
 			return new EditJiraQueryWizard(repository, query);
 		}
@@ -122,8 +122,8 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public IWizard getNewTaskWizard(TaskRepository taskRepository, TaskSelection taskSelection) {
-		return new NewJiraTaskWizard(taskRepository, taskSelection);
+	public IWizard getNewTaskWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
+		return new NewJiraTaskWizard(taskRepository, (TaskSelection) taskSelection);
 	}
 
 	@Override
