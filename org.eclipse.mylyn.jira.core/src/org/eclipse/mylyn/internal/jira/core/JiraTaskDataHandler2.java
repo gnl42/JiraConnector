@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,6 +60,8 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
 import org.eclipse.mylyn.tasks.core.data.TaskCommentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskOperation;
+import org.eclipse.mylyn.tasks.core.data.TaskRelation;
+import org.eclipse.mylyn.tasks.core.data.TaskRelation.Direction;
 
 /**
  * @author Mik Kersten
@@ -980,20 +983,21 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler {
 	}
 
 	@Override
-	public Set<String> getSubTaskIds(TaskData taskData) {
-		Set<String> subIds = new HashSet<String>();
-
+	public TaskRelation[] getTaskRelations(TaskData taskData) {
+		List<TaskRelation> relations = new ArrayList<TaskRelation>();
 		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SUBTASK_IDS.getId());
 		if (attribute != null) {
-			subIds.addAll(attribute.getValues());
+			for (String taskId : attribute.getValues()) {
+				relations.add(TaskRelation.subtask(taskId));
+			}
 		}
-
 		attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.getId());
 		if (attribute != null) {
-			subIds.addAll(attribute.getValues());
+			for (String taskId : attribute.getValues()) {
+				relations.add(TaskRelation.dependency(taskId, Direction.OUTWARD));
+			}
 		}
-
-		return subIds;
+		return relations.toArray(new TaskRelation[0]);
 	}
 
 	private static void trace(IStatus status) {
