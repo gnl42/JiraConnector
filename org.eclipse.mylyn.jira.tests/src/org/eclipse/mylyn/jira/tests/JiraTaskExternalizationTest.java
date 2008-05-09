@@ -17,15 +17,13 @@ import junit.framework.TestCase;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.RepositoryTaskHandleUtil;
 import org.eclipse.mylyn.internal.tasks.core.TaskList;
 import org.eclipse.mylyn.internal.tasks.ui.TaskListManager;
@@ -88,7 +86,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	public void testNamedFilterNotRenamed() {
 		NamedFilter filter = new NamedFilter();
 		filter.setName("f-name");
-		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getRepositoryUrl(), filter);
+		RepositoryQuery query = (RepositoryQuery) JiraTestUtils.createQuery(repository, filter);
 		taskList.addQuery(query);
 		query.setHandleIdentifier("q-name");
 
@@ -105,9 +103,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 
 	public void testCustomQueryRename() {
 		FilterDefinition filter = new FilterDefinition();
-		filter.setName("f-name");
-		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
-				repository.getCharacterEncoding());
+		RepositoryQuery query = (RepositoryQuery) JiraTestUtils.createQuery(repository, filter);
 		taskList.addQuery(query);
 		query.setHandleIdentifier("q-name");
 
@@ -163,8 +159,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 		namedFilter.setName("Test Filter");
 		namedFilter.setId("123456");
 		namedFilter.setDescription("Test Filter Description");
-		JiraRepositoryQuery jiraRepositoryQuery = new JiraRepositoryQuery(repository.getRepositoryUrl(), namedFilter);
-		String filterUrl = jiraRepositoryQuery.getUrl();
+		RepositoryQuery query = (RepositoryQuery) JiraTestUtils.createQuery(repository, namedFilter);
+		String filterUrl = query.getUrl();
 
 		JiraIssue jiraIssue = new JiraIssue();
 		jiraIssue.setKey(ISSUE_KEY);
@@ -176,8 +172,8 @@ public class JiraTaskExternalizationTest extends TestCase {
 		TasksUiPlugin.getTaskList().addTask(jiraTask);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
 
-		TasksUiPlugin.getTaskList().addQuery(jiraRepositoryQuery);
-		TasksUiPlugin.getTaskList().addTask(jiraTask, jiraRepositoryQuery);
+		TasksUiPlugin.getTaskList().addQuery(query);
+		TasksUiPlugin.getTaskList().addTask(jiraTask, query);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
 
 		manager.saveTaskList();
@@ -185,10 +181,10 @@ public class JiraTaskExternalizationTest extends TestCase {
 		manager.readExistingOrCreateNewList();
 
 		Set<RepositoryQuery> queries = manager.getTaskList().getQueries();
-		JiraRepositoryQuery savedFilter = null;
-		for (RepositoryQuery query : queries) {
-			if (query.getHandleIdentifier().equals(jiraRepositoryQuery.getHandleIdentifier())) {
-				savedFilter = (JiraRepositoryQuery) query;
+		RepositoryQuery savedFilter = null;
+		for (RepositoryQuery taskListQuery : queries) {
+			if (taskListQuery.getHandleIdentifier().equals(query.getHandleIdentifier())) {
+				savedFilter = taskListQuery;
 				break;
 			}
 		}

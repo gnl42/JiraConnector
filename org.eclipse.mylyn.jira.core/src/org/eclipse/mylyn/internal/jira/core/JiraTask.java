@@ -19,7 +19,7 @@ public class JiraTask extends AbstractTask {
 
 	public static final String UNASSIGNED_USER = "-1";
 
-	private String key = null;
+	private final String key = null;
 
 	public enum Kind {
 		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
@@ -60,10 +60,6 @@ public class JiraTask extends AbstractTask {
 	@Override
 	public String getTaskKey() {
 		return key;
-	}
-
-	public void setTaskKey(String key) {
-		this.key = key;
 	}
 
 	@Override

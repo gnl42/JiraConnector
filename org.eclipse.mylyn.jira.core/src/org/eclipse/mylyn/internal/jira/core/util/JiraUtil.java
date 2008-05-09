@@ -21,7 +21,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
+import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**
@@ -29,39 +34,21 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  */
 public class JiraUtil {
 
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general"));
-
-	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate";
-
 	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated";
 
 	private static final String COMPRESSION_KEY = "compression";
 
+	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl";
+
+	private static final String KEY_FILTER_ID = "FilterID";
+
+	private static final String KEY_FILTER_NAME = "FilterName";
+
 	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration";
 
-	public static void setLastUpdate(TaskRepository repository, Date date) {
-		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtil.dateToString(date));
-	}
+	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate";
 
-	public static Date getLastUpdate(TaskRepository repository) {
-		return JiraUtil.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
-	}
-
-	public static void setCompression(TaskRepository taskRepository, boolean compression) {
-		taskRepository.setProperty(COMPRESSION_KEY, String.valueOf(compression));
-	}
-
-	public static boolean getCompression(TaskRepository taskRepository) {
-		return Boolean.parseBoolean(taskRepository.getProperty(COMPRESSION_KEY));
-	}
-
-	public static void setCharacterEncodingValidated(TaskRepository taskRepository, boolean validated) {
-		taskRepository.setProperty(CHARACTER_ENCODING_VALIDATED, String.valueOf(validated));
-	}
-
-	public static boolean getCharacterEncodingValidated(TaskRepository taskRepository) {
-		return Boolean.parseBoolean(taskRepository.getProperty(CHARACTER_ENCODING_VALIDATED));
-	}
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general"));
 
 	public static String dateToString(Date date) {
 		if (date == null) {
@@ -69,6 +56,99 @@ public class JiraUtil {
 		} else {
 			return date.getTime() + "";
 		}
+	}
+
+	public static String encode(String text, String encoding) {
+		try {
+			return URLEncoder.encode(text, encoding);
+		} catch (UnsupportedEncodingException e) {
+			try {
+				return URLEncoder.encode(text, JiraClient.DEFAULT_CHARSET);
+			} catch (UnsupportedEncodingException e1) {
+				// should never happen
+				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, "Could not encode text \""
+						+ text + "\"", e));
+				return text;
+			}
+		}
+	}
+
+	public static boolean getAutoRefreshConfiguration(TaskRepository repository) {
+		return Boolean.parseBoolean(repository.getProperty(REFRESH_CONFIGURATION_KEY));
+	}
+
+	public static boolean getCharacterEncodingValidated(TaskRepository taskRepository) {
+		return Boolean.parseBoolean(taskRepository.getProperty(CHARACTER_ENCODING_VALIDATED));
+	}
+
+	public static boolean getCompression(TaskRepository taskRepository) {
+		return Boolean.parseBoolean(taskRepository.getProperty(COMPRESSION_KEY));
+	}
+
+	public static JiraFilter getQuery(TaskRepository taskRepository, JiraClient client, IRepositoryQuery query,
+			boolean validate) {
+		JiraFilter filter = getFilterDefinition(taskRepository, client, query, validate);
+		if (filter != null) {
+			return filter;
+		} else {
+			return getNamedFilter(query);
+		}
+	}
+
+	public static FilterDefinition getFilterDefinition(TaskRepository taskRepository, JiraClient client,
+			IRepositoryQuery query, boolean validate) {
+		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
+		if (customUrl != null && customUrl.length() > 0) {
+			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+			return converter.toFilter(client, customUrl, validate);
+		}
+		return null;
+	}
+
+	public static NamedFilter getNamedFilter(IRepositoryQuery query) {
+		String id = query.getAttribute(KEY_FILTER_ID);
+		if (id != null) {
+			NamedFilter namedFilter = new NamedFilter();
+			namedFilter.setId(id);
+			namedFilter.setName(query.getAttribute(KEY_FILTER_NAME));
+			return namedFilter;
+		}
+		return null;
+	}
+
+	public static void setQuery(TaskRepository taskRepository, IRepositoryQuery query, JiraFilter filter) {
+		if (filter instanceof NamedFilter) {
+			NamedFilter namedFilter = (NamedFilter) filter;
+			query.setAttribute(KEY_FILTER_ID, namedFilter.getId());
+			query.setAttribute(KEY_FILTER_NAME, namedFilter.getName());
+			query.setUrl(taskRepository.getRepositoryUrl() + JiraRepositoryConnector.FILTER_URL_PREFIX + "&requestId="
+					+ namedFilter.getId());
+		} else if (filter instanceof FilterDefinition) {
+			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+			String url = converter.toUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter);
+			query.setAttribute(KEY_FILTER_CUSTOM_URL, url);
+			query.setUrl(url);
+		}
+	}
+
+	public static Date getLastUpdate(TaskRepository repository) {
+		return JiraUtil.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
+	}
+
+	public static void setAutoRefreshConfiguration(TaskRepository repository, boolean autoRefreshConfiguration) {
+		repository.setProperty(REFRESH_CONFIGURATION_KEY, String.valueOf(autoRefreshConfiguration));
+	}
+
+	public static void setCharacterEncodingValidated(TaskRepository taskRepository, boolean validated) {
+		taskRepository.setProperty(CHARACTER_ENCODING_VALIDATED, String.valueOf(validated));
+	}
+
+	public static void setCompression(TaskRepository taskRepository, boolean compression) {
+		taskRepository.setProperty(COMPRESSION_KEY, String.valueOf(compression));
+	}
+
+	public static void setLastUpdate(TaskRepository repository, Date date) {
+		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtil.dateToString(date));
 	}
 
 	public static Date stringToDate(String dateString) {
@@ -94,27 +174,9 @@ public class JiraUtil {
 		}
 	}
 
-	public static boolean getAutoRefreshConfiguration(TaskRepository repository) {
-		return Boolean.parseBoolean(repository.getProperty(REFRESH_CONFIGURATION_KEY));
-	}
-
-	public static void setAutoRefreshConfiguration(TaskRepository repository, boolean autoRefreshConfiguration) {
-		repository.setProperty(REFRESH_CONFIGURATION_KEY, String.valueOf(autoRefreshConfiguration));
-	}
-
-	public static String encode(String text, String encoding) {
-		try {
-			return URLEncoder.encode(text, encoding);
-		} catch (UnsupportedEncodingException e) {
-			try {
-				return URLEncoder.encode(text, JiraClient.DEFAULT_CHARSET);
-			} catch (UnsupportedEncodingException e1) {
-				// should never happen
-				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, "Could not encode text \""
-						+ text + "\"", e));
-				return text;
-			}
-		}
+	public static boolean isFilterDefinition(IRepositoryQuery query) {
+		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
+		return customUrl != null && customUrl.length() > 0;
 	}
 
 }

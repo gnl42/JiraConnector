@@ -18,9 +18,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
@@ -31,10 +29,12 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.tasks.core.ITaskList;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.jira.tests.util.ResultCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**
@@ -107,7 +107,7 @@ public class JiraFilterTest extends TestCase {
 		NamedFilter filter = filters[1];
 		assertEquals("My Issues", filter.getName());
 
-		JiraRepositoryQuery query = new JiraRepositoryQuery(repository.getRepositoryUrl(), filter);
+		RepositoryQuery query = (RepositoryQuery) JiraTestUtils.createQuery(repository, filter);
 		taskList.addQuery(query);
 		assertTrue(query.getChildren().size() == 0);
 
@@ -133,9 +133,7 @@ public class JiraFilterTest extends TestCase {
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
-
-		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
-				repository.getCharacterEncoding());
+		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
 
 		ResultCollector hitCollector = new ResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
@@ -165,8 +163,7 @@ public class JiraFilterTest extends TestCase {
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
 
-		JiraCustomQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
-				repository.getCharacterEncoding());
+		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
 		ResultCollector hitCollector = new ResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(1, hitCollector.results.size());

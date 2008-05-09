@@ -19,14 +19,12 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
-import org.eclipse.mylyn.internal.jira.ui.wizards.EditJiraQueryWizard;
-import org.eclipse.mylyn.internal.jira.ui.wizards.JiraQueryPage;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
+import org.eclipse.mylyn.internal.jira.ui.wizards.JiraFilterDefinitionPage;
+import org.eclipse.mylyn.internal.jira.ui.wizards.JiraNamedFilterPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
-import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraQueryWizard;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
@@ -41,8 +39,9 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttachmentModel;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskSearchPage;
+import org.eclipse.mylyn.tasks.ui.wizards.RepositoryQueryWizard;
 import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
 
 /**
@@ -105,20 +104,27 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public ITaskSearchPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
-		return new JiraQueryPage(repository);
+		return new JiraFilterDefinitionPage(repository);
 	}
 
 	@Override
-	public AbstractRepositorySettingsPage getSettingsPage() {
-		return new JiraRepositorySettingsPage(this);
+	public ITaskRepositoryPage getSettingsPage(TaskRepository taskRepository) {
+		return new JiraRepositorySettingsPage(taskRepository);
 	}
 
 	@Override
 	public IWizard getQueryWizard(TaskRepository repository, IRepositoryQuery query) {
-		if (query instanceof JiraRepositoryQuery || query instanceof JiraCustomQuery) {
-			return new EditJiraQueryWizard(repository, query);
+		RepositoryQueryWizard wizard = new RepositoryQueryWizard(repository);
+		if (query != null) {
+			if (JiraUtil.isFilterDefinition(query)) {
+				wizard.addPage(new JiraFilterDefinitionPage(repository, query));
+			} else {
+				wizard.addPage(new JiraNamedFilterPage(repository, query));
+			}
+		} else {
+			wizard.addPage(new JiraNamedFilterPage(repository));
 		}
-		return new NewJiraQueryWizard(repository);
+		return wizard;
 	}
 
 	@Override

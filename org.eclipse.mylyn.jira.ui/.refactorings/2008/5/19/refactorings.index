@@ -1,0 +1,7 @@
+1210280078201	Rename type 'JiraQueryPage'
+1210280099542	Rename type 'JiraQueryWizardPage'
+1210282211343	Delete element
+1210282426332	Extract method 'getFilter'
+1210282499613	Extract local variable 'query'
+1210283780840	Delete element
+1210284746007	Delete element

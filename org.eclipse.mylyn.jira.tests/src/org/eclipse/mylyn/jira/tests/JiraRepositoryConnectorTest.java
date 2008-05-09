@@ -27,7 +27,6 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
@@ -56,6 +55,7 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
+import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
@@ -120,7 +120,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		WizardDialog dialog = new WizardDialog(shell, wizard);
 		dialog.create();
 
-		wizard.getSettingsPage().setUserId("newuser");
+		((AbstractRepositorySettingsPage) wizard.getSettingsPage()).setUserId("newuser");
 		assertTrue(wizard.performFinish());
 
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
@@ -162,12 +162,11 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		DateFilter dueDateFilter = new DateRangeFilter(fromDate, toDate);
 
-		FilterDefinition filter = new FilterDefinition("test query");
+		FilterDefinition filter = new FilterDefinition();
 		filter.setDueDateFilter(dueDateFilter);
 
 		// AbstractRepositoryQuery query = new JiraCustomQuery("test query", queryUrl, repository.getUrl(), repository.getCharacterEncoding());
-		IRepositoryQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
-				repository.getCharacterEncoding());
+		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
 
 		ResultCollector collector1 = new ResultCollector();
 		connector.performQuery(repository, query, collector1, null, null);
@@ -198,11 +197,10 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		JiraTestUtils.createIssue(client, summary2);
 
 		String queryString = currentTimeMillis + " " + (currentTimeMillis + 1);
-		FilterDefinition filter = new FilterDefinition("test query");
+		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(queryString, true, false, false, false));
 
-		IRepositoryQuery query = new JiraCustomQuery(repository.getRepositoryUrl(), filter,
-				repository.getCharacterEncoding());
+		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
 		ResultCollector collector = new ResultCollector();
 		connector.performQuery(repository, query, collector, null, new NullProgressMonitor());
 		assertEquals(2, collector.results.size());

@@ -24,7 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
-import org.eclipse.mylyn.internal.jira.core.model.Query;
+import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
@@ -271,7 +271,7 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public void search(Query query, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
+	public void search(JiraFilter query, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
 		// ignore
 	}
 

@@ -24,10 +24,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.net.Policy;
+import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
-import org.eclipse.mylyn.internal.jira.core.model.Query;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.Order;
@@ -41,7 +41,6 @@ import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttachmentHandler;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractTaskDataHandler;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.LegacyTaskDataCollector;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
@@ -121,13 +120,11 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 
 	@Override
 	public IStatus performQuery(TaskRepository repository, IRepositoryQuery repositoryQuery,
-			TaskDataCollector resultCollector, ISynchronizationContext event, IProgressMonitor monitor) {
+			TaskDataCollector resultCollector, ISynchronizationContext context, IProgressMonitor monitor) {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Query Repository", IProgressMonitor.UNKNOWN);
-
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-
 			try {
 				if (!client.getCache().hasDetails()) {
 					client.getCache().refreshDetails(monitor);
@@ -135,42 +132,33 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 			} catch (JiraException e) {
 				return JiraCorePlugin.toStatus(repository, e);
 			}
-
-			Query filter;
-			if (repositoryQuery instanceof JiraRepositoryQuery) {
-				filter = ((JiraRepositoryQuery) repositoryQuery).getNamedFilter();
-			} else if (repositoryQuery instanceof JiraCustomQuery) {
-				try {
-					filter = ((JiraCustomQuery) repositoryQuery).getFilterDefinition(client, true);
-				} catch (InvalidJiraQueryException e) {
-					return new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0,
-							"The query parameters do not match the repository configuration, please check the query properties: "
-									+ e.getMessage(), null);
-				}
-			} else {
+			JiraFilter filter = JiraUtil.getQuery(repository, client, repositoryQuery, true);
+			if (filter == null) {
 				return new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, //
 						"Invalid query type: " + repositoryQuery.getClass(), null);
 			}
-
 			try {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
 				client.search(filter, new JiraIssueCollector(monitor, issues, TaskDataCollector.MAX_HITS), monitor);
-
 				for (JiraIssue issue : issues) {
 					if (monitor.isCanceled()) {
 						return Status.CANCEL_STATUS;
 					}
-
 					if (issue.getProject() == null) {
 						return new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION,
 								null);
 					}
-
 					monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
-					RepositoryTaskData oldTaskData = ((TaskDataManager) getTaskDataManager()).getNewTaskData(
-							repository.getRepositoryUrl(), issue.getId());
-					((LegacyTaskDataCollector) resultCollector).accept(taskDataHandler.createTaskData(repository,
-							client, issue, oldTaskData, monitor));
+					TaskData oldTaskData = null;
+					if (context != null) {
+						try {
+							oldTaskData = context.getTaskDataManager().getTaskData(repository, issue.getId());
+						} catch (CoreException e) {
+							// ignore
+						}
+					}
+					resultCollector.accept(taskDataHandler2.createTaskData(repository, client, issue, oldTaskData,
+							monitor));
 				}
 				return Status.OK_STATUS;
 			} catch (JiraException e) {
@@ -312,14 +300,14 @@ public class JiraRepositoryConnector extends AbstractLegacyRepositoryConnector {
 			}
 
 			// get all tasks that were changed after the last known task modification
-			FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
+			FilterDefinition changedFilter = new FilterDefinition();
 			changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, null));
 			// make sure it's sorted so the most recent changes are returned in case the query maximum is hit
 			changedFilter.setOrdering(new Order[] { new Order(Order.Field.UPDATED, false) });
 			return changedFilter;
 		}
 
-		FilterDefinition changedFilter = new FilterDefinition("Changed Tasks");
+		FilterDefinition changedFilter = new FilterDefinition();
 		// need to use RelativeDateRangeFilter since the granularity of DateRangeFilter is days
 		// whereas this allows us to use minutes 
 		long minutes = (now.getTime() - lastSyncDate.getTime()) / (60 * 1000) + 1;

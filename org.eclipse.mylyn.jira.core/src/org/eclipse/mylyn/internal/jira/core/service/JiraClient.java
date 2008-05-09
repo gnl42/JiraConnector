@@ -30,7 +30,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
-import org.eclipse.mylyn.internal.jira.core.model.Query;
+import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
@@ -38,7 +38,7 @@ import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
-import org.eclipse.mylyn.internal.jira.core.model.filter.SmartQuery;
+import org.eclipse.mylyn.internal.jira.core.model.filter.TextFilter;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraSoapClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssClient;
@@ -430,9 +430,9 @@ public class JiraClient {
 	 * @param collector
 	 * 		Reciever for the matching issues
 	 */
-	public void search(Query query, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
-		if (query instanceof SmartQuery) {
-			quickSearch(((SmartQuery) query).getKeywords(), collector, monitor);
+	public void search(JiraFilter query, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
+		if (query instanceof TextFilter) {
+			quickSearch(((TextFilter) query).getKeywords(), collector, monitor);
 		} else if (query instanceof FilterDefinition) {
 			findIssues((FilterDefinition) query, collector, monitor);
 		} else if (query instanceof NamedFilter) {

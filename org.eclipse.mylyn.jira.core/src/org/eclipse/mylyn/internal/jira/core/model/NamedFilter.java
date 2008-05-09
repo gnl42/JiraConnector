@@ -13,7 +13,7 @@ import java.io.Serializable;
 /**
  * @author Brock Janiczak
  */
-public class NamedFilter implements Query, Serializable {
+public class NamedFilter implements JiraFilter, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String id;

@@ -17,13 +17,11 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -46,45 +44,66 @@ import org.eclipse.swt.widgets.List;
  * @author Eugene Kuleshov (layout and other improvements)
  * @author Steffen Pingel
  */
-public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
-
-	private static final String TITLE = "New Jira Query";
+public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 	private static final String DESCRIPTION = "Please select a query type.";
 
-	private static final String WAIT_MESSAGE = "Downloading...";
-
 	private static final String JOB_LABEL = "Downloading Filter Names";
 
-	private NamedFilter[] filters = null;
+	private static final String TITLE = "New Jira Query";
 
-	private List filterList;
-
-	private Button updateButton = null;
+	private static final String WAIT_MESSAGE = "Downloading...";
 
 	private Button buttonCustom;
 
 	private Button buttonSaved;
 
-	private JiraQueryPage filterSummaryPage;
+	private List filterList;
 
-	private final IRepositoryQuery query;
+	private NamedFilter[] filters = null;
 
-	public JiraQueryWizardPage(TaskRepository repository) {
+	private JiraFilterDefinitionPage filterDefinitionPage;
+
+	private Button updateButton = null;
+
+	private final NamedFilter workingCopy;
+
+	public JiraNamedFilterPage(TaskRepository repository) {
 		this(repository, null);
 	}
 
-	public JiraQueryWizardPage(TaskRepository repository, IRepositoryQuery query) {
-		super(TITLE, repository);
-		this.query = query;
+	public JiraNamedFilterPage(TaskRepository repository, IRepositoryQuery query) {
+		super(TITLE, repository, query);
+		this.workingCopy = getFilter(query);
 		setTitle(TITLE);
 		setDescription(DESCRIPTION);
 		setPageComplete(false);
 	}
 
+	private NamedFilter getFilter(IRepositoryQuery query) {
+		NamedFilter filter = null;
+		if (query != null) {
+			filter = JiraUtil.getNamedFilter(query);
+		}
+		if (filter == null) {
+			filter = new NamedFilter();
+		}
+		return filter;
+	}
+
+	@Override
+	public void applyTo(IRepositoryQuery query) {
+		JiraUtil.setQuery(getTaskRepository(), query, getSelectedFilter());
+	}
+
+	@Override
+	public boolean canFlipToNextPage() {
+		return buttonCustom.getSelection();
+	}
+
 	public void createControl(Composite parent) {
-		boolean isCustom = query == null || query instanceof JiraCustomQuery;
-		boolean isRepository = query instanceof JiraRepositoryQuery;
+		IRepositoryQuery query = getQuery();
+		boolean isCustom = query == null || JiraUtil.isFilterDefinition(query);
 
 		final Composite innerComposite = new Composite(parent, SWT.NONE);
 		innerComposite.setLayoutData(new GridData());
@@ -100,7 +119,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		buttonSaved = new Button(innerComposite, SWT.RADIO);
 		buttonSaved.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		buttonSaved.setText("Use saved &filter from the repository");
-		buttonSaved.setSelection(isRepository);
+		buttonSaved.setSelection(!isCustom);
 
 		buttonSaved.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -127,7 +146,7 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, false, true);
 		updateButton.setLayoutData(gridData);
 		updateButton.setText("Update from &Repository");
-		updateButton.setEnabled(isRepository);
+		updateButton.setEnabled(isCustom);
 		updateButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -149,31 +168,43 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		downloadFilters();
 	}
 
-	@Override
-	public boolean isPageComplete() {
-		return buttonCustom.getSelection() ? super.isPageComplete() : filterList.getSelectionCount() == 1;
-	}
-
-	@Override
-	public IWizardPage getNextPage() {
-		if (!buttonCustom.getSelection()) {
-			return null;
+	/**
+	 * Called by the download job when the filters have been downloaded
+	 * 
+	 * @param status
+	 */
+	public void displayFilters(NamedFilter[] filters, IStatus status) {
+		if (!status.isOK()) {
+			setMessage(status.getMessage(), IMessageProvider.ERROR);
 		}
 
-		if (filterSummaryPage == null) {
-			if (query instanceof JiraCustomQuery) {
-				filterSummaryPage = new JiraQueryPage(getTaskRepository(), (JiraCustomQuery) query);
-			} else {
-				filterSummaryPage = new JiraQueryPage(getTaskRepository());
+		filterList.removeAll();
+
+		if (filters.length == 0) {
+			filterList.setEnabled(false);
+			filterList.add("No filters found");
+			filterList.deselectAll();
+
+			if (status.isOK()) {
+				setMessage("No saved filters found. Please create filters using JIRA web interface or"
+						+ " follow to the next page to create custom query.", IMessageProvider.WARNING);
 			}
-			filterSummaryPage.setWizard(getWizard());
+			setPageComplete(false);
+			return;
 		}
-		return filterSummaryPage;
-	}
 
-	@Override
-	public boolean canFlipToNextPage() {
-		return buttonCustom.getSelection();
+		int n = 0;
+		for (int i = 0; i < filters.length; i++) {
+			filterList.add(filters[i].getName());
+			if (filters[i].getId().equals(workingCopy.getId())) {
+				n = i;
+			}
+		}
+
+		filterList.select(n);
+		filterList.showSelection();
+		filterList.setEnabled(buttonSaved.getSelection());
+		setPageComplete(status.isOK());
 	}
 
 	protected void downloadFilters() {
@@ -223,48 +254,21 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 		job.schedule();
 	}
 
-	/**
-	 * Called by the download job when the filters have been downloaded
-	 * 
-	 * @param status
-	 */
-	public void displayFilters(NamedFilter[] filters, IStatus status) {
-		if (!status.isOK()) {
-			setMessage(status.getMessage(), IMessageProvider.ERROR);
+	@Override
+	public IWizardPage getNextPage() {
+		if (!buttonCustom.getSelection()) {
+			return null;
 		}
-
-		filterList.removeAll();
-
-		if (filters.length == 0) {
-			filterList.setEnabled(false);
-			filterList.add("No filters found");
-			filterList.deselectAll();
-
-			if (status.isOK()) {
-				setMessage("No saved filters found. Please create filters using JIRA web interface or"
-						+ " follow to the next page to create custom query.", IMessageProvider.WARNING);
-			}
-			setPageComplete(false);
-			return;
+		if (filterDefinitionPage == null) {
+			filterDefinitionPage = new JiraFilterDefinitionPage(getTaskRepository(), getQuery());
+			filterDefinitionPage.setWizard(getWizard());
 		}
+		return filterDefinitionPage;
+	}
 
-		String id = null;
-		if (query instanceof JiraRepositoryQuery) {
-			id = ((JiraRepositoryQuery) query).getNamedFilter().getId();
-		}
-
-		int n = 0;
-		for (int i = 0; i < filters.length; i++) {
-			filterList.add(filters[i].getName());
-			if (filters[i].getId().equals(id)) {
-				n = i;
-			}
-		}
-
-		filterList.select(n);
-		filterList.showSelection();
-		filterList.setEnabled(buttonSaved.getSelection());
-		setPageComplete(status.isOK());
+	@Override
+	public String getQueryTitle() {
+		return getSelectedFilter() != null ? getSelectedFilter().getName() : null;
 	}
 
 	/** Returns the filter selected by the user or null on failure */
@@ -276,21 +280,8 @@ public class JiraQueryWizardPage extends AbstractRepositoryQueryPage {
 	}
 
 	@Override
-	public RepositoryQuery getQuery() {
-		if (buttonSaved.getSelection()) {
-			return new JiraRepositoryQuery(getTaskRepository().getRepositoryUrl(), getSelectedFilter());
-		}
-
-		if (filterSummaryPage != null) {
-			return filterSummaryPage.getQuery();
-		}
-
-		return null;
-	}
-
-	@Override
-	public String getQueryTitle() {
-		return null;
+	public boolean isPageComplete() {
+		return buttonCustom.getSelection() ? super.isPageComplete() : filterList.getSelectionCount() == 1;
 	}
 
 }

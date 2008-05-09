@@ -21,23 +21,24 @@ import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
+import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler2;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraStackTraceDuplicateDetector;
-import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractLegacyRepositoryConnector;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.search.SearchHitCollector;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 
 /**
@@ -49,9 +50,9 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 	private TaskRepositoryManager manager;
 
-	private AbstractLegacyRepositoryConnector connector;
+	private JiraRepositoryConnector connector;
 
-	private JiraTaskDataHandler dataHandler;
+	private JiraTaskDataHandler2 dataHandler;
 
 	private JiraClient client;
 
@@ -82,11 +83,9 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		connector = (AbstractLegacyRepositoryConnector) manager.getRepositoryConnector(kind);
+		connector = (JiraRepositoryConnector) manager.getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
-
-		dataHandler = (JiraTaskDataHandler) connector.getLegacyTaskDataHandler();
-
+		dataHandler = (JiraTaskDataHandler2) connector.getTaskDataHandler();
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
 	}
 
@@ -127,13 +126,13 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		JiraIssue issue2 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
 		issue2.setDescription(stackTrace);
 
-		RepositoryTaskData data = new RepositoryTaskData(dataHandler.getAttributeFactory(null, null, null),
-				connector.getConnectorKind(), repository.getRepositoryUrl(), //
-				TasksUiPlugin.getDefault().getNextNewRepositoryTaskId());
-		data.setDescription(stackTrace);
+		TaskData data = new TaskData(dataHandler.getAttributeMapper(repository), repository.getConnectorKind(),
+				repository.getRepositoryUrl(), "");
+		dataHandler.initializeTaskData(repository, data, null);
+		data.getMappedAttribute(JiraAttribute.DESCRIPTION.getId()).setValue(stackTrace);
 
 		JiraStackTraceDuplicateDetector detector = new JiraStackTraceDuplicateDetector();
-		RepositoryQuery duplicatesQuery = detector.getDuplicatesQuery(repository, data);
+		IRepositoryQuery duplicatesQuery = detector.getDuplicatesQuery(repository, data, stackTrace);
 		SearchHitCollector collector = new SearchHitCollector(TasksUiInternal.getTaskList(), repository,
 				duplicatesQuery);
 
@@ -149,5 +148,4 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		}
 		fail("Duplicated task not found " + issue.getId() + " : " + issue.getKey());
 	}
-
 }

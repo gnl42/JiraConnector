@@ -10,7 +10,7 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import org.eclipse.mylyn.internal.jira.core.model.Query;
+import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 
 /*
  * TODO convert this into a factory. Have methods like addProjectFilter this way
@@ -23,12 +23,8 @@ import org.eclipse.mylyn.internal.jira.core.model.Query;
 /**
  * @author Brock Janiczak
  */
-public class FilterDefinition implements Query, Serializable {
+public class FilterDefinition implements JiraFilter, Serializable {
 	private static final long serialVersionUID = 1L;
-
-	private String name;
-
-	private String description;
 
 	private ProjectFilter projectFilter;
 
@@ -63,18 +59,9 @@ public class FilterDefinition implements Query, Serializable {
 	private Order[] ordering = new Order[0];
 
 	public FilterDefinition() {
-
-	}
-
-	public FilterDefinition(String name) {
-		this.name = name;
 	}
 
 	public void copyAttributes(FilterDefinition copy) {
-		this.name = copy.name;
-
-		this.description = copy.description;
-
 		if (copy.assignedToFilter != null) {
 			this.assignedToFilter = copy.assignedToFilter.copy();
 		} else {
@@ -170,18 +157,10 @@ public class FilterDefinition implements Query, Serializable {
 	 * Copy constructor for cloning filter definitions
 	 * 
 	 * @param copy
-	 *            Filter definition to copy
+	 * 		Filter definition to copy
 	 */
 	public FilterDefinition(FilterDefinition copy) {
 		copyAttributes(copy);
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return this.name;
 	}
 
 	public void setProjectFilter(ProjectFilter projectFilter) {
@@ -280,16 +259,6 @@ public class FilterDefinition implements Query, Serializable {
 		this.estimateVsActualFilter = estimateVsActualFilter;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return name;
-	}
-
 	public DateFilter getCreatedDateFilter() {
 		return this.createdDateFilter;
 	}
@@ -322,11 +291,4 @@ public class FilterDefinition implements Query, Serializable {
 		this.ordering = ordering;
 	}
 
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 }

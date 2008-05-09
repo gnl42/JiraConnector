@@ -8,7 +8,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.model.filter;
 
-import org.eclipse.mylyn.internal.jira.core.model.Query;
+import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 
 /**
  * Query object that holds the query value that will be passed to the server. TODO Possibly allow the user to construct
@@ -16,11 +16,11 @@ import org.eclipse.mylyn.internal.jira.core.model.Query;
  * 
  * @author Brock Janiczak
  */
-public class SmartQuery implements Query {
+public class TextFilter implements JiraFilter {
 
 	private final String keywords;
 
-	public SmartQuery(String keywords) {
+	public TextFilter(String keywords) {
 		this.keywords = keywords;
 	}
 

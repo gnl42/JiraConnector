@@ -22,14 +22,20 @@ import java.util.Map;
 import junit.framework.AssertionFailedError;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
+import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientData;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 public class JiraTestUtils {
 
@@ -163,6 +169,12 @@ public class JiraTestUtils {
 		} finally {
 			out.close();
 		}
+	}
+
+	public static IRepositoryQuery createQuery(TaskRepository taskRepository, JiraFilter filter) {
+		RepositoryQuery query = new RepositoryQuery(JiraCorePlugin.CONNECTOR_KIND, "");
+		JiraUtil.setQuery(taskRepository, query, filter);
+		return query;
 	}
 
 }

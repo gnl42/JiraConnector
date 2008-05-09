@@ -14,7 +14,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylyn.internal.jira.core.InvalidJiraQueryException;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
@@ -35,6 +34,8 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
+import org.eclipse.mylyn.internal.jira.core.util.FilterDefinitionConverter;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**
@@ -111,7 +112,6 @@ public class JiraCustomQueryTest extends TestCase {
 		resolutions[1].setId("resolution1");
 
 		FilterDefinition filter = new FilterDefinition();
-		filter.setName("filter");
 		filter.setProjectFilter(new ProjectFilter(project));
 		filter.setComponentFilter(new ComponentFilter(components));
 		filter.setFixForVersionFilter(new VersionFilter(fixVersions));
@@ -131,9 +131,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 		TaskRepository taskRepository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
-
-		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, taskRepository.getCharacterEncoding());
-
+		IRepositoryQuery customQuery = JiraTestUtils.createQuery(taskRepository, filter);
 		String queryUrl = customQuery.getUrl();
 
 		MockJiraClient client = new MockJiraClient("");
@@ -167,10 +165,8 @@ public class JiraCustomQueryTest extends TestCase {
 		};
 		client.setCache(cache);
 
-		JiraCustomQuery customQuery2 = new JiraCustomQuery("test", queryUrl, repositoryUrl,
-				taskRepository.getCharacterEncoding());
-
-		FilterDefinition filter2 = customQuery2.getFilterDefinition(client, true);
+		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+		FilterDefinition filter2 = converter.toFilter(client, queryUrl, true);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();
 		assertEquals(project.getId(), projectFilter2.getProject().getId());
@@ -238,12 +234,14 @@ public class JiraCustomQueryTest extends TestCase {
 
 	public void testGetFilterDefinitionUnresolvedResolution() {
 		String repositoryUrl = JiraTestConstants.JIRA_39_URL;
+		MockJiraClient client = new MockJiraClient(repositoryUrl);
+		FilterDefinitionConverter converter = new FilterDefinitionConverter(JiraClient.DEFAULT_CHARSET);
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
-		JiraCustomQuery customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.DEFAULT_CHARSET);
-		MockJiraClient client = new MockJiraClient(repositoryUrl);
-		filter = customQuery.getFilterDefinition(client, true);
+		String queryUrl = converter.toUrl(repositoryUrl, filter);
+		filter = converter.toFilter(client, queryUrl, true);
+
 		ResolutionFilter resolutionFilter = filter.getResolutionFilter();
 		assertNotNull(resolutionFilter);
 		assertTrue(resolutionFilter.isUnresolved());
@@ -254,9 +252,9 @@ public class JiraCustomQueryTest extends TestCase {
 		resolutions[0].setId("123");
 		resolutionFilter = new ResolutionFilter(resolutions);
 		filter.setResolutionFilter(resolutionFilter);
-		customQuery = new JiraCustomQuery(repositoryUrl, filter, JiraClient.DEFAULT_CHARSET);
+		queryUrl = converter.toUrl(repositoryUrl, filter);
 		try {
-			filter = customQuery.getFilterDefinition(client, true);
+			filter = converter.toFilter(client, queryUrl, true);
 			fail("Expected InvalidJiraQueryException, got: " + filter);
 		} catch (InvalidJiraQueryException e) {
 		}

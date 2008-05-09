@@ -34,19 +34,20 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.internal.tasks.core.TaskDataStorageManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.deprecated.AbstractRepositoryTaskEditorInput;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.SWT;
@@ -319,11 +320,11 @@ public class JiraProjectPage extends WizardPage {
 			}
 		}
 
-		if (element instanceof JiraCustomQuery) {
-			JiraCustomQuery query = (JiraCustomQuery) element;
+		if (element instanceof IRepositoryQuery) {
+			IRepositoryQuery query = (IRepositoryQuery) element;
 			if (query.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
 				JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-				FilterDefinition filter = query.getFilterDefinition(client, false);
+				FilterDefinition filter = JiraUtil.getFilterDefinition(repository, client, query, false);
 				if (filter != null) {
 					ProjectFilter projectFilter = filter.getProjectFilter();
 					if (projectFilter != null) {

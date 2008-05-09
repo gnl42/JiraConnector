@@ -8,22 +8,14 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
-import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraCustomQuery;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryQuery;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
-import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
-import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
-import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractTaskListFactory;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -72,7 +64,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 
 	@Override
 	public boolean canCreate(IRepositoryQuery category) {
-		return category instanceof JiraRepositoryQuery || category instanceof JiraCustomQuery;
+		return JiraCorePlugin.CONNECTOR_KIND.equals(category.getConnectorKind());
 	}
 
 	@Override
@@ -82,73 +74,25 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 
 	@Override
 	public RepositoryQuery createQuery(String repositoryUrl, String queryString, String label, Element element) {
-		String custom = element.getAttribute(KEY_FILTER_CUSTOM);
-		String customUrl = element.getAttribute(KEY_FILTER_CUSTOM_URL);
-		RepositoryQuery query;
-		if (custom != null && custom.length() > 0) {
-			// TODO remove this at some point
-			FilterDefinition filter = decodeFilter(custom);
-			if (filter == null) {
-				StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to restore custom query "
-						+ element.getAttribute(KEY_FILTER_ID)));
-				return null;
-			}
-			filter.setName(element.getAttribute(KEY_FILTER_ID));
-			// filter.setDescription(element.getAttribute(KEY_FILTER_DESCRIPTION));
-
-			query = new JiraCustomQuery(repositoryUrl, filter, TasksUi.getRepositoryManager().getRepository(
-					JiraCorePlugin.CONNECTOR_KIND, repositoryUrl).getCharacterEncoding());
-		} else if (customUrl != null && customUrl.length() > 0) {
-			TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
-					JiraCorePlugin.CONNECTOR_KIND, repositoryUrl);
-			if (repository != null) {
-				query = new JiraCustomQuery(element.getAttribute(KEY_FILTER_ID), customUrl, repositoryUrl,
-						repository.getCharacterEncoding());
-			} else {
-				// orphaned query
-				return null;
-			}
-
-		} else {
-			NamedFilter namedFilter = new NamedFilter();
-			namedFilter.setId(element.getAttribute(KEY_FILTER_ID));
-			namedFilter.setName(element.getAttribute(KEY_FILTER_NAME));
-			query = new JiraRepositoryQuery(repositoryUrl, namedFilter);
+		TaskRepository taskRepository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
+				repositoryUrl);
+		if (taskRepository != null) {
+			IRepositoryQuery query = TasksUi.getTasksModel().createQuery(taskRepository);
+			query.setSummary(label);
+			query.setUrl(queryString);
+			query.setAttribute(KEY_FILTER_CUSTOM_URL, element.getAttribute(KEY_FILTER_CUSTOM_URL));
+			query.setAttribute(KEY_FILTER_ID, element.getAttribute(KEY_FILTER_ID));
+			query.setAttribute(KEY_FILTER_NAME, element.getAttribute(KEY_FILTER_NAME));
+			return (RepositoryQuery) query;
 		}
-
-		return query;
+		return null;
 	}
 
 	@Override
 	public void setAdditionalAttributes(IRepositoryQuery query, Element node) {
-//		String queryTagName = getQueryElementName(query);
-		if (query instanceof JiraRepositoryQuery) {
-			NamedFilter filter = ((JiraRepositoryQuery) query).getNamedFilter();
-			node.setAttribute(KEY_FILTER_ID, filter.getId());
-			node.setAttribute(KEY_FILTER_NAME, filter.getName());
-		} else if (query instanceof JiraCustomQuery) {
-			JiraCustomQuery customQuery = (JiraCustomQuery) query;
-			node.setAttribute(KEY_FILTER_ID, customQuery.getSummary());
-			node.setAttribute(KEY_FILTER_NAME, customQuery.getSummary());
-			node.setAttribute(KEY_FILTER_CUSTOM_URL, customQuery.getUrl());
-		}
-	}
-
-	private FilterDefinition decodeFilter(String filter) {
-		byte[] buff = new byte[filter.length() / 2];
-		char[] chars = filter.toCharArray();
-		for (int i = 0, k = 0; i < chars.length; i += 2, k++) {
-			buff[k] = (byte) ((((chars[i] - 'A') << 4) | (chars[i + 1] - 'A')) & 0xff);
-		}
-
-		ObjectInputStream ois;
-		try {
-			ois = new ObjectInputStream(new ByteArrayInputStream(buff));
-			return (FilterDefinition) ois.readObject();
-		} catch (Exception ex) {
-			// TODO Auto-generated catch block
-			return null;
-		}
+		node.setAttribute(KEY_FILTER_ID, query.getAttribute(KEY_FILTER_ID));
+		node.setAttribute(KEY_FILTER_NAME, query.getAttribute(KEY_FILTER_NAME));
+		node.setAttribute(KEY_FILTER_CUSTOM_URL, query.getAttribute(KEY_FILTER_CUSTOM_URL));
 	}
 
 	@Override
@@ -169,10 +113,12 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 
 	@Override
 	public String getQueryElementName(IRepositoryQuery query) {
-		if (query instanceof JiraRepositoryQuery) {
-			return KEY_JIRA_QUERY;
-		} else if (query instanceof JiraCustomQuery) {
-			return KEY_JIRA_CUSTOM;
+		if (JiraCorePlugin.CONNECTOR_KIND.equals(query.getConnectorKind())) {
+			if (JiraUtil.isFilterDefinition(query)) {
+				return KEY_JIRA_CUSTOM;
+			} else {
+				return KEY_JIRA_QUERY;
+			}
 		}
 		return "";
 	}

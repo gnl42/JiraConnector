@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.core;
+package org.eclipse.mylyn.internal.jira.core.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.eclipse.mylyn.internal.jira.core.InvalidJiraQueryException;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
@@ -44,16 +46,15 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.
  * 
  * @author Mik Kersten
  * @author Eugene Kuleshov
- * @since 3.0
+ * @author Steffen Pingel
  */
-public class JiraCustomQuery extends RepositoryQuery {
+public class FilterDefinitionConverter {
 
 	private static final String PROJECT_KEY = "pid";
 
@@ -111,34 +112,15 @@ public class JiraCustomQuery extends RepositoryQuery {
 
 	private final String encoding;
 
-	private boolean search;
-
-	public JiraCustomQuery(String repositoryUrl, FilterDefinition filter, String encoding) {
-		super(filter.getName());
-		this.repositoryUrl = repositoryUrl;
-		this.encoding = encoding;
-		this.url = repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
-	}
-
-	public JiraCustomQuery(String name, String queryUrl, String repositoryUrl, String encoding) {
-		super(name);
-		this.repositoryUrl = repositoryUrl;
-		this.url = queryUrl;
+	public FilterDefinitionConverter(String encoding) {
 		this.encoding = encoding;
 	}
 
-	@Override
-	public String getConnectorKind() {
-		return JiraCorePlugin.CONNECTOR_KIND;
+	public String toUrl(String repositoryUrl, FilterDefinition filter) {
+		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
 	}
 
-	public FilterDefinition getFilterDefinition(JiraClient jiraServer, boolean validate) {
-		FilterDefinition filter = createFilter(jiraServer, getUrl(), validate);
-		filter.setName(getSummary());
-		return filter;
-	}
-
-	private FilterDefinition createFilter(JiraClient jiraServer, String url, boolean validate) {
+	public FilterDefinition toFilter(JiraClient client, String url, boolean validate) {
 		FilterDefinition filter = new FilterDefinition();
 
 		int n = url.indexOf('?');
@@ -167,7 +149,7 @@ public class JiraCustomQuery extends RepositoryQuery {
 
 		List<String> projectIds = getIds(params, PROJECT_KEY);
 		for (String projectId : projectIds) {
-			Project project = jiraServer.getCache().getProjectById(projectId);
+			Project project = client.getCache().getProjectById(projectId);
 			if (project == null) {
 				if (validate) {
 					// safeguard
@@ -202,7 +184,7 @@ public class JiraCustomQuery extends RepositoryQuery {
 		List<String> typeIds = getIds(params, TYPE_KEY);
 		List<IssueType> issueTypes = new ArrayList<IssueType>();
 		for (String typeId : typeIds) {
-			IssueType issueType = jiraServer.getCache().getIssueTypeById(typeId);
+			IssueType issueType = client.getCache().getIssueTypeById(typeId);
 			if (issueType != null) {
 				issueTypes.add(issueType);
 			} else if (validate) {
@@ -216,7 +198,7 @@ public class JiraCustomQuery extends RepositoryQuery {
 		List<String> statusIds = getIds(params, STATUS_KEY);
 		List<JiraStatus> statuses = new ArrayList<JiraStatus>();
 		for (String statusId : statusIds) {
-			JiraStatus status = jiraServer.getCache().getStatusById(statusId);
+			JiraStatus status = client.getCache().getStatusById(statusId);
 			if (status != null) {
 				statuses.add(status);
 			} else if (validate) {
@@ -232,7 +214,7 @@ public class JiraCustomQuery extends RepositoryQuery {
 		boolean unresolved = false;
 		for (String resolutionId : resolutionIds) {
 			if (!UNRESOLVED.equals(resolutionId)) {
-				Resolution resolution = jiraServer.getCache().getResolutionById(resolutionId);
+				Resolution resolution = client.getCache().getResolutionById(resolutionId);
 				if (resolution != null) {
 					resolutions.add(resolution);
 				} else if (validate) {
@@ -251,7 +233,7 @@ public class JiraCustomQuery extends RepositoryQuery {
 		List<String> priorityIds = getIds(params, PRIORITY_KEY);
 		List<Priority> priorities = new ArrayList<Priority>();
 		for (String priorityId : priorityIds) {
-			Priority priority = jiraServer.getCache().getPriorityById(priorityId);
+			Priority priority = client.getCache().getPriorityById(priorityId);
 			if (priority != null) {
 				priorities.add(priority);
 			} else if (validate) {
@@ -525,11 +507,4 @@ public class JiraCustomQuery extends RepositoryQuery {
 		}
 	}
 
-	public boolean isSearch() {
-		return search;
-	}
-
-	public void setSearch(boolean search) {
-		this.search = search;
-	}
 }

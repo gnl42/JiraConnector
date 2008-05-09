@@ -1,0 +1,11 @@
+1210278293476	Inline local variable 'filter'
+1210279447890	Extract local variable 'attribute'
+1210279473408	Rename method 'getFilter'
+1210279889854	Extract local variable 'jiraQueryConverter'
+1210279897060	Extract local variable 'url'
+1210279910489	Extract local variable 'jiraQueryConverter'
+1210281984067	Rename type 'Query'
+1210282032255	Rename type 'SmartQuery'
+1210283063623	Rename type 'JiraQueryConverter'
+1210283081940	Move compilation unit
+1210283096343	Delete element

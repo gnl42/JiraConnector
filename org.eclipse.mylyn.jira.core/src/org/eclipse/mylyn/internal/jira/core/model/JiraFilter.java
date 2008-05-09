@@ -11,6 +11,5 @@ package org.eclipse.mylyn.internal.jira.core.model;
 /**
  * @author Brock Janiczak
  */
-public interface Query {
-
+public interface JiraFilter {
 }

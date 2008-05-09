@@ -33,7 +33,6 @@ import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
-import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -66,8 +65,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private Button autoRefreshConfigurationButton;
 
-	public JiraRepositorySettingsPage(AbstractRepositoryConnectorUi repositoryUi) {
-		super(TITLE, DESCRIPTION, repositoryUi);
+	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
+		super(TITLE, DESCRIPTION, taskRepository);
 		setNeedsProxy(true);
 		setNeedsHttpAuth(true);
 	}
@@ -122,7 +121,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	}
 
 	@Override
-	public void updateProperties(TaskRepository repository) {
+	public void applyTo(TaskRepository repository) {
+		super.applyTo(repository);
 		JiraUtil.setCompression(repository, compressionButton.getSelection());
 		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
 		if (characterEncodingValidated) {
@@ -300,6 +300,11 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			return selectedUrl;
 		}
 
+	}
+
+	@Override
+	public String getConnectorKind() {
+		return JiraCorePlugin.CONNECTOR_KIND;
 	}
 
 }
