@@ -93,7 +93,9 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public void applyTo(IRepositoryQuery query) {
-		JiraUtil.setQuery(getTaskRepository(), query, getSelectedFilter());
+		NamedFilter filter = getSelectedFilter();
+		query.setSummary(filter.getName());
+		JiraUtil.setQuery(getTaskRepository(), query, filter);
 	}
 
 	@Override

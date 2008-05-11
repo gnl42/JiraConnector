@@ -5,3 +5,4 @@
 1210282499613	Extract local variable 'query'
 1210283780840	Delete element
 1210284746007	Delete element
+1210484135323	Extract local variable 'selectedFilter'
