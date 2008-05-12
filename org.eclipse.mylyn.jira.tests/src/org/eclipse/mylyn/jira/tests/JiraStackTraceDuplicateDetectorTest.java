@@ -81,7 +81,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
 
-		manager.addRepository(repository, TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		manager.addRepository(repository);
 
 		connector = (JiraRepositoryConnector) manager.getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);

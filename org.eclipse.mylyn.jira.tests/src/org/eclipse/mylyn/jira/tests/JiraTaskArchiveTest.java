@@ -61,8 +61,7 @@ public class JiraTaskArchiveTest extends TestCase {
 		assertNotNull(client);
 
 		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "repo");
-		TasksUiPlugin.getRepositoryManager().addRepository(repository,
-				TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getRepositoryManager().addRepository(repository);
 
 		JiraTask task1 = new JiraTask("repo", HANDLE1, LABEL);
 		task1.setLastReadTimeStamp("now");

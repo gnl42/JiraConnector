@@ -85,8 +85,7 @@ public class JiraFilterTest extends TestCase {
 				credentials.password), false);
 		repository.setCharacterEncoding(JiraClient.DEFAULT_CHARSET);
 
-		TasksUiPlugin.getRepositoryManager().addRepository(repository,
-				TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getRepositoryManager().addRepository(repository);
 	}
 
 	public void testJiraFilterRefresh() throws Exception {

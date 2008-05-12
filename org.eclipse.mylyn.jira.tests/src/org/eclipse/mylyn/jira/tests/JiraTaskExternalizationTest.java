@@ -64,8 +64,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		super.setUp();
 		repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, SERVER_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(USER, PASSWORD), false);
-		TasksUiPlugin.getRepositoryManager().addRepository(repository,
-				TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getRepositoryManager().addRepository(repository);
 		TasksUiPlugin.getTaskListManager().resetTaskList();
 		taskList = TasksUiPlugin.getTaskList();
 		TasksUiPlugin.getTaskListManager().saveTaskList();
