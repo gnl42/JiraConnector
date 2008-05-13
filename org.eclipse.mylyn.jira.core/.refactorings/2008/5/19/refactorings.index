@@ -9,3 +9,6 @@
 1210283063623	Rename type 'JiraQueryConverter'
 1210283081940	Move compilation unit
 1210283096343	Delete element
+1210486342468	Rename type 'JiraRepositoryConnector'
+1210486503616	Copy compilation unit
+1210487124215	Extract local variable 'createTaskData'

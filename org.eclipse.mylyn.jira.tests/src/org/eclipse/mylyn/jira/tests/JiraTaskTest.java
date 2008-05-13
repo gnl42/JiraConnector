@@ -10,7 +10,7 @@ package org.eclipse.mylyn.jira.tests;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraLegacyRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 
@@ -22,7 +22,7 @@ public class JiraTaskTest extends TestCase {
 	public void testPriorityMapping() {
 		Priority priority = new Priority();
 		priority.setId("1");
-		assertEquals(PriorityLevel.P1, JiraRepositoryConnector.getPriorityLevel(priority));
+		assertEquals(PriorityLevel.P1, JiraLegacyRepositoryConnector.getPriorityLevel(priority));
 	}
 
 }

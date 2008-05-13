@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraLegacyRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
@@ -167,7 +167,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraIssue.setSummary(ISSUE_SUMMARY);
 		JiraTask jiraTask = new JiraTask(SERVER_URL, "" + 123, ISSUE_DESCRIPTION);
 		taskList.addTask(jiraTask);
-		JiraRepositoryConnector.updateTaskFromIssue(repository.getRepositoryUrl(), jiraTask, jiraIssue);
+		JiraLegacyRepositoryConnector.updateTaskFromIssue(repository.getRepositoryUrl(), jiraTask, jiraIssue);
 		TasksUiPlugin.getTaskList().addTask(jiraTask);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
 

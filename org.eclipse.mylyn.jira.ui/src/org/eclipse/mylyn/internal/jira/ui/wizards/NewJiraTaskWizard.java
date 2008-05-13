@@ -11,12 +11,14 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.internal.jira.ui.editor.JiraTaskInitializationData;
-import org.eclipse.mylyn.internal.tasks.core.LocalTask;
+import org.eclipse.mylyn.internal.tasks.core.TaskTask;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.ITask.SynchronizationState;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
@@ -65,10 +67,11 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		data.taskRepository = taskRepository;
 		data.taskSelection = taskSelection;
 
-		LocalTask task = TasksUiInternal.createNewLocalTask(null);
-		task.setSynchronizationState(SynchronizationState.OUTGOING);
-
-		TaskEditorInput editorInput = new TaskEditorInput(taskRepository, task);
+		ITask task = TasksUiInternal.createNewLocalTask(null);
+		((TaskTask) task).setSynchronizationState(SynchronizationState.OUTGOING);
+		TaskRepository localTaskRepository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
+				task.getRepositoryUrl());
+		TaskEditorInput editorInput = new TaskEditorInput(localTaskRepository, task);
 		editorInput.setData(data);
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		TasksUiUtil.openEditor(editorInput, TaskEditor.ID_EDITOR, page);

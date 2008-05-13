@@ -18,7 +18,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraLegacyRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
@@ -46,7 +46,7 @@ public class JiraFilterTest extends TestCase {
 
 	private TaskRepository repository;
 
-	private JiraRepositoryConnector connector;
+	private JiraLegacyRepositoryConnector connector;
 
 	private ITaskList taskList;
 
@@ -59,7 +59,7 @@ public class JiraFilterTest extends TestCase {
 
 		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraCorePlugin.CONNECTOR_KIND);
-		connector = (JiraRepositoryConnector) abstractConnector;
+		connector = (JiraLegacyRepositoryConnector) abstractConnector;
 
 		repository = null;
 	}

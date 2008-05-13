@@ -32,6 +32,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 /**
  * @author Steffen Pingel
  */
+@Deprecated
 public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 
 	public JiraAttachmentHandler() {
@@ -72,8 +73,8 @@ public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 	}
 
 	@Override
-	public void uploadAttachment(TaskRepository repository, ITask task, ITaskAttachment attachment,
-			String comment, IProgressMonitor monitor) throws CoreException {
+	public void uploadAttachment(TaskRepository repository, ITask task, ITaskAttachment attachment, String comment,
+			IProgressMonitor monitor) throws CoreException {
 		JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
 			JiraIssue issue = server.getIssueByKey(task.getTaskKey(), monitor);

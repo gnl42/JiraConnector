@@ -69,6 +69,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  * @author Steffen Pingel
  * @since 3.0
  */
+@Deprecated
 public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final String CONTEXT_ATTACHEMENT_FILENAME = "mylyn-context.zip";
@@ -435,7 +436,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		updateMarkup(data, jiraIssue, client, oldTaskData, monitor);
 
 		HashSet<String> editableKeys = new HashSet<String>();
-		if (!JiraRepositoryConnector.isClosed(jiraIssue)) {
+		if (!JiraLegacyRepositoryConnector.isClosed(jiraIssue)) {
 			if (useCachedInformation(jiraIssue, oldTaskData)) {
 				// avoid server round-trips
 				for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
@@ -649,7 +650,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		data.addOperation(leaveOperation);
 
 		// TODO need more accurate status matching
-		if (!JiraRepositoryConnector.isCompleted(data)) {
+		if (!JiraLegacyRepositoryConnector.isCompleted(data)) {
 			RepositoryOperation reassignOperation = new RepositoryOperation(REASSIGN_OPERATION, "Reassign to");
 			reassignOperation.setInputName(JiraAttribute.USER_ASSIGNED.getParamName());
 			reassignOperation.setInputValue(client.getUserName());
@@ -743,7 +744,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 				if (LEAVE_OPERATION.equals(operation.getKnobName())
 						|| REASSIGN_OPERATION.equals(operation.getKnobName())) {
-					if (!JiraRepositoryConnector.isClosed(issue)
+					if (!JiraLegacyRepositoryConnector.isClosed(issue)
 							&& taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
 						client.updateIssue(issue, taskData.getNewComment(), monitor);
 					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
@@ -992,7 +993,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		} else {
 			assignee = taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED);
 		}
-		issue.setAssignee(JiraRepositoryConnector.getAssigneeFromAttribute(assignee));
+		issue.setAssignee(JiraLegacyRepositoryConnector.getAssigneeFromAttribute(assignee));
 
 		issue.setEnvironment(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT));
 		for (Priority priority : client.getCache().getPriorities()) {

@@ -458,7 +458,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler {
 	private HashSet<String> getEditableKeys(TaskData data, JiraIssue jiraIssue, JiraClient client,
 			TaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		HashSet<String> editableKeys = new HashSet<String>();
-		if (!JiraRepositoryConnector.isClosed(jiraIssue)) {
+		if (!JiraLegacyRepositoryConnector.isClosed(jiraIssue)) {
 			if (useCachedInformation(jiraIssue, oldTaskData)) {
 				// avoid server round-trips
 				for (TaskAttribute attribute : oldTaskData.getRoot().getAttributes().values()) {
@@ -746,7 +746,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler {
 					String operationId = getOperationId(taskData);
 					String newComment = getNewComment(taskData);
 					if (LEAVE_OPERATION.equals(operationId) || REASSIGN_OPERATION.equals(operationId)) {
-						if (!JiraRepositoryConnector.isClosed(issue)
+						if (!JiraLegacyRepositoryConnector.isClosed(issue)
 								&& taskData.getMappedAttribute(JiraAttributeFactory.ATTRIBUTE_READ_ONLY) == null) {
 							client.updateIssue(issue, newComment, monitor);
 						} else if (newComment.length() > 0) {
@@ -954,7 +954,7 @@ public class JiraTaskDataHandler2 extends AbstractTaskDataHandler {
 		issue.setReporter(getAttributeValue(taskData, JiraAttribute.USER_REPORTER));
 
 		String assignee = getAttributeValue(taskData, JiraAttribute.USER_ASSIGNED);
-		issue.setAssignee(JiraRepositoryConnector.getAssigneeFromAttribute(assignee));
+		issue.setAssignee(JiraLegacyRepositoryConnector.getAssigneeFromAttribute(assignee));
 
 		issue.setEnvironment(getAttributeValue(taskData, JiraAttribute.ENVIRONMENT));
 		issue.setPriority(new Priority(getAttributeValue(taskData, JiraAttribute.PRIORITY)));

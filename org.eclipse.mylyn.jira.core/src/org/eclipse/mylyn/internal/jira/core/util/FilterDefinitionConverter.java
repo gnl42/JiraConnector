@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.mylyn.internal.jira.core.InvalidJiraQueryException;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraLegacyRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
@@ -117,7 +117,7 @@ public class FilterDefinitionConverter {
 	}
 
 	public String toUrl(String repositoryUrl, FilterDefinition filter) {
-		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
+		return repositoryUrl + JiraLegacyRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
 	}
 
 	public FilterDefinition toFilter(JiraClient client, String url, boolean validate) {
