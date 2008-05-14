@@ -51,6 +51,11 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
  */
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
+	@SuppressWarnings("restriction")
+	public JiraConnectorUi() {
+		TasksUiPlugin.getDefault().addSearchHandler(new JiraSearchHandler());
+	}
+
 	@Override
 	public String getTaskKindLabel(ITask repositoryTask) {
 		return "Issue";

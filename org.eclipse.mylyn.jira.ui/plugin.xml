@@ -47,13 +47,4 @@
             urlRepository="http://issues.apache.org/jira/"/>
    </extension>
 
-   <extension
-         point="org.eclipse.mylyn.tasks.ui.duplicateDetectors">
-      <detector
-            class="org.eclipse.mylyn.internal.jira.ui.JiraStackTraceDuplicateDetector"
-            name="Stack Trace"
-            kind="jira">
-      </detector>
-   </extension>
-
 </plugin>

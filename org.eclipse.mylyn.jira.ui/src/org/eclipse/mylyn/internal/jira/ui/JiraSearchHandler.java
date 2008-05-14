@@ -8,15 +8,14 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
-import org.eclipse.mylyn.tasks.core.AbstractDuplicateDetector;
+import org.eclipse.mylyn.internal.tasks.core.AbstractSearchHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 
 /**
  * Stack Trace duplicate detector
@@ -24,23 +23,21 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  */
-public class JiraStackTraceDuplicateDetector extends AbstractDuplicateDetector {
-
-	private static final String NO_STACK_MESSAGE = "Unable to locate a stack trace in the description text.";
+@SuppressWarnings("restriction")
+public class JiraSearchHandler extends AbstractSearchHandler {
 
 	@Override
-	public IRepositoryQuery getDuplicatesQuery(TaskRepository taskRepository, TaskData taskData, String text) {
-		String searchString = AbstractDuplicateDetector.getStackTraceFromDescription(text);
-		if (searchString == null) {
-			MessageDialog.openWarning(null, "No Stack Trace Found", NO_STACK_MESSAGE);
-			return null;
-		}
+	public String getConnectorKind() {
+		return JiraCorePlugin.CONNECTOR_KIND;
+	}
 
+	@Override
+	public boolean queryForText(TaskRepository taskRepository, IRepositoryQuery query, TaskData taskData,
+			String searchString) {
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(searchString, false, true, false, true));
-		IRepositoryQuery query = TasksUi.getTasksModel().createQuery(taskRepository);
 		JiraUtil.setQuery(taskRepository, query, filter);
-		return query;
+		return true;
 	}
 
 }
