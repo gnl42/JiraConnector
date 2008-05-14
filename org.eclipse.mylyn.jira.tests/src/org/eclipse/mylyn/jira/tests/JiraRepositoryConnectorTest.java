@@ -144,7 +144,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 
 		TasksUiInternal.synchronizeTask(connector, task, true, null);
 
-		Set<RepositoryAttachment> contextAttachments = AttachmentUtil.getContextAttachments(repository, task);
+		Set<RepositoryAttachment> contextAttachments = AttachmentUtil.getLegacyContextAttachments(repository, task);
 		assertEquals(1, contextAttachments.size());
 
 		RepositoryAttachment attachment = contextAttachments.iterator().next();
