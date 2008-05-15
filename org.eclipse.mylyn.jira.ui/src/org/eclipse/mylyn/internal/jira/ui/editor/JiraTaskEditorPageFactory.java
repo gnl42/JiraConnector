@@ -10,8 +10,9 @@ package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiImages;
+import org.eclipse.mylyn.tasks.ui.ITasksUiConstants;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
@@ -41,7 +42,7 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 	@Override
 	public String[] getConflictingIds(TaskEditorInput input) {
 		if (!input.getTask().getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
-			return new String[] { TasksUi.ID_PLANNING_PAGE };
+			return new String[] { ITasksUiConstants.ID_PAGE_PLANNING };
 		}
 		return null;
 	}
