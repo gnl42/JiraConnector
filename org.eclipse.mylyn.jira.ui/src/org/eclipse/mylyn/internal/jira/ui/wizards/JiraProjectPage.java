@@ -9,12 +9,11 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -32,9 +31,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraTask;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
@@ -42,13 +41,12 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
-import org.eclipse.mylyn.internal.tasks.core.TaskDataStorageManager;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.internal.tasks.ui.deprecated.AbstractRepositoryTaskEditorInput;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -85,9 +83,9 @@ public class JiraProjectPage extends WizardPage {
 
 	public JiraProjectPage(TaskRepository repository) {
 		super("jiraProject");
+		Assert.isNotNull(repository);
 		setTitle("New JIRA Task");
 		setDescription(DESCRIPTION);
-
 		this.repository = repository;
 	}
 
@@ -208,7 +206,6 @@ public class JiraProjectPage extends WizardPage {
 			}
 		});
 
-		// set the composite as the control for this page
 		setControl(composite);
 	}
 
@@ -274,12 +271,44 @@ public class JiraProjectPage extends WizardPage {
 
 	private Project discoverProject() {
 		// TODO similarity with TasksUiUtil and Bugzilla implementation. consider adapting to TaskSelection or RepositoryTaskData
+		Object element = getSelectedElement();
+		if (element == null) {
+			return null;
+		}
+		if (element instanceof ITask) {
+			ITask task = (ITask) element;
+			if (task.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
+				try {
+					TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task, task.getConnectorKind());
+					Project project = getProject(taskData);
+					if (project != null) {
+						return project;
+					}
+				} catch (CoreException e) {
+					StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data",
+							e));
+				}
+			}
+		} else if (element instanceof IRepositoryQuery) {
+			IRepositoryQuery query = (IRepositoryQuery) element;
+			if (query.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
+				JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+				FilterDefinition filter = JiraUtil.getFilterDefinition(repository, client, query, false);
+				if (filter != null) {
+					ProjectFilter projectFilter = filter.getProjectFilter();
+					if (projectFilter != null) {
+						return projectFilter.getProject();
+					}
+				}
+			}
+		}
+		return null;
+	}
 
-		Object element;
-
+	private Object getSelectedElement() {
 		IStructuredSelection selection = getSelection();
 		if (selection != null) {
-			element = selection.getFirstElement();
+			return selection.getFirstElement();
 		} else {
 			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			if (window == null) {
@@ -295,108 +324,21 @@ public class JiraProjectPage extends WizardPage {
 			}
 			IEditorInput editorInput = editor.getEditorInput();
 			if (editorInput instanceof TaskEditorInput) {
-				element = ((TaskEditorInput) editorInput).getTask();
-			} else if (editorInput instanceof AbstractRepositoryTaskEditorInput) {
-				element = ((AbstractRepositoryTaskEditorInput) editorInput).getOldTaskData();
-			} else {
-				return null;
+				return ((TaskEditorInput) editorInput).getTask();
 			}
 		}
-
-		if (element == null) {
-			return null;
-		}
-
-		if (element instanceof JiraTask) {
-			JiraTask jiraTask = (JiraTask) element;
-			// API 3.0 need to provide public access to the task data
-			if (jiraTask.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
-				TaskDataStorageManager taskDataManager = TasksUiPlugin.getTaskDataStorageManager();
-				Project project = getProject(taskDataManager.getNewTaskData(repository.getRepositoryUrl(),
-						jiraTask.getTaskId()));
-				if (project != null) {
-					return project;
-				}
-			}
-		}
-
-		if (element instanceof IRepositoryQuery) {
-			IRepositoryQuery query = (IRepositoryQuery) element;
-			if (query.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
-				JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-				FilterDefinition filter = JiraUtil.getFilterDefinition(repository, client, query, false);
-				if (filter != null) {
-					ProjectFilter projectFilter = filter.getProjectFilter();
-					if (projectFilter != null) {
-						return projectFilter.getProject();
-					}
-				}
-			}
-		}
-
-//		if (element instanceof JiraRepositoryQuery) {
-//			JiraRepositoryQuery query = (JiraRepositoryQuery) element;
-//			NamedFilter namedFilter = query.getNamedFilter();
-//			if (namedFilter != null) {
-//				String projectId = namedFilter.getProject();
-//				if (projectId != null) {
-//					return client.getProjectById(projectId);
-//				}
-//			}
-//		}
-
-		RepositoryTaskData taskData = null;
-		if (element instanceof RepositoryTaskData) {
-			taskData = (RepositoryTaskData) getAdapter(element, RepositoryTaskData.class);
-		}
-		if (taskData == null) {
-			TaskSelection taskSelection = (TaskSelection) getAdapter(element, TaskSelection.class);
-			if (taskSelection != null) {
-				taskData = taskSelection.getLegacyTaskData();
-			}
-		}
-
-		if (taskData != null && taskData.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
-			Project project = getProject(taskData);
-			if (project != null) {
-				return project;
-			}
-		}
-
 		return null;
 	}
 
-	private Project getProject(RepositoryTaskData taskData) {
+	private Project getProject(TaskData taskData) {
 		if (taskData != null) {
-			String projectName = taskData.getProduct();
-			if (projectName != null && projectName.length() > 0) {
+			TaskAttribute attribute = taskData.getMappedAttribute(JiraAttribute.PROJECT.getId());
+			if (attribute != null) {
 				JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-
-				for (Project project : client.getCache().getProjects()) {
-					if (projectName.equals(project.getName())) {
-						return project;
-					}
-				}
-
-				return client.getCache().getProjectByKey(projectName);
+				return client.getCache().getProjectById(attribute.getValue());
 			}
 		}
 		return null;
-	}
-
-	private static Object getAdapter(Object adaptable, Class<?> adapterType) {
-		if (adaptable.getClass().isAssignableFrom(adapterType)) {
-			return adaptable;
-		}
-
-		if (adaptable instanceof IAdaptable) {
-			Object adapter = ((IAdaptable) adaptable).getAdapter(adapterType);
-			if (adapter != null) {
-				return adapter;
-			}
-		}
-
-		return Platform.getAdapterManager().getAdapter(adaptable, adapterType);
 	}
 
 	private IStructuredSelection getSelection() {

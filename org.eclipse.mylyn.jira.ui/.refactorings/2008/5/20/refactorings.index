@@ -2,3 +2,4 @@
 1210875932877	Rename type 'JiraTaskEditor'
 1210875953886	Rename type 'JiraTaskEditor2'
 1210875969650	Rename type 'JiraTaskEditor'
+1210886443400	Extract method 'getSelectedElement'

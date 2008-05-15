@@ -451,10 +451,10 @@ public class JiraLegacyRepositoryConnector extends AbstractLegacyRepositoryConne
 			jiraTask.setSummary(taskData.getAttributeValue(RepositoryTaskAttribute.SUMMARY));
 			jiraTask.setOwner(taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED));
 			jiraTask.setTaskKey(taskData.getAttributeValue(RepositoryTaskAttribute.TASK_KEY));
-			jiraTask.setTaskKind(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_TYPE));
+			jiraTask.setTaskKind(taskData.getAttributeValue(IJiraConstants.ATTRIBUTE_TYPE));
 			jiraTask.setUrl(getTaskUrlFromKey(repository.getRepositoryUrl(), repositoryTask.getTaskKey()));
 			jiraTask.setCreationDate(JiraUtil.stringToDate(taskData.getAttributeValue(RepositoryTaskAttribute.DATE_CREATION)));
-			jiraTask.setDueDate(JiraUtil.stringToDate(taskData.getAttributeValue(JiraAttributeFactory.ATTRIBUTE_DUE_DATE)));
+			jiraTask.setDueDate(JiraUtil.stringToDate(taskData.getAttributeValue(IJiraConstants.ATTRIBUTE_DUE_DATE)));
 
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 			jiraTask.setPriority(getPriorityLevel(client, taskData.getAttributeValue(RepositoryTaskAttribute.PRIORITY)).toString());
@@ -524,7 +524,7 @@ public class JiraLegacyRepositoryConnector extends AbstractLegacyRepositoryConne
 	}
 
 	public static String getAssigneeFromAttribute(String assignee) {
-		return "".equals(assignee) ? JiraTask.UNASSIGNED_USER : assignee;
+		return "".equals(assignee) ? JiraRepositoryConnector.UNASSIGNED_USER : assignee;
 	}
 
 	private void trace(IStatus status) {

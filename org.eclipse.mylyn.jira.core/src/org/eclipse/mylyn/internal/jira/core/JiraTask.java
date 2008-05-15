@@ -19,33 +19,7 @@ import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 @Deprecated
 public class JiraTask extends AbstractTask {
 
-	public static final String UNASSIGNED_USER = "-1";
-
 	private final String key = null;
-
-	public enum Kind {
-		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
-
-		@Override
-		public String toString() {
-			switch (this) {
-			case BUG:
-				return "Bug";
-			case FEATURE:
-				return "New Feature";
-			case TASK:
-				return "Task";
-			case IMPROVEMENT:
-				return "Improvement";
-			case CUSTOM_ISSUE:
-				return "Custom Issue";
-			case SUB_TASK:
-				return "Sub-task";
-			default:
-				return "";
-			}
-		}
-	}
 
 	/**
 	 * The handle is also the task's Jira url

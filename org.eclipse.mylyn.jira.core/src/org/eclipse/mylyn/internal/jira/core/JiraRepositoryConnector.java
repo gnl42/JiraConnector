@@ -73,6 +73,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private final JiraTaskAttachmentHandler attachmentHandler2;
 
+	public static final String UNASSIGNED_USER = "-1";
+
 	/** Name initially given to new tasks. Public for testing */
 	public static final String NEW_TASK_DESC = "New Task";
 
@@ -275,7 +277,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			// use the timestamp on the task that was modified last
 			lastSyncDate = null;
 			for (ITask task : tasks) {
-				Date date = JiraUtil.stringToDate(task.getLastReadTimeStamp());
+				Date date = task.getModificationDate();
 				if (lastSyncDate == null || (date != null && date.after(lastSyncDate))) {
 					lastSyncDate = date;
 				}
@@ -430,7 +432,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public static String getAssigneeFromAttribute(String assignee) {
-		return "".equals(assignee) ? JiraTask.UNASSIGNED_USER : assignee;
+		return "".equals(assignee) ? UNASSIGNED_USER : assignee;
 	}
 
 	private void trace(IStatus status) {
@@ -455,9 +457,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		TaskMapper scheme = new TaskMapper(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 		Date localDate = task.getModificationDate();
-		if (localDate == null) {
-			localDate = JiraUtil.stringToDate(task.getLastReadTimeStamp());
-		}
 		if (repositoryDate != null && repositoryDate.equals(localDate)) {
 			return false;
 		}
@@ -467,9 +466,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	private boolean hasChanged(ITask task, JiraIssue issue) {
 		Date repositoryDate = issue.getUpdated();
 		Date localDate = task.getModificationDate();
-		if (localDate == null) {
-			localDate = JiraUtil.stringToDate(task.getLastReadTimeStamp());
-		}
 		if (repositoryDate != null && repositoryDate.equals(localDate)) {
 			return false;
 		}

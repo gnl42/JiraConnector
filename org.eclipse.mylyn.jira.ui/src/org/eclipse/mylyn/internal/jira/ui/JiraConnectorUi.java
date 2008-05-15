@@ -11,22 +11,24 @@ package org.eclipse.mylyn.internal.jira.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraLegacyRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.core.JiraTask;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraFilterDefinitionPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraNamedFilterPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
@@ -35,7 +37,9 @@ import org.eclipse.mylyn.tasks.core.ITaskComment;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentModel;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
+import org.eclipse.mylyn.tasks.ui.LegendElement;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
@@ -50,6 +54,30 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
  */
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
+	public enum JiraTaskKind {
+		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
+
+		@Override
+		public String toString() {
+			switch (this) {
+			case BUG:
+				return "Bug";
+			case FEATURE:
+				return "New Feature";
+			case TASK:
+				return "Task";
+			case IMPROVEMENT:
+				return "Improvement";
+			case CUSTOM_ISSUE:
+				return "Custom Issue";
+			case SUB_TASK:
+				return "Sub-task";
+			default:
+				return "";
+			}
+		}
+	}
+
 	@SuppressWarnings("restriction")
 	public JiraConnectorUi() {
 		TasksUiPlugin.getDefault().addSearchHandler(new JiraSearchHandler());
@@ -61,49 +89,32 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public List<ITask> getLegendItems() {
-		List<ITask> legendItems = new ArrayList<ITask>();
-
-		JiraTask bug = new JiraTask("", "bug", "Bug");
-		bug.setTaskKind(JiraTask.Kind.BUG.toString());
-		legendItems.add(bug);
-
-		JiraTask feature = new JiraTask("", "feature", "Feature");
-		feature.setTaskKind(JiraTask.Kind.FEATURE.toString());
-		legendItems.add(feature);
-
-		JiraTask improvement = new JiraTask("", "improvement", "Improvement");
-		improvement.setTaskKind(JiraTask.Kind.IMPROVEMENT.toString());
-		legendItems.add(improvement);
-
-		JiraTask task = new JiraTask("", "task", "Task");
-		task.setTaskKind(JiraTask.Kind.TASK.toString());
-		legendItems.add(task);
-
-		JiraTask subTask = new JiraTask("", "task", "Sub-task");
-		subTask.setTaskKind(JiraTask.Kind.SUB_TASK.toString());
-		legendItems.add(subTask);
-
+	public List<LegendElement> getLegendElements() {
+		List<LegendElement> legendItems = new ArrayList<LegendElement>();
+		legendItems.add(LegendElement.createTask("Bug", JiraImages.OVERLAY_BUG));
+		legendItems.add(LegendElement.createTask("Feature", JiraImages.OVERLAY_FEATURE));
+		legendItems.add(LegendElement.createTask("Improvement", JiraImages.OVERLAY_IMPROVEMENT));
+		legendItems.add(LegendElement.createTask("Task", JiraImages.OVERLAY_TASK));
+		legendItems.add(LegendElement.createTask("Sub-task", JiraImages.OVERLAY_SUB_TASK));
 		return legendItems;
 	}
 
 	@Override
-	public ImageDescriptor getTaskKindOverlay(ITask repositoryTask) {
-		if (repositoryTask instanceof JiraTask) {
-			JiraTask task = (JiraTask) repositoryTask;
-			if (JiraTask.Kind.BUG.toString().equals(task.getTaskKind())) {
+	public ImageDescriptor getTaskKindOverlay(ITask task) {
+		if (JiraCorePlugin.CONNECTOR_KIND.equals(task.getConnectorKind())) {
+			if (JiraTaskKind.BUG.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_BUG;
-			} else if (JiraTask.Kind.FEATURE.toString().equals(task.getTaskKind())) {
+			} else if (JiraTaskKind.FEATURE.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_FEATURE;
-			} else if (JiraTask.Kind.IMPROVEMENT.toString().equals(task.getTaskKind())) {
+			} else if (JiraTaskKind.IMPROVEMENT.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_IMPROVEMENT;
-			} else if (JiraTask.Kind.TASK.toString().equals(task.getTaskKind())) {
+			} else if (JiraTaskKind.TASK.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_TASK;
-			} else if (JiraTask.Kind.SUB_TASK.toString().equals(task.getTaskKind())) {
+			} else if (JiraTaskKind.SUB_TASK.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_SUB_TASK;
 			}
 		}
-		return super.getTaskKindOverlay(repositoryTask);
+		return null;
 	}
 
 	@Override
@@ -195,24 +206,25 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		return links;
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public boolean supportsDueDates(ITask task) {
-		if (task instanceof JiraTask) {
+		if (JiraCorePlugin.CONNECTOR_KIND.equals(task.getConnectorKind())) {
 			// XXX This is only used in the planning editor, and if its input was set correctly as a RepositoryTaskEditorInput
 			// we wouldn't have to get the task data this way from here
-			RepositoryTaskData taskData = TasksUiPlugin.getTaskDataStorageManager().getNewTaskData(
-					task.getRepositoryUrl(), task.getTaskId());
-			if (taskData != null && taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_DUE_DATE) != null) {
-				return true;
+			TaskData taskData;
+			try {
+				taskData = TasksUi.getTaskDataManager().getTaskData(task, task.getConnectorKind());
+				return taskData.getMappedAttribute(JiraAttribute.DUE_DATE.getId()) != null;
+			} catch (CoreException e) {
+				StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data", e));
 			}
 		}
-		return super.supportsDueDates(task);
+		return false;
 	}
 
 	@Override
 	public String getTaskHistoryUrl(TaskRepository taskRepository, ITask task) {
-		return taskRepository.getRepositoryUrl() + JiraLegacyRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
+		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
 				+ "?page=history";
 	}
 

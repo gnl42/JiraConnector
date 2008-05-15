@@ -62,7 +62,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 			return properties.getType();
 		}
 
-		JiraFieldType type = JiraFieldType.fromKey(taskAttribute.getMetaData(JiraAttributeFactory.META_TYPE));
+		JiraFieldType type = JiraFieldType.fromKey(taskAttribute.getMetaData(IJiraConstants.META_TYPE));
 		if (type.getTaskType() != null) {
 			return type.getTaskType();
 		}

@@ -27,6 +27,8 @@ import org.w3c.dom.Element;
  * @author Mik Kersten
  * @author Wesley Coelho (filter prototyping)
  */
+@SuppressWarnings( { "deprecation", "restriction" })
+@Deprecated
 public class JiraTaskListFactory extends AbstractTaskListFactory {
 
 	private static final String KEY_JIRA = "Jira";
@@ -42,8 +44,6 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 	private static final String KEY_FILTER_NAME = "FilterName";
 
 	private static final String KEY_FILTER_ID = "FilterID";
-
-	private static final String KEY_FILTER_CUSTOM = "FilterCustom";
 
 	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl";
 

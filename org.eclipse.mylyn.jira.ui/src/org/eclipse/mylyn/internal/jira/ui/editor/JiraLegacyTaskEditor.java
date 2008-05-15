@@ -16,7 +16,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
+import org.eclipse.mylyn.internal.jira.core.IJiraConstants;
 import org.eclipse.mylyn.internal.jira.core.JiraFieldType;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryOperation;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
@@ -92,7 +92,7 @@ public class JiraLegacyTaskEditor extends AbstractRepositoryTaskEditor {
 				continue;
 			}
 
-			JiraFieldType type = JiraFieldType.fromKey(attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE));
+			JiraFieldType type = JiraFieldType.fromKey(attribute.getMetaDataValue(IJiraConstants.META_TYPE));
 			Collection<String> options = attribute.getOptions();
 			if (type.equals(JiraFieldType.SELECT) && (options == null || options.isEmpty() || attribute.isReadOnly())) {
 				type = JiraFieldType.TEXTFIELD;
@@ -261,7 +261,7 @@ public class JiraLegacyTaskEditor extends AbstractRepositoryTaskEditor {
 		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()
 					|| !JiraFieldType.ISSUELINKS.getKey().equals(
-							attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE))) {
+							attribute.getMetaDataValue(IJiraConstants.META_TYPE))) {
 				continue;
 			}
 
@@ -297,7 +297,7 @@ public class JiraLegacyTaskEditor extends AbstractRepositoryTaskEditor {
 		for (RepositoryTaskAttribute attribute : taskData.getAttributes()) {
 			if (attribute.isHidden()
 					|| !JiraFieldType.TEXTAREA.getKey().equals(
-							attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE))
+							attribute.getMetaDataValue(IJiraConstants.META_TYPE))
 					// no need to show non-editable empty values
 					|| (attribute.isReadOnly() && (attribute.getValue() == null || attribute.getValue().length() == 0))) {
 				continue;
@@ -374,7 +374,7 @@ public class JiraLegacyTaskEditor extends AbstractRepositoryTaskEditor {
 
 	@Override
 	protected boolean hasContentAssist(RepositoryTaskAttribute attribute) {
-		String key = attribute.getMetaDataValue(JiraAttributeFactory.META_TYPE);
+		String key = attribute.getMetaDataValue(IJiraConstants.META_TYPE);
 		// TODO need more robust detection
 		if (JiraFieldType.USERPICKER.getKey().equals(key)) {
 			return true;

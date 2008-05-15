@@ -28,6 +28,8 @@ import org.eclipse.ui.IEditorPart;
  * @author Mik Kersten
  * @author Steffen Pingel
  */
+@SuppressWarnings( { "deprecation", "restriction" })
+@Deprecated
 public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 
 	@Override

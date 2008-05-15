@@ -26,55 +26,13 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	private static final long serialVersionUID = 8000933300692372211L;
 
-	public static final String ATTRIBUTE_TYPE = "attribute.jira.type";
-
-	public static final String ATTRIBUTE_ISSUE_PARENT_KEY = "attribute.jira.issue_parent_key";
-
-	public static final String ATTRIBUTE_ISSUE_PARENT_ID = "attribute.jira.issue_parent_id";
-
-	public static final String ATTRIBUTE_ENVIRONMENT = "attribute.jira.environment";
-
-	public static final String ATTRIBUTE_COMPONENTS = "attribute.jira.components";
-
-	public static final String ATTRIBUTE_FIXVERSIONS = "attribute.jira.fixversions";
-
-	public static final String ATTRIBUTE_AFFECTSVERSIONS = "attribute.jira.affectsversions";
-
-	public static final String ATTRIBUTE_ESTIMATE = "attribute.jira.estimate";
-
-	public static final String ATTRIBUTE_INITIAL_ESTIMATE = "attribute.jira.initialestimate";
-
-	public static final String ATTRIBUTE_ACTUAL = "attribute.jira.actual";
-
-	public static final String ATTRIBUTE_DUE_DATE = "attribute.jira.due";
-
-	public static final String ATTRIBUTE_SUBTASK_IDS = "attribute.jira.subtask_ids";
-
-	public static final String ATTRIBUTE_SUBTASK_KEYS = "attribute.jira.subtask_keys";
-
-	public static final String ATTRIBUTE_CUSTOM_PREFIX = "attribute.jira.custom::";
-
-	public static final String ATTRIBUTE_LINK_PREFIX = "attribute.jira.link::";
-
-	public static final String ATTRIBUTE_SECURITY_LEVEL = "attribute.jira.security";
-
-	public static final String ATTRIBUTE_READ_ONLY = "attribute.jira.read-only";
-
-	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z";
-
-	public static final String META_TYPE = "type";
-
-	public static final String ATTRIBUTE_LINKED_IDS = "attribute.jira.link_ids";
-
-	public static final String META_SUB_TASK_TYPE = "isSubtaskType";
-
 	public JiraAttributeFactory() {
 	}
 
 	@Override
 	public RepositoryTaskAttribute createAttribute(String key) {
 		RepositoryTaskAttribute attribute = super.createAttribute(key);
-		attribute.putMetaDataValue(META_TYPE, JiraAttribute.valueById(attribute.getId()).getType().getKey());
+		attribute.putMetaDataValue(IJiraConstants.META_TYPE, JiraAttribute.valueById(attribute.getId()).getType().getKey());
 		return attribute;
 	}
 
@@ -106,30 +64,30 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 		} else if ("assignee".equals(key)) {
 			return RepositoryTaskAttribute.USER_ASSIGNED;
 		} else if ("environment".equals(key)) {
-			return ATTRIBUTE_ENVIRONMENT;
+			return IJiraConstants.ATTRIBUTE_ENVIRONMENT;
 		} else if ("issuetype".equals(key)) {
-			return ATTRIBUTE_TYPE;
+			return IJiraConstants.ATTRIBUTE_TYPE;
 		} else if ("components".equals(key)) {
-			return ATTRIBUTE_COMPONENTS;
+			return IJiraConstants.ATTRIBUTE_COMPONENTS;
 		} else if ("versions".equals(key)) {
-			return ATTRIBUTE_AFFECTSVERSIONS;
+			return IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS;
 		} else if ("fixVersions".equals(key)) {
-			return ATTRIBUTE_FIXVERSIONS;
+			return IJiraConstants.ATTRIBUTE_FIXVERSIONS;
 		} else if ("timetracking".equals(key)) {
-			return ATTRIBUTE_ESTIMATE;
+			return IJiraConstants.ATTRIBUTE_ESTIMATE;
 		} else if ("duedate".equals(key)) {
-			return ATTRIBUTE_DUE_DATE;
+			return IJiraConstants.ATTRIBUTE_DUE_DATE;
 		}
 
 		if (RepositoryTaskAttribute.COMPONENT.equals(key)) {
-			return JiraAttributeFactory.ATTRIBUTE_COMPONENTS;
+			return IJiraConstants.ATTRIBUTE_COMPONENTS;
 		}
 
 		if (key.startsWith("issueLink")) {
-			return ATTRIBUTE_LINK_PREFIX + key;
+			return IJiraConstants.ATTRIBUTE_LINK_PREFIX + key;
 		}
 		if (key.startsWith("customfield")) {
-			return ATTRIBUTE_CUSTOM_PREFIX + key;
+			return IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX + key;
 		}
 
 		return key;

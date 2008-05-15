@@ -16,43 +16,43 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
  */
 public enum JiraAttribute {
 
-	ACTUAL(JiraAttributeFactory.ATTRIBUTE_ACTUAL, JiraFieldType.TEXTFIELD, "Time Spent:", false, true, "timespent"),
+	ACTUAL(IJiraConstants.ATTRIBUTE_ACTUAL, JiraFieldType.TEXTFIELD, "Time Spent:", false, true, "timespent"),
 
-	AFFECTSVERSIONS(JiraAttributeFactory.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT, "Affects Versions:",
+	AFFECTSVERSIONS(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT, "Affects Versions:",
 			false, false, "versions"),
 
 	COMMENT_NEW(TaskAttribute.COMMENT_NEW, JiraFieldType.TEXTAREA, "New Comment:", true, false, "comment"),
 
-	COMPONENTS(JiraAttributeFactory.ATTRIBUTE_COMPONENTS, JiraFieldType.MULTISELECT, "Components:", false, false,
+	COMPONENTS(IJiraConstants.ATTRIBUTE_COMPONENTS, JiraFieldType.MULTISELECT, "Components:", false, false,
 			"components"),
 
 	CREATION_DATE(TaskAttribute.DATE_CREATION, JiraFieldType.DATEPICKER, "Created:"),
 
 	DESCRIPTION(TaskAttribute.DESCRIPTION, JiraFieldType.TEXTFIELD, "Description:", true, false, "description"),
 
-	DUE_DATE(JiraAttributeFactory.ATTRIBUTE_DUE_DATE, JiraFieldType.DATEPICKER, "Due Date:", true, false, "duedate"),
+	DUE_DATE(IJiraConstants.ATTRIBUTE_DUE_DATE, JiraFieldType.DATEPICKER, "Due Date:", true, false, "duedate"),
 
-	ENVIRONMENT(JiraAttributeFactory.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA, "Environment:", false, false,
+	ENVIRONMENT(IJiraConstants.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA, "Environment:", false, false,
 			"environment"),
 
-	ESTIMATE(JiraAttributeFactory.ATTRIBUTE_ESTIMATE, JiraFieldType.TEXTFIELD, "Estimate:", false, false,
+	ESTIMATE(IJiraConstants.ATTRIBUTE_ESTIMATE, JiraFieldType.TEXTFIELD, "Estimate:", false, false,
 			"timetracking"),
 
-	FIXVERSIONS(JiraAttributeFactory.ATTRIBUTE_FIXVERSIONS, JiraFieldType.MULTISELECT, "Fix Versions:", false, false,
+	FIXVERSIONS(IJiraConstants.ATTRIBUTE_FIXVERSIONS, JiraFieldType.MULTISELECT, "Fix Versions:", false, false,
 			"fixVersions"),
 
-	INITIAL_ESTIMATE(JiraAttributeFactory.ATTRIBUTE_INITIAL_ESTIMATE, JiraFieldType.TEXTFIELD, "Original Estimate:",
+	INITIAL_ESTIMATE(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE, JiraFieldType.TEXTFIELD, "Original Estimate:",
 			false, true),
 
 	ISSUE_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Issue ID:"),
 
-	LINKED_IDS(JiraAttributeFactory.ATTRIBUTE_LINKED_IDS, JiraFieldType.TEXTFIELD, "Linked ids:", true, true),
+	LINKED_IDS(IJiraConstants.ATTRIBUTE_LINKED_IDS, JiraFieldType.TEXTFIELD, "Linked ids:", true, true),
 
 	MODIFICATION_DATE(TaskAttribute.DATE_MODIFIED, JiraFieldType.DATEPICKER, "Modified:"),
 
-	PARENT_ID(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID, JiraFieldType.ISSUELINK, "Parent ID:", true, true),
+	PARENT_ID(IJiraConstants.ATTRIBUTE_ISSUE_PARENT_ID, JiraFieldType.ISSUELINK, "Parent ID:", true, true),
 
-	PARENT_KEY(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.ISSUELINK, "Parent:", false, true),
+	PARENT_KEY(IJiraConstants.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.ISSUELINK, "Parent:", false, true),
 
 	PRIORITY(TaskAttribute.PRIORITY, JiraFieldType.SELECT, "Priority:", false, false, "priority"),
 
@@ -60,17 +60,17 @@ public enum JiraAttribute {
 
 	RESOLUTION(TaskAttribute.RESOLUTION, JiraFieldType.SELECT, "Resolution:", true, false, "resolution"),
 
-	SECURITY_LEVEL(JiraAttributeFactory.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT, "Security Level:", false, true),
+	SECURITY_LEVEL(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT, "Security Level:", false, true),
 
 	STATUS(TaskAttribute.STATUS, JiraFieldType.SELECT, "Status:"),
 
-	SUBTASK_IDS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, "Subtask ids:", true, true),
+	SUBTASK_IDS(IJiraConstants.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, "Subtask ids:", true, true),
 
-	SUBTASK_KEYS(JiraAttributeFactory.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Subtasks:", false, true),
+	SUBTASK_KEYS(IJiraConstants.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Subtasks:", false, true),
 
 	SUMMARY(TaskAttribute.SUMMARY, JiraFieldType.TEXTFIELD, "Summary:", true, false, "summary"),
 
-	TYPE(JiraAttributeFactory.ATTRIBUTE_TYPE, JiraFieldType.SELECT, "Type:", false, false, "issuetype"),
+	TYPE(IJiraConstants.ATTRIBUTE_TYPE, JiraFieldType.SELECT, "Type:", false, false, "issuetype"),
 
 	UNKNOWN(null, JiraFieldType.UNKNOWN, "unknown:", true, true),
 
