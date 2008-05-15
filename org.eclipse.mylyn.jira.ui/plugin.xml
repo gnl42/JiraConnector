@@ -25,10 +25,10 @@
          class="org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi"
          name="JIRA Repository UI"
          overlayIcon="icons/eview16/overlay-jira.gif"/>
+   <taskListMigrator
+         class="org.eclipse.mylyn.internal.jira.ui.JiraTaskListMigrator">
+   </taskListMigrator>
             
-      <taskListFactory 
-            class="org.eclipse.mylyn.internal.jira.ui.JiraTaskListFactory"
-            id="org.eclipse.mylyn.jira.tasklist.factory"/>
    </extension>
 
    <extension
