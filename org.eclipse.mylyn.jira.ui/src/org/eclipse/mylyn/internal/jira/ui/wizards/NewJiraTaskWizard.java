@@ -12,9 +12,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.internal.jira.ui.editor.JiraTaskInitializationData;
 import org.eclipse.mylyn.internal.tasks.core.TaskTask;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.ITask.SynchronizationState;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -38,9 +38,9 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 
 	private final JiraProjectPage projectPage;
 
-	private final TaskSelection taskSelection;
+	private final ITaskMapping taskSelection;
 
-	public NewJiraTaskWizard(TaskRepository taskRepository, TaskSelection taskSelection) {
+	public NewJiraTaskWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
 		this.taskRepository = taskRepository;
 		this.taskSelection = taskSelection;
 
@@ -67,8 +67,9 @@ public class NewJiraTaskWizard extends Wizard implements INewWizard {
 		data.taskRepository = taskRepository;
 		data.taskSelection = taskSelection;
 
+		// TODO: move to superclass
 		ITask task = TasksUiInternal.createNewLocalTask(null);
-		((TaskTask) task).setSynchronizationState(SynchronizationState.OUTGOING);
+		((TaskTask) task).setSynchronizationState(SynchronizationState.OUTGOING_NEW);
 		TaskRepository localTaskRepository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
 				task.getRepositoryUrl());
 		TaskEditorInput editorInput = new TaskEditorInput(localTaskRepository, task);

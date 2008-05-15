@@ -32,6 +32,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 /**
  * @author Steffen Pingel
  */
+@SuppressWarnings( { "restriction", "deprecation" })
 @Deprecated
 public class JiraAttachmentHandler extends AbstractAttachmentHandler {
 

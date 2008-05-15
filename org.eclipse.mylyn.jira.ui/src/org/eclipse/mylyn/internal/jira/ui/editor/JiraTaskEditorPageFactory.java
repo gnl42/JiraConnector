@@ -36,7 +36,7 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
 	@Override
 	public FormPage createPage(TaskEditor parentEditor) {
-		return new JiraTaskEditor2(parentEditor);
+		return new JiraTaskEditorPage(parentEditor);
 	}
 
 	@Override

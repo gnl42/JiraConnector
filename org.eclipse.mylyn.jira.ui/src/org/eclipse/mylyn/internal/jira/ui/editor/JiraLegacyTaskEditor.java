@@ -44,9 +44,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Rob Elves
  * @author Eugene Kuleshov
  */
-public class JiraTaskEditor extends AbstractRepositoryTaskEditor {
+@SuppressWarnings( { "deprecation", "restriction" })
+public class JiraLegacyTaskEditor extends AbstractRepositoryTaskEditor {
 
-	public JiraTaskEditor(FormEditor editor) {
+	public JiraLegacyTaskEditor(FormEditor editor) {
 		super(editor);
 	}
 

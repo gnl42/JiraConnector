@@ -28,6 +28,8 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Steffen Pingel
  */
+@SuppressWarnings( { "restriction", "deprecation" })
+@Deprecated
 public class NewJiraTaskEditor extends AbstractNewRepositoryTaskEditor {
 
 	public NewJiraTaskEditor(FormEditor editor) {

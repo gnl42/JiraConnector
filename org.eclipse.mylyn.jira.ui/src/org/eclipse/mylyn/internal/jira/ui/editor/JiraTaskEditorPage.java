@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler2;
+import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -34,14 +34,13 @@ import org.eclipse.ui.handlers.IHandlerService;
  * 
  * @author Steffen Pingel
  */
-@SuppressWarnings("restriction")
-public class JiraTaskEditor2 extends AbstractTaskEditorPage {
+public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 	private AttributeEditorFactory attributeEditorFactory;
 
 	private AttributeEditorToolkit attributeEditorToolkit;
 
-	public JiraTaskEditor2(TaskEditor editor) {
+	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
 	}
 
@@ -75,7 +74,7 @@ public class JiraTaskEditor2 extends AbstractTaskEditorPage {
 			AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
 					JiraCorePlugin.CONNECTOR_KIND);
 
-			JiraTaskDataHandler2 taskDataHandler = (JiraTaskDataHandler2) connector.getTaskDataHandler();
+			JiraTaskDataHandler taskDataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 			TaskAttributeMapper mapper = taskDataHandler.getAttributeMapper(taskRepository);
 			TaskData taskData = new TaskData(mapper, JiraCorePlugin.CONNECTOR_KIND, taskRepository.getRepositoryUrl(),
 					"");

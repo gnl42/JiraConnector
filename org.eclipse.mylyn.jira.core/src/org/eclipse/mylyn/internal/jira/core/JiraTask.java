@@ -15,6 +15,7 @@ import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
+@SuppressWarnings("restriction")
 @Deprecated
 public class JiraTask extends AbstractTask {
 

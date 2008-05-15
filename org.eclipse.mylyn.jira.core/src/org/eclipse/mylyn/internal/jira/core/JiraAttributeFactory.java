@@ -20,6 +20,8 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
  * @author Mik Kersten
  * @author Steffen Pingel
  */
+@SuppressWarnings( { "restriction", "deprecation" })
+@Deprecated
 public class JiraAttributeFactory extends AbstractAttributeFactory {
 
 	private static final long serialVersionUID = 8000933300692372211L;

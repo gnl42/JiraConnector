@@ -23,7 +23,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
+import org.eclipse.mylyn.internal.jira.core.JiraLegacyTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
@@ -55,7 +55,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 	private TaskRepository repository;
 
-	private JiraTaskDataHandler dataHandler;
+	private JiraLegacyTaskDataHandler dataHandler;
 
 	private JiraClient client;
 
@@ -100,7 +100,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 				kind);
 		assertEquals(connector.getConnectorKind(), kind);
 
-		dataHandler = (JiraTaskDataHandler) connector.getLegacyTaskDataHandler();
+		dataHandler = (JiraLegacyTaskDataHandler) connector.getLegacyTaskDataHandler();
 
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
 
@@ -166,7 +166,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "http://jira.codehaus.org/");
 		MockJiraClient client = new MockJiraClient(repository.getRepositoryUrl());
-		JiraTaskDataHandler dataHandler = new JiraTaskDataHandler(new MockJiraClientFactory(client));
+		JiraLegacyTaskDataHandler dataHandler = new JiraLegacyTaskDataHandler(new MockJiraClientFactory(client));
 		RepositoryTaskData data = dataHandler.createTaskData(repository, client, issue, null, null);
 
 		assertValues(data, RepositoryTaskAttribute.TASK_KEY, "FOO-1");

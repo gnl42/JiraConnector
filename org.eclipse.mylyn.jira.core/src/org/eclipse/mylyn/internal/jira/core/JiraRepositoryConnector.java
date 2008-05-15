@@ -69,7 +69,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
 
-	private final JiraTaskDataHandler2 taskDataHandler2;
+	private final JiraTaskDataHandler taskDataHandler2;
 
 	private final JiraTaskAttachmentHandler attachmentHandler2;
 
@@ -79,7 +79,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static final int RETURN_ALL_HITS = -1;
 
 	public JiraRepositoryConnector() {
-		taskDataHandler2 = new JiraTaskDataHandler2(JiraClientFactory.getDefault());
+		taskDataHandler2 = new JiraTaskDataHandler(JiraClientFactory.getDefault());
 		attachmentHandler2 = new JiraTaskAttachmentHandler();
 	}
 

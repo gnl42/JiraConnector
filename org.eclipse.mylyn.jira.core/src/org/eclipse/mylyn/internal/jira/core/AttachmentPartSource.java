@@ -17,6 +17,8 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.ITaskAttachment;
 /**
  * @author Steffen Pingel
  */
+@SuppressWarnings( { "restriction", "deprecation" })
+@Deprecated
 public class AttachmentPartSource implements PartSource {
 
 	private final ITaskAttachment attachment;

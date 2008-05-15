@@ -27,7 +27,6 @@ import org.eclipse.mylyn.internal.jira.ui.wizards.JiraNamedFilterPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.TaskSelection;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
@@ -134,7 +133,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
-		return new NewJiraTaskWizard(taskRepository, (TaskSelection) taskSelection);
+		return new NewJiraTaskWizard(taskRepository, taskSelection);
 	}
 
 	@Override

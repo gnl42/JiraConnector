@@ -52,10 +52,10 @@ public class JiraTaskEditorFactory extends AbstractTaskEditorFactory {
 			if (taskInput.getTaskData().isNew()) {
 				return new NewJiraTaskEditor(parentEditor);
 			} else {
-				return new JiraTaskEditor(parentEditor);
+				return new JiraLegacyTaskEditor(parentEditor);
 			}
 		} else if (editorInput instanceof TaskEditorInput) {
-			return new JiraTaskEditor(parentEditor);
+			return new JiraLegacyTaskEditor(parentEditor);
 		}
 		return null;
 	}

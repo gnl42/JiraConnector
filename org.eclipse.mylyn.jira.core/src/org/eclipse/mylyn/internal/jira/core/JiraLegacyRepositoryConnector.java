@@ -59,6 +59,8 @@ import org.eclipse.mylyn.tasks.core.sync.ISynchronizationContext;
  * @author Eugene Kuleshov
  * @since 3.0
  */
+@SuppressWarnings( { "restriction", "deprecation" })
+@Deprecated
 public class JiraLegacyRepositoryConnector extends AbstractLegacyRepositoryConnector {
 
 	private static final String ERROR_REPOSITORY_CONFIGURATION = "The repository returned an unknown project. Please update the repository attributes.";
@@ -73,11 +75,11 @@ public class JiraLegacyRepositoryConnector extends AbstractLegacyRepositoryConne
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
 
-	private final JiraTaskDataHandler taskDataHandler;
+	private final JiraLegacyTaskDataHandler taskDataHandler;
 
 	private final JiraAttachmentHandler attachmentHandler;
 
-	private final JiraTaskDataHandler2 taskDataHandler2;
+	private final JiraTaskDataHandler taskDataHandler2;
 
 	private final JiraTaskAttachmentHandler attachmentHandler2;
 
@@ -87,8 +89,8 @@ public class JiraLegacyRepositoryConnector extends AbstractLegacyRepositoryConne
 	public static final int RETURN_ALL_HITS = -1;
 
 	public JiraLegacyRepositoryConnector() {
-		taskDataHandler = new JiraTaskDataHandler(JiraClientFactory.getDefault());
-		taskDataHandler2 = new JiraTaskDataHandler2(JiraClientFactory.getDefault());
+		taskDataHandler = new JiraLegacyTaskDataHandler(JiraClientFactory.getDefault());
+		taskDataHandler2 = new JiraTaskDataHandler(JiraClientFactory.getDefault());
 		attachmentHandler = new JiraAttachmentHandler();
 		attachmentHandler2 = new JiraTaskAttachmentHandler();
 	}
