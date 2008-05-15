@@ -52,6 +52,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  */
+@SuppressWarnings("restriction")
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	public enum JiraTaskKind {
@@ -78,7 +79,6 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		}
 	}
 
-	@SuppressWarnings("restriction")
 	public JiraConnectorUi() {
 		TasksUiPlugin.getDefault().addSearchHandler(new JiraSearchHandler());
 	}
