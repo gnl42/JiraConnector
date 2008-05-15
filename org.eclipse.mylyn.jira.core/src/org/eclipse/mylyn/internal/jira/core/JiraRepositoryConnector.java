@@ -39,6 +39,7 @@ import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
@@ -113,8 +114,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			}
 			JiraFilter filter = JiraUtil.getQuery(repository, client, repositoryQuery, true);
 			if (filter == null) {
-				return new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, //
-						"Invalid query type: " + repositoryQuery.getClass(), null);
+				return RepositoryStatus.createStatus(repository, IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+						"The JIRA query is invalid");
 			}
 			try {
 				List<JiraIssue> issues = new ArrayList<JiraIssue>();
