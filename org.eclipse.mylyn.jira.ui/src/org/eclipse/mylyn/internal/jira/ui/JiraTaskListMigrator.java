@@ -28,7 +28,7 @@ public class JiraTaskListMigrator extends AbstractTaskListMigrator {
 
 	private static final String KEY_FILTER_NAME = "FilterName";
 
-	private static final String KEY_JIRA_CUSTOM = "JiraCustomQuery";
+	private static final String KEY_JIRA_CUSTOM = "JiraJiraCustomQuery";
 
 	private static final String KEY_JIRA_ISSUE = "JiraIssue";
 
