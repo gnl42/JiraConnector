@@ -33,7 +33,6 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 
 /**
  * @author Steffen Pingel
@@ -100,7 +99,7 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		file.deleteOnExit();
 		JiraTestUtils.writeFile(file, "Mylyn".getBytes());
 
-		AbstractTask task = (AbstractTask) TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		FileAttachment attachment = new FileAttachment(file);
 		attachment.setContentType("text/plain");
 		attachmentHandler.uploadAttachment(repository, task, attachment, "", new NullProgressMonitor());

@@ -46,7 +46,6 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 
 /**
  * @author Steffen Pingel
@@ -203,7 +202,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
 
-		AbstractTask task = (AbstractTask) TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(false, task.isCompleted());
 		assertNull(task.getDueDate());

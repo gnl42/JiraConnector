@@ -40,7 +40,6 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 
 /**
  * @author Eugene Kuleshov
@@ -119,7 +118,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 	}
 
 	private void verifyDuplicate(String stackTrace, JiraIssue issue) throws JiraException, CoreException {
-		ITask task1 = TasksUiUtil.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		ITask task1 = TasksUiInternal.createTask(repository, issue.getKey(), new NullProgressMonitor());
 		assertEquals(issue.getSummary(), task1.getSummary());
 		assertEquals(false, task1.isCompleted());
 		assertNull(task1.getDueDate());
