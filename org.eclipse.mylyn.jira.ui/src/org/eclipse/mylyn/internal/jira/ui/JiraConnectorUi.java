@@ -240,7 +240,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public IWizardPage getAttachmentPage(TaskAttachmentModel model) {
+	public IWizardPage getTaskAttachmentPage(TaskAttachmentModel model) {
 		TaskAttachmentPage page = new TaskAttachmentPage(model);
 		page.setNeedsDescription(false);
 		return page;
