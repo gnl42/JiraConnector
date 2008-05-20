@@ -32,7 +32,7 @@ import org.eclipse.mylyn.internal.tasks.core.ITaskList;
 import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.mylyn.jira.tests.util.ResultCollector;
+import org.eclipse.mylyn.jira.tests.util.LegacyResultCollector;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -134,7 +134,7 @@ public class JiraFilterTest extends TestCase {
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
 
-		ResultCollector hitCollector = new ResultCollector();
+		LegacyResultCollector hitCollector = new LegacyResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(1, hitCollector.results.size());
 		assertEquals(issue.getSummary(), hitCollector.results.iterator().next().getSummary());
@@ -163,12 +163,12 @@ public class JiraFilterTest extends TestCase {
 		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
 
 		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
-		ResultCollector hitCollector = new ResultCollector();
+		LegacyResultCollector hitCollector = new LegacyResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(1, hitCollector.results.size());
 		assertEquals(issue2.getSummary(), hitCollector.results.iterator().next().getSummary());
 
-		hitCollector = new ResultCollector();
+		hitCollector = new LegacyResultCollector();
 		JiraClientFactory.getDefault().clearClientsAndConfigurationData();
 		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
 		assertEquals(1, hitCollector.results.size());

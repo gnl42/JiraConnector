@@ -35,11 +35,11 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraTaskExternalizationTest.class);
 		suite.addTestSuite(JiraFilterTest.class);
 		suite.addTestSuite(JiraTaskArchiveTest.class);
-		suite.addTestSuite(JiraRepositoryConnectorTest.class);
+		suite.addTestSuite(JiraLegacyRepositoryConnectorTest.class);
 		suite.addTestSuite(JiraClientTest.class);
 		suite.addTestSuite(JiraWebClientTest.class);
-		suite.addTestSuite(JiraAttachmentHandlerTest.class);
-		suite.addTestSuite(JiraTaskDataHandlerTest.class);
+		suite.addTestSuite(JiraLegacyAttachmentHandlerTest.class);
+		suite.addTestSuite(JiraLegacyTaskDataHandlerTest.class);
 		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
 		suite.addTestSuite(JiraConnectorUiTest.class);
 		// $JUnit-END$

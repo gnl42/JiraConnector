@@ -17,7 +17,8 @@ import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 /**
  * @author Steffen Pingel
  */
-public class ResultCollector extends LegacyTaskDataCollector {
+@SuppressWarnings("deprecation")
+public class LegacyResultCollector extends LegacyTaskDataCollector {
 
 	public List<RepositoryTaskData> results = new ArrayList<RepositoryTaskData>();
 

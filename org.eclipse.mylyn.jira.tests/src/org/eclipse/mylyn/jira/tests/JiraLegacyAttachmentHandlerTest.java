@@ -37,7 +37,8 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 /**
  * @author Steffen Pingel
  */
-public class JiraAttachmentHandlerTest extends TestCase {
+@SuppressWarnings("deprecation")
+public class JiraLegacyAttachmentHandlerTest extends TestCase {
 
 	private TaskRepository repository;
 
@@ -99,7 +100,8 @@ public class JiraAttachmentHandlerTest extends TestCase {
 		file.deleteOnExit();
 		JiraTestUtils.writeFile(file, "Mylyn".getBytes());
 
-		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(),
+				new NullProgressMonitor());
 		FileAttachment attachment = new FileAttachment(file);
 		attachment.setContentType("text/plain");
 		attachmentHandler.uploadAttachment(repository, task, attachment, "", new NullProgressMonitor());

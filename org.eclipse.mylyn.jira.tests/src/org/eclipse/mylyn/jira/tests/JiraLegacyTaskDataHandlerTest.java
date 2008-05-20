@@ -51,7 +51,8 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
-public class JiraTaskDataHandlerTest extends TestCase {
+@SuppressWarnings("deprecation")
+public class JiraLegacyTaskDataHandlerTest extends TestCase {
 
 	private TaskRepository repository;
 
@@ -202,7 +203,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtils.createIssue(client, "testUpdateTask");
 
-		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(),
+				new NullProgressMonitor());
 		assertEquals("testUpdateTask", task.getSummary());
 		assertEquals(false, task.isCompleted());
 		assertNull(task.getDueDate());
