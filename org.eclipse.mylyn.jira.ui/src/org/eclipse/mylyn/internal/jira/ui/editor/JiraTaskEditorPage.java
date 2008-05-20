@@ -22,12 +22,8 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
-import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorFactory;
-import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorToolkit;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
-import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.handlers.IHandlerService;
 
 /**
  * NOTE: This class is work in progress and currently not used.
@@ -36,31 +32,8 @@ import org.eclipse.ui.handlers.IHandlerService;
  */
 public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
-	private AttributeEditorFactory attributeEditorFactory;
-
-	private AttributeEditorToolkit attributeEditorToolkit;
-
 	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
-	}
-
-	@Override
-	protected void createFormContent(IManagedForm managedForm) {
-		attributeEditorFactory = new AttributeEditorFactory(getModel(), getTaskRepository());
-		IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
-		attributeEditorToolkit = new AttributeEditorToolkit(handlerService, getEditorSite().getActionBarContributor());
-
-		super.createFormContent(managedForm);
-	}
-
-	@Override
-	public AttributeEditorFactory getAttributeEditorFactory() {
-		return attributeEditorFactory;
-	}
-
-	@Override
-	public AttributeEditorToolkit getAttributeEditorToolkit() {
-		return attributeEditorToolkit;
 	}
 
 	@Override
