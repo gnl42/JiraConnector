@@ -279,7 +279,7 @@ public class JiraProjectPage extends WizardPage {
 			ITask task = (ITask) element;
 			if (task.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
 				try {
-					TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task, task.getConnectorKind());
+					TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
 					Project project = getProject(taskData);
 					if (project != null) {
 						return project;

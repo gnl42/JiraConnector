@@ -58,8 +58,8 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			}
 			taskData.getMappedAttribute(JiraAttribute.PROJECT.getId()).setValue(data.project.getId());
 
-			ITaskDataWorkingCopy workingCopy = TasksUi.getTaskDataManager().createWorkingCopy(input.getTask(),
-					taskData.getConnectorKind(), taskData);
+			ITaskDataWorkingCopy workingCopy = TasksUi.getTaskDataManager()
+					.createWorkingCopy(input.getTask(), taskData);
 			return new TaskDataModel(taskRepository, input.getTask(), workingCopy);
 		} else {
 			return super.createModel(input);

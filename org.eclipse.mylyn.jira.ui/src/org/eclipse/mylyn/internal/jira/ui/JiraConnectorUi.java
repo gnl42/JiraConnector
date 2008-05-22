@@ -213,7 +213,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 			// we wouldn't have to get the task data this way from here
 			TaskData taskData;
 			try {
-				taskData = TasksUi.getTaskDataManager().getTaskData(task, task.getConnectorKind());
+				taskData = TasksUi.getTaskDataManager().getTaskData(task);
 				return taskData.getMappedAttribute(JiraAttribute.DUE_DATE.getId()) != null;
 			} catch (CoreException e) {
 				StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data", e));
