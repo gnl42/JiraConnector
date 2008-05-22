@@ -397,12 +397,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private void addComments(TaskData data, JiraIssue jiraIssue) {
 		TaskAttribute commentContainer = data.getRoot().createAttribute(TaskAttribute.CONTAINER_COMMENTS);
-		int x = 1;
+		int i = 1;
 		for (Comment comment : jiraIssue.getComments()) {
-			TaskAttribute attribute = commentContainer.createAttribute(x++ + "");
+			TaskAttribute attribute = commentContainer.createAttribute(i + "");
 			attribute.setValue(attribute.getId());
 			TaskCommentMapper taskComment = TaskCommentMapper.createFrom(attribute);
 			taskComment.setAuthor(data.getAttributeMapper().getTaskRepository().createPerson(comment.getAuthor()));
+			taskComment.setNumber(i);
 			String commentText = comment.getComment();
 			if (comment.isMarkupDetected()) {
 				commentText = stripTags(commentText);
@@ -411,6 +412,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			taskComment.setCreationDate(comment.getCreated());
 			// TODO taskComment.setUrl()
 			taskComment.applyTo(attribute);
+			i++;
 		}
 	}
 
