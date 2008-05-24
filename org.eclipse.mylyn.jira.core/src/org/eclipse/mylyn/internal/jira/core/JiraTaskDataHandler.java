@@ -669,15 +669,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			return;
 		}
 
-		TaskAttribute operationAttribute = data.getRoot().createAttribute(TaskAttribute.OPERATION);
-
+		String label = "Leave as " + issue.getStatus().getName();
 		TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_OPERATION + LEAVE_OPERATION);
-		TaskOperation operation = TaskOperation.createFrom(attribute, LEAVE_OPERATION);
-		operation.setLabel("Leave as " + issue.getStatus().getName());
-		operation.applyTo(attribute);
-
+		TaskOperation.applyTo(attribute, LEAVE_OPERATION, label);
 		// set as default
-		operation.applyTo(operationAttribute);
+		attribute = data.getRoot().createAttribute(TaskAttribute.OPERATION);
+		TaskOperation.applyTo(attribute, LEAVE_OPERATION, label);
 
 		// TODO need more accurate status matching
 //		if (!JiraRepositoryConnector.isCompleted(data)) {
@@ -696,9 +693,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (availableActions != null) {
 			for (JiraAction action : availableActions) {
 				attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_OPERATION + action.getId());
-				operation = TaskOperation.createFrom(attribute, action.getId());
-				operation.setLabel(action.getName());
-				operation.applyTo(attribute);
+				TaskOperation.applyTo(attribute, action.getId(), action.getName());
 
 				String[] fields = client.getActionFields(issue.getKey(), action.getId(), monitor);
 				for (String field : fields) {
