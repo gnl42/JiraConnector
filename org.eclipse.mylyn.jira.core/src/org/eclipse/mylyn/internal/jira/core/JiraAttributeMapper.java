@@ -21,7 +21,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
-import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeMetaData;
 
 /**
  * @author Steffen Pingel
@@ -45,16 +45,14 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 
 	@Override
 	public String getType(TaskAttribute taskAttribute) {
-		TaskAttributeProperties properties = TaskAttributeProperties.from(taskAttribute);
+		TaskAttributeMetaData properties = taskAttribute.getMetaData();
 		if (properties.getType() != null) {
 			return properties.getType();
 		}
-
-		JiraFieldType type = JiraFieldType.fromKey(taskAttribute.getMetaData(IJiraConstants.META_TYPE));
+		JiraFieldType type = JiraFieldType.fromKey(properties.getValue(IJiraConstants.META_TYPE));
 		if (type.getTaskType() != null) {
 			return type.getTaskType();
 		}
-
 		return TaskAttribute.TYPE_SHORT_TEXT;
 	}
 

@@ -56,7 +56,7 @@ import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
-import org.eclipse.mylyn.tasks.core.data.TaskAttributeProperties;
+import org.eclipse.mylyn.tasks.core.data.TaskAttributeMetaData;
 import org.eclipse.mylyn.tasks.core.data.TaskCommentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskOperation;
@@ -153,8 +153,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	public void initializeTaskData(TaskData data, JiraClient client, Project project) {
 		createAttribute(data, JiraAttribute.CREATION_DATE);
 		TaskAttribute summaryAttribute = createAttribute(data, JiraAttribute.SUMMARY);
-		TaskAttributeProperties.from(summaryAttribute).setType(TaskAttribute.TYPE_SHORT_RICH_TEXT).applyTo(
-				summaryAttribute);
+		summaryAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		createAttribute(data, JiraAttribute.DESCRIPTION);
 		createAttribute(data, JiraAttribute.STATUS);
 		createAttribute(data, JiraAttribute.TASK_KEY);
@@ -238,13 +237,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
 		TaskAttribute attribute = data.getRoot().createAttribute(key.getId());
-		TaskAttributeProperties.defaults()
+		attribute.getMetaData().defaults() //
 				.setReadOnly(key.isReadOnly())
 				.setKind(key.getKind())
 				.setLabel(key.getName())
 				.setType(key.getType().getTaskType())
-				.applyTo(attribute);
-		attribute.putMetaDataValue(IJiraConstants.META_TYPE, key.getType().getKey());
+				.putValue(IJiraConstants.META_TYPE, key.getType().getKey());
 		return attribute;
 	}
 
@@ -291,9 +289,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				TaskAttribute attribute = links.get(key);
 				if (attribute == null) {
 					attribute = data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_LINK_PREFIX + key);
-					TaskAttributeProperties.defaults().setKind(TaskAttribute.KIND_DEFAULT).setLabel(label).setType(
-							JiraFieldType.ISSUELINKS.getTaskType()).applyTo(attribute);
-					attribute.putMetaDataValue(IJiraConstants.META_TYPE, JiraFieldType.ISSUELINKS.getKey());
+					attribute.getMetaData() //
+							.setKind(TaskAttribute.KIND_DEFAULT)
+							.setLabel(label)
+							.setType(JiraFieldType.ISSUELINKS.getTaskType())
+							.putValue(IJiraConstants.META_TYPE, JiraFieldType.ISSUELINKS.getKey());
 					links.put(key, attribute);
 				}
 				attribute.addValue(link.getIssueKey());
@@ -338,8 +338,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (issueType != null) {
 			TaskAttribute attribute = setAttributeValue(data, JiraAttribute.TYPE, issueType.getId());
 			if (issueType.isSubTaskType()) {
-				TaskAttributeProperties.from(attribute).setReadOnly(true).applyTo(attribute);
-				attribute.putMetaDataValue(IJiraConstants.META_SUB_TASK_TYPE, Boolean.toString(true));
+				attribute.getMetaData() //
+						.setReadOnly(true)
+						.putValue(IJiraConstants.META_SUB_TASK_TYPE, Boolean.toString(true));
 				attribute.clearOptions();
 			}
 		} else {
@@ -446,9 +447,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			String taskType = JiraFieldType.fromKey(type).getTaskType();
 
 			TaskAttribute attribute = data.getRoot().createAttribute(mappedKey);
-			TaskAttributeProperties.defaults().setKind(kind).setLabel(name).setReadOnly(field.isReadOnly()).setType(
-					taskType).applyTo(attribute);
-			attribute.putMetaDataValue(IJiraConstants.META_TYPE, type);
+			attribute.getMetaData().defaults() //
+					.setKind(kind)
+					.setLabel(name)
+					.setReadOnly(field.isReadOnly())
+					.setType(taskType)
+					.putValue(IJiraConstants.META_TYPE, type);
 			for (String value : field.getValues()) {
 				attribute.addValue(value);
 			}
@@ -462,7 +466,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (useCachedInformation(jiraIssue, oldTaskData)) {
 				// avoid server round-trips
 				for (TaskAttribute attribute : oldTaskData.getRoot().getAttributes().values()) {
-					if (!TaskAttributeProperties.from(attribute).isReadOnly()) {
+					if (!attribute.getMetaData().isReadOnly()) {
 						editableKeys.add(attribute.getId());
 					}
 				}
@@ -490,7 +494,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private void updateProperties(TaskData data, HashSet<String> editableKeys) {
 		for (TaskAttribute attribute : data.getRoot().getAttributes().values()) {
-			TaskAttributeProperties properties = TaskAttributeProperties.from(attribute);
+			TaskAttributeMetaData properties = attribute.getMetaData();
 			boolean editable = editableKeys.contains(attribute.getId().toLowerCase());
 			if (editable && (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX) //
 					|| !JiraAttribute.valueById(attribute.getId()).isHidden())) {
@@ -502,7 +506,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				properties.setReadOnly(false);
 			} else {
 				// make attributes read-only if can't find editing options
-				String key = attribute.getMetaData(IJiraConstants.META_TYPE);
+				String key = properties.getValue(IJiraConstants.META_TYPE);
 				Map<String, String> options = attribute.getOptions();
 				if (JiraFieldType.SELECT.getKey().equals(key) && (options.isEmpty() || properties.isReadOnly())) {
 					properties.setReadOnly(true);
@@ -512,7 +516,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					properties.setReadOnly(!editable);
 				}
 			}
-			properties.applyTo(attribute);
 		}
 	}
 
@@ -698,7 +701,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				String[] fields = client.getActionFields(issue.getKey(), action.getId(), monitor);
 				for (String field : fields) {
 					if (TaskAttribute.RESOLUTION.equals(mapCommonAttributeKey(field))) {
-						attribute.putMetaDataValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID, TaskAttribute.RESOLUTION);
+						attribute.getMetaData().putValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID,
+								TaskAttribute.RESOLUTION);
 					}
 					// TODO handle other action fields
 				}
@@ -910,7 +914,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		issue.setProject(new Project(getAttributeValue(taskData, JiraAttribute.PROJECT)));
 
-		boolean subTaskType = Boolean.parseBoolean(getAttribute(taskData, JiraAttribute.TYPE).getMetaData(
+		boolean subTaskType = Boolean.parseBoolean(getAttribute(taskData, JiraAttribute.TYPE).getMetaData().getValue(
 				IJiraConstants.META_SUB_TASK_TYPE));
 		IssueType issueType = new IssueType(getAttributeValue(taskData, JiraAttribute.TYPE), subTaskType);
 		issue.setType(issueType);
@@ -956,7 +960,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
 			if (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
 				String id = attribute.getId().substring(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX.length());
-				String type = attribute.getMetaData(IJiraConstants.META_TYPE);
+				String type = attribute.getMetaData().getValue(IJiraConstants.META_TYPE);
 				CustomField field = new CustomField(id, type, "", attribute.getValues());
 				customFields.add(field);
 			}
@@ -1020,7 +1024,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						attribute.putOption(key, value);
 					}
 				} else {
-					JiraFieldType type = JiraFieldType.fromKey(attribute.getMetaData(IJiraConstants.META_TYPE));
+					JiraFieldType type = JiraFieldType.fromKey(attribute.getMetaData().getValue(
+							IJiraConstants.META_TYPE));
 					if ((JiraFieldType.SELECT == type || JiraFieldType.MULTISELECT == type)
 							&& !attribute.getOptions().isEmpty()) {
 						// convert option values to keys: version 1.0 stored value whereas 2.0 stores keys 
