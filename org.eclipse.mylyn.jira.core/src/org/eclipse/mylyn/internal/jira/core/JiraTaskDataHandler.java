@@ -1009,16 +1009,28 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	public void migrateTaskData(TaskRepository taskRepository, TaskData taskData) {
 		if (TASK_DATA_VERSION_1_0.equals(taskData.getVersion())) {
 			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
-				JiraFieldType type = JiraFieldType.fromKey(attribute.getMetaData(IJiraConstants.META_TYPE));
-				if ((JiraFieldType.SELECT == type || JiraFieldType.MULTISELECT == type)
-						&& !attribute.getOptions().isEmpty()) {
-					// convert option values to keys: version 1.0 stored value whereas 2.0 stores keys 
-					Set<String> values = new HashSet<String>(attribute.getValues());
-					attribute.clearValues();
-					Map<String, String> options = attribute.getOptions();
+				if (TaskAttribute.PRODUCT.equals(attribute.getId())) {
+					String projectName = attribute.getValue();
+					Map<String, String> options = taskData.getAttributeMapper().getOptions(attribute);
 					for (String key : options.keySet()) {
-						if (values.contains(options.get(key))) {
-							attribute.addValue(key);
+						String value = options.get(key);
+						if (projectName.equals(value)) {
+							attribute.setValue(key);
+						}
+						attribute.putOption(key, value);
+					}
+				} else {
+					JiraFieldType type = JiraFieldType.fromKey(attribute.getMetaData(IJiraConstants.META_TYPE));
+					if ((JiraFieldType.SELECT == type || JiraFieldType.MULTISELECT == type)
+							&& !attribute.getOptions().isEmpty()) {
+						// convert option values to keys: version 1.0 stored value whereas 2.0 stores keys 
+						Set<String> values = new HashSet<String>(attribute.getValues());
+						attribute.clearValues();
+						Map<String, String> options = attribute.getOptions();
+						for (String key : options.keySet()) {
+							if (values.contains(options.get(key))) {
+								attribute.addValue(key);
+							}
 						}
 					}
 				}

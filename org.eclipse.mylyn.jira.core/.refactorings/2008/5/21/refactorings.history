@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract local variable &apos;anObject&apos; from expression &apos;options.get(key)&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Variable name: &apos;anObject&apos;&#x0A;- Destination method: &apos;org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler.migrateTaskData()&apos;&#x0A;- Variable expression: &apos;options.get(key)&apos;&#x0A;- Replace occurrences of expression with variable" description="Extract local variable &apos;anObject&apos;" final="false" id="org.eclipse.jdt.ui.extract.temp" input="/src&lt;org.eclipse.mylyn.internal.jira.core{JiraTaskDataHandler.java" name="anObject" replace="true" selection="40941 16" stamp="1211610062526" version="1.0"/>
+</session>
