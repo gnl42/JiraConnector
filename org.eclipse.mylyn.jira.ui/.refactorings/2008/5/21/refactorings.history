@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 1 elements(s) to &apos;org.eclipse.mylyn.web.tasks/src/org.eclipse.mylyn.internal.web.tasks&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.ui&apos;&#x0A;- Destination element: &apos;org.eclipse.mylyn.web.tasks/src/org.eclipse.mylyn.internal.web.tasks&apos;&#x0A;- Original element: &apos;org.eclipse.mylyn.internal.jira.ui.JiraImages.java&apos;" description="Copy compilation unit" destination="=org.eclipse.mylyn.web.tasks/src&lt;org.eclipse.mylyn.internal.web.tasks" element1="/src&lt;org.eclipse.mylyn.internal.jira.ui{JiraImages.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1211623308564" units="1" version="1.0"/>
+</session>
