@@ -10,18 +10,17 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
-import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -226,12 +225,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 							JiraCorePlugin.ID_PLUGIN, "Could not download saved filters: " + e.getMessage() + "\n"
 									+ "Please check repository settings in the Task Repositories view");
 					return Status.CANCEL_STATUS;
-				} catch (Exception e) {
-					status = RepositoryStatus.createStatus(getTaskRepository().getRepositoryUrl(), IStatus.ERROR,
-							JiraCorePlugin.ID_PLUGIN, "Could not download saved filters from Jira repository.\n"
-									+ "Please check repository settings in the Task Repositories view");
-					StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN,
-							status.getMessage(), e));
+				} catch (OperationCanceledException e) {
 					return Status.CANCEL_STATUS;
 				} finally {
 					showFilters(loadedFilters, status);
