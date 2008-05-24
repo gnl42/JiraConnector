@@ -473,7 +473,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 				TaskAttribute attribute = oldTaskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY);
 				if (attribute != null) {
-					data.getRoot().deepCopyFrom(attribute);
+					data.getRoot().deepAddCopy(attribute);
 				}
 			} else {
 				try {
