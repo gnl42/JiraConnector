@@ -396,11 +396,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private void addComments(TaskData data, JiraIssue jiraIssue) {
-		TaskAttribute commentContainer = data.getRoot().createAttribute(TaskAttribute.CONTAINER_COMMENTS);
 		int i = 1;
 		for (Comment comment : jiraIssue.getComments()) {
-			TaskAttribute attribute = commentContainer.createAttribute(i + "");
-			attribute.setValue(attribute.getId());
+			TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_COMMENT + i);
 			TaskCommentMapper taskComment = TaskCommentMapper.createFrom(attribute);
 			taskComment.setAuthor(data.getAttributeMapper().getTaskRepository().createPerson(comment.getAuthor()));
 			taskComment.setNumber(i);
@@ -417,10 +415,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private void addAttachments(TaskData data, JiraIssue jiraIssue, JiraClient client) {
-		TaskAttribute attachmentContainer = data.getRoot().createAttribute(TaskAttribute.CONTAINER_ATTACHMENTS);
+		int i = 1;
 		for (Attachment attachment : jiraIssue.getAttachments()) {
-			TaskAttribute attribute = attachmentContainer.createAttribute(attachment.getId());
-			attribute.setValue(attribute.getId());
+			TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_ATTACHMENT + i);
 			TaskAttachmentMapper taskAttachment = TaskAttachmentMapper.createFrom(attribute);
 			taskAttachment.setAuthor(data.getAttributeMapper().getTaskRepository().createPerson(attachment.getAuthor()));
 			taskAttachment.setFileName(attachment.getName());
@@ -436,6 +433,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			taskAttachment.setUrl(client.getBaseUrl() + "/secure/attachment/" + attachment.getId() + "/"
 					+ attachment.getName());
 			taskAttachment.applyTo(attribute);
+			i++;
 		}
 	}
 
@@ -661,21 +659,20 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	public void addOperations(TaskData data, JiraIssue issue, JiraClient client, TaskData oldTaskData,
 			IProgressMonitor monitor) throws JiraException {
-		TaskAttribute operationContainer = data.getRoot().createAttribute(TaskAttribute.CONTAINER_OPERATIONS);
-
 		// avoid server round-trips
 		if (useCachedInformation(issue, oldTaskData)) {
-			TaskAttribute oldOperationContainer = oldTaskData.getMappedAttribute(TaskAttribute.CONTAINER_OPERATIONS);
-			if (oldOperationContainer != null) {
-				operationContainer.deepCopyFrom(oldOperationContainer);
+			TaskAttribute[] attributes = oldTaskData.getAttributeMapper().getAttributesByType(oldTaskData,
+					TaskAttribute.TYPE_OPERATION);
+			for (TaskAttribute taskAttribute : attributes) {
+				data.getRoot().deepAddCopy(taskAttribute);
 			}
 			return;
 		}
 
 		TaskAttribute operationAttribute = data.getRoot().createAttribute(TaskAttribute.OPERATION);
 
-		TaskAttribute attribute = operationContainer.createAttribute(LEAVE_OPERATION);
-		TaskOperation operation = TaskOperation.createFrom(attribute);
+		TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_OPERATION + LEAVE_OPERATION);
+		TaskOperation operation = TaskOperation.createFrom(attribute, LEAVE_OPERATION);
 		operation.setLabel("Leave as " + issue.getStatus().getName());
 		operation.applyTo(attribute);
 
@@ -698,9 +695,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		JiraAction[] availableActions = client.getAvailableActions(issue.getKey(), monitor);
 		if (availableActions != null) {
 			for (JiraAction action : availableActions) {
-				attribute = operationContainer.createAttribute(action.getId());
-				attribute.setValue(action.getId());
-				operation = TaskOperation.createFrom(attribute);
+				attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_OPERATION + action.getId());
+				operation = TaskOperation.createFrom(attribute, action.getId());
 				operation.setLabel(action.getName());
 				operation.applyTo(attribute);
 

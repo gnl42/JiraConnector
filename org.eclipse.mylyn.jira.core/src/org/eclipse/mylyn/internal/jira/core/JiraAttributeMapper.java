@@ -44,18 +44,6 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 	}
 
 	@Override
-	public TaskAttribute getAssoctiatedAttribute(TaskAttribute taskAttribute) {
-		String id = taskAttribute.getMetaData(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID);
-		if (id != null) {
-			if (TaskAttribute.TYPE_OPERATION.equals(TaskAttributeProperties.from(taskAttribute).getType())) {
-				return taskAttribute.getTaskData().getRoot().getAttribute(id);
-			}
-			return taskAttribute.getAttribute(id);
-		}
-		return null;
-	}
-
-	@Override
 	public String getType(TaskAttribute taskAttribute) {
 		TaskAttributeProperties properties = TaskAttributeProperties.from(taskAttribute);
 		if (properties.getType() != null) {
