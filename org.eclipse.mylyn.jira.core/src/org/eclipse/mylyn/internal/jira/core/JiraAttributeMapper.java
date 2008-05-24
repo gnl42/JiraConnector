@@ -85,7 +85,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 				}
 				return options;
 			} else {
-				TaskAttribute projectAttribute = attribute.getTaskData().getMappedAttribute(
+				TaskAttribute projectAttribute = attribute.getTaskData().getRoot().getMappedAttribute(
 						JiraAttribute.PROJECT.getId());
 				if (projectAttribute != null) {
 					Project project = client.getCache().getProjectById(projectAttribute.getValue());

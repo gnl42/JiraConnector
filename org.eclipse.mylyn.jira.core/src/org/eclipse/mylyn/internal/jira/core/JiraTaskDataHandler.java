@@ -299,7 +299,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.addValue(link.getIssueKey());
 
 				if (link.getInwardDescription() != null) {
-					attribute = data.getMappedAttribute(JiraAttribute.LINKED_IDS.getId());
+					attribute = data.getRoot().getMappedAttribute(JiraAttribute.LINKED_IDS.getId());
 					if (attribute == null) {
 						attribute = createAttribute(data, JiraAttribute.LINKED_IDS);
 					}
@@ -531,7 +531,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private boolean useCachedInformation(JiraIssue issue, TaskData oldTaskData) {
 		if (oldTaskData != null && issue.getStatus() != null) {
-			TaskAttribute attribute = oldTaskData.getMappedAttribute(TaskAttribute.STATUS);
+			TaskAttribute attribute = oldTaskData.getRoot().getMappedAttribute(TaskAttribute.STATUS);
 			if (attribute != null) {
 				return attribute.getValue().equals(issue.getStatus().getName());
 			}
@@ -744,7 +744,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					String newComment = getNewComment(taskData);
 					if (LEAVE_OPERATION.equals(operationId) || REASSIGN_OPERATION.equals(operationId)) {
 						if (!JiraRepositoryConnector.isClosed(issue)
-								&& taskData.getMappedAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null) {
+								&& taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null) {
 							client.updateIssue(issue, newComment, monitor);
 						} else if (newComment.length() > 0) {
 							client.addCommentToIssue(issue, newComment, monitor);
@@ -766,7 +766,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private String getNewComment(TaskData taskData) {
 		String newComment = "";
-		TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.COMMENT_NEW);
+		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(TaskAttribute.COMMENT_NEW);
 		if (attribute != null) {
 			newComment = taskData.getAttributeMapper().getValue(attribute);
 		}
@@ -775,7 +775,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private String getOperationId(TaskData taskData) {
 		String operationId = "";
-		TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.OPERATION);
+		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(TaskAttribute.OPERATION);
 		if (attribute != null) {
 			operationId = taskData.getAttributeMapper().getValue(attribute);
 		}
@@ -895,7 +895,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			issue.setParentId(parentId);
 		}
 
-		TaskAttribute securityLevelAttribute = taskData.getMappedAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
+		TaskAttribute securityLevelAttribute = taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
 		if (securityLevelAttribute != null) {
 			issue.setSecurityLevel(new SecurityLevel(securityLevelAttribute.getValue()));
 		}
@@ -921,7 +921,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		issue.setStatus(new JiraStatus(getAttributeValue(taskData, JiraAttribute.STATUS)));
 
-		TaskAttribute componentsAttribute = taskData.getMappedAttribute(IJiraConstants.ATTRIBUTE_COMPONENTS);
+		TaskAttribute componentsAttribute = taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_COMPONENTS);
 		if (componentsAttribute != null) {
 			ArrayList<Component> components = new ArrayList<Component>();
 			for (String value : componentsAttribute.getValues()) {
@@ -930,7 +930,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			issue.setComponents(components.toArray(new Component[components.size()]));
 		}
 
-		TaskAttribute fixVersionAttr = taskData.getMappedAttribute(IJiraConstants.ATTRIBUTE_FIXVERSIONS);
+		TaskAttribute fixVersionAttr = taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_FIXVERSIONS);
 		if (fixVersionAttr != null) {
 			ArrayList<Version> fixVersions = new ArrayList<Version>();
 			for (String value : fixVersionAttr.getValues()) {
@@ -939,7 +939,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			issue.setFixVersions(fixVersions.toArray(new Version[fixVersions.size()]));
 		}
 
-		TaskAttribute affectsVersionAttr = taskData.getMappedAttribute(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS);
+		TaskAttribute affectsVersionAttr = taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS);
 		if (affectsVersionAttr != null) {
 			ArrayList<Version> affectsVersions = new ArrayList<Version>();
 			for (String value : affectsVersionAttr.getValues()) {

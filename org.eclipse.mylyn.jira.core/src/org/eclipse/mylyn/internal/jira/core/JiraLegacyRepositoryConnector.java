@@ -578,11 +578,11 @@ public class JiraLegacyRepositoryConnector extends AbstractLegacyRepositoryConne
 		scheme.applyTo(task);
 
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		TaskAttribute attribute = taskData.getMappedAttribute(TaskAttribute.TASK_KEY);
+		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(TaskAttribute.TASK_KEY);
 		if (attribute != null) {
 			task.setTaskKey(attribute.getValue());
 		}
-		attribute = taskData.getMappedAttribute(TaskAttribute.PRIORITY);
+		attribute = taskData.getRoot().getMappedAttribute(TaskAttribute.PRIORITY);
 		if (attribute != null) {
 			task.setPriority(getPriorityLevel(client, attribute.getValue()).toString());
 		}

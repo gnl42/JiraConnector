@@ -56,7 +56,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			if (data.taskSelection != null) {
 				taskDataHandler.cloneTaskData(data.taskSelection, taskData);
 			}
-			taskData.getMappedAttribute(JiraAttribute.PROJECT.getId()).setValue(data.project.getId());
+			taskData.getRoot().getMappedAttribute(JiraAttribute.PROJECT.getId()).setValue(data.project.getId());
 
 			ITaskDataWorkingCopy workingCopy = TasksUi.getTaskDataManager()
 					.createWorkingCopy(input.getTask(), taskData);
