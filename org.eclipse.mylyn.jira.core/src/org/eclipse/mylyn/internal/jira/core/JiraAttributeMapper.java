@@ -38,7 +38,9 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 	@Override
 	public String mapToRepositoryKey(TaskAttribute parent, String key) {
 		if (TaskAttribute.COMPONENT.equals(key)) {
-			return JiraAttribute.COMPONENTS.getId();
+			return JiraAttribute.COMPONENTS.id();
+		} else if (TaskAttribute.TASK_KIND.equals(key)) {
+			return JiraAttribute.TYPE.id();
 		}
 		return super.mapToRepositoryKey(parent, key);
 	}
@@ -60,25 +62,25 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 	public Map<String, String> getOptions(TaskAttribute attribute) {
 		if (client.getCache().hasDetails()) {
 			Map<String, String> options = new HashMap<String, String>();
-			if (JiraAttribute.PROJECT.getId().equals(attribute.getId())) {
+			if (JiraAttribute.PROJECT.id().equals(attribute.getId())) {
 				Project[] jiraProjects = client.getCache().getProjects();
 				for (Project jiraProject : jiraProjects) {
 					options.put(jiraProject.getId(), jiraProject.getName());
 				}
 				return options;
-			} else if (JiraAttribute.RESOLUTION.getId().equals(attribute.getId())) {
+			} else if (JiraAttribute.RESOLUTION.id().equals(attribute.getId())) {
 				Resolution[] jiraResolutions = client.getCache().getResolutions();
 				for (Resolution resolution : jiraResolutions) {
 					options.put(resolution.getId(), resolution.getName());
 				}
 				return options;
-			} else if (JiraAttribute.PRIORITY.getId().equals(attribute.getId())) {
+			} else if (JiraAttribute.PRIORITY.id().equals(attribute.getId())) {
 				Priority[] jiraPriorities = client.getCache().getPriorities();
 				for (Priority priority : jiraPriorities) {
 					options.put(priority.getId(), priority.getName());
 				}
 				return options;
-			} else if (JiraAttribute.TYPE.getId().equals(attribute.getId())) {
+			} else if (JiraAttribute.TYPE.id().equals(attribute.getId())) {
 				IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
 				for (IssueType issueType : jiraIssueTypes) {
 					options.put(issueType.getId(), issueType.getName());
@@ -86,21 +88,21 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 				return options;
 			} else {
 				TaskAttribute projectAttribute = attribute.getTaskData().getRoot().getMappedAttribute(
-						JiraAttribute.PROJECT.getId());
+						JiraAttribute.PROJECT.id());
 				if (projectAttribute != null) {
 					Project project = client.getCache().getProjectById(projectAttribute.getValue());
 					if (project != null) {
-						if (JiraAttribute.COMPONENTS.getId().equals(attribute.getId())) {
+						if (JiraAttribute.COMPONENTS.id().equals(attribute.getId())) {
 							for (Component component : project.getComponents()) {
 								options.put(component.getId(), component.getName());
 							}
 							return options;
-						} else if (JiraAttribute.AFFECTSVERSIONS.getId().equals(attribute.getId())) {
+						} else if (JiraAttribute.AFFECTSVERSIONS.id().equals(attribute.getId())) {
 							for (Version version : project.getVersions()) {
 								options.put(version.getId(), version.getName());
 							}
 							return options;
-						} else if (JiraAttribute.FIXVERSIONS.getId().equals(attribute.getId())) {
+						} else if (JiraAttribute.FIXVERSIONS.id().equals(attribute.getId())) {
 							for (Version version : project.getVersions()) {
 								options.put(version.getId(), version.getName());
 							}

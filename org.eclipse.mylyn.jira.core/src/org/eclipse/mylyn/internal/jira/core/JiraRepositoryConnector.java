@@ -39,6 +39,7 @@ import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
@@ -71,7 +72,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private final JiraTaskDataHandler taskDataHandler2;
 
-	private final JiraTaskAttachmentHandler attachmentHandler2;
+	private final JiraTaskAttachmentHandler attachmentHandler;
 
 	public static final String UNASSIGNED_USER = "-1";
 
@@ -82,7 +83,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public JiraRepositoryConnector() {
 		taskDataHandler2 = new JiraTaskDataHandler(JiraClientFactory.getDefault());
-		attachmentHandler2 = new JiraTaskAttachmentHandler();
+		attachmentHandler = new JiraTaskAttachmentHandler();
 	}
 
 	@Override
@@ -367,7 +368,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public static boolean isCompleted(TaskData taskData) {
-		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.RESOLUTION.getId());
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.RESOLUTION.id());
 		return attribute != null && attribute.getValue().length() > 0;
 	}
 
@@ -380,31 +381,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return issue.getStatus() != null && "6".equals(issue.getStatus().getId());
 	}
 
-	private static PriorityLevel getPriorityLevel(JiraClient client, String jiraPriority) {
-		if (jiraPriority != null) {
-			for (Priority priority : client.getCache().getPriorities()) {
-				if (jiraPriority.equals(priority.getName())) {
-					return getPriorityLevel(priority);
-				}
-			}
-		}
-		return PriorityLevel.getDefault();
-	}
-
-	public static PriorityLevel getPriorityLevel(Priority jiraPriority) {
-		if (jiraPriority != null) {
-			String priorityId = jiraPriority.getId();
-			if (Priority.BLOCKER_ID.equals(priorityId)) {
-				return PriorityLevel.P1;
-			} else if (Priority.CRITICAL_ID.equals(priorityId)) {
-				return PriorityLevel.P2;
-			} else if (Priority.MAJOR_ID.equals(priorityId)) {
-				return PriorityLevel.P3;
-			} else if (Priority.MINOR_ID.equals(priorityId)) {
-				return PriorityLevel.P4;
-			} else if (Priority.TRIVIAL_ID.equals(priorityId)) {
-				return PriorityLevel.P5;
-			}
+	private static PriorityLevel getPriorityLevel(String priorityId) {
+		if (Priority.BLOCKER_ID.equals(priorityId)) {
+			return PriorityLevel.P1;
+		} else if (Priority.CRITICAL_ID.equals(priorityId)) {
+			return PriorityLevel.P2;
+		} else if (Priority.MAJOR_ID.equals(priorityId)) {
+			return PriorityLevel.P3;
+		} else if (Priority.MINOR_ID.equals(priorityId)) {
+			return PriorityLevel.P4;
+		} else if (Priority.TRIVIAL_ID.equals(priorityId)) {
+			return PriorityLevel.P5;
 		}
 		return PriorityLevel.getDefault();
 	}
@@ -480,28 +467,51 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateTaskFromTaskData(TaskRepository repository, ITask task, TaskData taskData) {
-		TaskMapper scheme = new TaskMapper(taskData);
+		TaskMapper scheme = getTaskMapper(taskData);
 		scheme.applyTo(task);
-
-		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(TaskAttribute.TASK_KEY);
-		if (attribute != null) {
-			task.setTaskKey(attribute.getValue());
-		}
-		attribute = taskData.getRoot().getMappedAttribute(TaskAttribute.PRIORITY);
-		if (attribute != null) {
-			task.setPriority(getPriorityLevel(client, attribute.getValue()).toString());
-		}
-		if (isCompleted(taskData)) {
-			task.setCompletionDate(scheme.getModificationDate());
-		} else {
-			task.setCompletionDate(null);
-		}
 	}
 
 	@Override
 	public JiraTaskAttachmentHandler getTaskAttachmentHandler() {
-		return attachmentHandler2;
+		return attachmentHandler;
+	}
+
+	public TaskMapper getTaskMapper(TaskData taskData) {
+		return new TaskMapper(taskData) {
+			@Override
+			public PriorityLevel getPriority() {
+				TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.PRIORITY.id());
+				if (attribute != null) {
+					return getPriorityLevel(attribute.getValue());
+				}
+				return PriorityLevel.getDefault();
+			}
+
+			@Override
+			public void setPriority(PriorityLevel priority) {
+				// TODO implement
+			}
+
+			@Override
+			public Date getCompletionDate() {
+				if (isCompleted(getTaskData())) {
+					return getModificationDate();
+				} else {
+					return null;
+				}
+			}
+
+			@Override
+			public void setCompletionDate(Date dateCompleted) {
+				// ignore
+			}
+		};
+	}
+
+	@Override
+	public ITaskMapping getTaskMapping(TaskData taskData) {
+		// ignore
+		return super.getTaskMapping(taskData);
 	}
 
 }

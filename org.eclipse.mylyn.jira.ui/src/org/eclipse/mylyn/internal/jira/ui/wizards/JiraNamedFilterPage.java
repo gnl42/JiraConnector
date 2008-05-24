@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
@@ -121,27 +122,32 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		buttonSaved.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		buttonSaved.setText("Use saved &filter from the repository");
 		buttonSaved.setSelection(!isCustom);
-
 		buttonSaved.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				setErrorMessage(null);
 				boolean selection = buttonSaved.getSelection();
 				if (filters != null) {
 					filterList.setEnabled(selection);
 				}
 				updateButton.setEnabled(selection);
-				setPageComplete(selection);
+				getContainer().updateButtons();
 			}
 		});
 
 		filterList = new List(innerComposite, SWT.V_SCROLL | SWT.BORDER);
 		filterList.add(WAIT_MESSAGE);
 		filterList.deselectAll();
-
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.horizontalIndent = 15;
 		filterList.setLayoutData(data);
 		filterList.setEnabled(false);
+		filterList.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				getContainer().updateButtons();
+			}
+		});
 
 		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
 		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, false, true);
@@ -149,9 +155,9 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		updateButton.setText("Update from &Repository");
 		updateButton.setEnabled(isCustom);
 		updateButton.addSelectionListener(new SelectionAdapter() {
-
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				setErrorMessage(null);
 				filterList.setEnabled(false);
 				filterList.removeAll();
 				filterList.add(WAIT_MESSAGE);
@@ -162,7 +168,6 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 				downloadFilters();
 			}
-
 		});
 
 		setControl(innerComposite);
@@ -219,11 +224,9 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 					JiraClient jiraServer = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
 					loadedFilters = jiraServer.getNamedFilters(monitor);
 					filters = loadedFilters;
-
 				} catch (JiraException e) {
 					status = RepositoryStatus.createStatus(getTaskRepository().getRepositoryUrl(), IStatus.ERROR,
-							JiraCorePlugin.ID_PLUGIN, "Could not download saved filters: " + e.getMessage() + "\n"
-									+ "Please check repository settings in the Task Repositories view");
+							JiraCorePlugin.ID_PLUGIN, "Could not update filters: " + e.getMessage() + "\n");
 					return Status.CANCEL_STATUS;
 				} catch (OperationCanceledException e) {
 					return Status.CANCEL_STATUS;
@@ -231,7 +234,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 					showFilters(loadedFilters, status);
 					monitor.done();
 				}
-				return status;
+				return Status.OK_STATUS;
 			}
 
 			private void showFilters(final NamedFilter[] loadedFilters, final IStatus status) {
@@ -257,7 +260,9 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		}
 		if (filterDefinitionPage == null) {
 			filterDefinitionPage = new JiraFilterDefinitionPage(getTaskRepository(), getQuery());
-			filterDefinitionPage.setWizard(getWizard());
+			if (getWizard() instanceof Wizard) {
+				((Wizard) getWizard()).addPage(filterDefinitionPage);
+			}
 		}
 		return filterDefinitionPage;
 	}
@@ -277,7 +282,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public boolean isPageComplete() {
-		return buttonCustom.getSelection() ? super.isPageComplete() : filterList.getSelectionCount() == 1;
+		return buttonCustom.getSelection() ? false : filterList.getSelectionCount() == 1 && super.isPageComplete();
 	}
 
 }

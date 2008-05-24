@@ -156,7 +156,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		summaryAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
 		createAttribute(data, JiraAttribute.DESCRIPTION);
 		createAttribute(data, JiraAttribute.STATUS);
-		createAttribute(data, JiraAttribute.TASK_KEY);
+		createAttribute(data, JiraAttribute.ISSUE_KEY);
 		createAttribute(data, JiraAttribute.TASK_URL);
 		createAttribute(data, JiraAttribute.USER_ASSIGNED);
 		createAttribute(data, JiraAttribute.USER_REPORTER);
@@ -236,7 +236,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
-		TaskAttribute attribute = data.getRoot().createAttribute(key.getId());
+		TaskAttribute attribute = data.getRoot().createAttribute(key.id());
 		attribute.getMetaData().defaults() //
 				.setReadOnly(key.isReadOnly())
 				.setKind(key.getKind())
@@ -299,7 +299,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.addValue(link.getIssueKey());
 
 				if (link.getInwardDescription() != null) {
-					attribute = data.getRoot().getMappedAttribute(JiraAttribute.LINKED_IDS.getId());
+					attribute = data.getRoot().getMappedAttribute(JiraAttribute.LINKED_IDS.id());
 					if (attribute == null) {
 						attribute = createAttribute(data, JiraAttribute.LINKED_IDS);
 					}
@@ -312,7 +312,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		setAttributeValue(data, JiraAttribute.SUMMARY, jiraIssue.getSummary());
 		setAttributeValue(data, JiraAttribute.DESCRIPTION, jiraIssue.getDescription());
 		setAttributeValue(data, JiraAttribute.STATUS, jiraIssue.getStatus().getName());
-		setAttributeValue(data, JiraAttribute.TASK_KEY, jiraIssue.getKey());
+		setAttributeValue(data, JiraAttribute.ISSUE_KEY, jiraIssue.getKey());
 		setAttributeValue(data, JiraAttribute.TASK_URL, jiraIssue.getUrl());
 		setAttributeValue(data, JiraAttribute.RESOLUTION, //
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getId());
@@ -520,11 +520,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private void addAttributeValue(TaskData data, JiraAttribute key, String value) {
-		data.getRoot().getAttribute(key.getId()).addValue(value);
+		data.getRoot().getAttribute(key.id()).addValue(value);
 	}
 
 	private TaskAttribute setAttributeValue(TaskData data, JiraAttribute key, String value) {
-		TaskAttribute attribute = data.getRoot().getAttribute(key.getId());
+		TaskAttribute attribute = data.getRoot().getAttribute(key.id());
 		attribute.setValue(value);
 		return attribute;
 	}
@@ -549,7 +549,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 //	}
 
 	private void removeAttribute(TaskData data, JiraAttribute key) {
-		data.getRoot().removeAttribute(key.getId());
+		data.getRoot().removeAttribute(key.id());
 	}
 
 	/**
@@ -883,7 +883,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	private JiraIssue buildJiraIssue(TaskData taskData, JiraClient client) {
 		JiraIssue issue = new JiraIssue();
 		issue.setId(taskData.getTaskId());
-		issue.setKey(getAttributeValue(taskData, JiraAttribute.TASK_KEY));
+		issue.setKey(getAttributeValue(taskData, JiraAttribute.ISSUE_KEY));
 		issue.setSummary(getAttributeValue(taskData, JiraAttribute.SUMMARY));
 		issue.setDescription(getAttributeValue(taskData, JiraAttribute.DESCRIPTION));
 
@@ -895,7 +895,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			issue.setParentId(parentId);
 		}
 
-		TaskAttribute securityLevelAttribute = taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
+		TaskAttribute securityLevelAttribute = taskData.getRoot().getMappedAttribute(
+				IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
 		if (securityLevelAttribute != null) {
 			issue.setSecurityLevel(new SecurityLevel(securityLevelAttribute.getValue()));
 		}
@@ -939,7 +940,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			issue.setFixVersions(fixVersions.toArray(new Version[fixVersions.size()]));
 		}
 
-		TaskAttribute affectsVersionAttr = taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS);
+		TaskAttribute affectsVersionAttr = taskData.getRoot().getMappedAttribute(
+				IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS);
 		if (affectsVersionAttr != null) {
 			ArrayList<Version> affectsVersions = new ArrayList<Version>();
 			for (String value : affectsVersionAttr.getValues()) {
@@ -971,24 +973,24 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private TaskAttribute getAttribute(TaskData taskData, JiraAttribute key) {
-		return taskData.getRoot().getAttribute(key.getId());
+		return taskData.getRoot().getAttribute(key.id());
 	}
 
 	private String getAttributeValue(TaskData taskData, JiraAttribute key) {
-		TaskAttribute attribute = taskData.getRoot().getAttribute(key.getId());
+		TaskAttribute attribute = taskData.getRoot().getAttribute(key.id());
 		return (attribute != null) ? attribute.getValue() : null;
 	}
 
 	@Override
 	public TaskRelation[] getTaskRelations(TaskData taskData) {
 		List<TaskRelation> relations = new ArrayList<TaskRelation>();
-		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SUBTASK_IDS.getId());
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SUBTASK_IDS.id());
 		if (attribute != null) {
 			for (String taskId : attribute.getValues()) {
 				relations.add(TaskRelation.subtask(taskId));
 			}
 		}
-		attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.getId());
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.id());
 		if (attribute != null) {
 			for (String taskId : attribute.getValues()) {
 				relations.add(TaskRelation.dependency(taskId, Direction.OUTWARD));
@@ -1046,29 +1048,29 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private String mapCommonAttributeKey(String key) {
 		if ("summary".equals(key)) {
-			return JiraAttribute.SUMMARY.getId();
+			return JiraAttribute.SUMMARY.id();
 		} else if ("description".equals(key)) {
-			return JiraAttribute.DESCRIPTION.getId();
+			return JiraAttribute.DESCRIPTION.id();
 		} else if ("priority".equals(key)) {
-			return JiraAttribute.PRIORITY.getId();
+			return JiraAttribute.PRIORITY.id();
 		} else if ("resolution".equals(key)) {
-			return JiraAttribute.RESOLUTION.getId();
+			return JiraAttribute.RESOLUTION.id();
 		} else if ("assignee".equals(key)) {
-			return JiraAttribute.USER_ASSIGNED.getId();
+			return JiraAttribute.USER_ASSIGNED.id();
 		} else if ("environment".equals(key)) {
-			return JiraAttribute.ENVIRONMENT.getId();
+			return JiraAttribute.ENVIRONMENT.id();
 		} else if ("issuetype".equals(key)) {
-			return JiraAttribute.TYPE.getId();
+			return JiraAttribute.TYPE.id();
 		} else if ("components".equals(key)) {
-			return JiraAttribute.COMPONENTS.getId();
+			return JiraAttribute.COMPONENTS.id();
 		} else if ("versions".equals(key)) {
-			return JiraAttribute.AFFECTSVERSIONS.getId();
+			return JiraAttribute.AFFECTSVERSIONS.id();
 		} else if ("fixVersions".equals(key)) {
-			return JiraAttribute.FIXVERSIONS.getId();
+			return JiraAttribute.FIXVERSIONS.id();
 		} else if ("timetracking".equals(key)) {
-			return JiraAttribute.ESTIMATE.getId();
+			return JiraAttribute.ESTIMATE.id();
 		} else if ("duedate".equals(key)) {
-			return JiraAttribute.DUE_DATE.getId();
+			return JiraAttribute.DUE_DATE.id();
 		}
 		if (key.startsWith("issueLink")) {
 			return IJiraConstants.ATTRIBUTE_LINK_PREFIX + key;

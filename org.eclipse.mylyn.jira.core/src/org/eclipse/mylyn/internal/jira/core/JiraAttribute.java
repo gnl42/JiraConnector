@@ -18,8 +18,8 @@ public enum JiraAttribute {
 
 	ACTUAL(IJiraConstants.ATTRIBUTE_ACTUAL, JiraFieldType.TEXTFIELD, "Time Spent:", false, true, "timespent"),
 
-	AFFECTSVERSIONS(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT, "Affects Versions:",
-			false, false, "versions"),
+	AFFECTSVERSIONS(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT, "Affects Versions:", false,
+			false, "versions"),
 
 	COMMENT_NEW(TaskAttribute.COMMENT_NEW, JiraFieldType.TEXTAREA, "New Comment:", true, false, "comment"),
 
@@ -35,14 +35,13 @@ public enum JiraAttribute {
 	ENVIRONMENT(IJiraConstants.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA, "Environment:", false, false,
 			"environment"),
 
-	ESTIMATE(IJiraConstants.ATTRIBUTE_ESTIMATE, JiraFieldType.TEXTFIELD, "Estimate:", false, false,
-			"timetracking"),
+	ESTIMATE(IJiraConstants.ATTRIBUTE_ESTIMATE, JiraFieldType.TEXTFIELD, "Estimate:", false, false, "timetracking"),
 
 	FIXVERSIONS(IJiraConstants.ATTRIBUTE_FIXVERSIONS, JiraFieldType.MULTISELECT, "Fix Versions:", false, false,
 			"fixVersions"),
 
-	INITIAL_ESTIMATE(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE, JiraFieldType.TEXTFIELD, "Original Estimate:",
-			false, true),
+	INITIAL_ESTIMATE(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE, JiraFieldType.TEXTFIELD, "Original Estimate:", false,
+			true),
 
 	ISSUE_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Issue ID:"),
 
@@ -78,13 +77,11 @@ public enum JiraAttribute {
 
 	USER_REPORTER(TaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, "Reported by:"),
 
-	TASK_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Task ID:"),
-
 	TASK_URL(TaskAttribute.TASK_URL, JiraFieldType.URL, "URL:");
 
 	public static JiraAttribute valueById(String id) {
 		for (JiraAttribute attribute : values()) {
-			if (id.equals(attribute.getId())) {
+			if (id.equals(attribute.id())) {
 				return attribute;
 			}
 		}
@@ -131,7 +128,7 @@ public enum JiraAttribute {
 		this.paramName = paramName;
 	}
 
-	public String getId() {
+	public String id() {
 		return id;
 	}
 

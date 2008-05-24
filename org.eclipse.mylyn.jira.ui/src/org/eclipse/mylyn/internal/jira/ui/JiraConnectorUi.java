@@ -214,7 +214,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 			TaskData taskData;
 			try {
 				taskData = TasksUi.getTaskDataManager().getTaskData(task);
-				return taskData.getRoot().getMappedAttribute(JiraAttribute.DUE_DATE.getId()) != null;
+				return taskData.getRoot().getMappedAttribute(JiraAttribute.DUE_DATE.id()) != null;
 			} catch (CoreException e) {
 				StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data", e));
 			}

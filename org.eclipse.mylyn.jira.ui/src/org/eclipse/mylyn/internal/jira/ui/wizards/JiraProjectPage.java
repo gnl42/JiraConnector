@@ -332,7 +332,7 @@ public class JiraProjectPage extends WizardPage {
 
 	private Project getProject(TaskData taskData) {
 		if (taskData != null) {
-			TaskAttribute attribute = taskData.getRoot().getMappedAttribute(JiraAttribute.PROJECT.getId());
+			TaskAttribute attribute = taskData.getRoot().getMappedAttribute(JiraAttribute.PROJECT.id());
 			if (attribute != null) {
 				JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 				return client.getCache().getProjectById(attribute.getValue());

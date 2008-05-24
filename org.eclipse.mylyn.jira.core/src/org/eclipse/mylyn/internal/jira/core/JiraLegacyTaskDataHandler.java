@@ -1022,12 +1022,12 @@ public class JiraLegacyTaskDataHandler extends AbstractTaskDataHandler {
 	public Set<String> getSubTaskIds(RepositoryTaskData taskData) {
 		Set<String> subIds = new HashSet<String>();
 
-		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttribute.SUBTASK_IDS.getId());
+		RepositoryTaskAttribute attribute = taskData.getAttribute(JiraAttribute.SUBTASK_IDS.id());
 		if (attribute != null) {
 			subIds.addAll(attribute.getValues());
 		}
 
-		attribute = taskData.getAttribute(JiraAttribute.LINKED_IDS.getId());
+		attribute = taskData.getAttribute(JiraAttribute.LINKED_IDS.id());
 		if (attribute != null) {
 			subIds.addAll(attribute.getValues());
 		}
