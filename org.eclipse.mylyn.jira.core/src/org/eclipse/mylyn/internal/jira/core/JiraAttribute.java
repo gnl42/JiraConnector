@@ -48,7 +48,7 @@ public enum JiraAttribute {
 
 	LINKED_IDS(IJiraConstants.ATTRIBUTE_LINKED_IDS, JiraFieldType.TEXTFIELD, "Linked ids:", true, true),
 
-	MODIFICATION_DATE(TaskAttribute.DATE_MODIFIED, JiraFieldType.DATEPICKER, "Modified:"),
+	MODIFICATION_DATE(TaskAttribute.DATE_MODIFICATION, JiraFieldType.DATEPICKER, "Modified:"),
 
 	PARENT_ID(IJiraConstants.ATTRIBUTE_ISSUE_PARENT_ID, JiraFieldType.ISSUELINK, "Parent ID:", true, true),
 

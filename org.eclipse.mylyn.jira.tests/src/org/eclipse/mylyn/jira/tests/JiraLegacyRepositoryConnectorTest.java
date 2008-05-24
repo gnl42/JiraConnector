@@ -43,6 +43,7 @@ import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.TaskList;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryAttachment;
+import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
 import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizationContext;
 import org.eclipse.mylyn.internal.tasks.ui.AttachmentUtil;
@@ -53,7 +54,6 @@ import org.eclipse.mylyn.jira.tests.util.LegacyResultCollector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -182,7 +182,7 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 		assertEquals(collector1.results.size() + 1, collector2.results.size());
 
 		for (RepositoryTaskData taskData : collector2.results) {
-			String owner = taskData.getAttributeValue(TaskAttribute.USER_OWNER);
+			String owner = taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER);
 			assertNotNull(owner);
 			assertTrue(owner.length() > 0);
 		}
