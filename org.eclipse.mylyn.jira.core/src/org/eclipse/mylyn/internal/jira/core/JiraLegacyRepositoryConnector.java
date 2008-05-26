@@ -551,7 +551,7 @@ public class JiraLegacyRepositoryConnector extends AbstractLegacyRepositoryConne
 	}
 
 	@Override
-	public boolean hasChanged(ITask task, TaskData taskData) {
+	public boolean hasChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
 		TaskMapper scheme = new TaskMapper(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 

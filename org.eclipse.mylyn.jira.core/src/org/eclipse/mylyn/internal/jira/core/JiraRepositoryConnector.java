@@ -440,7 +440,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean hasChanged(ITask task, TaskData taskData) {
+	public boolean hasChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
 		TaskMapper scheme = new TaskMapper(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 		Date localDate = task.getModificationDate();
@@ -510,8 +510,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public ITaskMapping getTaskMapping(TaskData taskData) {
-		// ignore
-		return super.getTaskMapping(taskData);
+		return getTaskMapper(taskData);
 	}
 
 }
