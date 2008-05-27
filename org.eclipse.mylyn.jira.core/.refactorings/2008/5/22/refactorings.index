@@ -1,0 +1,3 @@
+1211845768352	Inline local variable 'mapper'
+1211847574543	Extract method 'hasSubTaskType'
+1211847615849	Inline local variable 'subTaskType'

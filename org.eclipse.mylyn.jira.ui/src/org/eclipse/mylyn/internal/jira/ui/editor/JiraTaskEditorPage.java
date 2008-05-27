@@ -54,7 +54,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
 			taskDataHandler.initializeTaskData(taskData, client, data.project);
 			if (data.taskSelection != null) {
-				taskDataHandler.cloneTaskData(data.taskSelection, taskData);
+				connector.getTaskMapping(taskData).copyFrom(data.taskSelection);
 			}
 			taskData.getRoot().getMappedAttribute(JiraAttribute.PROJECT.id()).setValue(data.project.getId());
 
