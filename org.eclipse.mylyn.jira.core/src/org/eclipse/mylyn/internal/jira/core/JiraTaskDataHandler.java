@@ -49,6 +49,7 @@ import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse.ResponseKind;
@@ -787,13 +788,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	@Override
-	public boolean initializeTaskData(TaskRepository repository, TaskData data, IProgressMonitor monitor)
-			throws CoreException {
-		TaskAttribute projectAttribute = data.getRoot().getAttribute(TaskAttribute.PRODUCT);
-		if (projectAttribute == null) {
+	public boolean initializeTaskData(TaskRepository repository, TaskData data, ITaskMapping initializationData,
+			IProgressMonitor monitor) throws CoreException {
+		if (initializationData == null) {
 			return false;
 		}
-
+		String product = initializationData.getProduct();
+		if (product == null) {
+			return false;
+		}
 		JiraClient client = clientFactory.getJiraClient(repository);
 		if (!client.getCache().hasDetails()) {
 			try {
@@ -804,15 +807,22 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				throw new CoreException(status);
 			}
 		}
-
-		Project project = client.getCache().getProjectById(projectAttribute.getValue());
+		Project project = getProject(client, product);
 		if (project == null) {
 			return false;
 		}
-
 		initializeTaskData(data, client, project);
-		setAttributeValue(data, JiraAttribute.PROJECT, project.getId());
 		return true;
+	}
+
+	private Project getProject(JiraClient client, String product) {
+		Project[] projects = client.getCache().getProjects();
+		for (Project project : projects) {
+			if (product.equals(project.getName()) || product.equals(project.getKey())) {
+				return project;
+			}
+		}
+		return null;
 	}
 
 	@Override
