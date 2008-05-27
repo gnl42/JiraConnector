@@ -81,9 +81,12 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 				}
 				return options;
 			} else if (JiraAttribute.TYPE.id().equals(attribute.getId())) {
+				boolean isSubTask = JiraTaskDataHandler.hasSubTaskType(attribute);
 				IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
 				for (IssueType issueType : jiraIssueTypes) {
-					options.put(issueType.getId(), issueType.getName());
+					if (!isSubTask || issueType.isSubTaskType()) {
+						options.put(issueType.getId(), issueType.getName());
+					}
 				}
 				return options;
 			} else {

@@ -59,6 +59,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMetaData;
 import org.eclipse.mylyn.tasks.core.data.TaskCommentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskOperation;
 import org.eclipse.mylyn.tasks.core.data.TaskRelation;
 import org.eclipse.mylyn.tasks.core.data.TaskRelation.Direction;
@@ -825,45 +826,44 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				client.getCache().refreshDetails(new SubProgressMonitor(monitor, 1));
 			}
 
-//			Project project = getProject(client, parentTaskData.getProduct());
-//			if (project == null) {
-//				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-//						IStatus.OK, "The parent task does not have a valid project.", null));
-//			}
-//
-//			initializeTaskData(taskData, client, project);
-//			//cloneTaskData(parentTaskData, taskData);
-//			taskData.setDescription("");
-//			taskData.setSummary("");
-//			setAttributeValue(taskdata, TaskAttribute.USER_ASSIGNED, parentTaskData.getAssignedTo());
-//			setAttributeValue(taskdata, TaskAttribute.PRODUCT, project.getName());
-//
-//			// set subtask type
-//			TaskAttribute typeAttribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_TYPE);
-//			typeAttribute.clearOptions();
-//
-//			IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
-//			for (IssueType type : jiraIssueTypes) {
-//				if (type.isSubTaskType()) {
-//					typeAttribute.putOption(type.getName(), type.getId());
-//				}
-//			}
-//
-//			List<String> options = typeAttribute.getOptions();
-//			if (options.size() == 0) {
-//				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-//						IStatus.OK, "The repository does not support subtasks.", null));
-//			} else if (options.size() == 1) {
-//				setReadOnly(typeAttribute, true);
-//			}
-//			typeAttribute.setValue(options.get(0));
-//
-//			// set parent id
-//			TaskAttribute attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_ID);
-//			attribute.setValue(parentTaskData.getTaskId());
-//
-//			attribute = taskData.getAttribute(JiraAttributeFactory.ATTRIBUTE_ISSUE_PARENT_KEY);
-//			attribute.setValue(parentTaskData.getTaskKey());
+			TaskAttribute projectAttribute = parentTaskData.getRoot().getAttribute(TaskAttribute.PRODUCT);
+			if (projectAttribute == null) {
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+						IStatus.OK, "The parent task does not have a valid project.", null));
+			}
+
+			Project project = client.getCache().getProjectById(projectAttribute.getValue());
+			initializeTaskData(taskData, client, project);
+
+			new TaskMapper(taskData).copyFrom(new TaskMapper(parentTaskData));
+			taskData.getRoot().getAttribute(JiraAttribute.PROJECT.id()).setValue(project.getId());
+			taskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue("");
+			taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).setValue("");
+
+			// set subtask type
+			TaskAttribute typeAttribute = taskData.getRoot().getAttribute(JiraAttribute.TYPE.id());
+			typeAttribute.clearOptions();
+			IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
+			for (IssueType type : jiraIssueTypes) {
+				if (type.isSubTaskType()) {
+					typeAttribute.putOption(type.getId(), type.getName());
+				}
+			}
+			Map<String, String> options = typeAttribute.getOptions();
+			if (options.size() == 0) {
+				throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+						IStatus.OK, "The repository does not support subtasks.", null));
+			} else if (options.size() == 1) {
+				typeAttribute.getMetaData().setReadOnly(true);
+			}
+			typeAttribute.setValue(options.keySet().iterator().next());
+			typeAttribute.getMetaData().putValue(IJiraConstants.META_SUB_TASK_TYPE, Boolean.TRUE.toString());
+
+			// set parent id
+			TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.PARENT_ID.id());
+			attribute.setValue(parentTaskData.getTaskId());
+			attribute = taskData.getRoot().getAttribute(JiraAttribute.PARENT_KEY.id());
+			attribute.setValue(parentTaskData.getRoot().getAttribute(JiraAttribute.ISSUE_KEY.id()).getValue());
 
 			return true;
 		} catch (JiraException e) {
@@ -876,7 +876,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	@Override
-	public boolean canInitializeSubTaskData(ITask task, TaskData parentTaskData) {
+	public boolean canInitializeSubTaskData(TaskRepository taskRepository, ITask task) {
 		return true;
 	}
 
@@ -915,8 +915,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		issue.setProject(new Project(getAttributeValue(taskData, JiraAttribute.PROJECT)));
 
-		boolean subTaskType = Boolean.parseBoolean(getAttribute(taskData, JiraAttribute.TYPE).getMetaData().getValue(
-				IJiraConstants.META_SUB_TASK_TYPE));
+		boolean subTaskType = hasSubTaskType(getAttribute(taskData, JiraAttribute.TYPE));
 		IssueType issueType = new IssueType(getAttributeValue(taskData, JiraAttribute.TYPE), subTaskType);
 		issue.setType(issueType);
 
@@ -970,6 +969,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setCustomFields(customFields.toArray(new CustomField[customFields.size()]));
 
 		return issue;
+	}
+
+	public static boolean hasSubTaskType(TaskAttribute typeAttribute) {
+		return Boolean.parseBoolean(typeAttribute.getMetaData().getValue(IJiraConstants.META_SUB_TASK_TYPE));
 	}
 
 	private TaskAttribute getAttribute(TaskData taskData, JiraAttribute key) {
