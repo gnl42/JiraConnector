@@ -30,7 +30,6 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraSearchHandler;
-import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.search.SearchHitCollector;
@@ -139,7 +138,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 		collector.run(new NullProgressMonitor());
 
-		Set<AbstractTask> tasks = collector.getTasks();
+		Set<ITask> tasks = collector.getTasks();
 		assertTrue("Expected duplicated task " + issue.getId() + " : " + issue.getKey(), tasks.size() > 0);
 
 		for (ITask task : tasks) {
