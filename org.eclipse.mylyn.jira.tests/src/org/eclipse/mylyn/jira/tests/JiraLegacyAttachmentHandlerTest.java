@@ -22,7 +22,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraLegacyRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
@@ -42,7 +42,7 @@ public class JiraLegacyAttachmentHandlerTest extends TestCase {
 
 	private TaskRepository repository;
 
-	private JiraLegacyRepositoryConnector connector;
+	private JiraRepositoryConnector connector;
 
 	private AbstractAttachmentHandler attachmentHandler;
 
@@ -55,8 +55,8 @@ public class JiraLegacyAttachmentHandlerTest extends TestCase {
 
 		AbstractRepositoryConnector abstractConnector = TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
 				JiraCorePlugin.CONNECTOR_KIND);
-		connector = (JiraLegacyRepositoryConnector) abstractConnector;
-		attachmentHandler = connector.getAttachmentHandler();
+		connector = (JiraRepositoryConnector) abstractConnector;
+		// FIXME attachmentHandler = connector.getTaskAttachmentHandler();
 
 		repository = null;
 	}

@@ -95,7 +95,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		legendItems.add(LegendElement.createTask("Feature", JiraImages.OVERLAY_FEATURE));
 		legendItems.add(LegendElement.createTask("Improvement", JiraImages.OVERLAY_IMPROVEMENT));
 		legendItems.add(LegendElement.createTask("Task", JiraImages.OVERLAY_TASK));
-		legendItems.add(LegendElement.createTask("Sub-task", JiraImages.OVERLAY_SUB_TASK));
+		legendItems.add(LegendElement.createTask("Subtask", JiraImages.OVERLAY_SUB_TASK));
 		return legendItems;
 	}
 

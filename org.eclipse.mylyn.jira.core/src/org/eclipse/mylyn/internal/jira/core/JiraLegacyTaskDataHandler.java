@@ -436,7 +436,7 @@ public class JiraLegacyTaskDataHandler extends AbstractTaskDataHandler {
 		updateMarkup(data, jiraIssue, client, oldTaskData, monitor);
 
 		HashSet<String> editableKeys = new HashSet<String>();
-		if (!JiraLegacyRepositoryConnector.isClosed(jiraIssue)) {
+		if (!JiraRepositoryConnector.isClosed(jiraIssue)) {
 			if (useCachedInformation(jiraIssue, oldTaskData)) {
 				// avoid server round-trips
 				for (RepositoryTaskAttribute attribute : oldTaskData.getAttributes()) {
@@ -650,12 +650,12 @@ public class JiraLegacyTaskDataHandler extends AbstractTaskDataHandler {
 		data.addOperation(leaveOperation);
 
 		// TODO need more accurate status matching
-		if (!JiraLegacyRepositoryConnector.isCompleted(data)) {
-			RepositoryOperation reassignOperation = new RepositoryOperation(REASSIGN_OPERATION, "Reassign to");
-			reassignOperation.setInputName(JiraAttribute.USER_ASSIGNED.getParamName());
-			reassignOperation.setInputValue(client.getUserName());
-			data.addOperation(reassignOperation);
-		}
+//		if (!JiraLegacyRepositoryConnector.isCompleted(data)) {
+//			RepositoryOperation reassignOperation = new RepositoryOperation(REASSIGN_OPERATION, "Reassign to");
+//			reassignOperation.setInputName(JiraAttribute.USER_ASSIGNED.getParamName());
+//			reassignOperation.setInputValue(client.getUserName());
+//			data.addOperation(reassignOperation);
+//		}
 
 		JiraAction[] availableOperations = client.getAvailableActions(issue.getKey(), monitor);
 		if (availableOperations != null) {
@@ -744,12 +744,12 @@ public class JiraLegacyTaskDataHandler extends AbstractTaskDataHandler {
 
 				if (LEAVE_OPERATION.equals(operation.getKnobName())
 						|| REASSIGN_OPERATION.equals(operation.getKnobName())) {
-					if (!JiraLegacyRepositoryConnector.isClosed(issue)
-							&& taskData.getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null) {
-						client.updateIssue(issue, taskData.getNewComment(), monitor);
-					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
-						client.addCommentToIssue(issue, taskData.getNewComment(), monitor);
-					}
+//					if (!JiraLegacyRepositoryConnector.isClosed(issue)
+//							&& taskData.getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null) {
+//						client.updateIssue(issue, taskData.getNewComment(), monitor);
+//					} else if (taskData.getNewComment() != null && taskData.getNewComment().length() > 0) {
+//						client.addCommentToIssue(issue, taskData.getNewComment(), monitor);
+//					}
 				} else {
 					client.advanceIssueWorkflow(issue, operation.getKnobName(), taskData.getNewComment(), monitor);
 				}
@@ -993,7 +993,7 @@ public class JiraLegacyTaskDataHandler extends AbstractTaskDataHandler {
 		} else {
 			assignee = taskData.getAttributeValue(RepositoryTaskAttribute.USER_ASSIGNED);
 		}
-		issue.setAssignee(JiraLegacyRepositoryConnector.getAssigneeFromAttribute(assignee));
+//		issue.setAssignee(JiraLegacyRepositoryConnector.getAssigneeFromAttribute(assignee));
 
 		issue.setEnvironment(taskData.getAttributeValue(IJiraConstants.ATTRIBUTE_ENVIRONMENT));
 		for (Priority priority : client.getCache().getPriorities()) {

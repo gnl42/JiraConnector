@@ -24,7 +24,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraLegacyRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -49,7 +49,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 	private TaskRepositoryManager manager;
 
-	private JiraLegacyRepositoryConnector connector;
+	private JiraRepositoryConnector connector;
 
 	private JiraTaskDataHandler dataHandler;
 
@@ -82,7 +82,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 		manager.addRepository(repository);
 
-		connector = (JiraLegacyRepositoryConnector) manager.getRepositoryConnector(kind);
+		connector = (JiraRepositoryConnector) manager.getRepositoryConnector(kind);
 		assertEquals(connector.getConnectorKind(), kind);
 		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
 		client = JiraClientFactory.getDefault().getJiraClient(repository);

@@ -48,7 +48,9 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskMapper;
-import org.eclipse.mylyn.tasks.core.sync.ISynchronizationContext;
+import org.eclipse.mylyn.tasks.core.data.TaskRelation;
+import org.eclipse.mylyn.tasks.core.data.TaskRelation.Direction;
+import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
 /**
  * @author Mik Kersten
@@ -103,7 +105,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public IStatus performQuery(TaskRepository repository, IRepositoryQuery repositoryQuery,
-			TaskDataCollector resultCollector, ISynchronizationContext context, IProgressMonitor monitor) {
+			TaskDataCollector resultCollector, ISynchronizationSession session, IProgressMonitor monitor) {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Query Repository", IProgressMonitor.UNKNOWN);
@@ -134,9 +136,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
 					TaskData oldTaskData = null;
 					// TODO consider marking result as partial instead of loading task data from disk
-					if (context != null) {
+					if (session != null) {
 						try {
-							oldTaskData = context.getTaskDataManager().getTaskData(repository, issue.getId());
+							oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
 						} catch (CoreException e) {
 							// ignore
 						}
@@ -156,20 +158,20 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void preSynchronization(ISynchronizationContext context, IProgressMonitor monitor) throws CoreException {
+	public void preSynchronization(ISynchronizationSession session, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Getting changed tasks", IProgressMonitor.UNKNOWN);
 
-			context.setNeedsPerformQueries(true);
+			session.setNeedsPerformQueries(true);
 
-			if (!context.isFullSynchronization()) {
+			if (!session.isFullSynchronization()) {
 				return;
 			}
 
 			Date now = new Date();
-			TaskRepository repository = context.getTaskRepository();
-			FilterDefinition changedFilter = getSynchronizationFilter(repository, context.getTasks(), now);
+			TaskRepository repository = session.getTaskRepository();
+			FilterDefinition changedFilter = getSynchronizationFilter(session, repository, session.getTasks(), now);
 			if (changedFilter == null) {
 				// could not determine last time, rerun queries
 				repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
@@ -187,12 +189,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				if (issues.isEmpty()) {
 					// repository is unchanged
 					repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
-					context.setNeedsPerformQueries(false);
+					session.setNeedsPerformQueries(false);
 					return;
 				}
 
 				HashMap<String, ITask> taskById = new HashMap<String, ITask>();
-				for (ITask task : context.getTasks()) {
+				for (ITask task : session.getTasks()) {
 					taskById.put(task.getTaskId(), task);
 				}
 				for (JiraIssue issue : issues) {
@@ -209,13 +211,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						if (hasChanged(task, issue)) {
 							TaskData oldTaskData = null;
 							try {
-								oldTaskData = context.getTaskDataManager().getTaskData(repository, issue.getId());
+								oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
 							} catch (CoreException e) {
 								// ignore
 							}
 							TaskData taskData = taskDataHandler2.createTaskData(repository, client, issue, oldTaskData,
 									monitor);
-							context.getTaskDataManager().putUpdatedTaskData(task, taskData, false);
+							session.putUpdatedTaskData(task, taskData);
 						}
 					}
 				}
@@ -226,7 +228,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				Date repositoryUpdateTimeStamp = JiraUtil.getLastUpdate(repository);
 				if (repositoryUpdateTimeStamp != null && repositoryUpdateTimeStamp.equals(lastUpdate)) {
 					// didn't see any new changes
-					context.setNeedsPerformQueries(false);
+					session.setNeedsPerformQueries(false);
 				} else {
 					// updates may have caused tasks to match/not match a query therefore we need to rerun all queries  			
 					if (lastUpdate != null) {
@@ -244,12 +246,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public void postSynchronization(ISynchronizationContext event, IProgressMonitor monitor) throws CoreException {
+	public void postSynchronization(ISynchronizationSession event, IProgressMonitor monitor) throws CoreException {
 		// ignore
 	}
 
 	/* Public for testing. */
-	public FilterDefinition getSynchronizationFilter(TaskRepository repository, Set<ITask> tasks, Date now) {
+	public FilterDefinition getSynchronizationFilter(ISynchronizationSession session, TaskRepository repository,
+			Set<ITask> tasks, Date now) {
 		// there are no JIRA tasks in the task list, skip contacting the repository
 		if (tasks.isEmpty()) {
 			return null;
@@ -260,7 +263,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// repository was never synchronized, update all tasks
 		if (lastSyncDate == null) {
 			for (ITask task : tasks) {
-				task.setStale(true);
+				session.markStale(task);
 			}
 			return null;
 		}
@@ -275,7 +278,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					"Synchronization time stamp clock skew detected for " + repository.getRepositoryUrl() + ": "
 							+ lastSyncTime + " >= " + now, null));
 
-			// use the timestamp on the task that was modified last
+			// use the time stamp on the task that was modified last
 			lastSyncDate = null;
 			for (ITask task : tasks) {
 				Date date = task.getModificationDate();
@@ -511,6 +514,24 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public ITaskMapping getTaskMapping(TaskData taskData) {
 		return getTaskMapper(taskData);
+	}
+
+	@Override
+	public TaskRelation[] getTaskRelations(TaskData taskData) {
+		List<TaskRelation> relations = new ArrayList<TaskRelation>();
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SUBTASK_IDS.id());
+		if (attribute != null) {
+			for (String taskId : attribute.getValues()) {
+				relations.add(TaskRelation.subtask(taskId));
+			}
+		}
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.id());
+		if (attribute != null) {
+			for (String taskId : attribute.getValues()) {
+				relations.add(TaskRelation.dependency(taskId, Direction.OUTWARD));
+			}
+		}
+		return relations.toArray(new TaskRelation[0]);
 	}
 
 }
