@@ -17,7 +17,7 @@ import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
-import org.eclipse.mylyn.tasks.core.ITaskRepositoryListener;
+import org.eclipse.mylyn.tasks.core.IRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
@@ -30,7 +30,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
-public class JiraClientFactory implements ITaskRepositoryListener, IJiraClientFactory {
+public class JiraClientFactory implements IRepositoryListener, IJiraClientFactory {
 
 	private static JiraClientFactory instance = null;
 

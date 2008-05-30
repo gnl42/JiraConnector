@@ -131,7 +131,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		data.getRoot().getMappedAttribute(JiraAttribute.DESCRIPTION.id()).setValue(stackTrace);
 
 		JiraSearchHandler detector = new JiraSearchHandler();
-		IRepositoryQuery duplicatesQuery = TasksUi.getTasksModel().createQuery(repository);
+		IRepositoryQuery duplicatesQuery = TasksUi.getRepositoryModel().createQuery(repository);
 		assertTrue(detector.queryForText(repository, duplicatesQuery, data, stackTrace));
 		SearchHitCollector collector = new SearchHitCollector(TasksUiInternal.getTaskList(), repository,
 				duplicatesQuery);

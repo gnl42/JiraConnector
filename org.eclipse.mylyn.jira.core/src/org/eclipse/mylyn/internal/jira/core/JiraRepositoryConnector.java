@@ -9,6 +9,7 @@
 package org.eclipse.mylyn.internal.jira.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -517,7 +518,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public TaskRelation[] getTaskRelations(TaskData taskData) {
+	public Collection<TaskRelation> getTaskRelations(TaskData taskData) {
 		List<TaskRelation> relations = new ArrayList<TaskRelation>();
 		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SUBTASK_IDS.id());
 		if (attribute != null) {
@@ -531,7 +532,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				relations.add(TaskRelation.dependency(taskId, Direction.OUTWARD));
 			}
 		}
-		return relations.toArray(new TaskRelation[0]);
+		return relations;
 	}
 
 }
