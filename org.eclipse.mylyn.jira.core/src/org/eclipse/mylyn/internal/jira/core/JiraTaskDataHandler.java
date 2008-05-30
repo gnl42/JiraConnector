@@ -231,7 +231,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		createAttribute(data, JiraAttribute.ENVIRONMENT);
 
-		createAttribute(data, JiraAttribute.COMMENT_NEW);
+		if (!data.isNew()) {
+			createAttribute(data, JiraAttribute.COMMENT_NEW);
+		}
 	}
 
 	private TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
