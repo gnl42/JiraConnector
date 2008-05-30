@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.AbstractTaskListMigrator;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -61,7 +62,7 @@ public class JiraTaskListMigrator extends AbstractTaskListMigrator {
 
 	@Override
 	public void migrateTask(ITask task, Element element) {
-		// nothing to do
+		task.setModificationDate(JiraUtil.stringToDate(element.getAttribute(KEY_LAST_MOD_DATE)));
 	}
 
 }
