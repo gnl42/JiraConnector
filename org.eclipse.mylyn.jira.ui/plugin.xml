@@ -18,8 +18,7 @@
       <connectorCore
             class="org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector"
             id="org.eclipse.mylyn.jira.tasklist.repositories"
-            name="JIRA Repository Connector"
-            type="jira"/>
+            name="JIRA Repository Connector"/>
 	  <connectorUi
          brandingIcon="icons/eview16/jira-logo.gif"
          class="org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi"
