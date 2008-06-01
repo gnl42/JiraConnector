@@ -60,6 +60,10 @@ public class JiraVersion implements Comparable<JiraVersion> {
 		return n == -1 ? "" : segment.substring(n + 1);
 	}
 
+	public boolean isSmallerOrEquals(JiraVersion v) {
+		return compareTo(v) <= 0;
+	}
+
 	/**
 	 * 3.6.5-#161 3.9-#233 3.10-DEV-190607-#251
 	 */

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract local variable &apos;value&apos; from expression &apos;taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE)&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Variable name: &apos;value&apos;&#x0A;- Destination method: &apos;org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler.getType()&apos;&#x0A;- Variable expression: &apos;taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE)&apos;&#x0A;- Replace occurrences of expression with variable" description="Extract local variable &apos;value&apos;" final="false" id="org.eclipse.jdt.ui.extract.temp" input="/src&lt;org.eclipse.mylyn.internal.jira.core{JiraTaskDataHandler.java" name="value" replace="true" selection="43046 62" stamp="1212293178663" version="1.0"/>
+</session>

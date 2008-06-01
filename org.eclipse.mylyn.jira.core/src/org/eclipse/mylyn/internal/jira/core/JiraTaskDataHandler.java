@@ -36,6 +36,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
@@ -86,9 +87,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final String LEAVE_OPERATION = "leave";
 
-	private static final String TASK_DATA_VERSION_1_0 = "1.0";
+	private static final JiraVersion TASK_DATA_VERSION_1_0 = new JiraVersion("1.0");
 
-	private static final String TASK_DATA_VERSION_2_0 = "2.0";
+	private static final JiraVersion TASK_DATA_VERSION_2_0 = new JiraVersion("2.0");
+
+	private static final JiraVersion TASK_DATA_VERSION_CURRENT = new JiraVersion("2.1");
 
 	private final IJiraClientFactory clientFactory;
 
@@ -143,7 +146,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			TaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		TaskData data = new TaskData(getAttributeMapper(repository), JiraCorePlugin.CONNECTOR_KIND,
 				repository.getRepositoryUrl(), jiraIssue.getId());
-		data.setVersion(TASK_DATA_VERSION_2_0);
+		data.setVersion(TASK_DATA_VERSION_CURRENT.toString());
 		initializeTaskData(data, client, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
 		addOperations(data, jiraIssue, client, oldTaskData, monitor);
@@ -154,7 +157,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		createAttribute(data, JiraAttribute.CREATION_DATE);
 		TaskAttribute summaryAttribute = createAttribute(data, JiraAttribute.SUMMARY);
 		summaryAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
-		createAttribute(data, JiraAttribute.DESCRIPTION);
+		TaskAttribute descriptionAttribute = createAttribute(data, JiraAttribute.DESCRIPTION);
+		descriptionAttribute.getMetaData().setType(TaskAttribute.TYPE_LONG_RICH_TEXT);
 		createAttribute(data, JiraAttribute.STATUS);
 		createAttribute(data, JiraAttribute.ISSUE_KEY);
 		createAttribute(data, JiraAttribute.TASK_URL);
@@ -233,7 +237,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		createAttribute(data, JiraAttribute.ENVIRONMENT);
 
 		if (!data.isNew()) {
-			createAttribute(data, JiraAttribute.COMMENT_NEW);
+			TaskAttribute commentAttribute = createAttribute(data, JiraAttribute.COMMENT_NEW);
+			commentAttribute.getMetaData().setType(TaskAttribute.TYPE_LONG_RICH_TEXT);
 		}
 	}
 
@@ -1009,7 +1014,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	@Override
 	public void migrateTaskData(TaskRepository taskRepository, TaskData taskData) {
-		if (TASK_DATA_VERSION_1_0.equals(taskData.getVersion())) {
+		JiraVersion version = new JiraVersion(taskData.getVersion());
+		// 1.0: the value was stored in the attribute rather than the key
+		if (version.isSmallerOrEquals(TASK_DATA_VERSION_1_0)) {
 			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
 				if (TaskAttribute.PRODUCT.equals(attribute.getId())) {
 					String projectName = attribute.getValue();
@@ -1038,8 +1045,50 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					}
 				}
 			}
-			taskData.setVersion(TASK_DATA_VERSION_2_0);
 		}
+		// 2.0: the type was not always set
+		if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_0)) {
+			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
+				attribute.getMetaData().setType(getType(attribute));
+			}
+		}
+		if (version.isSmallerOrEquals(TASK_DATA_VERSION_CURRENT)) {
+			taskData.setVersion(TASK_DATA_VERSION_CURRENT.toString());
+		}
+	}
+
+	private String getType(TaskAttribute taskAttribute) {
+		if (JiraAttribute.DESCRIPTION.id().equals(taskAttribute.getId())) {
+			return TaskAttribute.TYPE_LONG_RICH_TEXT;
+		}
+		if (JiraAttribute.COMMENT_NEW.id().equals(taskAttribute.getId())) {
+			return TaskAttribute.TYPE_LONG_RICH_TEXT;
+		}
+		if (JiraAttribute.SUMMARY.id().equals(taskAttribute.getId())) {
+			return TaskAttribute.TYPE_LONG_RICH_TEXT;
+		}
+		JiraFieldType fieldType = null;
+		if (JiraAttribute.CREATION_DATE.id().equals(taskAttribute.getId())
+				|| JiraAttribute.DUE_DATE.id().equals(taskAttribute.getId())
+				|| JiraAttribute.MODIFICATION_DATE.id().equals(taskAttribute.getId())) {
+			fieldType = JiraFieldType.DATEPICKER;
+			taskAttribute.getMetaData().putValue(IJiraConstants.META_TYPE, fieldType.getKey());
+		}
+		if (fieldType == null) {
+			fieldType = JiraFieldType.fromKey(taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE));
+		}
+		if (fieldType.getTaskType() != null) {
+			return fieldType.getTaskType();
+		}
+		fieldType = JiraAttribute.valueById(taskAttribute.getId()).getType();
+		if (fieldType.getTaskType() != null) {
+			return fieldType.getTaskType();
+		}
+		String existingType = taskAttribute.getMetaData().getType();
+		if (existingType != null) {
+			return existingType;
+		}
+		return TaskAttribute.TYPE_SHORT_TEXT;
 	}
 
 	private String mapCommonAttributeKey(String key) {
