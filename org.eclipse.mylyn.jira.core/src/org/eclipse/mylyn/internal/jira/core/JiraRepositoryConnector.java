@@ -445,7 +445,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public boolean hasChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
-		TaskMapper scheme = new TaskMapper(taskData);
+		TaskMapper scheme = getTaskMapper(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 		Date localDate = task.getModificationDate();
 		if (repositoryDate != null && repositoryDate.equals(localDate)) {
@@ -508,6 +508,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			@Override
 			public void setCompletionDate(Date dateCompleted) {
 				// ignore
+			}
+
+			@Override
+			public void setProduct(String product) {
+				// ignore, set during task data initialization
 			}
 		};
 	}

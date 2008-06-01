@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -666,7 +667,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			IProgressMonitor monitor) throws JiraException {
 		// avoid server round-trips
 		if (useCachedInformation(issue, oldTaskData)) {
-			TaskAttribute[] attributes = oldTaskData.getAttributeMapper().getAttributesByType(oldTaskData,
+			List<TaskAttribute> attributes = oldTaskData.getAttributeMapper().getAttributesByType(oldTaskData,
 					TaskAttribute.TYPE_OPERATION);
 			for (TaskAttribute taskAttribute : attributes) {
 				data.getRoot().deepAddCopy(taskAttribute);
