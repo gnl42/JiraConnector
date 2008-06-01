@@ -11,17 +11,12 @@ package org.eclipse.mylyn.internal.jira.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
@@ -37,7 +32,6 @@ import org.eclipse.mylyn.tasks.core.ITaskComment;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentModel;
-import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.LegendElement;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
@@ -204,22 +198,6 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 			links[i] = new TaskHyperlink(new Region(regionOffset + startRegion, taskId.length()), repository, taskId);
 		}
 		return links;
-	}
-
-	@Override
-	public boolean supportsDueDates(ITask task) {
-		if (JiraCorePlugin.CONNECTOR_KIND.equals(task.getConnectorKind())) {
-			// XXX This is only used in the planning editor, and if its input was set correctly as a RepositoryTaskEditorInput
-			// we wouldn't have to get the task data this way from here
-			TaskData taskData;
-			try {
-				taskData = TasksUi.getTaskDataManager().getTaskData(task);
-				return taskData.getRoot().getMappedAttribute(JiraAttribute.DUE_DATE.id()) != null;
-			} catch (CoreException e) {
-				StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data", e));
-			}
-		}
-		return false;
 	}
 
 	@Override

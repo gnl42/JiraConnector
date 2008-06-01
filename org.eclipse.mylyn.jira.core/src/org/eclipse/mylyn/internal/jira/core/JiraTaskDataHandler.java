@@ -146,7 +146,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			TaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
 		TaskData data = new TaskData(getAttributeMapper(repository), JiraCorePlugin.CONNECTOR_KIND,
 				repository.getRepositoryUrl(), jiraIssue.getId());
-		data.setVersion(TASK_DATA_VERSION_CURRENT.toString());
 		initializeTaskData(data, client, jiraIssue.getProject());
 		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
 		addOperations(data, jiraIssue, client, oldTaskData, monitor);
@@ -154,6 +153,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	public void initializeTaskData(TaskData data, JiraClient client, Project project) {
+		data.setVersion(TASK_DATA_VERSION_CURRENT.toString());
+
 		createAttribute(data, JiraAttribute.CREATION_DATE);
 		TaskAttribute summaryAttribute = createAttribute(data, JiraAttribute.SUMMARY);
 		summaryAttribute.getMetaData().setType(TaskAttribute.TYPE_SHORT_RICH_TEXT);
@@ -1014,7 +1015,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	@Override
 	public void migrateTaskData(TaskRepository taskRepository, TaskData taskData) {
-		JiraVersion version = new JiraVersion(taskData.getVersion());
+		String taskDataVersion = taskData.getVersion();
+		JiraVersion version = new JiraVersion(taskDataVersion != null ? taskDataVersion : "0.0");
 		// 1.0: the value was stored in the attribute rather than the key
 		if (version.isSmallerOrEquals(TASK_DATA_VERSION_1_0)) {
 			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
@@ -1065,7 +1067,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			return TaskAttribute.TYPE_LONG_RICH_TEXT;
 		}
 		if (JiraAttribute.SUMMARY.id().equals(taskAttribute.getId())) {
-			return TaskAttribute.TYPE_LONG_RICH_TEXT;
+			return TaskAttribute.TYPE_SHORT_RICH_TEXT;
 		}
 		JiraFieldType fieldType = null;
 		if (JiraAttribute.CREATION_DATE.id().equals(taskAttribute.getId())

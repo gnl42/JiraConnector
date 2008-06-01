@@ -540,4 +540,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return relations;
 	}
 
+	@Override
+	public boolean hasRepositoryDueDate(TaskRepository taskRepository, ITask task, TaskData taskData) {
+		return taskData.getRoot().getMappedAttribute(JiraAttribute.DUE_DATE.id()) != null;
+	}
+
 }

@@ -30,7 +30,7 @@ public enum JiraAttribute {
 
 	DESCRIPTION(TaskAttribute.DESCRIPTION, JiraFieldType.TEXTFIELD, "Description:", true, false, "description"),
 
-	DUE_DATE(IJiraConstants.ATTRIBUTE_DUE_DATE, JiraFieldType.DATEPICKER, "Due Date:", true, false, "duedate"),
+	DUE_DATE(IJiraConstants.ATTRIBUTE_DUE_DATE, JiraFieldType.DATEPICKER, "Due Date:", false, false, "duedate"),
 
 	ENVIRONMENT(IJiraConstants.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA, "Environment:", false, false,
 			"environment"),
