@@ -218,7 +218,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 							}
 							TaskData taskData = taskDataHandler2.createTaskData(repository, client, issue, oldTaskData,
 									monitor);
-							session.putUpdatedTaskData(task, taskData);
+							session.putTaskData(task, taskData);
 						}
 					}
 				}
@@ -444,7 +444,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public boolean hasChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
+	public boolean hasTaskChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
 		TaskMapper scheme = getTaskMapper(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 		Date localDate = task.getModificationDate();
