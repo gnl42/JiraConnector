@@ -77,7 +77,7 @@ public class JiraTaskListFactory extends AbstractTaskListFactory {
 		TaskRepository taskRepository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
 				repositoryUrl);
 		if (taskRepository != null) {
-			IRepositoryQuery query = TasksUi.getRepositoryModel().createQuery(taskRepository);
+			IRepositoryQuery query = TasksUi.getRepositoryModel().createRepositoryQuery(taskRepository);
 			query.setSummary(label);
 			query.setUrl(queryString);
 			query.setAttribute(KEY_FILTER_CUSTOM_URL, element.getAttribute(KEY_FILTER_CUSTOM_URL));
