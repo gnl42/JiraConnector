@@ -852,7 +852,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			Project project = client.getCache().getProjectById(projectAttribute.getValue());
 			initializeTaskData(taskData, client, project);
 
-			new TaskMapper(taskData).copyFrom(new TaskMapper(parentTaskData));
+			new TaskMapper(taskData).merge(new TaskMapper(parentTaskData));
 			taskData.getRoot().getAttribute(JiraAttribute.PROJECT.id()).setValue(project.getId());
 			taskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue("");
 			taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).setValue("");
