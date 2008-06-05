@@ -1069,6 +1069,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (JiraAttribute.SUMMARY.id().equals(taskAttribute.getId())) {
 			return TaskAttribute.TYPE_SHORT_RICH_TEXT;
 		}
+		if (TaskAttribute.OPERATION.equals(taskAttribute.getId())
+				|| taskAttribute.getId().startsWith(TaskAttribute.PREFIX_OPERATION)) {
+			return TaskAttribute.TYPE_OPERATION;
+		}
+		if (taskAttribute.getId().startsWith(TaskAttribute.PREFIX_COMMENT)) {
+			return TaskAttribute.TYPE_COMMENT;
+		}
+		if (taskAttribute.getId().startsWith(TaskAttribute.PREFIX_ATTACHMENT)) {
+			return TaskAttribute.TYPE_ATTACHMENT;
+		}
 		JiraFieldType fieldType = null;
 		if (JiraAttribute.CREATION_DATE.id().equals(taskAttribute.getId())
 				|| JiraAttribute.DUE_DATE.id().equals(taskAttribute.getId())
