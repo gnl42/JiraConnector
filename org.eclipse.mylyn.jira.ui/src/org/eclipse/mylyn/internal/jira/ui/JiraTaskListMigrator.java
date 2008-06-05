@@ -35,6 +35,8 @@ public class JiraTaskListMigrator extends AbstractTaskListMigrator {
 
 	private static final String KEY_JIRA_QUERY = "JiraQuery";
 
+	private static final String KEY_KEY = "Key";
+
 	@Override
 	public String getConnectorKind() {
 		return JiraCorePlugin.CONNECTOR_KIND;
@@ -63,6 +65,7 @@ public class JiraTaskListMigrator extends AbstractTaskListMigrator {
 	@Override
 	public void migrateTask(ITask task, Element element) {
 		task.setModificationDate(JiraUtil.stringToDate(element.getAttribute(KEY_LAST_MOD_DATE)));
+		task.setTaskKey(element.getAttribute(KEY_KEY));
 	}
 
 }
