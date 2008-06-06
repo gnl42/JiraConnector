@@ -40,8 +40,11 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 
 		private final AbstractTaskAttachmentSource attachment;
 
-		public AttachmentPartSource(AbstractTaskAttachmentSource attachment) {
+		private final String filename;
+
+		public AttachmentPartSource(AbstractTaskAttachmentSource attachment, String filename) {
 			this.attachment = attachment;
+			this.filename = filename;
 		}
 
 		public InputStream createInputStream() throws IOException {
@@ -54,7 +57,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 		}
 
 		public String getFileName() {
-			return attachment.getName();
+			return filename;
 		}
 
 		public long getLength() {
@@ -76,8 +79,8 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 		return true;
 	}
 
-	private void downloadAttachment(TaskRepository repository, ITask task, String attachmentId,
-			OutputStream out, IProgressMonitor monitor) throws CoreException {
+	private void downloadAttachment(TaskRepository repository, ITask task, String attachmentId, OutputStream out,
+			IProgressMonitor monitor) throws CoreException {
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		try {
 			JiraIssue issue = client.getIssueByKey(task.getTaskKey(), monitor);
@@ -103,14 +106,25 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 	}
 
 	@Override
-	public void postContent(TaskRepository repository, ITask task, AbstractTaskAttachmentSource source,
-			String comment, TaskAttribute attachmentAttribute, IProgressMonitor monitor) throws CoreException {
+	public void postContent(TaskRepository repository, ITask task, AbstractTaskAttachmentSource source, String comment,
+			TaskAttribute attachmentAttribute, IProgressMonitor monitor) throws CoreException {
 		try {
 			monitor.beginTask("Sending attachment", IProgressMonitor.UNKNOWN);
+			String contentType = source.getContentType();
+			String filename = source.getName();
+			if (attachmentAttribute != null) {
+				TaskAttachmentMapper mapper = TaskAttachmentMapper.createFrom(attachmentAttribute);
+				if (mapper.getContentType() != null) {
+					contentType = mapper.getContentType();
+				}
+				if (mapper.getFileName() != null) {
+					filename = mapper.getFileName();
+				}
+			}
 			JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 			try {
 				JiraIssue issue = server.getIssueByKey(task.getTaskKey(), monitor);
-				server.addAttachment(issue, comment, new AttachmentPartSource(source), source.getContentType(), monitor);
+				server.addAttachment(issue, comment, new AttachmentPartSource(source, filename), contentType, monitor);
 			} catch (JiraException e) {
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 			}
