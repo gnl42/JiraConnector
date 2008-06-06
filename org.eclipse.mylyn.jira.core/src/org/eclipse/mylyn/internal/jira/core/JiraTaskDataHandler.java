@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1050,7 +1051,47 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 		// 2.0: the type was not always set
 		if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_0)) {
-			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
+			Collection<TaskAttribute> attributes = new ArrayList<TaskAttribute>(taskData.getRoot()
+					.getAttributes()
+					.values());
+			for (TaskAttribute attribute : attributes) {
+				if (attribute.getId().startsWith(TaskAttribute.PREFIX_OPERATION)) {
+					if (attribute.getValue().equals(REASSIGN_OPERATION)) {
+						taskData.getRoot().removeAttribute(attribute.getId());
+						continue;
+					} else {
+						TaskAttribute associatedAttribute = taskData.getAttributeMapper().getAssoctiatedAttribute(
+								attribute);
+						if (associatedAttribute != null && associatedAttribute.getId().equals("resolution")) {
+							TaskAttribute resolutionAttribute = taskData.getRoot().getAttribute(
+									JiraAttribute.RESOLUTION.id());
+							if (resolutionAttribute != null) {
+								Map<String, String> options = associatedAttribute.getOptions();
+								for (String key : options.keySet()) {
+									resolutionAttribute.putOption(key, options.get(key));
+								}
+								resolutionAttribute.getMetaData().setType(TaskAttribute.TYPE_SINGLE_SELECT);
+								resolutionAttribute.getMetaData().setReadOnly(false);
+							}
+							attribute.getMetaData().putValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID,
+									JiraAttribute.RESOLUTION.id());
+							attribute.removeAttribute(associatedAttribute.getId());
+						}
+					}
+				} else if (attribute.getId().equals(JiraAttribute.TYPE.id())) {
+					if (attribute.getOptions().isEmpty()) {
+						// sub task
+						JiraClient client = clientFactory.getJiraClient(taskRepository);
+						IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
+						for (IssueType type : jiraIssueTypes) {
+							if (attribute.getValue().equals(type.getName())) {
+								attribute.putOption(type.getId(), type.getName());
+								attribute.setValue(type.getId());
+								break;
+							}
+						}
+					}
+				}
 				attribute.getMetaData().setType(getType(attribute));
 			}
 		}
