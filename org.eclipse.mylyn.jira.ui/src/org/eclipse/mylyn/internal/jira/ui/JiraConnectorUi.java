@@ -24,7 +24,6 @@ import org.eclipse.mylyn.internal.jira.ui.wizards.JiraFilterDefinitionPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraNamedFilterPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -46,7 +45,6 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  */
-@SuppressWarnings("restriction")
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	public enum JiraTaskKind {
@@ -73,8 +71,9 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	public JiraConnectorUi() {
-		TasksUiPlugin.getDefault().addSearchHandler(new JiraSearchHandler());
+		org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin.getDefault().addSearchHandler(new JiraSearchHandler());
 	}
 
 	@Override

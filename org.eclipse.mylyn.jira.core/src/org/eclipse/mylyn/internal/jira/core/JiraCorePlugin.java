@@ -9,8 +9,6 @@
 package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.File;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,13 +29,10 @@ import org.osgi.framework.BundleContext;
  * @author Brock Janiczak
  */
 public class JiraCorePlugin extends Plugin {
+
 	public static final String ID_PLUGIN = "org.eclipse.mylyn.internal.jira.core"; //$NON-NLS-1$
 
-	// The shared instance.
 	private static JiraCorePlugin plugin;
-
-	// Resource bundle.
-	private ResourceBundle resourceBundle;
 
 	private JiraClientManager serverManager;
 
@@ -73,26 +68,6 @@ public class JiraCorePlugin extends Plugin {
 		serverManager.start();
 	}
 
-// /**
-// * @return
-// */
-// private PasswordPrompter getPasswordPrompter() {
-// return new PasswordPrompter() {
-//
-// public String getPassword(URL baseURL, String username) {
-// Map<?, ?> authenticationInfo = Platform.getAuthorizationInfo(baseURL, "jira",
-// "");
-// // String username = (String)
-// // authenticationInfo.get("com.gbst.jira.core.username");
-// // //$NON-NLS-1$
-// String password = (String)
-// authenticationInfo.get("com.gbst.jira.core.password"); //$NON-NLS-1$
-// return password;
-// }
-//
-// };
-// }
-
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
@@ -104,7 +79,6 @@ public class JiraCorePlugin extends Plugin {
 			serverManager.stop();
 		}
 		plugin = null;
-		resourceBundle = null;
 		serverManager = null;
 	}
 
@@ -117,32 +91,6 @@ public class JiraCorePlugin extends Plugin {
 
 	public JiraClientManager getServerManager() {
 		return serverManager;
-	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = JiraCorePlugin.getDefault().getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		try {
-			if (resourceBundle == null) {
-				resourceBundle = ResourceBundle.getBundle("com.gbst.jira.core.JiraCorePluginResources"); //$NON-NLS-1$
-			}
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
-		return resourceBundle;
 	}
 
 	public static void log(int severity, String message, Throwable e) {

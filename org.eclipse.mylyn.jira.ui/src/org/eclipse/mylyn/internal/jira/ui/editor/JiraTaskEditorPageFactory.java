@@ -30,8 +30,6 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 			return true;
 		} else if (TasksUiUtil.isOutgoingNewTask(input.getTask(), JiraCorePlugin.CONNECTOR_KIND)) {
 			return true;
-		} else if (input.getData() instanceof JiraTaskInitializationData) {
-			return true;
 		}
 		return false;
 	}

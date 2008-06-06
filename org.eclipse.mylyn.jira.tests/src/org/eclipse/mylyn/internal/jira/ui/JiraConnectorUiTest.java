@@ -10,7 +10,7 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylyn.internal.jira.core.JiraTask;
+import org.eclipse.mylyn.jira.tests.JiraTask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.tests.connector.MockRepositoryConnector;
 

@@ -6,12 +6,15 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.core;
+package org.eclipse.mylyn.jira.tests;
 
 import java.util.Date;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.jira.core.IJiraConstants;
+import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.AbstractAttributeFactory;
 import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
@@ -32,7 +35,9 @@ public class JiraAttributeFactory extends AbstractAttributeFactory {
 	@Override
 	public RepositoryTaskAttribute createAttribute(String key) {
 		RepositoryTaskAttribute attribute = super.createAttribute(key);
-		attribute.putMetaDataValue(IJiraConstants.META_TYPE, JiraAttribute.valueById(attribute.getId()).getType().getKey());
+		attribute.putMetaDataValue(IJiraConstants.META_TYPE, JiraAttribute.valueById(attribute.getId())
+				.getType()
+				.getKey());
 		return attribute;
 	}
 
