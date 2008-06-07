@@ -117,11 +117,11 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 	private synchronized void removeServer(JiraClient server) {
 		if (server != null) {
 			// FIXME run this in a job
-			try {
-				server.logout(null);
-			} catch (JiraException e) {
-				// ignore
-			}
+//			try {
+//				server.logout(null);
+//			} catch (JiraException e) {
+//				// ignore
+//			}
 			clientManager.removeClient(server);
 		}
 	}
@@ -132,11 +132,11 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 	 * @param monitor
 	 * 
 	 * @param serverUrl
-	 * 		Location of the Jira Server
+	 *            Location of the Jira Server
 	 * @param user
-	 * 		Username
+	 *            Username
 	 * @param password
-	 * 		Password
+	 *            Password
 	 * @return
 	 * @return String describing validation failure or null if the details are valid
 	 */
