@@ -483,17 +483,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public TaskMapper getTaskMapper(TaskData taskData) {
 		return new TaskMapper(taskData) {
 			@Override
-			public PriorityLevel getPriority() {
+			public PriorityLevel getPriorityLevel() {
 				TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.PRIORITY.id());
 				if (attribute != null) {
-					return getPriorityLevel(attribute.getValue());
+					return JiraRepositoryConnector.getPriorityLevel(attribute.getValue());
 				}
 				return PriorityLevel.getDefault();
-			}
-
-			@Override
-			public void setPriority(PriorityLevel priority) {
-				// TODO implement
 			}
 
 			@Override
