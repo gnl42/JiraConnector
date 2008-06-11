@@ -17,7 +17,7 @@ import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
  * @author Steffen Pingel
@@ -35,7 +35,7 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 	}
 
 	@Override
-	public FormPage createPage(TaskEditor parentEditor) {
+	public IFormPage createPage(TaskEditor parentEditor) {
 		return new JiraTaskEditorPage(parentEditor);
 	}
 
