@@ -43,7 +43,7 @@ public enum JiraAttribute {
 	INITIAL_ESTIMATE(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE, JiraFieldType.TEXTFIELD, "Original Estimate:", false,
 			true),
 
-	ISSUE_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Issue ID:"),
+	ISSUE_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "ID:"),
 
 	LINKED_IDS(IJiraConstants.ATTRIBUTE_LINKED_IDS, JiraFieldType.TEXTFIELD, "Linked ids:", true, true),
 
