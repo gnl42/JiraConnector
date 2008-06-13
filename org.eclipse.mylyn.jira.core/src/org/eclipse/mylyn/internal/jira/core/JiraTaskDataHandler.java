@@ -305,9 +305,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 							.putValue(IJiraConstants.META_TYPE, JiraFieldType.ISSUELINKS.getKey());
 					links.put(key, attribute);
 				}
-				attribute.addValue(link.getIssueKey());
+				if (attribute.getValue().length() > 0) {
+					attribute.setValue(attribute.getValue() + " " + link.getIssueKey());
+				} else {
+					attribute.setValue(link.getIssueKey());
+				}
 
-				if (link.getInwardDescription() != null) {
+				if (link.getOutwardDescription() != null) {
 					attribute = data.getRoot().getMappedAttribute(JiraAttribute.LINKED_IDS.id());
 					if (attribute == null) {
 						attribute = createAttribute(data, JiraAttribute.LINKED_IDS);

@@ -50,7 +50,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskRelation;
-import org.eclipse.mylyn.tasks.core.data.TaskRelation.Direction;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
 /**
@@ -529,7 +528,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.id());
 		if (attribute != null) {
 			for (String taskId : attribute.getValues()) {
-				relations.add(TaskRelation.dependency(taskId, Direction.OUTWARD));
+				relations.add(TaskRelation.subtask(taskId));
 			}
 		}
 		return relations;
