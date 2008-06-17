@@ -990,6 +990,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 		issue.setCustomFields(customFields.toArray(new CustomField[customFields.size()]));
 
+		String resolutionId = getAttributeValue(taskData, JiraAttribute.RESOLUTION);
+		if (resolutionId != null) {
+			issue.setResolution(new Resolution(resolutionId));
+		}
+
 		return issue;
 	}
 

@@ -8,7 +8,7 @@
 
 package org.eclipse.mylyn.internal.jira.core;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.mylyn.internal.jira.core.model.Component;
@@ -47,7 +47,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 	@Override
 	public Map<String, String> getOptions(TaskAttribute attribute) {
 		if (client.getCache().hasDetails()) {
-			Map<String, String> options = new HashMap<String, String>();
+			Map<String, String> options = new LinkedHashMap<String, String>();
 			if (JiraAttribute.PROJECT.id().equals(attribute.getId())) {
 				Project[] jiraProjects = client.getCache().getProjects();
 				for (Project jiraProject : jiraProjects) {

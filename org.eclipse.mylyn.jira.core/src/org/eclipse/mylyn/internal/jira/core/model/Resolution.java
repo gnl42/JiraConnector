@@ -35,6 +35,13 @@ public class Resolution implements Serializable {
 
 	private String icon;
 
+	public Resolution(String id) {
+		this.id = id;
+	}
+
+	public Resolution() {
+	}
+
 	public String getDescription() {
 		return this.description;
 	}
