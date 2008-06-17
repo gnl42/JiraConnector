@@ -40,6 +40,8 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 			return JiraAttribute.COMPONENTS.id();
 		} else if (TaskAttribute.TASK_KIND.equals(key)) {
 			return JiraAttribute.TYPE.id();
+		} else if (TaskAttribute.DATE_DUE.equals(key)) {
+			return JiraAttribute.DUE_DATE.id();
 		}
 		return super.mapToRepositoryKey(parent, key);
 	}
