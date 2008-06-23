@@ -9,22 +9,19 @@
 package org.eclipse.mylyn.jira.tests;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
-import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.context.tests.support.TestUtil;
-import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
-import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.context.core.ContextCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
@@ -34,23 +31,23 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
-import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
-import org.eclipse.mylyn.internal.tasks.core.TaskList;
-import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryAttachment;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskAttribute;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
+import org.eclipse.mylyn.internal.tasks.core.TaskTask;
 import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizationSession;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.AttachmentUtil;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
-import org.eclipse.mylyn.jira.tests.util.LegacyResultCollector;
+import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
+import org.eclipse.mylyn.jira.tests.util.JiraTestResultCollector;
+import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITaskAttachment;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -59,53 +56,37 @@ import org.eclipse.ui.PlatformUI;
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
-@SuppressWarnings("deprecation")
-public class JiraLegacyRepositoryConnectorTest extends TestCase {
+public class JiraRepositoryConnectorTest extends TestCase {
 
 	private TaskRepository repository;
-
-	private TaskRepositoryManager manager;
 
 	private JiraRepositoryConnector connector;
 
 	private JiraClient client;
 
-	private TaskList taskList;
-
 	@Override
 	protected void setUp() throws Exception {
-		super.setUp();
-
-		manager = TasksUiPlugin.getRepositoryManager();
-		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
-
-		taskList = TasksUiPlugin.getTaskList();
-		taskList.reset();
-
-		JiraClientFactory.getDefault().clearClients();
+		JiraTestUtil.setUp();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		if (client != null) {
-			JiraTestUtils.cleanup(client);
-		}
+		JiraTestUtil.tearDown();
 	}
 
 	protected void init(String url) throws Exception {
-		String kind = JiraCorePlugin.CONNECTOR_KIND;
-
-		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		repository = new TaskRepository(kind, url);
-		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
-				credentials.password), false);
-
-		manager.addRepository(repository);
-
-		connector = (JiraRepositoryConnector) manager.getRepositoryConnector(kind);
-		assertEquals(connector.getConnectorKind(), kind);
-
+		repository = JiraTestUtil.init(url);
+		connector = (JiraRepositoryConnector) TasksUi.getRepositoryConnector(JiraCorePlugin.CONNECTOR_KIND);
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
+	}
+
+	private SynchronizationSession createSession(ITask... tasks) {
+		SynchronizationSession session = new SynchronizationSession();
+		session.setNeedsPerformQueries(true);
+		session.setTaskRepository(repository);
+		session.setFullSynchronization(true);
+		session.setTasks(new HashSet<ITask>(Arrays.asList(tasks)));
+		return session;
 	}
 
 	public void testChangeTaskRepositorySettings() throws Exception {
@@ -127,31 +108,24 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 	public void testAttachContext() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testAttachContext");
-
-		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(),
-				new NullProgressMonitor());
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testAttachContext");
+		ITask task = JiraTestUtil.createTask(repository, issue.getId());
 		assertEquals("testAttachContext", task.getSummary());
-
 		File sourceContextFile = ContextCorePlugin.getContextStore().getFileForContext(task.getHandleIdentifier());
-		JiraTestUtils.writeFile(sourceContextFile, "Mylyn".getBytes());
+		JiraTestUtil.writeFile(sourceContextFile, "Mylyn".getBytes());
 		sourceContextFile.deleteOnExit();
 
-		// FIXME
-		fail();
-//		assertTrue(AttachmentUtil.attachContext(connector.getAttachmentHandler(), repository, task, "",
-//				new NullProgressMonitor()));
+		boolean result = AttachmentUtil.postContext(connector, repository, task, "", null, null);
+		assertTrue(result);
 
-		TasksUiInternal.synchronizeTask(connector, task, true, null);
-
-		Set<RepositoryAttachment> contextAttachments = AttachmentUtil.getLegacyContextAttachments(repository, task);
+		task = JiraTestUtil.createTask(repository, issue.getId());
+		List<ITaskAttachment> contextAttachments = AttachmentUtil.getContextAttachments(repository, task);
 		assertEquals(1, contextAttachments.size());
 
-		RepositoryAttachment attachment = contextAttachments.iterator().next();
-		// FIXME
-		fail();
-//		assertTrue(AttachmentUtil.retrieveContext(connector.getAttachmentHandler(), repository, task, attachment,
-//				System.getProperty("java.io.tmpdir"), new NullProgressMonitor()));
+		ITaskAttachment attachment = contextAttachments.get(0);
+		result = AttachmentUtil.retrieveContext(connector.getTaskAttachmentHandler(), repository, task, attachment,
+				System.getProperty("java.io.tmpdir"), PlatformUI.getWorkbench().getProgressService());
+		assertTrue(result);
 	}
 
 	public void testPerformQueryDueDateFilter() throws Exception {
@@ -161,29 +135,24 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 		c.add(Calendar.MONTH, 1);
 		Date fromDate = c.getTime();
 		Date toDate = c.getTime();
-
 		DateFilter dueDateFilter = new DateRangeFilter(fromDate, toDate);
-
 		FilterDefinition filter = new FilterDefinition();
 		filter.setDueDateFilter(dueDateFilter);
+		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
 
-		// AbstractRepositoryQuery query = new JiraCustomQuery("test query", queryUrl, repository.getUrl(), repository.getCharacterEncoding());
-		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
-
-		LegacyResultCollector collector1 = new LegacyResultCollector();
+		JiraTestResultCollector collector1 = new JiraTestResultCollector();
 		connector.performQuery(repository, query, collector1, null, null);
 
-		JiraIssue issue = JiraTestUtils.newIssue(client, "testDueDateFilter");
+		JiraIssue issue = JiraTestUtil.newIssue(client, "testDueDateFilter");
 		issue.setDue(fromDate);
-		issue = JiraTestUtils.createIssue(client, issue);
+		issue = JiraTestUtil.createIssue(client, issue);
 		assertNotNull(issue);
 
-		LegacyResultCollector collector2 = new LegacyResultCollector();
+		JiraTestResultCollector collector2 = new JiraTestResultCollector();
 		connector.performQuery(repository, query, collector2, null, new NullProgressMonitor());
 		assertEquals(collector1.results.size() + 1, collector2.results.size());
-
-		for (RepositoryTaskData taskData : collector2.results) {
-			String owner = taskData.getAttributeValue(RepositoryTaskAttribute.USER_OWNER);
+		for (TaskData taskData : collector2.results) {
+			String owner = taskData.getRoot().getAttribute(JiraAttribute.USER_ASSIGNED.id()).getValue();
 			assertNotNull(owner);
 			assertTrue(owner.length() > 0);
 		}
@@ -194,16 +163,16 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 
 		long currentTimeMillis = System.currentTimeMillis();
 		String summary1 = "test search for spaces " + currentTimeMillis;
-		JiraTestUtils.createIssue(client, summary1);
+		JiraTestUtil.createIssue(client, summary1);
 		String summary2 = "test search for spaces " + (currentTimeMillis + 1);
-		JiraTestUtils.createIssue(client, summary2);
+		JiraTestUtil.createIssue(client, summary2);
 
 		String queryString = currentTimeMillis + " " + (currentTimeMillis + 1);
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(queryString, true, false, false, false));
 
-		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
-		LegacyResultCollector collector = new LegacyResultCollector();
+		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
+		JiraTestResultCollector collector = new JiraTestResultCollector();
 		connector.performQuery(repository, query, collector, null, new NullProgressMonitor());
 		assertEquals(2, collector.results.size());
 	}
@@ -212,38 +181,27 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		repository.setSynchronizationTimeStamp(null);
-		SynchronizationSession event = new SynchronizationSession();
-		event.setTasks(new HashSet<ITask>());
-		event.setTaskRepository(repository);
-		event.setFullSynchronization(true);
-		connector.preSynchronization(event, null);
-		assertTrue(event.needsPerformQueries());
+		SynchronizationSession session = createSession();
+		connector.preSynchronization(session, null);
+		assertTrue(session.needsPerformQueries());
 		assertNotNull(repository.getSynchronizationTimeStamp());
 	}
 
 	public void testMarkStaleOneTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
 		Date start = new Date();
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
-		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(),
-				new NullProgressMonitor());
-		taskList.addTask(task);
+		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
+		task.setModificationDate(null);
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference 
 		assertNull(JiraUtil.getLastUpdate(repository));
 
-		Set<ITask> tasks = new HashSet<ITask>();
-		tasks.add(task);
-		SynchronizationSession event = new SynchronizationSession();
-		event.setTasks(tasks);
-		event.setTaskRepository(repository);
-		event.setFullSynchronization(true);
-
-		connector.preSynchronization(event, null);
-		assertTrue(event.needsPerformQueries());
-		assertFalse(task.isStale());
+		SynchronizationSession session = createSession(task);
+		connector.preSynchronization(session, null);
+		assertTrue(session.needsPerformQueries());
+		assertNull(session.getStaleTasks());
 		assertNotNull(repository.getSynchronizationTimeStamp());
 		Date timestamp = JiraUtil.stringToDate(repository.getSynchronizationTimeStamp());
 		assertTrue(timestamp.after(start));
@@ -252,10 +210,11 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 
 		Thread.sleep(5); // make sure markStaleTasks() finds a difference
 
-		connector.preSynchronization(event, null);
-		assertFalse(event.needsPerformQueries());
+		session = createSession(task);
+		connector.preSynchronization(session, null);
+		assertFalse(session.needsPerformQueries());
 		assertNotNull(repository.getSynchronizationTimeStamp());
-		assertFalse(task.isStale());
+		assertEquals(null, session.getStaleTasks());
 		assertFalse("Expected updated synchronization timestamp", JiraUtil.dateToString(timestamp).equals(
 				repository.getSynchronizationTimeStamp()));
 		assertEquals(issue.getUpdated(), JiraUtil.getLastUpdate(repository));
@@ -266,27 +225,17 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 
 		// create two issues, the first one is added to the task list
 		Date start = new Date();
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(),
-				new NullProgressMonitor());
-		taskList.addTask(task);
-
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
+		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		// make sure the second issue is created after the first one
 		Thread.sleep(1000);
-
-		JiraIssue issue2 = JiraTestUtils.createIssue(client, "testMarkStale2");
+		JiraIssue issue2 = JiraTestUtil.createIssue(client, "testMarkStale2");
 		assertTrue(issue2.getUpdated().after(issue.getUpdated()));
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(start));
 
-		Set<ITask> tasks = new HashSet<ITask>();
-		tasks.add(task);
-
-		SynchronizationSession event = new SynchronizationSession();
-		event.setTasks(tasks);
-		event.setTaskRepository(repository);
-		event.setFullSynchronization(true);
-		connector.preSynchronization(event, null);
-		assertTrue(event.needsPerformQueries());
+		SynchronizationSession session = createSession(task);
+		connector.preSynchronization(session, null);
+		assertTrue(session.needsPerformQueries());
 		assertFalse("Expected updated synchronization timestamp", JiraUtil.dateToString(start).equals(
 				repository.getSynchronizationTimeStamp()));
 		assertEquals(issue2.getUpdated(), JiraUtil.getLastUpdate(repository));
@@ -296,108 +245,92 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		// create an issue
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testMarkStale");
-		AbstractTask task = (AbstractTask) TasksUiInternal.createTask(repository, issue.getKey(),
-				new NullProgressMonitor());
-		taskList.addTask(task);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
+		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertFalse(task.isCompleted());
 
 		// close issue
-		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
+		String resolveOperation = JiraTestUtil.getOperation(client, issue.getKey(), "resolve");
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(new Date(), -1)));
-		Set<ITask> tasks = new HashSet<ITask>();
-		tasks.add(task);
-		SynchronizationSession event = new SynchronizationSession();
-		event.setTasks(tasks);
-		event.setTaskRepository(repository);
-		event.setFullSynchronization(true);
-		connector.preSynchronization(event, null);
-		assertTrue(event.needsPerformQueries());
+		SynchronizationSession session = createSession(task);
+		connector.preSynchronization(session, null);
+		assertTrue(session.needsPerformQueries());
 		assertTrue(task.isCompleted());
 	}
 
 	public void testGetSynchronizationFilter() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Set<ITask> tasks = new HashSet<ITask>();
-		tasks.add(new JiraTask(JiraTestConstants.JIRA_39_URL, "1", ""));
-
 		Date now = new Date();
-		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
-		fail(); // FIXME
-//		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, addSecondsToDate(now, 1));
-//		assertNotNull(filter);
-//		assertTrue(filter.getUpdatedDateFilter() instanceof RelativeDateRangeFilter);
-//		RelativeDateRangeFilter dateFilter = (RelativeDateRangeFilter) filter.getUpdatedDateFilter();
-//		assertEquals(RangeType.MINUTE, dateFilter.getPreviousRangeType());
-//		assertEquals(-1, dateFilter.getPreviousCount());
-//		assertEquals(RangeType.NONE, dateFilter.getNextRangeType());
-//		assertEquals(0, dateFilter.getNextCount());
+		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "1");
+		SynchronizationSession session = createSession(task);
 
-		fail(); // FIXME
-//		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(now, -121)));
-//		filter = connector.getSynchronizationFilter(repository, tasks, now);
-//		assertNotNull(filter);
-//		assertTrue(filter.getUpdatedDateFilter() instanceof RelativeDateRangeFilter);
-//		dateFilter = (RelativeDateRangeFilter) filter.getUpdatedDateFilter();
-//		assertEquals(RangeType.MINUTE, dateFilter.getPreviousRangeType());
-//		assertEquals(-3, dateFilter.getPreviousCount());
-//		assertEquals(RangeType.NONE, dateFilter.getNextRangeType());
-//		assertEquals(0, dateFilter.getNextCount());
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
+		FilterDefinition filter = connector.getSynchronizationFilter(session, addSecondsToDate(now, 1));
+		assertNotNull(filter);
+		assertTrue(filter.getUpdatedDateFilter() instanceof RelativeDateRangeFilter);
+		RelativeDateRangeFilter dateFilter = (RelativeDateRangeFilter) filter.getUpdatedDateFilter();
+		assertEquals(RangeType.MINUTE, dateFilter.getPreviousRangeType());
+		assertEquals(-1, dateFilter.getPreviousCount());
+		assertEquals(RangeType.NONE, dateFilter.getNextRangeType());
+		assertEquals(0, dateFilter.getNextCount());
+
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(now, -121)));
+		filter = connector.getSynchronizationFilter(session, now);
+		assertNotNull(filter);
+		assertTrue(filter.getUpdatedDateFilter() instanceof RelativeDateRangeFilter);
+		dateFilter = (RelativeDateRangeFilter) filter.getUpdatedDateFilter();
+		assertEquals(RangeType.MINUTE, dateFilter.getPreviousRangeType());
+		assertEquals(-3, dateFilter.getPreviousCount());
+		assertEquals(RangeType.NONE, dateFilter.getNextRangeType());
+		assertEquals(0, dateFilter.getNextCount());
 	}
 
 	public void testGetSynchronizationFilterTimeStampInTheFuture() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		Set<ITask> tasks = new HashSet<ITask>();
-		tasks.add(new JiraTask(JiraTestConstants.JIRA_39_URL, "1", ""));
-
+		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "1");
 		Date now = new Date();
 		String future = JiraUtil.dateToString(addSecondsToDate(now, 20));
+		SynchronizationSession session = createSession(task);
+
 		repository.setSynchronizationTimeStamp(future);
-		fail(); // FIXME
-//		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, now);
-//		assertNull(filter);
-//		assertEquals("Expected unchanged timestamp", future, repository.getSynchronizationTimeStamp());
-//
-//		SynchronizationSession event = new SynchronizationSession();
-//		event.setTasks(tasks);
-//		event.setTaskRepository(repository);
-//		event.setFullSynchronization(true);
-//		connector.preSynchronization(event, null);
-//		assertTrue(event.needsPerformQueries());
-//		assertNotNull(repository.getSynchronizationTimeStamp());
-//		assertTrue("Expected updated timestamp", !future.equals(repository.getSynchronizationTimeStamp()));
+		FilterDefinition filter = connector.getSynchronizationFilter(session, now);
+		assertNull(filter);
+		assertEquals("Expected unchanged timestamp", future, repository.getSynchronizationTimeStamp());
+
+		connector.preSynchronization(session, null);
+		assertTrue(session.needsPerformQueries());
+		assertNotNull(repository.getSynchronizationTimeStamp());
+		assertTrue("Expected updated timestamp", !future.equals(repository.getSynchronizationTimeStamp()));
 	}
 
 	public void testGetSynchronizationFilterTimeStampInTheFutureWithTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
 		Date now = new Date();
-		HashSet<ITask> tasks = new HashSet<ITask>();
-		JiraTask task = new JiraTask(repository.getRepositoryUrl(), "1", "");
-		task.setLastReadTimeStamp(JiraUtil.dateToString(now));
-		tasks.add(task);
+		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "1");
+		task.setModificationDate(now);
 
+		SynchronizationSession session = createSession(task);
 		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(new Date(), 121)));
-		fail(); // FIXME
-//		FilterDefinition filter = connector.getSynchronizationFilter(repository, tasks, now);
-//		assertNotNull(filter);
-//		assertTrue(filter.getUpdatedDateFilter() instanceof DateRangeFilter);
-//		DateRangeFilter dateFilter = (DateRangeFilter) filter.getUpdatedDateFilter();
-//		assertEquals(JiraUtil.stringToDate(task.getLastReadTimeStamp()), dateFilter.getFromDate());
-//		assertEquals(null, dateFilter.getToDate());
+		FilterDefinition filter = connector.getSynchronizationFilter(session, now);
+		assertNotNull(filter);
+		assertTrue(filter.getUpdatedDateFilter() instanceof DateRangeFilter);
+		DateRangeFilter dateFilter = (DateRangeFilter) filter.getUpdatedDateFilter();
+		assertEquals(task.getModificationDate(), dateFilter.getFromDate());
+		assertEquals(null, dateFilter.getToDate());
 	}
 
 	public void testCreateTask() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testCreateTask");
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testCreateTask");
 
-		ITask task = TasksUiInternal.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertEquals("testCreateTask", task.getSummary());
 		assertEquals(null, task.getCompletionDate());
 		assertFalse(task.isCompleted());
@@ -408,7 +341,7 @@ public class JiraLegacyRepositoryConnectorTest extends TestCase {
 		client.advanceIssueWorkflow(issue, "2", "", null);
 
 		issue = client.getIssueByKey(issue.getKey(), null);
-		task = TasksUiInternal.createTask(repository, issue.getKey(), new NullProgressMonitor());
+		task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertTrue(task.isCompleted());
 		assertEquals(issue.getUpdated(), task.getCompletionDate());
 		assertEquals(issue.getCreated(), task.getCreationDate());

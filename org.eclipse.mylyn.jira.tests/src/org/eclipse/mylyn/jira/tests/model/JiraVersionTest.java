@@ -9,7 +9,9 @@
  *     University Of British Columbia - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.core.model;
+package org.eclipse.mylyn.jira.tests.model;
+
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 
 import junit.framework.TestCase;
 

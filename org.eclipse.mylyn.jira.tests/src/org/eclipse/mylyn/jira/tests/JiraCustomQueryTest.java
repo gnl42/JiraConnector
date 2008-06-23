@@ -35,6 +35,9 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
 import org.eclipse.mylyn.internal.jira.core.util.FilterDefinitionConverter;
+import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
+import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
+import org.eclipse.mylyn.jira.tests.util.MockJiraClient;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
@@ -131,7 +134,7 @@ public class JiraCustomQueryTest extends TestCase {
 
 		TaskRepository taskRepository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl);
 		taskRepository.setCharacterEncoding("ASCII");
-		IRepositoryQuery customQuery = JiraTestUtils.createQuery(taskRepository, filter);
+		IRepositoryQuery customQuery = JiraTestUtil.createQuery(taskRepository, filter);
 		String queryUrl = customQuery.getUrl();
 
 		MockJiraClient client = new MockJiraClient("");

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.eclipse.mylyn.jira.tests;
+package org.eclipse.mylyn.jira.tests.util;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -60,7 +60,7 @@ public class MockJiraClient extends JiraClient {
 
 	public static Project createProject() {
 		Project project = new Project();
-		project.setId(JiraTestUtils.PROJECT1);
+		project.setId(JiraTestUtil.PROJECT1);
 		project.setKey("PRONE");
 		project.setName("Prone");
 

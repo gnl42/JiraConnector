@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.jira.tests;
+package org.eclipse.mylyn.jira.tests.util;
 
 import org.eclipse.mylyn.internal.jira.core.IJiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;

@@ -11,10 +11,10 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
-import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUiTest;
-import org.eclipse.mylyn.internal.jira.ui.JiraTimeFormatTest;
-import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
+import org.eclipse.mylyn.jira.tests.client.JiraClientTest;
+import org.eclipse.mylyn.jira.tests.client.JiraWebClientTest;
+import org.eclipse.mylyn.jira.tests.ui.JiraConnectorUiTest;
+import org.eclipse.mylyn.jira.tests.ui.JiraTimeFormatTest;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -24,21 +24,17 @@ public class AllJiraTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for mylyn.jira.tests");
-
-		JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new TaskRepositoryLocationFactory(), true);
-
 		// $JUnit-BEGIN$
 		suite.addTestSuite(JiraTimeFormatTest.class);
 		suite.addTestSuite(JiraCustomQueryTest.class);
 		suite.addTestSuite(JiraClientFacadeTest.class);
 		suite.addTestSuite(JiraTaskExternalizationTest.class);
 		suite.addTestSuite(JiraFilterTest.class);
-		suite.addTestSuite(JiraTaskArchiveTest.class);
-		suite.addTestSuite(JiraLegacyRepositoryConnectorTest.class);
+		suite.addTestSuite(JiraRepositoryConnectorTest.class);
 		suite.addTestSuite(JiraClientTest.class);
 		suite.addTestSuite(JiraWebClientTest.class);
-		suite.addTestSuite(JiraLegacyAttachmentHandlerTest.class);
-		suite.addTestSuite(JiraLegacyTaskDataHandlerTest.class);
+		suite.addTestSuite(JiraTaskAttachmentHandlerTest.class);
+		suite.addTestSuite(JiraTaskDataHandlerTest.class);
 		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
 		suite.addTestSuite(JiraConnectorUiTest.class);
 		// $JUnit-END$

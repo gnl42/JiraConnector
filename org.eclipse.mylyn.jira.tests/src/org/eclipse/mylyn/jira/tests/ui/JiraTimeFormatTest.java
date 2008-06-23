@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.jira.tests.ui;
 
 import junit.framework.TestCase;
 

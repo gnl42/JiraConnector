@@ -16,9 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -52,8 +50,6 @@ public class JiraClientManager {
 
 	private final Map<String, JiraClientData> clientDataByUrl = new HashMap<String, JiraClientData>();
 
-	private final List<JiraClientListener> listeners = new ArrayList<JiraClientListener>();
-
 	public JiraClientManager(File cacheLocation) {
 		this.cacheLocation = cacheLocation;
 	}
@@ -65,8 +61,8 @@ public class JiraClientManager {
 		File file = new File(cacheLocation, CONFIGURATION_DATA_FILENAME);
 		if (!file.exists()) {
 			// clean up legacy data
-			File[] servers = this.cacheLocation.listFiles();
-			for (File directory : servers) {
+			File[] clients = this.cacheLocation.listFiles();
+			for (File directory : clients) {
 				File oldData = new File(directory, "server.ser");
 				if (oldData.exists()) {
 					oldData.delete();
@@ -101,7 +97,7 @@ public class JiraClientManager {
 	protected void stop() {
 		File file = new File(cacheLocation, CONFIGURATION_DATA_FILENAME);
 
-		// update data map from servers
+		// update data map from clients
 		for (String url : clientByUrl.keySet()) {
 			clientDataByUrl.put(url, clientByUrl.get(url).getCache().getData());
 		}
@@ -163,58 +159,37 @@ public class JiraClientManager {
 //		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 //			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 //		}
-
-		JiraClient clienht = new JiraClient(location, useCompression);
-		return clienht;
+		return new JiraClient(location, useCompression);
 	}
 
 	public JiraClient addClient(AbstractWebLocation location, String characterEncoding, boolean useCompression) {
 		if (clientByUrl.containsKey(location.getUrl())) {
-			throw new RuntimeException("A server with that name already exists");
+			throw new RuntimeException("A client with that name already exists");
 		}
 
-		JiraClient server = createClient(location, useCompression);
-		server.setCharacterEncoding(characterEncoding);
+		JiraClient client = createClient(location, useCompression);
+		client.setCharacterEncoding(characterEncoding);
 		JiraClientData data = clientDataByUrl.get(location.getUrl());
 		if (data != null) {
-			server.getCache().setData(data);
+			client.getCache().setData(data);
 		}
-		clientByUrl.put(location.getUrl(), server);
+		clientByUrl.put(location.getUrl(), client);
 
-		fireClientAddded(server);
-
-		return server;
+		return client;
 	}
 
 	public void refreshClient() {
 
 	}
 
-	public void removeClient(JiraClient server) {
-		clientDataByUrl.remove(server.getBaseUrl());
-		clientByUrl.remove(server.getBaseUrl());
-
-		fireClientRemoved(server);
-	}
-
-	public void addClientListener(JiraClientListener listener) {
-		listeners.add(listener);
-	}
-
-	public void removeClientListener(JiraClientListener listener) {
-		listeners.remove(listener);
-	}
-
-	private void fireClientRemoved(JiraClient server) {
-		for (JiraClientListener listener : listeners) {
-			listener.clientRemoved(server);
+	public void removeClient(JiraClient client, boolean clearData) {
+		// TODO trigger logout?
+		if (clearData) {
+			clientDataByUrl.remove(client.getBaseUrl());
+		} else {
+			clientDataByUrl.put(client.getBaseUrl(), client.getCache().getData());
 		}
-	}
-
-	private void fireClientAddded(JiraClient server) {
-		for (JiraClientListener listener : listeners) {
-			listener.clientAdded(server);
-		}
+		clientByUrl.remove(client.getBaseUrl());
 	}
 
 	public void removeAllClients(boolean clearData) {

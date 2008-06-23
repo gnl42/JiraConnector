@@ -11,10 +11,6 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
-import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.context.tests.support.TestUtil;
-import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
@@ -27,13 +23,19 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.tasks.core.ITaskList;
 import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.mylyn.jira.tests.util.LegacyResultCollector;
+import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
+import org.eclipse.mylyn.jira.tests.util.JiraTestResultCollector;
+import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -46,43 +48,19 @@ public class JiraFilterTest extends TestCase {
 
 	private JiraRepositoryConnector connector;
 
-	private ITaskList taskList;
-
 	@Override
 	protected void setUp() throws Exception {
-		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		JiraClientFactory.getDefault().clearClients();
-
-		taskList = TasksUiPlugin.getTaskList();
-
-		connector = (JiraRepositoryConnector) TasksUiPlugin.getRepositoryManager().getRepositoryConnector(
-				JiraCorePlugin.CONNECTOR_KIND);
-
-		repository = null;
+		JiraTestUtil.setUp();
+		connector = (JiraRepositoryConnector) TasksUi.getRepositoryConnector(JiraCorePlugin.CONNECTOR_KIND);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		if (repository != null) {
-			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-			JiraTestUtils.cleanup(client);
-		}
+		JiraTestUtil.tearDown();
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
-		Credentials credentials = TestUtil.readCredentials(level);
-
-		if (repository != null) {
-			TasksUiPlugin.getRepositoryManager().removeRepository(repository,
-					TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		}
-
-		repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, JiraTestConstants.JIRA_39_URL);
-		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
-				credentials.password), false);
-		repository.setCharacterEncoding(JiraClient.DEFAULT_CHARSET);
-
-		TasksUiPlugin.getRepositoryManager().addRepository(repository);
+		repository = JiraTestUtil.init(url, level);
 	}
 
 	public void testJiraFilterRefresh() throws Exception {
@@ -93,9 +71,9 @@ public class JiraFilterTest extends TestCase {
 		init(url, PrivilegeLevel.USER);
 
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		JiraIssue issue = JiraTestUtils.newIssue(client, "testFilterRefresh");
+		JiraIssue issue = JiraTestUtil.newIssue(client, "testFilterRefresh");
 		issue.setAssignee(client.getUserName());
-		JiraTestUtils.createIssue(client, issue);
+		JiraTestUtil.createIssue(client, issue);
 
 		NamedFilter[] filters = client.getNamedFilters(null);
 		assertTrue(filters.length > 1);
@@ -103,14 +81,13 @@ public class JiraFilterTest extends TestCase {
 		NamedFilter filter = filters[1];
 		assertEquals("My Issues", filter.getName());
 
-		RepositoryQuery query = (RepositoryQuery) JiraTestUtils.createQuery(repository, filter);
-		taskList.addQuery(query);
+		RepositoryQuery query = (RepositoryQuery) JiraTestUtil.createQuery(repository, filter);
+		TasksUiPlugin.getTaskList().addQuery(query);
 		assertTrue(query.getChildren().size() == 0);
 
 		TasksUiInternal.synchronizeQuery(connector, query, null, false);
-
 		assertTrue(query.getChildren().size() > 0);
-		JiraTask hit = (JiraTask) query.getChildren().iterator().next();
+		ITask hit = query.getChildren().iterator().next();
 		assertTrue(hit.getSummary().length() > 0);
 	}
 
@@ -123,19 +100,21 @@ public class JiraFilterTest extends TestCase {
 
 		String summary = "testCustomQuery" + System.currentTimeMillis();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		JiraIssue issue = JiraTestUtils.newIssue(client, summary);
+		JiraIssue issue = JiraTestUtil.newIssue(client, summary);
 		issue.setPriority(client.getCache().getPriorityById(Priority.BLOCKER_ID));
-		issue = JiraTestUtils.createIssue(client, issue);
+		issue = JiraTestUtil.createIssue(client, issue);
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
-		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
+		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
 
-		LegacyResultCollector hitCollector = new LegacyResultCollector();
+		JiraTestResultCollector hitCollector = new JiraTestResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(1, hitCollector.results.size());
-		assertEquals(issue.getSummary(), hitCollector.results.iterator().next().getSummary());
-		//assertEquals(PriorityLevel.P1.toString(), hitCollector.getTaskDataHits().iterator().next().getPriority());
+		TaskData hit = hitCollector.results.iterator().next();
+		ITaskMapping mapping = connector.getTaskMapping(hit);
+		assertEquals(issue.getSummary(), mapping.getSummary());
+		assertEquals(PriorityLevel.P1, mapping.getPriorityLevel());
 	}
 
 	public void testCustomQueryWithoutRepositoryConfiguraton() throws Exception {
@@ -147,75 +126,31 @@ public class JiraFilterTest extends TestCase {
 
 		String summary = "testCustomQueryWithoutRepositoryConfiguraton" + System.currentTimeMillis();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-		JiraTestUtils.createIssue(client, summary + " 1");
+		JiraTestUtil.createIssue(client, summary + " 1");
 
-		JiraIssue issue2 = JiraTestUtils.newIssue(client, summary + " 2");
+		JiraIssue issue2 = JiraTestUtil.newIssue(client, summary + " 2");
 		assertTrue(issue2.getProject().getComponents().length > 0);
 		issue2.setComponents(issue2.getProject().getComponents());
-		JiraTestUtils.createIssue(client, issue2);
+		JiraTestUtil.createIssue(client, issue2);
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setProjectFilter(new ProjectFilter(issue2.getProject()));
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
 
-		IRepositoryQuery query = JiraTestUtils.createQuery(repository, filter);
-		LegacyResultCollector hitCollector = new LegacyResultCollector();
+		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
+		JiraTestResultCollector hitCollector = new JiraTestResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(1, hitCollector.results.size());
-		assertEquals(issue2.getSummary(), hitCollector.results.iterator().next().getSummary());
+		ITaskMapping taskMapping = connector.getTaskMapping(hitCollector.results.iterator().next());
+		assertEquals(issue2.getSummary(), taskMapping.getSummary());
 
-		hitCollector = new LegacyResultCollector();
+		hitCollector = new JiraTestResultCollector();
 		JiraClientFactory.getDefault().clearClientsAndConfigurationData();
 		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
 		assertEquals(1, hitCollector.results.size());
-		assertEquals(issue2.getSummary(), hitCollector.results.iterator().next().getSummary());
+		taskMapping = connector.getTaskMapping(hitCollector.results.iterator().next());
+		assertEquals(issue2.getSummary(), taskMapping.getSummary());
 	}
 
-//	private class MockQueryHitCollector extends QueryHitCollector {
-//
-//		public List<AbstractQueryHit> results = new ArrayList<AbstractQueryHit>();
-//
-//		private MockQueryHitCollector(TaskList tasklist) {
-//			super(tasklist);
-//		}
-//
-//		@Override
-//		public void addMatch(AbstractQueryHit hit) {
-//			results.add(hit);
-//		}
-//	}
-
-	// TODO: reneable
-// public void testJiraTaskRegistryIntegration() {
-// TaskList taskList = MylynTaskListPlugin.getTaskListManager().getTaskList();
-// AbstractRepositoryConnector client =
-// MylynTaskListPlugin.getRepositoryManager().getRepositoryConnector(
-// JiraUiPlugin.REPOSITORY_KIND);
-// assertNotNull(client);
-// assertEquals(""+taskList.getArchiveContainer().getChildren(), 0,
-// taskList.getArchiveContainer().getChildren().size());
-// JiraServer server = jiraFacade.getJiraServer(repository);
-// NamedFilter[] namedFilters = server.getNamedFilters();
-// JiraRepositoryQuery filter = new JiraRepositoryQuery(repository.getUrl(),
-// namedFilters[0], MylynTaskListPlugin.getTaskListManager().getTaskList());
-//		
-// connector.synchronize(filter, null);
-// // filter.refreshHits();
-// // MylynTaskListPlugin.getTaskListManager().addQuery(filter);
-// Job job = connector.synchronize(filter, null);
-// while (job.getResult() == null) {
-// // while (filter.isRefreshing()) {
-// try {
-// Thread.sleep(500);
-// } catch (InterruptedException e) {
-// e.printStackTrace();
-// }
-// }
-//
-// assertTrue(filter.getHits().size() > 0);
-// JiraQueryHit jHit = (JiraQueryHit) filter.getHits().iterator().next();
-//
-// assertNotNull(taskList.getTask(jHit.getHandleIdentifier()));
-// }
 }

@@ -6,13 +6,16 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.ui;
+package org.eclipse.mylyn.jira.tests.ui;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylyn.jira.tests.JiraTask;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi;
+import org.eclipse.mylyn.internal.tasks.core.TaskTask;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.tests.connector.MockRepositoryConnector;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 
 /**
  * @author Eugene Kuleshov
@@ -20,9 +23,15 @@ import org.eclipse.mylyn.tasks.tests.connector.MockRepositoryConnector;
  */
 public class JiraConnectorUiTest extends TestCase {
 
+	private JiraConnectorUi connectorUi;
+
+	@Override
+	protected void setUp() throws Exception {
+		connectorUi = (JiraConnectorUi) TasksUi.getRepositoryConnectorUi(JiraCorePlugin.CONNECTOR_KIND);
+	}
+
 	public void testFindHyperlinks() {
-		TaskRepository repository = new TaskRepository(MockRepositoryConnector.REPOSITORY_KIND, "http://u.net");
-		JiraConnectorUi connectorUi = new JiraConnectorUi();
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "http://u.net");
 		connectorUi.findHyperlinks(repository, "foo", -1, 0);
 		connectorUi.findHyperlinks(repository, "foo", 0, 0);
 		connectorUi.findHyperlinks(repository, "foo", 1, 0);
@@ -44,10 +53,8 @@ public class JiraConnectorUiTest extends TestCase {
 	}
 
 	public void testGetTaskHistoryUrl() {
-		TaskRepository repository = new TaskRepository(MockRepositoryConnector.REPOSITORY_KIND,
-				"http://mylyn.eclipse.org");
-		JiraConnectorUi connectorUi = new JiraConnectorUi();
-		JiraTask task = new JiraTask(repository.getRepositoryUrl(), "456", "");
+		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "http://mylyn.eclipse.org");
+		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "456");
 		task.setTaskKey("ABC-123");
 		assertEquals("http://mylyn.eclipse.org/browse/ABC-123?page=history", connectorUi.getTaskHistoryUrl(repository,
 				task));

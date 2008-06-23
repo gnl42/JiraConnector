@@ -42,7 +42,7 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 
 	private JiraClientFactory() {
 		this.taskRepositoryLocationFactory = new TaskRepositoryLocationFactory();
-		this.clientManager = JiraCorePlugin.getDefault().getServerManager();
+		this.clientManager = JiraCorePlugin.getDefault().getClientManager();
 	}
 
 	/* For testing. */
@@ -61,16 +61,16 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 	 * @see #validateConnection(String, String, String, Proxy, String, String)
 	 */
 	public synchronized JiraClient getJiraClient(TaskRepository repository) {
-		JiraClient server = clientManager.getClient(repository.getRepositoryUrl());
-		if (server == null) {
+		JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
+		if (client == null) {
 			AbstractWebLocation location = taskRepositoryLocationFactory.createWebLocation(repository);
 			String characterEncoding = null;
 			if (JiraUtil.getCharacterEncodingValidated(repository)) {
 				characterEncoding = repository.getCharacterEncoding();
 			}
-			server = clientManager.addClient(location, characterEncoding, JiraUtil.getCompression(repository));
+			client = clientManager.addClient(location, characterEncoding, JiraUtil.getCompression(repository));
 		}
-		return server;
+		return client;
 	}
 
 	public synchronized static JiraClientFactory getDefault() {
@@ -104,25 +104,19 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
 		if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
-			JiraClient server = clientManager.getClient(repository.getRepositoryUrl());
-			removeServer(server);
+			JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
+			if (client != null) {
+				clientManager.removeClient(client, true);
+			}
 		}
 	}
 
 	public synchronized void repositorySettingsChanged(TaskRepository repository) {
-		repositoryRemoved(repository);
-		repositoryAdded(repository);
-	}
-
-	private synchronized void removeServer(JiraClient server) {
-		if (server != null) {
-			// FIXME run this in a job
-//			try {
-//				server.logout(null);
-//			} catch (JiraException e) {
-//				// ignore
-//			}
-			clientManager.removeClient(server);
+		if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
+			JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
+			if (client != null) {
+				clientManager.removeClient(client, false);
+			}
 		}
 	}
 

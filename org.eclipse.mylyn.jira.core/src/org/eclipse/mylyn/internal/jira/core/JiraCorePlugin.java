@@ -34,7 +34,7 @@ public class JiraCorePlugin extends Plugin {
 
 	private static JiraCorePlugin plugin;
 
-	private JiraClientManager serverManager;
+	private JiraClientManager clientManager;
 
 	public final static String CONNECTOR_KIND = "jira";
 
@@ -64,8 +64,8 @@ public class JiraCorePlugin extends Plugin {
 		Logger logger = Logger.getLogger("org.apache.axis.utils.JavaUtils");
 		logger.setLevel(Level.SEVERE);
 
-		serverManager = new JiraClientManager(serverCache);
-		serverManager.start();
+		clientManager = new JiraClientManager(serverCache);
+		clientManager.start();
 	}
 
 	/**
@@ -75,11 +75,11 @@ public class JiraCorePlugin extends Plugin {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 
-		if (serverManager != null) {
-			serverManager.stop();
+		if (clientManager != null) {
+			clientManager.stop();
 		}
 		plugin = null;
-		serverManager = null;
+		clientManager = null;
 	}
 
 	/**
@@ -89,8 +89,8 @@ public class JiraCorePlugin extends Plugin {
 		return plugin;
 	}
 
-	public JiraClientManager getServerManager() {
-		return serverManager;
+	public JiraClientManager getClientManager() {
+		return clientManager;
 	}
 
 	public static void log(int severity, String message, Throwable e) {

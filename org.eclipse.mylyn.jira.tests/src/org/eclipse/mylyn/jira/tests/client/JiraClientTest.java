@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.jira.tests;
+package org.eclipse.mylyn.jira.tests.client;
 
 import java.io.File;
 import java.util.HashSet;
@@ -33,6 +33,9 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
+import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
+import org.eclipse.mylyn.jira.tests.util.MockIssueCollector;
 
 /**
  * @author Steffen Pingel
@@ -44,16 +47,14 @@ public class JiraClientTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		if (client != null) {
-			JiraTestUtils.cleanup(client);
-		}
+		JiraTestUtil.tearDown();
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
 		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password), false);
 
-		JiraTestUtils.refreshDetails(client);
+		JiraTestUtil.refreshDetails(client);
 	}
 
 	public void testLogin381() throws Exception {
@@ -79,9 +80,9 @@ public class JiraClientTest extends TestCase {
 	private void startStopIssue(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testStartStopIssue");
 
-		String startOperation = JiraTestUtils.getOperation(client, issue.getKey(), "start");
+		String startOperation = JiraTestUtil.getOperation(client, issue.getKey(), "start");
 
 		client.advanceIssueWorkflow(issue, startOperation, null, null);
 		try {
@@ -91,7 +92,7 @@ public class JiraClientTest extends TestCase {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
 
-		String stopOperation = JiraTestUtils.getOperation(client, issue.getKey(), "stop");
+		String stopOperation = JiraTestUtil.getOperation(client, issue.getKey(), "stop");
 
 		client.advanceIssueWorkflow(issue, stopOperation, null, null);
 		try {
@@ -110,13 +111,13 @@ public class JiraClientTest extends TestCase {
 	private void resolveCloseReopenIssue(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Resolution resolution = JiraTestUtils.getFixedResolution(client);
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testStartStopIssue");
+		Resolution resolution = JiraTestUtil.getFixedResolution(client);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testStartStopIssue");
 
 		issue.setResolution(resolution);
 		issue.setFixVersions(new Version[0]);
 
-		String resolveOperation = JiraTestUtils.getOperation(client, issue.getKey(), "resolve");
+		String resolveOperation = JiraTestUtil.getOperation(client, issue.getKey(), "resolve");
 
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
@@ -131,7 +132,7 @@ public class JiraClientTest extends TestCase {
 		}
 
 		// have to get "close" operation after resolving issue
-		String closeOperation = JiraTestUtils.getOperation(client, issue.getKey(), "close");
+		String closeOperation = JiraTestUtil.getOperation(client, issue.getKey(), "close");
 
 		client.advanceIssueWorkflow(issue, closeOperation, "comment", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
@@ -151,7 +152,7 @@ public class JiraClientTest extends TestCase {
 			assertEquals("Workflow Action Invalid", e.getMessage());
 		}
 
-		String reopenOperation = JiraTestUtils.getOperation(client, issue.getKey(), "reopen");
+		String reopenOperation = JiraTestUtil.getOperation(client, issue.getKey(), "reopen");
 
 		client.advanceIssueWorkflow(issue, reopenOperation, "comment", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
@@ -165,7 +166,7 @@ public class JiraClientTest extends TestCase {
 	private void getIdFromKey(String url) throws Exception {
 		init(url, PrivilegeLevel.GUEST);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "getIdFromKey");
+		JiraIssue issue = JiraTestUtil.createIssue(client, "getIdFromKey");
 
 		String key = client.getKeyFromId(issue.getId(), null);
 		assertEquals(issue.getKey(), key);
@@ -191,7 +192,7 @@ public class JiraClientTest extends TestCase {
 	private void reassign(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testReassign");
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testReassign");
 
 		issue.setAssignee("nonexistantuser");
 		try {
@@ -257,7 +258,7 @@ public class JiraClientTest extends TestCase {
 	private void addComment(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testAddComment");
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testAddComment");
 
 		client.addCommentToIssue(issue, "comment 1", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
@@ -293,7 +294,7 @@ public class JiraClientTest extends TestCase {
 		File file = File.createTempFile("mylyn", null);
 		file.deleteOnExit();
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testAttachFile");
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testAttachFile");
 
 		// test attaching an empty file
 		try {
@@ -353,7 +354,7 @@ public class JiraClientTest extends TestCase {
 		issue.setSummary("testCreateIssue");
 		issue.setAssignee(client.getUserName());
 
-		JiraIssue createdIssue = JiraTestUtils.createIssue(client, issue);
+		JiraIssue createdIssue = JiraTestUtil.createIssue(client, issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
 		assertEquals(issue.getType(), createdIssue.getType());
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
@@ -365,7 +366,7 @@ public class JiraClientTest extends TestCase {
 
 		init(url, PrivilegeLevel.GUEST);
 
-		createdIssue = JiraTestUtils.createIssue(client, issue);
+		createdIssue = JiraTestUtil.createIssue(client, issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
 		assertEquals(issue.getType(), createdIssue.getType());
 		assertEquals(issue.getSummary(), createdIssue.getSummary());
@@ -385,7 +386,7 @@ public class JiraClientTest extends TestCase {
 		issue.setType(client.getCache().getIssueTypes()[0]);
 		issue.setSummary("testCreateSubTaskParent");
 
-		JiraIssue parentIssue = JiraTestUtils.createIssue(client, issue);
+		JiraIssue parentIssue = JiraTestUtil.createIssue(client, issue);
 
 		issue = new JiraIssue();
 		issue.setProject(client.getCache().getProjects()[0]);
@@ -419,7 +420,7 @@ public class JiraClientTest extends TestCase {
 		issue.setDescription(description);
 		issue.setAssignee(client.getUserName());
 
-		issue = JiraTestUtils.createIssue(client, issue);
+		issue = JiraTestUtil.createIssue(client, issue);
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(description, issue.getDescription());
 		assertEquals(summary, issue.getSummary());
@@ -437,7 +438,7 @@ public class JiraClientTest extends TestCase {
 	public void testUpdateIssueCustomOperation() throws Exception {
 		JiraIssue issue = updateIssue(JiraTestConstants.JIRA_39_URL, "EDITABLEREPORTER");
 
-		String operation = JiraTestUtils.getOperation(client, issue.getKey(), "custom");
+		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "custom");
 		assertNotNull("Unable to find Custom workflow action", operation);
 
 		init(JiraTestConstants.JIRA_39_URL, PrivilegeLevel.USER);
@@ -447,7 +448,7 @@ public class JiraClientTest extends TestCase {
 	private JiraIssue updateIssue(String url, String projectKey) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		Project project = JiraTestUtils.getProject(client, projectKey);
+		Project project = JiraTestUtil.getProject(client, projectKey);
 
 		JiraIssue issue = new JiraIssue();
 		issue.setProject(project);
@@ -455,7 +456,7 @@ public class JiraClientTest extends TestCase {
 		issue.setSummary("testUpdateIssue");
 		issue.setAssignee(client.getUserName());
 
-		issue = JiraTestUtils.createIssue(client, issue);
+		issue = JiraTestUtil.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueChanged");
 		client.updateIssue(issue, "", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
@@ -472,7 +473,7 @@ public class JiraClientTest extends TestCase {
 		init(url, PrivilegeLevel.GUEST);
 
 		issue.setSummary("testUpdateIssueGuest");
-		issue = JiraTestUtils.createIssue(client, issue);
+		issue = JiraTestUtil.createIssue(client, issue);
 		issue.setSummary("testUpdateIssueGuestChanged");
 		try {
 			client.updateIssue(issue, "", null);
@@ -493,7 +494,7 @@ public class JiraClientTest extends TestCase {
 		String summary = "\u00C4\u00D6\u00DC\nnewline";
 		String description = "\"&\n\u00A9\\ ',><br/>&nbsp; ";
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, summary);
+		JiraIssue issue = JiraTestUtil.createIssue(client, summary);
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
@@ -515,7 +516,7 @@ public class JiraClientTest extends TestCase {
 		String summary = "line1\nline2";
 		String description = "\nline2\n\nline4\n";
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, summary);
+		JiraIssue issue = JiraTestUtil.createIssue(client, summary);
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
@@ -535,7 +536,7 @@ public class JiraClientTest extends TestCase {
 		String summary = "updateIssueWithLinkInDescriptoin";
 		String description = "Link:\n\nhttp://mylyn.eclipse.org/";
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, summary);
+		JiraIssue issue = JiraTestUtil.createIssue(client, summary);
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
@@ -554,7 +555,7 @@ public class JiraClientTest extends TestCase {
 		String summary = "<b>bold</b>";
 		String description = "<head>123\n<pre>line1\nline2\n\nline4</pre>  &nbsp;&lt;&gt; ";
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, summary);
+		JiraIssue issue = JiraTestUtil.createIssue(client, summary);
 		issue.setDescription(description);
 		assertEquals(summary, issue.getSummary());
 
@@ -571,7 +572,7 @@ public class JiraClientTest extends TestCase {
 	private void watchUnwatchIssue(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "testWatchUnwatch");
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testWatchUnwatch");
 
 		assertFalse(issue.isWatched());
 		client.watchIssue(issue, null);
@@ -638,7 +639,7 @@ public class JiraClientTest extends TestCase {
 	private void getEditableFields(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		JiraIssue issue = JiraTestUtils.createIssue(client, "getEditableFields");
+		JiraIssue issue = JiraTestUtil.createIssue(client, "getEditableFields");
 
 		JiraField[] fields = client.getEditableAttributes(issue.getKey(), null);
 		Set<String> ids = new HashSet<String>();

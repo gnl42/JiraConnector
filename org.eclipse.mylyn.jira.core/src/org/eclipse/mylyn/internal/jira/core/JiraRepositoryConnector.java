@@ -44,7 +44,6 @@ import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
-import org.eclipse.mylyn.tasks.core.data.AbstractTaskDataHandler;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
@@ -72,7 +71,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
 	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
 
-	private final JiraTaskDataHandler taskDataHandler2;
+	private final JiraTaskDataHandler taskDataHandler;
 
 	private final JiraTaskAttachmentHandler attachmentHandler;
 
@@ -84,7 +83,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public static final int RETURN_ALL_HITS = -1;
 
 	public JiraRepositoryConnector() {
-		taskDataHandler2 = new JiraTaskDataHandler(JiraClientFactory.getDefault());
+		taskDataHandler = new JiraTaskDataHandler(JiraClientFactory.getDefault());
 		attachmentHandler = new JiraTaskAttachmentHandler();
 	}
 
@@ -143,7 +142,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 							// ignore
 						}
 					}
-					TaskData taskData = taskDataHandler2.createTaskData(repository, client, issue, oldTaskData, monitor);
+					TaskData taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData, monitor);
 					resultCollector.accept(taskData);
 				}
 				return Status.OK_STATUS;
@@ -210,12 +209,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						// only load old task data from if necessary 
 						if (hasChanged(task, issue)) {
 							TaskData oldTaskData = null;
-							try {
-								oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
-							} catch (CoreException e) {
-								// ignore
+							if (session.getTaskDataManager() != null) {
+								try {
+									oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
+								} catch (CoreException e) {
+									// ignore
+								}
 							}
-							TaskData taskData = taskDataHandler2.createTaskData(repository, client, issue, oldTaskData,
+							TaskData taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData,
 									monitor);
 							session.putTaskData(task, taskData);
 						}
@@ -439,8 +440,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
-	public AbstractTaskDataHandler getTaskDataHandler() {
-		return taskDataHandler2;
+	public JiraTaskDataHandler getTaskDataHandler() {
+		return taskDataHandler;
 	}
 
 	@Override
@@ -466,7 +467,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
-		return taskDataHandler2.getTaskData(taskRepository, taskId, monitor);
+		return taskDataHandler.getTaskData(taskRepository, taskId, monitor);
 	}
 
 	@Override

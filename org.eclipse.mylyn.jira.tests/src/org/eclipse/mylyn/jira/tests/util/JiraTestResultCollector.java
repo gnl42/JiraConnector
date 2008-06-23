@@ -11,19 +11,18 @@ package org.eclipse.mylyn.jira.tests.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.mylyn.internal.tasks.core.deprecated.LegacyTaskDataCollector;
-import org.eclipse.mylyn.internal.tasks.core.deprecated.RepositoryTaskData;
+import org.eclipse.mylyn.tasks.core.data.TaskData;
+import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 
 /**
  * @author Steffen Pingel
  */
-@SuppressWarnings("deprecation")
-public class LegacyResultCollector extends LegacyTaskDataCollector {
+public class JiraTestResultCollector extends TaskDataCollector {
 
-	public List<RepositoryTaskData> results = new ArrayList<RepositoryTaskData>();
+	public List<TaskData> results = new ArrayList<TaskData>();
 
 	@Override
-	public void accept(RepositoryTaskData taskData) {
+	public void accept(TaskData taskData) {
 		results.add(taskData);
 	}
 

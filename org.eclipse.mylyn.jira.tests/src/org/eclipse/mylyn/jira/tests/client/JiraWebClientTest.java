@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.mylyn.jira.tests;
+package org.eclipse.mylyn.jira.tests.client;
 
 import junit.framework.TestCase;
 
@@ -18,7 +18,12 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebClient;
+import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
+import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 
+/**
+ * @author Steffen Pingel
+ */
 public class JiraWebClientTest extends TestCase {
 
 	private JiraWebClient webClient;
@@ -27,9 +32,7 @@ public class JiraWebClientTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		if (webClient != null) {
-			JiraTestUtils.cleanup(client);
-		}
+		JiraTestUtil.tearDown();
 	}
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
@@ -37,7 +40,7 @@ public class JiraWebClientTest extends TestCase {
 		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password), false);
 		webClient = new JiraWebClient(client);
 
-		JiraTestUtils.refreshDetails(client);
+		JiraTestUtil.refreshDetails(client);
 	}
 
 	public void testCreateIssue() throws Exception {

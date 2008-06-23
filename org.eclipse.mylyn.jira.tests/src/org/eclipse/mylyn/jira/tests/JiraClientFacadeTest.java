@@ -24,6 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 /**
@@ -37,10 +38,7 @@ public class JiraClientFacadeTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-
 		jiraFacade = JiraClientFactory.getDefault();
-
-		TasksUiPlugin.getTaskListManager().resetTaskList();
 	}
 
 	@Override

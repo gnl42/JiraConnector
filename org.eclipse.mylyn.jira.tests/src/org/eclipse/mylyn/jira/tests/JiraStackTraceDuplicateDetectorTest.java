@@ -14,77 +14,42 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
-import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.context.tests.support.TestUtil;
-import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
-import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
-import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
-import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
-import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.ui.JiraSearchHandler;
-import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.search.SearchHitCollector;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
+import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 
 /**
  * @author Eugene Kuleshov
+ * @author Steffen Pingel
  */
 public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 
 	private TaskRepository repository;
 
-	private TaskRepositoryManager manager;
-
-	private JiraRepositoryConnector connector;
-
-	private JiraTaskDataHandler dataHandler;
-
 	private JiraClient client;
 
 	@Override
 	protected void setUp() throws Exception {
-		super.setUp();
-
-		manager = TasksUiPlugin.getRepositoryManager();
-		manager.clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
-
-		JiraClientFactory.getDefault().clearClients();
+		JiraTestUtil.setUp();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		if (client != null) {
-			JiraTestUtils.cleanup(client);
-		}
+		JiraTestUtil.tearDown();
 	}
 
 	protected void init(String url) throws Exception {
-		String kind = JiraCorePlugin.CONNECTOR_KIND;
-
-		Credentials credentials = TestUtil.readCredentials(PrivilegeLevel.USER);
-		repository = new TaskRepository(kind, url);
-		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
-				credentials.password), false);
-
-		manager.addRepository(repository);
-
-		connector = (JiraRepositoryConnector) manager.getRepositoryConnector(kind);
-		assertEquals(connector.getConnectorKind(), kind);
-		dataHandler = (JiraTaskDataHandler) connector.getTaskDataHandler();
+		repository = JiraTestUtil.init(url);
 		client = JiraClientFactory.getDefault().getJiraClient(repository);
 	}
 
@@ -94,10 +59,9 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		StringWriter sw = new StringWriter();
 		new Exception().printStackTrace(new PrintWriter(sw));
 		String stackTrace = sw.toString();
-
-		JiraIssue issue1 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
+		JiraIssue issue1 = JiraTestUtil.newIssue(client, "testStackTraceDetector1");
 		issue1.setDescription(stackTrace);
-		issue1 = JiraTestUtils.createIssue(client, issue1);
+		issue1 = JiraTestUtil.createIssue(client, issue1);
 
 		verifyDuplicate(stackTrace, issue1);
 	}
@@ -108,36 +72,37 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		StringWriter sw = new StringWriter();
 		new Exception().printStackTrace(new PrintWriter(sw));
 		String stackTrace = sw.toString();
-
-		JiraIssue issue1 = JiraTestUtils.createIssue(client, "testStackTraceDetector2");
-
+		JiraIssue issue1 = JiraTestUtil.createIssue(client, "testStackTraceDetector2");
 		client.updateIssue(issue1, stackTrace, null);
 
 		verifyDuplicate(stackTrace, issue1);
 	}
 
-	private void verifyDuplicate(String stackTrace, JiraIssue issue) throws JiraException, CoreException {
-		ITask task1 = TasksUiInternal.createTask(repository, issue.getKey(), new NullProgressMonitor());
+	private void verifyDuplicate(String stackTrace, final JiraIssue issue) throws Exception {
+		ITask task1 = JiraTestUtil.createTask(repository, issue.getKey());
 		assertEquals(issue.getSummary(), task1.getSummary());
 		assertEquals(false, task1.isCompleted());
 		assertNull(task1.getDueDate());
 
-		JiraIssue issue2 = JiraTestUtils.newIssue(client, "testStackTraceDetector1");
+		JiraIssue issue2 = JiraTestUtil.newIssue(client, "testStackTraceDetector1");
 		issue2.setDescription(stackTrace);
 
-		TaskData data = new TaskData(dataHandler.getAttributeMapper(repository), repository.getConnectorKind(),
-				repository.getRepositoryUrl(), "");
-		dataHandler.initializeTaskData(repository, data, null, null);
-		data.getRoot().getMappedAttribute(JiraAttribute.DESCRIPTION.id()).setValue(stackTrace);
+//		TaskData data = new TaskData(dataHandler.getAttributeMapper(repository), repository.getConnectorKind(),
+//				repository.getRepositoryUrl(), "");
+//		dataHandler.initializeTaskData(repository, data, new TaskMapping() {
+//			@Override
+//			public String getProduct() {
+//				return issue.getProject().getId();
+//			}
+//		}, null);
+//		data.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue(stackTrace);
 
 		JiraSearchHandler detector = new JiraSearchHandler();
 		IRepositoryQuery duplicatesQuery = TasksUi.getRepositoryModel().createRepositoryQuery(repository);
-		assertTrue(detector.queryForText(repository, duplicatesQuery, data, stackTrace));
+		assertTrue(detector.queryForText(repository, duplicatesQuery, null, stackTrace));
 		SearchHitCollector collector = new SearchHitCollector(TasksUiInternal.getTaskList(), repository,
 				duplicatesQuery);
-
 		collector.run(new NullProgressMonitor());
-
 		Set<ITask> tasks = collector.getTasks();
 		assertTrue("Expected duplicated task " + issue.getId() + " : " + issue.getKey(), tasks.size() > 0);
 
