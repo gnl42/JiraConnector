@@ -171,7 +171,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			Date now = new Date();
 			TaskRepository repository = session.getTaskRepository();
-			FilterDefinition changedFilter = getSynchronizationFilter(session, repository, session.getTasks(), now);
+			FilterDefinition changedFilter = getSynchronizationFilter(session, now);
 			if (changedFilter == null) {
 				// could not determine last time, rerun queries
 				repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
@@ -251,13 +251,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	/* Public for testing. */
-	public FilterDefinition getSynchronizationFilter(ISynchronizationSession session, TaskRepository repository,
-			Set<ITask> tasks, Date now) {
+	public FilterDefinition getSynchronizationFilter(ISynchronizationSession session, Date now) {
+		Set<ITask> tasks = session.getTasks();
 		// there are no JIRA tasks in the task list, skip contacting the repository
 		if (tasks.isEmpty()) {
 			return null;
 		}
 
+		TaskRepository repository = session.getTaskRepository();
 		Date lastSyncDate = JiraUtil.stringToDate(repository.getSynchronizationTimeStamp());
 
 		// repository was never synchronized, update all tasks

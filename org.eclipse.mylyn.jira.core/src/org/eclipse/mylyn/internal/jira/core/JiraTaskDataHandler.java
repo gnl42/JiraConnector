@@ -92,7 +92,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final JiraVersion TASK_DATA_VERSION_2_0 = new JiraVersion("2.0");
 
-	private static final JiraVersion TASK_DATA_VERSION_CURRENT = new JiraVersion("2.1");
+	private static final JiraVersion TASK_DATA_VERSION_2_1 = new JiraVersion("2.1");
+
+	private static final JiraVersion TASK_DATA_VERSION_CURRENT = new JiraVersion("2.2");
 
 	private final IJiraClientFactory clientFactory;
 
@@ -434,6 +436,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		for (Attachment attachment : jiraIssue.getAttachments()) {
 			TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_ATTACHMENT + i);
 			TaskAttachmentMapper taskAttachment = TaskAttachmentMapper.createFrom(attribute);
+			taskAttachment.setAttachmentId(attachment.getId());
 			taskAttachment.setAuthor(data.getAttributeMapper().getTaskRepository().createPerson(attachment.getAuthor()));
 			taskAttachment.setFileName(attachment.getName());
 			if (CONTEXT_ATTACHEMENT_FILENAME.equals(attachment.getName())) {
@@ -1102,6 +1105,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					}
 				}
 				attribute.getMetaData().setType(getType(attribute));
+			}
+		}
+		if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_1)) {
+			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
+				if (TaskAttribute.TYPE_ATTACHMENT.equals(attribute.getMetaData().getType())) {
+					TaskAttribute attributeId = attribute.getAttribute(TaskAttribute.ATTACHMENT_ID);
+					if (attributeId != null) {
+						attribute.setValue(attributeId.getValue());
+					}
+				}
 			}
 		}
 		if (version.isSmallerOrEquals(TASK_DATA_VERSION_CURRENT)) {

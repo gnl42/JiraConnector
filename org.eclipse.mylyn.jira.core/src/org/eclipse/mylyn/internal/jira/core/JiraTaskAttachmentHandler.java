@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -85,6 +86,10 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 		try {
 			JiraIssue issue = client.getIssueByKey(task.getTaskKey(), monitor);
 			Attachment jiraAttachment = issue.getAttachmentById(attachmentId);
+			if (jiraAttachment == null) {
+				throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, "Attachment with id \""
+						+ attachmentId + "\" for JIRA issue \"" + task.getTaskKey() + "\" not found"));
+			}
 			client.getAttachment(issue, jiraAttachment, out, monitor);
 		} catch (JiraException e) {
 			throw new CoreException(JiraCorePlugin.toStatus(repository, e));
@@ -94,6 +99,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 	@Override
 	public InputStream getContent(TaskRepository repository, ITask task, TaskAttribute attachmentAttribute,
 			IProgressMonitor monitor) throws CoreException {
+		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Getting attachment", IProgressMonitor.UNKNOWN);
 			TaskAttachmentMapper attachment = TaskAttachmentMapper.createFrom(attachmentAttribute);
@@ -108,6 +114,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 	@Override
 	public void postContent(TaskRepository repository, ITask task, AbstractTaskAttachmentSource source, String comment,
 			TaskAttribute attachmentAttribute, IProgressMonitor monitor) throws CoreException {
+		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask("Sending attachment", IProgressMonitor.UNKNOWN);
 			String contentType = source.getContentType();
