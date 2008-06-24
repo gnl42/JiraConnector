@@ -22,6 +22,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.IJiraConstants;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -33,10 +34,6 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  * @author Steffen Pingel
  */
 public class JiraUtil {
-
-	private static final int DEFAULT_WORK_HOURS_PER_DAY = 24;
-
-	private static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
 
 	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated";
 
@@ -150,7 +147,7 @@ public class JiraUtil {
 	}
 
 	public static int getWorkHoursPerDay(TaskRepository repository) {
-		int value = getInteger(repository, WORK_HOURS_PER_DAY, DEFAULT_WORK_HOURS_PER_DAY);
+		int value = getInteger(repository, WORK_HOURS_PER_DAY, JiraTimeFormat.DEFAULT_WORK_HOURS_PER_DAY);
 		if (value < 1) {
 			return 1;
 		}
@@ -161,7 +158,7 @@ public class JiraUtil {
 	}
 
 	public static int getWorkDaysPerWeek(TaskRepository repository) {
-		int value = getInteger(repository, WORK_DAYS_PER_WEEK, DEFAULT_WORK_DAYS_PER_WEEK);
+		int value = getInteger(repository, WORK_DAYS_PER_WEEK, JiraTimeFormat.DEFAULT_WORK_DAYS_PER_WEEK);
 		if (value < 1) {
 			return 1;
 		}
@@ -237,6 +234,11 @@ public class JiraUtil {
 	public static boolean isFilterDefinition(IRepositoryQuery query) {
 		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
 		return customUrl != null && customUrl.length() > 0;
+	}
+
+	public static JiraTimeFormat getTimeFormat(TaskRepository taskRepository) {
+		return new JiraTimeFormat(JiraUtil.getWorkDaysPerWeek(taskRepository),
+				JiraUtil.getWorkHoursPerDay(taskRepository));
 	}
 
 }

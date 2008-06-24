@@ -8,7 +8,9 @@
 
 package org.eclipse.mylyn.internal.jira.core;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.mylyn.internal.jira.core.model.Component;
@@ -18,6 +20,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
@@ -32,6 +35,23 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 	public JiraAttributeMapper(TaskRepository taskRepository, JiraClient client) {
 		super(taskRepository);
 		this.client = client;
+	}
+
+	@Override
+	public String getValueLabel(TaskAttribute taskAttribute) {
+		if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
+			return JiraUtil.getTimeFormat(getTaskRepository()).format(getLongValue(taskAttribute));
+		}
+		return super.getValueLabel(taskAttribute);
+	}
+
+	@Override
+	public List<String> getValueLabels(TaskAttribute taskAttribute) {
+		if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
+			return Collections.singletonList(JiraUtil.getTimeFormat(getTaskRepository()).format(
+					getLongValue(taskAttribute)));
+		}
+		return super.getValueLabels(taskAttribute);
 	}
 
 	@Override

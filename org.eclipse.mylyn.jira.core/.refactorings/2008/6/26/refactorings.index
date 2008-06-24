@@ -3,3 +3,6 @@
 1214199376215	Inline local variable 'client'
 1214346668033	Extract method 'getInteger'
 1214347511501	Extract constant '_6'
+1214349991668	Move members
+1214351127948	Extract local variable 'value'
+1214351421401	Extract method 'isTimeSpanAttribute'

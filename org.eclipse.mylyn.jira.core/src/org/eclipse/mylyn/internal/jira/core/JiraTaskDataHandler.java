@@ -93,7 +93,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final JiraVersion TASK_DATA_VERSION_2_1 = new JiraVersion("2.1");
 
-	private static final JiraVersion TASK_DATA_VERSION_CURRENT = new JiraVersion("2.2");
+	private static final JiraVersion TASK_DATA_VERSION_2_2 = new JiraVersion("2.2");
+
+	private static final JiraVersion TASK_DATA_VERSION_CURRENT = new JiraVersion("3.0");
 
 	private final IJiraClientFactory clientFactory;
 
@@ -367,14 +369,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			removeAttribute(data, JiraAttribute.TYPE);
 		}
 
-		JiraTimeFormat timeFormat = new JiraTimeFormat();
 		if (jiraIssue.getActual() > 0) {
-			setAttributeValue(data, JiraAttribute.INITIAL_ESTIMATE, timeFormat.format(jiraIssue.getInitialEstimate()));
+			setAttributeValue(data, JiraAttribute.INITIAL_ESTIMATE, jiraIssue.getInitialEstimate() + "");
 		} else {
 			removeAttribute(data, JiraAttribute.INITIAL_ESTIMATE);
 		}
-		setAttributeValue(data, JiraAttribute.ESTIMATE, timeFormat.format(jiraIssue.getEstimate()));
-		setAttributeValue(data, JiraAttribute.ACTUAL, timeFormat.format(jiraIssue.getActual()));
+		setAttributeValue(data, JiraAttribute.ESTIMATE, jiraIssue.getEstimate() + "");
+		setAttributeValue(data, JiraAttribute.ACTUAL, jiraIssue.getActual() + "");
 
 		if (jiraIssue.getDue() != null) {
 			setAttributeValue(data, JiraAttribute.DUE_DATE, JiraUtil.dateToString(jiraIssue.getDue()));
@@ -932,14 +933,18 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		String estimate = getAttributeValue(taskData, JiraAttribute.ESTIMATE);
 		if (estimate != null) {
-			JiraTimeFormat timeFormat = new JiraTimeFormat();
-			issue.setEstimate(timeFormat.parse(estimate));
+			try {
+				issue.setEstimate(Long.parseLong(estimate));
+			} catch (NumberFormatException e) {
+			}
 		}
 
 		estimate = getAttributeValue(taskData, JiraAttribute.INITIAL_ESTIMATE);
 		if (estimate != null) {
-			JiraTimeFormat timeFormat = new JiraTimeFormat();
-			issue.setInitialEstimate(timeFormat.parse(estimate));
+			try {
+				issue.setInitialEstimate(Long.parseLong(estimate));
+			} catch (NumberFormatException e) {
+			}
 		}
 
 		issue.setProject(new Project(getAttributeValue(taskData, JiraAttribute.PROJECT)));
@@ -1111,6 +1116,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.getMetaData().setType(getType(attribute));
 			}
 		}
+		// bug 238070
 		if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_1)) {
 			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
 				if (TaskAttribute.TYPE_ATTACHMENT.equals(attribute.getMetaData().getType())) {
@@ -1121,9 +1127,31 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 			}
 		}
+		// store long values instead of formatted time spans
+		if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_2)) {
+			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
+				JiraTimeFormat format = new JiraTimeFormat();
+				if (isTimeSpanAttribute(attribute)) {
+					String value = attribute.getValue();
+					if (value.length() > 0) {
+						try {
+							Long.parseLong(value);
+						} catch (NumberFormatException e) {
+							attribute.setValue(String.valueOf(format.parse(value)));
+						}
+					}
+				}
+			}
+		}
 		if (version.isSmallerOrEquals(TASK_DATA_VERSION_CURRENT)) {
 			taskData.setVersion(TASK_DATA_VERSION_CURRENT.toString());
 		}
+	}
+
+	public static boolean isTimeSpanAttribute(TaskAttribute attribute) {
+		return JiraAttribute.INITIAL_ESTIMATE.id().equals(attribute.getId())
+				|| JiraAttribute.ESTIMATE.id().equals(attribute.getId())
+				|| JiraAttribute.ACTUAL.id().equals(attribute.getId());
 	}
 
 	private String getType(TaskAttribute taskAttribute) {

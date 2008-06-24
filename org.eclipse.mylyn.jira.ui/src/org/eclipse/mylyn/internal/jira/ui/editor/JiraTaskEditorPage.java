@@ -9,7 +9,11 @@
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
+import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 
 /**
@@ -19,6 +23,20 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
+	}
+
+	@Override
+	protected AttributeEditorFactory createAttributeEditorFactory() {
+		AttributeEditorFactory factory = new AttributeEditorFactory(getModel(), getTaskRepository()) {
+			@Override
+			public AbstractAttributeEditor createEditor(String type, TaskAttribute taskAttribute) {
+				if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
+					return new TimeSpanAttributeEditor(getModel(), taskAttribute);
+				}
+				return super.createEditor(type, taskAttribute);
+			}
+		};
+		return factory;
 	}
 
 }
