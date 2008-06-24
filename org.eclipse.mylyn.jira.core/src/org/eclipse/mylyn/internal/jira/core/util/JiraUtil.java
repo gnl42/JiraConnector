@@ -34,6 +34,10 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  */
 public class JiraUtil {
 
+	private static final int DEFAULT_WORK_HOURS_PER_DAY = 24;
+
+	private static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
+
 	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated";
 
 	private static final String COMPRESSION_KEY = "compression";
@@ -47,6 +51,12 @@ public class JiraUtil {
 	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration";
 
 	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate";
+
+	private static final String COMPLETED_BASED_ON_RESOLUTION = "jira.completedBasedOnResolution";
+
+	private static final String WORK_HOURS_PER_DAY = "jira.workHoursPerDay";
+
+	private static final String WORK_DAYS_PER_WEEK = "jira.workDaysPerWeek";
 
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general"));
 
@@ -79,6 +89,10 @@ public class JiraUtil {
 
 	public static boolean getCharacterEncodingValidated(TaskRepository taskRepository) {
 		return Boolean.parseBoolean(taskRepository.getProperty(CHARACTER_ENCODING_VALIDATED));
+	}
+
+	public static boolean getCompletedBasedOnResolution(TaskRepository taskRepository) {
+		return Boolean.parseBoolean(taskRepository.getProperty(COMPLETED_BASED_ON_RESOLUTION));
 	}
 
 	public static boolean getCompression(TaskRepository taskRepository) {
@@ -135,6 +149,40 @@ public class JiraUtil {
 		return JiraUtil.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
 	}
 
+	public static int getWorkHoursPerDay(TaskRepository repository) {
+		int value = getInteger(repository, WORK_HOURS_PER_DAY, DEFAULT_WORK_HOURS_PER_DAY);
+		if (value < 1) {
+			return 1;
+		}
+		if (value > 24) {
+			return 24;
+		}
+		return value;
+	}
+
+	public static int getWorkDaysPerWeek(TaskRepository repository) {
+		int value = getInteger(repository, WORK_DAYS_PER_WEEK, DEFAULT_WORK_DAYS_PER_WEEK);
+		if (value < 1) {
+			return 1;
+		}
+		if (value > 7) {
+			return 7;
+		}
+		return value;
+	}
+
+	private static int getInteger(TaskRepository repository, String key, int defaultValue) {
+		String value = repository.getProperty(key);
+		if (value != null) {
+			try {
+				return Integer.parseInt(value);
+			} catch (NumberFormatException e) {
+				// ignore
+			}
+		}
+		return defaultValue;
+	}
+
 	public static void setAutoRefreshConfiguration(TaskRepository repository, boolean autoRefreshConfiguration) {
 		repository.setProperty(REFRESH_CONFIGURATION_KEY, String.valueOf(autoRefreshConfiguration));
 	}
@@ -147,8 +195,20 @@ public class JiraUtil {
 		taskRepository.setProperty(COMPRESSION_KEY, String.valueOf(compression));
 	}
 
+	public static void setCompletedBasedOnResolution(TaskRepository taskRepository, boolean completion) {
+		taskRepository.setProperty(COMPLETED_BASED_ON_RESOLUTION, String.valueOf(completion));
+	}
+
 	public static void setLastUpdate(TaskRepository repository, Date date) {
 		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtil.dateToString(date));
+	}
+
+	public static void setWorkDaysPerWeek(TaskRepository repository, int workDaysPerWeek) {
+		repository.setProperty(WORK_DAYS_PER_WEEK, String.valueOf(workDaysPerWeek));
+	}
+
+	public static void setWorkingHoursPerDay(TaskRepository repository, int workHoursPerDay) {
+		repository.setProperty(WORK_HOURS_PER_DAY, String.valueOf(workHoursPerDay));
 	}
 
 	public static Date stringToDate(String dateString) {

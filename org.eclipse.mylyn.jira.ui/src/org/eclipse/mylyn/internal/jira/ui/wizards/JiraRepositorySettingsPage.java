@@ -65,6 +65,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private Button autoRefreshConfigurationButton;
 
+	private Button useResolutionButton;
+
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
 		super(TITLE, DESCRIPTION, taskRepository);
 		setNeedsProxy(true);
@@ -95,11 +97,21 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		}
 
 		Label label = new Label(parent, SWT.NONE);
-		label.setText("Automatically refresh attributes:");
+		label.setText("Refresh configuration:");
 		autoRefreshConfigurationButton = new Button(parent, SWT.CHECK | SWT.LEFT);
-		autoRefreshConfigurationButton.setToolTipText("If checked Mylyn will periodically update the the repository attributes. Note: This can cause a significant load on the repository if it has many projects.");
+		autoRefreshConfigurationButton.setText("Automatically");
+		autoRefreshConfigurationButton.setToolTipText("If checked the repository configuration will be periodically updated. Note: This can cause a significant load on the repository if it has many projects.");
 		if (repository != null) {
 			autoRefreshConfigurationButton.setSelection(JiraUtil.getAutoRefreshConfiguration(repository));
+		}
+
+		label = new Label(parent, SWT.NONE);
+		label.setText("Completed tasks:");
+		useResolutionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+		useResolutionButton.setText("Based on resolution");
+		useResolutionButton.setToolTipText("If checked an issue is considered completed if it has a resolution. Otherwise detection is based on the status of the issue.");
+		if (repository != null) {
+			useResolutionButton.setSelection(JiraUtil.getCompletedBasedOnResolution(repository));
 		}
 	}
 
@@ -125,6 +137,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		super.applyTo(repository);
 		JiraUtil.setCompression(repository, compressionButton.getSelection());
 		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
+		JiraUtil.setCompletedBasedOnResolution(repository, useResolutionButton.getSelection());
 		if (characterEncodingValidated) {
 			JiraUtil.setCharacterEncodingValidated(repository, true);
 		}

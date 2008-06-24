@@ -58,6 +58,10 @@ import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
+	private static final String ID_STATUS_RESOLVED = "5";
+
+	private static final String ID_STATUS_CLOSED = "6";
+
 	private static final String ERROR_REPOSITORY_CONFIGURATION = "The repository returned an unknown project. Please update the repository attributes.";
 
 	private static final int MAX_MARK_STALE_QUERY_HITS = 500;
@@ -372,17 +376,19 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public static boolean isCompleted(TaskData taskData) {
-		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.RESOLUTION.id());
-		return attribute != null && attribute.getValue().length() > 0;
-	}
-
-	public static boolean isCompleted(JiraIssue issue) {
-		return issue.getResolution() != null;
+		if (JiraUtil.getCompletedBasedOnResolution(taskData.getAttributeMapper().getTaskRepository())) {
+			TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.RESOLUTION.id());
+			return attribute != null && attribute.getValue().length() > 0;
+		} else {
+			TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id());
+			return attribute != null
+					&& (ID_STATUS_RESOLVED.equals(attribute.getValue()) || ID_STATUS_CLOSED.equals(attribute.getValue()));
+		}
 	}
 
 	public static boolean isClosed(JiraIssue issue) {
 		// TODO find a more robust way to determine if a status is closed
-		return issue.getStatus() != null && "6".equals(issue.getStatus().getId());
+		return issue.getStatus() != null && ID_STATUS_CLOSED.equals(issue.getStatus().getId());
 	}
 
 	static PriorityLevel getPriorityLevel(String priorityId) {
@@ -473,6 +479,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public void updateTaskFromTaskData(TaskRepository repository, ITask task, TaskData taskData) {
 		TaskMapper scheme = getTaskMapping(taskData);
 		scheme.applyTo(task);
+		task.setCompletionDate(scheme.getCompletionDate());
 	}
 
 	@Override

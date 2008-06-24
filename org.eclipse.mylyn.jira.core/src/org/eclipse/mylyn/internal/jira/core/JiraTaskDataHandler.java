@@ -325,7 +325,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		setAttributeValue(data, JiraAttribute.CREATION_DATE, JiraUtil.dateToString(jiraIssue.getCreated()));
 		setAttributeValue(data, JiraAttribute.SUMMARY, jiraIssue.getSummary());
 		setAttributeValue(data, JiraAttribute.DESCRIPTION, jiraIssue.getDescription());
-		setAttributeValue(data, JiraAttribute.STATUS, jiraIssue.getStatus().getName());
 		setAttributeValue(data, JiraAttribute.ISSUE_KEY, jiraIssue.getKey());
 		setAttributeValue(data, JiraAttribute.TASK_URL, jiraIssue.getUrl());
 		setAttributeValue(data, JiraAttribute.RESOLUTION, //
@@ -334,6 +333,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		setAttributeValue(data, JiraAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
 		setAttributeValue(data, JiraAttribute.USER_REPORTER, jiraIssue.getReporter());
 		setAttributeValue(data, JiraAttribute.PROJECT, jiraIssue.getProject().getId());
+
+		if (jiraIssue.getStatus() != null) {
+			TaskAttribute attribute = data.getRoot().getAttribute(JiraAttribute.STATUS.id());
+			attribute.putOption(jiraIssue.getStatus().getId(), jiraIssue.getStatus().getName());
+			attribute.setValue(jiraIssue.getStatus().getId());
+		}
 
 		if (jiraIssue.getPriority() != null) {
 			setAttributeValue(data, JiraAttribute.PRIORITY, jiraIssue.getPriority().getId());
