@@ -62,7 +62,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMetaData;
 import org.eclipse.mylyn.tasks.core.data.TaskCommentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
-import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskOperation;
 
 /**
@@ -197,7 +196,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			Priority priority = jiraPriorities[i];
 			priorities.putOption(priority.getId(), priority.getName());
 			if (i == (jiraPriorities.length / 2)) {
-				priorities.setValue(priority.getName());
+				priorities.setValue(priority.getId());
 			}
 		}
 
@@ -208,7 +207,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (!type.isSubTaskType()) {
 				types.putOption(type.getId(), type.getName());
 				if (i == 0) {
-					types.setValue(type.getName());
+					types.setValue(type.getId());
 				}
 			}
 		}
@@ -860,7 +859,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			Project project = client.getCache().getProjectById(projectAttribute.getValue());
 			initializeTaskData(taskData, client, project);
 
-			new TaskMapper(taskData).merge(new TaskMapper(parentTaskData));
+			new JiraTaskMapper(taskData).merge(new JiraTaskMapper(parentTaskData));
 			taskData.getRoot().getAttribute(JiraAttribute.PROJECT.id()).setValue(project.getId());
 			taskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue("");
 			taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).setValue("");

@@ -40,7 +40,6 @@ import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
@@ -386,7 +385,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return issue.getStatus() != null && "6".equals(issue.getStatus().getId());
 	}
 
-	private static PriorityLevel getPriorityLevel(String priorityId) {
+	static PriorityLevel getPriorityLevel(String priorityId) {
 		if (Priority.BLOCKER_ID.equals(priorityId)) {
 			return PriorityLevel.P1;
 		} else if (Priority.CRITICAL_ID.equals(priorityId)) {
@@ -446,7 +445,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public boolean hasTaskChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
-		TaskMapper scheme = getTaskMapper(taskData);
+		TaskMapper scheme = getTaskMapping(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 		Date localDate = task.getModificationDate();
 		if (repositoryDate != null && repositoryDate.equals(localDate)) {
@@ -472,7 +471,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateTaskFromTaskData(TaskRepository repository, ITask task, TaskData taskData) {
-		TaskMapper scheme = getTaskMapper(taskData);
+		TaskMapper scheme = getTaskMapping(taskData);
 		scheme.applyTo(task);
 	}
 
@@ -481,41 +480,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		return attachmentHandler;
 	}
 
-	public TaskMapper getTaskMapper(TaskData taskData) {
-		return new TaskMapper(taskData) {
-			@Override
-			public PriorityLevel getPriorityLevel() {
-				TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.PRIORITY.id());
-				if (attribute != null) {
-					return JiraRepositoryConnector.getPriorityLevel(attribute.getValue());
-				}
-				return PriorityLevel.getDefault();
-			}
-
-			@Override
-			public Date getCompletionDate() {
-				if (isCompleted(getTaskData())) {
-					return getModificationDate();
-				} else {
-					return null;
-				}
-			}
-
-			@Override
-			public void setCompletionDate(Date dateCompleted) {
-				// ignore
-			}
-
-			@Override
-			public void setProduct(String product) {
-				// ignore, set during task data initialization
-			}
-		};
-	}
-
 	@Override
-	public ITaskMapping getTaskMapping(TaskData taskData) {
-		return getTaskMapper(taskData);
+	public JiraTaskMapper getTaskMapping(TaskData taskData) {
+		return new JiraTaskMapper(taskData);
 	}
 
 	@Override
