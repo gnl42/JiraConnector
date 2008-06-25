@@ -525,7 +525,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 
 			if (TaskAttribute.COMMENT_NEW.equals(attribute.getId())
-					|| TaskAttribute.RESOLUTION.equals(attribute.getId())) {
+					|| TaskAttribute.RESOLUTION.equals(attribute.getId())
+					|| TaskAttribute.USER_ASSIGNED.equals(attribute.getId())) {
 				properties.setReadOnly(false);
 			} else {
 				// make attributes read-only if can't find editing options
