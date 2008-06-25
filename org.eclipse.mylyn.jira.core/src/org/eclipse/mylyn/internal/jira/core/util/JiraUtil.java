@@ -204,7 +204,7 @@ public class JiraUtil {
 		repository.setProperty(WORK_DAYS_PER_WEEK, String.valueOf(workDaysPerWeek));
 	}
 
-	public static void setWorkingHoursPerDay(TaskRepository repository, int workHoursPerDay) {
+	public static void setWorkHoursPerDay(TaskRepository repository, int workHoursPerDay) {
 		repository.setProperty(WORK_HOURS_PER_DAY, String.valueOf(workHoursPerDay));
 	}
 

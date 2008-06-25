@@ -6,3 +6,4 @@
 1214349991668	Move members
 1214351127948	Extract local variable 'value'
 1214351421401	Extract method 'isTimeSpanAttribute'
+1214353054192	Rename method 'setWorkingHoursPerDay'

@@ -21,10 +21,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
@@ -44,6 +47,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
 
 /**
  * Wizard page used to specify a JIRA repository address, username, and password.
@@ -66,6 +70,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	private Button autoRefreshConfigurationButton;
 
 	private Button useResolutionButton;
+
+	private Spinner workDaysPerWeekSpinner;
+
+	private Spinner workHoursPerDaySpinner;
 
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
 		super(TITLE, DESCRIPTION, taskRepository);
@@ -92,6 +100,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		Label compressionLabel = new Label(parent, SWT.NONE);
 		compressionLabel.setText("Compression:");
 		compressionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+		compressionButton.setText("Enabled");
 		if (repository != null) {
 			compressionButton.setSelection(JiraUtil.getCompression(repository));
 		}
@@ -113,6 +122,29 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		if (repository != null) {
 			useResolutionButton.setSelection(JiraUtil.getCompletedBasedOnResolution(repository));
 		}
+
+		label = new Label(parent, SWT.NONE);
+		label.setText("Time tracking:");
+
+		Composite timeTrackingComposite = new Composite(parent, SWT.NONE);
+		timeTrackingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+
+		workDaysPerWeekSpinner = new Spinner(timeTrackingComposite, SWT.BORDER | SWT.RIGHT);
+		workDaysPerWeekSpinner.setValues(JiraTimeFormat.DEFAULT_WORK_DAYS_PER_WEEK, 1, 7, 0, 1, 1);
+		if (repository != null) {
+			workDaysPerWeekSpinner.setSelection(JiraUtil.getWorkDaysPerWeek(repository));
+		}
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).applyTo(workDaysPerWeekSpinner);
+		label = new Label(timeTrackingComposite, SWT.NONE);
+		label.setText("working days per week");
+
+		workHoursPerDaySpinner = new Spinner(timeTrackingComposite, SWT.BORDER);
+		workHoursPerDaySpinner.setValues(JiraTimeFormat.DEFAULT_WORK_HOURS_PER_DAY, 1, 24, 0, 1, 1);
+		if (repository != null) {
+			workHoursPerDaySpinner.setSelection(JiraUtil.getWorkHoursPerDay(repository));
+		}
+		label = new Label(timeTrackingComposite, SWT.NONE);
+		label.setText("working hours per day");
 	}
 
 	@Override
@@ -138,6 +170,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		JiraUtil.setCompression(repository, compressionButton.getSelection());
 		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
 		JiraUtil.setCompletedBasedOnResolution(repository, useResolutionButton.getSelection());
+		JiraUtil.setWorkDaysPerWeek(repository, workDaysPerWeekSpinner.getSelection());
+		JiraUtil.setWorkHoursPerDay(repository, workHoursPerDaySpinner.getSelection());
 		if (characterEncodingValidated) {
 			JiraUtil.setCharacterEncodingValidated(repository, true);
 		}
