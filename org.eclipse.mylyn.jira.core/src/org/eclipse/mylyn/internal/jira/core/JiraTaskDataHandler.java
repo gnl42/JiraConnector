@@ -369,6 +369,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			removeAttribute(data, JiraAttribute.TYPE);
 		}
 
+		// if no time was logged initial estimate and estimate are the same value, only include estimate in this case
 		if (jiraIssue.getActual() > 0) {
 			setAttributeValue(data, JiraAttribute.INITIAL_ESTIMATE, jiraIssue.getInitialEstimate() + "");
 		} else {
