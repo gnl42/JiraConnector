@@ -1118,17 +1118,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				attribute.getMetaData().setType(getType(attribute));
 			}
 		}
-		// bug 238070
-		if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_1)) {
-			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
-				if (TaskAttribute.TYPE_ATTACHMENT.equals(attribute.getMetaData().getType())) {
-					TaskAttribute attributeId = attribute.getAttribute(TaskAttribute.ATTACHMENT_ID);
-					if (attributeId != null) {
-						attribute.setValue(attributeId.getValue());
-					}
-				}
-			}
-		}
+		// migration for v2.1 is now handled in the framework 
 		// store long values instead of formatted time spans
 		if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_2)) {
 			for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
