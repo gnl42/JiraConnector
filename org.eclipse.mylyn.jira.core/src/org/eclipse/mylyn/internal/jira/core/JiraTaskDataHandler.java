@@ -557,7 +557,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (oldTaskData != null && issue.getStatus() != null) {
 			TaskAttribute attribute = oldTaskData.getRoot().getMappedAttribute(TaskAttribute.STATUS);
 			if (attribute != null) {
-				return attribute.getValue().equals(issue.getStatus().getName());
+				return attribute.getValue().equals(issue.getStatus().getId());
 			}
 		}
 		return false;
