@@ -177,6 +177,38 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(2, collector.results.size());
 	}
 
+	public void testPerformQueryLimitNumberOfResults() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+
+		long currentTimeMillis = System.currentTimeMillis();
+		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
+		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
+		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
+		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
+		FilterDefinition filter = new FilterDefinition();
+		filter.setContentFilter(new ContentFilter("search " + currentTimeMillis, true, false, false, false));
+		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
+
+		try {
+			JiraUtil.setMaxSearchResults(repository, JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
+			JiraTestResultCollector collector = new JiraTestResultCollector();
+			connector.performQuery(repository, query, collector, null, null);
+			assertEquals(4, collector.results.size());
+
+			JiraUtil.setMaxSearchResults(repository, 2);
+			collector = new JiraTestResultCollector();
+			connector.performQuery(repository, query, collector, null, null);
+			assertEquals(2, collector.results.size());
+
+			JiraUtil.setMaxSearchResults(repository, -1);
+			collector = new JiraTestResultCollector();
+			connector.performQuery(repository, query, collector, null, null);
+			assertEquals(4, collector.results.size());
+		} finally {
+			JiraUtil.setMaxSearchResults(repository, JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
+		}
+	}
+
 	public void testMarkStaleNoTasks() throws Exception {
 		init(JiraTestConstants.JIRA_39_URL);
 
