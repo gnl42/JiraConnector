@@ -91,8 +91,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final JiraVersion TASK_DATA_VERSION_2_0 = new JiraVersion("2.0");
 
-	private static final JiraVersion TASK_DATA_VERSION_2_1 = new JiraVersion("2.1");
-
 	private static final JiraVersion TASK_DATA_VERSION_2_2 = new JiraVersion("2.2");
 
 	private static final JiraVersion TASK_DATA_VERSION_CURRENT = new JiraVersion("3.0");
@@ -314,7 +312,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					attribute.setValue(link.getIssueKey());
 				}
 
-				if (link.getOutwardDescription() != null) {
+				if (link.getInwardDescription() != null) {
 					attribute = data.getRoot().getMappedAttribute(JiraAttribute.LINKED_IDS.id());
 					if (attribute == null) {
 						attribute = createAttribute(data, JiraAttribute.LINKED_IDS);

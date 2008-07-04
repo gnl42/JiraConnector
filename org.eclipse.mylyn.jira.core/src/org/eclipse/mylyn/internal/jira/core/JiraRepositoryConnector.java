@@ -482,10 +482,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				relations.add(TaskRelation.subtask(taskId));
 			}
 		}
-		attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.id());
-		if (attribute != null) {
-			for (String taskId : attribute.getValues()) {
-				relations.add(TaskRelation.subtask(taskId));
+		if (JiraUtil.getLinkedTasksAsSubtasks(taskData.getAttributeMapper().getTaskRepository())) {
+			attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.id());
+			if (attribute != null) {
+				for (String taskId : attribute.getValues()) {
+					relations.add(TaskRelation.subtask(taskId));
+				}
 			}
 		}
 		return relations;

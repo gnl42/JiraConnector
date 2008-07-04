@@ -77,6 +77,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private Spinner maxSearchResultsSpinner;
 
+	private Button linkedTasksAsSubtasksButton;
+
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
 		super(TITLE, DESCRIPTION, taskRepository);
 		setNeedsProxy(true);
@@ -123,6 +125,15 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		useResolutionButton.setToolTipText("If checked an issue is considered completed if it has a resolution. Otherwise detection is based on the status of the issue.");
 		if (repository != null) {
 			useResolutionButton.setSelection(JiraUtil.getCompletedBasedOnResolution(repository));
+		}
+
+		label = new Label(parent, SWT.NONE);
+		label.setText("Subtasks:");
+		linkedTasksAsSubtasksButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+		linkedTasksAsSubtasksButton.setText("Show linked tasks");
+		linkedTasksAsSubtasksButton.setToolTipText("If checked linked tasks show as subtasks in the task list.");
+		if (repository != null) {
+			linkedTasksAsSubtasksButton.setSelection(JiraUtil.getLinkedTasksAsSubtasks(repository));
 		}
 
 		label = new Label(parent, SWT.NONE);
@@ -180,6 +191,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		JiraUtil.setCompression(repository, compressionButton.getSelection());
 		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
 		JiraUtil.setCompletedBasedOnResolution(repository, useResolutionButton.getSelection());
+		JiraUtil.setLinkedTasksAsSubtasks(repository, linkedTasksAsSubtasksButton.getSelection());
 		JiraUtil.setWorkDaysPerWeek(repository, workDaysPerWeekSpinner.getSelection());
 		JiraUtil.setWorkHoursPerDay(repository, workHoursPerDaySpinner.getSelection());
 		JiraUtil.setMaxSearchResults(repository, maxSearchResultsSpinner.getSelection());

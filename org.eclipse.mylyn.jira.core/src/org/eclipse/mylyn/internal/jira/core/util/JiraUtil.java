@@ -62,6 +62,8 @@ public class JiraUtil {
 
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general"));
 
+	private static final String LINKED_TASKS_AS_SUBTASKS = "jira.linkedTasksAsSubtasks";
+
 	public static String dateToString(Date date) {
 		if (date == null) {
 			return "";
@@ -101,16 +103,6 @@ public class JiraUtil {
 		return Boolean.parseBoolean(taskRepository.getProperty(COMPRESSION_KEY));
 	}
 
-	public static JiraFilter getQuery(TaskRepository taskRepository, JiraClient client, IRepositoryQuery query,
-			boolean validate) {
-		JiraFilter filter = getFilterDefinition(taskRepository, client, query, validate);
-		if (filter != null) {
-			return filter;
-		} else {
-			return getNamedFilter(query);
-		}
-	}
-
 	public static FilterDefinition getFilterDefinition(TaskRepository taskRepository, JiraClient client,
 			IRepositoryQuery query, boolean validate) {
 		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
@@ -119,6 +111,34 @@ public class JiraUtil {
 			return converter.toFilter(client, customUrl, validate);
 		}
 		return null;
+	}
+
+	private static int getInteger(TaskRepository repository, String key, int defaultValue) {
+		String value = repository.getProperty(key);
+		if (value != null) {
+			try {
+				return Integer.parseInt(value);
+			} catch (NumberFormatException e) {
+				// ignore
+			}
+		}
+		return defaultValue;
+	}
+
+	public static Date getLastUpdate(TaskRepository repository) {
+		return JiraUtil.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
+	}
+
+	public static boolean getLinkedTasksAsSubtasks(TaskRepository taskRepository) {
+		return Boolean.parseBoolean(taskRepository.getProperty(LINKED_TASKS_AS_SUBTASKS));
+	}
+
+	public static int getMaxSearchResults(TaskRepository repository) {
+		int value = getInteger(repository, MAX_SEARCH_RESULTS, DEFAULT_MAX_SEARCH_RESULTS);
+		if (value < -1) {
+			return -1;
+		}
+		return value;
 	}
 
 	public static NamedFilter getNamedFilter(IRepositoryQuery query) {
@@ -130,6 +150,76 @@ public class JiraUtil {
 			return namedFilter;
 		}
 		return null;
+	}
+
+	public static JiraFilter getQuery(TaskRepository taskRepository, JiraClient client, IRepositoryQuery query,
+			boolean validate) {
+		JiraFilter filter = getFilterDefinition(taskRepository, client, query, validate);
+		if (filter != null) {
+			return filter;
+		} else {
+			return getNamedFilter(query);
+		}
+	}
+
+	public static JiraTimeFormat getTimeFormat(TaskRepository taskRepository) {
+		return new JiraTimeFormat(JiraUtil.getWorkDaysPerWeek(taskRepository),
+				JiraUtil.getWorkHoursPerDay(taskRepository));
+	}
+
+	public static int getWorkDaysPerWeek(TaskRepository repository) {
+		int value = getInteger(repository, WORK_DAYS_PER_WEEK, JiraTimeFormat.DEFAULT_WORK_DAYS_PER_WEEK);
+		if (value < 1) {
+			return 1;
+		}
+		if (value > 7) {
+			return 7;
+		}
+		return value;
+	}
+
+	public static int getWorkHoursPerDay(TaskRepository repository) {
+		int value = getInteger(repository, WORK_HOURS_PER_DAY, JiraTimeFormat.DEFAULT_WORK_HOURS_PER_DAY);
+		if (value < 1) {
+			return 1;
+		}
+		if (value > 24) {
+			return 24;
+		}
+		return value;
+	}
+
+	public static boolean isFilterDefinition(IRepositoryQuery query) {
+		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
+		return customUrl != null && customUrl.length() > 0;
+	}
+
+	public static void setAutoRefreshConfiguration(TaskRepository repository, boolean autoRefreshConfiguration) {
+		repository.setProperty(REFRESH_CONFIGURATION_KEY, String.valueOf(autoRefreshConfiguration));
+	}
+
+	public static void setCharacterEncodingValidated(TaskRepository taskRepository, boolean validated) {
+		taskRepository.setProperty(CHARACTER_ENCODING_VALIDATED, String.valueOf(validated));
+	}
+
+	public static void setCompletedBasedOnResolution(TaskRepository taskRepository, boolean completion) {
+		taskRepository.setProperty(COMPLETED_BASED_ON_RESOLUTION, String.valueOf(completion));
+	}
+
+	public static void setCompression(TaskRepository taskRepository, boolean compression) {
+		taskRepository.setProperty(COMPRESSION_KEY, String.valueOf(compression));
+	}
+
+	public static void setLastUpdate(TaskRepository repository, Date date) {
+		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtil.dateToString(date));
+	}
+
+	public static void setLinkedTasksAsSubtasks(TaskRepository taskRepository, boolean linkedTasksAsSubtasks) {
+		taskRepository.setProperty(LINKED_TASKS_AS_SUBTASKS, String.valueOf(linkedTasksAsSubtasks));
+	}
+
+	public static void setMaxSearchResults(TaskRepository repository, int maxSearchResults) {
+		repository.setProperty(MAX_SEARCH_RESULTS, String.valueOf(maxSearchResults));
 	}
 
 	public static void setQuery(TaskRepository taskRepository, IRepositoryQuery query, JiraFilter filter) {
@@ -147,82 +237,12 @@ public class JiraUtil {
 		}
 	}
 
-	public static Date getLastUpdate(TaskRepository repository) {
-		return JiraUtil.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
-	}
-
-	public static int getMaxSearchResults(TaskRepository repository) {
-		int value = getInteger(repository, MAX_SEARCH_RESULTS, DEFAULT_MAX_SEARCH_RESULTS);
-		if (value < -1) {
-			return -1;
-		}
-		return value;
-	}
-
-	public static int getWorkHoursPerDay(TaskRepository repository) {
-		int value = getInteger(repository, WORK_HOURS_PER_DAY, JiraTimeFormat.DEFAULT_WORK_HOURS_PER_DAY);
-		if (value < 1) {
-			return 1;
-		}
-		if (value > 24) {
-			return 24;
-		}
-		return value;
-	}
-
-	public static int getWorkDaysPerWeek(TaskRepository repository) {
-		int value = getInteger(repository, WORK_DAYS_PER_WEEK, JiraTimeFormat.DEFAULT_WORK_DAYS_PER_WEEK);
-		if (value < 1) {
-			return 1;
-		}
-		if (value > 7) {
-			return 7;
-		}
-		return value;
-	}
-
-	private static int getInteger(TaskRepository repository, String key, int defaultValue) {
-		String value = repository.getProperty(key);
-		if (value != null) {
-			try {
-				return Integer.parseInt(value);
-			} catch (NumberFormatException e) {
-				// ignore
-			}
-		}
-		return defaultValue;
-	}
-
-	public static void setAutoRefreshConfiguration(TaskRepository repository, boolean autoRefreshConfiguration) {
-		repository.setProperty(REFRESH_CONFIGURATION_KEY, String.valueOf(autoRefreshConfiguration));
-	}
-
-	public static void setCharacterEncodingValidated(TaskRepository taskRepository, boolean validated) {
-		taskRepository.setProperty(CHARACTER_ENCODING_VALIDATED, String.valueOf(validated));
-	}
-
-	public static void setCompression(TaskRepository taskRepository, boolean compression) {
-		taskRepository.setProperty(COMPRESSION_KEY, String.valueOf(compression));
-	}
-
-	public static void setCompletedBasedOnResolution(TaskRepository taskRepository, boolean completion) {
-		taskRepository.setProperty(COMPLETED_BASED_ON_RESOLUTION, String.valueOf(completion));
-	}
-
-	public static void setLastUpdate(TaskRepository repository, Date date) {
-		repository.setProperty(REPOSITORY_UPDATE_TIME_STAMP, JiraUtil.dateToString(date));
-	}
-
 	public static void setWorkDaysPerWeek(TaskRepository repository, int workDaysPerWeek) {
 		repository.setProperty(WORK_DAYS_PER_WEEK, String.valueOf(workDaysPerWeek));
 	}
 
 	public static void setWorkHoursPerDay(TaskRepository repository, int workHoursPerDay) {
 		repository.setProperty(WORK_HOURS_PER_DAY, String.valueOf(workHoursPerDay));
-	}
-
-	public static void setMaxSearchResults(TaskRepository repository, int maxSearchResults) {
-		repository.setProperty(MAX_SEARCH_RESULTS, String.valueOf(maxSearchResults));
 	}
 
 	public static Date stringToDate(String dateString) {
@@ -246,16 +266,6 @@ public class JiraUtil {
 		if (TRACE_ENABLED) {
 			JiraCorePlugin.getDefault().getLog().log(status);
 		}
-	}
-
-	public static boolean isFilterDefinition(IRepositoryQuery query) {
-		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
-		return customUrl != null && customUrl.length() > 0;
-	}
-
-	public static JiraTimeFormat getTimeFormat(TaskRepository taskRepository) {
-		return new JiraTimeFormat(JiraUtil.getWorkDaysPerWeek(taskRepository),
-				JiraUtil.getWorkHoursPerDay(taskRepository));
 	}
 
 }
