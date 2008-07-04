@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract local variable &apos;collector&apos; from expression &apos;new JiraIssueCollector(monitor,issues,JiraUtil.getMaxSearchResults(repository))&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Variable name: &apos;collector&apos;&#x0A;- Destination method: &apos;org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector.performQuery()&apos;&#x0A;- Variable expression: &apos;new JiraIssueCollector(monitor,issues,JiraUtil.getMaxSearchResults(repository))&apos;&#x0A;- Replace occurrences of expression with variable" description="Extract local variable &apos;collector&apos;" final="false" id="org.eclipse.jdt.ui.extract.temp" input="/src&lt;org.eclipse.mylyn.internal.jira.core{JiraRepositoryConnector.java" name="collector" replace="true" selection="5212 81" stamp="1215128984173" version="1.0"/>
+</session>

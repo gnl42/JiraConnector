@@ -29,6 +29,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 
 /**
  * @author Steffen Pingel
@@ -54,6 +55,10 @@ public class JiraUtil {
 	private static final String WORK_HOURS_PER_DAY = "jira.workHoursPerDay";
 
 	private static final String WORK_DAYS_PER_WEEK = "jira.workDaysPerWeek";
+
+	private static final String MAX_SEARCH_RESULTS = "jira.maxSearchResults";
+
+	public static final int DEFAULT_MAX_SEARCH_RESULTS = TaskDataCollector.MAX_HITS;
 
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general"));
 
@@ -146,6 +151,14 @@ public class JiraUtil {
 		return JiraUtil.stringToDate(repository.getProperty(REPOSITORY_UPDATE_TIME_STAMP));
 	}
 
+	public static int getMaxSearchResults(TaskRepository repository) {
+		int value = getInteger(repository, MAX_SEARCH_RESULTS, DEFAULT_MAX_SEARCH_RESULTS);
+		if (value < -1) {
+			return -1;
+		}
+		return value;
+	}
+
 	public static int getWorkHoursPerDay(TaskRepository repository) {
 		int value = getInteger(repository, WORK_HOURS_PER_DAY, JiraTimeFormat.DEFAULT_WORK_HOURS_PER_DAY);
 		if (value < 1) {
@@ -206,6 +219,10 @@ public class JiraUtil {
 
 	public static void setWorkHoursPerDay(TaskRepository repository, int workHoursPerDay) {
 		repository.setProperty(WORK_HOURS_PER_DAY, String.valueOf(workHoursPerDay));
+	}
+
+	public static void setMaxSearchResults(TaskRepository repository, int maxSearchResults) {
+		repository.setProperty(MAX_SEARCH_RESULTS, String.valueOf(maxSearchResults));
 	}
 
 	public static Date stringToDate(String dateString) {

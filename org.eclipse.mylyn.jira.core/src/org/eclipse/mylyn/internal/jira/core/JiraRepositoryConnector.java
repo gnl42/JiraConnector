@@ -31,6 +31,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.model.filter.Order;
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
@@ -125,30 +126,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						"The JIRA query is invalid");
 			}
 			try {
-				List<JiraIssue> issues = new ArrayList<JiraIssue>();
-				client.search(filter, new JiraIssueCollector(monitor, issues, TaskDataCollector.MAX_HITS), monitor);
-				for (JiraIssue issue : issues) {
-					if (monitor.isCanceled()) {
-						return Status.CANCEL_STATUS;
-					}
-					if (issue.getProject() == null) {
-						return new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION,
-								null);
-					}
-					monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
-					TaskData oldTaskData = null;
-					// TODO consider marking result as partial instead of loading task data from disk
-					if (session != null) {
-						try {
-							oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
-						} catch (CoreException e) {
-							// ignore
-						}
-					}
-					TaskData taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData, monitor);
-					resultCollector.accept(taskData);
-				}
-				return Status.OK_STATUS;
+				QueryHitCollector collector = new QueryHitCollector(repository, client, resultCollector, session,
+						monitor);
+				client.search(filter, collector, monitor);
+				return collector.getStatus();
 			} catch (JiraException e) {
 				IStatus status = JiraCorePlugin.toStatus(repository, e);
 				trace(status);
@@ -513,6 +494,80 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public boolean hasRepositoryDueDate(TaskRepository taskRepository, ITask task, TaskData taskData) {
 		return taskData.getRoot().getMappedAttribute(JiraAttribute.DUE_DATE.id()) != null;
+	}
+
+	private class QueryHitCollector implements IssueCollector {
+
+		private final IProgressMonitor monitor;
+
+		private final ISynchronizationSession session;
+
+		private IStatus status;
+
+		private final JiraClient client;
+
+		private final TaskRepository repository;
+
+		private final TaskDataCollector collector;
+
+		private final int maxHits;
+
+		public QueryHitCollector(TaskRepository repository, JiraClient client, TaskDataCollector collector,
+				ISynchronizationSession session, IProgressMonitor monitor) {
+			this.repository = repository;
+			this.client = client;
+			this.collector = collector;
+			this.session = session;
+			this.monitor = monitor;
+			this.maxHits = JiraUtil.getMaxSearchResults(repository);
+			this.status = Status.OK_STATUS;
+		}
+
+		// TODO collect all statuses
+		public void collectIssue(JiraIssue issue) {
+			if (issue.getProject() == null) {
+				status = new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION, null);
+			}
+			monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
+			TaskData oldTaskData = null;
+			// TODO consider marking result as partial instead of loading task data from disk
+			if (session != null) {
+				try {
+					oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
+				} catch (CoreException e) {
+					// ignore
+				}
+			}
+			TaskData taskData;
+			try {
+				taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData, monitor);
+				collector.accept(taskData);
+			} catch (JiraException e) {
+				status = JiraCorePlugin.toStatus(repository, e);
+			}
+		}
+
+		public void done() {
+			// ignore
+
+		}
+
+		public int getMaxHits() {
+			return maxHits;
+		}
+
+		public IStatus getStatus() {
+			return status;
+		}
+
+		public boolean isCancelled() {
+			return monitor.isCanceled();
+		}
+
+		public void start() {
+			// ignore			
+		}
+
 	}
 
 }

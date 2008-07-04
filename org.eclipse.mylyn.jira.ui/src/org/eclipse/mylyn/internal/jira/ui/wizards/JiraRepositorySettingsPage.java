@@ -75,6 +75,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private Spinner workHoursPerDaySpinner;
 
+	private Spinner maxSearchResultsSpinner;
+
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
 		super(TITLE, DESCRIPTION, taskRepository);
 		setNeedsProxy(true);
@@ -145,6 +147,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		}
 		label = new Label(timeTrackingComposite, SWT.NONE);
 		label.setText("working hours per day");
+
+		label = new Label(parent, SWT.NONE);
+		label.setText("Max number of search results:");
+		maxSearchResultsSpinner = new Spinner(parent, SWT.BORDER);
+		maxSearchResultsSpinner.setValues(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS, -1, 99999, 0, 1, 1000);
+		if (repository != null) {
+			maxSearchResultsSpinner.setSelection(JiraUtil.getMaxSearchResults(repository));
+		}
 	}
 
 	@Override
@@ -172,6 +182,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		JiraUtil.setCompletedBasedOnResolution(repository, useResolutionButton.getSelection());
 		JiraUtil.setWorkDaysPerWeek(repository, workDaysPerWeekSpinner.getSelection());
 		JiraUtil.setWorkHoursPerDay(repository, workHoursPerDaySpinner.getSelection());
+		JiraUtil.setMaxSearchResults(repository, maxSearchResultsSpinner.getSelection());
 		if (characterEncodingValidated) {
 			JiraUtil.setCharacterEncodingValidated(repository, true);
 		}

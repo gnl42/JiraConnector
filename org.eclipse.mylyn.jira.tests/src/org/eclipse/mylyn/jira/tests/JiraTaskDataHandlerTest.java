@@ -361,8 +361,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		TaskData newTaskData = dataHandler.createTaskData(repository, client, issue, taskData, null);
 		operations = taskData.getAttributeMapper().getAttributesByType(newTaskData, TaskAttribute.TYPE_OPERATION);
 		assertNotNull(operations);
-		assertEquals(3, operations.size());
-		assertEquals("3", operations.get(2).getValue());
+		assertEquals(4, operations.size());
+		assertEquals("3", operations.get(3).getValue());
 
 		issue.setSummary("changed");
 		client.updateIssue(issue, "", null);
@@ -372,9 +372,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		newTaskData = dataHandler.createTaskData(repository, client, issue, newTaskData, null);
 		operations = taskData.getAttributeMapper().getAttributesByType(newTaskData, TaskAttribute.TYPE_OPERATION);
 		assertNotNull(operations);
-		assertEquals(2, operations.size());
-		assertEquals("3", operations.get(1).getValue());
-
+		assertEquals(3, operations.size());
+		assertEquals("3", operations.get(2).getValue());
 	}
 
 	public void testReadOnly() throws Exception {
