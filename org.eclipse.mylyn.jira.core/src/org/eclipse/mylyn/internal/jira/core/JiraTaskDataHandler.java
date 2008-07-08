@@ -331,7 +331,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getId());
 		setAttributeValue(data, JiraAttribute.MODIFICATION_DATE, JiraUtil.dateToString(jiraIssue.getUpdated()));
 		setAttributeValue(data, JiraAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
-		setAttributeValue(data, JiraAttribute.USER_REPORTER, jiraIssue.getReporter());
+		setAttributeValue(data, JiraAttribute.USER_REPORTER, getReporter(jiraIssue));
 		setAttributeValue(data, JiraAttribute.PROJECT, jiraIssue.getProject().getId());
 
 		if (jiraIssue.getStatus() != null) {
@@ -414,6 +414,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		HashSet<String> editableKeys = getEditableKeys(data, jiraIssue, client, oldTaskData, monitor);
 		updateProperties(data, editableKeys);
+	}
+
+	private String getReporter(JiraIssue jiraIssue) {
+		String reporter = jiraIssue.getReporter();
+		return reporter == null ? "" : reporter;
 	}
 
 	private void addComments(TaskData data, JiraIssue jiraIssue) {
