@@ -80,6 +80,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread;
 
 /**
  * This class uses Jakarta Commons's HttpClient to call a SOAP server.
@@ -92,6 +93,11 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 @SuppressWarnings( { "serial", "unchecked", "null" })
 public class CommonsHttpSender extends BasicHandler {
 
+	private static IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
+	static {
+		idleConnectionTimeoutThread.start();
+	}
+
 	/** Field log */
 	//protected static Log log = LogFactory.getLog(CommonsHTTPSender.class.getName());
 	protected HttpConnectionManager connectionManager;
@@ -102,6 +108,13 @@ public class CommonsHttpSender extends BasicHandler {
 
 	public CommonsHttpSender() {
 		initialize();
+		idleConnectionTimeoutThread.addConnectionManager(this.connectionManager);
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		((MultiThreadedHttpConnectionManager) connectionManager).shutdown();
+		idleConnectionTimeoutThread.removeConnectionManager(connectionManager);
 	}
 
 	protected void initialize() {
