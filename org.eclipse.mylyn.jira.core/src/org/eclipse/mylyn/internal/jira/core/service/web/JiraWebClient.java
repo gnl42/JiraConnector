@@ -167,7 +167,9 @@ public class JiraWebClient {
 				if (issue.getReporter() != null) {
 					post.addParameter("reporter", issue.getReporter());
 				}
-				post.addParameter("environment", issue.getEnvironment());
+				if (issue.getEnvironment() != null) {
+					post.addParameter("environment", issue.getEnvironment());
+				}
 				post.addParameter("description", issue.getDescription());
 
 				if (comment != null) {
