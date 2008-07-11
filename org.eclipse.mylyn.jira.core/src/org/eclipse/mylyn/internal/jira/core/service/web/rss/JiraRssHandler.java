@@ -109,12 +109,6 @@ public class JiraRssHandler extends DefaultHandler {
 
 	private static final String CUSTOM_FIELD_TYPE_TEXTAREA = "com.atlassian.jira.plugin.system.customfieldtypes:textarea";
 
-	private static final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat(
-			"E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
-
-	private static final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat(
-			"E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
-
 	private static final String CREATED_ATTR = "created"; //$NON-NLS-1$
 
 	private static final String LEVEL_ATTR = "level"; //$NON-NLS-1$
@@ -254,6 +248,12 @@ public class JiraRssHandler extends DefaultHandler {
 	private static final int IN_CUSTOM_FIELD_VALUE = 16;
 
 	private static final int IN_SUBTASKS = 17;
+
+	// intentionally not static: SimpleDateFormat is not thread safe
+	private final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
+
+	// intentionally not static: SimpleDateFormat is not thread safe
+	private final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
 
 	int state = START;
 
@@ -782,7 +782,7 @@ public class JiraRssHandler extends DefaultHandler {
 		currentElementText.append(ch, start, length);
 	}
 
-	private static Date convertToDate(String value) {
+	private Date convertToDate(String value) {
 		if (value == null || value.length() == 0) {
 			return null;
 		}
@@ -795,7 +795,7 @@ public class JiraRssHandler extends DefaultHandler {
 		}
 	}
 
-	private static Date convertToDueDate(String value) {
+	private Date convertToDueDate(String value) {
 		if (value == null || value.length() == 0) {
 			return null;
 		}
@@ -825,12 +825,12 @@ public class JiraRssHandler extends DefaultHandler {
 	}
 
 	/**
-	 * Strips HTML tags from <code>text</code>. The RSS Feed enhances the output of certain fields such as
-	 * description, environment and comments with HTML tags:
+	 * Strips HTML tags from <code>text</code>. The RSS Feed enhances the output of certain fields such as description,
+	 * environment and comments with HTML tags:
 	 * 
 	 * <ul>
-	 * <li>for each line breaks a <code><br/>\n</code> or <code>\n<br/>\n</code> tag is added
-	 * <li>links are wrapped in <code><a></code> tags
+	 * <li>for each line breaks a <code><br/>\n</code> or <code>\n<br/>\n</code> tag is added <li>links are wrapped in
+	 * <code><a></code> tags
 	 * </ul>
 	 * 
 	 * <p>
