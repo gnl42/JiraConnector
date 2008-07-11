@@ -18,6 +18,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.SimpleHttpConnectionManager;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -74,15 +75,20 @@ public class JiraWebSession {
 
 	public void doInSession(JiraWebSessionCallback callback, IProgressMonitor monitor) throws JiraException {
 		monitor = Policy.monitorFor(monitor);
-		HttpClient httpClient = new HttpClient();
-		HostConfiguration hostConfiguration = login(httpClient, monitor);
+		SimpleHttpConnectionManager connectionManager = new SimpleHttpConnectionManager();
 		try {
-			callback.configure(httpClient, hostConfiguration, baseUrl);
-			callback.run(client, baseUrl, monitor);
-		} catch (IOException e) {
-			throw new JiraException(e);
+			HttpClient httpClient = new HttpClient(connectionManager);
+			HostConfiguration hostConfiguration = login(httpClient, monitor);
+			try {
+				callback.configure(httpClient, hostConfiguration, baseUrl);
+				callback.run(client, baseUrl, monitor);
+			} catch (IOException e) {
+				throw new JiraException(e);
+			} finally {
+				logout(httpClient, hostConfiguration, monitor);
+			}
 		} finally {
-			logout(httpClient, hostConfiguration, monitor);
+			connectionManager.shutdown();
 		}
 	}
 
