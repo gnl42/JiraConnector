@@ -10,6 +10,8 @@ package org.eclipse.mylyn.internal.jira.core.model;
 
 import java.io.Serializable;
 
+import org.eclipse.core.runtime.Assert;
+
 /**
  * @author Brock Janiczak
  */
@@ -36,6 +38,7 @@ public class IssueType implements Serializable {
 	private boolean subTaskType;
 
 	public IssueType(String id, boolean subTaskType) {
+		Assert.isNotNull(id);
 		this.id = id;
 		this.subTaskType = subTaskType;
 	}

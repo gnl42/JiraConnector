@@ -930,10 +930,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			issue.setParentId(parentId);
 		}
 
-		TaskAttribute securityLevelAttribute = taskData.getRoot().getMappedAttribute(
-				IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
-		if (securityLevelAttribute != null) {
-			issue.setSecurityLevel(new SecurityLevel(securityLevelAttribute.getValue()));
+		String securityLevelId = getAttributeValue(taskData, JiraAttribute.SECURITY_LEVEL);
+		if (securityLevelId != null) {
+			issue.setSecurityLevel(new SecurityLevel(securityLevelId));
 		}
 
 		String estimate = getAttributeValue(taskData, JiraAttribute.ESTIMATE);
@@ -994,7 +993,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setAssignee(JiraRepositoryConnector.getAssigneeFromAttribute(assignee));
 
 		issue.setEnvironment(getAttributeValue(taskData, JiraAttribute.ENVIRONMENT));
-		issue.setPriority(new Priority(getAttributeValue(taskData, JiraAttribute.PRIORITY)));
+		String priorityId = getAttributeValue(taskData, JiraAttribute.PRIORITY);
+		if (priorityId != null) {
+			issue.setPriority(new Priority(priorityId));
+		}
 
 		ArrayList<CustomField> customFields = new ArrayList<CustomField>();
 		for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {

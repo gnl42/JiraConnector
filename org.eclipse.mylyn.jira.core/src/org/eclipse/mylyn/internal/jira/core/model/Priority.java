@@ -10,6 +10,8 @@ package org.eclipse.mylyn.internal.jira.core.model;
 
 import java.io.Serializable;
 
+import org.eclipse.core.runtime.Assert;
+
 /**
  * @author Brock Janiczak
  */
@@ -38,6 +40,7 @@ public class Priority implements Serializable {
 	private String colour;
 
 	public Priority(String id) {
+		Assert.isNotNull(id);
 		this.id = id;
 	}
 

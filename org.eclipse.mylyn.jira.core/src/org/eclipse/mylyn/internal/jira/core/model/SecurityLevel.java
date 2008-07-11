@@ -10,6 +10,8 @@ package org.eclipse.mylyn.internal.jira.core.model;
 
 import java.io.Serializable;
 
+import org.eclipse.core.runtime.Assert;
+
 /**
  * @author Steffen Pingel
  */
@@ -22,6 +24,7 @@ public class SecurityLevel implements Serializable {
 	private String name;
 
 	public SecurityLevel(String id) {
+		Assert.isNotNull(id);
 		this.id = id;
 	}
 

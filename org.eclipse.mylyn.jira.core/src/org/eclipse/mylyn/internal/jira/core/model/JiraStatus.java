@@ -10,6 +10,8 @@ package org.eclipse.mylyn.internal.jira.core.model;
 
 import java.io.Serializable;
 
+import org.eclipse.core.runtime.Assert;
+
 /**
  * @author Brock Janiczak
  */
@@ -26,6 +28,7 @@ public class JiraStatus implements Serializable {
 	private String icon;
 
 	public JiraStatus(String id) {
+		Assert.isNotNull(id);
 		this.id = id;
 	}
 
