@@ -23,6 +23,7 @@ import org.eclipse.mylyn.internal.jira.core.IJiraConstants;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
+import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -39,6 +40,10 @@ public class JiraUtil {
 	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated";
 
 	private static final String COMPRESSION_KEY = "compression";
+
+	private static final String DATE_FORMAT_KEY = "jira.dateFormat";
+
+	private static final String DATE_TIME_FORMAT_KEY = "jira.dateTimeFormat";
 
 	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl";
 
@@ -63,6 +68,8 @@ public class JiraUtil {
 	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general"));
 
 	private static final String LINKED_TASKS_AS_SUBTASKS = "jira.linkedTasksAsSubtasks";
+
+	private static final String LOCALE_KEY = "jira.locale";
 
 	public static String dateToString(Date date) {
 		if (date == null) {
@@ -265,6 +272,48 @@ public class JiraUtil {
 	public static void trace(IStatus status) {
 		if (TRACE_ENABLED) {
 			JiraCorePlugin.getDefault().getLog().log(status);
+		}
+	}
+
+	public static JiraConfiguration getConfiguration(TaskRepository repository) {
+		JiraConfiguration configuration = new JiraConfiguration();
+		if (JiraUtil.getCharacterEncodingValidated(repository)) {
+			configuration.setCharacterEncoding(repository.getCharacterEncoding());
+		}
+		configuration.setCompressionEnabled(JiraUtil.getCompression(repository));
+		if (repository.getProperty(DATE_FORMAT_KEY) != null) {
+			configuration.setDateFormat(repository.getProperty(DATE_FORMAT_KEY));
+		}
+		if (repository.getProperty(DATE_TIME_FORMAT_KEY) != null) {
+			configuration.setDateTimeFormat(repository.getProperty(DATE_TIME_FORMAT_KEY));
+		}
+		String localeString = repository.getProperty(LOCALE_KEY);
+		if (localeString != null) {
+			for (Locale locale : Locale.getAvailableLocales()) {
+				if (locale.toString().equals(localeString)) {
+					configuration.setLocale(locale);
+					break;
+				}
+			}
+		}
+		return configuration;
+	}
+
+	public static void setConfiguration(TaskRepository repository, JiraConfiguration configuration) {
+		if (JiraConfiguration.DEFAULT_DATE_FORMAT.equals(configuration.getDateFormat())) {
+			repository.removeProperty(DATE_FORMAT_KEY);
+		} else {
+			repository.setProperty(DATE_FORMAT_KEY, configuration.getDateFormat());
+		}
+		if (JiraConfiguration.DEFAULT_DATE_TIME_FORMAT.equals(configuration.getDateTimeFormat())) {
+			repository.removeProperty(DATE_TIME_FORMAT_KEY);
+		} else {
+			repository.setProperty(DATE_TIME_FORMAT_KEY, configuration.getDateTimeFormat());
+		}
+		if (JiraConfiguration.DEFAULT_LOCALE.equals(configuration.getLocale())) {
+			repository.removeProperty(LOCALE_KEY);
+		} else {
+			repository.setProperty(LOCALE_KEY, configuration.getLocale().toString());
 		}
 	}
 

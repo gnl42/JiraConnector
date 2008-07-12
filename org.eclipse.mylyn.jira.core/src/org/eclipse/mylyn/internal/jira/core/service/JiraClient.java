@@ -23,14 +23,15 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
+import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.model.JiraField;
+import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
-import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
@@ -97,8 +98,6 @@ public class JiraClient {
 
 	private final JiraClientCache cache;
 
-	private String characterEncoding;
-
 	private final JiraRssClient rssClient;
 
 	private final JiraWebClient webClient;
@@ -107,20 +106,23 @@ public class JiraClient {
 
 	private final JiraSoapClient soapClient;
 
-	private final boolean useCompression;
+	private final JiraConfiguration configuration;
 
-	public JiraClient(AbstractWebLocation location, boolean useCompression) {
+	public JiraClient(AbstractWebLocation location, JiraConfiguration configuration) {
 		Assert.isNotNull(location);
-
+		Assert.isNotNull(configuration);
 		this.baseUrl = location.getUrl();
 		this.location = location;
-		this.useCompression = useCompression;
+		this.configuration = configuration;
 
 		this.cache = new JiraClientCache(this);
-
 		this.rssClient = new JiraRssClient(this);
 		this.webClient = new JiraWebClient(this);
 		this.soapClient = new JiraSoapClient(this);
+	}
+
+	public JiraClient(AbstractWebLocation location) {
+		this(location, new JiraConfiguration());
 	}
 
 	public void addCommentToIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
@@ -174,9 +176,9 @@ public class JiraClient {
 	 * All other fields other fields are not settable at this time
 	 * 
 	 * @param issue
-	 * 		Prototype issue used to create the new issue
+	 *            Prototype issue used to create the new issue
 	 * @return A fully populated {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue} containing the details of
-	 * 	the new issue
+	 *         the new issue
 	 */
 	public JiraIssue createIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		String issueKey = webClient.createIssue(issue, monitor);
@@ -218,9 +220,9 @@ public class JiraClient {
 	 * Returns fields for given action id
 	 * 
 	 * @param issueKey
-	 * 		Unique key of the issue to find
+	 *            Unique key of the issue to find
 	 * @param actionId
-	 * 		Unique id for action to get fields for
+	 *            Unique id for action to get fields for
 	 * @return array of field ids for given actionId
 	 */
 	public String[] getActionFields(final String issueKey, final String actionId, IProgressMonitor monitor)
@@ -232,7 +234,7 @@ public class JiraClient {
 	 * Returns available operations for <code>issueKey</code>
 	 * 
 	 * @param issueKey
-	 * 		Unique key of the issue to find
+	 *            Unique key of the issue to find
 	 * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
 	 */
 	public JiraAction[] getAvailableActions(final String issueKey, IProgressMonitor monitor) throws JiraException {
@@ -248,7 +250,7 @@ public class JiraClient {
 	}
 
 	public String getCharacterEncoding() throws JiraException {
-		if (this.characterEncoding == null) {
+		if (configuration.getCharacterEncoding() == null) {
 			String serverEncoding = getCache().getServerInfo().getCharacterEncoding();
 			if (serverEncoding != null) {
 				return serverEncoding;
@@ -262,11 +264,15 @@ public class JiraClient {
 			// fallback
 			return DEFAULT_CHARSET;
 		}
-		return this.characterEncoding;
+		return configuration.getCharacterEncoding();
 	}
 
 	public Component[] getComponents(String projectKey, IProgressMonitor monitor) throws JiraException {
 		return soapClient.getComponents(projectKey, monitor);
+	}
+
+	public JiraConfiguration getConfiguration() {
+		return configuration;
 	}
 
 	public CustomField[] getCustomAttributes(IProgressMonitor monitor) throws JiraException {
@@ -277,7 +283,7 @@ public class JiraClient {
 	 * Returns editable attributes for <code>issueKey</code>
 	 * 
 	 * @param issueKey
-	 * 		Unique key of the issue to find
+	 *            Unique key of the issue to find
 	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>.
 	 */
 	public JiraField[] getEditableAttributes(final String issueKey, IProgressMonitor monitor) throws JiraException {
@@ -291,7 +297,7 @@ public class JiraClient {
 	 * Retrieve an issue using its unique key
 	 * 
 	 * @param issueKey
-	 * 		Unique key of the issue to find
+	 *            Unique key of the issue to find
 	 * @return Matching issue or <code>null</code> if no matching issue could be found
 	 */
 	public JiraIssue getIssueByKey(String issueKey, IProgressMonitor monitor) throws JiraException {
@@ -312,7 +318,7 @@ public class JiraClient {
 	 * Returns the corresponding key for <code>issueId</code>.
 	 * 
 	 * @param issueId
-	 * 		unique id of the issue
+	 *            unique id of the issue
 	 * @return corresponding key or <code>null</code> if the id was not found
 	 */
 	public String getKeyFromId(final String issueId, IProgressMonitor monitor) throws JiraException {
@@ -392,8 +398,8 @@ public class JiraClient {
 	 * Force a login to the remote repository.
 	 * 
 	 * There is no need to call this method as all services should automatically login when the session is about to
-	 * expire. If you need to check if the credentials are valid, call {@link
-	 * org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
+	 * expire. If you need to check if the credentials are valid, call
+	 * {@link org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
 	 */
 	public void login(IProgressMonitor monitor) throws JiraException {
 		soapClient.login(monitor);
@@ -426,9 +432,9 @@ public class JiraClient {
 
 	/**
 	 * @param query
-	 * 		Query to be executed
+	 *            Query to be executed
 	 * @param collector
-	 * 		Reciever for the matching issues
+	 *            Reciever for the matching issues
 	 */
 	public void search(JiraFilter query, IssueCollector collector, IProgressMonitor monitor) throws JiraException {
 		if (query instanceof TextFilter) {
@@ -442,10 +448,6 @@ public class JiraClient {
 		}
 	}
 
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
-
 	@Override
 	public String toString() {
 		return getBaseUrl();
@@ -453,12 +455,12 @@ public class JiraClient {
 
 	/**
 	 * Revoke vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user
-	 * and is not resolved. Before calling this method, ensure it is valid to vote by calling {@link
-	 * org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user to
-	 * vote for an issue this method will do nothing.
+	 * and is not resolved. Before calling this method, ensure it is valid to vote by calling
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user
+	 * to vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
-	 * 		Issue to remove vote from
+	 *            Issue to remove vote from
 	 */
 	public void unvoteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		webClient.unvoteIssue(issue, monitor);
@@ -468,7 +470,7 @@ public class JiraClient {
 	 * Stop watching <code>issue</code>. Nothing will happen if the user is not currently watching the issue.
 	 * 
 	 * @param issue
-	 * 		Issue to stop watching
+	 *            Issue to stop watching
 	 */
 	public void unwatchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		webClient.unwatchIssue(issue, monitor);
@@ -479,17 +481,17 @@ public class JiraClient {
 	}
 
 	public boolean useCompression() {
-		return useCompression;
+		return configuration.isCompressionEnabled();
 	}
 
 	/**
 	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
-	 * not resolved. Before calling this method, ensure it is valid to vote by calling {@link
-	 * org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user to
-	 * vote for an issue this method will do nothing.
+	 * not resolved. Before calling this method, ensure it is valid to vote by calling
+	 * {@link org.eclipse.mylyn.internal.jira.core.model.JiraIssue#canUserVote(String)}. If it is not valid for the user
+	 * to vote for an issue this method will do nothing.
 	 * 
 	 * @param issue
-	 * 		Issue to vote for
+	 *            Issue to vote for
 	 */
 	public void voteIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		webClient.voteIssue(issue, monitor);
@@ -499,7 +501,7 @@ public class JiraClient {
 	 * Begin watching <code>issue</code>. Nothing will happen if the user is already watching the issue.
 	 * 
 	 * @param issue
-	 * 		Issue to begin watching
+	 *            Issue to begin watching
 	 */
 	public void watchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		webClient.watchIssue(issue, monitor);

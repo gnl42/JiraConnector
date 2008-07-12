@@ -11,8 +11,11 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +31,7 @@ import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
+import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
@@ -43,11 +47,20 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.events.ExpansionAdapter;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * Wizard page used to specify a JIRA repository address, username, and password.
@@ -79,6 +92,18 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private Button linkedTasksAsSubtasksButton;
 
+	private FormToolkit toolkit;
+
+	private JiraConfiguration configuration;
+
+	private Text dateTimeFormatText;
+
+	private Text dateFormatText;
+
+	private Combo localeCombo;
+
+	private Locale[] locales;
+
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
 		super(TITLE, DESCRIPTION, taskRepository);
 		setNeedsProxy(true);
@@ -95,6 +120,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	/** Create a button to validate the specified repository settings */
 	@Override
 	protected void createAdditionalControls(Composite parent) {
+		if (repository != null) {
+			configuration = JiraUtil.getConfiguration(repository);
+		} else {
+			configuration = new JiraConfiguration();
+		}
+
+		toolkit = new FormToolkit(parent.getDisplay());
+
 		addRepositoryTemplatesToServerUrlCombo();
 
 		if (repository != null) {
@@ -166,6 +199,83 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		if (repository != null) {
 			maxSearchResultsSpinner.setSelection(JiraUtil.getMaxSearchResults(repository));
 		}
+
+		createAdvancedComposite(parent);
+	}
+
+	private void createAdvancedComposite(final Composite parent) {
+		ExpandableComposite expandableComposite = toolkit.createExpandableComposite(parent,
+				ExpandableComposite.TITLE_BAR | ExpandableComposite.COMPACT | ExpandableComposite.TWISTIE);
+		GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+		gd.horizontalSpan = 2;
+		gd.horizontalIndent = -5;
+		expandableComposite.setLayoutData(gd);
+		expandableComposite.setFont(parent.getFont());
+		expandableComposite.setBackground(parent.getBackground());
+		expandableComposite.setText("Advanced &Configuration");
+		expandableComposite.addExpansionListener(new ExpansionAdapter() {
+			@Override
+			public void expansionStateChanged(ExpansionEvent e) {
+				getControl().getShell().pack();
+			}
+		});
+		toolkit.paintBordersFor(expandableComposite);
+
+		Composite composite = toolkit.createComposite(expandableComposite, SWT.BORDER);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		composite.setLayout(layout);
+		expandableComposite.setClient(composite);
+
+//		compressionButton = new Button(composite, SWT.CHECK | SWT.LEFT);
+//		compressionButton.setText("Customize");
+//		if (repository != null) {
+//			compressionButton.setSelection(JiraUtil.getCompression(repository));
+//		}
+//
+//		new Label(composite, SWT.NONE);
+
+		Label label = new Label(composite, SWT.NONE);
+		label.setText("Date Picker Format:");
+
+		dateFormatText = new Text(composite, SWT.NONE);
+		dateFormatText.setText(configuration.getDateFormat());
+
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateFormatText);
+		label = new Label(composite, SWT.NONE);
+		label.setText("Date Time Picker Format:");
+
+		dateTimeFormatText = new Text(composite, SWT.NONE);
+		dateTimeFormatText.setText(configuration.getDateTimeFormat());
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateTimeFormatText);
+
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateFormatText);
+		label = new Label(composite, SWT.NONE);
+		label.setText("Locale:");
+
+		localeCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+		locales = Locale.getAvailableLocales();
+		Arrays.sort(locales, new Comparator<Locale>() {
+			public int compare(Locale o1, Locale o2) {
+				return o1.getDisplayName().compareTo(o2.getDisplayName());
+			}
+		});
+		for (Locale locale : locales) {
+			localeCombo.add(locale.getDisplayName());
+		}
+		localeCombo.setText(configuration.getLocale().getDisplayName());
+
+		Hyperlink hyperlink = toolkit.createHyperlink(composite, "Reset to defaults", SWT.NONE);
+		hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
+			public void linkActivated(HyperlinkEvent e) {
+				dateFormatText.setText(JiraConfiguration.DEFAULT_DATE_FORMAT);
+				dateTimeFormatText.setText(JiraConfiguration.DEFAULT_DATE_TIME_FORMAT);
+				localeCombo.setText(JiraConfiguration.DEFAULT_LOCALE.getDisplayName());
+			}
+		});
+
+		toolkit.paintBordersFor(composite);
 	}
 
 	@Override
@@ -188,6 +298,12 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	@Override
 	public void applyTo(TaskRepository repository) {
 		super.applyTo(repository);
+		configuration.setDateFormat(dateFormatText.getText());
+		configuration.setDateTimeFormat(dateTimeFormatText.getText());
+		if (localeCombo.getSelectionIndex() != -1) {
+			configuration.setLocale(locales[localeCombo.getSelectionIndex()]);
+		}
+		JiraUtil.setConfiguration(repository, configuration);
 		JiraUtil.setCompression(repository, compressionButton.getSelection());
 		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
 		JiraUtil.setCompletedBasedOnResolution(repository, useResolutionButton.getSelection());
@@ -375,6 +491,15 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	@Override
 	public String getConnectorKind() {
 		return JiraCorePlugin.CONNECTOR_KIND;
+	}
+
+	@Override
+	public void dispose() {
+		if (toolkit != null) {
+			toolkit.dispose();
+			toolkit = null;
+		}
+		super.dispose();
 	}
 
 }

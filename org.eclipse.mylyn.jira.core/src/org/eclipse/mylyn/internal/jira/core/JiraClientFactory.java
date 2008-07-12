@@ -12,6 +12,7 @@ import java.net.Proxy;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -64,11 +65,7 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 		JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
 		if (client == null) {
 			AbstractWebLocation location = taskRepositoryLocationFactory.createWebLocation(repository);
-			String characterEncoding = null;
-			if (JiraUtil.getCharacterEncodingValidated(repository)) {
-				characterEncoding = repository.getCharacterEncoding();
-			}
-			client = clientManager.addClient(location, characterEncoding, JiraUtil.getCompression(repository));
+			client = clientManager.addClient(location, JiraUtil.getConfiguration(repository));
 		}
 		return client;
 	}
@@ -135,7 +132,7 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 	 * @return String describing validation failure or null if the details are valid
 	 */
 	public ServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
-		ServerInfo info = clientManager.validateConnection(location, monitor);
+		ServerInfo info = clientManager.validateConnection(location, new JiraConfiguration(), monitor);
 		JiraVersion serverVersion = new JiraVersion(info.getVersion());
 		if (JiraVersion.MIN_VERSION.compareTo(serverVersion) > 0) {
 			throw new JiraException("JIRA connector requires server " + JiraVersion.MIN_VERSION + " or later");

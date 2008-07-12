@@ -61,8 +61,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
  */
 public class JiraWebClient {
 
-	public static final String DATE_FORMAT = "dd-MMM-yyyy"; //$NON-NLS-1$
-
 	public static final String DUE_DATE_FORMAT = "dd/MMM/yy"; //$NON-NLS-1$
 
 	private final JiraClient client;

@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -142,8 +143,9 @@ public class JiraClientManager {
 	 * @throws JiraServiceUnavailableException
 	 *             URL was not valid
 	 */
-	public ServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
-		JiraClient client = createClient(location, false);
+	public ServerInfo validateConnection(AbstractWebLocation location, JiraConfiguration configuration,
+			IProgressMonitor monitor) throws JiraException {
+		JiraClient client = createClient(location, configuration);
 		return client.getServerInfo(monitor);
 	}
 
@@ -155,20 +157,19 @@ public class JiraClientManager {
 		return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
 	}
 
-	private JiraClient createClient(AbstractWebLocation location, boolean useCompression) {
+	private JiraClient createClient(AbstractWebLocation location, JiraConfiguration configuration) {
 //		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
 //			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 //		}
-		return new JiraClient(location, useCompression);
+		return new JiraClient(location, configuration);
 	}
 
-	public JiraClient addClient(AbstractWebLocation location, String characterEncoding, boolean useCompression) {
+	public JiraClient addClient(AbstractWebLocation location, JiraConfiguration configuration) {
 		if (clientByUrl.containsKey(location.getUrl())) {
 			throw new RuntimeException("A client with that name already exists");
 		}
 
-		JiraClient client = createClient(location, useCompression);
-		client.setCharacterEncoding(characterEncoding);
+		JiraClient client = createClient(location, configuration);
 		JiraClientData data = clientDataByUrl.get(location.getUrl());
 		if (data != null) {
 			client.getCache().setData(data);

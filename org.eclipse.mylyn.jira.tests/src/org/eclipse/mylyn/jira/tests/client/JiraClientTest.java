@@ -52,7 +52,7 @@ public class JiraClientTest extends TestCase {
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
-		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password), false);
+		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password));
 
 		JiraTestUtil.refreshDetails(client);
 	}
@@ -597,10 +597,10 @@ public class JiraClientTest extends TestCase {
 		Credentials httpCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
 		WebLocation location = new WebLocation(url, credentials.username, credentials.password);
 		location.setCredentials(AuthenticationType.HTTP, httpCredentials.username, httpCredentials.password);
-		client = new JiraClient(location, false);
+		client = new JiraClient(location);
 		assertNotNull(client.getCache().getServerInfo());
 
-		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password), false);
+		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password));
 		try {
 			assertNotNull(client.getCache().getServerInfo());
 			fail("Expected JiraServiceUnavailableException");
@@ -615,7 +615,7 @@ public class JiraClientTest extends TestCase {
 	private void characterEncoding(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 		assertEquals("ISO-8859-1", client.getCharacterEncoding());
-		client.setCharacterEncoding("UTF-8");
+		client.getConfiguration().setCharacterEncoding("UTF-8");
 		assertEquals("UTF-8", client.getCharacterEncoding());
 	}
 

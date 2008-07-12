@@ -37,7 +37,7 @@ public class JiraWebClientTest extends TestCase {
 
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
-		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password), false);
+		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password));
 		webClient = new JiraWebClient(client);
 
 		JiraTestUtil.refreshDetails(client);
