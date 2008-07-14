@@ -643,9 +643,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 				for (CustomField field : jiraIssue.getCustomFields()) {
 					if (field.isMarkupDetected()) {
-						TaskAttribute oldAttribute = oldTaskData.getRoot().getAttribute(field.getId());
+						String attributeId = mapCommonAttributeKey(field.getId());
+						TaskAttribute oldAttribute = oldTaskData.getRoot().getAttribute(attributeId);
 						if (oldAttribute != null) {
-							TaskAttribute attribute = data.getRoot().getAttribute(field.getId());
+							TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
 							attribute.setValues(oldAttribute.getValues());
 						}
 					}
@@ -675,7 +676,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			if (field.isMarkupDetected()) {
 				innerLoop: for (RemoteCustomFieldValue remoteField : fields) {
 					if (field.getId().equals(remoteField.getCustomfieldId())) {
-						TaskAttribute attribute = data.getRoot().getAttribute(field.getId());
+						String attributeId = mapCommonAttributeKey(field.getId());
+						TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
 						if (attribute != null) {
 							attribute.setValues(Arrays.asList(remoteField.getValues()));
 						}
