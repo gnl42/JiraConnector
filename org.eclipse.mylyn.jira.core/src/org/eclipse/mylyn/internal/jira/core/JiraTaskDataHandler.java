@@ -1175,7 +1175,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (JiraAttribute.CREATION_DATE.id().equals(taskAttribute.getId())
 				|| JiraAttribute.DUE_DATE.id().equals(taskAttribute.getId())
 				|| JiraAttribute.MODIFICATION_DATE.id().equals(taskAttribute.getId())) {
-			fieldType = JiraFieldType.DATEPICKER;
+			fieldType = JiraFieldType.DATE;
 			taskAttribute.getMetaData().putValue(IJiraConstants.META_TYPE, fieldType.getKey());
 		}
 		if (fieldType == null) {

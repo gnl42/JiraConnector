@@ -8,6 +8,8 @@
 
 package org.eclipse.mylyn.internal.jira.core.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
@@ -15,15 +17,15 @@ import java.util.Locale;
  */
 public class JiraConfiguration {
 
-	public static final String DEFAULT_DATE_FORMAT = "dd/MMM/yy"; //$NON-NLS-1$
+	public static final String DEFAULT_DATE_PATTERN = "dd/MMM/yy"; //$NON-NLS-1$
 
-	public static final String DEFAULT_DATE_TIME_FORMAT = "dd/MMM/yy hh:mm a"; //$NON-NLS-1$
+	public static final String DEFAULT_DATE_TIME_PATTERN = "dd/MMM/yy hh:mm a"; //$NON-NLS-1$
 
 	public static final Locale DEFAULT_LOCALE = Locale.US;
 
-	private String dateFormat;
+	private String datePattern;
 
-	private String dateTimeFormat;
+	private String dateTimePattern;
 
 	private boolean compressionEnabled;
 
@@ -32,8 +34,8 @@ public class JiraConfiguration {
 	private String characterEncoding;
 
 	public JiraConfiguration() {
-		setDateFormat(DEFAULT_DATE_FORMAT);
-		setDateTimeFormat(DEFAULT_DATE_TIME_FORMAT);
+		setDatePattern(DEFAULT_DATE_PATTERN);
+		setDateTimePattern(DEFAULT_DATE_TIME_PATTERN);
 		setLocale(DEFAULT_LOCALE);
 		setCompressionEnabled(false);
 	}
@@ -42,12 +44,12 @@ public class JiraConfiguration {
 		return characterEncoding;
 	}
 
-	public String getDateFormat() {
-		return dateFormat;
+	public String getDatePattern() {
+		return datePattern;
 	}
 
-	public String getDateTimeFormat() {
-		return dateTimeFormat;
+	public String getDateTimePattern() {
+		return dateTimePattern;
 	}
 
 	public Locale getLocale() {
@@ -62,12 +64,12 @@ public class JiraConfiguration {
 		this.compressionEnabled = compressionEnabled;
 	}
 
-	public void setDateFormat(String dateFormat) {
-		this.dateFormat = dateFormat;
+	public void setDatePattern(String dateFormat) {
+		this.datePattern = dateFormat;
 	}
 
-	public void setDateTimeFormat(String dateTimeFormat) {
-		this.dateTimeFormat = dateTimeFormat;
+	public void setDateTimePattern(String dateTimeFormat) {
+		this.dateTimePattern = dateTimeFormat;
 	}
 
 	public void setLocale(Locale locale) {
@@ -76,6 +78,14 @@ public class JiraConfiguration {
 
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
+	}
+
+	public DateFormat getDateFormat() {
+		return new SimpleDateFormat(getDatePattern(), getLocale());
+	}
+
+	public DateFormat getDateTimeFormat() {
+		return new SimpleDateFormat(getDateTimePattern(), getLocale());
 	}
 
 }

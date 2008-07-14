@@ -15,11 +15,11 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.text.html.HTML.Tag;
 
@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer;
 import org.eclipse.mylyn.commons.net.HtmlTag;
 import org.eclipse.mylyn.commons.net.HtmlStreamTokenizer.Token;
+import org.eclipse.mylyn.internal.jira.core.JiraFieldType;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
@@ -51,6 +52,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
+import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssHandler;
 
 /**
  * TODO look at creation Operation classes to perform each of these actions TODO extract field names into constants
@@ -60,8 +62,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
  * @author Eugene Kuleshov
  */
 public class JiraWebClient {
-
-	public static final String DUE_DATE_FORMAT = "dd/MMM/yy"; //$NON-NLS-1$
 
 	private final JiraClient client;
 
@@ -115,12 +115,7 @@ public class JiraWebClient {
 				if (issue.getPriority() != null) {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
-				if (issue.getDue() != null) {
-					post.addParameter("duedate",
-							new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
-				} else {
-					post.addParameter("duedate", "");
-				}
+				addFields(client, issue, post);
 				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m");
 
 				Component[] components = issue.getComponents();
@@ -180,7 +175,7 @@ public class JiraWebClient {
 					post.addParameter("security", issue.getSecurityLevel().getId());
 				}
 
-				addCustomFields(issue, post);
+				addCustomFields(client, issue, post);
 
 				try {
 					execute(post);
@@ -427,7 +422,7 @@ public class JiraWebClient {
 		final String[] issueKey = new String[1];
 		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
-			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
+			public void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder attachFileURLBuffer = new StringBuilder(baseUrl);
 				attachFileURLBuffer.append(url);
 
@@ -440,10 +435,7 @@ public class JiraWebClient {
 				if (issue.getPriority() != null) {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
-				if (issue.getDue() != null) {
-					post.addParameter("duedate",
-							new SimpleDateFormat(DUE_DATE_FORMAT, Locale.US).format(issue.getDue()));
-				}
+				addFields(client, issue, post);
 				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m");
 
 				if (issue.getComponents() != null) {
@@ -478,7 +470,7 @@ public class JiraWebClient {
 					post.addParameter("assignee", issue.getAssignee());
 				}
 
-				post.addParameter("reporter", server.getUserName());
+				post.addParameter("reporter", client.getUserName());
 
 				post.addParameter("environment", issue.getEnvironment() != null ? issue.getEnvironment() : "");
 				post.addParameter("description", issue.getDescription() != null ? issue.getDescription() : "");
@@ -487,7 +479,7 @@ public class JiraWebClient {
 					post.addParameter("parentIssueId", issue.getParentId());
 				}
 
-				addCustomFields(issue, post);
+				addCustomFields(client, issue, post);
 
 				try {
 					execute(post);
@@ -526,6 +518,7 @@ public class JiraWebClient {
 	private void watchUnwatchIssue(final JiraIssue issue, final boolean watch, IProgressMonitor monitor)
 			throws JiraException {
 		doInSession(monitor, new JiraWebSessionCallback() {
+			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder urlBuffer = new StringBuilder(baseUrl);
 				urlBuffer.append("/browse/").append(issue.getKey());
@@ -706,17 +699,45 @@ public class JiraWebClient {
 		return sb.toString();
 	}
 
-	private void addCustomFields(final JiraIssue issue, PostMethod post) {
+	private void addCustomFields(JiraClient client, JiraIssue issue, PostMethod post) {
 		for (CustomField customField : issue.getCustomFields()) {
 			for (String value : customField.getValues()) {
 				String key = customField.getKey();
-				if (key == null || //
-						(!key.startsWith("com.atlassian.jira.toolkit") && //
-						!key.startsWith("com.atlassian.jira.ext.charting"))) {
+				if (value != null
+						&& (JiraFieldType.DATE.getKey().equals(key) || JiraFieldType.DATETIME.getKey().equals(key))) {
+					try {
+						Date date = JiraRssHandler.getDateTimeFormat().parse(value);
+						DateFormat format;
+						if (JiraFieldType.DATE.getKey().equals(key)) {
+							format = client.getConfiguration().getDateFormat();
+						} else {
+							format = client.getConfiguration().getDateTimeFormat();
+						}
+						value = format.format(date);
+					} catch (ParseException e) {
+						// XXX ignore
+					}
+				}
+				if (includeCustomField(key)) {
 					post.addParameter(customField.getId(), value == null ? "" : value);
 				}
 			}
 		}
+	}
+
+	private void addFields(JiraClient client, JiraIssue issue, PostMethod post) {
+		if (issue.getDue() != null) {
+			DateFormat format = client.getConfiguration().getDateFormat();
+			post.addParameter("duedate", format.format(issue.getDue()));
+		} else {
+			post.addParameter("duedate", "");
+		}
+	}
+
+	private boolean includeCustomField(String key) {
+		return key == null || //
+				(!key.startsWith("com.atlassian.jira.toolkit") && //
+				!key.startsWith("com.atlassian.jira.ext.charting"));
 	}
 
 	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {

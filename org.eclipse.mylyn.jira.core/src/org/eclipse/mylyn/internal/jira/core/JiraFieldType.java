@@ -17,9 +17,9 @@ public enum JiraFieldType {
 
 	CASCADINGSELECT("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect"),
 
-	DATEPICKER("com.atlassian.jira.plugin.system.customfieldtypes:datepicker", TaskAttribute.TYPE_DATE),
+	DATE("com.atlassian.jira.plugin.system.customfieldtypes:datepicker", TaskAttribute.TYPE_DATE),
 
-	DATETIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime"),
+	DATETIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime", TaskAttribute.TYPE_DATE),
 
 	FLOATFIELD("com.atlassian.jira.plugin.system.customfieldtypes:float"),
 

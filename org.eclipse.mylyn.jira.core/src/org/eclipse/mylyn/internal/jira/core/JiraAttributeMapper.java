@@ -8,7 +8,9 @@
 
 package org.eclipse.mylyn.internal.jira.core;
 
+import java.text.ParseException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssHandler;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -35,6 +38,28 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 	public JiraAttributeMapper(TaskRepository taskRepository, JiraClient client) {
 		super(taskRepository);
 		this.client = client;
+	}
+
+	@Override
+	public Date getDateValue(TaskAttribute attribute) {
+		if (JiraUtil.isCustomDateTimeAttribute(attribute)) {
+			try {
+				return JiraRssHandler.getDateTimeFormat().parse(attribute.getValue());
+			} catch (ParseException e) {
+				return null;
+			}
+		} else {
+			return super.getDateValue(attribute);
+		}
+	}
+
+	@Override
+	public void setDateValue(TaskAttribute attribute, Date date) {
+		if (JiraUtil.isCustomDateTimeAttribute(attribute)) {
+			attribute.setValue(JiraRssHandler.getDateTimeFormat().format(date));
+		} else {
+			super.setDateValue(attribute, date);
+		}
 	}
 
 	@Override

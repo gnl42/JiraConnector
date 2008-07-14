@@ -8,8 +8,11 @@
 
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
+import org.eclipse.mylyn.internal.jira.core.IJiraConstants;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.JiraFieldType;
 import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
@@ -32,6 +35,14 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 			public AbstractAttributeEditor createEditor(String type, TaskAttribute taskAttribute) {
 				if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
 					return new TimeSpanAttributeEditor(getModel(), taskAttribute);
+				}
+				if (JiraUtil.isCustomDateTimeAttribute(taskAttribute)) {
+					String metaType = taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE);
+					if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
+						return new DateTimeAttributeEditor(getModel(), taskAttribute, true);
+					} else if (JiraFieldType.DATE.getKey().equals(metaType)) {
+						return new DateTimeAttributeEditor(getModel(), taskAttribute, false);
+					}
 				}
 				return super.createEditor(type, taskAttribute);
 			}

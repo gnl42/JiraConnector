@@ -250,10 +250,10 @@ public class JiraRssHandler extends DefaultHandler {
 	private static final int IN_SUBTASKS = 17;
 
 	// intentionally not static: SimpleDateFormat is not thread safe
-	private final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
+	private final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US);
 
 	// intentionally not static: SimpleDateFormat is not thread safe
-	private final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
+	//private final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
 
 	int state = START;
 
@@ -318,6 +318,12 @@ public class JiraRssHandler extends DefaultHandler {
 	private Date attachmentCreated;
 
 	private boolean markupDetected;
+
+	public static SimpleDateFormat getDateTimeFormat() {
+		// the server returns the server timezone, convert to local time zone to avoid confusion
+		//return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US);
+		return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US);
+	}
 
 	/**
 	 * Creates a new RSS reader that will create issues from the RSS information by querying the local Jira Server for
@@ -725,7 +731,7 @@ public class JiraRssHandler extends DefaultHandler {
 					currentComponents.add(component);
 				}
 			} else if (DUE.equals(localName)) {
-				currentIssue.setDue(convertToDueDate(getCurrentElementText()));
+				currentIssue.setDue(convertToSimpleDate(getCurrentElementText()));
 			} else if (VOTES.equals(localName)) {
 				if (getCurrentElementText().length() > 0) {
 					try {
@@ -795,12 +801,12 @@ public class JiraRssHandler extends DefaultHandler {
 		}
 	}
 
-	private Date convertToDueDate(String value) {
+	private Date convertToSimpleDate(String value) {
 		if (value == null || value.length() == 0) {
 			return null;
 		}
 		try {
-			return XML_DUE_DATE_FORMAT.parse(value);
+			return getDateTimeFormat().parse(value);
 		} catch (ParseException e) {
 			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \""
 					+ value + "\"", e));

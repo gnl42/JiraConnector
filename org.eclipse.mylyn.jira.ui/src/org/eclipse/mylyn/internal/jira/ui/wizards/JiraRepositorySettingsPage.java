@@ -96,9 +96,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private JiraConfiguration configuration;
 
-	private Text dateTimeFormatText;
+	private Text dateTimePatternText;
 
-	private Text dateFormatText;
+	private Text datePatternText;
 
 	private Combo localeCombo;
 
@@ -238,18 +238,18 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Date Picker Format:");
 
-		dateFormatText = new Text(composite, SWT.NONE);
-		dateFormatText.setText(configuration.getDateFormat());
+		datePatternText = new Text(composite, SWT.NONE);
+		datePatternText.setText(configuration.getDatePattern());
 
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateFormatText);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(datePatternText);
 		label = new Label(composite, SWT.NONE);
 		label.setText("Date Time Picker Format:");
 
-		dateTimeFormatText = new Text(composite, SWT.NONE);
-		dateTimeFormatText.setText(configuration.getDateTimeFormat());
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateTimeFormatText);
+		dateTimePatternText = new Text(composite, SWT.NONE);
+		dateTimePatternText.setText(configuration.getDateTimePattern());
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateTimePatternText);
 
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateFormatText);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(datePatternText);
 		label = new Label(composite, SWT.NONE);
 		label.setText("Locale:");
 
@@ -269,8 +269,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
-				dateFormatText.setText(JiraConfiguration.DEFAULT_DATE_FORMAT);
-				dateTimeFormatText.setText(JiraConfiguration.DEFAULT_DATE_TIME_FORMAT);
+				datePatternText.setText(JiraConfiguration.DEFAULT_DATE_PATTERN);
+				dateTimePatternText.setText(JiraConfiguration.DEFAULT_DATE_TIME_PATTERN);
 				localeCombo.setText(JiraConfiguration.DEFAULT_LOCALE.getDisplayName());
 			}
 		});
@@ -298,8 +298,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	@Override
 	public void applyTo(TaskRepository repository) {
 		super.applyTo(repository);
-		configuration.setDateFormat(dateFormatText.getText());
-		configuration.setDateTimeFormat(dateTimeFormatText.getText());
+		configuration.setDatePattern(datePatternText.getText());
+		configuration.setDateTimePattern(dateTimePatternText.getText());
 		if (localeCombo.getSelectionIndex() != -1) {
 			configuration.setLocale(locales[localeCombo.getSelectionIndex()]);
 		}

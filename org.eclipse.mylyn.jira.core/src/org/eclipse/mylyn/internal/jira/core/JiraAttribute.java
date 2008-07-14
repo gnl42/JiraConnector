@@ -26,11 +26,11 @@ public enum JiraAttribute {
 	COMPONENTS(IJiraConstants.ATTRIBUTE_COMPONENTS, JiraFieldType.MULTISELECT, "Components:", false, false,
 			"components"),
 
-	CREATION_DATE(TaskAttribute.DATE_CREATION, JiraFieldType.DATEPICKER, "Created:"),
+	CREATION_DATE(TaskAttribute.DATE_CREATION, JiraFieldType.DATE, "Created:"),
 
 	DESCRIPTION(TaskAttribute.DESCRIPTION, JiraFieldType.TEXTFIELD, "Description:", true, false, "description"),
 
-	DUE_DATE(IJiraConstants.ATTRIBUTE_DUE_DATE, JiraFieldType.DATEPICKER, "Due Date:", false, false, "duedate"),
+	DUE_DATE(IJiraConstants.ATTRIBUTE_DUE_DATE, JiraFieldType.DATE, "Due Date:", false, false, "duedate"),
 
 	ENVIRONMENT(IJiraConstants.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA, "Environment:", false, false,
 			"environment"),
@@ -47,7 +47,7 @@ public enum JiraAttribute {
 
 	LINKED_IDS(IJiraConstants.ATTRIBUTE_LINKED_IDS, JiraFieldType.TEXTFIELD, "Linked ids:", true, true),
 
-	MODIFICATION_DATE(TaskAttribute.DATE_MODIFICATION, JiraFieldType.DATEPICKER, "Modified:"),
+	MODIFICATION_DATE(TaskAttribute.DATE_MODIFICATION, JiraFieldType.DATE, "Modified:"),
 
 	PARENT_ID(IJiraConstants.ATTRIBUTE_ISSUE_PARENT_ID, JiraFieldType.ISSUELINK, "Parent ID:", true, true),
 
