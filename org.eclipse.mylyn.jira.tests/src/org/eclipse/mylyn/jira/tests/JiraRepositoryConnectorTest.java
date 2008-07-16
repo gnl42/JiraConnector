@@ -37,6 +37,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.core.TaskTask;
 import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizationSession;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.AttachmentUtil;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.EditRepositoryWizard;
 import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
@@ -81,7 +82,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	private SynchronizationSession createSession(ITask... tasks) {
-		SynchronizationSession session = new SynchronizationSession();
+		SynchronizationSession session = new SynchronizationSession(TasksUiPlugin.getTaskDataManager());
 		session.setNeedsPerformQueries(true);
 		session.setTaskRepository(repository);
 		session.setFullSynchronization(true);

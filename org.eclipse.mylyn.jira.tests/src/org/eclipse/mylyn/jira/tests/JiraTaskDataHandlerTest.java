@@ -110,7 +110,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		List<ITaskComment> comments = JiraTestUtil.getTaskComments(task);
 		assertEquals(1, comments.size());
 		assertEquals(commentText, comments.get(0).getText());
-		assertEquals("10m", taskData.getRoot().getAttribute(JiraAttribute.ESTIMATE.id()).getValue());
+		assertEquals("600", taskData.getRoot().getAttribute(JiraAttribute.ESTIMATE.id()).getValue());
 		assertEquals(component.getId(), taskData.getRoot().getAttribute(JiraAttribute.COMPONENTS.id()).getValue());
 	}
 
@@ -148,9 +148,9 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		assertValues(data, TaskAttribute.TASK_KEY, "FOO-1");
 		assertValues(data, TaskAttribute.STATUS, "open");
-		assertValues(data, TaskAttribute.PRIORITY, "blocker");
-		assertValues(data, TaskAttribute.PRODUCT, "Prone");
-		assertValues(data, IJiraConstants.ATTRIBUTE_TYPE, "task");
+		assertValues(data, TaskAttribute.PRIORITY, Priority.BLOCKER_ID);
+		assertValues(data, TaskAttribute.PRODUCT, "PRONE");
+		assertValues(data, IJiraConstants.ATTRIBUTE_TYPE, "3");
 		assertValues(data, TaskAttribute.DATE_CREATION, JiraUtil.dateToString(issue.getCreated()));
 		assertValues(data, IJiraConstants.ATTRIBUTE_COMPONENTS, "component2", "component3");
 		assertValues(data, IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS, "1.0", "2.0");
@@ -163,7 +163,11 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		TaskAttribute attribute = data.getRoot().getAttribute(key);
 		int n = 0;
 		for (String value : attribute.getValues()) {
-			assertEquals(values[n], value);
+			if (!attribute.getOptions().isEmpty()) {
+				assertEquals(values[n], attribute.getOption(value));
+			} else {
+				assertEquals(values[n], attribute.getValue());
+			}
 			n++;
 		}
 	}
@@ -181,8 +185,10 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		String issueKey = issue.getKey();
 		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_DUE_DATE).addValue(dueDate);
-		taskData.getRoot().getAttribute(customFieldId).addValue("foo");
+		TaskAttribute attribute = dataHandler.createAttribute(taskData, JiraAttribute.DUE_DATE);
+		attribute.setValue(dueDate);
+		attribute = taskData.getRoot().createAttribute(dataHandler.mapCommonAttributeKey(customFieldId));
+		attribute.addValue("foo");
 		taskData.getRoot().getAttribute(TaskAttribute.COMMENT_NEW).addValue("add comment");
 		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
 
@@ -264,7 +270,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(subTaskIssue.getKey(), taskData.getRoot().getAttribute(JiraAttribute.ISSUE_KEY.id()).getValue());
 		typeAttribute = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_TYPE);
 		assertTrue(typeAttribute.getMetaData().isReadOnly());
-		assertEquals(0, typeAttribute.getOptions().size());
+		assertEquals(1, typeAttribute.getOptions().size());
 	}
 
 	public void testPostTaskDataSubTask() throws Exception {
@@ -319,16 +325,16 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		TaskAttribute attribute = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
 		assertNotNull(attribute);
-		assertEquals("10000", attribute.getOption("Developers"));
-		assertEquals("Developers", attribute.getValue());
+		assertEquals("10000", attribute.getValue());
+		assertEquals("Developers", attribute.getOption("10000"));
 
 		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
 		attribute = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
 		assertNotNull(attribute);
-		assertEquals("10000", attribute.getOption("Developers"));
-		assertEquals("Developers", attribute.getValue());
+		assertEquals("10000", attribute.getValue());
+		assertEquals("Developers", attribute.getOption("10000"));
 
 		taskData.getRoot().removeAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
 		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());

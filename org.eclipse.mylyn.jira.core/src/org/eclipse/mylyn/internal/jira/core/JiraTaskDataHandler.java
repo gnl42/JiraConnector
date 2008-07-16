@@ -245,7 +245,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
+	public TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
 		TaskAttribute attribute = data.getRoot().createAttribute(key.id());
 		attribute.getMetaData().defaults() //
 				.setReadOnly(key.isReadOnly())
@@ -1193,7 +1193,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return TaskAttribute.TYPE_SHORT_TEXT;
 	}
 
-	private String mapCommonAttributeKey(String key) {
+	public String mapCommonAttributeKey(String key) {
 		if ("summary".equals(key)) {
 			return JiraAttribute.SUMMARY.id();
 		} else if ("description".equals(key)) {
