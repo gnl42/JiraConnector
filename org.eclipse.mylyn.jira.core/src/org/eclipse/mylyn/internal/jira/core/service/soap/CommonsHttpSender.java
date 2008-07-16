@@ -26,6 +26,7 @@
  *   - changed visibility of addContextInfo() from private to protected
  *   - reformatted source and added @SuppressWarnings annotation
  *   - commented calls to commons logging out 
+ *   - added timeout thread for idle connections
  */
 package org.eclipse.mylyn.internal.jira.core.service.soap;
 
