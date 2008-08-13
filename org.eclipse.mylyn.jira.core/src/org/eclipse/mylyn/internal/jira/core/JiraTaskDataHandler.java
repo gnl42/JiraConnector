@@ -548,7 +548,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private TaskAttribute setAttributeValue(TaskData data, JiraAttribute key, String value) {
 		TaskAttribute attribute = data.getRoot().getAttribute(key.id());
-		attribute.setValue(value);
+		// XXX a null value might indicate an invalid issue
+		if (value != null) {
+			attribute.setValue(value);
+		}
 		return attribute;
 	}
 
