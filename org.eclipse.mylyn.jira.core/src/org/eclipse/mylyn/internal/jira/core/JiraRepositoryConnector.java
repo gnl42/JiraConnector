@@ -504,8 +504,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		private final ISynchronizationSession session;
 
-		private IStatus status;
-
 		private final JiraClient client;
 
 		private final TaskRepository repository;
@@ -513,6 +511,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		private final TaskDataCollector collector;
 
 		private final int maxHits;
+
+		private List<IStatus> statuses;
 
 		public QueryHitCollector(TaskRepository repository, JiraClient client, TaskDataCollector collector,
 				ISynchronizationSession session, IProgressMonitor monitor) {
@@ -522,13 +522,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			this.session = session;
 			this.monitor = monitor;
 			this.maxHits = JiraUtil.getMaxSearchResults(repository);
-			this.status = Status.OK_STATUS;
 		}
 
-		// TODO collect all statuses
 		public void collectIssue(JiraIssue issue) {
 			if (issue.getProject() == null) {
-				status = new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION, null);
+				addStatus(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION, null));
+				return;
 			}
 			monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
 			TaskData oldTaskData = null;
@@ -545,8 +544,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData, monitor);
 				collector.accept(taskData);
 			} catch (JiraException e) {
-				status = JiraCorePlugin.toStatus(repository, e);
+				addStatus(JiraCorePlugin.toStatus(repository, e));
 			}
+		}
+
+		private void addStatus(IStatus status) {
+			if (statuses == null) {
+				statuses = new ArrayList<IStatus>();
+			}
+			statuses.add(status);
 		}
 
 		public void done() {
@@ -559,7 +565,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		}
 
 		public IStatus getStatus() {
-			return status;
+			// TODO return all statuses in a MultiStatus
+			return (statuses != null) ? statuses.get(0) : Status.OK_STATUS;
 		}
 
 		public boolean isCancelled() {
