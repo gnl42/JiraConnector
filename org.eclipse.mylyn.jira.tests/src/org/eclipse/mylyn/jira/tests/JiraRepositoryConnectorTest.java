@@ -124,9 +124,9 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		assertEquals(1, contextAttachments.size());
 
 		ITaskAttachment attachment = contextAttachments.get(0);
-		result = AttachmentUtil.retrieveContext(connector.getTaskAttachmentHandler(), repository, task, attachment,
-				System.getProperty("java.io.tmpdir"), PlatformUI.getWorkbench().getProgressService());
+		result = AttachmentUtil.downloadContext(task, attachment, PlatformUI.getWorkbench().getProgressService());
 		assertTrue(result);
+		assertTrue(task.isActive());
 	}
 
 	public void testPerformQueryDueDateFilter() throws Exception {
