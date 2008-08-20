@@ -144,7 +144,7 @@ public class JiraUtil {
 
 	public static int getMaxSearchResults(TaskRepository repository) {
 		int value = getInteger(repository, MAX_SEARCH_RESULTS, DEFAULT_MAX_SEARCH_RESULTS);
-		if (value < -1) {
+		if (value <= 0) {
 			return -1;
 		}
 		return value;

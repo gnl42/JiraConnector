@@ -42,6 +42,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -103,6 +104,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	private Combo localeCombo;
 
 	private Locale[] locales;
+
+	private Button limitSearchResultsButton;
 
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
 		super(TITLE, DESCRIPTION, taskRepository);
@@ -193,12 +196,37 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		label.setText("working hours per day");
 
 		label = new Label(parent, SWT.NONE);
-		label.setText("Max number of search results:");
-		maxSearchResultsSpinner = new Spinner(parent, SWT.BORDER);
-		maxSearchResultsSpinner.setValues(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS, -1, 99999, 0, 1, 1000);
+		label.setText("Search results:");
+
+		Composite maxSearchResultsComposite = new Composite(parent, SWT.NONE);
+		maxSearchResultsComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+
+		limitSearchResultsButton = new Button(maxSearchResultsComposite, SWT.CHECK | SWT.LEFT);
+		limitSearchResultsButton.setText("Limit");
+
+		maxSearchResultsSpinner = new Spinner(maxSearchResultsComposite, SWT.BORDER);
+		maxSearchResultsSpinner.setValues(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS, 1, 99999, 0, 1, 1000);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).applyTo(maxSearchResultsSpinner);
 		if (repository != null) {
-			maxSearchResultsSpinner.setSelection(JiraUtil.getMaxSearchResults(repository));
+			int maxSearchResults = JiraUtil.getMaxSearchResults(repository);
+			if (maxSearchResults != -1) {
+				maxSearchResultsSpinner.setSelection(maxSearchResults);
+				limitSearchResultsButton.setSelection(true);
+			} else {
+				maxSearchResultsSpinner.setSelection(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
+				limitSearchResultsButton.setSelection(false);
+				maxSearchResultsSpinner.setEnabled(false);
+			}
+		} else {
+			maxSearchResultsSpinner.setSelection(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
+			limitSearchResultsButton.setSelection(true);
 		}
+		limitSearchResultsButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				maxSearchResultsSpinner.setEnabled(limitSearchResultsButton.getSelection());
+			}
+		});
 
 		createAdvancedComposite(parent);
 	}
@@ -310,7 +338,11 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		JiraUtil.setLinkedTasksAsSubtasks(repository, linkedTasksAsSubtasksButton.getSelection());
 		JiraUtil.setWorkDaysPerWeek(repository, workDaysPerWeekSpinner.getSelection());
 		JiraUtil.setWorkHoursPerDay(repository, workHoursPerDaySpinner.getSelection());
-		JiraUtil.setMaxSearchResults(repository, maxSearchResultsSpinner.getSelection());
+		if (limitSearchResultsButton.getSelection()) {
+			JiraUtil.setMaxSearchResults(repository, maxSearchResultsSpinner.getSelection());
+		} else {
+			JiraUtil.setMaxSearchResults(repository, -1);
+		}
 		if (characterEncodingValidated) {
 			JiraUtil.setCharacterEncodingValidated(repository, true);
 		}
