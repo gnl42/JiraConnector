@@ -115,7 +115,7 @@ public class JiraWebClient {
 				if (issue.getPriority() != null) {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
-				addFields(client, issue, post);
+				addFields(client, issue, post, new String[] { "duedate" });
 				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m");
 
 				Component[] components = issue.getComponents();
@@ -239,16 +239,7 @@ public class JiraWebClient {
 				}
 				post.addParameter("commentLevel", "");
 
-				for (String field : fields) {
-					String[] values = issue.getFieldValues(field);
-					if (values == null) {
-						// method.addParameter(field, "");
-					} else {
-						for (String value : values) {
-							post.addParameter(field, value);
-						}
-					}
-				}
+				addFields(server, issue, post, fields);
 
 				try {
 					execute(post);
@@ -435,7 +426,7 @@ public class JiraWebClient {
 				if (issue.getPriority() != null) {
 					post.addParameter("priority", issue.getPriority().getId());
 				}
-				addFields(client, issue, post);
+				addFields(client, issue, post, new String[] { "duedate" });
 				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m");
 
 				if (issue.getComponents() != null) {
@@ -701,8 +692,14 @@ public class JiraWebClient {
 
 	private void addCustomFields(JiraClient client, JiraIssue issue, PostMethod post) {
 		for (CustomField customField : issue.getCustomFields()) {
-			for (String value : customField.getValues()) {
-				String key = customField.getKey();
+			addCustomField(client, post, customField);
+		}
+	}
+
+	private void addCustomField(JiraClient client, PostMethod post, CustomField customField) {
+		for (String value : customField.getValues()) {
+			String key = customField.getKey();
+			if (includeCustomField(key)) {
 				if (value != null
 						&& (JiraFieldType.DATE.getKey().equals(key) || JiraFieldType.DATETIME.getKey().equals(key))) {
 					try {
@@ -718,19 +715,34 @@ public class JiraWebClient {
 						// XXX ignore
 					}
 				}
-				if (includeCustomField(key)) {
-					post.addParameter(customField.getId(), value == null ? "" : value);
-				}
+				post.addParameter(customField.getId(), value == null ? "" : value);
 			}
 		}
 	}
 
-	private void addFields(JiraClient client, JiraIssue issue, PostMethod post) {
-		if (issue.getDue() != null) {
-			DateFormat format = client.getConfiguration().getDateFormat();
-			post.addParameter("duedate", format.format(issue.getDue()));
-		} else {
-			post.addParameter("duedate", "");
+	private void addFields(JiraClient client, JiraIssue issue, PostMethod post, String[] fields) {
+		for (String field : fields) {
+			if ("duedate".equals(field)) {
+				if (issue.getDue() != null) {
+					DateFormat format = client.getConfiguration().getDateFormat();
+					post.addParameter("duedate", format.format(issue.getDue()));
+				} else {
+					post.addParameter("duedate", "");
+				}
+			} else if (field.startsWith("customfield_")) {
+				for (CustomField customField : issue.getCustomFields()) {
+					addCustomField(client, post, customField);
+				}
+			} else {
+				String[] values = issue.getFieldValues(field);
+				if (values == null) {
+					// method.addParameter(field, "");
+				} else {
+					for (String value : values) {
+						post.addParameter(field, value);
+					}
+				}
+			}
 		}
 	}
 
