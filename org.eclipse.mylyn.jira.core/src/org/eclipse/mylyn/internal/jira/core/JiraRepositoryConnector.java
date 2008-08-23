@@ -163,9 +163,14 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 			List<JiraIssue> issues = new ArrayList<JiraIssue>();
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+			int maxResults = JiraUtil.getMaxSearchResults(repository);
+			if (maxResults <= 0) {
+				maxResults = MAX_MARK_STALE_QUERY_HITS;
+			} else {
+				maxResults = Math.min(MAX_MARK_STALE_QUERY_HITS, maxResults);
+			}
 			// unlimited maxHits can create crazy amounts of traffic
-			JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues,
-					MAX_MARK_STALE_QUERY_HITS);
+			JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues, maxResults);
 			try {
 				client.search(changedFilter, issueCollector, monitor);
 
