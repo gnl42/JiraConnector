@@ -33,6 +33,8 @@ public class JiraConfiguration {
 
 	private String characterEncoding;
 
+	private boolean followRedirects;
+
 	public JiraConfiguration() {
 		setDatePattern(DEFAULT_DATE_PATTERN);
 		setDateTimePattern(DEFAULT_DATE_TIME_PATTERN);
@@ -86,6 +88,14 @@ public class JiraConfiguration {
 
 	public DateFormat getDateTimeFormat() {
 		return new SimpleDateFormat(getDateTimePattern(), getLocale());
+	}
+
+	public boolean getFollowRedirects() {
+		return followRedirects;
+	}
+
+	public void setFollowRedirects(boolean followRedirects) {
+		this.followRedirects = followRedirects;
 	}
 
 }

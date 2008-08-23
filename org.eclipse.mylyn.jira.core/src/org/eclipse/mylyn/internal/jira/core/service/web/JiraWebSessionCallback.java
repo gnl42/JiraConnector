@@ -35,10 +35,14 @@ public abstract class JiraWebSessionCallback {
 
 	private String baseUrl;
 
-	public void configure(HttpClient httpClient, HostConfiguration hostConfiguration, String baseUrl) {
+	private boolean followRedirects;
+
+	public void configure(HttpClient httpClient, HostConfiguration hostConfiguration, String baseUrl,
+			boolean followRedirects) {
 		this.httpClient = httpClient;
 		this.hostConfiguration = hostConfiguration;
 		this.baseUrl = baseUrl;
+		this.followRedirects = followRedirects;
 	}
 
 	public int execute(HttpMethod method) throws JiraException {
@@ -53,7 +57,8 @@ public abstract class JiraWebSessionCallback {
 		}
 	}
 
-	public abstract void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException, IOException;
+	public abstract void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException,
+			IOException;
 
 	protected boolean expectRedirect(HttpMethodBase method, JiraIssue issue) throws JiraException {
 		return expectRedirect(method, "/browse/" + issue.getKey());
@@ -69,7 +74,7 @@ public abstract class JiraWebSessionCallback {
 			throw new JiraServiceUnavailableException("Invalid server response, missing redirect location");
 		}
 		String url = locationHeader.getValue();
-		if (!url.startsWith(baseUrl + page)) {
+		if ((followRedirects && !url.startsWith(baseUrl + page)) || (!followRedirects && !url.endsWith(page))) {
 			throw new JiraException("Server redirected to unexpected location: " + url);
 		}
 		return true;

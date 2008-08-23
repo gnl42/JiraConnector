@@ -47,6 +47,8 @@ public class JiraUtil {
 
 	private static final String DATE_TIME_PATTERN_KEY = "jira.dateTimePattern";
 
+	private static final String FOLLOW_REDIRECTS_KEY = "jira.followRedirects";
+
 	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl";
 
 	private static final String KEY_FILTER_ID = "FilterID";
@@ -301,6 +303,11 @@ public class JiraUtil {
 				}
 			}
 		}
+		if (repository.getProperty(FOLLOW_REDIRECTS_KEY) == null) {
+			configuration.setFollowRedirects(true);
+		} else {
+			configuration.setFollowRedirects(Boolean.parseBoolean(repository.getProperty(FOLLOW_REDIRECTS_KEY)));
+		}
 		return configuration;
 	}
 
@@ -320,6 +327,7 @@ public class JiraUtil {
 		} else {
 			repository.setProperty(LOCALE_KEY, configuration.getLocale().toString());
 		}
+		repository.setProperty(FOLLOW_REDIRECTS_KEY, Boolean.toString(configuration.getFollowRedirects()));
 	}
 
 	public static boolean isCustomDateTimeAttribute(TaskAttribute attribute) {

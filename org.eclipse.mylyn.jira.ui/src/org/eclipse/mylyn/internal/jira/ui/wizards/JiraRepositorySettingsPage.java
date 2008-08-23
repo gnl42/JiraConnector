@@ -107,6 +107,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private Button limitSearchResultsButton;
 
+	private Button followRedirectsButton;
+
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
 		super(TITLE, DESCRIPTION, taskRepository);
 		setNeedsProxy(true);
@@ -170,6 +172,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		linkedTasksAsSubtasksButton.setToolTipText("If checked linked tasks show as subtasks in the task list.");
 		if (repository != null) {
 			linkedTasksAsSubtasksButton.setSelection(JiraUtil.getLinkedTasksAsSubtasks(repository));
+		}
+
+		Label followRedirectsLabel = new Label(parent, SWT.NONE);
+		followRedirectsLabel.setText("Follow redirects:");
+		followRedirectsButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+		followRedirectsButton.setText("Enabled");
+		if (configuration != null) {
+			followRedirectsButton.setSelection(configuration.getFollowRedirects());
 		}
 
 		label = new Label(parent, SWT.NONE);
@@ -331,6 +341,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		if (localeCombo.getSelectionIndex() != -1) {
 			configuration.setLocale(locales[localeCombo.getSelectionIndex()]);
 		}
+		configuration.setFollowRedirects(followRedirectsButton.getSelection());
 		JiraUtil.setConfiguration(repository, configuration);
 		JiraUtil.setCompression(repository, compressionButton.getSelection());
 		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());

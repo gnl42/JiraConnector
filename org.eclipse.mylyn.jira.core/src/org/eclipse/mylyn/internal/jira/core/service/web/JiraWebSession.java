@@ -80,7 +80,8 @@ public class JiraWebSession {
 			HttpClient httpClient = new HttpClient(connectionManager);
 			HostConfiguration hostConfiguration = login(httpClient, monitor);
 			try {
-				callback.configure(httpClient, hostConfiguration, baseUrl);
+				callback.configure(httpClient, hostConfiguration, baseUrl, client.getConfiguration()
+						.getFollowRedirects());
 				callback.run(client, baseUrl, monitor);
 			} catch (IOException e) {
 				throw new JiraException(e);
@@ -162,7 +163,7 @@ public class JiraWebSession {
 				}
 				if (url.endsWith("/success")) {
 					String newBaseUrl = url.substring(0, url.lastIndexOf("/success"));
-					if (baseUrl.equals(newBaseUrl)) {
+					if (baseUrl.equals(newBaseUrl) || !client.getConfiguration().getFollowRedirects()) {
 						// success
 						return hostConfiguration;
 					} else {
