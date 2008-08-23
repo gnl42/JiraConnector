@@ -307,7 +307,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return null;
 		}
 		int index = url.indexOf(ISSUE_URL_PREFIX);
-		return index == -1 ? null : url.substring(0, index);
+		return (index != -1) ? url.substring(0, index) : null;
 	}
 
 	@Override
@@ -316,7 +316,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			return null;
 		}
 		int index = url.indexOf(ISSUE_URL_PREFIX);
-		return index == -1 ? null : url.substring(index + ISSUE_URL_PREFIX.length());
+		if (index != -1) {
+			String taskId = url.substring(index + ISSUE_URL_PREFIX.length());
+			if (taskId.contains("-")) {
+				return taskId;
+			}
+		}
+		return null;
 	}
 
 	@Override

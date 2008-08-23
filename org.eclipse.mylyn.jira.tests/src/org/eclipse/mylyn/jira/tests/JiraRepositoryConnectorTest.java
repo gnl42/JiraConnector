@@ -386,6 +386,26 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		return cal.getTime();
 	}
 
+	public void testGetRepositoryUrlFromTaskUrl() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+		assertEquals(null, connector.getRepositoryUrlFromTaskUrl("test"));
+		assertEquals(null, connector.getRepositoryUrlFromTaskUrl("http://mylyn.eclipse.org"));
+		assertEquals("http://mylyn.eclipse.org",
+				connector.getRepositoryUrlFromTaskUrl("http://mylyn.eclipse.org/browse/ABC"));
+		assertEquals("http://mylyn.eclipse.org/jiratest",
+				connector.getRepositoryUrlFromTaskUrl("http://mylyn.eclipse.org/jiratest/browse/ABC"));
+		assertEquals("http://mylyn.eclipse.org/jiratest",
+				connector.getRepositoryUrlFromTaskUrl("http://mylyn.eclipse.org/jiratest/browse/ABC-123"));
+	}
+
+	public void testGetTaskIdFromTaskUrl() throws Exception {
+		init(JiraTestConstants.JIRA_39_URL);
+		assertEquals(null, connector.getTaskIdFromTaskUrl("test"));
+		assertEquals(null, connector.getTaskIdFromTaskUrl("http://mylyn.eclipse.org"));
+		assertEquals(null, connector.getTaskIdFromTaskUrl("http://mylyn.eclipse.org/browse/ABC"));
+		assertEquals("ABC-123", connector.getTaskIdFromTaskUrl("http://mylyn.eclipse.org/jiratest/browse/ABC-123"));
+	}
+
 //	private void waitForRepositoryTimeSync(Date repositoryTime) throws InterruptedException {
 //		Date now = new Date();
 //		long diff = now.getTime() - repositoryTime.getTime();
