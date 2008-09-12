@@ -1,9 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Mylyn project committers and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Brock Janiczak - initial API and implementation
+ *     Tasktop Technologies - improvements
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.core.service.web.rss;
@@ -44,7 +48,8 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 	}
 
 	@Override
-	public final void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException, IOException {
+	public final void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException,
+			IOException {
 		String rssUrl = getRssUrl(baseUrl);
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
 			GetMethod rssRequest = new GetMethod(rssUrl);
