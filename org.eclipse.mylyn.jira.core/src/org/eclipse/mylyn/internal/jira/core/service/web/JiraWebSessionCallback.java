@@ -69,6 +69,10 @@ public abstract class JiraWebSessionCallback {
 	}
 
 	protected boolean expectRedirect(HttpMethodBase method, String page) throws JiraException {
+		return expectRedirect(method, page, true);
+	}
+
+	protected boolean expectRedirect(HttpMethodBase method, String page, boolean fullMatch) throws JiraException {
 		if (method.getStatusCode() != HttpStatus.SC_MOVED_TEMPORARILY) {
 			return false;
 		}
@@ -78,8 +82,16 @@ public abstract class JiraWebSessionCallback {
 			throw new JiraServiceUnavailableException("Invalid server response, missing redirect location");
 		}
 		String url = locationHeader.getValue();
-		if ((followRedirects && !url.startsWith(baseUrl + page)) || (!followRedirects && !url.endsWith(page))) {
-			throw new JiraException("Server redirected to unexpected location: " + url);
+		if (fullMatch) {
+			// only if followRedirects is enabled the baseUrl is guaranteed to match the redirect url, otherwise the repository might be sending back a different url 
+			if ((followRedirects && !url.startsWith(baseUrl + page)) || (!followRedirects && !url.endsWith(page))) {
+				throw new JiraException("Server redirected to unexpected location: " + url);
+			}
+		} else {
+			// the client does not know exactly where the repository will redirect to
+			if (!url.contains(page)) {
+				throw new JiraException("Server redirected to unexpected location: " + url);
+			}
 		}
 		return true;
 	}

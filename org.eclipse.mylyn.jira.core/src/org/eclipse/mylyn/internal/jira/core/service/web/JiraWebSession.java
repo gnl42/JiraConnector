@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.axis.transport.http.HTTPConstants;
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -65,6 +67,8 @@ public class JiraWebSession {
 	private final AbstractWebLocation location;
 
 	protected static final String USER_AGENT = "JiraConnector";
+
+	private static final Object SESSION_ID_COOKIE = "JSESSIONID";
 
 	public JiraWebSession(JiraClient client, String baseUrl) {
 		this.client = client;
@@ -169,6 +173,7 @@ public class JiraWebSession {
 					String newBaseUrl = url.substring(0, url.lastIndexOf("/success"));
 					if (baseUrl.equals(newBaseUrl) || !client.getConfiguration().getFollowRedirects()) {
 						// success
+						addAuthenticationCookie(httpClient, login);
 						return hostConfiguration;
 					} else {
 						// need to login to make sure HttpClient picks up the session cookie
@@ -186,6 +191,38 @@ public class JiraWebSession {
 		tracker.log("Exceeded maximum number of allowed redirects during login to repository: " + client.getBaseUrl());
 
 		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects during login");
+	}
+
+	private void addAuthenticationCookie(HttpClient httpClient, PostMethod method) {
+		Cookie[] cookies = httpClient.getState().getCookies();
+		for (Cookie cookie : cookies) {
+			if (SESSION_ID_COOKIE.equals(cookie.getName())) {
+				// already have cookie
+				return;
+			}
+		}
+
+		for (Header header : method.getResponseHeaders()) {
+			if (header.getName().equalsIgnoreCase(HTTPConstants.HEADER_SET_COOKIE)) {
+				String cookie = header.getValue();
+				// chop of path
+				int index = cookie.indexOf(';');
+				if (index != -1) {
+					cookie = cookie.substring(0, index);
+				}
+				// get session id 
+				int i = cookie.indexOf("=");
+				String key = (i != -1) ? cookie.substring(0, i) : cookie;
+				cookie = (i != -1) ? cookie.substring(i + 1) : "";
+				httpClient.getState().addCookie(
+						new Cookie(WebUtil.getHost(baseUrl), key, cookie, WebUtil.getRequestPath(baseUrl), null,
+								isSecure(baseUrl)));
+			}
+		}
+	}
+
+	private static boolean isSecure(String repositoryUrl) {
+		return repositoryUrl.matches("https.*");
 	}
 
 	private boolean needsReauthentication(HttpClient httpClient, int code, IProgressMonitor monitor)

@@ -479,7 +479,7 @@ public class JiraWebClient {
 
 				try {
 					execute(post);
-					if (!expectRedirect(post, "/browse/")) {
+					if (!expectRedirect(post, "/browse/", false)) {
 						handleErrorMessage(post);
 					} else {
 						final Header locationHeader = post.getResponseHeader("location");
