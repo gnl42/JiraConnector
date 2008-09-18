@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import org.eclipse.mylyn.jira.tests.ui.JiraTimeFormatTest;
 public class AllJiraTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for mylyn.jira.tests");
+		TestSuite suite = new TestSuite("Test for org.eclipse.mylyn.jira.tests");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(JiraTimeFormatTest.class);
 		suite.addTestSuite(JiraCustomQueryTest.class);
