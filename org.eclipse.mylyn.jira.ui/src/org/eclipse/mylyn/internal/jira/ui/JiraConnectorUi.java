@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package org.eclipse.mylyn.internal.jira.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.Region;
@@ -21,14 +23,15 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraFilterDefinitionPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraNamedFilterPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.JiraRepositorySettingsPage;
 import org.eclipse.mylyn.internal.jira.ui.wizards.NewJiraTaskWizard;
-import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskComment;
@@ -38,7 +41,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttachmentModel;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.LegendElement;
 import org.eclipse.mylyn.tasks.ui.TaskHyperlink;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskSearchPage;
 import org.eclipse.mylyn.tasks.ui.wizards.RepositoryQueryWizard;
@@ -50,6 +52,8 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
  * @author Steffen Pingel
  */
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
+
+	private static Pattern TASK_PATTERN = Pattern.compile("([A-Z]+)-\\d+");
 
 	public enum JiraTaskKind {
 		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
@@ -155,52 +159,24 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	}
 
 	@Override
-	public IHyperlink[] findHyperlinks(TaskRepository repository, String text, int lineOffset, int regionOffset) {
-		AbstractRepositoryConnector connector = TasksUi.getRepositoryManager().getRepositoryConnector(
-				repository.getConnectorKind());
-		if (text.length() == 0) {
-			return null;
-		}
-
-		int startPos = lineOffset;
-		if (startPos < 0) {
-			startPos = 0;
-		} else if (startPos >= text.length()) {
-			startPos = text.length() - 1;
-		}
-		while (startPos > 0) {
-			char c = text.charAt(startPos);
-			if (Character.isWhitespace(c) || ",.;[](){}".indexOf(c) > -1) {
-				break;
+	public IHyperlink[] findHyperlinks(TaskRepository repository, String text, int index, int textOffset) {
+		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+		if (client.getCache().hasDetails()) {
+			List<IHyperlink> links = null;
+			Matcher m = TASK_PATTERN.matcher(text);
+			while (m.find()) {
+				String projectKey = m.group(1);
+				if (client.getCache().getProjectByKey(projectKey) != null) {
+					if (links == null) {
+						links = new ArrayList<IHyperlink>();
+					}
+					Region region = new Region(textOffset + m.start(), m.end() - m.start());
+					links.add(new TaskHyperlink(region, repository, m.group()));
+				}
 			}
-			startPos--;
+			return links == null ? null : links.toArray(new IHyperlink[0]);
 		}
-		int endPos = lineOffset;
-		if (endPos < 0) {
-			endPos = 0;
-		} else if (endPos >= text.length()) {
-			endPos = text.length() - 1;
-		}
-		while (endPos < text.length()) {
-			char c = text.charAt(endPos);
-			if (Character.isWhitespace(c) || ",.;[](){}".indexOf(c) > -1) {
-				break;
-			}
-			endPos++;
-		}
-
-		String[] taskIds = connector.getTaskIdsFromComment(repository, text.substring(startPos, endPos));
-		if (taskIds == null || taskIds.length == 0) {
-			return null;
-		}
-
-		IHyperlink[] links = new IHyperlink[taskIds.length];
-		for (int i = 0; i < taskIds.length; i++) {
-			String taskId = taskIds[i];
-			int startRegion = text.indexOf(taskId, startPos);
-			links[i] = new TaskHyperlink(new Region(regionOffset + startRegion, taskId.length()), repository, taskId);
-		}
-		return links;
+		return null;
 	}
 
 	@Override

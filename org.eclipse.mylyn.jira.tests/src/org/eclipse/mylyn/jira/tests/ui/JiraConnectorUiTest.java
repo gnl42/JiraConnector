@@ -14,9 +14,15 @@ package org.eclipse.mylyn.jira.tests.ui;
 
 import junit.framework.TestCase;
 
+import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi;
 import org.eclipse.mylyn.internal.tasks.core.TaskTask;
+import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
+import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -32,28 +38,49 @@ public class JiraConnectorUiTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		connectorUi = (JiraConnectorUi) TasksUi.getRepositoryConnectorUi(JiraCorePlugin.CONNECTOR_KIND);
+		JiraTestUtil.setUp();
 	}
 
-	public void testFindHyperlinks() {
-		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "http://u.net");
-		connectorUi.findHyperlinks(repository, "foo", -1, 0);
-		connectorUi.findHyperlinks(repository, "foo", 0, 0);
-		connectorUi.findHyperlinks(repository, "foo", 1, 0);
-		connectorUi.findHyperlinks(repository, "foo", 2, 0);
-		connectorUi.findHyperlinks(repository, "foo", 3, 0);
-		connectorUi.findHyperlinks(repository, "foo", 4, 0);
+	@Override
+	protected void tearDown() throws Exception {
+		JiraTestUtil.tearDown();
+	}
 
-		connectorUi.findHyperlinks(repository, "foo boo", -1, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 0, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 1, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 2, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 3, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 4, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 5, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 6, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 7, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 8, 0);
-		connectorUi.findHyperlinks(repository, "foo boo", 9, 0);
+	protected void init(String url) throws Exception {
+	}
+
+	public void testFindHyperlinks() throws Exception {
+		TaskRepository repository = JiraTestUtil.init(JiraTestConstants.JIRA_39_URL);
+		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+		JiraTestUtil.refreshDetails(client);
+
+		IHyperlink[] result = connectorUi.findHyperlinks(repository, "foo", -1, 0);
+		assertNull(result);
+
+		result = connectorUi.findHyperlinks(repository, "PRONE", -1, 0);
+		assertNull(result);
+
+		result = connectorUi.findHyperlinks(repository, "PRONE-1", -1, 0);
+		assertNotNull(result);
+		assertEquals(1, result.length);
+		assertEquals(new Region(0, 7), result[0].getHyperlinkRegion());
+
+		result = connectorUi.findHyperlinks(repository, " PRONE-1", 2, 3);
+		assertNotNull(result);
+		assertEquals(1, result.length);
+		assertEquals(new Region(4, 7), result[0].getHyperlinkRegion());
+
+		result = connectorUi.findHyperlinks(repository, " PRONE-1 abc PRONE-23 ABC-123 ", 2, 3);
+		assertNotNull(result);
+		assertEquals(2, result.length);
+		assertEquals(new Region(4, 7), result[0].getHyperlinkRegion());
+		assertEquals(new Region(16, 8), result[1].getHyperlinkRegion());
+
+		result = connectorUi.findHyperlinks(repository, " PRONE-1 abc PRONE-2 ABC-123 ", -1, 3);
+		assertNotNull(result);
+		assertEquals(2, result.length);
+		assertEquals(new Region(4, 7), result[0].getHyperlinkRegion());
+		assertEquals(new Region(16, 8), result[1].getHyperlinkRegion());
 	}
 
 	public void testGetTaskHistoryUrl() {
