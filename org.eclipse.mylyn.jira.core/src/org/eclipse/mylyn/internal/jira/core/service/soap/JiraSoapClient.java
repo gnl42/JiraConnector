@@ -37,9 +37,9 @@ import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
+import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
-import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -328,14 +328,10 @@ public class JiraSoapClient {
 		});
 	}
 
-	public Comment[] getComments(String issueKey, IProgressMonitor monitor) throws JiraException {
+	public Comment[] getComments(final String issueKey, IProgressMonitor monitor) throws JiraException {
 		return call(monitor, new RemoteRunnable<Comment[]>() {
 			public Comment[] run() throws java.rmi.RemoteException, JiraException {
-				// TODO implement
-				// return
-				// Converter.convert(jirasoapserviceV2.getComments(loginToken.getCurrentValue(),
-				// issueKey));
-				return null;
+				return JiraSoapConverter.convert(getSoapService().getComments(loginToken.getCurrentValue(), issueKey));
 			}
 		});
 	}

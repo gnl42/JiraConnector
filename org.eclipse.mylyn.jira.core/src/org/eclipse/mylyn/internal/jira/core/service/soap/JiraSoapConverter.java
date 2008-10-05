@@ -12,6 +12,7 @@
 
 package org.eclipse.mylyn.internal.jira.core.service.soap;
 
+import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
@@ -23,6 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComment;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteGroup;
@@ -228,5 +230,18 @@ class JiraSoapConverter {
 			namedFilters[i] = filter;
 		}
 		return namedFilters;
+	}
+
+	public static Comment[] convert(RemoteComment[] remoteComments) {
+		Comment[] comments = new Comment[remoteComments.length];
+		for (int i = 0; i < remoteComments.length; i++) {
+			RemoteComment remoteComment = remoteComments[i];
+			Comment comment = new Comment();
+			comment.setAuthor(remoteComment.getAuthor());
+			comment.setComment(remoteComment.getBody());
+			comment.setLevel(remoteComment.getRoleLevel());
+			comments[i] = comment;
+		}
+		return comments;
 	}
 }

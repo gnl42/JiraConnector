@@ -654,6 +654,21 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						}
 					}
 				}
+				int i = 1;
+				for (Comment comment : jiraIssue.getComments()) {
+					if (comment.isMarkupDetected()) {
+						String attributeId = TaskAttribute.PREFIX_COMMENT + i;
+						TaskAttribute oldAttribute = oldTaskData.getRoot().getAttribute(attributeId);
+						if (oldAttribute != null) {
+							TaskCommentMapper oldComment = TaskCommentMapper.createFrom(oldAttribute);
+							TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
+							TaskCommentMapper newComment = TaskCommentMapper.createFrom(attribute);
+							newComment.setText(oldComment.getText());
+							newComment.applyTo(attribute);
+						}
+					}
+					i++;
+				}
 				return;
 			}
 		}
@@ -689,7 +704,26 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 			}
 		}
-
+		boolean retrieveComments = false;
+		for (Comment comment : jiraIssue.getComments()) {
+			if (comment.isMarkupDetected()) {
+				retrieveComments = true;
+			}
+		}
+		if (retrieveComments) {
+			Comment[] remoteComments = client.getSoapClient().getComments(jiraIssue.getKey(), monitor);
+			int i = 1;
+			for (Comment remoteComment : remoteComments) {
+				String attributeId = TaskAttribute.PREFIX_COMMENT + i;
+				TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
+				if (attribute != null) {
+					TaskCommentMapper comment = TaskCommentMapper.createFrom(attribute);
+					comment.setText(remoteComment.getComment());
+					comment.applyTo(attribute);
+				}
+				i++;
+			}
+		}
 	}
 
 	public void addOperations(TaskData data, JiraIssue issue, JiraClient client, TaskData oldTaskData,

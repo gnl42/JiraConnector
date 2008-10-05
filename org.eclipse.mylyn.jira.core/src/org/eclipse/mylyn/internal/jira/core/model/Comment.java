@@ -24,29 +24,24 @@ public final class Comment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String level;
+	private String level;
 
-	private final String comment;
+	private String comment;
 
-	private final String author;
+	private String author;
 
-	private final Date created;
+	private Date created;
 
 	private boolean markupDetected;
-
-	public Comment(String comment, String author) {
-		this(comment, author, "", new Date()); //$NON-NLS-1$
-	}
-
-	public Comment(String comment, String author, String level) {
-		this(comment, author, level, new Date());
-	}
 
 	public Comment(String comment, String author, String level, Date created) {
 		this.comment = comment;
 		this.author = author;
 		this.level = level;
 		this.created = created;
+	}
+
+	public Comment() {
 	}
 
 	public String getAuthor() {
@@ -65,22 +60,33 @@ public final class Comment implements Serializable {
 		return this.level;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return this.author + ": " + this.comment;
-	}
-
 	public boolean isMarkupDetected() {
 		return markupDetected;
 	}
 
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
 	public void setMarkupDetected(boolean markupDetected) {
 		this.markupDetected = markupDetected;
+	}
+
+	@Override
+	public String toString() {
+		return this.author + ": " + this.comment;
 	}
 
 }
