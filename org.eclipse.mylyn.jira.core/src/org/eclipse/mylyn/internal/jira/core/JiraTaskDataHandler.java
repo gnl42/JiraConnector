@@ -471,6 +471,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			String kind = JiraAttribute.valueById(mappedKey).getKind();
 			String type = field.getKey();
 			String taskType = JiraFieldType.fromKey(type).getTaskType();
+			if (taskType == null && type != null && type.startsWith(IJiraConstants.JIRA_TOOLKIT_PREFIX)) {
+				taskType = TaskAttribute.TYPE_SHORT_TEXT;
+
+			}
 
 			TaskAttribute attribute = data.getRoot().createAttribute(mappedKey);
 			attribute.getMetaData().defaults() //
