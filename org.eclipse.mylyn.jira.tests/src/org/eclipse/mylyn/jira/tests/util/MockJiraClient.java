@@ -22,7 +22,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
-import org.eclipse.mylyn.internal.jira.core.model.JiraField;
+import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
@@ -184,7 +184,7 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public JiraField[] getEditableAttributes(String issueKey, IProgressMonitor monitor) throws JiraException {
+	public IssueField[] getEditableAttributes(String issueKey, IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 

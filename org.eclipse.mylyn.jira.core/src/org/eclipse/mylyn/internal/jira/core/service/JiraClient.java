@@ -28,7 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
-import org.eclipse.mylyn.internal.jira.core.model.JiraField;
+import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
@@ -290,7 +290,7 @@ public class JiraClient {
 	 *            Unique key of the issue to find
 	 * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>.
 	 */
-	public JiraField[] getEditableAttributes(final String issueKey, IProgressMonitor monitor) throws JiraException {
+	public IssueField[] getEditableAttributes(final String issueKey, IProgressMonitor monitor) throws JiraException {
 		// work around for bug 205015
 		String version = getCache().getServerInfo().getVersion();
 		boolean workAround = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0);

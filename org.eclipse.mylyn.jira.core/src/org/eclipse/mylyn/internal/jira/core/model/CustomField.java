@@ -21,7 +21,7 @@ import java.util.List;
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  */
-public class CustomField extends JiraField {
+public class CustomField extends IssueField {
 
 	private static final long serialVersionUID = 1L;
 

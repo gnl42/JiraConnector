@@ -26,7 +26,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
-import org.eclipse.mylyn.internal.jira.core.model.JiraField;
+import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
@@ -645,9 +645,9 @@ public class JiraClientTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getEditableFields");
 
-		JiraField[] fields = client.getEditableAttributes(issue.getKey(), null);
+		IssueField[] fields = client.getEditableAttributes(issue.getKey(), null);
 		Set<String> ids = new HashSet<String>();
-		for (JiraField field : fields) {
+		for (IssueField field : fields) {
 			ids.add(field.getId());
 		}
 		assertFalse(ids.isEmpty());

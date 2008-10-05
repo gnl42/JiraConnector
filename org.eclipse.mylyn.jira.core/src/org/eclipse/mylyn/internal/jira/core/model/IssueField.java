@@ -16,7 +16,7 @@ import java.io.Serializable;
 /**
  * @author Steffen Pingel
  */
-public class JiraField implements Serializable {
+public class IssueField implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,7 @@ public class JiraField implements Serializable {
 
 	private final String name;
 
-	public JiraField(String id, String name) {
+	public IssueField(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}

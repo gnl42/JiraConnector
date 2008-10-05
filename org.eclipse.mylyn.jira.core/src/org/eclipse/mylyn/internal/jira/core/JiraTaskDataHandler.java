@@ -38,7 +38,7 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueLink;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
-import org.eclipse.mylyn.internal.jira.core.model.JiraField;
+import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
@@ -503,9 +503,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				}
 			} else {
 				try {
-					JiraField[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(), monitor);
+					IssueField[] editableAttributes = client.getEditableAttributes(jiraIssue.getKey(), monitor);
 					if (editableAttributes != null) {
-						for (JiraField field : editableAttributes) {
+						for (IssueField field : editableAttributes) {
 							editableKeys.add(mapCommonAttributeKey(field.getId()));
 						}
 					}

@@ -39,7 +39,7 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
-import org.eclipse.mylyn.internal.jira.core.model.JiraField;
+import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -218,13 +218,13 @@ public class JiraSoapClient {
 		});
 	}
 
-	public JiraField[] getEditableAttributes(final String taskKey, final boolean workAroundBug205015,
+	public IssueField[] getEditableAttributes(final String taskKey, final boolean workAroundBug205015,
 			IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<JiraField[]>() {
-			public JiraField[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new RemoteRunnable<IssueField[]>() {
+			public IssueField[] run() throws java.rmi.RemoteException, JiraException {
 				RemoteField[] fields = getSoapService().getFieldsForEdit(loginToken.getCurrentValue(), taskKey);
 				if (fields == null) {
-					return new JiraField[0];
+					return new IssueField[0];
 				}
 
 				int add = 0;
@@ -232,16 +232,16 @@ public class JiraSoapClient {
 					add += 2;
 				}
 
-				JiraField[] attributes = new JiraField[fields.length + add];
+				IssueField[] attributes = new IssueField[fields.length + add];
 				for (int i = 0; i < fields.length; i++) {
 					RemoteField field = fields[i];
-					attributes[i] = new JiraField(field.getId(), field.getName());
+					attributes[i] = new IssueField(field.getId(), field.getName());
 				}
 
 				if (add > 0) {
 					// might also need to add: Reporter and Summary (http://jira.atlassian.com/browse/JRA-13703)
-					attributes[attributes.length - 2] = new JiraField("duedate", "Due Date");
-					attributes[attributes.length - 1] = new JiraField("fixVersions", "Fix Version/s");
+					attributes[attributes.length - 2] = new IssueField("duedate", "Due Date");
+					attributes[attributes.length - 1] = new IssueField("fixVersions", "Fix Version/s");
 				}
 
 				return attributes;
