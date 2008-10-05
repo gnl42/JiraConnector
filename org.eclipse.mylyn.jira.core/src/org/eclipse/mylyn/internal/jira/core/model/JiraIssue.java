@@ -69,6 +69,8 @@ public class JiraIssue implements Serializable {
 
 	private Date due;
 
+	private boolean hasDueDate;
+
 	private int votes;
 
 	private Comment[] comments = new Comment[0];
@@ -167,6 +169,11 @@ public class JiraIssue implements Serializable {
 
 	public void setDue(Date due) {
 		this.due = due;
+		this.hasDueDate = true;
+	}
+
+	public boolean hasDueDate() {
+		return hasDueDate;
 	}
 
 	public Version[] getFixVersions() {
