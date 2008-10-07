@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.tests.TaskTestUtil;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -52,7 +53,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraTestUtil.setUp();
 		taskList = TasksUiPlugin.getTaskList();
 		repository = JiraTestUtil.init(JiraTestConstants.JIRA_39_URL);
-		resetTaskList();
+		TaskTestUtil.resetTaskList();
 	}
 
 	@Override
@@ -60,21 +61,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraTestUtil.tearDown();
 	}
 
-	@SuppressWarnings("deprecation")
-	private void resetTaskList() {
-		org.eclipse.mylyn.internal.tasks.ui.TaskListManager manager = TasksUiPlugin.getTaskListManager();
-		manager.resetTaskList();
-	}
-
-	@SuppressWarnings("deprecation")
-	private void saveAndReadTaskList() {
-		org.eclipse.mylyn.internal.tasks.ui.TaskListManager manager = TasksUiPlugin.getTaskListManager();
-		manager.saveTaskList();
-		manager.resetTaskList();
-		manager.readExistingOrCreateNewList();
-	}
-
-	public void testNamedFilterNotRenamed() {
+	public void testNamedFilterNotRenamed() throws Exception {
 		NamedFilter filter = new NamedFilter();
 		filter.setName("f-name");
 		RepositoryQuery query = (RepositoryQuery) JiraTestUtil.createQuery(repository, filter);
@@ -86,13 +73,13 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertEquals("f-name", taskList.getQueries().iterator().next().getSummary());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getHandleIdentifier());
 
-		saveAndReadTaskList();
+		TaskTestUtil.saveAndReadTasklist();
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("f-name", taskList.getQueries().iterator().next().getSummary());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getHandleIdentifier());
 	}
 
-	public void testCustomQueryRename() {
+	public void testCustomQueryRename() throws Exception {
 		FilterDefinition filter = new FilterDefinition();
 		RepositoryQuery query = (RepositoryQuery) JiraTestUtil.createQuery(repository, filter);
 		query.setSummary("q-name");
@@ -103,31 +90,31 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
 		assertEquals("handle", taskList.getQueries().iterator().next().getHandleIdentifier());
 
-		saveAndReadTaskList();
+		TaskTestUtil.saveAndReadTasklist();
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
 		assertEquals("handle", taskList.getQueries().iterator().next().getHandleIdentifier());
 	}
 
-	public void testCompletionSave() {
+	public void testCompletionSave() throws Exception {
 		ITask jiraTask = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), TEST_TASK);
 		jiraTask.setSummary(TEST_LABEL);
 		jiraTask.setCompletionDate(new Date());
 		taskList.addTask(jiraTask);
 
-		saveAndReadTaskList();
+		TaskTestUtil.saveAndReadTasklist();
 		ITask task = taskList.getTask(repository.getRepositoryUrl(), TEST_TASK);
 		assertTrue(task.isCompleted());
 	}
 
-	public void testJiraTaskSave() {
+	public void testJiraTaskSave() throws Exception {
 		ITask jiraTask = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), TEST_TASK);
 		jiraTask.setSummary(TEST_LABEL);
 		String testUrl = "http://foo";
 		jiraTask.setUrl(testUrl);
 		taskList.addTask(jiraTask);
 
-		saveAndReadTaskList();
+		TaskTestUtil.saveAndReadTasklist();
 		boolean taskFound = false;
 		for (AbstractTask task : taskList.getAllTasks()) {
 			if (task.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
@@ -140,7 +127,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertTrue("The saved Jira task was not found", taskFound);
 	}
 
-	public void testJiraFilterHitSave() {
+	public void testJiraFilterHitSave() throws Exception {
 		NamedFilter namedFilter = new NamedFilter();
 		namedFilter.setName("Test Filter");
 		namedFilter.setId("123456");
@@ -159,7 +146,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		TasksUiPlugin.getTaskList().addTask(jiraTask, query);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
 
-		saveAndReadTaskList();
+		TaskTestUtil.saveAndReadTasklist();
 
 		Set<RepositoryQuery> queries = taskList.getQueries();
 		RepositoryQuery savedFilter = null;
