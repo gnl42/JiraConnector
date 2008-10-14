@@ -80,7 +80,7 @@ public class JiraConnectorUiTest extends TestCase {
 		assertNotNull(result);
 		assertEquals(2, result.length);
 		assertEquals(new Region(4, 7), result[0].getHyperlinkRegion());
-		assertEquals(new Region(16, 8), result[1].getHyperlinkRegion());
+		assertEquals(new Region(16, 7), result[1].getHyperlinkRegion());
 	}
 
 	public void testGetTaskHistoryUrl() {
