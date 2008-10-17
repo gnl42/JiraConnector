@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 	@Override
 	protected AttributeEditorFactory createAttributeEditorFactory() {
-		AttributeEditorFactory factory = new AttributeEditorFactory(getModel(), getTaskRepository()) {
+		AttributeEditorFactory factory = new AttributeEditorFactory(getModel(), getTaskRepository(), getEditorSite()) {
 			@Override
 			public AbstractAttributeEditor createEditor(String type, TaskAttribute taskAttribute) {
 				if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
