@@ -14,7 +14,6 @@ package org.eclipse.mylyn.jira.tests;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -23,6 +22,7 @@ import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.ui.JiraSearchHandler;
+import org.eclipse.mylyn.internal.tasks.ui.search.RepositorySearchResult;
 import org.eclipse.mylyn.internal.tasks.ui.search.SearchHitCollector;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
@@ -107,10 +107,11 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 		SearchHitCollector collector = new SearchHitCollector(TasksUiInternal.getTaskList(), repository,
 				duplicatesQuery);
 		collector.run(new NullProgressMonitor());
-		Set<ITask> tasks = collector.getTasks();
-		assertTrue("Expected duplicated task " + issue.getId() + " : " + issue.getKey(), tasks.size() > 0);
-
-		for (ITask task : tasks) {
+		RepositorySearchResult searchResult = (RepositorySearchResult) collector.getSearchResult();
+		assertTrue("Expected duplicated task " + issue.getId() + " : " + issue.getKey(),
+				searchResult.getMatchCount() > 0);
+		for (Object element : searchResult.getElements()) {
+			ITask task = (ITask) element;
 			if (task.getTaskId().equals(issue.getId())) {
 				return;
 			}
