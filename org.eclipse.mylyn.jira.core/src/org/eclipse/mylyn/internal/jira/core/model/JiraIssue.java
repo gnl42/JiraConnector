@@ -53,6 +53,10 @@ public class JiraIssue implements Serializable {
 
 	private Resolution resolution;
 
+	private String assignee;
+
+	private String reporter;
+
 	private String assigneeName;
 
 	private String reporterName;
@@ -132,11 +136,11 @@ public class JiraIssue implements Serializable {
 	}
 
 	public String getAssignee() {
-		return this.assigneeName;
+		return this.assignee;
 	}
 
 	public void setAssignee(String asignee) {
-		this.assigneeName = asignee;
+		this.assignee = asignee;
 	}
 
 	public Component[] getComponents() {
@@ -193,11 +197,11 @@ public class JiraIssue implements Serializable {
 	}
 
 	public String getReporter() {
-		return this.reporterName;
+		return this.reporter;
 	}
 
 	public void setReporter(String reporter) {
-		this.reporterName = reporter;
+		this.reporter = reporter;
 	}
 
 	public Resolution getResolution() {
@@ -410,9 +414,9 @@ public class JiraIssue implements Serializable {
 				return new String[] { resolution.getId() };
 			}
 		} else if ("assignee".equals(field)) {
-			return new String[] { assigneeName };
+			return new String[] { assignee };
 		} else if ("reporter".equals(field)) {
-			return new String[] { reporterName };
+			return new String[] { reporter };
 		} else if ("issuetype".equals(field)) {
 			if (type != null) {
 				return new String[] { type.getId() };
@@ -479,7 +483,7 @@ public class JiraIssue implements Serializable {
 				resolution.setId(value);
 			}
 		} else if ("assignee".equals(field)) {
-			assigneeName = value;
+			assignee = value;
 
 			// TODO add other fields
 		} else if (field.startsWith("customfield_")) {
@@ -518,6 +522,22 @@ public class JiraIssue implements Serializable {
 
 	public void setMarkupDetected(boolean markupDetected) {
 		this.markupDetected = markupDetected;
+	}
+
+	public String getReporterName() {
+		return reporterName;
+	}
+
+	public void setReporterName(String reporterName) {
+		this.reporterName = reporterName;
+	}
+
+	public String getAssigneeName() {
+		return assigneeName;
+	}
+
+	public void setAssigneeName(String assigneeName) {
+		this.assigneeName = assigneeName;
 	}
 
 }

@@ -758,9 +758,9 @@ public class JiraRssHandler extends DefaultHandler {
 			} else if (STATUS.equals(localName)) {
 
 			} else if (ASSIGNEE.equals(localName)) {
-
+				currentIssue.setAssigneeName(getCurrentElementText());
 			} else if (REPORTER.equals(localName)) {
-
+				currentIssue.setReporterName(getCurrentElementText());
 			} else if (RESOLUTION.equals(localName)) {
 
 			} else if (ORIGINAL_ESTIMATE.equals(localName)) {

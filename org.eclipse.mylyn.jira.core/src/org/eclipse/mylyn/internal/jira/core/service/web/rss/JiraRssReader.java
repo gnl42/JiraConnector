@@ -15,15 +15,13 @@ package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * @author Brock Janiczak
@@ -42,12 +40,7 @@ class JiraRssReader {
 
 	public void readRssFeed(InputStream feed, String baseUrl) throws JiraException, IOException {
 		try {
-			// TODO this only seems to work in J2SE 5.0
-			// XMLReader reader = XMLReaderFactory.createXMLReader();
-
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			XMLReader reader = factory.newSAXParser().getXMLReader();
+			XMLReader reader = XMLReaderFactory.createXMLReader();
 			reader.setContentHandler(new JiraRssHandler(client, collector, baseUrl));
 			InputSource inputSource = new InputSource(feed);
 			inputSource.setEncoding(client.getCharacterEncoding());
@@ -55,8 +48,6 @@ class JiraRssReader {
 			collector.done();
 		} catch (SAXException e) {
 			throw new JiraException("Error parsing server response: " + e.getMessage(), e);
-		} catch (ParserConfigurationException e) {
-			throw new JiraException("Internal error parsing server response", e);
 		}
 	}
 }

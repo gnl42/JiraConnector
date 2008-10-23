@@ -22,6 +22,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylyn.internal.jira.core.model.User;
 
 /**
  * @author Steffen Pingel
@@ -209,6 +210,22 @@ public class JiraClientCache {
 		}
 		data.serverInfo = info;
 		return info;
+	}
+
+	public User getUser(String name) {
+		synchronized (this.data.usersByName) {
+			return this.data.usersByName.get(name);
+		}
+	}
+
+	public User putUser(String name, String fullName) {
+		User user = new User();
+		user.setName(name);
+		user.setFullName(fullName);
+		synchronized (this.data.usersByName) {
+			this.data.usersByName.put(name, user);
+		}
+		return user;
 	}
 
 }

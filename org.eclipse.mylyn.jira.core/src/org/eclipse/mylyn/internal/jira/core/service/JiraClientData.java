@@ -59,6 +59,7 @@ public class JiraClientData implements Serializable {
 
 	Map<String, JiraStatus> statusesById = new HashMap<String, JiraStatus>();
 
+	// not used
 	User[] users = new User[0];
 
 	Map<String, User> usersByName = new HashMap<String, User>();

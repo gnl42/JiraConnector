@@ -47,6 +47,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Subtask;
+import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -54,6 +55,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionEx
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
+import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.RepositoryResponse;
@@ -330,8 +332,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		setAttributeValue(data, JiraAttribute.RESOLUTION, //
 				jiraIssue.getResolution() == null ? "" : jiraIssue.getResolution().getId());
 		setAttributeValue(data, JiraAttribute.MODIFICATION_DATE, JiraUtil.dateToString(jiraIssue.getUpdated()));
-		setAttributeValue(data, JiraAttribute.USER_ASSIGNED, getAssignee(jiraIssue));
-		setAttributeValue(data, JiraAttribute.USER_REPORTER, getReporter(jiraIssue));
+		setAttributeValue(data, JiraAttribute.USER_ASSIGNED, getPerson(data, client, jiraIssue.getAssignee(),
+				jiraIssue.getAssigneeName()));
+		setAttributeValue(data, JiraAttribute.USER_REPORTER, getPerson(data, client, jiraIssue.getReporter(),
+				jiraIssue.getReporterName()));
 		setAttributeValue(data, JiraAttribute.PROJECT, jiraIssue.getProject().getId());
 
 		if (jiraIssue.getStatus() != null) {
@@ -406,7 +410,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			removeAttribute(data, JiraAttribute.ENVIRONMENT);
 		}
 
-		addComments(data, jiraIssue);
+		addComments(data, jiraIssue, client);
 		addAttachments(data, jiraIssue, client);
 		addCustomFields(data, jiraIssue);
 
@@ -416,17 +420,32 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		updateProperties(data, editableKeys);
 	}
 
-	private String getReporter(JiraIssue jiraIssue) {
-		String reporter = jiraIssue.getReporter();
-		return reporter == null ? "" : reporter;
+	/**
+	 * Stores user in cache if <code>fullName</code> is provided. Otherwise user is retrieved from cache.
+	 */
+	private IRepositoryPerson getPerson(TaskData data, JiraClient client, String userId, String fullName) {
+		if (userId == null || JiraRepositoryConnector.UNASSIGNED_USER.equals(userId)) {
+			userId = "";
+		}
+		User user;
+		if (fullName != null) {
+			user = client.getCache().putUser(userId, fullName);
+		} else {
+			user = client.getCache().getUser(userId);
+		}
+		IRepositoryPerson person = data.getAttributeMapper().getTaskRepository().createPerson(userId);
+		if (user != null) {
+			person.setName(user.getFullName());
+		}
+		return person;
 	}
 
-	private void addComments(TaskData data, JiraIssue jiraIssue) {
+	private void addComments(TaskData data, JiraIssue jiraIssue, JiraClient client) {
 		int i = 1;
 		for (Comment comment : jiraIssue.getComments()) {
 			TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_COMMENT + i);
 			TaskCommentMapper taskComment = TaskCommentMapper.createFrom(attribute);
-			taskComment.setAuthor(data.getAttributeMapper().getTaskRepository().createPerson(comment.getAuthor()));
+			taskComment.setAuthor(getPerson(data, client, comment.getAuthor(), null));
 			taskComment.setNumber(i);
 			String commentText = comment.getComment();
 			if (comment.isMarkupDetected()) {
@@ -446,7 +465,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_ATTACHMENT + i);
 			TaskAttachmentMapper taskAttachment = TaskAttachmentMapper.createFrom(attribute);
 			taskAttachment.setAttachmentId(attachment.getId());
-			taskAttachment.setAuthor(data.getAttributeMapper().getTaskRepository().createPerson(attachment.getAuthor()));
+			taskAttachment.setAuthor(getPerson(data, client, attachment.getAuthor(), null));
 			taskAttachment.setFileName(attachment.getName());
 			if (CONTEXT_ATTACHEMENT_FILENAME.equals(attachment.getName())) {
 				taskAttachment.setDescription(CONTEXT_ATTACHMENT_DESCRIPTION);
@@ -563,6 +582,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return attribute;
 	}
 
+	private TaskAttribute setAttributeValue(TaskData data, JiraAttribute key, IRepositoryPerson person) {
+		TaskAttribute attribute = data.getRoot().getAttribute(key.id());
+		data.getAttributeMapper().setRepositoryPerson(attribute, person);
+		return attribute;
+	}
+
 	private boolean useCachedInformation(JiraIssue issue, TaskData oldTaskData) {
 		if (oldTaskData != null && issue.getStatus() != null) {
 			TaskAttribute attribute = oldTaskData.getRoot().getMappedAttribute(TaskAttribute.STATUS);
@@ -601,11 +626,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 		}
 		return s;
-	}
-
-	private String getAssignee(JiraIssue jiraIssue) {
-		String assignee = jiraIssue.getAssignee();
-		return assignee == null || JiraRepositoryConnector.UNASSIGNED_USER.equals(assignee) ? "" : assignee;
 	}
 
 	public static String stripTags(String text) {
