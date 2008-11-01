@@ -13,16 +13,13 @@ package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
@@ -33,42 +30,13 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentHandler;
 import org.eclipse.mylyn.tasks.core.data.AbstractTaskAttachmentSource;
 import org.eclipse.mylyn.tasks.core.data.TaskAttachmentMapper;
+import org.eclipse.mylyn.tasks.core.data.TaskAttachmentPartSource;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
  * @author Steffen Pingel
  */
 public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
-
-	public class AttachmentPartSource implements PartSource {
-
-		private final AbstractTaskAttachmentSource attachment;
-
-		private final String filename;
-
-		public AttachmentPartSource(AbstractTaskAttachmentSource attachment, String filename) {
-			this.attachment = attachment;
-			this.filename = filename;
-		}
-
-		public InputStream createInputStream() throws IOException {
-			try {
-				return attachment.createInputStream(null);
-			} catch (CoreException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, "Error attaching file", e));
-				throw new IOException("Failed to create source stream");
-			}
-		}
-
-		public String getFileName() {
-			return filename;
-		}
-
-		public long getLength() {
-			return attachment.getLength();
-		}
-
-	}
 
 	public JiraTaskAttachmentHandler() {
 	}
@@ -134,7 +102,8 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 			JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
 			try {
 				JiraIssue issue = server.getIssueByKey(task.getTaskKey(), monitor);
-				server.addAttachment(issue, comment, new AttachmentPartSource(source, filename), contentType, monitor);
+				server.addAttachment(issue, comment, new TaskAttachmentPartSource(source, filename), contentType,
+						monitor);
 			} catch (JiraException e) {
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 			}
