@@ -275,14 +275,6 @@ public class JiraSoapClient {
 	public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
 		return call(monitor, new RemoteRunnable<Project[]>() {
 			public Project[] run() throws java.rmi.RemoteException, JiraException {
-				return JiraSoapConverter.convert(getSoapService().getProjects(loginToken.getCurrentValue()));
-			}
-		});
-	}
-
-	public Project[] getProjectsNoSchemes(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<Project[]>() {
-			public Project[] run() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getProjectsNoSchemes(loginToken.getCurrentValue()));
 			}
 		});

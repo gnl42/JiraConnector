@@ -25,10 +25,10 @@ import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
+import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
-import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
@@ -348,12 +348,7 @@ public class JiraClient {
 	}
 
 	public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
-		String version = getCache().getServerInfo().getVersion();
-		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_4) >= 0) {
-			return soapClient.getProjectsNoSchemes(monitor);
-		} else {
-			return soapClient.getProjects(monitor);
-		}
+		return soapClient.getProjects(monitor);
 	}
 
 	public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {

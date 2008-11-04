@@ -1,14 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Tasktop Technologies - initial API and implementation
- *******************************************************************************/
-
 /**
  * RemotePermissionScheme.java
  *
@@ -55,16 +44,13 @@ public class RemotePermissionScheme extends org.eclipse.mylyn.internal.jira.core
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof RemotePermissionScheme)) {
+		if (!(obj instanceof RemotePermissionScheme))
 			return false;
-		}
 		RemotePermissionScheme other = (RemotePermissionScheme) obj;
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
 		if (__equalsCalc != null) {
 			return (__equalsCalc == obj);
 		}

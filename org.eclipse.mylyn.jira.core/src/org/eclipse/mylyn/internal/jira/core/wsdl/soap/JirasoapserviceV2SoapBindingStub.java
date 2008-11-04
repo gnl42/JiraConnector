@@ -1,14 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Tasktop Technologies - initial API and implementation
- *******************************************************************************/
-
 /**
  * JirasoapserviceV2SoapBindingStub.java
  *
@@ -21,18 +10,18 @@ package org.eclipse.mylyn.internal.jira.core.wsdl.soap;
 @SuppressWarnings("all")
 public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stub implements
 		org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService {
-	private final java.util.Vector cachedSerClasses = new java.util.Vector();
+	private java.util.Vector cachedSerClasses = new java.util.Vector();
 
-	private final java.util.Vector cachedSerQNames = new java.util.Vector();
+	private java.util.Vector cachedSerQNames = new java.util.Vector();
 
-	private final java.util.Vector cachedSerFactories = new java.util.Vector();
+	private java.util.Vector cachedSerFactories = new java.util.Vector();
 
-	private final java.util.Vector cachedDeserFactories = new java.util.Vector();
+	private java.util.Vector cachedDeserFactories = new java.util.Vector();
 
 	static org.apache.axis.description.OperationDesc[] _operations;
 
 	static {
-		_operations = new org.apache.axis.description.OperationDesc[93];
+		_operations = new org.apache.axis.description.OperationDesc[97];
 		_initOperationDesc1();
 		_initOperationDesc2();
 		_initOperationDesc3();
@@ -111,30 +100,16 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		_operations[1] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
-		oper.setName("getUser");
+		oper.setName("getServerInfo");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
 				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
 						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
 		oper.addParameter(param);
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteUser"));
-		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser.class);
-		oper.setReturnQName(new javax.xml.namespace.QName("", "getUserReturn"));
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteServerInfo"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getServerInfoReturn"));
 		oper.setStyle(org.apache.axis.constants.Style.RPC);
 		oper.setUse(org.apache.axis.constants.Use.ENCODED);
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
-				true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
-						"RemoteAuthenticationException"), true));
 		_operations[2] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
@@ -172,121 +147,6 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
 		_operations[3] = oper;
-
-		oper = new org.apache.axis.description.OperationDesc();
-		oper.setName("login");
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-		oper.setReturnClass(java.lang.String.class);
-		oper.setReturnQName(new javax.xml.namespace.QName("", "loginReturn"));
-		oper.setStyle(org.apache.axis.constants.Style.RPC);
-		oper.setUse(org.apache.axis.constants.Use.ENCODED);
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
-						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
-						"RemoteAuthenticationException"), true));
-		_operations[4] = oper;
-
-		oper = new org.apache.axis.description.OperationDesc();
-		oper.setName("getServerInfo");
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteServerInfo"));
-		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo.class);
-		oper.setReturnQName(new javax.xml.namespace.QName("", "getServerInfoReturn"));
-		oper.setStyle(org.apache.axis.constants.Style.RPC);
-		oper.setUse(org.apache.axis.constants.Use.ENCODED);
-		_operations[5] = oper;
-
-		oper = new org.apache.axis.description.OperationDesc();
-		oper.setName("logout");
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-		oper.setReturnClass(boolean.class);
-		oper.setReturnQName(new javax.xml.namespace.QName("", "logoutReturn"));
-		oper.setStyle(org.apache.axis.constants.Style.RPC);
-		oper.setUse(org.apache.axis.constants.Use.ENCODED);
-		_operations[6] = oper;
-
-		oper = new org.apache.axis.description.OperationDesc();
-		oper.setName("getIssue");
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteIssue"));
-		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue.class);
-		oper.setReturnQName(new javax.xml.namespace.QName("", "getIssueReturn"));
-		oper.setStyle(org.apache.axis.constants.Style.RPC);
-		oper.setUse(org.apache.axis.constants.Use.ENCODED);
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
-						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
-				true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
-						"RemoteAuthenticationException"), true));
-		_operations[7] = oper;
-
-		oper = new org.apache.axis.description.OperationDesc();
-		oper.setName("getComponents");
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		oper.setReturnType(new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
-				"ArrayOf_tns1_RemoteComponent"));
-		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[].class);
-		oper.setReturnQName(new javax.xml.namespace.QName("", "getComponentsReturn"));
-		oper.setStyle(org.apache.axis.constants.Style.RPC);
-		oper.setUse(org.apache.axis.constants.Use.ENCODED);
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
-						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
-				true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
-						"RemoteAuthenticationException"), true));
-		_operations[8] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("createUser");
@@ -334,13 +194,92 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[9] = oper;
+		_operations[4] = oper;
 
-	}
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("getUser");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteUser"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getUserReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
+				true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
+						"RemoteAuthenticationException"), true));
+		_operations[5] = oper;
 
-	private static void _initOperationDesc2() {
-		org.apache.axis.description.OperationDesc oper;
-		org.apache.axis.description.ParameterDesc param;
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("login");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+		oper.setReturnClass(java.lang.String.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "loginReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
+						"RemoteAuthenticationException"), true));
+		_operations[6] = oper;
+
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("getIssue");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteIssue"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getIssueReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
+				true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
+						"RemoteAuthenticationException"), true));
+		_operations[7] = oper;
+
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("createIssue");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -376,7 +315,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[10] = oper;
+		_operations[8] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getAvailableActions");
@@ -398,36 +337,13 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[11] = oper;
+		_operations[9] = oper;
 
-		oper = new org.apache.axis.description.OperationDesc();
-		oper.setName("getProjects");
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		oper.setReturnType(new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
-				"ArrayOf_tns1_RemoteProject"));
-		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject[].class);
-		oper.setReturnQName(new javax.xml.namespace.QName("", "getProjectsReturn"));
-		oper.setStyle(org.apache.axis.constants.Style.RPC);
-		oper.setUse(org.apache.axis.constants.Use.ENCODED);
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
-						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
-				true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
-						"RemoteAuthenticationException"), true));
-		_operations[12] = oper;
+	}
 
+	private static void _initOperationDesc2() {
+		org.apache.axis.description.OperationDesc oper;
+		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("updateIssue");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -452,7 +368,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[13] = oper;
+		_operations[10] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getConfiguration");
@@ -480,7 +396,66 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[14] = oper;
+		_operations[11] = oper;
+
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("getComponents");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
+				"ArrayOf_tns1_RemoteComponent"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[].class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getComponentsReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
+				true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
+						"RemoteAuthenticationException"), true));
+		_operations[12] = oper;
+
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("getSecurityLevel");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com",
+				"RemoteSecurityLevel"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getSecurityLevelReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
+				true));
+		_operations[13] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("updateProject");
@@ -517,7 +492,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[15] = oper;
+		_operations[14] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getProjectByKey");
@@ -548,7 +523,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[16] = oper;
+		_operations[15] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getPriorities");
@@ -572,7 +547,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[17] = oper;
+		_operations[16] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getResolutions");
@@ -596,7 +571,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[18] = oper;
+		_operations[17] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getIssueTypes");
@@ -620,13 +595,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[19] = oper;
+		_operations[18] = oper;
 
-	}
-
-	private static void _initOperationDesc3() {
-		org.apache.axis.description.OperationDesc oper;
-		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getStatuses");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -649,8 +619,13 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[20] = oper;
+		_operations[19] = oper;
 
+	}
+
+	private static void _initOperationDesc3() {
+		org.apache.axis.description.OperationDesc oper;
+		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getSubTaskIssueTypes");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -673,7 +648,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[21] = oper;
+		_operations[20] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getProjectRoles");
@@ -691,7 +666,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[22] = oper;
+		_operations[21] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getProjectRole");
@@ -713,7 +688,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[23] = oper;
+		_operations[22] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getProjectRoleActors");
@@ -741,7 +716,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[24] = oper;
+		_operations[23] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getDefaultRoleActors");
@@ -763,7 +738,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[25] = oper;
+		_operations[24] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("removeAllRoleActorsByNameAndType");
@@ -786,7 +761,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[26] = oper;
+		_operations[25] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("removeAllRoleActorsByProject");
@@ -806,7 +781,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[27] = oper;
+		_operations[26] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deleteProjectRole");
@@ -830,7 +805,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[28] = oper;
+		_operations[27] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("updateProjectRole");
@@ -850,13 +825,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[29] = oper;
+		_operations[28] = oper;
 
-	}
-
-	private static void _initOperationDesc4() {
-		org.apache.axis.description.OperationDesc oper;
-		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("createProjectRole");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -878,8 +848,13 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[30] = oper;
+		_operations[29] = oper;
 
+	}
+
+	private static void _initOperationDesc4() {
+		org.apache.axis.description.OperationDesc oper;
+		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("isProjectRoleNameUnique");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -899,7 +874,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[31] = oper;
+		_operations[30] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addActorsToProjectRole");
@@ -933,7 +908,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[32] = oper;
+		_operations[31] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("removeActorsFromProjectRole");
@@ -967,7 +942,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[33] = oper;
+		_operations[32] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addDefaultActorsToProjectRole");
@@ -996,7 +971,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[34] = oper;
+		_operations[33] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("removeDefaultActorsFromProjectRole");
@@ -1025,7 +1000,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[35] = oper;
+		_operations[34] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getAssociatedNotificationSchemes");
@@ -1048,7 +1023,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[36] = oper;
+		_operations[35] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getAssociatedPermissionSchemes");
@@ -1071,7 +1046,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[37] = oper;
+		_operations[36] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getCustomFields");
@@ -1089,41 +1064,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[38] = oper;
+		_operations[37] = oper;
 
-		oper = new org.apache.axis.description.OperationDesc();
-		oper.setName("getSavedFilters");
-		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
-				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
-		oper.addParameter(param);
-		oper.setReturnType(new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
-				"ArrayOf_tns1_RemoteFilter"));
-		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[].class);
-		oper.setReturnQName(new javax.xml.namespace.QName("", "getSavedFiltersReturn"));
-		oper.setStyle(org.apache.axis.constants.Style.RPC);
-		oper.setUse(org.apache.axis.constants.Use.ENCODED);
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
-						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
-				true));
-		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
-				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
-				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
-				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
-						"RemoteAuthenticationException"), true));
-		_operations[39] = oper;
-
-	}
-
-	private static void _initOperationDesc5() {
-		org.apache.axis.description.OperationDesc oper;
-		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getComments");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -1154,8 +1096,41 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[40] = oper;
+		_operations[38] = oper;
 
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("getFavouriteFilters");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
+				"ArrayOf_tns1_RemoteFilter"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[].class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getFavouriteFiltersReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
+				true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
+						"RemoteAuthenticationException"), true));
+		_operations[39] = oper;
+
+	}
+
+	private static void _initOperationDesc5() {
+		org.apache.axis.description.OperationDesc oper;
+		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("archiveVersion");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -1181,7 +1156,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[41] = oper;
+		_operations[40] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getVersions");
@@ -1213,7 +1188,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[42] = oper;
+		_operations[41] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("createProject");
@@ -1280,7 +1255,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[43] = oper;
+		_operations[42] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addComment");
@@ -1314,7 +1289,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[44] = oper;
+		_operations[43] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getFieldsForEdit");
@@ -1336,7 +1311,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[45] = oper;
+		_operations[44] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getIssueTypesForProject");
@@ -1364,7 +1339,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[46] = oper;
+		_operations[45] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getSubTaskIssueTypesForProject");
@@ -1392,7 +1367,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[47] = oper;
+		_operations[46] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addUserToGroup");
@@ -1432,7 +1407,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[48] = oper;
+		_operations[47] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("removeUserFromGroup");
@@ -1472,6 +1447,19 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
+		_operations[48] = oper;
+
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("logout");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+		oper.setReturnClass(boolean.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "logoutReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
 		_operations[49] = oper;
 
 	}
@@ -1511,6 +1499,27 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		_operations[50] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("getProjectWithSchemesById");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "long"), long.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteProject"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getProjectWithSchemesByIdReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		_operations[51] = oper;
+
+		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deleteProject");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
 				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
@@ -1537,7 +1546,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[51] = oper;
+		_operations[52] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("releaseVersion");
@@ -1561,7 +1570,34 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[52] = oper;
+		_operations[53] = oper;
+
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("getSecurityLevels");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
+				"ArrayOf_tns1_RemoteSecurityLevel"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel[].class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getSecurityLevelsReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
+				true));
+		_operations[54] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deleteIssue");
@@ -1590,7 +1626,48 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[53] = oper;
+		_operations[55] = oper;
+
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("createIssueWithSecurityLevel");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://beans.soap.rpc.jira.atlassian.com", "RemoteIssue"),
+				org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue.class, false, false);
+		oper.addParameter(param);
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "long"), long.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteIssue"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "createIssueWithSecurityLevelReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
+				true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
+				true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
+						"RemoteAuthenticationException"), true));
+		_operations[56] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addAttachmentsToIssue");
@@ -1636,7 +1713,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[54] = oper;
+		_operations[57] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getAttachmentsFromIssue");
@@ -1673,7 +1750,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[55] = oper;
+		_operations[58] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("hasPermissionToEditComment");
@@ -1695,8 +1772,13 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[56] = oper;
+		_operations[59] = oper;
 
+	}
+
+	private static void _initOperationDesc7() {
+		org.apache.axis.description.OperationDesc oper;
+		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("editComment");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -1717,7 +1799,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[57] = oper;
+		_operations[60] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getFieldsForAction");
@@ -1743,7 +1825,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[58] = oper;
+		_operations[61] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("progressWorkflowAction");
@@ -1773,13 +1855,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[59] = oper;
+		_operations[62] = oper;
 
-	}
-
-	private static void _initOperationDesc7() {
-		org.apache.axis.description.OperationDesc oper;
-		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getIssueById");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -1809,7 +1886,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[60] = oper;
+		_operations[63] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addWorklogWithNewRemainingEstimate");
@@ -1830,7 +1907,9 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
 						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
 		oper.addParameter(param);
-		oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteWorklog"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "addWorklogWithNewRemainingEstimateReturn"));
 		oper.setStyle(org.apache.axis.constants.Style.RPC);
 		oper.setUse(org.apache.axis.constants.Use.ENCODED);
 		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
@@ -1847,7 +1926,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[61] = oper;
+		_operations[64] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addWorklogAndAutoAdjustRemainingEstimate");
@@ -1864,7 +1943,9 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 						"http://beans.soap.rpc.jira.atlassian.com", "RemoteWorklog"),
 				org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog.class, false, false);
 		oper.addParameter(param);
-		oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteWorklog"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "addWorklogAndAutoAdjustRemainingEstimateReturn"));
 		oper.setStyle(org.apache.axis.constants.Style.RPC);
 		oper.setUse(org.apache.axis.constants.Use.ENCODED);
 		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
@@ -1881,7 +1962,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[62] = oper;
+		_operations[65] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addWorklogAndRetainRemainingEstimate");
@@ -1898,7 +1979,9 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 						"http://beans.soap.rpc.jira.atlassian.com", "RemoteWorklog"),
 				org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog.class, false, false);
 		oper.addParameter(param);
-		oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+		oper.setReturnType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteWorklog"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog.class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "addWorklogAndRetainRemainingEstimateReturn"));
 		oper.setStyle(org.apache.axis.constants.Style.RPC);
 		oper.setUse(org.apache.axis.constants.Use.ENCODED);
 		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
@@ -1915,7 +1998,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[63] = oper;
+		_operations[66] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deleteWorklogWithNewRemainingEstimate");
@@ -1948,7 +2031,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[64] = oper;
+		_operations[67] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deleteWorklogAndAutoAdjustRemainingEstimate");
@@ -1977,7 +2060,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[65] = oper;
+		_operations[68] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deleteWorklogAndRetainRemainingEstimate");
@@ -2006,8 +2089,13 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[66] = oper;
+		_operations[69] = oper;
 
+	}
+
+	private static void _initOperationDesc8() {
+		org.apache.axis.description.OperationDesc oper;
+		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("updateWorklogWithNewRemainingEstimate");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -2040,7 +2128,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[67] = oper;
+		_operations[70] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("updateWorklogAndAutoAdjustRemainingEstimate");
@@ -2070,7 +2158,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[68] = oper;
+		_operations[71] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("updateWorklogAndRetainRemainingEstimate");
@@ -2100,13 +2188,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[69] = oper;
+		_operations[72] = oper;
 
-	}
-
-	private static void _initOperationDesc8() {
-		org.apache.axis.description.OperationDesc oper;
-		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getWorklogs");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -2137,7 +2220,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[70] = oper;
+		_operations[73] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("hasPermissionToCreateWorklog");
@@ -2163,7 +2246,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[71] = oper;
+		_operations[74] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("hasPermissionToDeleteWorklog");
@@ -2189,7 +2272,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[72] = oper;
+		_operations[75] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("hasPermissionToUpdateWorklog");
@@ -2215,7 +2298,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemoteValidationException"),
 				true));
-		_operations[73] = oper;
+		_operations[76] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getNotificationSchemes");
@@ -2243,7 +2326,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[74] = oper;
+		_operations[77] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getPermissionSchemes");
@@ -2271,7 +2354,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[75] = oper;
+		_operations[78] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("createPermissionScheme");
@@ -2312,8 +2395,13 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[76] = oper;
+		_operations[79] = oper;
 
+	}
+
+	private static void _initOperationDesc9() {
+		org.apache.axis.description.OperationDesc oper;
+		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deletePermissionScheme");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -2346,7 +2434,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[77] = oper;
+		_operations[80] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addPermissionTo");
@@ -2394,7 +2482,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[78] = oper;
+		_operations[81] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deletePermissionFrom");
@@ -2442,13 +2530,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[79] = oper;
+		_operations[82] = oper;
 
-	}
-
-	private static void _initOperationDesc9() {
-		org.apache.axis.description.OperationDesc oper;
-		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getAllPermissions");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -2475,7 +2558,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[80] = oper;
+		_operations[83] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getIssueCountForFilter");
@@ -2496,7 +2579,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[81] = oper;
+		_operations[84] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getIssuesFromTextSearch");
@@ -2518,7 +2601,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[82] = oper;
+		_operations[85] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getIssuesFromTextSearchWithProject");
@@ -2549,7 +2632,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[83] = oper;
+		_operations[86] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deleteUser");
@@ -2583,7 +2666,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[84] = oper;
+		_operations[87] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("updateGroup");
@@ -2620,7 +2703,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[85] = oper;
+		_operations[88] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("deleteGroup");
@@ -2658,8 +2741,13 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[86] = oper;
+		_operations[89] = oper;
 
+	}
+
+	private static void _initOperationDesc10() {
+		org.apache.axis.description.OperationDesc oper;
+		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("refreshCustomFields");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -2673,7 +2761,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[87] = oper;
+		_operations[90] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getProjectsNoSchemes");
@@ -2701,7 +2789,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[88] = oper;
+		_operations[91] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("addVersion");
@@ -2727,13 +2815,36 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[89] = oper;
+		_operations[92] = oper;
 
-	}
+		oper = new org.apache.axis.description.OperationDesc();
+		oper.setName("getSavedFilters");
+		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
+				org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+						"http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+		oper.addParameter(param);
+		oper.setReturnType(new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
+				"ArrayOf_tns1_RemoteFilter"));
+		oper.setReturnClass(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[].class);
+		oper.setReturnQName(new javax.xml.namespace.QName("", "getSavedFiltersReturn"));
+		oper.setStyle(org.apache.axis.constants.Style.RPC);
+		oper.setUse(org.apache.axis.constants.Use.ENCODED);
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
+						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com", "RemotePermissionException"),
+				true));
+		oper.addFault(new org.apache.axis.description.FaultDesc(new javax.xml.namespace.QName(
+				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
+				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
+				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
+						"RemoteAuthenticationException"), true));
+		_operations[93] = oper;
 
-	private static void _initOperationDesc10() {
-		org.apache.axis.description.OperationDesc oper;
-		org.apache.axis.description.ParameterDesc param;
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("createProjectFromObject");
 		param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"),
@@ -2769,7 +2880,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[90] = oper;
+		_operations[94] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getSecuritySchemes");
@@ -2797,7 +2908,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException",
 				new javax.xml.namespace.QName("http://exception.rpc.jira.atlassian.com",
 						"RemoteAuthenticationException"), true));
-		_operations[91] = oper;
+		_operations[95] = oper;
 
 		oper = new org.apache.axis.description.OperationDesc();
 		oper.setName("getIssuesFromFilter");
@@ -2819,7 +2930,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 				"http://jira.atlassian.com/rpc/soap/jirasoapservice-v2", "fault"),
 				"org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException", new javax.xml.namespace.QName(
 						"http://exception.rpc.jira.atlassian.com", "RemoteException"), true));
-		_operations[92] = oper;
+		_operations[96] = oper;
 
 	}
 
@@ -3038,6 +3149,13 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		qName = new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteScheme");
 		cachedSerQNames.add(qName);
 		cls = org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteScheme.class;
+		cachedSerClasses.add(cls);
+		cachedSerFactories.add(beansf);
+		cachedDeserFactories.add(beandf);
+
+		qName = new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteSecurityLevel");
+		cachedSerQNames.add(qName);
+		cls = org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel.class;
 		cachedSerClasses.add(cls);
 		cachedSerFactories.add(beansf);
 		cachedDeserFactories.add(beandf);
@@ -3307,6 +3425,16 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
 		qName = new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
+				"ArrayOf_tns1_RemoteSecurityLevel");
+		cachedSerQNames.add(qName);
+		cls = org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel[].class;
+		cachedSerClasses.add(cls);
+		qName = new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteSecurityLevel");
+		qName2 = null;
+		cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+		cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
+		qName = new javax.xml.namespace.QName("http://jira.atlassian.com/rpc/soap/jirasoapservice-v2",
 				"ArrayOf_tns1_RemoteStatus");
 		cachedSerQNames.add(qName);
 		cls = org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteStatus[].class;
@@ -3521,9 +3649,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser getUser(java.lang.String in0, java.lang.String in1)
-			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo getServerInfo(java.lang.String in0)
+			throws java.rmi.RemoteException {
 		if (super.cachedEndpoint == null) {
 			throw new org.apache.axis.NoEndPointException();
 		}
@@ -3532,36 +3659,25 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getUser"));
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getServerInfo"));
 
 		setRequestHeaders(_call);
 		setAttachments(_call);
 		try {
-			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1 });
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0 });
 
 			if (_resp instanceof java.rmi.RemoteException) {
 				throw (java.rmi.RemoteException) _resp;
 			} else {
 				extractAttachments(_call);
 				try {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser) _resp;
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo) _resp;
 				} catch (java.lang.Exception _exception) {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser) org.apache.axis.utils.JavaUtils.convert(
-							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser.class);
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo.class);
 				}
 			}
 		} catch (org.apache.axis.AxisFault axisFaultException) {
-			if (axisFaultException.detail != null) {
-				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
-					throw (java.rmi.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
-				}
-			}
 			throw axisFaultException;
 		}
 	}
@@ -3620,6 +3736,105 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser createUser(java.lang.String in0,
+			java.lang.String in1, java.lang.String in2, java.lang.String in3, java.lang.String in4)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[4]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "createUser"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1, in2, in3, in4 });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser.class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser getUser(java.lang.String in0, java.lang.String in1)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[5]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getUser"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1 });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser.class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
 	public java.lang.String login(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
@@ -3627,7 +3842,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[4]);
+		_call.setOperation(_operations[6]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -3660,70 +3875,6 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
 				}
 			}
-			throw axisFaultException;
-		}
-	}
-
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo getServerInfo(java.lang.String in0)
-			throws java.rmi.RemoteException {
-		if (super.cachedEndpoint == null) {
-			throw new org.apache.axis.NoEndPointException();
-		}
-		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[5]);
-		_call.setUseSOAPAction(true);
-		_call.setSOAPActionURI("");
-		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getServerInfo"));
-
-		setRequestHeaders(_call);
-		setAttachments(_call);
-		try {
-			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0 });
-
-			if (_resp instanceof java.rmi.RemoteException) {
-				throw (java.rmi.RemoteException) _resp;
-			} else {
-				extractAttachments(_call);
-				try {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo) _resp;
-				} catch (java.lang.Exception _exception) {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo) org.apache.axis.utils.JavaUtils.convert(
-							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo.class);
-				}
-			}
-		} catch (org.apache.axis.AxisFault axisFaultException) {
-			throw axisFaultException;
-		}
-	}
-
-	public boolean logout(java.lang.String in0) throws java.rmi.RemoteException {
-		if (super.cachedEndpoint == null) {
-			throw new org.apache.axis.NoEndPointException();
-		}
-		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[6]);
-		_call.setUseSOAPAction(true);
-		_call.setSOAPActionURI("");
-		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "logout"));
-
-		setRequestHeaders(_call);
-		setAttachments(_call);
-		try {
-			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0 });
-
-			if (_resp instanceof java.rmi.RemoteException) {
-				throw (java.rmi.RemoteException) _resp;
-			} else {
-				extractAttachments(_call);
-				try {
-					return ((java.lang.Boolean) _resp).booleanValue();
-				} catch (java.lang.Exception _exception) {
-					return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
-				}
-			}
-		} catch (org.apache.axis.AxisFault axisFaultException) {
 			throw axisFaultException;
 		}
 	}
@@ -3778,110 +3929,6 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[] getComponents(java.lang.String in0,
-			java.lang.String in1) throws java.rmi.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
-		if (super.cachedEndpoint == null) {
-			throw new org.apache.axis.NoEndPointException();
-		}
-		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[8]);
-		_call.setUseSOAPAction(true);
-		_call.setSOAPActionURI("");
-		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getComponents"));
-
-		setRequestHeaders(_call);
-		setAttachments(_call);
-		try {
-			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1 });
-
-			if (_resp instanceof java.rmi.RemoteException) {
-				throw (java.rmi.RemoteException) _resp;
-			} else {
-				extractAttachments(_call);
-				try {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[]) _resp;
-				} catch (java.lang.Exception _exception) {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[]) org.apache.axis.utils.JavaUtils.convert(
-							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[].class);
-				}
-			}
-		} catch (org.apache.axis.AxisFault axisFaultException) {
-			if (axisFaultException.detail != null) {
-				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
-					throw (java.rmi.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
-				}
-			}
-			throw axisFaultException;
-		}
-	}
-
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser createUser(java.lang.String in0,
-			java.lang.String in1, java.lang.String in2, java.lang.String in3, java.lang.String in4)
-			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
-		if (super.cachedEndpoint == null) {
-			throw new org.apache.axis.NoEndPointException();
-		}
-		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[9]);
-		_call.setUseSOAPAction(true);
-		_call.setSOAPActionURI("");
-		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "createUser"));
-
-		setRequestHeaders(_call);
-		setAttachments(_call);
-		try {
-			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1, in2, in3, in4 });
-
-			if (_resp instanceof java.rmi.RemoteException) {
-				throw (java.rmi.RemoteException) _resp;
-			} else {
-				extractAttachments(_call);
-				try {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser) _resp;
-				} catch (java.lang.Exception _exception) {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser) org.apache.axis.utils.JavaUtils.convert(
-							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser.class);
-				}
-			}
-		} catch (org.apache.axis.AxisFault axisFaultException) {
-			if (axisFaultException.detail != null) {
-				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
-					throw (java.rmi.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
-				}
-			}
-			throw axisFaultException;
-		}
-	}
-
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue createIssue(java.lang.String in0,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
@@ -3892,7 +3939,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[10]);
+		_call.setOperation(_operations[8]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -3943,7 +3990,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[11]);
+		_call.setOperation(_operations[9]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -3979,55 +4026,6 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject[] getProjects(java.lang.String in0)
-			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
-		if (super.cachedEndpoint == null) {
-			throw new org.apache.axis.NoEndPointException();
-		}
-		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[12]);
-		_call.setUseSOAPAction(true);
-		_call.setSOAPActionURI("");
-		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getProjects"));
-
-		setRequestHeaders(_call);
-		setAttachments(_call);
-		try {
-			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0 });
-
-			if (_resp instanceof java.rmi.RemoteException) {
-				throw (java.rmi.RemoteException) _resp;
-			} else {
-				extractAttachments(_call);
-				try {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject[]) _resp;
-				} catch (java.lang.Exception _exception) {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject[]) org.apache.axis.utils.JavaUtils.convert(
-							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject[].class);
-				}
-			}
-		} catch (org.apache.axis.AxisFault axisFaultException) {
-			if (axisFaultException.detail != null) {
-				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
-					throw (java.rmi.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
-				}
-			}
-			throw axisFaultException;
-		}
-	}
-
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue updateIssue(java.lang.String in0,
 			java.lang.String in1, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFieldValue[] in2)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException {
@@ -4035,7 +4033,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[13]);
+		_call.setOperation(_operations[10]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4078,7 +4076,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[14]);
+		_call.setOperation(_operations[11]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4119,6 +4117,102 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[] getComponents(java.lang.String in0,
+			java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[12]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getComponents"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1 });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[]) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[]) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[].class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel getSecurityLevel(java.lang.String in0,
+			java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[13]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getSecurityLevel"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1 });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel.class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject updateProject(java.lang.String in0,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
@@ -4129,7 +4223,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[15]);
+		_call.setOperation(_operations[14]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4182,7 +4276,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[16]);
+		_call.setOperation(_operations[15]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4230,7 +4324,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[17]);
+		_call.setOperation(_operations[16]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4275,7 +4369,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[18]);
+		_call.setOperation(_operations[17]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4320,7 +4414,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[19]);
+		_call.setOperation(_operations[18]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4365,7 +4459,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[20]);
+		_call.setOperation(_operations[19]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4410,7 +4504,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[21]);
+		_call.setOperation(_operations[20]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4455,7 +4549,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[22]);
+		_call.setOperation(_operations[21]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4496,7 +4590,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[23]);
+		_call.setOperation(_operations[22]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4539,7 +4633,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[24]);
+		_call.setOperation(_operations[23]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4582,7 +4676,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[25]);
+		_call.setOperation(_operations[24]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4624,7 +4718,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[26]);
+		_call.setOperation(_operations[25]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4660,7 +4754,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[27]);
+		_call.setOperation(_operations[26]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4696,7 +4790,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[28]);
+		_call.setOperation(_operations[27]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4731,7 +4825,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[29]);
+		_call.setOperation(_operations[28]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4766,7 +4860,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[30]);
+		_call.setOperation(_operations[29]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4807,7 +4901,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[31]);
+		_call.setOperation(_operations[30]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4850,7 +4944,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[32]);
+		_call.setOperation(_operations[31]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4887,7 +4981,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[33]);
+		_call.setOperation(_operations[32]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4923,7 +5017,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[34]);
+		_call.setOperation(_operations[33]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4959,7 +5053,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[35]);
+		_call.setOperation(_operations[34]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -4995,7 +5089,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[36]);
+		_call.setOperation(_operations[35]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5038,7 +5132,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[37]);
+		_call.setOperation(_operations[36]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5080,7 +5174,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[38]);
+		_call.setOperation(_operations[37]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5115,55 +5209,6 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[] getSavedFilters(java.lang.String in0)
-			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
-		if (super.cachedEndpoint == null) {
-			throw new org.apache.axis.NoEndPointException();
-		}
-		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[39]);
-		_call.setUseSOAPAction(true);
-		_call.setSOAPActionURI("");
-		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getSavedFilters"));
-
-		setRequestHeaders(_call);
-		setAttachments(_call);
-		try {
-			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0 });
-
-			if (_resp instanceof java.rmi.RemoteException) {
-				throw (java.rmi.RemoteException) _resp;
-			} else {
-				extractAttachments(_call);
-				try {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[]) _resp;
-				} catch (java.lang.Exception _exception) {
-					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[]) org.apache.axis.utils.JavaUtils.convert(
-							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[].class);
-				}
-			}
-		} catch (org.apache.axis.AxisFault axisFaultException) {
-			if (axisFaultException.detail != null) {
-				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
-					throw (java.rmi.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
-				}
-				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
-					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
-				}
-			}
-			throw axisFaultException;
-		}
-	}
-
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComment[] getComments(java.lang.String in0,
 			java.lang.String in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
@@ -5173,7 +5218,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[40]);
+		_call.setOperation(_operations[38]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5214,13 +5259,63 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[] getFavouriteFilters(java.lang.String in0)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[39]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com",
+				"getFavouriteFilters"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0 });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[]) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[]) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[].class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
 	public void archiveVersion(java.lang.String in0, java.lang.String in1, java.lang.String in2, boolean in3)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException {
 		if (super.cachedEndpoint == null) {
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[41]);
+		_call.setOperation(_operations[40]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5257,7 +5352,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[42]);
+		_call.setOperation(_operations[41]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5311,7 +5406,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[43]);
+		_call.setOperation(_operations[42]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5364,7 +5459,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[44]);
+		_call.setOperation(_operations[43]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5405,7 +5500,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[45]);
+		_call.setOperation(_operations[44]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5448,7 +5543,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[46]);
+		_call.setOperation(_operations[45]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5495,7 +5590,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[47]);
+		_call.setOperation(_operations[46]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5544,7 +5639,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[48]);
+		_call.setOperation(_operations[47]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5592,7 +5687,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[49]);
+		_call.setOperation(_operations[48]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5626,6 +5721,37 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
 				}
 			}
+			throw axisFaultException;
+		}
+	}
+
+	public boolean logout(java.lang.String in0) throws java.rmi.RemoteException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[49]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "logout"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0 });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return ((java.lang.Boolean) _resp).booleanValue();
+				} catch (java.lang.Exception _exception) {
+					return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
 			throw axisFaultException;
 		}
 	}
@@ -5679,6 +5805,49 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject getProjectWithSchemesById(
+			java.lang.String in0, long in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[51]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com",
+				"getProjectWithSchemesById"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, new java.lang.Long(in1) });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject.class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
 	public void deleteProject(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
@@ -5687,7 +5856,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[51]);
+		_call.setOperation(_operations[52]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5728,7 +5897,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[52]);
+		_call.setOperation(_operations[53]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5756,6 +5925,52 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel[] getSecurityLevels(
+			java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[54]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getSecurityLevels"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1 });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel[]) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel[]) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel[].class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
 	public void deleteIssue(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
@@ -5764,7 +5979,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[53]);
+		_call.setOperation(_operations[55]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5798,6 +6013,61 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue createIssueWithSecurityLevel(
+			java.lang.String in0, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue in1, long in2)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[56]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com",
+				"createIssueWithSecurityLevel"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0, in1, new java.lang.Long(in2) });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue.class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
 	public boolean addAttachmentsToIssue(java.lang.String in0, java.lang.String in1, java.lang.String[] in2,
 			byte[][] in3) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
@@ -5808,7 +6078,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[54]);
+		_call.setOperation(_operations[57]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5862,7 +6132,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[55]);
+		_call.setOperation(_operations[58]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5914,7 +6184,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[56]);
+		_call.setOperation(_operations[59]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5956,7 +6226,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[57]);
+		_call.setOperation(_operations[60]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -5998,7 +6268,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[58]);
+		_call.setOperation(_operations[61]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6041,7 +6311,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[59]);
+		_call.setOperation(_operations[62]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6086,7 +6356,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[60]);
+		_call.setOperation(_operations[63]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6127,7 +6397,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
-	public void addWorklogWithNewRemainingEstimate(java.lang.String in0, java.lang.String in1,
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog addWorklogWithNewRemainingEstimate(
+			java.lang.String in0, java.lang.String in1,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog in2, java.lang.String in3)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
@@ -6136,7 +6407,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[61]);
+		_call.setOperation(_operations[64]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6150,8 +6421,15 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 
 			if (_resp instanceof java.rmi.RemoteException) {
 				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog.class);
+				}
 			}
-			extractAttachments(_call);
 		} catch (org.apache.axis.AxisFault axisFaultException) {
 			if (axisFaultException.detail != null) {
 				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
@@ -6171,7 +6449,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
-	public void addWorklogAndAutoAdjustRemainingEstimate(java.lang.String in0, java.lang.String in1,
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog addWorklogAndAutoAdjustRemainingEstimate(
+			java.lang.String in0, java.lang.String in1,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog in2) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
@@ -6180,7 +6459,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[62]);
+		_call.setOperation(_operations[65]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6194,8 +6473,15 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 
 			if (_resp instanceof java.rmi.RemoteException) {
 				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog.class);
+				}
 			}
-			extractAttachments(_call);
 		} catch (org.apache.axis.AxisFault axisFaultException) {
 			if (axisFaultException.detail != null) {
 				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
@@ -6215,7 +6501,8 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
-	public void addWorklogAndRetainRemainingEstimate(java.lang.String in0, java.lang.String in1,
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog addWorklogAndRetainRemainingEstimate(
+			java.lang.String in0, java.lang.String in1,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog in2) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
@@ -6224,7 +6511,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[63]);
+		_call.setOperation(_operations[66]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6238,8 +6525,15 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 
 			if (_resp instanceof java.rmi.RemoteException) {
 				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog.class);
+				}
 			}
-			extractAttachments(_call);
 		} catch (org.apache.axis.AxisFault axisFaultException) {
 			if (axisFaultException.detail != null) {
 				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
@@ -6267,7 +6561,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[64]);
+		_call.setOperation(_operations[67]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6310,7 +6604,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[65]);
+		_call.setOperation(_operations[68]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6353,7 +6647,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[66]);
+		_call.setOperation(_operations[69]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6397,7 +6691,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[67]);
+		_call.setOperation(_operations[70]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6441,7 +6735,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[68]);
+		_call.setOperation(_operations[71]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6485,7 +6779,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[69]);
+		_call.setOperation(_operations[72]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6529,7 +6823,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[70]);
+		_call.setOperation(_operations[73]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6577,7 +6871,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[71]);
+		_call.setOperation(_operations[74]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6622,7 +6916,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[72]);
+		_call.setOperation(_operations[75]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6667,7 +6961,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[73]);
+		_call.setOperation(_operations[76]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6713,7 +7007,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[74]);
+		_call.setOperation(_operations[77]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6764,7 +7058,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[75]);
+		_call.setOperation(_operations[78]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6816,7 +7110,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[76]);
+		_call.setOperation(_operations[79]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6870,7 +7164,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[77]);
+		_call.setOperation(_operations[80]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6920,7 +7214,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[78]);
+		_call.setOperation(_operations[81]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -6976,7 +7270,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[79]);
+		_call.setOperation(_operations[82]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7029,7 +7323,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[80]);
+		_call.setOperation(_operations[83]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7076,7 +7370,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[81]);
+		_call.setOperation(_operations[84]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7118,7 +7412,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[82]);
+		_call.setOperation(_operations[85]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7161,7 +7455,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[83]);
+		_call.setOperation(_operations[86]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7206,7 +7500,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[84]);
+		_call.setOperation(_operations[87]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7253,7 +7547,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[85]);
+		_call.setOperation(_operations[88]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7306,7 +7600,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[86]);
+		_call.setOperation(_operations[89]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7349,7 +7643,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[87]);
+		_call.setOperation(_operations[90]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7386,7 +7680,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[88]);
+		_call.setOperation(_operations[91]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7435,7 +7729,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[89]);
+		_call.setOperation(_operations[92]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7470,6 +7764,55 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 		}
 	}
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[] getSavedFilters(java.lang.String in0)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[93]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(new javax.xml.namespace.QName("http://soap.rpc.jira.atlassian.com", "getSavedFilters"));
+
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			java.lang.Object _resp = _call.invoke(new java.lang.Object[] { in0 });
+
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[]) _resp;
+				} catch (java.lang.Exception _exception) {
+					return (org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[]) org.apache.axis.utils.JavaUtils.convert(
+							_resp, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[].class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			if (axisFaultException.detail != null) {
+				if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+					throw (java.rmi.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException) axisFaultException.detail;
+				}
+				if (axisFaultException.detail instanceof org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) {
+					throw (org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException) axisFaultException.detail;
+				}
+			}
+			throw axisFaultException;
+		}
+	}
+
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject createProjectFromObject(java.lang.String in0,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
@@ -7480,7 +7823,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[90]);
+		_call.setOperation(_operations[94]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7533,7 +7876,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[91]);
+		_call.setOperation(_operations[95]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
@@ -7581,7 +7924,7 @@ public class JirasoapserviceV2SoapBindingStub extends org.apache.axis.client.Stu
 			throw new org.apache.axis.NoEndPointException();
 		}
 		org.apache.axis.client.Call _call = createCall();
-		_call.setOperation(_operations[92]);
+		_call.setOperation(_operations[96]);
 		_call.setUseSOAPAction(true);
 		_call.setSOAPActionURI("");
 		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);

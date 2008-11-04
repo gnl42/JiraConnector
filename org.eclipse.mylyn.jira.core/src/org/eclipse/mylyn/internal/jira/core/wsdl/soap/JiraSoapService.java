@@ -1,14 +1,3 @@
-/*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Tasktop Technologies - initial API and implementation
- *******************************************************************************/
-
 /**
  * JiraSoapService.java
  *
@@ -30,9 +19,8 @@ public interface JiraSoapService extends java.rmi.Remote {
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser getUser(java.lang.String in0, java.lang.String in1)
-			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo getServerInfo(java.lang.String in0)
+			throws java.rmi.RemoteException;
 
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteGroup getGroup(java.lang.String in0,
 			java.lang.String in1) throws java.rmi.RemoteException,
@@ -41,32 +29,25 @@ public interface JiraSoapService extends java.rmi.Remote {
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
-	public java.lang.String login(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
-
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo getServerInfo(java.lang.String in0)
-			throws java.rmi.RemoteException;
-
-	public boolean logout(java.lang.String in0) throws java.rmi.RemoteException;
-
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue getIssue(java.lang.String in0,
-			java.lang.String in1) throws java.rmi.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
-
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[] getComponents(java.lang.String in0,
-			java.lang.String in1) throws java.rmi.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
-
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser createUser(java.lang.String in0,
 			java.lang.String in1, java.lang.String in2, java.lang.String in3, java.lang.String in4)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser getUser(java.lang.String in0, java.lang.String in1)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public java.lang.String login(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue getIssue(java.lang.String in0,
+			java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue createIssue(java.lang.String in0,
@@ -80,11 +61,6 @@ public interface JiraSoapService extends java.rmi.Remote {
 			java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject[] getProjects(java.lang.String in0)
-			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
-
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue updateIssue(java.lang.String in0,
 			java.lang.String in1, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFieldValue[] in2)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
@@ -93,6 +69,17 @@ public interface JiraSoapService extends java.rmi.Remote {
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent[] getComponents(java.lang.String in0,
+			java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel getSecurityLevel(java.lang.String in0,
+			java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
 
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject updateProject(java.lang.String in0,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject in1) throws java.rmi.RemoteException,
@@ -193,14 +180,14 @@ public interface JiraSoapService extends java.rmi.Remote {
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteField[] getCustomFields(java.lang.String in0)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[] getSavedFilters(java.lang.String in0)
-			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
-
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComment[] getComments(java.lang.String in0,
 			java.lang.String in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[] getFavouriteFilters(java.lang.String in0)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
@@ -258,10 +245,16 @@ public interface JiraSoapService extends java.rmi.Remote {
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
+	public boolean logout(java.lang.String in0) throws java.rmi.RemoteException;
+
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject getProjectById(java.lang.String in0, long in1)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject getProjectWithSchemesById(
+			java.lang.String in0, long in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 
 	public void deleteProject(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
@@ -272,9 +265,21 @@ public interface JiraSoapService extends java.rmi.Remote {
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion in2) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel[] getSecurityLevels(
+			java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
+
 	public void deleteIssue(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue createIssueWithSecurityLevel(
+			java.lang.String in0, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue in1, long in2)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
 	public boolean addAttachmentsToIssue(java.lang.String in0, java.lang.String in1, java.lang.String[] in2,
@@ -314,19 +319,22 @@ public interface JiraSoapService extends java.rmi.Remote {
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
-	public void addWorklogWithNewRemainingEstimate(java.lang.String in0, java.lang.String in1,
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog addWorklogWithNewRemainingEstimate(
+			java.lang.String in0, java.lang.String in1,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog in2, java.lang.String in3)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException;
 
-	public void addWorklogAndAutoAdjustRemainingEstimate(java.lang.String in0, java.lang.String in1,
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog addWorklogAndAutoAdjustRemainingEstimate(
+			java.lang.String in0, java.lang.String in1,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog in2) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException;
 
-	public void addWorklogAndRetainRemainingEstimate(java.lang.String in0, java.lang.String in1,
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog addWorklogAndRetainRemainingEstimate(
+			java.lang.String in0, java.lang.String in1,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog in2) throws java.rmi.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
@@ -471,6 +479,11 @@ public interface JiraSoapService extends java.rmi.Remote {
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion addVersion(java.lang.String in0,
 			java.lang.String in1, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion in2)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
+
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[] getSavedFilters(java.lang.String in0)
+			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject createProjectFromObject(java.lang.String in0,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject in1) throws java.rmi.RemoteException,

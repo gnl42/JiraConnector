@@ -1,5 +1,5 @@
 /**
- * RemoteProjectRole.java
+ * RemoteSecurityLevel.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
@@ -8,24 +8,20 @@
 package org.eclipse.mylyn.internal.jira.core.wsdl.beans;
 
 @SuppressWarnings("all")
-public class RemoteProjectRole implements java.io.Serializable {
+public class RemoteSecurityLevel extends org.eclipse.mylyn.internal.jira.core.wsdl.beans.AbstractNamedRemoteEntity
+		implements java.io.Serializable {
 	private java.lang.String description;
 
-	private java.lang.Long id;
-
-	private java.lang.String name;
-
-	public RemoteProjectRole() {
+	public RemoteSecurityLevel() {
 	}
 
-	public RemoteProjectRole(java.lang.String description, java.lang.Long id, java.lang.String name) {
+	public RemoteSecurityLevel(java.lang.String id, java.lang.String name, java.lang.String description) {
+		super(id, name);
 		this.description = description;
-		this.id = id;
-		this.name = name;
 	}
 
 	/**
-	 * Gets the description value for this RemoteProjectRole.
+	 * Gets the description value for this RemoteSecurityLevel.
 	 * 
 	 * @return description
 	 */
@@ -34,7 +30,7 @@ public class RemoteProjectRole implements java.io.Serializable {
 	}
 
 	/**
-	 * Sets the description value for this RemoteProjectRole.
+	 * Sets the description value for this RemoteSecurityLevel.
 	 * 
 	 * @param description
 	 */
@@ -42,48 +38,12 @@ public class RemoteProjectRole implements java.io.Serializable {
 		this.description = description;
 	}
 
-	/**
-	 * Gets the id value for this RemoteProjectRole.
-	 * 
-	 * @return id
-	 */
-	public java.lang.Long getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id value for this RemoteProjectRole.
-	 * 
-	 * @param id
-	 */
-	public void setId(java.lang.Long id) {
-		this.id = id;
-	}
-
-	/**
-	 * Gets the name value for this RemoteProjectRole.
-	 * 
-	 * @return name
-	 */
-	public java.lang.String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets the name value for this RemoteProjectRole.
-	 * 
-	 * @param name
-	 */
-	public void setName(java.lang.String name) {
-		this.name = name;
-	}
-
 	private java.lang.Object __equalsCalc = null;
 
 	public synchronized boolean equals(java.lang.Object obj) {
-		if (!(obj instanceof RemoteProjectRole))
+		if (!(obj instanceof RemoteSecurityLevel))
 			return false;
-		RemoteProjectRole other = (RemoteProjectRole) obj;
+		RemoteSecurityLevel other = (RemoteSecurityLevel) obj;
 		if (obj == null)
 			return false;
 		if (this == obj)
@@ -93,10 +53,8 @@ public class RemoteProjectRole implements java.io.Serializable {
 		}
 		__equalsCalc = obj;
 		boolean _equals;
-		_equals = true
-				&& ((this.description == null && other.getDescription() == null) || (this.description != null && this.description.equals(other.getDescription())))
-				&& ((this.id == null && other.getId() == null) || (this.id != null && this.id.equals(other.getId())))
-				&& ((this.name == null && other.getName() == null) || (this.name != null && this.name.equals(other.getName())));
+		_equals = super.equals(obj)
+				&& ((this.description == null && other.getDescription() == null) || (this.description != null && this.description.equals(other.getDescription())));
 		__equalsCalc = null;
 		return _equals;
 	}
@@ -108,15 +66,9 @@ public class RemoteProjectRole implements java.io.Serializable {
 			return 0;
 		}
 		__hashCodeCalc = true;
-		int _hashCode = 1;
+		int _hashCode = super.hashCode();
 		if (getDescription() != null) {
 			_hashCode += getDescription().hashCode();
-		}
-		if (getId() != null) {
-			_hashCode += getId().hashCode();
-		}
-		if (getName() != null) {
-			_hashCode += getName().hashCode();
 		}
 		__hashCodeCalc = false;
 		return _hashCode;
@@ -124,26 +76,14 @@ public class RemoteProjectRole implements java.io.Serializable {
 
 	// Type metadata
 	private static org.apache.axis.description.TypeDesc typeDesc = new org.apache.axis.description.TypeDesc(
-			RemoteProjectRole.class, true);
+			RemoteSecurityLevel.class, true);
 
 	static {
 		typeDesc.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com",
-				"RemoteProjectRole"));
+				"RemoteSecurityLevel"));
 		org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
 		elemField.setFieldName("description");
 		elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
-		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-		elemField.setNillable(true);
-		typeDesc.addFieldDesc(elemField);
-		elemField = new org.apache.axis.description.ElementDesc();
-		elemField.setFieldName("id");
-		elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
-		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "long"));
-		elemField.setNillable(true);
-		typeDesc.addFieldDesc(elemField);
-		elemField = new org.apache.axis.description.ElementDesc();
-		elemField.setFieldName("name");
-		elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
 		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
 		elemField.setNillable(true);
 		typeDesc.addFieldDesc(elemField);
