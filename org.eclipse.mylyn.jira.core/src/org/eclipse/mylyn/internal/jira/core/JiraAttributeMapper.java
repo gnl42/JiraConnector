@@ -34,7 +34,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 /**
  * @author Steffen Pingel
  */
-public class JiraAttributeMapper extends TaskAttributeMapper {
+public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAttributeMapper2 {
 
 	private final JiraClient client;
 
@@ -96,6 +96,11 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 
 	@Override
 	public Map<String, String> getOptions(TaskAttribute attribute) {
+		Map<String, String> options = getRepositoryOptions(attribute);
+		return (options != null) ? super.getOptions(attribute) : options;
+	}
+
+	public Map<String, String> getRepositoryOptions(TaskAttribute attribute) {
 		if (client.getCache().hasDetails()) {
 			Map<String, String> options = new LinkedHashMap<String, String>();
 			if (JiraAttribute.PROJECT.id().equals(attribute.getId())) {
@@ -151,7 +156,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper {
 				}
 			}
 		}
-		return super.getOptions(attribute);
+		return null;
 	}
 
 }
