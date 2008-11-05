@@ -41,6 +41,7 @@ import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorklog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -97,7 +98,7 @@ public class JiraSoapClient {
 		this.loginToken = new LoginToken(jiraClient.getLocation(), DEFAULT_SESSION_TIMEOUT);
 	}
 
-	private JiraSoapService getSoapService() throws JiraException {
+	public JiraSoapService getSoapService() throws JiraException {
 		soapServiceLock.lock();
 		try {
 			if (soapService == null) {
@@ -142,10 +143,10 @@ public class JiraSoapClient {
 		});
 	}
 
-	public void login(IProgressMonitor monitor) throws JiraException {
+	public String login(IProgressMonitor monitor) throws JiraException {
 		loginToken.expire();
-		call(monitor, new RemoteRunnable<Object>() {
-			public Object run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new RemoteRunnable<String>() {
+			public String run() throws java.rmi.RemoteException, JiraException {
 				return loginToken.getCurrentValue();
 			}
 		});
@@ -333,6 +334,14 @@ public class JiraSoapClient {
 			public Version[] run() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getVersions(loginToken.getCurrentValue(),
 						componentKey));
+			}
+		});
+	}
+
+	public JiraWorklog[] getWorkLogs(final String issueKey, IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new RemoteRunnable<JiraWorklog[]>() {
+			public JiraWorklog[] run() throws java.rmi.RemoteException, JiraException {
+				return JiraSoapConverter.convert(getSoapService().getWorklogs(loginToken.getCurrentValue(), issueKey));
 			}
 		});
 	}

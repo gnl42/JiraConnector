@@ -12,11 +12,15 @@
 
 package org.eclipse.mylyn.internal.jira.core.service.soap;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorklog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -36,9 +40,11 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteStatus;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteVersion;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog;
 
 /**
  * @author Brock Janiczak
+ * @author Steffen Pingel
  */
 class JiraSoapConverter {
 
@@ -59,6 +65,32 @@ class JiraSoapConverter {
 		priority.setName(remotePriority.getName());
 
 		return priority;
+	}
+
+	protected static JiraWorklog[] convert(RemoteWorklog[] remoteWorklogs) {
+		JiraWorklog[] worklogs = new JiraWorklog[remoteWorklogs.length];
+		for (int i = 0; i < remoteWorklogs.length; i++) {
+			worklogs[i] = convert(remoteWorklogs[i]);
+		}
+		return worklogs;
+	}
+
+	protected static JiraWorklog convert(RemoteWorklog remoteWorklog) {
+		JiraWorklog worklog = new JiraWorklog();
+		worklog.setAuthor(remoteWorklog.getAuthor());
+		worklog.setComment(remoteWorklog.getComment());
+		worklog.setCreated(convert(remoteWorklog.getCreated()));
+		worklog.setId(remoteWorklog.getId());
+		worklog.setRoleLevelId(remoteWorklog.getRoleLevelId());
+		worklog.setStartDate(convert(remoteWorklog.getStartDate()));
+		worklog.setTimeSpent(remoteWorklog.getTimeSpentInSeconds());
+		worklog.setUpdateAuthor(remoteWorklog.getUpdateAuthor());
+		worklog.setAuthor(worklog.getAuthor());
+		return worklog;
+	}
+
+	protected static Date convert(Calendar calendar) {
+		return (calendar != null) ? calendar.getTime() : null;
 	}
 
 	protected static JiraStatus[] convert(RemoteStatus[] remoteStatuses) {

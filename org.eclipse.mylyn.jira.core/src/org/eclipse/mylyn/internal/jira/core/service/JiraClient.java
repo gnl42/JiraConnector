@@ -33,6 +33,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorklog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -504,6 +505,10 @@ public class JiraClient {
 	 */
 	public void watchIssue(JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		webClient.watchIssue(issue, monitor);
+	}
+
+	public JiraWorklog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {
+		return soapClient.getWorkLogs(issueKey, monitor);
 	}
 
 }

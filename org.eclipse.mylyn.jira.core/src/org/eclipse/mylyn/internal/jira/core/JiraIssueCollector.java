@@ -58,4 +58,5 @@ class JiraIssueCollector implements IssueCollector {
 	public int getMaxHits() {
 		return maxHits;
 	}
+
 }

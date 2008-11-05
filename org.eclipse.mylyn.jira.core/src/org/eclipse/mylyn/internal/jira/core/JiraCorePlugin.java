@@ -20,7 +20,6 @@ import org.apache.axis.AxisEngine;
 import org.apache.axis.AxisProperties;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
@@ -95,14 +94,6 @@ public class JiraCorePlugin extends Plugin {
 
 	public JiraClientManager getClientManager() {
 		return clientManager;
-	}
-
-	public static void log(int severity, String message, Throwable e) {
-		getDefault().getLog().log(new Status(severity, ID_PLUGIN, -1, message, e));
-	}
-
-	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
 	}
 
 	public static IStatus toStatus(TaskRepository repository, Throwable e) {

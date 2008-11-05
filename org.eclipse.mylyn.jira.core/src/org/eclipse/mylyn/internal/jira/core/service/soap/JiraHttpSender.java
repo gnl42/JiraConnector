@@ -42,7 +42,7 @@ public class JiraHttpSender extends CommonsHttpSender {
 		AbstractWebLocation location = (AbstractWebLocation) context.getProperty(LOCATION);
 		JiraRequest request = JiraRequest.getCurrentRequest();
 		WebUtil.configureHttpClient(client, USER_AGENT);
-		return WebUtil.createHostConfiguration(client, location, request.getMonitor());
+		return WebUtil.createHostConfiguration(client, location, (request != null) ? request.getMonitor() : null);
 	}
 
 	@Override
@@ -51,6 +51,8 @@ public class JiraHttpSender extends CommonsHttpSender {
 		super.addContextInfo(method, httpClient, msgContext, tmpURL);
 
 		JiraRequest request = JiraRequest.getCurrentRequest();
-		request.setMethod(method);
+		if (request != null) {
+			request.setMethod(method);
+		}
 	}
 }
