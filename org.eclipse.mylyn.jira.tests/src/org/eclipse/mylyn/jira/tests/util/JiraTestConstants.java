@@ -15,6 +15,8 @@ public class JiraTestConstants {
 
 	public static final String JIRA_LATEST_URL = getServerUrl("jira-enterprise-3.13.1");
 
+	public static final String JIRA_3_13_1_URL = getServerUrl("jira-enterprise-3.13.1");
+
 	public static final String JIRA_39_URL = getServerUrl("jira-enterprise-3.9");
 
 	public static final String JIRA_39_BASIC_AUTH_URL = getServerUrl("jira-enterprise-3.9-basic-auth");
