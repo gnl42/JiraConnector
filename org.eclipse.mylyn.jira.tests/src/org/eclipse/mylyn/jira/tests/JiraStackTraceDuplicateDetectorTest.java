@@ -58,7 +58,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 	}
 
 	public void testStackTraceInDescription() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		StringWriter sw = new StringWriter();
 		new Exception().printStackTrace(new PrintWriter(sw));
@@ -71,7 +71,7 @@ public class JiraStackTraceDuplicateDetectorTest extends TestCase {
 	}
 
 	public void testStackTraceInComment() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		StringWriter sw = new StringWriter();
 		new Exception().printStackTrace(new PrintWriter(sw));

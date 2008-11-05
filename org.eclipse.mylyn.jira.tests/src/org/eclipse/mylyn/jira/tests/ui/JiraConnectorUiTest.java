@@ -50,7 +50,7 @@ public class JiraConnectorUiTest extends TestCase {
 	}
 
 	public void testFindHyperlinks() throws Exception {
-		TaskRepository repository = JiraTestUtil.init(JiraTestConstants.JIRA_39_URL);
+		TaskRepository repository = JiraTestUtil.init(JiraTestConstants.JIRA_LATEST_URL);
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		JiraTestUtil.refreshDetails(client);
 

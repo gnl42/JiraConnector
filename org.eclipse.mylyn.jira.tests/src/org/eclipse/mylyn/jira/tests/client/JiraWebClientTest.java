@@ -47,7 +47,7 @@ public class JiraWebClientTest extends TestCase {
 	}
 
 	public void testCreateIssue() throws Exception {
-		createIssue(JiraTestConstants.JIRA_39_URL);
+		createIssue(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void createIssue(String url) throws Exception {

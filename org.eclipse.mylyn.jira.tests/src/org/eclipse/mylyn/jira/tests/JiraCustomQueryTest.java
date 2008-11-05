@@ -240,7 +240,7 @@ public class JiraCustomQueryTest extends TestCase {
 	}
 
 	public void testGetFilterDefinitionUnresolvedResolution() {
-		String repositoryUrl = JiraTestConstants.JIRA_39_URL;
+		String repositoryUrl = JiraTestConstants.JIRA_LATEST_URL;
 		MockJiraClient client = new MockJiraClient(repositoryUrl);
 		FilterDefinitionConverter converter = new FilterDefinitionConverter(JiraClient.DEFAULT_CHARSET);
 

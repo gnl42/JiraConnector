@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorklog;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
@@ -62,7 +63,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testLogin381() throws Exception {
-		login(JiraTestConstants.JIRA_39_URL);
+		login(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void login(String url) throws Exception {
@@ -78,7 +79,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testStartStopIssue() throws Exception {
-		startStopIssue(JiraTestConstants.JIRA_39_URL);
+		startStopIssue(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void startStopIssue(String url) throws Exception {
@@ -109,7 +110,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testResolveCloseReopenIssue() throws Exception {
-		resolveCloseReopenIssue(JiraTestConstants.JIRA_39_URL);
+		resolveCloseReopenIssue(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void resolveCloseReopenIssue(String url) throws Exception {
@@ -164,7 +165,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testGetIdFromKey() throws Exception {
-		getIdFromKey(JiraTestConstants.JIRA_39_URL);
+		getIdFromKey(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void getIdFromKey(String url) throws Exception {
@@ -190,7 +191,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testReassign() throws Exception {
-		reassign(JiraTestConstants.JIRA_39_URL);
+		reassign(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void reassign(String url) throws Exception {
@@ -243,7 +244,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testFindIssues() throws Exception {
-		findIssues(JiraTestConstants.JIRA_39_URL);
+		findIssues(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void findIssues(String url) throws Exception {
@@ -256,7 +257,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testAddComment() throws Exception {
-		addComment(JiraTestConstants.JIRA_39_URL);
+		addComment(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void addComment(String url) throws Exception {
@@ -289,7 +290,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testAttachFile() throws Exception {
-		attachFile(JiraTestConstants.JIRA_39_URL);
+		attachFile(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void attachFile(String url) throws Exception {
@@ -346,7 +347,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testCreateIssue() throws Exception {
-		createIssue(JiraTestConstants.JIRA_39_URL);
+		createIssue(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void createIssue(String url) throws Exception {
@@ -379,7 +380,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testCreateSubTask() throws Exception {
-		createSubTask(JiraTestConstants.JIRA_39_URL);
+		createSubTask(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void createSubTask(String url) throws Exception {
@@ -408,7 +409,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testGetIssueLeadingSpaces() throws Exception {
-		getIssueLeadingSpaces(JiraTestConstants.JIRA_39_URL);
+		getIssueLeadingSpaces(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void getIssueLeadingSpaces(String url) throws Exception {
@@ -436,16 +437,16 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssue() throws Exception {
-		updateIssue(JiraTestConstants.JIRA_39_URL, "CUSTOMFIELDS");
+		updateIssue(JiraTestConstants.JIRA_LATEST_URL, "CUSTOMFIELDS");
 	}
 
 	public void testUpdateIssueCustomOperation() throws Exception {
-		JiraIssue issue = updateIssue(JiraTestConstants.JIRA_39_URL, "EDITABLEREPORTER");
+		JiraIssue issue = updateIssue(JiraTestConstants.JIRA_LATEST_URL, "EDITABLEREPORTER");
 
 		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "custom");
 		assertNotNull("Unable to find Custom workflow action", operation);
 
-		init(JiraTestConstants.JIRA_39_URL, PrivilegeLevel.USER);
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
 		client.advanceIssueWorkflow(issue, operation, "custom action test", null);
 	}
 
@@ -489,7 +490,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssueNonAscii() throws Exception {
-		updateIssueNonAscii(JiraTestConstants.JIRA_39_URL);
+		updateIssueNonAscii(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void updateIssueNonAscii(String url) throws Exception {
@@ -511,7 +512,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssueMultipleLinesOfText() throws Exception {
-		updateIssueMultipleLinesOfText(JiraTestConstants.JIRA_39_URL);
+		updateIssueMultipleLinesOfText(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void updateIssueMultipleLinesOfText(String url) throws Exception {
@@ -531,7 +532,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssueWithLinkInDescription() throws Exception {
-		updateIssueWithLinkInDescriptoin(JiraTestConstants.JIRA_39_URL);
+		updateIssueWithLinkInDescriptoin(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void updateIssueWithLinkInDescriptoin(String url) throws Exception {
@@ -550,7 +551,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssueHtmlTag() throws Exception {
-		updateIssueHtmlTags(JiraTestConstants.JIRA_39_URL);
+		updateIssueHtmlTags(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void updateIssueHtmlTags(String url) throws Exception {
@@ -570,7 +571,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testWatchUnwatchIssue() throws Exception {
-		watchUnwatchIssue(JiraTestConstants.JIRA_39_URL);
+		watchUnwatchIssue(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void watchUnwatchIssue(String url) throws Exception {
@@ -613,7 +614,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testCharacterEncoding() throws Exception {
-		characterEncoding(JiraTestConstants.JIRA_39_URL);
+		characterEncoding(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void characterEncoding(String url) throws Exception {
@@ -624,7 +625,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testGetServerInfo() throws Exception {
-		getServerInfo(JiraTestConstants.JIRA_39_URL, "3.9", "233");
+		getServerInfo(JiraTestConstants.JIRA_LATEST_URL, "3.9", "233");
 	}
 
 	private void getServerInfo(String url, String version, String buildNumber) throws Exception {
@@ -637,7 +638,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testGetEditableFields() throws Exception {
-		getEditableFields(JiraTestConstants.JIRA_39_URL);
+		getEditableFields(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void getEditableFields(String url) throws Exception {
@@ -653,6 +654,20 @@ public class JiraClientTest extends TestCase {
 		assertFalse(ids.isEmpty());
 		assertTrue("Missing 'versions': " + ids, ids.contains("versions"));
 		assertTrue("Missing 'fixVersions': " + ids, ids.contains("fixVersions"));
+	}
+
+	public void testGetWorklogs() throws Exception {
+		getWorklogs(JiraTestConstants.JIRA_LATEST_URL);
+	}
+
+	private void getWorklogs(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+
+		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
+
+		JiraWorklog[] logs = client.getWorklogs(issue.getKey(), null);
+		assertEquals(0, logs.length);
+		JiraWorklog log = new JiraWorklog();
 	}
 
 }

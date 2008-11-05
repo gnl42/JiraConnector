@@ -95,7 +95,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testChangeTaskRepositorySettings() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 		assertEquals(repository.getUserName(), repository.getUserName());
 
 		EditRepositoryWizard wizard = new EditRepositoryWizard(repository);
@@ -111,7 +111,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testAttachContext() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testAttachContext");
 		ITask task = JiraTestUtil.createTask(repository, issue.getId());
@@ -134,7 +134,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testPerformQueryDueDateFilter() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		GregorianCalendar c = new GregorianCalendar();
 		c.add(Calendar.MONTH, 1);
@@ -164,7 +164,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testPerformQuerySpaces() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		long currentTimeMillis = System.currentTimeMillis();
 		String summary1 = "test search for spaces " + currentTimeMillis;
@@ -183,7 +183,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testPerformQueryLimitNumberOfResults() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		long currentTimeMillis = System.currentTimeMillis();
 		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
@@ -215,7 +215,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testMarkStaleNoTasks() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		repository.setSynchronizationTimeStamp(null);
 		SynchronizationSession session = createSession();
@@ -225,7 +225,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testMarkStaleOneTask() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
 		Date start = new Date();
@@ -258,7 +258,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testMarkStaleRepositoryChanged() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		// create two issues, the first one is added to the task list
 		Date start = new Date();
@@ -279,7 +279,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testMarkStaleClosedTask() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		// create an issue
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testMarkStale");
@@ -299,7 +299,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testGetSynchronizationFilter() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		Date now = new Date();
 		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "1");
@@ -327,7 +327,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testGetSynchronizationFilterTimeStampInTheFuture() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "1");
 		Date now = new Date();
@@ -346,7 +346,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testGetSynchronizationFilterTimeStampInTheFutureWithTask() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		Date now = new Date();
 		ITask task = new TaskTask(JiraCorePlugin.CONNECTOR_KIND, repository.getRepositoryUrl(), "1");
@@ -363,7 +363,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testCreateTask() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testCreateTask");
 
@@ -391,7 +391,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testGetRepositoryUrlFromTaskUrl() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 		assertEquals(null, connector.getRepositoryUrlFromTaskUrl("test"));
 		assertEquals(null, connector.getRepositoryUrlFromTaskUrl("http://mylyn.eclipse.org"));
 		assertEquals("http://mylyn.eclipse.org",
@@ -403,7 +403,7 @@ public class JiraRepositoryConnectorTest extends TestCase {
 	}
 
 	public void testGetTaskIdFromTaskUrl() throws Exception {
-		init(JiraTestConstants.JIRA_39_URL);
+		init(JiraTestConstants.JIRA_LATEST_URL);
 		assertEquals(null, connector.getTaskIdFromTaskUrl("test"));
 		assertEquals(null, connector.getTaskIdFromTaskUrl("http://mylyn.eclipse.org"));
 		assertEquals(null, connector.getTaskIdFromTaskUrl("http://mylyn.eclipse.org/browse/ABC"));

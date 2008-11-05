@@ -30,7 +30,7 @@ public class AllJiraTests {
 		// $JUnit-BEGIN$
 		suite.addTestSuite(JiraTimeFormatTest.class);
 		suite.addTestSuite(JiraCustomQueryTest.class);
-		suite.addTestSuite(JiraClientFacadeTest.class);
+		suite.addTestSuite(JiraClientFactoryTest.class);
 		suite.addTestSuite(JiraTaskExternalizationTest.class);
 		suite.addTestSuite(JiraFilterTest.class);
 		suite.addTestSuite(JiraRepositoryConnectorTest.class);

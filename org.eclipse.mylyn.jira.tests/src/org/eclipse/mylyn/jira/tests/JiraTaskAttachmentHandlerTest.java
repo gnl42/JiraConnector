@@ -64,7 +64,7 @@ public class JiraTaskAttachmentHandlerTest extends TestCase {
 	}
 
 	public void testAttachFile() throws Exception {
-		attachFile(JiraTestConstants.JIRA_39_URL);
+		attachFile(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void attachFile(String url) throws Exception {

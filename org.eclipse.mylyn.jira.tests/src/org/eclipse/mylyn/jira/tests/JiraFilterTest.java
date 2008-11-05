@@ -67,7 +67,7 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testJiraFilterRefresh() throws Exception {
-		filterRefresh(JiraTestConstants.JIRA_39_URL);
+		filterRefresh(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void filterRefresh(String url) throws Exception {
@@ -95,7 +95,7 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testCustomQuery() throws Exception {
-		customQuery(JiraTestConstants.JIRA_39_URL);
+		customQuery(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void customQuery(String url) throws Exception {
@@ -121,7 +121,7 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testCustomQueryWithoutRepositoryConfiguraton() throws Exception {
-		customQueryWithoutRepositoryConfiguraton(JiraTestConstants.JIRA_39_URL);
+		customQueryWithoutRepositoryConfiguraton(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
 	private void customQueryWithoutRepositoryConfiguraton(String url) throws Exception {

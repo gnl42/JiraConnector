@@ -52,7 +52,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 	protected void setUp() throws Exception {
 		JiraTestUtil.setUp();
 		taskList = TasksUiPlugin.getTaskList();
-		repository = JiraTestUtil.init(JiraTestConstants.JIRA_39_URL);
+		repository = JiraTestUtil.init(JiraTestConstants.JIRA_LATEST_URL);
 		TaskTestUtil.resetTaskList();
 	}
 
