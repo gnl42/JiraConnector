@@ -97,7 +97,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 	@Override
 	public Map<String, String> getOptions(TaskAttribute attribute) {
 		Map<String, String> options = getRepositoryOptions(attribute);
-		return (options != null) ? super.getOptions(attribute) : options;
+		return (options != null) ? options : super.getOptions(attribute);
 	}
 
 	public Map<String, String> getRepositoryOptions(TaskAttribute attribute) {
