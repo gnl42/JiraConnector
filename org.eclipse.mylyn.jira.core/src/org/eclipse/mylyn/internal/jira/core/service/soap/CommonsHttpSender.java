@@ -72,7 +72,6 @@ import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpVersion;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NTCredentials;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
@@ -81,7 +80,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread;
+import org.eclipse.mylyn.commons.net.WebUtil;
 
 /**
  * This class uses Jakarta Commons's HttpClient to call a SOAP server.
@@ -94,11 +93,6 @@ import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread;
 @SuppressWarnings( { "serial", "unchecked", "null" })
 public class CommonsHttpSender extends BasicHandler {
 
-	private static IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
-	static {
-		idleConnectionTimeoutThread.start();
-	}
-
 	/** Field log */
 	//protected static Log log = LogFactory.getLog(CommonsHTTPSender.class.getName());
 	protected HttpConnectionManager connectionManager;
@@ -109,29 +103,11 @@ public class CommonsHttpSender extends BasicHandler {
 
 	public CommonsHttpSender() {
 		initialize();
-		idleConnectionTimeoutThread.addConnectionManager(this.connectionManager);
-	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		((MultiThreadedHttpConnectionManager) connectionManager).shutdown();
-		idleConnectionTimeoutThread.removeConnectionManager(connectionManager);
 	}
 
 	protected void initialize() {
-		MultiThreadedHttpConnectionManager cm = new MultiThreadedHttpConnectionManager();
 		this.clientProperties = CommonsHTTPClientPropertiesFactory.create();
-		cm.getParams().setDefaultMaxConnectionsPerHost(clientProperties.getMaximumConnectionsPerHost());
-		cm.getParams().setMaxTotalConnections(clientProperties.getMaximumTotalConnections());
-		// If defined, set the default timeouts
-		// Can be overridden by the MessageContext
-		if (this.clientProperties.getDefaultConnectionTimeout() > 0) {
-			cm.getParams().setConnectionTimeout(this.clientProperties.getDefaultConnectionTimeout());
-		}
-		if (this.clientProperties.getDefaultSoTimeout() > 0) {
-			cm.getParams().setSoTimeout(this.clientProperties.getDefaultSoTimeout());
-		}
-		this.connectionManager = cm;
+		this.connectionManager = WebUtil.getConnectionManager();
 	}
 
 	/**
