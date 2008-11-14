@@ -12,6 +12,8 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
+import java.util.StringTokenizer;
+
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -30,6 +32,8 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 @SuppressWarnings("restriction")
 public class JiraSearchHandler extends AbstractSearchHandler {
 
+	private static final int MAX_LENGTH = 950;
+
 	@Override
 	public String getConnectorKind() {
 		return JiraCorePlugin.CONNECTOR_KIND;
@@ -38,8 +42,31 @@ public class JiraSearchHandler extends AbstractSearchHandler {
 	@Override
 	public boolean queryForText(TaskRepository taskRepository, IRepositoryQuery query, TaskData taskData,
 			String searchString) {
+		StringBuilder sb = new StringBuilder(MAX_LENGTH);
+		if (searchString.length() > MAX_LENGTH) {
+			// searching for exact matches fails if strings are too long
+			StringTokenizer t = new StringTokenizer(searchString, " \n\t()");
+			while (t.hasMoreTokens() && sb.length() < MAX_LENGTH - 20) {
+				if (sb.length() > 0) {
+					sb.append(" AND ");
+				}
+				int remaining = MAX_LENGTH - sb.length();
+				String token = t.nextToken();
+				if (token.length() > remaining) {
+					sb.append(token.substring(0, remaining));
+					sb.append("*");
+				} else {
+					sb.append(token);
+				}
+			}
+		} else {
+			sb.append("\"");
+			sb.append(searchString);
+			sb.append("\"");
+		}
+
 		FilterDefinition filter = new FilterDefinition();
-		filter.setContentFilter(new ContentFilter(searchString, false, true, false, true));
+		filter.setContentFilter(new ContentFilter(sb.toString(), false, true, false, true));
 		JiraUtil.setQuery(taskRepository, query, filter);
 		return true;
 	}
