@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/*.java" including="plugin.xml|plugin.properties|icons/**/*.*|META-INF/*.*" kind="src" path=""/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="lib" path="activation-1.1.jar" sourcepath="C:/Users/Jacek/.m2/repository/javax/activation/activation/1.1/activation-1.1-sources.jar"/>
+	<classpathentry kind="lib" path="mail-1.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="atlassian-plugin-commons-1.8.0-SNAPSHOT.jar" sourcepath="/atlassian-plugin-commons"/>
+	<classpathentry kind="lib" path="commons-codec-1.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2/commons-collections-3.2.jar" sourcepath="M2_REPO/commons-collections/commons-collections/3.2/commons-collections-3.2-sources.jar"/>
+	<classpathentry kind="lib" path="commons-httpclient-3.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.3/commons-lang-2.3.jar" sourcepath="M2_REPO/commons-lang/commons-lang/2.3/commons-lang-2.3-sources.jar"/>
+	<classpathentry kind="lib" path="commons-logging-1.0.4.jar" sourcepath="C:/Users/Jacek/.m2/repository/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/ddsteps/ddsteps-httpserver-mock/1.0-m1/ddsteps-httpserver-mock-1.0-m1.jar" sourcepath="M2_REPO/org/ddsteps/ddsteps-httpserver-mock/1.0-m1/ddsteps-httpserver-mock-1.0-m1-sources.jar"/>
+	<classpathentry kind="lib" path="dom4j-1.6.1.jar" sourcepath="C:/Users/Jacek/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/easymock/easymock/2.3/easymock-2.3.jar" sourcepath="M2_REPO/org/easymock/easymock/2.3/easymock-2.3-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/net/sourceforge/htmlunit/htmlunit/1.14/htmlunit-1.14.jar" sourcepath="M2_REPO/net/sourceforge/htmlunit/htmlunit/1.14/htmlunit-1.14-sources.jar"/>
+	<classpathentry kind="lib" path="icu4j-2.6.1.jar"/>
+	<classpathentry kind="lib" path="jaxen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="jdom-1.0.jar" sourcepath="C:/Users/Jacek/.m2/repository/jdom/jdom/1.0/jdom-1.0-sources.jar"/>
+	<classpathentry kind="lib" path="joda-time-1.5.2.jar" sourcepath="C:/Users/Jacek/.m2/repository/joda-time/joda-time/1.5.2/joda-time-1.5.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/rhino/js/1.6R7/js-1.6R7.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.2/junit-3.8.2.jar" sourcepath="M2_REPO/junit/junit/3.8.2/junit-3.8.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit-addons/junit-addons/1.4/junit-addons-1.4.jar"/>
+	<classpathentry kind="lib" path="log4j-1.2.12.jar" sourcepath="C:/Users/Jacek/.m2/repository/log4j/log4j/1.2.12/log4j-1.2.12-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/nekohtml/nekohtml/0.9.5/nekohtml-0.9.5.jar" sourcepath="M2_REPO/nekohtml/nekohtml/0.9.5/nekohtml-0.9.5-sources.jar"/>
+	<classpathentry kind="lib" path="xalan-2.6.0.jar"/>
+	<classpathentry kind="lib" path="xercesImpl-2.6.2.jar" sourcepath="C:/Users/Jacek/.m2/repository/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2-sources.jar"/>
+	<classpathentry kind="lib" path="xml-apis-1.3.02.jar"/>
+	<classpathentry kind="lib" path="xmlParserAPIs-2.6.2.jar"/>
+	<classpathentry kind="lib" path="xom-1.0.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
