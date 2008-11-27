@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * @author Steffen Pingel
  */
-public class JiraWorklog implements Serializable {
+public class JiraWorkLog implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class JiraWorklog implements Serializable {
 
 	private Date updated;
 
-	public JiraWorklog() {
+	public JiraWorkLog() {
 	}
 
 	public String getAuthor() {

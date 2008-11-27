@@ -16,14 +16,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.mylyn.internal.jira.core.model.JiraWorklog;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
  * @author Steffen Pingel
  */
-public class WorklogConverter extends AbstractComplexAttributeConverter<JiraWorklog> {
+public class WorkLogConverter extends AbstractComplexAttributeConverter<JiraWorkLog> {
 
 	private static List<JiraField<?>> _taskFields = new ArrayList<JiraField<?>>();
 
@@ -39,7 +39,7 @@ public class WorklogConverter extends AbstractComplexAttributeConverter<JiraWork
 	public final static JiraField<String> GROUP_LEVEL = create(String.class, "groupLevel", "Group Level",
 			TaskAttribute.TYPE_DATETIME);
 
-	public final static JiraField<String> ID = create(String.class, "id", "Created", TaskAttribute.TYPE_DATETIME);
+	public final static JiraField<String> ID = create(String.class, "id", "Created", TaskAttribute.TYPE_SHORT_TEXT);
 
 	public final static JiraField<Date> MODIFICATION_DATE = create(Date.class, "updated", "Created",
 			TaskAttribute.TYPE_DATETIME);
@@ -52,8 +52,7 @@ public class WorklogConverter extends AbstractComplexAttributeConverter<JiraWork
 	public final static JiraField<Date> START_DATE = create(Date.class, "startDate", "Created",
 			TaskAttribute.TYPE_DATETIME);
 
-	public final static JiraField<Integer> TIME_SPENT = create(Integer.class, "timeSpent", "Created",
-			TaskAttribute.TYPE_INTEGER);
+	public final static JiraField<Long> TIME_SPENT = create(Long.class, "timeSpent", "Time", TaskAttribute.TYPE_LONG);
 
 	public static final String TYPE_WORKLOG = "jira.worklog";
 
@@ -70,13 +69,13 @@ public class WorklogConverter extends AbstractComplexAttributeConverter<JiraWork
 		return Collections.unmodifiableList(_taskFields);
 	}
 
-	public WorklogConverter() {
+	public WorkLogConverter() {
 		super(taskFields());
 	}
 
 	@Override
-	protected JiraWorklog newInstance() {
-		return new JiraWorklog();
+	protected JiraWorkLog newInstance() {
+		return new JiraWorkLog();
 	}
 
 }

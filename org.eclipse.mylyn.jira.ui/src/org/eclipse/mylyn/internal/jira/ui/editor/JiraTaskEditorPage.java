@@ -11,6 +11,8 @@
 
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
+import java.util.Set;
+
 import org.eclipse.mylyn.internal.jira.core.IJiraConstants;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraFieldType;
@@ -19,8 +21,10 @@ import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
+import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorFactory;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
+import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
 
 /**
  * @author Steffen Pingel
@@ -29,6 +33,18 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
+	}
+
+	@Override
+	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
+		Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
+		parts.add(new TaskEditorPartDescriptor("org.eclipse.mylyn.jira.worklog") {
+			@Override
+			public AbstractTaskEditorPart createPart() {
+				return new WorkLogPart();
+			}
+		}.setPath(PATH_ATTRIBUTES));
+		return parts;
 	}
 
 	@Override

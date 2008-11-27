@@ -42,7 +42,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
-import org.eclipse.mylyn.internal.jira.core.model.JiraWorklog;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
@@ -764,13 +764,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (useCachedData(jiraIssue, oldTaskData)) {
 			// FIXME
 		}
-		JiraWorklog[] remoteWorklogs = client.getSoapClient().getWorkLogs(jiraIssue.getKey(), monitor);
+		JiraWorkLog[] remoteWorklogs = client.getSoapClient().getWorkLogs(jiraIssue.getKey(), monitor);
 		int i = 1;
-		for (JiraWorklog remoteWorklog : remoteWorklogs) {
-			String attributeId = WorklogConverter.PREFIX_WORKLOG + "-" + i;
+		for (JiraWorkLog remoteWorklog : remoteWorklogs) {
+			String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i;
 			TaskAttribute attribute = data.getRoot().createAttribute(attributeId);
-			attribute.getMetaData().setType(WorklogConverter.TYPE_WORKLOG);
-			new WorklogConverter().applyTo(remoteWorklog, attribute);
+			attribute.getMetaData().setType(WorkLogConverter.TYPE_WORKLOG);
+			new WorkLogConverter().applyTo(remoteWorklog, attribute);
 			i++;
 		}
 	}

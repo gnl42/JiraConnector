@@ -20,7 +20,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.Group;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
-import org.eclipse.mylyn.internal.jira.core.model.JiraWorklog;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
@@ -67,16 +67,16 @@ class JiraSoapConverter {
 		return priority;
 	}
 
-	protected static JiraWorklog[] convert(RemoteWorklog[] remoteWorklogs) {
-		JiraWorklog[] worklogs = new JiraWorklog[remoteWorklogs.length];
+	protected static JiraWorkLog[] convert(RemoteWorklog[] remoteWorklogs) {
+		JiraWorkLog[] worklogs = new JiraWorkLog[remoteWorklogs.length];
 		for (int i = 0; i < remoteWorklogs.length; i++) {
 			worklogs[i] = convert(remoteWorklogs[i]);
 		}
 		return worklogs;
 	}
 
-	protected static JiraWorklog convert(RemoteWorklog remoteWorklog) {
-		JiraWorklog worklog = new JiraWorklog();
+	protected static JiraWorkLog convert(RemoteWorklog remoteWorklog) {
+		JiraWorkLog worklog = new JiraWorkLog();
 		worklog.setAuthor(remoteWorklog.getAuthor());
 		worklog.setComment(remoteWorklog.getComment());
 		worklog.setCreated(convert(remoteWorklog.getCreated()));

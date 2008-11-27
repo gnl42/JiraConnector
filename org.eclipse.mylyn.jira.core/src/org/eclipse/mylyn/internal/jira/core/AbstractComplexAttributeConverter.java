@@ -57,14 +57,24 @@ public abstract class AbstractComplexAttributeConverter<T> {
 		if (taskField.javaKey() != null) {
 			Field field;
 			try {
-				field = instance.getClass().getField(taskField.javaKey());
+				field = instance.getClass().getDeclaredField(taskField.javaKey());
 				field.setAccessible(true);
 				Object value;
 				TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
 				if (TaskAttribute.TYPE_DATE.equals(taskField.getType())) {
 					value = mapper.getDateValue(attribute);
+				} else if (TaskAttribute.TYPE_DATETIME.equals(taskField.getType())) {
+					value = mapper.getDateValue(attribute);
 				} else if (TaskAttribute.TYPE_INTEGER.equals(taskField.getType())) {
 					value = mapper.getIntegerValue(attribute);
+					if (value == null) {
+						value = 0;
+					}
+				} else if (TaskAttribute.TYPE_LONG.equals(taskField.getType())) {
+					value = mapper.getLongValue(attribute);
+					if (value == null) {
+						value = 0;
+					}
 				} else {
 					value = attribute.getValue();
 				}
@@ -87,10 +97,14 @@ public abstract class AbstractComplexAttributeConverter<T> {
 			if (value == null) {
 				attribute.clearValues();
 			} else {
-				if (TaskAttribute.TYPE_DATE.equals(field.getType())) {
+				if (TaskAttribute.TYPE_DATE.equals(taskField.getType())) {
 					mapper.setDateValue(attribute, (Date) value);
-				} else if (TaskAttribute.TYPE_INTEGER.equals(field.getType())) {
+				} else if (TaskAttribute.TYPE_DATETIME.equals(taskField.getType())) {
+					mapper.setDateValue(attribute, (Date) value);
+				} else if (TaskAttribute.TYPE_INTEGER.equals(taskField.getType())) {
 					mapper.setIntegerValue(attribute, (Integer) value);
+				} else if (TaskAttribute.TYPE_LONG.equals(taskField.getType())) {
+					mapper.setLongValue(attribute, (Long) value);
 				} else {
 					attribute.setValue(value.toString());
 				}

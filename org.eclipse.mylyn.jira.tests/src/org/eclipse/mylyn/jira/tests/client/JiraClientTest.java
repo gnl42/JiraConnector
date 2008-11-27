@@ -28,7 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
-import org.eclipse.mylyn.internal.jira.core.model.JiraWorklog;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
@@ -669,9 +669,9 @@ public class JiraClientTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
 
-		JiraWorklog[] logs = client.getWorklogs(issue.getKey(), null);
+		JiraWorkLog[] logs = client.getWorklogs(issue.getKey(), null);
 		assertEquals(0, logs.length);
-		JiraWorklog log = new JiraWorklog();
+		JiraWorkLog log = new JiraWorkLog();
 	}
 
 }

@@ -185,6 +185,11 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 				+ "?page=history";
 	}
 
+	public static String getTaskWorkLogUrl(TaskRepository taskRepository, ITask task) {
+		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
+				+ "?page=com.atlassian.jira.plugin.system.issuetabpanels%3Aworklog-tabpanel";
+	}
+
 	@Override
 	public String getReplyText(TaskRepository taskRepository, ITask task, ITaskComment taskComment, boolean includeTask) {
 		if (taskComment == null) {
