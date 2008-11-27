@@ -24,6 +24,5 @@ Export-Package: com.thoughtworks.xstream,
  com.thoughtworks.xstream.io.xml.xppdom,
  com.thoughtworks.xstream.mapper,
  com.thoughtworks.xstream.persistence
-Require-Bundle: javax.xml,
- org.jdom;resolution:=optional,
+Require-Bundle: org.jdom;resolution:=optional,
  org.joda.time;resolution:=optional
