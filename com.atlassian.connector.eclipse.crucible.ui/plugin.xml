@@ -1,3 +1,16 @@
 <plugin>
+   <extension
+         point="org.eclipse.mylyn.tasks.ui.repositories">
+      <connectorCore
+            class="com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepsositoryConnector"
+            id="crucible"
+            name="Crucible">
+      </connectorCore>
+      <connectorUi
+            class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleRepositoryConnectorUi"
+            id="crucible"
+            name="Crucible">
+      </connectorUi>
+   </extension>
 
 </plugin>

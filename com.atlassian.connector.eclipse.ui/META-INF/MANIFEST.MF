@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Ui
+Bundle-SymbolicName: com.atlassian.connector.eclipse.ui
+Bundle-Version: 0.1.0
+Bundle-Activator: com.atlassian.connector.eclipse.ui.AtlassianUiPlugin
+Bundle-Vendor: Atlassian
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-LazyStart: true

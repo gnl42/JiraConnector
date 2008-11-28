@@ -6,7 +6,11 @@ Bundle-Version: 1.0.0
 Require-Bundle: com.atlassian.connector.commons,
  org.eclipse.core.runtime,
  org.eclipse.ui,
- com.atlassian.connector.eclipse.crucible.core
+ com.atlassian.connector.eclipse.crucible.core,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.tasks.ui,
+ org.eclipse.ui.forms,
+ org.eclipse.mylyn.commons.ui
 Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
