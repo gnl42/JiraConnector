@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Ui
+Bundle-Name: Crucible Ui
 Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.ui;singleton:=true
 Bundle-Version: 1.0.0
 Require-Bundle: com.atlassian.connector.commons,
@@ -11,3 +11,4 @@ Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleU
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.ui;x-internal:=true
+Eclipse-LazyStart: true

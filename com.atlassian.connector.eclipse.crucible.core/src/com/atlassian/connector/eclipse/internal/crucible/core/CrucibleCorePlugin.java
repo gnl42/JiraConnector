@@ -11,6 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import java.io.File;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -22,7 +26,11 @@ import org.osgi.framework.BundleContext;
 public class CrucibleCorePlugin extends Plugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "asds";
+	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.crucible.core";
+
+	public static final String CONNECTOR_KIND = "crucible";
+
+	private static CrucibleRepsositoryConnector repositoryConnector;
 
 	// The shared instance
 	private static CrucibleCorePlugin plugin;
@@ -61,6 +69,20 @@ public class CrucibleCorePlugin extends Plugin {
 	 */
 	public static CrucibleCorePlugin getDefault() {
 		return plugin;
+	}
+
+	static void setRepositoryConnector(CrucibleRepsositoryConnector repositoryConnector) {
+		CrucibleCorePlugin.repositoryConnector = repositoryConnector;
+	}
+
+	public static CrucibleRepsositoryConnector getRepositoryConnector() {
+		return repositoryConnector;
+	}
+
+	public File getRepositoryConfigurationCacheFile() {
+		IPath stateLocation = Platform.getStateLocation(getBundle());
+		IPath cacheFile = stateLocation.append("repositoryConfigurations");
+		return cacheFile.toFile();
 	}
 
 }

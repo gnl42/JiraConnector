@@ -1,11 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Core
-Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.core
+Bundle-Name: Crucible Core
+Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.core;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.core.runtime,
- com.atlassian.connector.commons
-Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-internal:=true
+ com.atlassian.connector.commons,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.commons.core,
+ org.eclipse.mylyn.commons.net
+Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.core.client;x-internal:=true
+Eclipse-LazyStart: true

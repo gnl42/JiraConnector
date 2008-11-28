@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "asds";
+	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.crucible.ui";
 
 	// The shared instance
 	private static CrucibleUiPlugin plugin;
