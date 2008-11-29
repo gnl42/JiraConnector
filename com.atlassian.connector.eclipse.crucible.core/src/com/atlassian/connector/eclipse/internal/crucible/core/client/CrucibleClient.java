@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 
 /**
@@ -27,5 +28,9 @@ public class CrucibleClient {
 	public CrucibleClient(AbstractWebLocation location, CrucibleClientData data) {
 		this.location = location;
 		this.clientData = data;
+	}
+
+	public void validate(IProgressMonitor monitor) {
+		// TODO implement this to check that the credentials and urls, etc are valid
 	}
 }

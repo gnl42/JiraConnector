@@ -10,7 +10,8 @@ Require-Bundle: com.atlassian.connector.commons,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.ui.forms,
- org.eclipse.mylyn.commons.ui
+ org.eclipse.mylyn.commons.ui,
+ org.eclipse.mylyn.commons.net
 Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
