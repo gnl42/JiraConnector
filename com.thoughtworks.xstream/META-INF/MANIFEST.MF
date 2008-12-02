@@ -26,3 +26,4 @@ Export-Package: com.thoughtworks.xstream,
  com.thoughtworks.xstream.persistence
 Require-Bundle: org.jdom;resolution:=optional,
  org.joda.time;resolution:=optional
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
