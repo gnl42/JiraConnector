@@ -13,6 +13,10 @@
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse_feature" />
 		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.test_feature" />
+		</ant>
 	</target>
 
 	<!-- ===================================================================== -->
@@ -23,6 +27,9 @@
 	<!-- Replace element.id with the id of the top level element being built   -->
 	<!-- ===================================================================== -->
 	<target name="assemble.com.atlassian.connector.eclipse_feature">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<target name="assemble.com.atlassian.connector.eclipse.test_feature">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	
