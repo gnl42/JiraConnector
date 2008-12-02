@@ -176,8 +176,7 @@
 		<!-- Generate the "site.xml" file in the "updateSite folder -->
 		<copy file="${builder}/${SiteXmlFile}" tofile="${UpdateSiteLocation}/site.xml">
 			<filterset>
-				<filter token="core" value="${org.eclipse.mylyn_feature}" />
-				<filter token="wikitext" value="${org.eclipse.mylyn.wikitext_feature}" />
+				<filter token="core" value="${com.atlassian.connector.eclipse_feature}" />
 			</filterset>
 		</copy>
 
@@ -186,11 +185,7 @@
 			<param name="target" value="updateSiteExport" />
 		</antcall>
 
-		<zip destfile="${UpdateSiteLocation}/../mylyn-${org.eclipse.mylyn_feature}-${SiteName}.zip" basedir="${UpdateSiteLocation}" />
-		<!--<exec dir="${UpdateSiteLocation}" executable="scp" failonerror="true">
-			<arg value="${UpdateSiteLocation}/update-${org.eclipse.mylyn_feature}.zip"/>
-		    <arg value="username@host:/destination/folder/"/>
-		</exec>-->
+		<zip destfile="${UpdateSiteLocation}/../atlassian-eclipse-connector-${com.atlassian.connector.eclipse_feature}-site.zip" basedir="${UpdateSiteLocation}" />
 	</target>
 
 	<!-- ===================================================================== -->

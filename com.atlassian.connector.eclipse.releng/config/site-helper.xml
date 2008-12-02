@@ -24,19 +24,6 @@
 	</target>
 	
 	<target name="orbit-copy-bundles-helper">
-		<antcall target="orbit-pack-helper">
-			<param name="bundle" value="javax.xml.rpc"/>
-		</antcall>
-		<antcall target="orbit-pack-helper">
-			<param name="bundle" value="javax.xml.soap"/>
-		</antcall>
-		<antcall target="orbit-pack-helper">
-			<param name="bundle" value="org.apache.axis"/>
-		</antcall>
-		<antcall target="orbit-pack-helper">
-			<param name="bundle" value="org.apache.commons.discovery"/>
-		</antcall>
-
 		<!-- httpclient -->
 		<fileset dir="${buildDirectory}/plugins" id="org.apache.commons.httpclient">
 			<include name="org.apache.commons.codec*.jar"/>
@@ -71,29 +58,17 @@
 			<include name="org.jdom*.jar"/>				
 		</fileset>
 
-		<mkdir dir="${buildDirectory}/standardUpdateSite/plugins"/>
-		<copy todir="${buildDirectory}/standardUpdateSite/plugins">
+		<!-- xstream -->
+		<fileset dir="${buildDirectory}/plugins" id="com.thoughtworks.xstream">
+			<include name="com.thoughtworks.xsteam*.jar"/>
+			<include name="org.joda.time*.jar"/>				
+			<include name="org.jdom*.jar"/>				
+		</fileset>
+
+		<mkdir dir="${buildDirectory}/standard/plugins"/>
+		<copy todir="${buildDirectory}/standar/plugins">
 			<fileset refid="org.apache.commons.httpclient" />
-		</copy>
-
-		<mkdir dir="${buildDirectory}/extrasUpdateSite/plugins"/>
-		<copy todir="${buildDirectory}/extrasUpdateSite/plugins">
-			<fileset refid="org.apache.axis" />
-			<fileset refid="org.apache.xmlrpc" />
-		</copy>
-
-		<mkdir dir="${buildDirectory}/incubatorUpdateSite/plugins"/>
-		<copy todir="${buildDirectory}/incubatorUpdateSite/plugins">
-			<fileset refid="org.apache.axis" />
-			<fileset refid="com.sun.syndication" />
-		</copy>
-
-		<mkdir dir="${buildDirectory}/allUpdateSite/plugins"/>
-		<copy todir="${buildDirectory}/allUpdateSite/plugins">
-			<fileset refid="org.apache.axis" />
-			<fileset refid="org.apache.commons.httpclient" />
-			<fileset refid="org.apache.xmlrpc" />
-			<fileset refid="com.sun.syndication" />
+			<fileset refid="com.thoughtworks.xstream" />
 		</copy>
 	</target>
 	
