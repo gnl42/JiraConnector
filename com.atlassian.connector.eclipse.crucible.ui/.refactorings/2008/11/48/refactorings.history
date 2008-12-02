@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy 1 package(s) to &apos;com.atlassian.connector.eclipse.crucible.core/src&apos;&#x0D;&#x0A;- Original project: &apos;com.atlassian.connector.eclipse.crucible.ui&apos;&#x0D;&#x0A;- Destination element: &apos;com.atlassian.connector.eclipse.crucible.core/src&apos;&#x0D;&#x0A;- Original element: &apos;com.atlassian.connector.eclipse.crucible.ui/src/com.atlassian.connector.eclipse.internal.crucible.ui&apos;" description="Copy package" destination="/src" element1="/src&lt;com.atlassian.connector.eclipse.internal.crucible.ui" flags="589830" fragments="1" id="org.eclipse.jdt.ui.copy" log="/src&lt;com.atlassian.connector.eclipse.internal.crucible.ui&#x09;true&#x09;false" policy="org.eclipse.jdt.ui.copyPackages" stamp="1227824193906" version="1.0"/>
-</session>
