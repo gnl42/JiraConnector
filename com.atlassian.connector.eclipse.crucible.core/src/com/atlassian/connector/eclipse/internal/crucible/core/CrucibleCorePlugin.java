@@ -18,6 +18,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
+import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
+import com.atlassian.theplugin.commons.util.LoggerImpl;
+
 /**
  * The activator class controls the plug-in life cycle
  * 
@@ -39,6 +42,9 @@ public class CrucibleCorePlugin extends Plugin {
 	 * The constructor
 	 */
 	public CrucibleCorePlugin() {
+
+		// make sure that we have the logging going to the eclipse log
+		LoggerImpl.setInstance(new AtlassianLogger());
 	}
 
 	/*

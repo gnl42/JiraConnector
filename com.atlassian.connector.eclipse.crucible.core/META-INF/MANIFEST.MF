@@ -10,7 +10,9 @@ Require-Bundle: org.eclipse.core.runtime,
  com.atlassian.connector.commons,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.commons.core,
- org.eclipse.mylyn.commons.net
+ org.eclipse.mylyn.commons.net,
+ com.atlassian.connector.eclipse.core
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-friends:="com.atlassian.connector.eclipse.crucible.ui",
- com.atlassian.connector.eclipse.internal.crucible.core.client;x-friends:="com.atlassian.connector.eclipse.crucible.ui"
+ com.atlassian.connector.eclipse.internal.crucible.core.client;x-friends:="com.atlassian.connector.eclipse.crucible.ui",
+ com.atlassian.connector.eclipse.internal.crucible.core.configuration;x-internal:=true
 

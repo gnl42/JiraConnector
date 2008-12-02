@@ -16,7 +16,9 @@ import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
+import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
+import org.eclipse.mylyn.tasks.ui.wizards.RepositoryQueryWizard;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPage;
@@ -28,6 +30,11 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepo
  */
 public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi {
 
+	public CrucibleRepositoryConnectorUi() {
+		CrucibleCorePlugin.getRepositoryConnector().getClientManager().setTaskRepositoryLocationFactory(
+				new TaskRepositoryLocationUiFactory());
+	}
+
 	@Override
 	public String getConnectorKind() {
 		return CrucibleCorePlugin.CONNECTOR_KIND;
@@ -35,14 +42,23 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository, ITaskMapping selection) {
-		// ignore
+		// TODO implement this once we have the ability to create a new review
 		return null;
 	}
 
 	@Override
-	public IWizard getQueryWizard(TaskRepository taskRepository, IRepositoryQuery queryToEdit) {
-		// ignore
-		return null;
+	public IWizard getQueryWizard(TaskRepository repository, IRepositoryQuery query) {
+		RepositoryQueryWizard wizard = new RepositoryQueryWizard(repository);
+//		if (query != null) {
+//			if (CrucibleUtil.isFilterDefinition(query)) {
+//				wizard.addPage(new CrucibleFilterDefinitionPage(repository, query));
+//			} else {
+//				wizard.addPage(new CrucibleNamedFilterPage(repository, query));
+//			}
+//		} else {
+//			wizard.addPage(new CrucibleNamedFilterPage(repository));
+//		}
+		return wizard;
 	}
 
 	@Override
@@ -52,7 +68,6 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 
 	@Override
 	public boolean hasSearchPage() {
-		// ignore
 		return false;
 	}
 

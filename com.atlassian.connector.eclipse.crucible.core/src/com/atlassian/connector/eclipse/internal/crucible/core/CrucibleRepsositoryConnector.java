@@ -16,7 +16,6 @@ import java.io.File;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.mylyn.internal.provisional.tasks.core.RepositoryClientManager;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -24,9 +23,6 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
-
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 
 /**
  * Core class for integration with Mylyn tasks framework and synchronization
@@ -50,7 +46,7 @@ public class CrucibleRepsositoryConnector extends AbstractRepositoryConnector {
 
 	}
 
-	public synchronized RepositoryClientManager<CrucibleClient, CrucibleClientData> getClientManager() {
+	public synchronized CrucibleClientManager getClientManager() {
 		if (clientManager == null) {
 			clientManager = new CrucibleClientManager(getRepositoryConfigurationCacheFile());
 		}

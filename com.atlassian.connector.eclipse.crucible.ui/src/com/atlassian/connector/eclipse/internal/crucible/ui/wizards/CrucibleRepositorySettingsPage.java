@@ -16,13 +16,12 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Composite;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
@@ -44,10 +43,17 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
-			AbstractWebLocation location = new TaskRepositoryLocationFactory().createWebLocation(taskRepository);
-			CrucibleClient client = new CrucibleClient(location, new CrucibleClientData());
+			CrucibleClientManager clientManager = CrucibleCorePlugin.getRepositoryConnector().getClientManager();
+			CrucibleClient client = null;
+			try {
+				client = clientManager.createTempClient(taskRepository, new CrucibleClientData());
 
-			client.validate(monitor);
+				client.validate(monitor);
+			} finally {
+				if (client != null) {
+					clientManager.deleteTempClient(client);
+				}
+			}
 		}
 	}
 
@@ -55,7 +61,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 		super("Crucible Repository Settings", "Enter Crucible server information", taskRepository);
 		setNeedsHttpAuth(true);
 		setNeedsEncoding(false);
-		setNeedsAnonymousLogin(true);
+		setNeedsAnonymousLogin(false);
 		setNeedsAdvanced(false);
 	}
 
