@@ -185,7 +185,8 @@
 			<param name="target" value="updateSiteExport" />
 		</antcall>
 
-		<zip destfile="${UpdateSiteLocation}/../atlassian-eclipse-connector-${com.atlassian.connector.eclipse_feature}-site.zip" basedir="${UpdateSiteLocation}" />
+		<zip destfile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse_feature}-site.zip" basedir="${UpdateSiteLocation}" />
+		<copy tofile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse_feature}.zip" file="${buildDirectory}/${buildLabel}/com.atlassian.connector.eclipse_feature-${com.atlassian.connector.eclipse_feature}.zip" />
 	</target>
 
 	<!-- ===================================================================== -->

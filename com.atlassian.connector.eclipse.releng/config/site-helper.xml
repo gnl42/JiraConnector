@@ -65,8 +65,8 @@
 			<include name="org.jdom*.jar"/>				
 		</fileset>
 
-		<mkdir dir="${buildDirectory}/standard/plugins"/>
-		<copy todir="${buildDirectory}/standar/plugins">
+		<mkdir dir="${buildDirectory}/site/plugins"/>
+		<copy todir="${buildDirectory}/site/plugins">
 			<fileset refid="org.apache.commons.httpclient" />
 			<fileset refid="com.thoughtworks.xstream" />
 		</copy>
