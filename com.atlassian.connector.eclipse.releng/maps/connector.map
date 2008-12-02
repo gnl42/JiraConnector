@@ -1,0 +1,14 @@
+!*******************************************************************************************
+! SVN map files format
+! <type>@<id>=SVN,<tag>[:revision],<svnRepositoryURL>,<preTagPath>,<postTagPath>
+!*******************************************************************************************
+
+feature@com.atlassian.connector.eclipse_feature=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse-feature
+
+plugin@com.atlassian.connector.commons=SVN,trunk,https://studio.atlassian.com/svn/ACC,,com.atlassian.connector.commons
+plugin@com.atlassian.connector.eclipse.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.core
+plugin@com.atlassian.connector.eclipse.crucible.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.crucible.core
+plugin@com.atlassian.connector.eclipse.crucible.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.crucible.ui
+plugin@com.atlassian.connector.eclipse.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.ui
+plugin@com.thoughtworks.xstream=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.thoughtworks.xstream
+plugin@org.joda.time=SVN,trunk,https://studio.atlassian.com/svn/PLE,,org.joda.time

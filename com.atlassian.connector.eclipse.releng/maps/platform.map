@@ -1,0 +1,4 @@
+!*** Eclipse Test Framework ***
+plugin@org.eclipse.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.test
+plugin@org.eclipse.test.performance=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.test.performance
+plugin@org.eclipse.test.performance.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.releng.basebuilder/plugins/org.eclipse.test.performance.ui

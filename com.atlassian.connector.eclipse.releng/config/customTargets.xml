@@ -1,0 +1,221 @@
+<project name="Build specific targets and properties" default="noDefault">
+
+	<import file="site-helper.xml" />
+
+	<!-- ===================================================================== -->
+	<!-- Run a given ${target} on all elements being built -->
+	<!-- Add on <ant> task for each top level element being built. -->
+	<!-- ===================================================================== -->
+	<property name="allElementsFile" value="${builder}/allElements.xml" />
+	<import file="${allElementsFile}" />
+	<target name="allElements">
+		<antcall target="allElementsDelegator" />
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- ===================================================================== -->
+	<target name="getBaseComponents" depends="checkLocalBase" unless="skipBase">
+		<get src="${eclipseBaseURL}" dest="${buildDirectory}/../temp-base.zip" />
+		<unzip dest="${base}" overwrite="true" src="${buildDirectory}/../temp-base.zip" />
+	</target>
+
+	<target name="checkLocalBase">
+		<available file="${base}" property="skipBase" />
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Check out map files from correct repository -->
+	<!-- Replace values for mapsCheckoutTag as desired. -->
+	<!-- ===================================================================== -->
+	<target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
+		<property name="mapsCheckoutTag" value="HEAD" />
+		<cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
+	</target>
+
+	<target name="checkLocalMaps">
+		<available property="skipMaps" file="${buildDirectory}/maps" />
+	</target>
+
+	<target name="tagMapFiles" if="tagMaps">
+		<cvs dest="${buildDirectory}/maps/${mapsRoot}" command="tag ${mapsTagTag}" />
+	</target>
+
+	<!-- ===================================================================== -->
+
+	<target name="clean" unless="noclean">
+		<antcall target="allElements">
+			<param name="target" value="cleanElement" />
+		</antcall>
+	</target>
+
+	<target name="gatherLogs">
+		<mkdir dir="${buildDirectory}/${buildLabel}/compilelogs" />
+		<antcall target="allElements">
+			<param name="target" value="gatherLogs" />
+		</antcall>
+		<unzip dest="${buildDirectory}/${buildLabel}/compilelogs" overwrite="true">
+			<fileset dir="${buildDirectory}/features">
+				<include name="**/*.log.zip" />
+			</fileset>
+		</unzip>
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do before setup -->
+	<!-- ===================================================================== -->
+	<target name="preSetup">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do after setup but before starting the build proper -->
+	<!-- ===================================================================== -->
+	<target name="postSetup">
+		<antcall target="getBaseComponents" />
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do before fetching the build elements -->
+	<!-- ===================================================================== -->
+	<target name="preFetch">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do after fetching the build elements -->
+	<!-- ===================================================================== -->
+	<target name="postFetch">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do before generating the build scripts. -->
+	<!-- ===================================================================== -->
+	<target name="preGenerate">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do after generating the build scripts. -->
+	<!-- ===================================================================== -->
+	<target name="postGenerate">
+		<antcall target="clean" />
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do before running the build.xmls for the elements being built. -->
+	<!-- ===================================================================== -->
+	<target name="preProcess">
+		<replace dir="${buildDirectory}/features" value="${majorVersion}.${forceContextQualifier}" token="${majorVersion}.qualifier">
+			<include name="**/feature.xml" />
+		</replace>
+		<available property="patch.org.eclipse.test.performance" file="${builder}/org.eclipse.test.performance.diff"/>
+		<antcall target="patch"/>
+	</target>
+
+	<target name="patch" if="patch.org.eclipse.test.performance">
+		<patch patchfile="${builder}/org.eclipse.test.performance.diff"
+			dir="${buildDirectory}/plugins/org.eclipse.test.performance" strip="0"/>
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do after running the build.xmls for the elements being built. -->
+	<!-- ===================================================================== -->
+	<target name="postProcess">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do before running assemble. -->
+	<!-- ===================================================================== -->
+	<target name="preAssemble">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do after  running assemble. -->
+	<!-- ===================================================================== -->
+	<target name="postAssemble">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do before running package. -->
+	<!-- ===================================================================== -->
+	<target name="prePackage">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do after  running package. -->
+	<!-- ===================================================================== -->
+	<target name="postPackage">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do after the build is done. -->
+	<!-- ===================================================================== -->
+	<target name="postBuild">
+		<antcall target="gatherLogs" />
+		<antcall target="orbit-copy-bundles-helper" />
+		<!--
+		<exec executable="${builder}/../../copy-orbit-bundles.sh" failonerror="true">
+			<arg value="${buildDirectory}" />
+		</exec>
+		<exec executable="${builder}/../../fix-build-files.sh" failonerror="true">
+			<arg value="${buildDirectory}" />
+		</exec>
+		-->
+		<antcall target="generateUpdateSite">
+			<param name="UpdateSiteLocation" value="${buildDirectory}/site" />
+			<param name="SiteXmlFile" value="site.xml" />
+			<param name="ElementsTarget" value="allElements" />
+			<param name="SiteName" value="standard" />
+		</antcall>
+	</target>
+
+	<target name="generateUpdateSite">
+		<property file="${buildDirectory}/finalFeaturesVersions.properties" />
+		<!-- Create the directory structure -->
+		<mkdir dir="${UpdateSiteLocation}" />
+		<mkdir dir="${UpdateSiteLocation}/features" />
+		<mkdir dir="${UpdateSiteLocation}/plugins" />
+
+		<!-- Generate the "site.xml" file in the "updateSite folder -->
+		<copy file="${builder}/${SiteXmlFile}" tofile="${UpdateSiteLocation}/site.xml">
+			<filterset>
+				<filter token="core" value="${org.eclipse.mylyn_feature}" />
+				<filter token="wikitext" value="${org.eclipse.mylyn.wikitext_feature}" />
+			</filterset>
+		</copy>
+
+		<antcall target="${ElementsTarget}">
+			<param name="genericTargets" value="${builder}/customTargets.xml" />
+			<param name="target" value="updateSiteExport" />
+		</antcall>
+
+		<zip destfile="${UpdateSiteLocation}/../mylyn-${org.eclipse.mylyn_feature}-${SiteName}.zip" basedir="${UpdateSiteLocation}" />
+		<!--<exec dir="${UpdateSiteLocation}" executable="scp" failonerror="true">
+			<arg value="${UpdateSiteLocation}/update-${org.eclipse.mylyn_feature}.zip"/>
+		    <arg value="username@host:/destination/folder/"/>
+		</exec>-->
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do to test the build results -->
+	<!-- ===================================================================== -->
+	<target name="test">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Steps to do to publish the build results -->
+	<!-- ===================================================================== -->
+	<target name="publish">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- Default target                                                        -->
+	<!-- ===================================================================== -->
+	<target name="noDefault">
+		<echo message="You must specify a target when invoking this file" />
+	</target>
+
+	<target name="updateSiteExport">
+		<ant antfile="build.xml" dir="${buildDirectory}/features/${id}/" target="build.update.jar">
+			<property name="feature.destination" value="${UpdateSiteLocation}/features" />
+			<property name="plugin.destination" value="${UpdateSiteLocation}/plugins" />
+		</ant>
+	</target>
+</project>

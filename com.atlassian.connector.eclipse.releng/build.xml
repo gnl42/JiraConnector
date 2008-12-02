@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mylyn" default="all" basedir=".">
+	<property file="local.properties" />
+	<property file="defaults.properties" />
+
+	<import file="scripts/buildHelper.xml" />
+	
+	<target name="all" depends="clean,build,tests">
+	</target>
+</project>
