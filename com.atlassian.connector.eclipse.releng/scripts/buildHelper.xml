@@ -171,7 +171,7 @@
     	</path> 
     	<property name="pde.build.script" refid="pde.build.script.id"/>
 		<property name="build.forceContextQualifier" value="${qualifier}" />
-		<property name="build.extraBuildArgs" value="-Dignore=" />
+		<property name="build.extraBuildArgs" value="" />
 		<available property="builder" file="${basedir}/config/${eclipse.version}" value="${basedir}/config/${eclipse.version}"/>
 		<property name="builder" location="${basedir}/config"/>
     	<property name="log" value="${build.results}/build-${eclipse.version}.log" />
@@ -196,7 +196,7 @@
     		<arg value="-DbuildDirectory=${build.home}/${eclipse.version}"/>
     		<arg value="-DforceContextQualifier=${build.forceContextQualifier}"/>
     		<arg value="-DmajorVersion=${version}"/>
-    		<arg value="${build.extraBuildArgs}"/>
+    		<arg line="${build.extraBuildArgs}"/>
 		</java>
     </target>
 	

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Atlassian Eclipse Connector" default="all" basedir=".">
+	<property file="${build.config}" />
 	<property file="local.properties" />
 	<property file="defaults.properties" />
 

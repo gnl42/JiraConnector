@@ -106,14 +106,25 @@
 			<include name="**/feature.xml" />
 		</replace>
 		<available property="patch.org.eclipse.test.performance" file="${builder}/org.eclipse.test.performance.diff"/>
-		<antcall target="patch"/>
+		<antcall target="patch">
+			<param name="file" value="${builder}/org.eclipse.test.performance.diff"/>
+			<param name="dir" value="${buildDirectory}/plugins/org.eclipse.test.performance"/>
+		</antcall>
+		<antcall target="patch">
+			<param name="file" value="${builder}/com.atlassian.connector.commons.diff"/>
+			<param name="dir" value="${buildDirectory}/plugins/com.atlassian.connector.commons"/>
+		</antcall>
 	</target>
 
-	<target name="patch" if="patch.org.eclipse.test.performance">
-		<patch patchfile="${builder}/org.eclipse.test.performance.diff"
-			dir="${buildDirectory}/plugins/org.eclipse.test.performance" strip="0"/>
+	<target name="patch">
+		<available property="patch.exists" file="${file}"/>
+		<antcall target="patch-helper"/>
 	</target>
 
+	<target name="patch-helper" if="patch.exists">
+		<patch patchfile="${file}" dir="${dir}" strip="0"/>
+	</target>
+			
 	<!-- ===================================================================== -->
 	<!-- Steps to do after running the build.xmls for the elements being built. -->
 	<!-- ===================================================================== -->
