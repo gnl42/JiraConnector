@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,20 +77,15 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class JiraProjectPage extends WizardPage {
 
-	private static final String DESCRIPTION = "Pick a project to open the new bug editor.\n"
-			+ "Press the Update button if the project is not in the list.";
-
-	private static final String LABEL_UPDATE = "Update Projects from Repository";
-
 	private FilteredTree projectTree;
 
 	private final TaskRepository repository;
 
 	public JiraProjectPage(TaskRepository repository) {
-		super("jiraProject");
+		super("jiraProject"); //$NON-NLS-1$
 		Assert.isNotNull(repository);
-		setTitle("New JIRA Task");
-		setDescription(DESCRIPTION);
+		setTitle(Messages.JiraProjectPage_New_JIRA_Task);
+		setDescription(Messages.JiraProjectPage_Pick_a_project_to_open_the_new_bug_editor);
 		this.repository = repository;
 	}
 
@@ -125,9 +120,9 @@ public class JiraProjectPage extends WizardPage {
 			public String getText(Object element) {
 				if (element instanceof Project) {
 					Project project = (Project) element;
-					return project.getName() + "  (" + project.getKey() + ")";
+					return project.getName() + "  (" + project.getKey() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 		});
 
@@ -163,7 +158,7 @@ public class JiraProjectPage extends WizardPage {
 
 		final Project project = discoverProject();
 		if (project != null) {
-			new UIJob("") { // waiting on delayed refresh of filtered tree
+			new UIJob("") { // waiting on delayed refresh of filtered tree //$NON-NLS-1$
 				@Override
 				public IStatus runInUIThread(IProgressMonitor monitor) {
 					TreeViewer viewer = projectTree.getViewer();
@@ -182,7 +177,7 @@ public class JiraProjectPage extends WizardPage {
 
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (getSelectedProject() == null) {
-					setErrorMessage("You must select a project");
+					setErrorMessage(Messages.JiraProjectPage_You_must_select_a_project);
 				} else {
 					setErrorMessage(null);
 				}
@@ -202,7 +197,7 @@ public class JiraProjectPage extends WizardPage {
 		});
 
 		Button updateButton = new Button(composite, SWT.LEFT | SWT.PUSH);
-		updateButton.setText(LABEL_UPDATE);
+		updateButton.setText(Messages.JiraProjectPage_Update_Projects_from_Repository);
 		updateButton.setLayoutData(new GridData());
 		updateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -252,7 +247,8 @@ public class JiraProjectPage extends WizardPage {
 				if (e.getCause() instanceof CoreException) {
 					setErrorMessage(((CoreException) e.getCause()).getMessage());
 				} else {
-					StatusHandler.fail(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, "Error updating attributes", e));
+					// FIXME 3.1 replace with proper exception handling
+					StatusHandler.fail(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, "Error updating attributes", e)); //$NON-NLS-1$
 				}
 				return;
 			}
@@ -290,7 +286,8 @@ public class JiraProjectPage extends WizardPage {
 						return project;
 					}
 				} catch (CoreException e) {
-					StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data",
+					// FIXME 3.1 replace with proper exception handling
+					StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data", //$NON-NLS-1$
 							e));
 				}
 			}

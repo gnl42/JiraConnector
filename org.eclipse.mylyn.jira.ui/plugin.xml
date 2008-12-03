@@ -12,17 +12,17 @@
 
    <extension
          id="org.eclipse.mylyn.jira.repository"
-         name="JIRA Repository"
+         name="%repository.name"
          point="org.eclipse.mylyn.tasks.ui.repositories">
 
       <connectorCore
             class="org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector"
             id="org.eclipse.mylyn.jira.tasklist.repositories"
-            name="JIRA Repository Connector"/>
+            name="%JiraRepositoryConnector.name"/>
 	  <connectorUi
          brandingIcon="icons/eview16/jira-logo.gif"
          class="org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi"
-         name="JIRA Repository UI"
+         name="%JiraConnectorUi.name"
          overlayIcon="icons/eview16/overlay-jira.gif"/>
    <taskListMigrator
          class="org.eclipse.mylyn.internal.jira.ui.JiraTaskListMigrator">

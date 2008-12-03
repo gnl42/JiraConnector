@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,14 +50,6 @@ import org.eclipse.swt.widgets.List;
  */
 public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
-	private static final String DESCRIPTION = "Please select a query type.";
-
-	private static final String JOB_LABEL = "Downloading Filter Names";
-
-	private static final String TITLE = "New Jira Query";
-
-	private static final String WAIT_MESSAGE = "Downloading...";
-
 	private Button buttonCustom;
 
 	private Button buttonSaved;
@@ -77,10 +69,10 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 	}
 
 	public JiraNamedFilterPage(TaskRepository repository, IRepositoryQuery query) {
-		super(TITLE, repository, query);
+		super(Messages.JiraNamedFilterPage_New_Jira_Query, repository, query);
 		this.workingCopy = getFilter(query);
-		setTitle(TITLE);
-		setDescription(DESCRIPTION);
+		setTitle(Messages.JiraNamedFilterPage_New_Jira_Query);
+		setDescription(Messages.JiraNamedFilterPage_Please_select_a_query_type);
 		setPageComplete(false);
 	}
 
@@ -119,12 +111,12 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 		buttonCustom = new Button(innerComposite, SWT.RADIO);
 		buttonCustom.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		buttonCustom.setText("&Create query using form");
+		buttonCustom.setText(Messages.JiraNamedFilterPage_Create_query_using_form);
 		buttonCustom.setSelection(isCustom);
 
 		buttonSaved = new Button(innerComposite, SWT.RADIO);
 		buttonSaved.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		buttonSaved.setText("Use saved &filter from the repository");
+		buttonSaved.setText(Messages.JiraNamedFilterPage_Use_saved_filter_from_the_repository);
 		buttonSaved.setSelection(!isCustom);
 		buttonSaved.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -140,7 +132,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		});
 
 		filterList = new List(innerComposite, SWT.V_SCROLL | SWT.BORDER);
-		filterList.add(WAIT_MESSAGE);
+		filterList.add(Messages.JiraNamedFilterPage_Downloading_);
 		filterList.deselectAll();
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.horizontalIndent = 15;
@@ -156,7 +148,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		updateButton = new Button(innerComposite, SWT.LEFT | SWT.PUSH);
 		final GridData gridData = new GridData(SWT.FILL, SWT.TOP, false, true);
 		updateButton.setLayoutData(gridData);
-		updateButton.setText("Update from &Repository");
+		updateButton.setText(Messages.JiraNamedFilterPage_Update_from_Repository);
 		updateButton.setEnabled(isCustom);
 		updateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -164,7 +156,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 				setErrorMessage(null);
 				filterList.setEnabled(false);
 				filterList.removeAll();
-				filterList.add(WAIT_MESSAGE);
+				filterList.add(Messages.JiraNamedFilterPage_Downloading_);
 				filterList.deselectAll();
 
 				getContainer().updateButtons();
@@ -192,12 +184,11 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 		if (filters.length == 0) {
 			filterList.setEnabled(false);
-			filterList.add("No filters found");
+			filterList.add(Messages.JiraNamedFilterPage_No_filters_found);
 			filterList.deselectAll();
 
 			if (status.isOK()) {
-				setMessage("No saved filters found. Please create filters using JIRA web interface or"
-						+ " follow to the next page to create custom query.", IMessageProvider.WARNING);
+				setMessage(Messages.JiraNamedFilterPage_No_saved_filters_found, IMessageProvider.WARNING);
 			}
 			setPageComplete(false);
 			return;
@@ -218,10 +209,10 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 	}
 
 	protected void downloadFilters() {
-		Job job = new Job(JOB_LABEL) {
+		Job job = new Job(Messages.JiraNamedFilterPage_Downloading_Filter_Names) {
 			@Override
 			protected IStatus run(final IProgressMonitor monitor) {
-				monitor.beginTask("Downloading list of filters", IProgressMonitor.UNKNOWN);
+				monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_list_of_filters, IProgressMonitor.UNKNOWN);
 				NamedFilter[] loadedFilters = new NamedFilter[0];
 				IStatus status = Status.OK_STATUS;
 				try {
@@ -230,7 +221,8 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 					filters = loadedFilters;
 				} catch (JiraException e) {
 					status = RepositoryStatus.createStatus(getTaskRepository().getRepositoryUrl(), IStatus.ERROR,
-							JiraCorePlugin.ID_PLUGIN, "Could not update filters: " + e.getMessage() + "\n");
+							JiraCorePlugin.ID_PLUGIN, Messages.JiraNamedFilterPage_Could_not_update_filters
+									+ e.getMessage() + "\n"); //$NON-NLS-1$
 					return Status.CANCEL_STATUS;
 				} catch (OperationCanceledException e) {
 					return Status.CANCEL_STATUS;

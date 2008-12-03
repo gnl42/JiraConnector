@@ -26,7 +26,7 @@ import org.osgi.framework.BundleContext;
  */
 public class JiraUiPlugin extends AbstractUIPlugin {
 
-	public static final String ID_PLUGIN = "org.eclipse.mylyn.jira.ui";
+	public static final String ID_PLUGIN = "org.eclipse.mylyn.jira.ui"; //$NON-NLS-1$
 
 	private static JiraUiPlugin instance;
 
@@ -42,7 +42,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.mylyn.jira", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.mylyn.jira", path); //$NON-NLS-1$
 	}
 
 	public JiraUiPlugin() {
@@ -50,8 +50,8 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
-		reg.put("icons/obj16/comment.gif", getImageDescriptor("icons/obj16/comment.gif"));
-		reg.put("icons/obj16/jira.png", getImageDescriptor("icons/obj16/jira.png"));
+		reg.put("icons/obj16/comment.gif", getImageDescriptor("icons/obj16/comment.gif")); //$NON-NLS-1$ //$NON-NLS-2$
+		reg.put("icons/obj16/jira.png", getImageDescriptor("icons/obj16/jira.png")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override

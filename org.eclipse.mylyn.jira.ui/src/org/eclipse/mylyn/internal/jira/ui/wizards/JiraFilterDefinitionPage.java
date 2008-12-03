@@ -178,31 +178,29 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	}
 
-	protected final static String PAGE_NAME = "Jira" + "SearchPage"; //$NON-NLS-1$
+	private static final String PAGE_NAME = "Jira" + "SearchPage"; //$NON-NLS-1$ //$NON-NLS-2$
 
-	private static final String SEARCH_URL_ID = PAGE_NAME + ".SEARCHURL";
+	private static final String SEARCH_URL_ID = PAGE_NAME + ".SEARCHURL"; //$NON-NLS-1$
 
-	private static final String TITLE_PAGE = "JIRA Query";
+	final Placeholder ANY_ASSIGNEE = new Placeholder("Any"); //$NON-NLS-1$
 
-	final Placeholder ANY_ASSIGNEE = new Placeholder("Any");
+	final Placeholder ANY_COMPONENT = new Placeholder("Any"); //$NON-NLS-1$
 
-	final Placeholder ANY_COMPONENT = new Placeholder("Any");
+	final Placeholder ANY_FIX_VERSION = new Placeholder("Any"); //$NON-NLS-1$
 
-	final Placeholder ANY_FIX_VERSION = new Placeholder("Any");
+	final Placeholder ANY_ISSUE_TYPE = new Placeholder("Any"); //$NON-NLS-1$
 
-	final Placeholder ANY_ISSUE_TYPE = new Placeholder("Any");
-
-	final Placeholder ANY_PRIORITY = new Placeholder("Any");
+	final Placeholder ANY_PRIORITY = new Placeholder("Any"); //$NON-NLS-1$
 
 	// attributes
 
-	final Placeholder ANY_REPORTED_VERSION = new Placeholder("Any");
+	final Placeholder ANY_REPORTED_VERSION = new Placeholder("Any"); //$NON-NLS-1$
 
-	final Placeholder ANY_REPORTER = new Placeholder("Any");
+	final Placeholder ANY_REPORTER = new Placeholder("Any"); //$NON-NLS-1$
 
-	final Placeholder ANY_RESOLUTION = new Placeholder("Any");
+	final Placeholder ANY_RESOLUTION = new Placeholder("Any"); //$NON-NLS-1$
 
-	final Placeholder ANY_STATUS = new Placeholder("Any");
+	final Placeholder ANY_STATUS = new Placeholder("Any"); //$NON-NLS-1$
 
 	private Text assignee;
 
@@ -216,9 +214,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private DatePicker createdStartDatePicker;
 
-	final Placeholder CURRENT_USER_ASSIGNEE = new Placeholder("Current User");
+	final Placeholder CURRENT_USER_ASSIGNEE = new Placeholder(Messages.JiraFilterDefinitionPage_Current_User);
 
-	final Placeholder CURRENT_USER_REPORTER = new Placeholder("Current User");
+	final Placeholder CURRENT_USER_REPORTER = new Placeholder(Messages.JiraFilterDefinitionPage_Current_User);
 
 	private DatePicker dueEndDatePicker;
 
@@ -230,13 +228,13 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private ListViewer issueType;
 
-	final Placeholder NO_COMPONENT = new Placeholder("No Component");
+	final Placeholder NO_COMPONENT = new Placeholder(Messages.JiraFilterDefinitionPage_No_Component);
 
-	final Placeholder NO_FIX_VERSION = new Placeholder("No Fix Version");
+	final Placeholder NO_FIX_VERSION = new Placeholder(Messages.JiraFilterDefinitionPage_No_Fix_Version);
 
-	final Placeholder NO_REPORTED_VERSION = new Placeholder("No Version");
+	final Placeholder NO_REPORTED_VERSION = new Placeholder(Messages.JiraFilterDefinitionPage_No_Version);
 
-	final Placeholder NO_REPORTER = new Placeholder("No Reporter");
+	final Placeholder NO_REPORTER = new Placeholder(Messages.JiraFilterDefinitionPage_No_Reporter);
 
 	private ListViewer priority;
 
@@ -244,7 +242,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private Text queryString;
 
-	final Placeholder RELEASED_VERSION = new Placeholder("Released Versions");
+	final Placeholder RELEASED_VERSION = new Placeholder(Messages.JiraFilterDefinitionPage_Released_Versions);
 
 	private ListViewer reportedIn;
 
@@ -262,23 +260,23 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private Button searchSummary;
 
-	final Placeholder SPECIFIC_GROUP_ASSIGNEE = new Placeholder("Specified Group");
+	final Placeholder SPECIFIC_GROUP_ASSIGNEE = new Placeholder(Messages.JiraFilterDefinitionPage_Specified_Group);
 
-	final Placeholder SPECIFIC_GROUP_REPORTER = new Placeholder("Specified Group");
+	final Placeholder SPECIFIC_GROUP_REPORTER = new Placeholder(Messages.JiraFilterDefinitionPage_Specified_Group);
 
-	final Placeholder SPECIFIC_USER_ASSIGNEE = new Placeholder("Specified User");
+	final Placeholder SPECIFIC_USER_ASSIGNEE = new Placeholder(Messages.JiraFilterDefinitionPage_Specified_User);
 
-	final Placeholder SPECIFIC_USER_REPORTER = new Placeholder("Specified User");
+	final Placeholder SPECIFIC_USER_REPORTER = new Placeholder(Messages.JiraFilterDefinitionPage_Specified_User);
 
 	private ListViewer status;
 
 	private Text titleText;
 
-	final Placeholder UNASSIGNED = new Placeholder("Unassigned");
+	final Placeholder UNASSIGNED = new Placeholder(Messages.JiraFilterDefinitionPage_Unassigned);
 
-	final Placeholder UNRELEASED_VERSION = new Placeholder("Unreleased Versions");
+	final Placeholder UNRELEASED_VERSION = new Placeholder(Messages.JiraFilterDefinitionPage_Unreleased_Versions);
 
-	final Placeholder UNRESOLVED = new Placeholder("Unresolved");
+	final Placeholder UNRESOLVED = new Placeholder(Messages.JiraFilterDefinitionPage_Unresolved);
 
 	private DatePicker updatedEndDatePicker;
 
@@ -291,14 +289,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	}
 
 	public JiraFilterDefinitionPage(TaskRepository repository, IRepositoryQuery query) {
-		super(TITLE_PAGE, repository, query);
+		super(Messages.JiraFilterDefinitionPage_JIRA_Query, repository, query);
 		this.client = JiraClientFactory.getDefault().getJiraClient(repository);
 		if (query != null) {
 			this.workingCopy = (FilterDefinition) JiraUtil.getQuery(repository, client, query, false);
 		} else {
 			this.workingCopy = new FilterDefinition();
 		}
-		setDescription("Add search filters to define query.");
+		setDescription(Messages.JiraFilterDefinitionPage_Add_search_filters_to_define_query);
 		setPageComplete(false);
 	}
 
@@ -637,7 +635,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			Label lblName = new Label(c, SWT.NONE);
 			final GridData gridData = new GridData();
 			lblName.setLayoutData(gridData);
-			lblName.setText("Query Title:");
+			lblName.setText(Messages.JiraFilterDefinitionPage_Query_Title);
 
 			titleText = new Text(c, SWT.BORDER);
 			titleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
@@ -665,7 +663,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				comp.setLayout(gridLayout);
 
 				Label label = new Label(comp, SWT.NONE);
-				label.setText("Project:");
+				label.setText(Messages.JiraFilterDefinitionPage_Project);
 				createProjectsViewer(comp);
 			}
 
@@ -675,7 +673,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
 
-				new Label(comp, SWT.NONE).setText("Fix For:");
+				new Label(comp, SWT.NONE).setText(Messages.JiraFilterDefinitionPage_Fix_For);
 				createFixForViewer(comp);
 			}
 
@@ -685,7 +683,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				gridLayout.marginWidth = 0;
 				comp.setLayout(gridLayout);
 
-				new Label(comp, SWT.NONE).setText("In Components:");
+				new Label(comp, SWT.NONE).setText(Messages.JiraFilterDefinitionPage_In_Components);
 				createComponentsViewer(comp);
 			}
 
@@ -696,7 +694,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				comp.setLayout(gridLayout);
 
 				Label label = new Label(comp, SWT.NONE);
-				label.setText("Reported In:");
+				label.setText(Messages.JiraFilterDefinitionPage_Reported_In);
 				createReportedInViewer(comp);
 			}
 			cc.setWeights(new int[] { 1, 1, 1, 1 });
@@ -720,7 +718,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 				Label typeLabel = new Label(comp, SWT.NONE);
 				typeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
-				typeLabel.setText("Type:");
+				typeLabel.setText(Messages.JiraFilterDefinitionPage_Type);
 
 				issueType = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -753,7 +751,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 				Label statusLabel = new Label(comp, SWT.NONE);
 				statusLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
-				statusLabel.setText("Status:");
+				statusLabel.setText(Messages.JiraFilterDefinitionPage_Status);
 
 				status = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -786,7 +784,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 				Label resolutionLabel = new Label(comp, SWT.NONE);
 				resolutionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
-				resolutionLabel.setText("Resolution:");
+				resolutionLabel.setText(Messages.JiraFilterDefinitionPage_Resolution);
 
 				resolution = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -819,7 +817,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 				Label priorityLabel = new Label(comp, SWT.NONE);
 				priorityLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
-				priorityLabel.setText("Priority:");
+				priorityLabel.setText(Messages.JiraFilterDefinitionPage_Priority);
 
 				priority = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -852,7 +850,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		final GridData gd_lblQuery = new GridData();
 		gd_lblQuery.verticalIndent = 7;
 		lblQuery.setLayoutData(gd_lblQuery);
-		lblQuery.setText("Query:");
+		lblQuery.setText(Messages.JiraFilterDefinitionPage_Query);
 		queryString = new Text(c, SWT.BORDER);
 		final GridData gd_queryString = new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1);
 		gd_queryString.verticalIndent = 7;
@@ -867,7 +865,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		});
 
 		Label lblFields = new Label(c, SWT.NONE);
-		lblFields.setText("Fields:");
+		lblFields.setText(Messages.JiraFilterDefinitionPage_FILEDS);
 		lblFields.setLayoutData(new GridData());
 
 		{
@@ -883,25 +881,25 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			comp.setLayout(new FillLayout());
 
 			searchSummary = new Button(comp, SWT.CHECK);
-			searchSummary.setText("Summary");
+			searchSummary.setText(Messages.JiraFilterDefinitionPage_Summary);
 			searchSummary.addSelectionListener(selectionAdapter);
 
 			searchDescription = new Button(comp, SWT.CHECK);
-			searchDescription.setText("Description");
+			searchDescription.setText(Messages.JiraFilterDefinitionPage_Description);
 			searchDescription.addSelectionListener(selectionAdapter);
 
 			searchComments = new Button(comp, SWT.CHECK);
-			searchComments.setText("Comments");
+			searchComments.setText(Messages.JiraFilterDefinitionPage_Comments);
 			searchComments.addSelectionListener(selectionAdapter);
 
 			searchEnvironment = new Button(comp, SWT.CHECK);
-			searchEnvironment.setText("Environment");
+			searchEnvironment.setText(Messages.JiraFilterDefinitionPage_Environment);
 			searchEnvironment.addSelectionListener(selectionAdapter);
 		}
 
 		{
 			Label reportedByLabel = new Label(c, SWT.NONE);
-			reportedByLabel.setText("Reported By:");
+			reportedByLabel.setText(Messages.JiraFilterDefinitionPage_Reported_By);
 
 			reporterType = new ComboViewer(c, SWT.BORDER | SWT.READ_ONLY);
 			GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, false, false);
@@ -958,7 +956,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 		{
 			Label assignedToLabel = new Label(c, SWT.NONE);
-			assignedToLabel.setText("Assigned To:");
+			assignedToLabel.setText(Messages.JiraFilterDefinitionPage_Assigned_To);
 
 			assigneeType = new ComboViewer(c, SWT.BORDER | SWT.READ_ONLY);
 			GridData gridData_2 = new GridData(SWT.FILL, SWT.CENTER, false, false);
@@ -1016,7 +1014,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 		{
 			Label createdLabel = new Label(c, SWT.NONE);
-			createdLabel.setText("Created:");
+			createdLabel.setText(Messages.JiraFilterDefinitionPage_Created);
 
 			Composite composite = new Composite(c, SWT.NONE);
 			FillLayout fillLayout = new FillLayout();
@@ -1024,13 +1022,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			composite.setLayout(fillLayout);
 			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
-			createdStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>", true, 0);
-			createdEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>", true, 0);
+			createdStartDatePicker = new DatePicker(composite, SWT.BORDER,
+					Messages.JiraFilterDefinitionPage__start_date_, true, 0);
+			createdEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
+					true, 0);
 		}
 
 		{
 			Label updatedLabel = new Label(c, SWT.NONE);
-			updatedLabel.setText("Updated:");
+			updatedLabel.setText(Messages.JiraFilterDefinitionPage_Updated);
 
 			Composite composite = new Composite(c, SWT.NONE);
 			FillLayout fillLayout = new FillLayout();
@@ -1038,13 +1038,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			composite.setLayout(fillLayout);
 			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
-			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>", true, 0);
-			updatedEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>", true, 0);
+			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER,
+					Messages.JiraFilterDefinitionPage__start_date_, true, 0);
+			updatedEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
+					true, 0);
 		}
 
 		{
 			Label dueDateLabel = new Label(c, SWT.NONE);
-			dueDateLabel.setText("Due Date:");
+			dueDateLabel.setText(Messages.JiraFilterDefinitionPage_Due_Date);
 
 			Composite composite = new Composite(c, SWT.NONE);
 			FillLayout fillLayout = new FillLayout();
@@ -1052,8 +1054,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			composite.setLayout(fillLayout);
 			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 
-			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, "<start date>", true, 0);
-			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, "<end date>", true, 0);
+			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__start_date_,
+					true, 0);
+			dueEndDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__end_date_,
+					true, 0);
 		}
 
 		{
@@ -1215,7 +1219,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	protected void createUpdateButton(final Composite control) {
 		Button updateButton = new Button(control, SWT.PUSH);
-		updateButton.setText("Update Attributes from Repository");
+		updateButton.setText(Messages.JiraFilterDefinitionPage_Update_Attributes_from_Repository);
 		updateButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false, 3, 1));
 		updateButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -1239,7 +1243,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public String getQueryTitle() {
-		return (titleText != null) ? titleText.getText() : "";
+		return (titleText != null) ? titleText.getText() : ""; //$NON-NLS-1$
 	}
 
 	private DateRangeFilter getRangeFilter(DatePicker startDatePicker, DatePicker endDatePicker) {
@@ -1260,7 +1264,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			public Object[] getElements(Object inputElement) {
 				JiraClient server = (JiraClient) inputElement;
 				Object[] elements = new Object[server.getCache().getProjects().length + 1];
-				elements[0] = new Placeholder("All Projects");
+				elements[0] = new Placeholder(Messages.JiraFilterDefinitionPage_All_Projects);
 				System.arraycopy(server.getCache().getProjects(), 0, elements, 1,
 						server.getCache().getProjects().length);
 				return elements;
@@ -1385,7 +1389,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		if (workingCopy.getProjectFilter() != null) {
 			project.setSelection(new StructuredSelection(workingCopy.getProjectFilter().getProject()), true);
 		} else {
-			project.setSelection(new StructuredSelection(new Placeholder("All Projects")), true);
+			project.setSelection(new StructuredSelection(
+					new Placeholder(Messages.JiraFilterDefinitionPage_All_Projects)), true);
 		}
 
 		if (workingCopy.getFixForVersionFilter() != null) {
@@ -1523,7 +1528,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private boolean restoreWidgetValues() {
 		IDialogSettings settings = getDialogSettings();
-		String searchUrl = settings.get(SEARCH_URL_ID + "." + getTaskRepository().getRepositoryUrl());
+		String searchUrl = settings.get(SEARCH_URL_ID + "." + getTaskRepository().getRepositoryUrl()); //$NON-NLS-1$
 		if (searchUrl == null) {
 			return false;
 		}
@@ -1534,7 +1539,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public void saveState() {
-		String repoId = "." + getTaskRepository().getRepositoryUrl();
+		String repoId = "." + getTaskRepository().getRepositoryUrl(); //$NON-NLS-1$
 		IDialogSettings settings = getDialogSettings();
 		settings.put(SEARCH_URL_ID + repoId, createQuery().getUrl());
 	}
@@ -1593,14 +1598,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 							throw new InterruptedException();
 						} catch (JiraException e) {
 							showWarning(NLS.bind( //
-									"Error updating attributes: {0}\n"
-											+ "Please check repository settings in the Task Repositories view.", //
-									e.getMessage()));
+									Messages.JiraFilterDefinitionPage_Error_updating_attributes_X, e.getMessage()));
 						} catch (Exception e) {
 							String msg = NLS.bind( //
-									"Error updating attributes: {0}\n"
-											+ "Please check repository settings in the Task Repositories view.", //
-									e.getMessage());
+									Messages.JiraFilterDefinitionPage_Error_updating_attributes_X, e.getMessage());
 							showWarning(msg);
 							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.ERROR,
 									JiraUiPlugin.ID_PLUGIN, msg, e));

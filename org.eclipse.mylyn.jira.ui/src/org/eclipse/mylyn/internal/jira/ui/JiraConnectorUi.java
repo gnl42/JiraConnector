@@ -12,6 +12,7 @@
 
 package org.eclipse.mylyn.internal.jira.ui;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -53,7 +54,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
  */
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
-	private static Pattern TASK_PATTERN = Pattern.compile("([A-Z]+)-\\d+");
+	private static Pattern TASK_PATTERN = Pattern.compile("([A-Z]+)-\\d+"); //$NON-NLS-1$
 
 	public enum JiraTaskKind {
 		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
@@ -62,19 +63,19 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		public String toString() {
 			switch (this) {
 			case BUG:
-				return "Bug";
+				return "Bug"; //$NON-NLS-1$
 			case FEATURE:
-				return "New Feature";
+				return "New Feature"; //$NON-NLS-1$
 			case TASK:
-				return "Task";
+				return "Task"; //$NON-NLS-1$
 			case IMPROVEMENT:
-				return "Improvement";
+				return "Improvement"; //$NON-NLS-1$
 			case CUSTOM_ISSUE:
-				return "Custom Issue";
+				return "Custom Issue"; //$NON-NLS-1$
 			case SUB_TASK:
-				return "Sub-task";
+				return "Sub-task"; //$NON-NLS-1$
 			default:
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 		}
 	}
@@ -86,17 +87,17 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
 	@Override
 	public String getTaskKindLabel(ITask repositoryTask) {
-		return "Issue";
+		return Messages.JiraConnectorUi_Issue;
 	}
 
 	@Override
 	public List<LegendElement> getLegendElements() {
 		List<LegendElement> legendItems = new ArrayList<LegendElement>();
-		legendItems.add(LegendElement.createTask("Bug", JiraImages.OVERLAY_BUG));
-		legendItems.add(LegendElement.createTask("Feature", JiraImages.OVERLAY_FEATURE));
-		legendItems.add(LegendElement.createTask("Improvement", JiraImages.OVERLAY_IMPROVEMENT));
-		legendItems.add(LegendElement.createTask("Task", JiraImages.OVERLAY_TASK));
-		legendItems.add(LegendElement.createTask("Subtask", JiraImages.OVERLAY_SUB_TASK));
+		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Bug, JiraImages.OVERLAY_BUG));
+		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Feature, JiraImages.OVERLAY_FEATURE));
+		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Improvement, JiraImages.OVERLAY_IMPROVEMENT));
+		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Task, JiraImages.OVERLAY_TASK));
+		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Subtask, JiraImages.OVERLAY_SUB_TASK));
 		return legendItems;
 	}
 

@@ -26,19 +26,19 @@ import org.w3c.dom.Element;
  */
 public class JiraTaskListMigrator extends AbstractTaskListMigrator {
 
-	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl";
+	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl"; //$NON-NLS-1$
 
-	private static final String KEY_FILTER_ID = "FilterID";
+	private static final String KEY_FILTER_ID = "FilterID"; //$NON-NLS-1$
 
-	private static final String KEY_FILTER_NAME = "FilterName";
+	private static final String KEY_FILTER_NAME = "FilterName"; //$NON-NLS-1$
 
-	private static final String KEY_JIRA_CUSTOM = "JiraJiraCustomQuery";
+	private static final String KEY_JIRA_CUSTOM = "JiraJiraCustomQuery"; //$NON-NLS-1$
 
-	private static final String KEY_JIRA_ISSUE = "JiraIssue";
+	private static final String KEY_JIRA_ISSUE = "JiraIssue"; //$NON-NLS-1$
 
-	private static final String KEY_JIRA_QUERY = "JiraQuery";
+	private static final String KEY_JIRA_QUERY = "JiraQuery"; //$NON-NLS-1$
 
-	private static final String KEY_KEY = "Key";
+	private static final String KEY_KEY = "Key"; //$NON-NLS-1$
 
 	@Override
 	public String getConnectorKind() {

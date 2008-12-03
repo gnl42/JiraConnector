@@ -57,7 +57,7 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
 	@Override
 	public String getPageText() {
-		return "JIRA";
+		return "JIRA"; //$NON-NLS-1$
 	}
 
 	@Override

@@ -25,21 +25,21 @@ public class JiraImages {
 
 	private static ImageRegistry imageRegistry;
 
-	private static final String T_VIEW = "eview16";
+	private static final String T_VIEW = "eview16"; //$NON-NLS-1$
 
-	private static final URL baseURL = JiraUiPlugin.getDefault().getBundle().getEntry("/icons/");
+	private static final URL baseURL = JiraUiPlugin.getDefault().getBundle().getEntry("/icons/"); //$NON-NLS-1$
 
-	public static final ImageDescriptor OVERLAY_JIRA = create(T_VIEW, "overlay-jira.gif");
+	public static final ImageDescriptor OVERLAY_JIRA = create(T_VIEW, "overlay-jira.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor OVERLAY_BUG = create(T_VIEW, "overlay-bug.gif");
+	public static final ImageDescriptor OVERLAY_BUG = create(T_VIEW, "overlay-bug.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor OVERLAY_FEATURE = create(T_VIEW, "overlay-feature.gif");
+	public static final ImageDescriptor OVERLAY_FEATURE = create(T_VIEW, "overlay-feature.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor OVERLAY_IMPROVEMENT = create(T_VIEW, "overlay-improvement.gif");
+	public static final ImageDescriptor OVERLAY_IMPROVEMENT = create(T_VIEW, "overlay-improvement.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor OVERLAY_TASK = create(T_VIEW, "overlay-task.gif");
+	public static final ImageDescriptor OVERLAY_TASK = create(T_VIEW, "overlay-task.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor OVERLAY_SUB_TASK = create(T_VIEW, "overlay-sub-task.gif");
+	public static final ImageDescriptor OVERLAY_SUB_TASK = create(T_VIEW, "overlay-sub-task.gif"); //$NON-NLS-1$
 
 	public static ImageDescriptor create(String prefix, String name) {
 		try {
@@ -74,10 +74,10 @@ public class JiraImages {
 	public static Image getImage(ImageDescriptor imageDescriptor) {
 		ImageRegistry imageRegistry = getImageRegistry();
 
-		Image image = imageRegistry.get("" + imageDescriptor.hashCode());
+		Image image = imageRegistry.get("" + imageDescriptor.hashCode()); //$NON-NLS-1$
 		if (image == null) {
 			image = imageDescriptor.createImage();
-			imageRegistry.put("" + imageDescriptor.hashCode(), image);
+			imageRegistry.put("" + imageDescriptor.hashCode(), image); //$NON-NLS-1$
 		}
 		return image;
 	}
