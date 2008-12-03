@@ -32,6 +32,12 @@
 		<delete dir="${build.results}"/>
 	</target>
 
+	<target name="clean-tools">
+		<antcall target="forEach">
+			<param name="call" value="clean-tools-helper"/>
+		</antcall>
+	</target>
+
 	<target name="clean-tests">
 		<antcall target="forEach">
 			<param name="call" value="clean-tests-helper"/>
@@ -206,6 +212,13 @@
 		</delete>
 	</target>
 
+	<target name="clean-tools-helper">
+    	<property name="eclipse.sdk.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}" />
+		<delete dir="${eclipse.sdk.home}" />
+    	<property name="eclipse.test.home" value="${eclipse.base}/test-${eclipse.sdk.version}" />
+		<delete dir="${eclipse.test.home}" />
+	</target>
+
 	<target name="report-helper">
 		<property name="results.home" value="${build.results}/test-${eclipse.version}" />
 		<mkdir dir="${results.home}" />
@@ -269,6 +282,10 @@
 			<param name="isUnpackedFile" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse"/>
 		</antcall>
 
+		<antcall target="get-build-dependencies-helper-svn"/>
+	</target>
+	
+	<target name="get-build-dependencies-helper-svn" if="{eclipse.url.svn}">
 		<basename property="file.svn" file="${eclipse.url.svn}"/>
 		<antcall target="getBundle">
 			<param name="file" value="${file.svn}" />
