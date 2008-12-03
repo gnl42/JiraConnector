@@ -112,7 +112,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class JiraRssHandler extends DefaultHandler {
 
-	private static final String CUSTOM_FIELD_TYPE_TEXTAREA = "com.atlassian.jira.plugin.system.customfieldtypes:textarea";
+	private static final String CUSTOM_FIELD_TYPE_TEXTAREA = "com.atlassian.jira.plugin.system.customfieldtypes:textarea"; //$NON-NLS-1$
 
 	private static final String CREATED_ATTR = "created"; //$NON-NLS-1$
 
@@ -220,7 +220,7 @@ public class JiraRssHandler extends DefaultHandler {
 
 	private static final String ISSUE_KEY = "issuekey"; //$NON-NLS-1$
 
-	private static final String SECURITY = "security";
+	private static final String SECURITY = "security"; //$NON-NLS-1$
 
 	private static final int START = 0;
 
@@ -255,7 +255,7 @@ public class JiraRssHandler extends DefaultHandler {
 	private static final int IN_SUBTASKS = 17;
 
 	// intentionally not static: SimpleDateFormat is not thread safe
-	private final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US);
+	private final SimpleDateFormat XML_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US); //$NON-NLS-1$
 
 	// intentionally not static: SimpleDateFormat is not thread safe
 	//private final SimpleDateFormat XML_DUE_DATE_FORMAT = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
@@ -327,7 +327,7 @@ public class JiraRssHandler extends DefaultHandler {
 	public static SimpleDateFormat getDateTimeFormat() {
 		// the server returns the server timezone, convert to local time zone to avoid confusion
 		//return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss Z (zz)", Locale.US);
-		return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US);
+		return new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss", Locale.US); //$NON-NLS-1$
 	}
 
 	/**
@@ -671,7 +671,7 @@ public class JiraRssHandler extends DefaultHandler {
 			} else if (KEY.equals(localName)) {
 				String key = getCurrentElementText();
 				currentIssue.setKey(key);
-				currentIssue.setUrl(client.getBaseUrl() + "/browse/" + key);
+				currentIssue.setUrl(client.getBaseUrl() + "/browse/" + key); //$NON-NLS-1$
 				// TODO super dodgey to assume the project from the issue key
 				int i = key.lastIndexOf('-');
 				if (i == -1) {
@@ -743,7 +743,7 @@ public class JiraRssHandler extends DefaultHandler {
 						currentIssue.setVotes(Integer.parseInt(getCurrentElementText()));
 					} catch (NumberFormatException e) {
 						StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-								"Error parsing number of votes", e));
+								"Error parsing number of votes", e)); //$NON-NLS-1$
 					}
 				}
 			} else if (SECURITY.equals(localName)) {
@@ -800,8 +800,8 @@ public class JiraRssHandler extends DefaultHandler {
 		try {
 			return XML_DATE_FORMAT.parse(value);
 		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing date: \"" + value
-					+ "\"", e));
+			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing date: \"" + value //$NON-NLS-1$
+					+ "\"", e)); //$NON-NLS-1$
 			return null;
 		}
 	}
@@ -813,8 +813,8 @@ public class JiraRssHandler extends DefaultHandler {
 		try {
 			return getDateTimeFormat().parse(value);
 		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \""
-					+ value + "\"", e));
+			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error parsing due date: \"" //$NON-NLS-1$
+					+ value + "\"", e)); //$NON-NLS-1$
 			return null;
 		}
 	}
@@ -850,7 +850,7 @@ public class JiraRssHandler extends DefaultHandler {
 	 */
 	public static String stripTags(String text) {
 		if (text == null || text.length() == 0) {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 		StringReader stringReader = new StringReader(text);
 		HTML2TextReader html2TextReader = new HTML2TextReader(stringReader);
@@ -858,7 +858,7 @@ public class JiraRssHandler extends DefaultHandler {
 			char[] chars = new char[text.length()];
 			int len = html2TextReader.read(chars, 0, text.length());
 			if (len == -1) {
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 			return new String(chars, 0, len);
 		} catch (IOException e) {
@@ -875,13 +875,13 @@ public class JiraRssHandler extends DefaultHandler {
 	 */
 	public static boolean hasMarkup(String unescaped) {
 		// look for any tag that is not <br/> and not <a... or </a>
-		int i = unescaped.indexOf("<");
+		int i = unescaped.indexOf("<"); //$NON-NLS-1$
 		while (i != -1) {
-			if (!(unescaped.regionMatches(i + 1, "br/>", 0, 4) || unescaped.regionMatches(i + 1, "a ", 0, 1) || unescaped.regionMatches(
-					i + 1, "/a>", 0, 3))) {
+			if (!(unescaped.regionMatches(i + 1, "br/>", 0, 4) || unescaped.regionMatches(i + 1, "a ", 0, 1) || unescaped.regionMatches( //$NON-NLS-1$ //$NON-NLS-2$
+					i + 1, "/a>", 0, 3))) { //$NON-NLS-1$
 				return true;
 			}
-			i = unescaped.indexOf("<", i + 1);
+			i = unescaped.indexOf("<", i + 1); //$NON-NLS-1$
 		}
 		return false;
 	}

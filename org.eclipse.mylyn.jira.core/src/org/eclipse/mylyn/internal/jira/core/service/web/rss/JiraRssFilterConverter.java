@@ -184,11 +184,11 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertCreatedDateFilter(DateFilter createdDateFilter) {
-		return createDateFilter(createdDateFilter, "created");
+		return createDateFilter(createdDateFilter, "created"); //$NON-NLS-1$
 	}
 
 	protected String convertDueDateFilter(DateFilter dueDateFilter) {
-		return createDateFilter(dueDateFilter, "duedate");
+		return createDateFilter(dueDateFilter, "duedate"); //$NON-NLS-1$
 	}
 
 	protected String convertEstimateVsActualFilter(EstimateVsActualFilter filter) {
@@ -320,7 +320,7 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertUpdatedDateFilter(DateFilter updatedDateFilter) {
-		return createDateFilter(updatedDateFilter, "updated");
+		return createDateFilter(updatedDateFilter, "updated"); //$NON-NLS-1$
 	}
 
 	protected String convertVersionFilter(String param, VersionFilter versionFilter) {
@@ -365,22 +365,22 @@ public class JiraRssFilterConverter {
 			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 			DateRangeFilter filter = (DateRangeFilter) dateFilter;
 			if (filter.getFromDate() != null) {
-				buffer.append("&" + name + ":after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$
+				buffer.append("&" + name + ":after=").append(df.format(filter.getFromDate())); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			if (filter.getToDate() != null) {
-				buffer.append("&" + name + ":before=").append(df.format(filter.getToDate())); //$NON-NLS-1$
+				buffer.append("&" + name + ":before=").append(df.format(filter.getToDate())); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 		} else if (dateFilter instanceof RelativeDateRangeFilter) {
 			RelativeDateRangeFilter filter = ((RelativeDateRangeFilter) dateFilter);
 			if (filter.previousMilliseconds() != 0L) {
-				buffer.append("&" + name + ":previous=") //$NON-NLS-1$
+				buffer.append("&" + name + ":previous=") //$NON-NLS-1$ //$NON-NLS-2$
 						.append(createRelativeDateString(filter.getPreviousRangeType(), filter.getPreviousCount()));
 			}
 
 			if (filter.nextMilliseconds() != 0L) {
-				buffer.append("&" + name + ":next=") //$NON-NLS-1$
+				buffer.append("&" + name + ":next=") //$NON-NLS-1$ //$NON-NLS-2$
 						.append(createRelativeDateString(filter.getNextRangeType(), filter.getNextCount()));
 			}
 		}

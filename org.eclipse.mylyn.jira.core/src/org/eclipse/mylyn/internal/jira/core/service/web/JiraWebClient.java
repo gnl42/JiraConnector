@@ -753,9 +753,9 @@ public class JiraWebClient {
 
 	private boolean includeCustomField(String key) {
 		return key == null || //
-				(!key.startsWith("com.atlassian.jira.toolkit") && //
-						!key.startsWith("com.atlassian.jira.ext.charting") && //
-				!key.startsWith("com.pyxis.greenhopper.jira:greenhopper-ranking"));
+				(!key.startsWith("com.atlassian.jira.toolkit") && // //$NON-NLS-1$
+						!key.startsWith("com.atlassian.jira.ext.charting") && // //$NON-NLS-1$
+				!key.startsWith("com.pyxis.greenhopper.jira:greenhopper-ranking")); //$NON-NLS-1$
 	}
 
 	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {

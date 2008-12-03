@@ -61,59 +61,59 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
  */
 public class FilterDefinitionConverter {
 
-	private static final String PROJECT_KEY = "pid";
+	private static final String PROJECT_KEY = "pid"; //$NON-NLS-1$
 
-	private static final String COMPONENT_KEY = "component";
+	private static final String COMPONENT_KEY = "component"; //$NON-NLS-1$
 
-	private static final String TYPE_KEY = "type";
+	private static final String TYPE_KEY = "type"; //$NON-NLS-1$
 
-	private static final String PRIORITY_KEY = "priority";
+	private static final String PRIORITY_KEY = "priority"; //$NON-NLS-1$
 
-	private static final String STATUS_KEY = "status";
+	private static final String STATUS_KEY = "status"; //$NON-NLS-1$
 
-	private static final String RESOLUTION_KEY = "resolution";
+	private static final String RESOLUTION_KEY = "resolution"; //$NON-NLS-1$
 
-	private static final String FIXFOR_KEY = "fixfor";
+	private static final String FIXFOR_KEY = "fixfor"; //$NON-NLS-1$
 
-	private static final String VERSION_KEY = "version";
+	private static final String VERSION_KEY = "version"; //$NON-NLS-1$
 
-	private static final String QUERY_KEY = "query";
+	private static final String QUERY_KEY = "query"; //$NON-NLS-1$
 
-	private static final String ENVIRONMENT_KEY = "environment";
+	private static final String ENVIRONMENT_KEY = "environment"; //$NON-NLS-1$
 
-	private static final String BODY_KEY = "body";
+	private static final String BODY_KEY = "body"; //$NON-NLS-1$
 
-	private static final String DESCRIPTION_KEY = "description";
+	private static final String DESCRIPTION_KEY = "description"; //$NON-NLS-1$
 
-	private static final String SUMMARY_KEY = "summary";
+	private static final String SUMMARY_KEY = "summary"; //$NON-NLS-1$
 
-	private static final String ASSIGNEE_KEY = "assignee";
+	private static final String ASSIGNEE_KEY = "assignee"; //$NON-NLS-1$
 
-	private static final String REPORTER_KEY = "reporter";
+	private static final String REPORTER_KEY = "reporter"; //$NON-NLS-1$
 
-	private static final String CREATED_KEY = "created";
+	private static final String CREATED_KEY = "created"; //$NON-NLS-1$
 
-	private static final String UPDATED_KEY = "updated";
+	private static final String UPDATED_KEY = "updated"; //$NON-NLS-1$
 
-	private static final String DUEDATE_KEY = "duedate";
+	private static final String DUEDATE_KEY = "duedate"; //$NON-NLS-1$
 
-	private static final String ISSUE_SPECIFIC_GROUP = "specificgroup";
+	private static final String ISSUE_SPECIFIC_GROUP = "specificgroup"; //$NON-NLS-1$
 
-	private static final String ISSUE_SPECIFIC_USER = "specificuser";
+	private static final String ISSUE_SPECIFIC_USER = "specificuser"; //$NON-NLS-1$
 
-	private static final String ISSUE_CURRENT_USER = "issue_current_user";
+	private static final String ISSUE_CURRENT_USER = "issue_current_user"; //$NON-NLS-1$
 
-	private static final String ISSUE_NO_REPORTER = "issue_no_reporter";
+	private static final String ISSUE_NO_REPORTER = "issue_no_reporter"; //$NON-NLS-1$
 
-	private static final String VERSION_NONE = "-1";
+	private static final String VERSION_NONE = "-1"; //$NON-NLS-1$
 
-	private static final String VERSION_RELEASED = "-2";
+	private static final String VERSION_RELEASED = "-2"; //$NON-NLS-1$
 
-	private static final String VERSION_UNRELEASED = "-3";
+	private static final String VERSION_UNRELEASED = "-3"; //$NON-NLS-1$
 
-	private static final String UNRESOLVED = "-1";
+	private static final String UNRESOLVED = "-1"; //$NON-NLS-1$
 
-	private static final String COMPONENT_NONE = "-1";
+	private static final String COMPONENT_NONE = "-1"; //$NON-NLS-1$
 
 	private final String encoding;
 
@@ -122,7 +122,7 @@ public class FilterDefinitionConverter {
 	}
 
 	public String toUrl(String repositoryUrl, FilterDefinition filter) {
-		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter);
+		return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter); //$NON-NLS-1$
 	}
 
 	public FilterDefinition toFilter(JiraClient client, String url, boolean validate) {
@@ -134,12 +134,12 @@ public class FilterDefinitionConverter {
 		}
 
 		HashMap<String, List<String>> params = new HashMap<String, List<String>>();
-		for (String pair : url.substring(n + 1).split("&")) {
-			String[] tokens = pair.split("=");
+		for (String pair : url.substring(n + 1).split("&")) { //$NON-NLS-1$
+			String[] tokens = pair.split("="); //$NON-NLS-1$
 			if (tokens.length > 1) {
 				try {
 					String key = tokens[0];
-					String value = tokens.length == 1 ? "" : URLDecoder.decode(tokens[1], encoding);
+					String value = tokens.length == 1 ? "" : URLDecoder.decode(tokens[1], encoding); //$NON-NLS-1$
 					List<String> values = params.get(key);
 					if (values == null) {
 						values = new ArrayList<String>();
@@ -158,7 +158,7 @@ public class FilterDefinitionConverter {
 			if (project == null) {
 				if (validate) {
 					// safeguard
-					throw new InvalidJiraQueryException("Unknown project " + projectId);
+					throw new InvalidJiraQueryException("Unknown project " + projectId); //$NON-NLS-1$
 				} else {
 					continue;
 				}
@@ -193,7 +193,7 @@ public class FilterDefinitionConverter {
 			if (issueType != null) {
 				issueTypes.add(issueType);
 			} else if (validate) {
-				throw new InvalidJiraQueryException("Unknown type " + typeId);
+				throw new InvalidJiraQueryException("Unknown type " + typeId); //$NON-NLS-1$
 			}
 		}
 		if (!issueTypes.isEmpty()) {
@@ -207,7 +207,7 @@ public class FilterDefinitionConverter {
 			if (status != null) {
 				statuses.add(status);
 			} else if (validate) {
-				throw new InvalidJiraQueryException("Unknown status " + statusId);
+				throw new InvalidJiraQueryException("Unknown status " + statusId); //$NON-NLS-1$
 			}
 		}
 		if (!statuses.isEmpty()) {
@@ -223,7 +223,7 @@ public class FilterDefinitionConverter {
 				if (resolution != null) {
 					resolutions.add(resolution);
 				} else if (validate) {
-					throw new InvalidJiraQueryException("Unknown resolution " + resolutionId);
+					throw new InvalidJiraQueryException("Unknown resolution " + resolutionId); //$NON-NLS-1$
 				}
 			} else {
 				unresolved = true;
@@ -242,7 +242,7 @@ public class FilterDefinitionConverter {
 			if (priority != null) {
 				priorities.add(priority);
 			} else if (validate) {
-				throw new InvalidJiraQueryException("Unknown priority " + priorityId);
+				throw new InvalidJiraQueryException("Unknown priority " + priorityId); //$NON-NLS-1$
 			}
 		}
 		if (!priorities.isEmpty()) {
@@ -251,10 +251,10 @@ public class FilterDefinitionConverter {
 
 		List<String> queries = getIds(params, QUERY_KEY);
 		for (String query : queries) {
-			boolean searchSummary = getIds(params, SUMMARY_KEY).contains("true");
-			boolean searchDescription = getIds(params, DESCRIPTION_KEY).contains("true");
-			boolean searchEnvironment = getIds(params, ENVIRONMENT_KEY).contains("true");
-			boolean searchComments = getIds(params, BODY_KEY).contains("true");
+			boolean searchSummary = getIds(params, SUMMARY_KEY).contains("true"); //$NON-NLS-1$
+			boolean searchDescription = getIds(params, DESCRIPTION_KEY).contains("true"); //$NON-NLS-1$
+			boolean searchEnvironment = getIds(params, ENVIRONMENT_KEY).contains("true"); //$NON-NLS-1$
+			boolean searchComments = getIds(params, BODY_KEY).contains("true"); //$NON-NLS-1$
 			filter.setContentFilter(new ContentFilter(query, searchSummary, searchDescription, searchEnvironment,
 					searchComments));
 		}
@@ -304,10 +304,10 @@ public class FilterDefinitionConverter {
 	}
 
 	private DateFilter createDateFilter(Map<String, List<String>> params, String key) {
-		String after = getId(params, key + ":after");
-		String before = getId(params, key + ":before");
+		String after = getId(params, key + ":after"); //$NON-NLS-1$
+		String before = getId(params, key + ":before"); //$NON-NLS-1$
 
-		SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US);
+		SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US); //$NON-NLS-1$
 		Date fromDate;
 		try {
 			fromDate = df.parse(after);
@@ -325,7 +325,7 @@ public class FilterDefinitionConverter {
 	}
 
 	private UserFilter createUserFilter(Map<String, List<String>> params, String key) {
-		String type = getId(params, key + "Select");
+		String type = getId(params, key + "Select"); //$NON-NLS-1$
 		if (ISSUE_NO_REPORTER.equals(type)) {
 			return new NobodyFilter();
 		} else if (ISSUE_CURRENT_USER.equals(type)) {
@@ -458,16 +458,16 @@ public class FilterDefinitionConverter {
 				addParameter(sb, QUERY_KEY, queryString);
 			}
 			if (contentFilter.isSearchingSummary()) {
-				addParameter(sb, SUMMARY_KEY, "true");
+				addParameter(sb, SUMMARY_KEY, "true"); //$NON-NLS-1$
 			}
 			if (contentFilter.isSearchingDescription()) {
-				addParameter(sb, DESCRIPTION_KEY, "true");
+				addParameter(sb, DESCRIPTION_KEY, "true"); //$NON-NLS-1$
 			}
 			if (contentFilter.isSearchingComments()) {
-				addParameter(sb, BODY_KEY, "true");
+				addParameter(sb, BODY_KEY, "true"); //$NON-NLS-1$
 			}
 			if (contentFilter.isSearchingEnvironment()) {
-				addParameter(sb, ENVIRONMENT_KEY, "true");
+				addParameter(sb, ENVIRONMENT_KEY, "true"); //$NON-NLS-1$
 			}
 		}
 
@@ -483,23 +483,23 @@ public class FilterDefinitionConverter {
 
 	private void addDateFilter(StringBuilder sb, DateFilter filter, String type) {
 		if (filter instanceof DateRangeFilter) {
-			SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US);
+			SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US); //$NON-NLS-1$
 			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
-			addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate()));
-			addParameter(sb, type + ":before", df.format(rangeFilter.getToDate()));
+			addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate())); //$NON-NLS-1$
+			addParameter(sb, type + ":before", df.format(rangeFilter.getToDate())); //$NON-NLS-1$
 		}
 	}
 
 	private void addUserFilter(StringBuilder sb, UserFilter filter, String type) {
 		if (filter instanceof NobodyFilter) {
-			addParameter(sb, type + "Select", ISSUE_NO_REPORTER);
+			addParameter(sb, type + "Select", ISSUE_NO_REPORTER); //$NON-NLS-1$
 		} else if (filter instanceof CurrentUserFilter) {
-			addParameter(sb, type + "Select", ISSUE_CURRENT_USER);
+			addParameter(sb, type + "Select", ISSUE_CURRENT_USER); //$NON-NLS-1$
 		} else if (filter instanceof SpecificUserFilter) {
-			addParameter(sb, type + "Select", ISSUE_SPECIFIC_USER);
+			addParameter(sb, type + "Select", ISSUE_SPECIFIC_USER); //$NON-NLS-1$
 			addParameter(sb, type, ((SpecificUserFilter) filter).getUser());
 		} else if (filter instanceof UserInGroupFilter) {
-			addParameter(sb, type + "Select", ISSUE_SPECIFIC_GROUP);
+			addParameter(sb, type + "Select", ISSUE_SPECIFIC_GROUP); //$NON-NLS-1$
 			addParameter(sb, type, ((UserInGroupFilter) filter).getGroup());
 		}
 	}

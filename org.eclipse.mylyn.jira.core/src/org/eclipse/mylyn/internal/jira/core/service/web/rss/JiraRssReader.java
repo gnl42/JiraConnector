@@ -47,7 +47,7 @@ class JiraRssReader {
 			reader.parse(inputSource);
 			collector.done();
 		} catch (SAXException e) {
-			throw new JiraException("Error parsing server response: " + e.getMessage(), e);
+			throw new JiraException("Error parsing server response: " + e.getMessage(), e); //$NON-NLS-1$
 		}
 	}
 }

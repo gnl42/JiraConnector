@@ -42,47 +42,47 @@ import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
  */
 public class JiraUtil {
 
-	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated";
+	private static final String CHARACTER_ENCODING_VALIDATED = "jira.characterEncodingValidated"; //$NON-NLS-1$
 
-	private static final String COMPRESSION_KEY = "compression";
+	private static final String COMPRESSION_KEY = "compression"; //$NON-NLS-1$
 
-	private static final String DATE_PATTERN_KEY = "jira.datePattern";
+	private static final String DATE_PATTERN_KEY = "jira.datePattern"; //$NON-NLS-1$
 
-	private static final String DATE_TIME_PATTERN_KEY = "jira.dateTimePattern";
+	private static final String DATE_TIME_PATTERN_KEY = "jira.dateTimePattern"; //$NON-NLS-1$
 
-	private static final String FOLLOW_REDIRECTS_KEY = "jira.followRedirects";
+	private static final String FOLLOW_REDIRECTS_KEY = "jira.followRedirects"; //$NON-NLS-1$
 
-	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl";
+	private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl"; //$NON-NLS-1$
 
-	private static final String KEY_FILTER_ID = "FilterID";
+	private static final String KEY_FILTER_ID = "FilterID"; //$NON-NLS-1$
 
-	private static final String KEY_FILTER_NAME = "FilterName";
+	private static final String KEY_FILTER_NAME = "FilterName"; //$NON-NLS-1$
 
-	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration";
+	private static final String REFRESH_CONFIGURATION_KEY = "refreshConfiguration"; //$NON-NLS-1$
 
-	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate";
+	private static final String REPOSITORY_UPDATE_TIME_STAMP = "jira.lastIssueUpdate"; //$NON-NLS-1$
 
-	private static final String COMPLETED_BASED_ON_RESOLUTION = "jira.completedBasedOnResolution";
+	private static final String COMPLETED_BASED_ON_RESOLUTION = "jira.completedBasedOnResolution"; //$NON-NLS-1$
 
-	private static final String WORK_HOURS_PER_DAY = "jira.workHoursPerDay";
+	private static final String WORK_HOURS_PER_DAY = "jira.workHoursPerDay"; //$NON-NLS-1$
 
-	private static final String WORK_DAYS_PER_WEEK = "jira.workDaysPerWeek";
+	private static final String WORK_DAYS_PER_WEEK = "jira.workDaysPerWeek"; //$NON-NLS-1$
 
-	private static final String MAX_SEARCH_RESULTS = "jira.maxSearchResults";
+	private static final String MAX_SEARCH_RESULTS = "jira.maxSearchResults"; //$NON-NLS-1$
 
 	public static final int DEFAULT_MAX_SEARCH_RESULTS = TaskDataCollector.MAX_HITS;
 
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general"));
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general")); //$NON-NLS-1$
 
-	private static final String LINKED_TASKS_AS_SUBTASKS = "jira.linkedTasksAsSubtasks";
+	private static final String LINKED_TASKS_AS_SUBTASKS = "jira.linkedTasksAsSubtasks"; //$NON-NLS-1$
 
-	private static final String LOCALE_KEY = "jira.locale";
+	private static final String LOCALE_KEY = "jira.locale"; //$NON-NLS-1$
 
 	public static String dateToString(Date date) {
 		if (date == null) {
-			return "";
+			return ""; //$NON-NLS-1$
 		} else {
-			return date.getTime() + "";
+			return date.getTime() + ""; //$NON-NLS-1$
 		}
 	}
 
@@ -94,8 +94,8 @@ public class JiraUtil {
 				return URLEncoder.encode(text, JiraClient.DEFAULT_CHARSET);
 			} catch (UnsupportedEncodingException e1) {
 				// should never happen
-				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, "Could not encode text \""
-						+ text + "\"", e));
+				StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, "Could not encode text \"" //$NON-NLS-1$
+						+ text + "\"", e)); //$NON-NLS-1$
 				return text;
 			}
 		}
@@ -244,7 +244,7 @@ public class JiraUtil {
 			NamedFilter namedFilter = (NamedFilter) filter;
 			query.setAttribute(KEY_FILTER_ID, namedFilter.getId());
 			query.setAttribute(KEY_FILTER_NAME, namedFilter.getName());
-			query.setUrl(taskRepository.getRepositoryUrl() + JiraRepositoryConnector.FILTER_URL_PREFIX + "&requestId="
+			query.setUrl(taskRepository.getRepositoryUrl() + JiraRepositoryConnector.FILTER_URL_PREFIX + "&requestId=" //$NON-NLS-1$
 					+ namedFilter.getId());
 		} else if (filter instanceof FilterDefinition) {
 			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
@@ -272,7 +272,7 @@ public class JiraUtil {
 			try {
 				return new SimpleDateFormat(IJiraConstants.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
 			} catch (ParseException e) {
-				trace(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0, "Error while parsing date string "
+				trace(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0, "Error while parsing date string " //$NON-NLS-1$
 						+ dateString, e));
 				return null;
 			}

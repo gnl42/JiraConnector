@@ -67,14 +67,14 @@ public class JiraWebSession {
 
 	private final AbstractWebLocation location;
 
-	protected static final String USER_AGENT = "JiraConnector";
+	protected static final String USER_AGENT = "JiraConnector"; //$NON-NLS-1$
 
-	private static final Object SESSION_ID_COOKIE = "JSESSIONID";
+	private static final Object SESSION_ID_COOKIE = "JSESSIONID"; //$NON-NLS-1$
 
 	public JiraWebSession(JiraClient client, String baseUrl) {
 		this.client = client;
 		this.baseUrl = baseUrl;
-		this.secure = baseUrl.startsWith("https");
+		this.secure = baseUrl.startsWith("https"); //$NON-NLS-1$
 		this.location = client.getLocation();
 	}
 
@@ -129,12 +129,12 @@ public class JiraWebSession {
 	private HostConfiguration login(HttpClient httpClient, IProgressMonitor monitor) throws JiraException {
 		RedirectTracker tracker = new RedirectTracker();
 
-		String url = baseUrl + "/login.jsp";
+		String url = baseUrl + "/login.jsp"; //$NON-NLS-1$
 		for (int i = 0; i <= MAX_REDIRECTS; i++) {
 			AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (credentials == null) {
 				// TODO prompt user?
-				credentials = new AuthenticationCredentials("", "");
+				credentials = new AuthenticationCredentials("", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			PostMethod login = new PostMethod(url);
@@ -142,7 +142,7 @@ public class JiraWebSession {
 			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 			login.addParameter("os_username", credentials.getUserName()); //$NON-NLS-1$
 			login.addParameter("os_password", credentials.getPassword()); //$NON-NLS-1$
-			login.addParameter("os_destination", "/success"); //$NON-NLS-1$
+			login.addParameter("os_destination", "/success"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			tracker.addUrl(url);
 
@@ -153,25 +153,25 @@ public class JiraWebSession {
 					continue;
 				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
 						&& statusCode != HttpStatus.SC_MOVED_PERMANENTLY) {
-					throw new JiraServiceUnavailableException("Unexpected status code during login: " + statusCode);
+					throw new JiraServiceUnavailableException("Unexpected status code during login: " + statusCode); //$NON-NLS-1$
 				}
 
 				tracker.addRedirect(url, login, statusCode);
 
 				this.characterEncoding = login.getResponseCharSet();
 
-				Header locationHeader = login.getResponseHeader("location");
+				Header locationHeader = login.getResponseHeader("location"); //$NON-NLS-1$
 				if (locationHeader == null) {
-					throw new JiraServiceUnavailableException("Invalid redirect, missing location");
+					throw new JiraServiceUnavailableException("Invalid redirect, missing location"); //$NON-NLS-1$
 				}
 				url = locationHeader.getValue();
 				tracker.checkForCircle(url);
-				if (!insecureRedirect && isSecure() && url.startsWith("http://")) {
-					tracker.log("Redirect to insecure location during login to repository: " + client.getBaseUrl());
+				if (!insecureRedirect && isSecure() && url.startsWith("http://")) { //$NON-NLS-1$
+					tracker.log("Redirect to insecure location during login to repository: " + client.getBaseUrl()); //$NON-NLS-1$
 					insecureRedirect = true;
 				}
-				if (url.endsWith("/success")) {
-					String newBaseUrl = url.substring(0, url.lastIndexOf("/success"));
+				if (url.endsWith("/success")) { //$NON-NLS-1$
+					String newBaseUrl = url.substring(0, url.lastIndexOf("/success")); //$NON-NLS-1$
 					if (baseUrl.equals(newBaseUrl) || !client.getConfiguration().getFollowRedirects()) {
 						// success
 						addAuthenticationCookie(httpClient, login);
@@ -179,7 +179,7 @@ public class JiraWebSession {
 					} else {
 						// need to login to make sure HttpClient picks up the session cookie
 						baseUrl = newBaseUrl;
-						url = newBaseUrl + "/login.jsp";
+						url = newBaseUrl + "/login.jsp"; //$NON-NLS-1$
 					}
 				}
 			} catch (IOException e) {
@@ -189,9 +189,9 @@ public class JiraWebSession {
 			}
 		}
 
-		tracker.log("Exceeded maximum number of allowed redirects during login to repository: " + client.getBaseUrl());
+		tracker.log("Exceeded maximum number of allowed redirects during login to repository: " + client.getBaseUrl()); //$NON-NLS-1$
 
-		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects during login");
+		throw new JiraServiceUnavailableException("Exceeded maximum number of allowed redirects during login"); //$NON-NLS-1$
 	}
 
 	private void addAuthenticationCookie(HttpClient httpClient, PostMethod method) {
@@ -212,9 +212,9 @@ public class JiraWebSession {
 					cookie = cookie.substring(0, index);
 				}
 				// get session id 
-				int i = cookie.indexOf("=");
+				int i = cookie.indexOf("="); //$NON-NLS-1$
 				String key = (i != -1) ? cookie.substring(0, i) : cookie;
-				cookie = (i != -1) ? cookie.substring(i + 1) : "";
+				cookie = (i != -1) ? cookie.substring(i + 1) : ""; //$NON-NLS-1$
 				httpClient.getState().addCookie(
 						new Cookie(WebUtil.getHost(baseUrl), key, cookie, WebUtil.getRequestPath(baseUrl), null,
 								isSecure(baseUrl)));
@@ -223,7 +223,7 @@ public class JiraWebSession {
 	}
 
 	private static boolean isSecure(String repositoryUrl) {
-		return repositoryUrl.matches("https.*");
+		return repositoryUrl.matches("https.*"); //$NON-NLS-1$
 	}
 
 	private boolean needsReauthentication(HttpClient httpClient, int code, IProgressMonitor monitor)
@@ -240,7 +240,7 @@ public class JiraWebSession {
 		try {
 			location.requestCredentials(authenticationType, null, monitor);
 		} catch (UnsupportedRequestException ignored) {
-			throw new JiraAuthenticationException("Login failed.");
+			throw new JiraAuthenticationException("Login failed."); //$NON-NLS-1$
 		}
 
 		return true;
@@ -274,7 +274,7 @@ public class JiraWebSession {
 
 		public void checkForCircle(String url) {
 			if (!loggedCircle && urls.contains(url)) {
-				log("Circular redirect detected while login in to repository: " + client.getBaseUrl());
+				log("Circular redirect detected while login in to repository: " + client.getBaseUrl()); //$NON-NLS-1$
 				loggedCircle = true;
 			}
 		}
@@ -313,12 +313,12 @@ public class JiraWebSession {
 
 		@Override
 		public String toString() {
-			StringBuilder sb = new StringBuilder("Request: ");
+			StringBuilder sb = new StringBuilder("Request: "); //$NON-NLS-1$
 			sb.append(url).append('\n');
-			sb.append("Status: ").append(statusCode).append('\n');
+			sb.append("Status: ").append(statusCode).append('\n'); //$NON-NLS-1$
 			// log useful but insensitive headers
 			for (Header header : responseHeaders) {
-				if (header.getName().equalsIgnoreCase("Server") || header.getName().equalsIgnoreCase("Location")) {
+				if (header.getName().equalsIgnoreCase("Server") || header.getName().equalsIgnoreCase("Location")) { //$NON-NLS-1$ //$NON-NLS-2$
 					sb.append(header.toExternalForm());
 				}
 			}

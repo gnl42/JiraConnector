@@ -56,7 +56,7 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 			rssRequest.setFollowRedirects(false);
 			if (useCompression) {
 				// request compressed response, this does not guarantee it will be done
-				rssRequest.setRequestHeader("Accept-Encoding", "gzip"); //$NON-NLS-1$
+				rssRequest.setRequestHeader("Accept-Encoding", "gzip"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			try {
@@ -65,13 +65,13 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 				// TODO refactor, code was copied from JiraWebSession.expectRedirect()
 				if (code == HttpStatus.SC_MOVED_TEMPORARILY) {
 					// check if redirect was to issue page, this means only a single result was received
-					Header locationHeader = rssRequest.getResponseHeader("location");
+					Header locationHeader = rssRequest.getResponseHeader("location"); //$NON-NLS-1$
 					if (locationHeader == null) {
-						throw new JiraServiceUnavailableException("Invalid server response, missing redirect location");
+						throw new JiraServiceUnavailableException("Invalid server response, missing redirect location"); //$NON-NLS-1$
 					}
 					String url = locationHeader.getValue();
-					if (!url.startsWith(baseUrl + "/browse/")) {
-						throw new JiraException("Server redirected to unexpected location: " + url);
+					if (!url.startsWith(baseUrl + "/browse/")) { //$NON-NLS-1$
+						throw new JiraException("Server redirected to unexpected location: " + url); //$NON-NLS-1$
 					}
 
 					rssRequest.releaseConnection();
@@ -79,9 +79,9 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 					// request XML for single result
 					rssUrl = url + "?decorator=none&view=rss"; //$NON-NLS-1$
 				} else if (code != HttpStatus.SC_OK) {
-					StringBuilder sb = new StringBuilder("Unexpected result code ");
+					StringBuilder sb = new StringBuilder("Unexpected result code "); //$NON-NLS-1$
 					sb.append(code);
-					sb.append(" while running query: ");
+					sb.append(" while running query: "); //$NON-NLS-1$
 					sb.append(rssUrl);
 					throw new JiraRemoteMessageException(sb.toString(), rssRequest.getResponseBodyAsString());
 				}
@@ -100,7 +100,7 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 			}
 		}
 
-		throw new JiraException("Maximum number of query redirects exceeded: " + rssUrl);
+		throw new JiraException("Maximum number of query redirects exceeded: " + rssUrl); //$NON-NLS-1$
 	}
 
 	private void parseResult(JiraClient client, String baseUrl, GetMethod rssRequest) throws IOException, JiraException {

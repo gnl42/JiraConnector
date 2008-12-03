@@ -65,7 +65,7 @@ public abstract class JiraWebSessionCallback {
 			IOException;
 
 	protected boolean expectRedirect(HttpMethodBase method, JiraIssue issue) throws JiraException {
-		return expectRedirect(method, "/browse/" + issue.getKey());
+		return expectRedirect(method, "/browse/" + issue.getKey()); //$NON-NLS-1$
 	}
 
 	protected boolean expectRedirect(HttpMethodBase method, String page) throws JiraException {
@@ -77,20 +77,20 @@ public abstract class JiraWebSessionCallback {
 			return false;
 		}
 
-		Header locationHeader = method.getResponseHeader("location");
+		Header locationHeader = method.getResponseHeader("location"); //$NON-NLS-1$
 		if (locationHeader == null) {
-			throw new JiraServiceUnavailableException("Invalid server response, missing redirect location");
+			throw new JiraServiceUnavailableException("Invalid server response, missing redirect location"); //$NON-NLS-1$
 		}
 		String url = locationHeader.getValue();
 		if (fullMatch) {
 			// only if followRedirects is enabled the baseUrl is guaranteed to match the redirect url, otherwise the repository might be sending back a different url 
 			if ((followRedirects && !url.startsWith(baseUrl + page)) || (!followRedirects && !url.endsWith(page))) {
-				throw new JiraException("Server redirected to unexpected location: " + url);
+				throw new JiraException("Server redirected to unexpected location: " + url); //$NON-NLS-1$
 			}
 		} else {
 			// the client does not know exactly where the repository will redirect to
 			if (!url.contains(page)) {
-				throw new JiraException("Server redirected to unexpected location: " + url);
+				throw new JiraException("Server redirected to unexpected location: " + url); //$NON-NLS-1$
 			}
 		}
 		return true;
