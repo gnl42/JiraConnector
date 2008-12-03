@@ -24,6 +24,7 @@ import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
 
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
+import com.atlassian.theplugin.commons.cfg.Server;
 import com.atlassian.theplugin.commons.cfg.ServerCfg;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
 import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
@@ -44,8 +45,8 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 		idleConnectionTimeoutThread.start();
 	}
 
-	public synchronized HttpClient getHttpClient(ServerCfg serverCfg) throws HttpProxySettingsException {
-		HttpClient httpClient = httpClients.get(serverCfg);
+	public synchronized HttpClient getHttpClient(Server server) throws HttpProxySettingsException {
+		HttpClient httpClient = httpClients.get(server);
 
 		// TODO handle the case where we dont have a client initialzied
 		assert (httpClient != null);
