@@ -11,6 +11,5 @@ Export-Package: org.jdom;version="1.0.0",
  org.jdom.output;version="1.0.0",
  org.jdom.transform;version="1.0.0",
  org.jdom.xpath;version="1.0.0"
-Require-Bundle: org.apache.xerces;resolution:=optional,
- org.jdom_jaxen;resolution:=optional
+Require-Bundle: org.apache.xerces;resolution:=optional
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
