@@ -8,7 +8,7 @@
     <condition property="skip3.4"><not><contains string="${eclipse}" substring="3.4"/></not></condition>
     <condition property="skip3.5"><not><contains string="${eclipse}" substring="3.5"/></not></condition>
 
-	<available property="customTargets" file="${basedir}/../customTargets.xml" value="${builder}/customTargets.xml"/>
+	<available property="customTargets" file="${basedir}/customTargets.xml" value="${basedir}/customTargets.xml"/>
 	<property name="customTargets" location="${basedir}/scripts/customTargets.xml"/>
 
 	<!-- ===================================================================== -->
