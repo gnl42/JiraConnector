@@ -26,6 +26,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -39,9 +40,9 @@ public class JiraCorePlugin extends Plugin {
 
 	private JiraClientManager clientManager;
 
-	public final static String CONNECTOR_KIND = "jira";
+	public final static String CONNECTOR_KIND = "jira"; //$NON-NLS-1$
 
-	public final static String LABEL = "JIRA (supports 3.3.3 and later)";
+	public final static String LABEL = NLS.bind(Messages.JiraCorePlugin_JIRA_description, "3.4");
 
 	/**
 	 * The constructor.
@@ -51,7 +52,7 @@ public class JiraCorePlugin extends Plugin {
 		plugin = this;
 
 		// disable Axis attachment support, see bug 197819
-		AxisProperties.setProperty(AxisEngine.PROP_ATTACHMENT_IMPLEMENTATION, "org.eclipse.mylyn.does.not.exist");
+		AxisProperties.setProperty(AxisEngine.PROP_ATTACHMENT_IMPLEMENTATION, "org.eclipse.mylyn.does.not.exist"); //$NON-NLS-1$
 	}
 
 	/**
@@ -64,7 +65,7 @@ public class JiraCorePlugin extends Plugin {
 
 		// Turn off logging for the Attachment check. We don't want or need soap
 		// with attachments
-		Logger logger = Logger.getLogger("org.apache.axis.utils.JavaUtils");
+		Logger logger = Logger.getLogger("org.apache.axis.utils.JavaUtils"); //$NON-NLS-1$
 		logger.setLevel(Level.SEVERE);
 
 		clientManager = new JiraClientManager(serverCache);
@@ -109,7 +110,7 @@ public class JiraCorePlugin extends Plugin {
 			return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY,
 					e.getMessage(), e);
 		} else {
-			return RepositoryStatus.createInternalError(ID_PLUGIN, "Unexpected error", e);
+			return RepositoryStatus.createInternalError(ID_PLUGIN, "Unexpected error", e); //$NON-NLS-1$
 		}
 	}
 

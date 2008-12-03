@@ -165,7 +165,7 @@ public class JiraClientCache {
 
 			// use UNKNOWN since some of the update operations block for a long time
 			// TODO use InfiniteSubProgressMonitor
-			monitor.beginTask("Updating repository configuration", IProgressMonitor.UNKNOWN);
+			monitor.beginTask(Messages.JiraClientCache_Updating_repository_configuration, IProgressMonitor.UNKNOWN);
 
 			JiraClientData newData = new JiraClientData();
 
@@ -196,7 +196,7 @@ public class JiraClientCache {
 	 */
 	public synchronized void refreshServerInfo(IProgressMonitor monitor) throws JiraException {
 		try {
-			monitor.beginTask("Getting server information", IProgressMonitor.UNKNOWN);
+			monitor.beginTask(Messages.JiraClientCache_Getting_server_information, IProgressMonitor.UNKNOWN);
 			data.serverInfo = jiraClient.getServerInfo(monitor);
 		} finally {
 			monitor.done();

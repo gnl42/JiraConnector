@@ -86,7 +86,7 @@ public final class Comment implements Serializable {
 
 	@Override
 	public String toString() {
-		return this.author + ": " + this.comment;
+		return this.author + ": " + this.comment; //$NON-NLS-1$
 	}
 
 }

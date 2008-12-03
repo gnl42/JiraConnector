@@ -351,7 +351,7 @@ public class JiraIssue implements Serializable {
 
 	@Override
 	public String toString() {
-		return this.key + " " + this.summary;
+		return this.key + " " + this.summary; //$NON-NLS-1$
 	}
 
 	public Attachment[] getAttachments() {
@@ -405,27 +405,27 @@ public class JiraIssue implements Serializable {
 	}
 
 	public String[] getFieldValues(String field) {
-		if ("summary".equals(field)) {
+		if ("summary".equals(field)) { //$NON-NLS-1$
 			return new String[] { getSummary() };
-		} else if ("description".equals(field)) {
+		} else if ("description".equals(field)) { //$NON-NLS-1$
 			return new String[] { getDescription() };
-		} else if ("resolution".equals(field)) {
+		} else if ("resolution".equals(field)) { //$NON-NLS-1$
 			if (resolution != null) {
 				return new String[] { resolution.getId() };
 			}
-		} else if ("assignee".equals(field)) {
+		} else if ("assignee".equals(field)) { //$NON-NLS-1$
 			return new String[] { assignee };
-		} else if ("reporter".equals(field)) {
+		} else if ("reporter".equals(field)) { //$NON-NLS-1$
 			return new String[] { reporter };
-		} else if ("issuetype".equals(field)) {
+		} else if ("issuetype".equals(field)) { //$NON-NLS-1$
 			if (type != null) {
 				return new String[] { type.getId() };
 			}
-		} else if ("priority".equals(field)) {
+		} else if ("priority".equals(field)) { //$NON-NLS-1$
 			if (priority != null) {
 				return new String[] { getPriority().getId() };
 			}
-		} else if ("components".equals(field)) {
+		} else if ("components".equals(field)) { //$NON-NLS-1$
 			if (components != null) {
 				String[] res = new String[components.length];
 				for (int i = 0; i < components.length; i++) {
@@ -433,7 +433,7 @@ public class JiraIssue implements Serializable {
 				}
 				return res;
 			}
-		} else if ("versions".equals(field)) {
+		} else if ("versions".equals(field)) { //$NON-NLS-1$
 			if (reportedVersions != null) {
 				String[] res = new String[reportedVersions.length];
 				for (int i = 0; i < reportedVersions.length; i++) {
@@ -441,7 +441,7 @@ public class JiraIssue implements Serializable {
 				}
 				return res;
 			}
-		} else if ("fixVersions".equals(field)) {
+		} else if ("fixVersions".equals(field)) { //$NON-NLS-1$
 			if (fixVersions != null) {
 				String[] res = new String[fixVersions.length];
 				for (int i = 0; i < fixVersions.length; i++) {
@@ -449,21 +449,21 @@ public class JiraIssue implements Serializable {
 				}
 				return res;
 			}
-		} else if ("environment".equals(field)) {
+		} else if ("environment".equals(field)) { //$NON-NLS-1$
 			if (environment != null) {
 				return new String[] { environment };
 			}
-		} else if ("duedate".equals(field)) {
+		} else if ("duedate".equals(field)) { //$NON-NLS-1$
 			if (due != null) {
-				return new String[] { new SimpleDateFormat("dd/MMM/yy").format(due) };
+				return new String[] { new SimpleDateFormat("dd/MMM/yy").format(due) }; //$NON-NLS-1$
 			}
-		} else if ("timetracking".equals(field)) {
-			return new String[] { Long.toString(getEstimate() / 60) + "m" };
+		} else if ("timetracking".equals(field)) { //$NON-NLS-1$
+			return new String[] { Long.toString(getEstimate() / 60) + "m" }; //$NON-NLS-1$
 		}
 
 		// TODO add other fields
 
-		if (field.startsWith("customfield_")) {
+		if (field.startsWith("customfield_")) { //$NON-NLS-1$
 			for (CustomField customField : customFields) {
 				if (customField.getId().equals(field)) {
 					List<String> values = customField.getValues();
@@ -477,16 +477,16 @@ public class JiraIssue implements Serializable {
 
 	// TODO refactor RSS parser to use this call
 	public void setValue(String field, String value) {
-		if ("resolution".equals(field)) {
+		if ("resolution".equals(field)) { //$NON-NLS-1$
 			if (value != null) {
 				resolution = new Resolution();
 				resolution.setId(value);
 			}
-		} else if ("assignee".equals(field)) {
+		} else if ("assignee".equals(field)) { //$NON-NLS-1$
 			assignee = value;
 
 			// TODO add other fields
-		} else if (field.startsWith("customfield_")) {
+		} else if (field.startsWith("customfield_")) { //$NON-NLS-1$
 			boolean found = false;
 
 			for (int i = 0; i < customFields.length; i++) {
@@ -502,7 +502,7 @@ public class JiraIssue implements Serializable {
 
 			if (!found) {
 				List<CustomField> list = Arrays.asList(customFields);
-				list.add(new CustomField(field, "", "", Collections.singletonList(value)));
+				list.add(new CustomField(field, "", "", Collections.singletonList(value))); //$NON-NLS-1$ //$NON-NLS-2$
 				customFields = list.toArray(new CustomField[list.size()]);
 			}
 		}

@@ -95,7 +95,7 @@ public class JiraClient {
 	 */
 	public final static int ASSIGNEE_USER = 4;
 
-	public final static String DEFAULT_CHARSET = "UTF-8";
+	public final static String DEFAULT_CHARSET = "UTF-8"; //$NON-NLS-1$
 
 	private boolean attemptedToDetermineCharacterEncoding;
 
@@ -309,8 +309,8 @@ public class JiraClient {
 		SingleIssueCollector collector = new SingleIssueCollector();
 		rssClient.getIssueByKey(issueKey, collector, monitor);
 		if (collector.getIssue() != null && collector.getIssue().getProject() == null) {
-			throw new JiraException("Repository returned an unknown project for issue '"
-					+ collector.getIssue().getKey() + "'");
+			throw new JiraException("Repository returned an unknown project for issue '" //$NON-NLS-1$
+					+ collector.getIssue().getKey() + "'"); //$NON-NLS-1$
 		}
 		return collector.getIssue();
 	}
@@ -382,7 +382,7 @@ public class JiraClient {
 
 	public String getUserName() {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		return (credentials != null) ? credentials.getUserName() : "";
+		return (credentials != null) ? credentials.getUserName() : ""; //$NON-NLS-1$
 	}
 
 	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
@@ -444,7 +444,7 @@ public class JiraClient {
 		} else if (query instanceof NamedFilter) {
 			executeNamedFilter((NamedFilter) query, collector, monitor);
 		} else {
-			throw new IllegalArgumentException("Unknown query type: " + query.getClass());
+			throw new IllegalArgumentException("Unknown query type: " + query.getClass()); //$NON-NLS-1$
 		}
 	}
 

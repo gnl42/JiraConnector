@@ -27,15 +27,15 @@ public class JiraHttpSender extends CommonsHttpSender {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String PROXY = "org.eclipse.mylyn.jira.proxy";
+	public static final String PROXY = "org.eclipse.mylyn.jira.proxy"; //$NON-NLS-1$
 
-	public static final String HTTP_USER = "org.eclipse.mylyn.jira.httpUser";
+	public static final String HTTP_USER = "org.eclipse.mylyn.jira.httpUser"; //$NON-NLS-1$
 
-	public static final String HTTP_PASSWORD = "org.eclipse.mylyn.jira.httpPassword";
+	public static final String HTTP_PASSWORD = "org.eclipse.mylyn.jira.httpPassword"; //$NON-NLS-1$
 
-	public static final String LOCATION = "org.eclipse.mylyn.jira.location";
+	public static final String LOCATION = "org.eclipse.mylyn.jira.location"; //$NON-NLS-1$
 
-	protected static final String USER_AGENT = "JiraConnector Apache Axis/1.3";
+	protected static final String USER_AGENT = "JiraConnector Apache Axis/1.3"; //$NON-NLS-1$
 
 	@Override
 	protected HostConfiguration getHostConfiguration(HttpClient client, MessageContext context, URL url) {

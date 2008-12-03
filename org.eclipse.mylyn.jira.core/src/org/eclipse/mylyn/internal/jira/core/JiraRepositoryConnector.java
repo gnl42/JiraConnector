@@ -12,6 +12,7 @@
 
 package org.eclipse.mylyn.internal.jira.core;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -63,30 +64,30 @@ import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
  */
 public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
-	private static final String ID_STATUS_RESOLVED = "5";
+	private static final String ID_STATUS_RESOLVED = "5"; //$NON-NLS-1$
 
-	private static final String ID_STATUS_CLOSED = "6";
+	private static final String ID_STATUS_CLOSED = "6"; //$NON-NLS-1$
 
-	private static final String ERROR_REPOSITORY_CONFIGURATION = "The repository returned an unknown project. Please update the repository attributes.";
+	private static final String ERROR_REPOSITORY_CONFIGURATION = Messages.JiraRepositoryConnector_The_repository_returned_an_unknown_project;
 
 	private static final int MAX_MARK_STALE_QUERY_HITS = 500;
 
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/connector"));
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/connector")); //$NON-NLS-1$
 
 	/** Repository address + Issue Prefix + Issue key = the issue's web address */
-	public final static String ISSUE_URL_PREFIX = "/browse/";
+	public final static String ISSUE_URL_PREFIX = "/browse/"; //$NON-NLS-1$
 
 	/** Repository address + Filter Prefix + Issue key = the filter's web address */
-	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide";
+	public final static String FILTER_URL_PREFIX = "/secure/IssueNavigator.jspa?mode=hide"; //$NON-NLS-1$
 
 	private final JiraTaskDataHandler taskDataHandler;
 
 	private final JiraTaskAttachmentHandler attachmentHandler;
 
-	public static final String UNASSIGNED_USER = "-1";
+	public static final String UNASSIGNED_USER = "-1"; //$NON-NLS-1$
 
 	/** Name initially given to new tasks. Public for testing */
-	public static final String NEW_TASK_DESC = "New Task";
+	public static final String NEW_TASK_DESC = Messages.JiraRepositoryConnector_New_Task;
 
 	public static final int RETURN_ALL_HITS = -1;
 
@@ -115,7 +116,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			TaskDataCollector resultCollector, ISynchronizationSession session, IProgressMonitor monitor) {
 		monitor = Policy.monitorFor(monitor);
 		try {
-			monitor.beginTask("Query Repository", IProgressMonitor.UNKNOWN);
+			monitor.beginTask(Messages.JiraRepositoryConnector_Query_Repository, IProgressMonitor.UNKNOWN);
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 			try {
 				if (!client.getCache().hasDetails()) {
@@ -127,7 +128,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			JiraFilter filter = JiraUtil.getQuery(repository, client, repositoryQuery, true);
 			if (filter == null) {
 				return RepositoryStatus.createStatus(repository, IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-						"The JIRA query is invalid");
+						Messages.JiraRepositoryConnector_The_JIRA_query_is_invalid);
 			}
 			try {
 				QueryHitCollector collector = new QueryHitCollector(repository, client, resultCollector, session,
@@ -148,7 +149,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	public void preSynchronization(ISynchronizationSession session, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
-			monitor.beginTask("Getting changed tasks", IProgressMonitor.UNKNOWN);
+			monitor.beginTask(Messages.JiraRepositoryConnector_Getting_changed_tasks, IProgressMonitor.UNKNOWN);
 
 			session.setNeedsPerformQueries(true);
 
@@ -198,7 +199,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 						}
 
 						// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
-						monitor.subTask(issue.getKey() + " " + issue.getSummary());
+						monitor.subTask(issue.getKey() + " " + issue.getSummary()); //$NON-NLS-1$
 						// only load old task data from if necessary 
 						if (hasChanged(task, issue)) {
 							TaskData oldTaskData = null;
@@ -270,8 +271,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		// check if time stamp is skewed
 		if (lastSyncTime >= nowTime) {
 			trace(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0,
-					"Synchronization time stamp clock skew detected for " + repository.getRepositoryUrl() + ": "
-							+ lastSyncTime + " >= " + now, null));
+					"Synchronization time stamp clock skew detected for " + repository.getRepositoryUrl() + ": " //$NON-NLS-1$ //$NON-NLS-2$
+							+ lastSyncTime + " >= " + now, null)); //$NON-NLS-1$
 
 			// use the time stamp on the task that was modified last
 			lastSyncDate = null;
@@ -327,7 +328,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		int index = url.indexOf(ISSUE_URL_PREFIX);
 		if (index != -1) {
 			String taskId = url.substring(index + ISSUE_URL_PREFIX.length());
-			if (taskId.contains("-")) {
+			if (taskId.contains("-")) { //$NON-NLS-1$
 				return taskId;
 			}
 		}
@@ -345,13 +346,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		Project[] projects = client.getCache().getProjects();
 		if (projects != null && projects.length > 0) {
 			// (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
-			StringBuilder sb = new StringBuilder("(");
-			String sep = "";
+			StringBuilder sb = new StringBuilder("("); //$NON-NLS-1$
+			String sep = ""; //$NON-NLS-1$
 			for (Project project : projects) {
-				sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)");
-				sep = "|";
+				sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)"); //$NON-NLS-1$ //$NON-NLS-2$
+				sep = "|"; //$NON-NLS-1$
 			}
-			sb.append(")(?:\\D|\\z)");
+			sb.append(")(?:\\D|\\z)"); //$NON-NLS-1$
 
 			Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 			Matcher m = p.matcher(comment);
@@ -421,11 +422,11 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public String getTaskIdPrefix() {
-		return "issue";
+		return "issue"; //$NON-NLS-1$
 	}
 
 	public static String getAssigneeFromAttribute(String assignee) {
-		return "".equals(assignee) ? UNASSIGNED_USER : assignee;
+		return "".equals(assignee) ? UNASSIGNED_USER : assignee; //$NON-NLS-1$
 	}
 
 	private void trace(IStatus status) {
@@ -544,7 +545,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				addStatus(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION, null));
 				return;
 			}
-			monitor.subTask("Retrieving issue " + issue.getKey() + " " + issue.getSummary());
+			monitor.subTask(MessageFormat.format(Messages.JiraRepositoryConnector_Retrieving_issue_X, issue.getKey()
+					+ " " + issue.getSummary())); //$NON-NLS-1$
 			TaskData oldTaskData = null;
 			// TODO consider marking result as partial instead of loading task data from disk
 			if (session != null) {

@@ -20,68 +20,81 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
  */
 public enum JiraAttribute {
 
-	ACTUAL(IJiraConstants.ATTRIBUTE_ACTUAL, JiraFieldType.TEXTFIELD, "Time Spent:", false, true, "timespent"),
+	ACTUAL(IJiraConstants.ATTRIBUTE_ACTUAL, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Time_Spent, false, true,
+			"timespent"), //$NON-NLS-1$
 
-	AFFECTSVERSIONS(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT, "Affects Versions:", false,
-			false, "versions"),
+	AFFECTSVERSIONS(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS, JiraFieldType.MULTISELECT,
+			Messages.JiraAttribute_Affects_Versions, false, false, "versions"), //$NON-NLS-1$
 
-	COMMENT_NEW(TaskAttribute.COMMENT_NEW, JiraFieldType.TEXTAREA, "New Comment:", true, false, "comment"),
+	COMMENT_NEW(TaskAttribute.COMMENT_NEW, JiraFieldType.TEXTAREA, Messages.JiraAttribute_New_Comment, true, false,
+			"comment"), //$NON-NLS-1$
 
-	COMPONENTS(IJiraConstants.ATTRIBUTE_COMPONENTS, JiraFieldType.MULTISELECT, "Components:", false, false,
-			"components"),
+	COMPONENTS(IJiraConstants.ATTRIBUTE_COMPONENTS, JiraFieldType.MULTISELECT, Messages.JiraAttribute_Components,
+			false, false, "components"), //$NON-NLS-1$
 
-	CREATION_DATE(TaskAttribute.DATE_CREATION, JiraFieldType.DATE, "Created:"),
+	CREATION_DATE(TaskAttribute.DATE_CREATION, JiraFieldType.DATE, Messages.JiraAttribute_Created),
 
-	DESCRIPTION(TaskAttribute.DESCRIPTION, JiraFieldType.TEXTFIELD, "Description:", true, false, "description"),
+	DESCRIPTION(TaskAttribute.DESCRIPTION, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Description, true, false,
+			"description"), //$NON-NLS-1$
 
-	DUE_DATE(IJiraConstants.ATTRIBUTE_DUE_DATE, JiraFieldType.DATE, "Due Date:", false, false, "duedate"),
+	DUE_DATE(IJiraConstants.ATTRIBUTE_DUE_DATE, JiraFieldType.DATE, Messages.JiraAttribute_DUEDATE, false, false,
+			"duedate"), //$NON-NLS-1$
 
-	ENVIRONMENT(IJiraConstants.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA, "Environment:", false, false,
-			"environment"),
+	ENVIRONMENT(IJiraConstants.ATTRIBUTE_ENVIRONMENT, JiraFieldType.TEXTAREA, Messages.JiraAttribute_Environment,
+			false, false, "environment"), //$NON-NLS-1$
 
-	ESTIMATE(IJiraConstants.ATTRIBUTE_ESTIMATE, JiraFieldType.TEXTFIELD, "Estimate:", false, false, "timetracking"),
+	ESTIMATE(IJiraConstants.ATTRIBUTE_ESTIMATE, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Estimate, false, false,
+			"timetracking"), //$NON-NLS-1$
 
-	FIXVERSIONS(IJiraConstants.ATTRIBUTE_FIXVERSIONS, JiraFieldType.MULTISELECT, "Fix Versions:", false, false,
-			"fixVersions"),
+	FIXVERSIONS(IJiraConstants.ATTRIBUTE_FIXVERSIONS, JiraFieldType.MULTISELECT, Messages.JiraAttribute_Fix_Versions,
+			false, false, "fixVersions"), //$NON-NLS-1$
 
-	INITIAL_ESTIMATE(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE, JiraFieldType.TEXTFIELD, "Original Estimate:", false,
+	INITIAL_ESTIMATE(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE, JiraFieldType.TEXTFIELD,
+			Messages.JiraAttribute_Original_Estimate, false, true),
+
+	ISSUE_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Key),
+
+	LINKED_IDS(IJiraConstants.ATTRIBUTE_LINKED_IDS, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Linked_ids, true,
 			true),
 
-	ISSUE_KEY(TaskAttribute.TASK_KEY, JiraFieldType.TEXTFIELD, "Key:"),
+	MODIFICATION_DATE(TaskAttribute.DATE_MODIFICATION, JiraFieldType.DATE, Messages.JiraAttribute_Modified),
 
-	LINKED_IDS(IJiraConstants.ATTRIBUTE_LINKED_IDS, JiraFieldType.TEXTFIELD, "Linked ids:", true, true),
+	PARENT_ID(IJiraConstants.ATTRIBUTE_ISSUE_PARENT_ID, JiraFieldType.ISSUELINK, Messages.JiraAttribute_Parent_ID,
+			true, true),
 
-	MODIFICATION_DATE(TaskAttribute.DATE_MODIFICATION, JiraFieldType.DATE, "Modified:"),
+	PARENT_KEY(IJiraConstants.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.ISSUELINK, Messages.JiraAttribute_Parent,
+			false, true),
 
-	PARENT_ID(IJiraConstants.ATTRIBUTE_ISSUE_PARENT_ID, JiraFieldType.ISSUELINK, "Parent ID:", true, true),
+	PRIORITY(TaskAttribute.PRIORITY, JiraFieldType.SELECT, Messages.JiraAttribute_Priority, false, false, "priority"), //$NON-NLS-1$
 
-	PARENT_KEY(IJiraConstants.ATTRIBUTE_ISSUE_PARENT_KEY, JiraFieldType.ISSUELINK, "Parent:", false, true),
+	PROJECT(TaskAttribute.PRODUCT, JiraFieldType.PROJECT, Messages.JiraAttribute_Project, false, true),
 
-	PRIORITY(TaskAttribute.PRIORITY, JiraFieldType.SELECT, "Priority:", false, false, "priority"),
+	RESOLUTION(TaskAttribute.RESOLUTION, JiraFieldType.SELECT, Messages.JiraAttribute_Resolution, true, false,
+			"resolution"), //$NON-NLS-1$
 
-	PROJECT(TaskAttribute.PRODUCT, JiraFieldType.PROJECT, "Project:", false, true),
+	SECURITY_LEVEL(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT,
+			Messages.JiraAttribute_Security_Level, false, true),
 
-	RESOLUTION(TaskAttribute.RESOLUTION, JiraFieldType.SELECT, "Resolution:", true, false, "resolution"),
+	STATUS(TaskAttribute.STATUS, JiraFieldType.SELECT, Messages.JiraAttribute_Status),
 
-	SECURITY_LEVEL(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT, "Security Level:", false, true),
+	SUBTASK_IDS(IJiraConstants.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Subtask_ids,
+			true, true),
 
-	STATUS(TaskAttribute.STATUS, JiraFieldType.SELECT, "Status:"),
+	SUBTASK_KEYS(IJiraConstants.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, Messages.JiraAttribute_Subtasks,
+			false, true),
 
-	SUBTASK_IDS(IJiraConstants.ATTRIBUTE_SUBTASK_IDS, JiraFieldType.TEXTFIELD, "Subtask ids:", true, true),
+	SUMMARY(TaskAttribute.SUMMARY, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Summary, true, false, "summary"), //$NON-NLS-1$
 
-	SUBTASK_KEYS(IJiraConstants.ATTRIBUTE_SUBTASK_KEYS, JiraFieldType.ISSUELINKS, "Subtasks:", false, true),
+	TYPE(IJiraConstants.ATTRIBUTE_TYPE, JiraFieldType.SELECT, Messages.JiraAttribute_Type, false, false, "issuetype"), //$NON-NLS-1$
 
-	SUMMARY(TaskAttribute.SUMMARY, JiraFieldType.TEXTFIELD, "Summary:", true, false, "summary"),
+	UNKNOWN(null, JiraFieldType.UNKNOWN, Messages.JiraAttribute_unknown, true, true),
 
-	TYPE(IJiraConstants.ATTRIBUTE_TYPE, JiraFieldType.SELECT, "Type:", false, false, "issuetype"),
+	USER_ASSIGNED(TaskAttribute.USER_ASSIGNED, JiraFieldType.USERPICKER, Messages.JiraAttribute_Assigned_to, true,
+			false, "assignee"), //$NON-NLS-1$
 
-	UNKNOWN(null, JiraFieldType.UNKNOWN, "unknown:", true, true),
+	USER_REPORTER(TaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, Messages.JiraAttribute_Reported_by),
 
-	USER_ASSIGNED(TaskAttribute.USER_ASSIGNED, JiraFieldType.USERPICKER, "Assigned to:", true, false, "assignee"),
-
-	USER_REPORTER(TaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, "Reported by:"),
-
-	TASK_URL(TaskAttribute.TASK_URL, JiraFieldType.URL, "URL:");
+	TASK_URL(TaskAttribute.TASK_URL, JiraFieldType.URL, Messages.JiraAttribute_URL);
 
 	public static JiraAttribute valueById(String id) {
 		for (JiraAttribute attribute : values()) {

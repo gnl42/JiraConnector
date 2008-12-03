@@ -19,87 +19,87 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
  */
 public enum JiraFieldType {
 
-	CASCADINGSELECT("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect"),
+	CASCADINGSELECT("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect"), //$NON-NLS-1$
 
-	DATE("com.atlassian.jira.plugin.system.customfieldtypes:datepicker", TaskAttribute.TYPE_DATE),
+	DATE("com.atlassian.jira.plugin.system.customfieldtypes:datepicker", TaskAttribute.TYPE_DATE), //$NON-NLS-1$
 
-	DATETIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime", TaskAttribute.TYPE_DATE),
+	DATETIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime", TaskAttribute.TYPE_DATE), //$NON-NLS-1$
 
-	FLOATFIELD("com.atlassian.jira.plugin.system.customfieldtypes:float"),
+	FLOATFIELD("com.atlassian.jira.plugin.system.customfieldtypes:float"), //$NON-NLS-1$
 
-	GROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:grouppicker"),
+	GROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:grouppicker"), //$NON-NLS-1$
 
 	// field that has link to a single issue
-	ISSUELINK("org.mylar.jira.issuelink", TaskAttribute.TYPE_TASK_DEPENDENCY),
+	ISSUELINK("org.mylar.jira.issuelink", TaskAttribute.TYPE_TASK_DEPENDENCY), //$NON-NLS-1$
 
 	// field that has list of links to issues
-	ISSUELINKS("org.mylar.jira.issuelinks", TaskAttribute.TYPE_TASK_DEPENDENCY),
+	ISSUELINKS("org.mylar.jira.issuelinks", TaskAttribute.TYPE_TASK_DEPENDENCY), //$NON-NLS-1$
 
-	MULTICHECKBOXES("com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes"),
+	MULTICHECKBOXES("com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes"), //$NON-NLS-1$
 
-	MULTIGROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker"),
+	MULTIGROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker"), //$NON-NLS-1$
 
-	MULTISELECT("com.atlassian.jira.plugin.system.customfieldtypes:multiselect", TaskAttribute.TYPE_MULTI_SELECT),
+	MULTISELECT("com.atlassian.jira.plugin.system.customfieldtypes:multiselect", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
 
-	MULTIUSERPICKER("com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker", TaskAttribute.TYPE_PERSON),
+	MULTIUSERPICKER("com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker", TaskAttribute.TYPE_PERSON), //$NON-NLS-1$
 
-	MULTIVERSION("com.atlassian.jira.plugin.system.customfieldtypes:multiversion"),
+	MULTIVERSION("com.atlassian.jira.plugin.system.customfieldtypes:multiversion"), //$NON-NLS-1$
 
-	PROJECT("com.atlassian.jira.plugin.system.customfieldtypes:project", TaskAttribute.TYPE_SINGLE_SELECT),
+	PROJECT("com.atlassian.jira.plugin.system.customfieldtypes:project", TaskAttribute.TYPE_SINGLE_SELECT), //$NON-NLS-1$
 
-	RADIOBUTTONS("com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons"),
+	RADIOBUTTONS("com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons"), //$NON-NLS-1$
 
-	READONLYFIELD("com.atlassian.jira.plugin.system.customfieldtypes:readonlyfield"),
+	READONLYFIELD("com.atlassian.jira.plugin.system.customfieldtypes:readonlyfield"), //$NON-NLS-1$
 
-	SELECT("com.atlassian.jira.plugin.system.customfieldtypes:select", TaskAttribute.TYPE_SINGLE_SELECT),
+	SELECT("com.atlassian.jira.plugin.system.customfieldtypes:select", TaskAttribute.TYPE_SINGLE_SELECT), //$NON-NLS-1$
 
-	TEXTAREA("com.atlassian.jira.plugin.system.customfieldtypes:textarea", TaskAttribute.TYPE_LONG_TEXT),
+	TEXTAREA("com.atlassian.jira.plugin.system.customfieldtypes:textarea", TaskAttribute.TYPE_LONG_TEXT), //$NON-NLS-1$
 
-	TEXTFIELD("com.atlassian.jira.plugin.system.customfieldtypes:textfield", TaskAttribute.TYPE_SHORT_TEXT),
+	TEXTFIELD("com.atlassian.jira.plugin.system.customfieldtypes:textfield", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
 	// read only fields from JIRA Toolkit plug-in
 
-	TOOLKIT_ASSIGNEEDOMAIN("com.atlassian.jira.toolkit:assigneedomain"),
+	TOOLKIT_ASSIGNEEDOMAIN("com.atlassian.jira.toolkit:assigneedomain"), //$NON-NLS-1$
 
-	TOOLKIT_ATTACHMENTS("com.atlassian.jira.toolkit:attachments "),
+	TOOLKIT_ATTACHMENTS("com.atlassian.jira.toolkit:attachments "), //$NON-NLS-1$
 
-	TOOLKIT_COMMENTS("com.atlassian.jira.toolkit:comments"),
+	TOOLKIT_COMMENTS("com.atlassian.jira.toolkit:comments"), //$NON-NLS-1$
 
-	TOOLKIT_DAYSLASTCOMMENTED("com.atlassian.jira.toolkit:dayslastcommented"),
+	TOOLKIT_DAYSLASTCOMMENTED("com.atlassian.jira.toolkit:dayslastcommented"), //$NON-NLS-1$
 
-	TOOLKIT_LASTUSERCOMMENTED("com.atlassian.jira.toolkit:lastusercommented"),
+	TOOLKIT_LASTUSERCOMMENTED("com.atlassian.jira.toolkit:lastusercommented"), //$NON-NLS-1$
 
-	TOOLKIT_MESSAGE("com.atlassian.jira.toolkit:message"),
+	TOOLKIT_MESSAGE("com.atlassian.jira.toolkit:message"), //$NON-NLS-1$
 
-	TOOLKIT_MULTIKEYFIELD("com.atlassian.jira.toolkit:multikeyfield"),
+	TOOLKIT_MULTIKEYFIELD("com.atlassian.jira.toolkit:multikeyfield"), //$NON-NLS-1$
 
-	TOOLKIT_MULTIPROJECT("com.atlassian.jira.toolkit:multiproject"),
+	TOOLKIT_MULTIPROJECT("com.atlassian.jira.toolkit:multiproject"), //$NON-NLS-1$
 
-	TOOLKIT_ORIGINALESTIMATE("com.atlassian.jira.toolkit:originalestimate"),
+	TOOLKIT_ORIGINALESTIMATE("com.atlassian.jira.toolkit:originalestimate"), //$NON-NLS-1$
 
-	TOOLKIT_PARTICIPANTS("com.atlassian.jira.toolkit:participants"),
+	TOOLKIT_PARTICIPANTS("com.atlassian.jira.toolkit:participants"), //$NON-NLS-1$
 
-	TOOLKIT_REPORTERDOMAIN("com.atlassian.jira.toolkit:reporterdomain"),
+	TOOLKIT_REPORTERDOMAIN("com.atlassian.jira.toolkit:reporterdomain"), //$NON-NLS-1$
 
-	TOOLKIT_RESOLVEDDATE("com.atlassian.jira.toolkit:resolveddate"),
+	TOOLKIT_RESOLVEDDATE("com.atlassian.jira.toolkit:resolveddate"), //$NON-NLS-1$
 
-	TOOLKIT_SUPPORTTOOLS("com.atlassian.jira.toolkit:supporttools"),
+	TOOLKIT_SUPPORTTOOLS("com.atlassian.jira.toolkit:supporttools"), //$NON-NLS-1$
 
-	TOOLKIT_USERPROPERTY("com.atlassian.jira.toolkit:userproperty"),
+	TOOLKIT_USERPROPERTY("com.atlassian.jira.toolkit:userproperty"), //$NON-NLS-1$
 
-	TOOLKIT_VELOCITYMESSAGE("com.atlassian.jira.toolkit:velocitymessage"),
+	TOOLKIT_VELOCITYMESSAGE("com.atlassian.jira.toolkit:velocitymessage"), //$NON-NLS-1$
 
-	TOOLKIT_VELOCITYVIEWMESSAGE("com.atlassian.jira.toolkit:velocityviewmessage"),
+	TOOLKIT_VELOCITYVIEWMESSAGE("com.atlassian.jira.toolkit:velocityviewmessage"), //$NON-NLS-1$
 
-	TOOLKIT_VIEWMESSAGE("com.atlassian.jira.toolkit:viewmessage"),
+	TOOLKIT_VIEWMESSAGE("com.atlassian.jira.toolkit:viewmessage"), //$NON-NLS-1$
 
 	UNKNOWN(null),
 
-	URL("com.atlassian.jira.plugin.system.customfieldtypes:url", TaskAttribute.TYPE_URL),
+	URL("com.atlassian.jira.plugin.system.customfieldtypes:url", TaskAttribute.TYPE_URL), //$NON-NLS-1$
 
-	USERPICKER("com.atlassian.jira.plugin.system.customfieldtypes:userpicker", TaskAttribute.TYPE_PERSON),
+	USERPICKER("com.atlassian.jira.plugin.system.customfieldtypes:userpicker", TaskAttribute.TYPE_PERSON), //$NON-NLS-1$
 
-	VERSION("com.atlassian.jira.plugin.system.customfieldtypes:version");
+	VERSION("com.atlassian.jira.plugin.system.customfieldtypes:version"); //$NON-NLS-1$
 
 	public static JiraFieldType fromKey(String key) {
 		if (key != null) {

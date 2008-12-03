@@ -18,17 +18,17 @@ package org.eclipse.mylyn.internal.jira.core.model;
  */
 public class JiraVersion implements Comparable<JiraVersion> {
 
-	public final static JiraVersion MIN_VERSION = new JiraVersion("3.3.3");
+	public final static JiraVersion MIN_VERSION = new JiraVersion("3.3.3"); //$NON-NLS-1$
 
-	public static final JiraVersion JIRA_3_3 = new JiraVersion("3.3");
+	public static final JiraVersion JIRA_3_3 = new JiraVersion("3.3"); //$NON-NLS-1$
 
-	public static final JiraVersion JIRA_3_4 = new JiraVersion("3.4");
+	public static final JiraVersion JIRA_3_4 = new JiraVersion("3.4"); //$NON-NLS-1$
 
-	public static final JiraVersion JIRA_3_7 = new JiraVersion("3.7");
+	public static final JiraVersion JIRA_3_7 = new JiraVersion("3.7"); //$NON-NLS-1$
 
-	public static final JiraVersion JIRA_3_11 = new JiraVersion("3.11");
+	public static final JiraVersion JIRA_3_11 = new JiraVersion("3.11"); //$NON-NLS-1$
 
-	public static final JiraVersion JIRA_3_12 = new JiraVersion("3.12");
+	public static final JiraVersion JIRA_3_12 = new JiraVersion("3.12"); //$NON-NLS-1$
 
 	private final int major;
 
@@ -39,11 +39,11 @@ public class JiraVersion implements Comparable<JiraVersion> {
 	private final String qualifier;
 
 	public JiraVersion(String version) {
-		String[] segments = version == null ? new String[0] : version.split("\\.");
+		String[] segments = version == null ? new String[0] : version.split("\\."); //$NON-NLS-1$
 		major = segments.length > 0 ? parse(segments[0]) : 0;
 		minor = segments.length > 1 ? parse(segments[1]) : 0;
 		micro = segments.length > 2 ? parse(segments[2]) : 0;
-		qualifier = segments.length == 0 ? "" : getQualifier(segments[segments.length - 1]);
+		qualifier = segments.length == 0 ? "" : getQualifier(segments[segments.length - 1]); //$NON-NLS-1$
 	}
 
 	private int parse(String segment) {
@@ -57,7 +57,7 @@ public class JiraVersion implements Comparable<JiraVersion> {
 
 	private String getQualifier(String segment) {
 		int n = segment.indexOf('-');
-		return n == -1 ? "" : segment.substring(n + 1);
+		return n == -1 ? "" : segment.substring(n + 1); //$NON-NLS-1$
 	}
 
 	public boolean isSmallerOrEquals(JiraVersion v) {
@@ -94,12 +94,12 @@ public class JiraVersion implements Comparable<JiraVersion> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Integer.toString(major));
-		sb.append(".").append(Integer.toString(minor));
+		sb.append(".").append(Integer.toString(minor)); //$NON-NLS-1$
 		if (micro > 0) {
-			sb.append(".").append(Integer.toString(micro));
+			sb.append(".").append(Integer.toString(micro)); //$NON-NLS-1$
 		}
 		if (qualifier.length() > 0) {
-			sb.append("-").append(qualifier);
+			sb.append("-").append(qualifier); //$NON-NLS-1$
 		}
 		return sb.toString();
 	}

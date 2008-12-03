@@ -22,13 +22,13 @@ public class IssueType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String BUG_ID = "1";
+	public static final String BUG_ID = "1"; //$NON-NLS-1$
 
-	public static final String NEW_FEATURE_ID = "2";
+	public static final String NEW_FEATURE_ID = "2"; //$NON-NLS-1$
 
-	public static final String TASK_ID = "3";
+	public static final String TASK_ID = "3"; //$NON-NLS-1$
 
-	public static final String IMPROVEMENT_ID = "4";
+	public static final String IMPROVEMENT_ID = "4"; //$NON-NLS-1$
 
 	private String id;
 

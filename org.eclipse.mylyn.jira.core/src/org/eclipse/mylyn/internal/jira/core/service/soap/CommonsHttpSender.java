@@ -203,16 +203,16 @@ public class CommonsHttpSender extends BasicHandler {
 			} else if (msgContext.getSOAPConstants() == SOAPConstants.SOAP12_CONSTANTS) {
 				// For now, if we're SOAP 1.2, fall through, since the range of
 				// valid result codes is much greater
-			} else if ((contentType != null) && !contentType.equals("text/html")
+			} else if ((contentType != null) && !contentType.equals("text/html") //$NON-NLS-1$
 					&& ((returnCode > 499) && (returnCode < 600))) {
 
 				// SOAP Fault should be in here - so fall through
 			} else {
 				String statusMessage = method.getStatusText();
-				AxisFault fault = new AxisFault("HTTP", "(" + returnCode + ")" + statusMessage, null, null);
+				AxisFault fault = new AxisFault("HTTP", "(" + returnCode + ")" + statusMessage, null, null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				try {
-					fault.setFaultDetailString(Messages.getMessage("return01", "" + returnCode,
+					fault.setFaultDetailString(Messages.getMessage("return01", "" + returnCode, //$NON-NLS-1$ //$NON-NLS-2$
 							method.getResponseBodyAsString()));
 					fault.addFaultDetail(Constants.QNAME_FAULTDETAIL_HTTPERRORCODE, Integer.toString(returnCode));
 					throw fault;
@@ -230,8 +230,8 @@ public class CommonsHttpSender extends BasicHandler {
 				if (contentEncoding.getValue().equalsIgnoreCase(HTTPConstants.COMPRESSION_GZIP)) {
 					releaseConnectionOnCloseStream = new GZIPInputStream(releaseConnectionOnCloseStream);
 				} else {
-					AxisFault fault = new AxisFault("HTTP", "unsupported content-encoding of '"
-							+ contentEncoding.getValue() + "' found", null, null);
+					AxisFault fault = new AxisFault("HTTP", "unsupported content-encoding of '" //$NON-NLS-1$ //$NON-NLS-2$
+							+ contentEncoding.getValue() + "' found", null, null); //$NON-NLS-1$
 					throw fault;
 				}
 
@@ -270,7 +270,7 @@ public class CommonsHttpSender extends BasicHandler {
 
 			// always release the connection back to the pool if 
 			// it was one way invocation
-			if (msgContext.isPropertyTrue("axis.one.way")) {
+			if (msgContext.isPropertyTrue("axis.one.way")) { //$NON-NLS-1$
 				method.releaseConnection();
 			}
 
@@ -296,7 +296,7 @@ public class CommonsHttpSender extends BasicHandler {
 	public void handleCookie(String cookieName, String cookie, MessageContext msgContext) {
 
 		cookie = cleanupCookie(cookie);
-		int keyIndex = cookie.indexOf("=");
+		int keyIndex = cookie.indexOf("="); //$NON-NLS-1$
 		String key = (keyIndex != -1) ? cookie.substring(0, keyIndex) : cookie;
 
 		ArrayList cookies = new ArrayList();
@@ -395,7 +395,7 @@ public class CommonsHttpSender extends BasicHandler {
 		HostConfiguration config = new HostConfiguration();
 
 		if (port == -1) {
-			if (targetURL.getProtocol().equalsIgnoreCase("https")) {
+			if (targetURL.getProtocol().equalsIgnoreCase("https")) { //$NON-NLS-1$
 				port = 443; // default port for https being 443
 			} else { // it must be http
 				port = 80; // default port for http being 80
@@ -412,7 +412,7 @@ public class CommonsHttpSender extends BasicHandler {
 					Credentials proxyCred = new UsernamePasswordCredentials(tcp.getProxyUser(), tcp.getProxyPassword());
 					// if the username is in the form "user\domain" 
 					// then use NTCredentials instead.
-					int domainIndex = tcp.getProxyUser().indexOf("\\");
+					int domainIndex = tcp.getProxyUser().indexOf("\\"); //$NON-NLS-1$
 					if (domainIndex > 0) {
 						String domain = tcp.getProxyUser().substring(0, domainIndex);
 						if (tcp.getProxyUser().length() > domainIndex + 1) {
@@ -457,10 +457,10 @@ public class CommonsHttpSender extends BasicHandler {
 		}
 
 		// Get SOAPAction, default to ""
-		String action = msgContext.useSOAPAction() ? msgContext.getSOAPActionURI() : "";
+		String action = msgContext.useSOAPAction() ? msgContext.getSOAPActionURI() : ""; //$NON-NLS-1$
 
 		if (action == null) {
-			action = "";
+			action = ""; //$NON-NLS-1$
 		}
 
 		Message msg = msgContext.getRequestMessage();
@@ -468,8 +468,8 @@ public class CommonsHttpSender extends BasicHandler {
 			method.setRequestHeader(new Header(HTTPConstants.HEADER_CONTENT_TYPE,
 					msg.getContentType(msgContext.getSOAPConstants())));
 		}
-		method.setRequestHeader(new Header(HTTPConstants.HEADER_SOAP_ACTION, "\"" + action + "\""));
-		method.setRequestHeader(new Header(HTTPConstants.HEADER_USER_AGENT, Messages.getMessage("axisUserAgent")));
+		method.setRequestHeader(new Header(HTTPConstants.HEADER_SOAP_ACTION, "\"" + action + "\"")); //$NON-NLS-1$ //$NON-NLS-2$
+		method.setRequestHeader(new Header(HTTPConstants.HEADER_USER_AGENT, Messages.getMessage("axisUserAgent"))); //$NON-NLS-1$
 		String userID = msgContext.getUsername();
 		String passwd = msgContext.getPassword();
 
@@ -490,7 +490,7 @@ public class CommonsHttpSender extends BasicHandler {
 			Credentials proxyCred = new UsernamePasswordCredentials(userID, passwd);
 			// if the username is in the form "user\domain"
 			// then use NTCredentials instead.
-			int domainIndex = userID.indexOf("\\");
+			int domainIndex = userID.indexOf("\\"); //$NON-NLS-1$
 			if (domainIndex > 0) {
 				String domain = userID.substring(0, domainIndex);
 				if (userID.length() > domainIndex + 1) {
@@ -574,7 +574,7 @@ public class CommonsHttpSender extends BasicHandler {
 		 * The http.nonProxyHosts system property is a list enclosed in
 		 * double quotes with items separated by a vertical bar.
 		 */
-		StringTokenizer tokenizer = new StringTokenizer(nonProxyHosts, "|\"");
+		StringTokenizer tokenizer = new StringTokenizer(nonProxyHosts, "|\""); //$NON-NLS-1$
 
 		while (tokenizer.hasMoreTokens()) {
 			String pattern = tokenizer.nextToken();

@@ -94,7 +94,7 @@ public class JiraTimeFormat extends Format {
 			}
 			sb.append(Long.toString(minutes)).append('m');
 		} else if (sb.length() == 0) {
-			sb.append("0m");
+			sb.append("0m"); //$NON-NLS-1$
 		}
 	}
 
@@ -111,20 +111,20 @@ public class JiraTimeFormat extends Format {
 
 	@Override
 	public Object parseObject(String source, ParsePosition pos) {
-		Pattern pattern = Pattern.compile("(\\d+w)?\\s?(\\d+d)?\\s?(\\d+h)?\\s?(\\d+m)?");
+		Pattern pattern = Pattern.compile("(\\d+w)?\\s?(\\d+d)?\\s?(\\d+h)?\\s?(\\d+m)?"); //$NON-NLS-1$
 		Matcher matcher = pattern.matcher(source);
 		long value = 0;
 		if (matcher.find()) {
 			for (int i = 1; i <= matcher.groupCount(); i++) {
 				String group = matcher.group(i);
 				if (group != null) {
-					if (group.endsWith("m")) {
+					if (group.endsWith("m")) { //$NON-NLS-1$
 						value += Long.parseLong(group.substring(0, group.length() - 1)) * 60;
-					} else if (group.endsWith("h")) {
+					} else if (group.endsWith("h")) { //$NON-NLS-1$
 						value += Long.parseLong(group.substring(0, group.length() - 1)) * 60 * 60;
-					} else if (group.endsWith("d")) {
+					} else if (group.endsWith("d")) { //$NON-NLS-1$
 						value += Long.parseLong(group.substring(0, group.length() - 1)) * 60 * 60 * workHoursPerDay;
-					} else if (group.endsWith("w")) {
+					} else if (group.endsWith("w")) { //$NON-NLS-1$
 						value += Long.parseLong(group.substring(0, group.length() - 1)) * 60 * 60 * workHoursPerDay
 								* workDaysPerWeek;
 					}

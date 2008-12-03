@@ -70,15 +70,15 @@ import org.xml.sax.SAXException;
  */
 public class JiraSoapClient {
 
-	private static final String ERROR_RPC_NOT_ENABLED = "JIRA RPC services are not enabled. Please contact your JIRA administrator.";
+	private static final String ERROR_RPC_NOT_ENABLED = "JIRA RPC services are not enabled. Please contact your JIRA administrator."; //$NON-NLS-1$
 
-	private static final String REMOTE_ERROR_BAD_ID = "White spaces are required between publicId and systemId.";
+	private static final String REMOTE_ERROR_BAD_ID = "White spaces are required between publicId and systemId."; //$NON-NLS-1$
 
-	private static final String REMOTE_ERROR_BAD_ENVELOPE_TAG = "Bad envelope tag:  html";
+	private static final String REMOTE_ERROR_BAD_ENVELOPE_TAG = "Bad envelope tag:  html"; //$NON-NLS-1$
 
-	private static final String REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG = "Content is not allowed in prolog.";
+	private static final String REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG = "Content is not allowed in prolog."; //$NON-NLS-1$
 
-	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2";
+	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2"; //$NON-NLS-1$
 
 	/**
 	 * Default session timeout for a JIRA instance. The default value is 10 minutes.
@@ -104,7 +104,7 @@ public class JiraSoapClient {
 			if (soapService == null) {
 				JiraSoapServiceLocator locator = new JiraSoapServiceLocator(new FileProvider(this.getClass()
 						.getClassLoader()
-						.getResourceAsStream("client-config.wsdd")));
+						.getResourceAsStream("client-config.wsdd"))); //$NON-NLS-1$
 				locator.setLocation(jiraClient.getLocation());
 				locator.setCompression(jiraClient.useCompression());
 
@@ -117,7 +117,7 @@ public class JiraSoapClient {
 				}
 
 				if (soapService == null) {
-					throw new JiraException("Initialization of JIRA Soap service failed");
+					throw new JiraException("Initialization of JIRA Soap service failed"); //$NON-NLS-1$
 				}
 			}
 			return soapService;
@@ -241,8 +241,8 @@ public class JiraSoapClient {
 
 				if (add > 0) {
 					// might also need to add: Reporter and Summary (http://jira.atlassian.com/browse/JRA-13703)
-					attributes[attributes.length - 2] = new IssueField("duedate", "Due Date");
-					attributes[attributes.length - 1] = new IssueField("fixVersions", "Fix Version/s");
+					attributes[attributes.length - 2] = new IssueField("duedate", Messages.JiraSoapClient_Due_Date); //$NON-NLS-1$
+					attributes[attributes.length - 1] = new IssueField("fixVersions", Messages.JiraSoapClient_Fix_Version_s); //$NON-NLS-1$
 				}
 
 				return attributes;
@@ -381,13 +381,13 @@ public class JiraSoapClient {
 				int responseCode = Integer.parseInt(httpErrorElement.getFirstChild().getTextContent());
 				switch (responseCode) {
 				case HttpURLConnection.HTTP_INTERNAL_ERROR:
-					return "Internal Server Error. Please contact your JIRA administrator.";
+					return Messages.JiraSoapClient_Internal_Server_Error;
 				case HttpURLConnection.HTTP_UNAVAILABLE:
 					return ERROR_RPC_NOT_ENABLED;
 				case HttpURLConnection.HTTP_NOT_FOUND:
-					return "No JIRA repository found at location.";
+					return Messages.JiraSoapClient_No_JIRA_repository_found_at_location;
 				case HttpURLConnection.HTTP_MOVED_PERM:
-					return "The location of the Jira server has moved.";
+					return Messages.JiraSoapClient_The_location_of_the_Jira_server_has_moved;
 				}
 			}
 		}
@@ -395,9 +395,9 @@ public class JiraSoapClient {
 		if (e.getCause() != null) {
 			Throwable cause = e.getCause();
 			if (cause instanceof UnknownHostException) {
-				return "Unknown host.";
+				return Messages.JiraSoapClient_Unknown_host;
 			} else if (cause instanceof ConnectException) {
-				return "Unable to connect to server.";
+				return Messages.JiraSoapClient_Unable_to_connect_to_server;
 			} else if (cause instanceof SAXException) {
 				if (REMOTE_ERROR_BAD_ENVELOPE_TAG.equals(cause.getMessage())
 						|| REMOTE_ERROR_BAD_ID.equals(cause.getMessage())
@@ -409,7 +409,7 @@ public class JiraSoapClient {
 		}
 
 		if (e instanceof AxisFault) {
-			return "Server error: " + e.getLocalizedMessage();
+			return Messages.JiraSoapClient_Server_error_ + e.getLocalizedMessage();
 		}
 
 		return e.getLocalizedMessage();
@@ -509,7 +509,7 @@ public class JiraSoapClient {
 			AuthenticationCredentials newCredentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (newCredentials == null) {
 				expire();
-				return "";
+				return ""; //$NON-NLS-1$
 			} else if (!newCredentials.equals(credentials)) {
 				expire();
 				credentials = newCredentials;
@@ -546,8 +546,8 @@ public class JiraSoapClient {
 		@Override
 		public String toString() {
 			long expiresIn = (timeout - (System.currentTimeMillis() - lastAccessed)) / 1000;
-			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid=" + isValidToken() + ", expires="
-					+ expiresIn + "]";
+			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid=" + isValidToken() + ", expires=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					+ expiresIn + "]"; //$NON-NLS-1$
 		}
 
 	}

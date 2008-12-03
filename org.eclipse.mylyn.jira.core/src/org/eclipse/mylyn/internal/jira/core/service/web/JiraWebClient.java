@@ -80,13 +80,13 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				rssUrlBuffer.append("/secure/AddComment.jspa");
+				rssUrlBuffer.append("/secure/AddComment.jspa"); //$NON-NLS-1$
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", getContentType());
-				post.addParameter("comment", comment);
-				post.addParameter("commentLevel", "");
-				post.addParameter("id", issue.getId());
+				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
+				post.addParameter("comment", comment); //$NON-NLS-1$
+				post.addParameter("commentLevel", ""); //$NON-NLS-1$ //$NON-NLS-2$
+				post.addParameter("id", issue.getId()); //$NON-NLS-1$
 
 				try {
 					execute(post);
@@ -102,7 +102,7 @@ public class JiraWebClient {
 	}
 
 	private String getContentType() throws JiraException {
-		return "application/x-www-form-urlencoded; charset=" + client.getCharacterEncoding();
+		return "application/x-www-form-urlencoded; charset=" + client.getCharacterEncoding(); //$NON-NLS-1$
 	}
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
@@ -111,25 +111,25 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient client, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				rssUrlBuffer.append("/secure/EditIssue.jspa");
+				rssUrlBuffer.append("/secure/EditIssue.jspa"); //$NON-NLS-1$
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", getContentType());
-				post.addParameter("summary", issue.getSummary());
-				post.addParameter("issuetype", issue.getType().getId());
+				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
+				post.addParameter("summary", issue.getSummary()); //$NON-NLS-1$
+				post.addParameter("issuetype", issue.getType().getId()); //$NON-NLS-1$
 				if (issue.getPriority() != null) {
-					post.addParameter("priority", issue.getPriority().getId());
+					post.addParameter("priority", issue.getPriority().getId()); //$NON-NLS-1$
 				}
-				addFields(client, issue, post, new String[] { "duedate" });
-				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m");
+				addFields(client, issue, post, new String[] { "duedate" }); //$NON-NLS-1$
+				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m"); //$NON-NLS-1$ //$NON-NLS-2$
 
 				Component[] components = issue.getComponents();
 				if (components != null) {
 					if (components.length == 0) {
-						post.addParameter("components", "-1");
+						post.addParameter("components", "-1"); //$NON-NLS-1$ //$NON-NLS-2$
 					} else {
 						for (Component component : components) {
-							post.addParameter("components", component.getId());
+							post.addParameter("components", component.getId()); //$NON-NLS-1$
 						}
 					}
 				}
@@ -137,10 +137,10 @@ public class JiraWebClient {
 				Version[] versions = issue.getReportedVersions();
 				if (versions != null) {
 					if (versions.length == 0) {
-						post.addParameter("versions", "-1");
+						post.addParameter("versions", "-1"); //$NON-NLS-1$ //$NON-NLS-2$
 					} else {
 						for (Version version : versions) {
-							post.addParameter("versions", version.getId());
+							post.addParameter("versions", version.getId()); //$NON-NLS-1$
 						}
 					}
 				}
@@ -148,36 +148,36 @@ public class JiraWebClient {
 				Version[] fixVersions = issue.getFixVersions();
 				if (fixVersions != null) {
 					if (fixVersions.length == 0) {
-						post.addParameter("fixVersions", "-1");
+						post.addParameter("fixVersions", "-1"); //$NON-NLS-1$ //$NON-NLS-2$
 					} else {
 						for (Version fixVersion : fixVersions) {
-							post.addParameter("fixVersions", fixVersion.getId());
+							post.addParameter("fixVersions", fixVersion.getId()); //$NON-NLS-1$
 						}
 					}
 				}
 
 				// TODO need to be able to choose unassigned and automatic
 				if (issue.getAssignee() != null) {
-					post.addParameter("assignee", issue.getAssignee());
+					post.addParameter("assignee", issue.getAssignee()); //$NON-NLS-1$
 				} else {
-					post.addParameter("assignee", "-1");
+					post.addParameter("assignee", "-1"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				if (issue.getReporter() != null) {
-					post.addParameter("reporter", issue.getReporter());
+					post.addParameter("reporter", issue.getReporter()); //$NON-NLS-1$
 				}
 				if (issue.getEnvironment() != null) {
-					post.addParameter("environment", issue.getEnvironment());
+					post.addParameter("environment", issue.getEnvironment()); //$NON-NLS-1$
 				}
-				post.addParameter("description", issue.getDescription());
+				post.addParameter("description", issue.getDescription()); //$NON-NLS-1$
 
 				if (comment != null) {
-					post.addParameter("comment", comment);
+					post.addParameter("comment", comment); //$NON-NLS-1$
 				}
-				post.addParameter("commentLevel", "");
-				post.addParameter("id", issue.getId());
+				post.addParameter("commentLevel", ""); //$NON-NLS-1$ //$NON-NLS-2$
+				post.addParameter("id", issue.getId()); //$NON-NLS-1$
 
 				if (issue.getSecurityLevel() != null) {
-					post.addParameter("security", issue.getSecurityLevel().getId());
+					post.addParameter("security", issue.getSecurityLevel().getId()); //$NON-NLS-1$
 				}
 
 				addCustomFields(client, issue, post);
@@ -201,18 +201,18 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				rssUrlBuffer.append("/secure/AssignIssue.jspa");
+				rssUrlBuffer.append("/secure/AssignIssue.jspa"); //$NON-NLS-1$
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", getContentType());
+				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
 
-				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user));
+				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user)); //$NON-NLS-1$
 
 				if (comment != null) {
-					post.addParameter("comment", comment);
+					post.addParameter("comment", comment); //$NON-NLS-1$
 				}
-				post.addParameter("commentLevel", "");
-				post.addParameter("id", issue.getId());
+				post.addParameter("commentLevel", ""); //$NON-NLS-1$ //$NON-NLS-2$
+				post.addParameter("id", issue.getId()); //$NON-NLS-1$
 
 				try {
 					execute(post);
@@ -232,17 +232,17 @@ public class JiraWebClient {
 		doInSession(monitor, new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa");
-				post.setRequestHeader("Content-Type", getContentType());
+				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa"); //$NON-NLS-1$
+				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
 
-				post.addParameter("id", issue.getId());
-				post.addParameter("action", actionKey);
+				post.addParameter("id", issue.getId()); //$NON-NLS-1$
+				post.addParameter("action", actionKey); //$NON-NLS-1$
 				// method.addParameter("assignee", issue.getAssignee());
 
 				if (comment != null) {
-					post.addParameter("comment", comment);
+					post.addParameter("comment", comment); //$NON-NLS-1$
 				}
-				post.addParameter("commentLevel", "");
+				post.addParameter("commentLevel", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
 				addFields(server, issue, post, fields);
 
@@ -260,12 +260,12 @@ public class JiraWebClient {
 
 	public void attachFile(final JiraIssue issue, final String comment, final PartSource partSource,
 			final String contentType, IProgressMonitor monitor) throws JiraException {
-		attachFile(issue, comment, new FilePart("filename.1", partSource), contentType, monitor);
+		attachFile(issue, comment, new FilePart("filename.1", partSource), contentType, monitor); //$NON-NLS-1$
 	}
 
 	public void attachFile(final JiraIssue issue, final String comment, final String filename, final byte[] contents,
 			final String contentType, IProgressMonitor monitor) throws JiraException {
-		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)),
+		attachFile(issue, comment, new FilePart("filename.1", new ByteArrayPartSource(filename, contents)), //$NON-NLS-1$
 				contentType, monitor);
 	}
 
@@ -273,7 +273,7 @@ public class JiraWebClient {
 			final String contentType, IProgressMonitor monitor) throws JiraException {
 		try {
 			FilePartSource partSource = new FilePartSource(filename, file);
-			attachFile(issue, comment, new FilePart("filename.1", partSource), contentType, monitor);
+			attachFile(issue, comment, new FilePart("filename.1", partSource), contentType, monitor); //$NON-NLS-1$
 		} catch (FileNotFoundException e) {
 			throw new JiraException(e);
 		}
@@ -285,14 +285,14 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder attachFileURLBuffer = new StringBuilder(baseUrl);
-				attachFileURLBuffer.append("/secure/AttachFile.jspa");
+				attachFileURLBuffer.append("/secure/AttachFile.jspa"); //$NON-NLS-1$
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
 
 				List<PartBase> parts = new ArrayList<PartBase>();
 
-				StringPart idPart = new StringPart("id", issue.getId());
-				StringPart commentLevelPart = new StringPart("commentLevel", "");
+				StringPart idPart = new StringPart("id", issue.getId()); //$NON-NLS-1$
+				StringPart commentLevelPart = new StringPart("commentLevel", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
 				// The transfer encodings have to be removed for some reason
 				// There is no need to send the content types for the strings,
@@ -301,7 +301,7 @@ public class JiraWebClient {
 				idPart.setContentType(null);
 
 				if (comment != null) {
-					StringPart commentPart = new StringPart("comment", comment);
+					StringPart commentPart = new StringPart("comment", comment); //$NON-NLS-1$
 					commentPart.setTransferEncoding(null);
 					commentPart.setContentType(null);
 					parts.add(commentPart);
@@ -323,7 +323,7 @@ public class JiraWebClient {
 
 				try {
 					execute(post);
-					if (!expectRedirect(post, "/secure/ManageAttachments.jspa?id=" + issue.getId())) {
+					if (!expectRedirect(post, "/secure/ManageAttachments.jspa?id=" + issue.getId())) { //$NON-NLS-1$
 						handleErrorMessage(post);
 					}
 				} finally {
@@ -339,9 +339,9 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				rssUrlBuffer.append("/secure/attachment/");
+				rssUrlBuffer.append("/secure/attachment/"); //$NON-NLS-1$
 				rssUrlBuffer.append(attachment.getId());
-				rssUrlBuffer.append("/");
+				rssUrlBuffer.append("/"); //$NON-NLS-1$
 				try {
 					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding()));
 				} catch (UnsupportedEncodingException e) {
@@ -356,8 +356,8 @@ public class JiraWebClient {
 					} else {
 						byte[] data = get.getResponseBody();
 						if (data.length != attachmentData.length) {
-							throw new IOException("Unexpected attachment size (got " + data.length + ", expected "
-									+ attachmentData.length + ")");
+							throw new IOException("Unexpected attachment size (got " + data.length + ", expected " //$NON-NLS-1$ //$NON-NLS-2$
+									+ attachmentData.length + ")"); //$NON-NLS-1$
 						}
 						System.arraycopy(data, 0, attachmentData, 0, attachmentData.length);
 					}
@@ -378,9 +378,9 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				rssUrlBuffer.append("/secure/attachment/");
+				rssUrlBuffer.append("/secure/attachment/"); //$NON-NLS-1$
 				rssUrlBuffer.append(attachment.getId());
-				rssUrlBuffer.append("/");
+				rssUrlBuffer.append("/"); //$NON-NLS-1$
 				try {
 					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding()));
 				} catch (UnsupportedEncodingException e) {
@@ -406,11 +406,11 @@ public class JiraWebClient {
 	}
 
 	public String createIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		return createIssue("/secure/CreateIssueDetails.jspa", issue, monitor);
+		return createIssue("/secure/CreateIssueDetails.jspa", issue, monitor); //$NON-NLS-1$
 	}
 
 	public String createSubTask(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
-		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue, monitor);
+		return createIssue("/secure/CreateSubTaskIssueDetails.jspa", issue, monitor); //$NON-NLS-1$
 	}
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
@@ -423,74 +423,74 @@ public class JiraWebClient {
 				attachFileURLBuffer.append(url);
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
-				post.setRequestHeader("Content-Type", getContentType());
+				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
 
-				post.addParameter("pid", issue.getProject().getId());
-				post.addParameter("issuetype", issue.getType().getId());
-				post.addParameter("summary", issue.getSummary());
+				post.addParameter("pid", issue.getProject().getId()); //$NON-NLS-1$
+				post.addParameter("issuetype", issue.getType().getId()); //$NON-NLS-1$
+				post.addParameter("summary", issue.getSummary()); //$NON-NLS-1$
 				if (issue.getPriority() != null) {
-					post.addParameter("priority", issue.getPriority().getId());
+					post.addParameter("priority", issue.getPriority().getId()); //$NON-NLS-1$
 				}
-				addFields(client, issue, post, new String[] { "duedate" });
-				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m");
+				addFields(client, issue, post, new String[] { "duedate" }); //$NON-NLS-1$
+				post.addParameter("timetracking", Long.toString(issue.getEstimate() / 60) + "m"); //$NON-NLS-1$ //$NON-NLS-2$
 
 				if (issue.getComponents() != null) {
 					for (int i = 0; i < issue.getComponents().length; i++) {
-						post.addParameter("components", issue.getComponents()[i].getId());
+						post.addParameter("components", issue.getComponents()[i].getId()); //$NON-NLS-1$
 					}
 				} else {
-					post.addParameter("components", "-1");
+					post.addParameter("components", "-1"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 
 				if (issue.getReportedVersions() != null) {
 					for (int i = 0; i < issue.getReportedVersions().length; i++) {
-						post.addParameter("versions", issue.getReportedVersions()[i].getId());
+						post.addParameter("versions", issue.getReportedVersions()[i].getId()); //$NON-NLS-1$
 					}
 				} else {
-					post.addParameter("versions", "-1");
+					post.addParameter("versions", "-1"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 
 				if (issue.getFixVersions() != null) {
 					for (int i = 0; i < issue.getFixVersions().length; i++) {
-						post.addParameter("fixVersions", issue.getFixVersions()[i].getId());
+						post.addParameter("fixVersions", issue.getFixVersions()[i].getId()); //$NON-NLS-1$
 					}
 				} else {
-					post.addParameter("fixVersions", "-1");
+					post.addParameter("fixVersions", "-1"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 
 				if (issue.getAssignee() == null) {
-					post.addParameter("assignee", "-1"); // Default assignee
+					post.addParameter("assignee", "-1"); // Default assignee //$NON-NLS-1$ //$NON-NLS-2$
 				} else if (issue.getAssignee().length() == 0) {
-					post.addParameter("assignee", ""); // nobody
+					post.addParameter("assignee", ""); // nobody //$NON-NLS-1$ //$NON-NLS-2$
 				} else {
-					post.addParameter("assignee", issue.getAssignee());
+					post.addParameter("assignee", issue.getAssignee()); //$NON-NLS-1$
 				}
 
-				post.addParameter("reporter", client.getUserName());
+				post.addParameter("reporter", client.getUserName()); //$NON-NLS-1$
 
-				post.addParameter("environment", issue.getEnvironment() != null ? issue.getEnvironment() : "");
-				post.addParameter("description", issue.getDescription() != null ? issue.getDescription() : "");
+				post.addParameter("environment", issue.getEnvironment() != null ? issue.getEnvironment() : ""); //$NON-NLS-1$ //$NON-NLS-2$
+				post.addParameter("description", issue.getDescription() != null ? issue.getDescription() : ""); //$NON-NLS-1$ //$NON-NLS-2$
 
 				if (issue.getParentId() != null) {
-					post.addParameter("parentIssueId", issue.getParentId());
+					post.addParameter("parentIssueId", issue.getParentId()); //$NON-NLS-1$
 				}
 
 				addCustomFields(client, issue, post);
 
 				try {
 					execute(post);
-					if (!expectRedirect(post, "/browse/", false)) {
+					if (!expectRedirect(post, "/browse/", false)) { //$NON-NLS-1$
 						handleErrorMessage(post);
 					} else {
-						final Header locationHeader = post.getResponseHeader("location");
+						final Header locationHeader = post.getResponseHeader("location"); //$NON-NLS-1$
 						// parse issue key from issue URL 
 						String location = locationHeader.getValue();
-						int i = location.lastIndexOf("/");
+						int i = location.lastIndexOf("/"); //$NON-NLS-1$
 						if (i != -1) {
 							issueKey[0] = location.substring(i + 1);
 						} else {
 							throw new JiraException(
-									"The server redirected to an unexpected location while creating an issue: "
+									"The server redirected to an unexpected location while creating an issue: " //$NON-NLS-1$
 											+ location);
 						}
 					}
@@ -517,14 +517,14 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder urlBuffer = new StringBuilder(baseUrl);
-				urlBuffer.append("/browse/").append(issue.getKey());
-				urlBuffer.append("?watch=").append(Boolean.toString(watch));
+				urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
+				urlBuffer.append("?watch=").append(Boolean.toString(watch)); //$NON-NLS-1$
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
 				try {
 					int result = execute(head);
 					if (result != HttpStatus.SC_OK) {
-						throw new JiraException("Changing watch status failed. Return code: " + result);
+						throw new JiraException("Changing watch status failed. Return code: " + result); //$NON-NLS-1$
 					}
 				} finally {
 					head.releaseConnection();
@@ -548,14 +548,14 @@ public class JiraWebClient {
 
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder urlBuffer = new StringBuilder(baseUrl);
-				urlBuffer.append("/browse/").append(issue.getKey());
-				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote");
+				urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
+				urlBuffer.append("?vote=").append(vote ? "vote" : "unvote"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
 				try {
 					int result = execute(head);
 					if (result != HttpStatus.SC_OK) {
-						throw new JiraException("Changing vote failed. Return code: " + result);
+						throw new JiraException("Changing vote failed. Return code: " + result); //$NON-NLS-1$
 					}
 				} finally {
 					head.releaseConnection();
@@ -570,15 +570,15 @@ public class JiraWebClient {
 
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder urlBuffer = new StringBuilder(baseUrl);
-				urlBuffer.append("/secure/DeleteIssue.jspa");
-				urlBuffer.append("?id=").append(issue.getId());
-				urlBuffer.append("&confirm=true");
+				urlBuffer.append("/secure/DeleteIssue.jspa"); //$NON-NLS-1$
+				urlBuffer.append("?id=").append(issue.getId()); //$NON-NLS-1$
+				urlBuffer.append("&confirm=true"); //$NON-NLS-1$
 
 				HeadMethod head = new HeadMethod(urlBuffer.toString());
 				try {
 					int result = execute(head);
 					if (result != HttpStatus.SC_OK) {
-						throw new JiraException("Deleting issue failed. Return code: " + result);
+						throw new JiraException("Deleting issue failed. Return code: " + result); //$NON-NLS-1$
 					}
 				} finally {
 					head.releaseConnection();
@@ -625,11 +625,11 @@ public class JiraWebClient {
 			// TODO consider logging the error
 
 			if (method.getStatusCode() == HttpStatus.SC_SERVICE_UNAVAILABLE) {
-				throw new JiraRemoteException("JIRA system error", null);
+				throw new JiraRemoteException("JIRA system error", null); //$NON-NLS-1$
 			}
 
 			if (response == null) {
-				throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(), "");
+				throw new JiraRemoteMessageException("Error making JIRA request: " + method.getStatusCode(), ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			StringReader reader = new StringReader(response);
@@ -640,16 +640,16 @@ public class JiraWebClient {
 					if (token.getType() == Token.TAG) {
 						HtmlTag tag = (HtmlTag) token.getValue();
 
-						String classValue = tag.getAttribute("class");
+						String classValue = tag.getAttribute("class"); //$NON-NLS-1$
 						if (classValue != null) {
 							if (tag.getTagType() == HtmlTag.Type.DIV) {
-								if (classValue.startsWith("infoBox")) {
+								if (classValue.startsWith("infoBox")) { //$NON-NLS-1$
 									throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
-								} else if (classValue.startsWith("errorArea")) {
+								} else if (classValue.startsWith("errorArea")) { //$NON-NLS-1$
 									throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
 								}
 							} else if (tag.getTagType() == HtmlTag.Type.SPAN) {
-								if (classValue.startsWith("errMsg")) {
+								if (classValue.startsWith("errMsg")) { //$NON-NLS-1$
 									msg.append(getContent(tokenizer, HtmlTag.Type.SPAN));
 								}
 							}
@@ -662,7 +662,7 @@ public class JiraWebClient {
 					throw new JiraRemoteMessageException(msg.toString());
 				}
 			} catch (ParseException e) {
-				throw new JiraRemoteMessageException("Error parsing JIRA response: " + method.getStatusCode(), "");
+				throw new JiraRemoteMessageException("Error parsing JIRA response: " + method.getStatusCode(), ""); //$NON-NLS-1$ //$NON-NLS-2$
 			} finally {
 				reader.close();
 			}
@@ -720,21 +720,21 @@ public class JiraWebClient {
 						// XXX ignore
 					}
 				}
-				post.addParameter(customField.getId(), value == null ? "" : value);
+				post.addParameter(customField.getId(), value == null ? "" : value); //$NON-NLS-1$
 			}
 		}
 	}
 
 	private void addFields(JiraClient client, JiraIssue issue, PostMethod post, String[] fields) {
 		for (String field : fields) {
-			if ("duedate".equals(field)) {
+			if ("duedate".equals(field)) { //$NON-NLS-1$
 				if (issue.getDue() != null) {
 					DateFormat format = client.getConfiguration().getDateFormat();
-					post.addParameter("duedate", format.format(issue.getDue()));
+					post.addParameter("duedate", format.format(issue.getDue())); //$NON-NLS-1$
 				} else {
-					post.addParameter("duedate", "");
+					post.addParameter("duedate", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				}
-			} else if (field.startsWith("customfield_")) {
+			} else if (field.startsWith("customfield_")) { //$NON-NLS-1$
 				for (CustomField customField : issue.getCustomFields()) {
 					addCustomField(client, post, customField);
 				}

@@ -138,7 +138,7 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 		ServerInfo info = clientManager.validateConnection(location, new JiraConfiguration(), monitor);
 		JiraVersion serverVersion = new JiraVersion(info.getVersion());
 		if (JiraVersion.MIN_VERSION.compareTo(serverVersion) > 0) {
-			throw new JiraException("JIRA connector requires server " + JiraVersion.MIN_VERSION + " or later");
+			throw new JiraException("JIRA connector requires server " + JiraVersion.MIN_VERSION + " or later"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return info;
 	}

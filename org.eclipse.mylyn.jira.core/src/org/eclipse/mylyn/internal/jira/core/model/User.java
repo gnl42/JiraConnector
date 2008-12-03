@@ -53,6 +53,6 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return this.name + "(" + this.fullName + ")";
+		return this.name + "(" + this.fullName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

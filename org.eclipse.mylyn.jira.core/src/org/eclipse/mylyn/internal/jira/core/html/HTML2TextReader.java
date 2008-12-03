@@ -64,7 +64,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 		fgEntityLookup.put("nbsp", " "); //$NON-NLS-1$ //$NON-NLS-2$
 		fgEntityLookup.put("amp", "&"); //$NON-NLS-1$ //$NON-NLS-2$
 		fgEntityLookup.put("circ", "^"); //$NON-NLS-1$ //$NON-NLS-2$
-		fgEntityLookup.put("tilde", "~"); //$NON-NLS-2$ //$NON-NLS-1$
+		fgEntityLookup.put("tilde", "~"); //$NON-NLS-1$ //$NON-NLS-2$
 		fgEntityLookup.put("quot", "\""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
@@ -175,15 +175,15 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return EMPTY_STRING;
 		}
 
-		if ("dl".equals(html)) {
+		if ("dl".equals(html)) { //$NON-NLS-1$
 			return LINE_DELIM;
 		}
 
-		if ("dd".equals(html)) {
+		if ("dd".equals(html)) { //$NON-NLS-1$
 			return "\t"; //$NON-NLS-1$
 		}
 
-		if ("li".equals(html)) {
+		if ("li".equals(html)) { //$NON-NLS-1$
 			return LINE_DELIM + "  - "; //$NON-NLS-1$
 		}
 
@@ -197,7 +197,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return LINE_DELIM;
 		}
 
-		if ("br".equals(html) || "br/".equals(html) || "div".equals(html)) {
+		if ("br".equals(html) || "br/".equals(html) || "div".equals(html)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return LINE_DELIM;
 		}
 
@@ -212,7 +212,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 			return LINE_DELIM;
 		}
 
-		if ("/dd".equals(html)) {
+		if ("/dd".equals(html)) { //$NON-NLS-1$
 			return LINE_DELIM;
 		}
 

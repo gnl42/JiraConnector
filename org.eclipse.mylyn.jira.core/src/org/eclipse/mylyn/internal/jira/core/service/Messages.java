@@ -9,37 +9,23 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.core.model;
+package org.eclipse.mylyn.internal.jira.core.service;
 
-import java.io.Serializable;
+import org.eclipse.osgi.util.NLS;
 
-/**
- * @author Steffen Pingel
- */
-public class IssueField implements Serializable {
+public class Messages {
+	private static final String BUNDLE_NAME = "org.eclipse.mylyn.internal.jira.core.service.messages"; //$NON-NLS-1$
 
-	private static final long serialVersionUID = 1L;
-
-	private final String id;
-
-	private final String name;
-
-	public IssueField(String id, String name) {
-		this.id = id;
-		this.name = name;
+	static {
+		// load message values from bundle file
+		reloadMessages();
 	}
 
-	public String getId() {
-		return id;
+	public static void reloadMessages() {
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public String getName() {
-		return name;
-	}
+	public static String JiraClientCache_Getting_server_information;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
+	public static String JiraClientCache_Updating_repository_configuration;
 }

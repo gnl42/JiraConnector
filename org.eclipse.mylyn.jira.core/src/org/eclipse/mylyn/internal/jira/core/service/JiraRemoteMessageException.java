@@ -39,9 +39,9 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 			return null;
 		}
 
-		int start = text.indexOf("<strong>");
+		int start = text.indexOf("<strong>"); //$NON-NLS-1$
 		if (start != -1) {
-			int stop = text.indexOf("</strong>", start + 8);
+			int stop = text.indexOf("</strong>", start + 8); //$NON-NLS-1$
 			if (stop != -1) {
 				return text.substring(start + 8, stop);
 			}
@@ -58,7 +58,7 @@ public class JiraRemoteMessageException extends JiraRemoteException {
 		String message = getMessage();
 		if (message != null) {
 			if (htmlMessage != null) {
-				return message + " (" + htmlMessage + ")";
+				return message + " (" + htmlMessage + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				return message;
 			}

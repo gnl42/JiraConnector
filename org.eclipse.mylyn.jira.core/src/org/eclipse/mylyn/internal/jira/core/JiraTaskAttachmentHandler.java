@@ -58,8 +58,8 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 			JiraIssue issue = client.getIssueByKey(task.getTaskKey(), monitor);
 			Attachment jiraAttachment = issue.getAttachmentById(attachmentId);
 			if (jiraAttachment == null) {
-				throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, "Attachment with id \""
-						+ attachmentId + "\" for JIRA issue \"" + task.getTaskKey() + "\" not found"));
+				throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, "Attachment with id \"" //$NON-NLS-1$
+						+ attachmentId + "\" for JIRA issue \"" + task.getTaskKey() + "\" not found")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			client.getAttachment(issue, jiraAttachment, out, monitor);
 		} catch (JiraException e) {
@@ -72,7 +72,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 			IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
-			monitor.beginTask("Getting attachment", IProgressMonitor.UNKNOWN);
+			monitor.beginTask(Messages.JiraTaskAttachmentHandler_Getting_attachment, IProgressMonitor.UNKNOWN);
 			TaskAttachmentMapper attachment = TaskAttachmentMapper.createFrom(attachmentAttribute);
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			downloadAttachment(repository, task, attachment.getAttachmentId(), out, monitor);
@@ -87,7 +87,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
 			TaskAttribute attachmentAttribute, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
-			monitor.beginTask("Sending attachment", IProgressMonitor.UNKNOWN);
+			monitor.beginTask(Messages.JiraTaskAttachmentHandler_Sending_attachment, IProgressMonitor.UNKNOWN);
 			String contentType = source.getContentType();
 			String filename = source.getName();
 			if (attachmentAttribute != null) {

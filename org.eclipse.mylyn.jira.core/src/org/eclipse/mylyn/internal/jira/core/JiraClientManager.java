@@ -44,7 +44,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableExcept
  */
 public class JiraClientManager {
 
-	public static final String CONFIGURATION_DATA_FILENAME = "repositoryConfigurations";
+	public static final String CONFIGURATION_DATA_FILENAME = "repositoryConfigurations"; //$NON-NLS-1$
 
 	public static final int CONFIGURATION_DATA_VERSION = 1;
 
@@ -68,7 +68,7 @@ public class JiraClientManager {
 			// clean up legacy data
 			File[] clients = this.cacheLocation.listFiles();
 			for (File directory : clients) {
-				File oldData = new File(directory, "server.ser");
+				File oldData = new File(directory, "server.ser"); //$NON-NLS-1$
 				if (oldData.exists()) {
 					oldData.delete();
 					directory.delete();
@@ -87,7 +87,7 @@ public class JiraClientManager {
 				}
 			} catch (Throwable e) {
 				StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN,
-						"Reset JIRA repository configuration cache due to format change"));
+						"Reset JIRA repository configuration cache due to format change")); //$NON-NLS-1$
 			} finally {
 				if (in != null) {
 					try {
@@ -118,7 +118,7 @@ public class JiraClientManager {
 			}
 		} catch (Throwable e) {
 			StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-					"Error writing JIRA repository configuration cache", e));
+					"Error writing JIRA repository configuration cache", e)); //$NON-NLS-1$
 		} finally {
 			if (out != null) {
 				try {
@@ -170,7 +170,7 @@ public class JiraClientManager {
 
 	public JiraClient addClient(AbstractWebLocation location, JiraConfiguration configuration) {
 		if (clientByUrl.containsKey(location.getUrl())) {
-			throw new RuntimeException("A client with that name already exists");
+			throw new RuntimeException("A client with that name already exists"); //$NON-NLS-1$
 		}
 
 		JiraClient client = createClient(location, configuration);
