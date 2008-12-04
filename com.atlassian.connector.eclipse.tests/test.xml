@@ -8,6 +8,9 @@
   <!-- sets the properties eclipse-home, and library-file -->
   <property name="plugin-name" value="com.atlassian.connector.eclipse.tests"/>
   <property name="library-file" value="${eclipse-home}/plugins/org.eclipse.test/library.xml"/>
+	
+  <!-- TODO: change to 'ui-test' -->
+  <property name="test-target" value="core-test"/>
 
   <!-- This target holds all initialization code that needs to be done for -->
   <!-- all tests that are to be run. Initialization for individual tests -->
@@ -24,7 +27,7 @@
     <property name="workspace" value="${eclipse-home}/workspace"/>
     <delete dir="${workspace}" quiet="true"/>
   	
-    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
+    <ant target="${test-target}" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${workspace}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" value="com.atlassian.connector.eclipse.AllConnectorTests"/>
@@ -51,7 +54,7 @@
     <property name="plugin-name" value="${plugin-name}"/>
     <property name="workspace" value="${eclipse-home}/workspace"/>
     <delete dir="${workspace}" quiet="true"/>
-    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
+    <ant target="${test-target}" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${workspace}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" value="com.atlassian.connector.eclipse.AllConnectorPerformanceTests"/>
