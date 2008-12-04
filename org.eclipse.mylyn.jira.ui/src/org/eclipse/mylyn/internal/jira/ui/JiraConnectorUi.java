@@ -183,22 +183,24 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	@Override
 	public String getTaskHistoryUrl(TaskRepository taskRepository, ITask task) {
 		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
-				+ "?page=history";
+				+ "?page=history"; //$NON-NLS-1$
 	}
 
 	public static String getTaskWorkLogUrl(TaskRepository taskRepository, ITask task) {
 		return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
-				+ "?page=com.atlassian.jira.plugin.system.issuetabpanels%3Aworklog-tabpanel";
+				+ "?page=com.atlassian.jira.plugin.system.issuetabpanels%3Aworklog-tabpanel"; //$NON-NLS-1$
 	}
 
 	@Override
 	public String getReplyText(TaskRepository taskRepository, ITask task, ITaskComment taskComment, boolean includeTask) {
 		if (taskComment == null) {
-			return "In reply to " + task.getTaskKey() + ":";
+			return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_X, task.getTaskKey()) + ":"; //$NON-NLS-1$
 		} else if (includeTask) {
-			return "In reply to " + task.getTaskKey() + " comment #" + taskComment.getNumber() + ":";
+			return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_X_comment_X, task.getTaskKey(),
+					taskComment.getNumber())
+					+ ":"; //$NON-NLS-1$
 		} else {
-			return "In reply to comment #" + taskComment.getNumber() + ":";
+			return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_comment_X, taskComment.getNumber()) + ":"; //$NON-NLS-1$
 		}
 	}
 
