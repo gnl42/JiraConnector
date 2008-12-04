@@ -296,6 +296,11 @@
 			<param name="unpackDest" value="${eclipse.base}/sdk-${eclipse.sdk.version}"/>
 			<param name="isUnpackedFile" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse/plugins/org.eclipse.pde.build.svn_1.0.1.v20070222.jar"/>
 		</antcall>
+		<available property="svn.exists" file="${eclipse.base}/sdk-${eclipse.sdk.version}/org.eclipse.releng.basebuilder"/>
+		<antcall target="get-build-dependencies-helper-svn-move"/>
+	</target>
+
+	<target name="get-build-dependencies-helper-svn-move" if="svn.exists">
 		<move todir="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" failonerror="false">
 			<fileset dir="${eclipse.base}/sdk-${eclipse.sdk.version}/org.eclipse.releng.basebuilder">
 				<include name="**/*"/>
@@ -303,7 +308,7 @@
 		</move>
 		<delete dir="${eclipse.base}/sdk-${eclipse.sdk.version}/org.eclipse.releng.basebuilder" failonerror="false"/>
 	</target>
-		
+	
 	<target name="get-test-dependencies-helper" depends="get-build-dependencies-helper">
 		<property name="downloadsDir" value="${eclipse.base}"/> 
 
