@@ -4,6 +4,6 @@ Bundle-Name: Atlassian Eclipse Connector Crucible Tests Plug-in
 Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian
-Require-Bundle: org.junit
+Require-Bundle: org.junit4
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.tests;x-internal:=true

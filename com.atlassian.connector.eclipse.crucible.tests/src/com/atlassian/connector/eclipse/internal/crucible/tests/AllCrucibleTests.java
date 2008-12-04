@@ -15,7 +15,7 @@ public class AllCrucibleTests {
 		TestSuite suite = new TestSuite("Tests for Crucible");
 		// $JUnit-BEGIN$
 
-//		suite.addTestSuite(CLass.class);
+		suite.addTestSuite(CrucibleRepositoryConnectorTest.class);
 
 		// $JUnit-END$
 		return suite;
