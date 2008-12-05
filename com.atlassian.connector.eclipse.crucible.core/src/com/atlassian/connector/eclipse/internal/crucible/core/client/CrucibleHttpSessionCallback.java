@@ -48,7 +48,7 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 	public synchronized HttpClient getHttpClient(Server server) throws HttpProxySettingsException {
 		HttpClient httpClient = httpClients.get(server);
 
-		// TODO handle the case where we dont have a client initialzied
+		// TODO handle the case where we dont have a client initialized
 		assert (httpClient != null);
 
 		return httpClient;

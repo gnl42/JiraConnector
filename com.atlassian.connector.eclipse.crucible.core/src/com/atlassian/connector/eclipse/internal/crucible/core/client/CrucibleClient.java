@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -63,6 +65,7 @@ public class CrucibleClient {
 
 	public void validate(IProgressMonitor monitor) throws CoreException {
 		try {
+			updateCredentials();
 			crucibleServer.testServerConnection(serverCfg);
 		} catch (CrucibleLoginException e) {
 			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
@@ -75,6 +78,7 @@ public class CrucibleClient {
 	public TaskData getReview(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
 		try {
+			updateCredentials();
 			String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
 			Review review = crucibleServer.getReview(serverCfg, new PermIdBean(permId));
 			return getTaskDataForReview(taskRepository, review);
@@ -92,7 +96,7 @@ public class CrucibleClient {
 	public void performQuery(TaskRepository taskRepository, IRepositoryQuery query, TaskDataCollector resultCollector,
 			IProgressMonitor monitor) throws CoreException {
 		try {
-
+			updateCredentials();
 			String filterId = query.getAttribute(CrucibleUtil.KEY_FILTER_ID);
 			PredefinedFilter filter = CrucibleUtil.getPredefinedFilter(filterId);
 			if (filter != null) {
@@ -114,6 +118,16 @@ public class CrucibleClient {
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
 		}
 
+	}
+
+	private void updateCredentials() {
+		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+		if (credentials != null) {
+			String newUserName = credentials.getUserName();
+			String newPassword = credentials.getPassword();
+			serverCfg.setUsername(newUserName);
+			serverCfg.setPassword(newPassword);
+		}
 	}
 
 	private TaskData getTaskDataForReview(TaskRepository taskRepository, Review review) {
