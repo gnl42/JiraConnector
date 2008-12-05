@@ -177,7 +177,7 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 		query.setSummary(getQueryTitle());
 		query.setAttribute(CrucibleUtil.KEY_FILTER_ID, filterId);
 
-		query.setUrl(CrucibleUtil.getPredefinedFilterWebUrl(getTaskRepository(), filterId));
+		query.setUrl(CrucibleUtil.getPredefinedFilterWebUrl(getTaskRepository().getUrl(), filterId));
 	}
 
 	private String getFilterId() {

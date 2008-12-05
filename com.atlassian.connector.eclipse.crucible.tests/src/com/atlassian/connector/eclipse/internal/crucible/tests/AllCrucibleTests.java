@@ -3,6 +3,9 @@ package com.atlassian.connector.eclipse.internal.crucible.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnectorTest;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest;
+
 /**
  * All of the Crucible tests for the Atlassian Eclipse Connector can be run from this class
  * 
@@ -16,6 +19,7 @@ public class AllCrucibleTests {
 		// $JUnit-BEGIN$
 
 		suite.addTestSuite(CrucibleRepositoryConnectorTest.class);
+		suite.addTestSuite(CrucibleUtilTest.class);
 
 		// $JUnit-END$
 		return suite;

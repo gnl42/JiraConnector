@@ -9,10 +9,13 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.crucible.tests;
+package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import junit.framework.TestCase;
 
+/**
+ * @author Shawn Minto
+ */
 public class CrucibleRepositoryConnectorTest extends TestCase {
 
 	public void testPass() {
