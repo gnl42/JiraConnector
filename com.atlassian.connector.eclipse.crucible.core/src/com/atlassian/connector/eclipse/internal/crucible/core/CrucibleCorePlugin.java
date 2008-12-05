@@ -28,12 +28,14 @@ import com.atlassian.theplugin.commons.util.LoggerImpl;
  */
 public class CrucibleCorePlugin extends Plugin {
 
+	private static final String REPOSITORY_CONFIGURATIONS_FOLDER_PATH = "repositoryConfigurations";
+
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.crucible.core";
 
 	public static final String CONNECTOR_KIND = "crucible";
 
-	private static CrucibleRepsositoryConnector repositoryConnector;
+	private static CrucibleRepositoryConnector repositoryConnector;
 
 	// The shared instance
 	private static CrucibleCorePlugin plugin;
@@ -77,17 +79,17 @@ public class CrucibleCorePlugin extends Plugin {
 		return plugin;
 	}
 
-	static void setRepositoryConnector(CrucibleRepsositoryConnector repositoryConnector) {
+	static void setRepositoryConnector(CrucibleRepositoryConnector repositoryConnector) {
 		CrucibleCorePlugin.repositoryConnector = repositoryConnector;
 	}
 
-	public static CrucibleRepsositoryConnector getRepositoryConnector() {
+	public static CrucibleRepositoryConnector getRepositoryConnector() {
 		return repositoryConnector;
 	}
 
 	public File getRepositoryConfigurationCacheFile() {
 		IPath stateLocation = Platform.getStateLocation(getBundle());
-		IPath cacheFile = stateLocation.append("repositoryConfigurations");
+		IPath cacheFile = stateLocation.append(REPOSITORY_CONFIGURATIONS_FOLDER_PATH);
 		return cacheFile.toFile();
 	}
 

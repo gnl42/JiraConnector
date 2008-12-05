@@ -11,16 +11,20 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
+import org.eclipse.mylyn.tasks.ui.wizards.ITaskSearchPage;
 import org.eclipse.mylyn.tasks.ui.wizards.RepositoryQueryWizard;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleNamedFilterPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPage;
 
 /**
@@ -47,17 +51,24 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 	}
 
 	@Override
+	public ITaskSearchPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
+		// TODO change this once we have the custom query page
+		return new CrucibleNamedFilterPage(repository);
+	}
+
+	@Override
 	public IWizard getQueryWizard(TaskRepository repository, IRepositoryQuery query) {
 		RepositoryQueryWizard wizard = new RepositoryQueryWizard(repository);
-//		if (query != null) {
+		if (query != null) {
+			// TODO add this code back once we have support for custom queries
 //			if (CrucibleUtil.isFilterDefinition(query)) {
 //				wizard.addPage(new CrucibleFilterDefinitionPage(repository, query));
 //			} else {
-//				wizard.addPage(new CrucibleNamedFilterPage(repository, query));
+			wizard.addPage(new CrucibleNamedFilterPage(repository, query));
 //			}
-//		} else {
-//			wizard.addPage(new CrucibleNamedFilterPage(repository));
-//		}
+		} else {
+			wizard.addPage(new CrucibleNamedFilterPage(repository));
+		}
 		return wizard;
 	}
 
@@ -68,7 +79,12 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 
 	@Override
 	public boolean hasSearchPage() {
-		return false;
+		return true;
+	}
+
+	@Override
+	public String getTaskKindLabel(ITask task) {
+		return "Review";
 	}
 
 }

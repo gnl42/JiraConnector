@@ -12,24 +12,29 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import java.io.File;
+import java.util.Date;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
+import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
+
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 
 /**
  * Core class for integration with Mylyn tasks framework and synchronization
  * 
  * @author Shawn Minto
  */
-public class CrucibleRepsositoryConnector extends AbstractRepositoryConnector {
+public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String REPOSITORY_LABEL = "Crucible";
 
@@ -37,7 +42,7 @@ public class CrucibleRepsositoryConnector extends AbstractRepositoryConnector {
 
 	private File repositoryConfigurationCacheFile;
 
-	public CrucibleRepsositoryConnector() {
+	public CrucibleRepositoryConnector() {
 		CrucibleCorePlugin.setRepositoryConnector(this);
 		if (CrucibleCorePlugin.getDefault() != null) {
 			this.repositoryConfigurationCacheFile = CrucibleCorePlugin.getDefault()
@@ -74,39 +79,52 @@ public class CrucibleRepsositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public boolean canCreateTaskFromKey(TaskRepository repository) {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String getRepositoryUrlFromTaskUrl(String taskFullUrl) {
-		return null;
+		return CrucibleUtil.getRepositoryUrlFromUrl(taskFullUrl);
 	}
 
 	@Override
 	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
-		return null;
+		CrucibleClient client = getClientManager().getClient(taskRepository);
+		return client.getReview(taskRepository, taskId, monitor);
 	}
 
 	@Override
 	public String getTaskIdFromTaskUrl(String taskFullUrl) {
-		return null;
+		return CrucibleUtil.getTaskIdFromUrl(taskFullUrl);
 	}
 
 	@Override
 	public String getTaskUrl(String repositoryUrl, String taskId) {
-		return null;
+		return CrucibleUtil.getReviewUrl(repositoryUrl, taskId);
 	}
 
 	@Override
 	public boolean hasTaskChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
-		return false;
+		TaskMapper scheme = new TaskMapper(taskData);
+		Date repositoryDate = scheme.getModificationDate();
+		Date localDate = task.getModificationDate();
+		if (repositoryDate != null && repositoryDate.equals(localDate)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public IStatus performQuery(TaskRepository repository, IRepositoryQuery query, TaskDataCollector resultCollector,
 			ISynchronizationSession event, IProgressMonitor monitor) {
-		return null;
+		CrucibleClient client = getClientManager().getClient(repository);
+		try {
+			client.performQuery(repository, query, resultCollector, monitor);
+		} catch (CoreException e) {
+			return e.getStatus();
+		}
+		return Status.OK_STATUS;
 	}
 
 	@Override
@@ -116,6 +134,8 @@ public class CrucibleRepsositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public void updateTaskFromTaskData(TaskRepository taskRepository, ITask task, TaskData taskData) {
+		TaskMapper scheme = new TaskMapper(taskData);
+		scheme.applyTo(task);
+		task.setCompletionDate(scheme.getCompletionDate());
 	}
-
 }
