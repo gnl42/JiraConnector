@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IOpenListener;
@@ -206,6 +207,7 @@ public class JiraProjectPage extends WizardPage {
 			}
 		});
 
+		Dialog.applyDialogFont(composite);
 		setControl(composite);
 	}
 

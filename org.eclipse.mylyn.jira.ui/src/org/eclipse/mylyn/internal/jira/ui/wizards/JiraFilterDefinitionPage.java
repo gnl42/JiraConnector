@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -1078,6 +1079,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		// } else {
 
 		// }
+		Dialog.applyDialogFont(parent);
 	}
 
 //	@Override

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -166,6 +167,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			}
 		});
 
+		Dialog.applyDialogFont(innerComposite);
 		setControl(innerComposite);
 		downloadFilters();
 	}
