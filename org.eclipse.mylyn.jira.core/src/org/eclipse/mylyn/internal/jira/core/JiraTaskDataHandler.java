@@ -768,7 +768,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		JiraWorkLog[] remoteWorklogs = client.getSoapClient().getWorkLogs(jiraIssue.getKey(), monitor);
 		int i = 1;
 		for (JiraWorkLog remoteWorklog : remoteWorklogs) {
-			String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i;
+			String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i; //$NON-NLS-1$
 			TaskAttribute attribute = data.getRoot().createAttribute(attributeId);
 			attribute.getMetaData().setType(WorkLogConverter.TYPE_WORKLOG);
 			new WorkLogConverter().applyTo(remoteWorklog, attribute);

@@ -26,8 +26,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraRedirectException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
-import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
 
 /**
@@ -67,11 +67,11 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 					// check if redirect was to issue page, this means only a single result was received
 					Header locationHeader = rssRequest.getResponseHeader("location"); //$NON-NLS-1$
 					if (locationHeader == null) {
-						throw new JiraServiceUnavailableException("Invalid server response, missing redirect location"); //$NON-NLS-1$
+						throw new JiraRedirectException();
 					}
 					String url = locationHeader.getValue();
 					if (!url.startsWith(baseUrl + "/browse/")) { //$NON-NLS-1$
-						throw new JiraException("Server redirected to unexpected location: " + url); //$NON-NLS-1$
+						throw new JiraRedirectException(url);
 					}
 
 					rssRequest.releaseConnection();

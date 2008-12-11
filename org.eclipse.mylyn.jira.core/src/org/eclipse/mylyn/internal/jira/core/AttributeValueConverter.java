@@ -13,6 +13,9 @@ package org.eclipse.mylyn.internal.jira.core;
 
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
+/**
+ * @author Steffen Pingel
+ */
 public class AttributeValueConverter<T> {
 
 	private final Class<T> clazz;
@@ -24,12 +27,21 @@ public class AttributeValueConverter<T> {
 		this.type = type;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T getValue(TaskAttribute attribute) {
 		return (T) attribute.getTaskData().getAttributeMapper().getValue(attribute);
 	}
 
 	public void setValue(TaskAttribute attribute, T value) {
 		attribute.getTaskData().getAttributeMapper().setValue(attribute, value.toString());
+	}
+
+	public Class<T> getClazz() {
+		return clazz;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 }

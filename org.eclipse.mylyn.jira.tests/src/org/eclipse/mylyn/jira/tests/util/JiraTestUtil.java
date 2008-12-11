@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
+import org.eclipse.mylyn.commons.tests.support.CommonsTestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil;
 import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
@@ -63,6 +64,11 @@ public class JiraTestUtil {
 	public static String PROJECT1 = "PRONE";
 
 	private static Map<JiraClient, List<JiraIssue>> testIssues = new HashMap<JiraClient, List<JiraIssue>>();
+
+	private static final JiraTestUtil instance = new JiraTestUtil();
+
+	private JiraTestUtil() {
+	}
 
 	public static JiraIssue createIssue(JiraClient client, JiraIssue issue) throws JiraException {
 		issue = client.createIssue(issue, null);
@@ -259,6 +265,11 @@ public class JiraTestUtil {
 		} finally {
 			out.close();
 		}
+	}
+
+	public static String getMessage(String filename) throws Exception {
+		File file = CommonsTestUtil.getFile(instance, "testdata/" + filename + ".txt");
+		return CommonsTestUtil.read(file);
 	}
 
 }

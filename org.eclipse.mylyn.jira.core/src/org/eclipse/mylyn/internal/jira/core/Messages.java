@@ -108,4 +108,22 @@ public class Messages extends NLS {
 	public static String JiraTaskDataHandler_Leave_as_X;
 
 	public static String JiraTaskDataHandler_Sending_task;
+
+	public static String WorkLogConverter_Author;
+
+	public static String WorkLogConverter_Comment;
+
+	public static String WorkLogConverter_Created;
+
+	public static String WorkLogConverter_Group_Level;
+
+	public static String WorkLogConverter_Id;
+
+	public static String WorkLogConverter_Role_Level;
+
+	public static String WorkLogConverter_Start_Date;
+
+	public static String WorkLogConverter_Time;
+
+	public static String WorkLogConverter_Updated;
 }

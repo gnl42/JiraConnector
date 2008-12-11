@@ -1,0 +1,14 @@
+HTTP/1.1 302 Found
+Date: Thu, 11 Dec 2008 02:53:29 GMT
+Server: Apache/2.2.8 (Unix) mod_ssl/2.2.8 OpenSSL/0.9.8b DAV/2 SVN/1.5.1 PHP/5.2.4
+Location: https://localhost/rpc/soap/jirasoapservice-v2
+Content-Length: 229
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>302 Found</title>
+</head><body>
+<h1>Found</h1>
+<p>The document has moved <a href="https://localhost/rpc/soap/jirasoapservice-v2">here</a>.</p>
+</body></html>

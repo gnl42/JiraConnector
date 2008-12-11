@@ -42,7 +42,7 @@ public class JiraCorePlugin extends Plugin {
 
 	public final static String CONNECTOR_KIND = "jira"; //$NON-NLS-1$
 
-	public final static String LABEL = NLS.bind(Messages.JiraCorePlugin_JIRA_description, "3.4");
+	public final static String LABEL = NLS.bind(Messages.JiraCorePlugin_JIRA_description, "3.4"); //$NON-NLS-1$
 
 	/**
 	 * The constructor.

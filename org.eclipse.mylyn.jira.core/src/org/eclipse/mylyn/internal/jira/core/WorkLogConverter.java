@@ -27,40 +27,40 @@ public class WorkLogConverter extends AbstractComplexAttributeConverter<JiraWork
 
 	private static List<JiraField<?>> _taskFields = new ArrayList<JiraField<?>>();
 
-	public final static JiraField<IRepositoryPerson> AUTOR = create(IRepositoryPerson.class, "author", "Author",
+	public final static JiraField<IRepositoryPerson> AUTOR = create(IRepositoryPerson.class, "author", Messages.WorkLogConverter_Author, //$NON-NLS-1$
 			TaskAttribute.TYPE_PERSON);
 
-	public final static JiraField<String> COMMENT = create(String.class, "comment", "Comment",
+	public final static JiraField<String> COMMENT = create(String.class, "comment", Messages.WorkLogConverter_Comment, //$NON-NLS-1$
 			TaskAttribute.TYPE_LONG_TEXT);
 
-	public final static JiraField<Date> CREATION_DATE = create(Date.class, "created", "Created",
+	public final static JiraField<Date> CREATION_DATE = create(Date.class, "created", Messages.WorkLogConverter_Created, //$NON-NLS-1$
 			TaskAttribute.TYPE_DATETIME);
 
-	public final static JiraField<String> GROUP_LEVEL = create(String.class, "groupLevel", "Group Level",
+	public final static JiraField<String> GROUP_LEVEL = create(String.class, "groupLevel", Messages.WorkLogConverter_Group_Level, //$NON-NLS-1$
 			TaskAttribute.TYPE_DATETIME);
 
-	public final static JiraField<String> ID = create(String.class, "id", "Created", TaskAttribute.TYPE_SHORT_TEXT);
+	public final static JiraField<String> ID = create(String.class, "id", Messages.WorkLogConverter_Id, TaskAttribute.TYPE_SHORT_TEXT); //$NON-NLS-1$
 
-	public final static JiraField<Date> MODIFICATION_DATE = create(Date.class, "updated", "Created",
+	public final static JiraField<Date> MODIFICATION_DATE = create(Date.class, "updated", Messages.WorkLogConverter_Updated, //$NON-NLS-1$
 			TaskAttribute.TYPE_DATETIME);
 
-	public static final String PREFIX_WORKLOG = "attribute.jira.worklog-";
+	public static final String PREFIX_WORKLOG = "attribute.jira.worklog-"; //$NON-NLS-1$
 
-	public final static JiraField<String> ROLE_LEVEL_ID = create(String.class, "roleLevelId", "Created",
+	public final static JiraField<String> ROLE_LEVEL_ID = create(String.class, "roleLevelId", Messages.WorkLogConverter_Role_Level, //$NON-NLS-1$
 			TaskAttribute.TYPE_SHORT_TEXT);
 
-	public final static JiraField<Date> START_DATE = create(Date.class, "startDate", "Created",
+	public final static JiraField<Date> START_DATE = create(Date.class, "startDate", Messages.WorkLogConverter_Start_Date, //$NON-NLS-1$
 			TaskAttribute.TYPE_DATETIME);
 
-	public final static JiraField<Long> TIME_SPENT = create(Long.class, "timeSpent", "Time", TaskAttribute.TYPE_LONG);
+	public final static JiraField<Long> TIME_SPENT = create(Long.class, "timeSpent", Messages.WorkLogConverter_Time, TaskAttribute.TYPE_LONG); //$NON-NLS-1$
 
-	public static final String TYPE_WORKLOG = "jira.worklog";
+	public static final String TYPE_WORKLOG = "jira.worklog"; //$NON-NLS-1$
 
-	public final static JiraField<IRepositoryPerson> UPDATE_AUTHOR = create(IRepositoryPerson.class, "updateAuthor",
-			"Created", TaskAttribute.TYPE_PERSON);
+	public final static JiraField<IRepositoryPerson> UPDATE_AUTHOR = create(IRepositoryPerson.class, "updateAuthor", //$NON-NLS-1$
+			Messages.WorkLogConverter_Author, TaskAttribute.TYPE_PERSON);
 
 	private static <T> JiraField<T> create(Class<T> clazz, String key, String label, String type) {
-		JiraField<T> field = new JiraField<T>(clazz, "attribute.jira.worklog." + key, key, label, type);
+		JiraField<T> field = new JiraField<T>(clazz, "attribute.jira.worklog." + key, key, label, type); //$NON-NLS-1$
 		_taskFields.add(field);
 		return field;
 	}

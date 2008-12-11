@@ -26,7 +26,7 @@ import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
-import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraRedirectException;
 
 /**
  * @author Steffen Pingel
@@ -79,18 +79,18 @@ public abstract class JiraWebSessionCallback {
 
 		Header locationHeader = method.getResponseHeader("location"); //$NON-NLS-1$
 		if (locationHeader == null) {
-			throw new JiraServiceUnavailableException("Invalid server response, missing redirect location"); //$NON-NLS-1$
+			throw new JiraRedirectException();
 		}
 		String url = locationHeader.getValue();
 		if (fullMatch) {
 			// only if followRedirects is enabled the baseUrl is guaranteed to match the redirect url, otherwise the repository might be sending back a different url 
 			if ((followRedirects && !url.startsWith(baseUrl + page)) || (!followRedirects && !url.endsWith(page))) {
-				throw new JiraException("Server redirected to unexpected location: " + url); //$NON-NLS-1$
+				throw new JiraRedirectException(url);
 			}
 		} else {
 			// the client does not know exactly where the repository will redirect to
 			if (!url.contains(page)) {
-				throw new JiraException("Server redirected to unexpected location: " + url); //$NON-NLS-1$
+				throw new JiraRedirectException(url);
 			}
 		}
 		return true;
