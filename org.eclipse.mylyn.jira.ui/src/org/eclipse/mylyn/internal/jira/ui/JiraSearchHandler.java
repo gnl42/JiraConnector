@@ -45,24 +45,24 @@ public class JiraSearchHandler extends AbstractSearchHandler {
 		StringBuilder sb = new StringBuilder(MAX_LENGTH);
 		if (searchString.length() > MAX_LENGTH) {
 			// searching for exact matches fails if strings are too long
-			StringTokenizer t = new StringTokenizer(searchString, " \n\t()");
+			StringTokenizer t = new StringTokenizer(searchString, " \n\t()"); //$NON-NLS-1$
 			while (t.hasMoreTokens() && sb.length() < MAX_LENGTH - 20) {
 				if (sb.length() > 0) {
-					sb.append(" AND ");
+					sb.append(" AND "); //$NON-NLS-1$
 				}
 				int remaining = MAX_LENGTH - sb.length();
 				String token = t.nextToken();
 				if (token.length() > remaining) {
 					sb.append(token.substring(0, remaining));
-					sb.append("*");
+					sb.append("*"); //$NON-NLS-1$
 				} else {
 					sb.append(token);
 				}
 			}
 		} else {
-			sb.append("\"");
+			sb.append("\""); //$NON-NLS-1$
 			sb.append(searchString);
-			sb.append("\"");
+			sb.append("\""); //$NON-NLS-1$
 		}
 
 		FilterDefinition filter = new FilterDefinition();

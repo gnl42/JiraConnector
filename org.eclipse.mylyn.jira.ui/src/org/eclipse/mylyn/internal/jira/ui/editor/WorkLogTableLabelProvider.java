@@ -37,7 +37,7 @@ public class WorkLogTableLabelProvider extends ColumnLabelProvider {
 		case 3:
 			return attachment.getComment();
 		}
-		return "unrecognized column";
+		return "unrecognized column"; //$NON-NLS-1$
 	}
 
 	@Override

@@ -18,7 +18,8 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.mylyn.tasks.tests,
  org.apache.axis;bundle-version="1.4.0",
- org.eclipse.mylyn.commons.tests
+ org.eclipse.mylyn.commons.tests,
+ org.eclipse.mylyn.commons.soap
 Export-Package: org.eclipse.mylyn.jira.tests;x-internal:=true,
  org.eclipse.mylyn.jira.tests.client;x-internal:=true,
  org.eclipse.mylyn.jira.tests.model;x-internal:=true,

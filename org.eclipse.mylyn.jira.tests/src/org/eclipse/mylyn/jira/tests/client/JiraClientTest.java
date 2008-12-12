@@ -671,7 +671,7 @@ public class JiraClientTest extends TestCase {
 
 		JiraWorkLog[] logs = client.getWorklogs(issue.getKey(), null);
 		assertEquals(0, logs.length);
-		JiraWorkLog log = new JiraWorkLog();
+//		JiraWorkLog log = new JiraWorkLog();
 	}
 
 }

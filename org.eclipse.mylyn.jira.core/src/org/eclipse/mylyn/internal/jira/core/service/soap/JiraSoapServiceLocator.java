@@ -27,6 +27,7 @@ import javax.xml.rpc.ServiceException;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
+import org.eclipse.mylyn.internal.provisional.commons.soap.SoapHttpSender;
 
 /**
  * @author Brock Janiczak
@@ -70,7 +71,8 @@ public class JiraSoapServiceLocator extends JiraSoapServiceServiceLocator {
 //		if (proxy != null) {
 //			call.setProperty(JiraHttpSender.PROXY, proxy);
 //		}
-		call.setProperty(JiraHttpSender.LOCATION, location);
+		call.setProperty(SoapHttpSender.LOCATION, location);
+		call.setProperty(SoapHttpSender.USER_AGENT, "JiraConnector Apache Axis/1.4"); //$NON-NLS-1$
 
 		// some servers break with a 411 Length Required when chunked encoding
 		// is used

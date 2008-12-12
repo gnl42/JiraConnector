@@ -38,7 +38,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	@Override
 	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
 		Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
-		parts.add(new TaskEditorPartDescriptor("org.eclipse.mylyn.jira.worklog") {
+		parts.add(new TaskEditorPartDescriptor("org.eclipse.mylyn.jira.worklog") { //$NON-NLS-1$
 			@Override
 			public AbstractTaskEditorPart createPart() {
 				return new WorkLogPart();

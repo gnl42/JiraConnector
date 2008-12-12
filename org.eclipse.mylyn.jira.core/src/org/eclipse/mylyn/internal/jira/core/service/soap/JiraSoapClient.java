@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Collections;
+import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,10 +30,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.commons.net.Policy;
-import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
-import org.eclipse.mylyn.commons.net.WebRequest;
-import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
@@ -61,6 +58,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
+import org.eclipse.mylyn.internal.provisional.commons.soap.AbstractSoapClient;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -68,7 +66,9 @@ import org.xml.sax.SAXException;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public class JiraSoapClient {
+public class JiraSoapClient extends AbstractSoapClient {
+
+	private static final String CONFIG_FILE = "org/eclipse/mylyn/internal/jira/core/service/soap/client-config.wsdd"; //$NON-NLS-1$
 
 	private static final String ERROR_RPC_NOT_ENABLED = "JIRA RPC services are not enabled. Please contact your JIRA administrator."; //$NON-NLS-1$
 
@@ -102,9 +102,8 @@ public class JiraSoapClient {
 		soapServiceLock.lock();
 		try {
 			if (soapService == null) {
-				JiraSoapServiceLocator locator = new JiraSoapServiceLocator(new FileProvider(this.getClass()
-						.getClassLoader()
-						.getResourceAsStream("client-config.wsdd"))); //$NON-NLS-1$
+				JiraSoapServiceLocator locator = new JiraSoapServiceLocator(//
+						new FileProvider(getClass().getClassLoader().getResourceAsStream(CONFIG_FILE)));
 				locator.setLocation(jiraClient.getLocation());
 				locator.setCompression(jiraClient.useCompression());
 
@@ -127,16 +126,16 @@ public class JiraSoapClient {
 	}
 
 	public User getUser(IProgressMonitor monitor, final String username) throws JiraException {
-		return call(monitor, new RemoteRunnable<User>() {
-			public User run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<User>() {
+			public User call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getUser(loginToken.getCurrentValue(), username));
 			}
 		});
 	}
 
 	public Component[] getComponents(final String projectKey, IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<Component[]>() {
-			public Component[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<Component[]>() {
+			public Component[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getComponents(loginToken.getCurrentValue(),
 						projectKey));
 			}
@@ -145,24 +144,24 @@ public class JiraSoapClient {
 
 	public String login(IProgressMonitor monitor) throws JiraException {
 		loginToken.expire();
-		return call(monitor, new RemoteRunnable<String>() {
-			public String run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<String>() {
+			public String call() throws java.rmi.RemoteException, JiraException {
 				return loginToken.getCurrentValue();
 			}
 		});
 	}
 
 	public Group getGroup(final String name, IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<Group>() {
-			public Group run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<Group>() {
+			public Group call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getGroup(loginToken.getCurrentValue(), name));
 			}
 		});
 	}
 
 	public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
-		ServerInfo serverInfo = call(monitor, new RemoteRunnable<ServerInfo>() {
-			public ServerInfo run() throws java.rmi.RemoteException, JiraException {
+		ServerInfo serverInfo = call(monitor, new Callable<ServerInfo>() {
+			public ServerInfo call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getServerInfo(loginToken.getCurrentValue()));
 			}
 		});
@@ -173,8 +172,8 @@ public class JiraSoapClient {
 	 * It is recommended to use {@link #getIssueByKey(String)} instead.
 	 */
 	public String getKeyFromId(final String issueId, IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<String>() {
-			public String run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<String>() {
+			public String call() throws java.rmi.RemoteException, JiraException {
 				RemoteIssue issue = getSoapService().getIssueById(loginToken.getCurrentValue(), issueId);
 				return (issue != null) ? issue.getKey() : null;
 			}
@@ -182,8 +181,8 @@ public class JiraSoapClient {
 	}
 
 	public JiraAction[] getAvailableActions(final String taskKey, IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<JiraAction[]>() {
-			public JiraAction[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<JiraAction[]>() {
+			public JiraAction[] call() throws java.rmi.RemoteException, JiraException {
 				RemoteNamedObject[] actions = getSoapService().getAvailableActions(loginToken.getCurrentValue(),
 						taskKey);
 				if (actions == null) {
@@ -202,8 +201,8 @@ public class JiraSoapClient {
 
 	public String[] getActionFields(final String taskKey, final String actionId, IProgressMonitor monitor)
 			throws JiraException {
-		return call(monitor, new RemoteRunnable<String[]>() {
-			public String[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<String[]>() {
+			public String[] call() throws java.rmi.RemoteException, JiraException {
 				RemoteField[] remoteFields = getSoapService().getFieldsForAction(loginToken.getCurrentValue(), taskKey,
 						actionId);
 				if (remoteFields == null) {
@@ -221,8 +220,8 @@ public class JiraSoapClient {
 
 	public IssueField[] getEditableAttributes(final String taskKey, final boolean workAroundBug205015,
 			IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<IssueField[]>() {
-			public IssueField[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<IssueField[]>() {
+			public IssueField[] call() throws java.rmi.RemoteException, JiraException {
 				RemoteField[] fields = getSoapService().getFieldsForEdit(loginToken.getCurrentValue(), taskKey);
 				if (fields == null) {
 					return new IssueField[0];
@@ -242,7 +241,8 @@ public class JiraSoapClient {
 				if (add > 0) {
 					// might also need to add: Reporter and Summary (http://jira.atlassian.com/browse/JRA-13703)
 					attributes[attributes.length - 2] = new IssueField("duedate", Messages.JiraSoapClient_Due_Date); //$NON-NLS-1$
-					attributes[attributes.length - 1] = new IssueField("fixVersions", Messages.JiraSoapClient_Fix_Version_s); //$NON-NLS-1$
+					attributes[attributes.length - 1] = new IssueField(
+							"fixVersions", Messages.JiraSoapClient_Fix_Version_s); //$NON-NLS-1$
 				}
 
 				return attributes;
@@ -251,8 +251,8 @@ public class JiraSoapClient {
 	}
 
 	public CustomField[] getCustomAttributes(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<CustomField[]>() {
-			public CustomField[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<CustomField[]>() {
+			public CustomField[] call() throws java.rmi.RemoteException, JiraException {
 				RemoteField[] remoteFields = getSoapService().getCustomFields(loginToken.getCurrentValue());
 				CustomField[] fields = new CustomField[remoteFields.length];
 				for (int i = 0; i < remoteFields.length; i++) {
@@ -266,72 +266,72 @@ public class JiraSoapClient {
 	}
 
 	public RemoteIssue getIssueByKey(final String key, IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<RemoteIssue>() {
-			public RemoteIssue run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<RemoteIssue>() {
+			public RemoteIssue call() throws java.rmi.RemoteException, JiraException {
 				return getSoapService().getIssue(loginToken.getCurrentValue(), key);
 			}
 		});
 	}
 
 	public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<Project[]>() {
-			public Project[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<Project[]>() {
+			public Project[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getProjectsNoSchemes(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
 	public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<JiraStatus[]>() {
-			public JiraStatus[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<JiraStatus[]>() {
+			public JiraStatus[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getStatuses(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
 	public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<IssueType[]>() {
-			public IssueType[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<IssueType[]>() {
+			public IssueType[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getIssueTypes(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
 	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<IssueType[]>() {
-			public IssueType[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<IssueType[]>() {
+			public IssueType[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getSubTaskIssueTypes(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
 	public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<Priority[]>() {
-			public Priority[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<Priority[]>() {
+			public Priority[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getPriorities(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
 	public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<Resolution[]>() {
-			public Resolution[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<Resolution[]>() {
+			public Resolution[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getResolutions(loginToken.getCurrentValue()));
 			}
 		});
 	}
 
 	public Comment[] getComments(final String issueKey, IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<Comment[]>() {
-			public Comment[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<Comment[]>() {
+			public Comment[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getComments(loginToken.getCurrentValue(), issueKey));
 			}
 		});
 	}
 
 	public Version[] getVersions(final String componentKey, IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<Version[]>() {
-			public Version[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<Version[]>() {
+			public Version[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getVersions(loginToken.getCurrentValue(),
 						componentKey));
 			}
@@ -339,26 +339,25 @@ public class JiraSoapClient {
 	}
 
 	public JiraWorkLog[] getWorkLogs(final String issueKey, IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<JiraWorkLog[]>() {
-			public JiraWorkLog[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<JiraWorkLog[]>() {
+			public JiraWorkLog[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getWorklogs(loginToken.getCurrentValue(), issueKey));
 			}
 		});
 	}
 
 	public void logout(IProgressMonitor monitor) throws JiraException {
-		callOnce(monitor, new RemoteRunnable<Object>() {
-			public Object run() throws java.rmi.RemoteException, JiraException {
+		callOnce(monitor, new Callable<Object>() {
+			public Object call() throws java.rmi.RemoteException, JiraException {
 				loginToken.expire();
 				return null;
 			}
-
 		});
 	}
 
 	public NamedFilter[] getNamedFilters(IProgressMonitor monitor) throws JiraException {
-		return call(monitor, new RemoteRunnable<NamedFilter[]>() {
-			public NamedFilter[] run() throws java.rmi.RemoteException, JiraException {
+		return call(monitor, new Callable<NamedFilter[]>() {
+			public NamedFilter[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getSavedFilters(loginToken.getCurrentValue()));
 			}
 		});
@@ -415,38 +414,76 @@ public class JiraSoapClient {
 		return e.getLocalizedMessage();
 	}
 
-	private <T> T callWithRetry(IProgressMonitor monitor, RemoteRunnable<T> runnable) throws JiraException {
+//	private <T> T callWithRetry(IProgressMonitor monitor, Callable<T> runnable) throws JiraException {
+//		try {
+//			return callOnce(monitor, runnable);
+//		} catch (JiraAuthenticationException e) {
+//			loginToken.expire();
+//			return callOnce(monitor, runnable);
+//		}
+//	}
+
+//	private <T> T callOnce(IProgressMonitor monitor, final Callable<T> runnable) throws JiraException,
+//			JiraInsufficientPermissionException, JiraAuthenticationException, JiraServiceUnavailableException {
+//		try {
+//			monitor = Policy.monitorFor(monitor);
+//
+//			final JiraRequest request = new JiraRequest(monitor);
+//			return WebUtil.execute(monitor, new WebRequest<T>() {
+//
+//				@Override
+//				public void abort() {
+//					request.cancel();
+//				}
+//
+//				public T call() throws Exception {
+//					try {
+//						JiraRequest.setCurrentRequest(request);
+//						return runnable.run();
+//					} finally {
+//						request.done();
+//					}
+//				}
+//
+//			});
+//		} catch (RemotePermissionException e) {
+//			throw new JiraInsufficientPermissionException(e.getMessage());
+//		} catch (RemoteAuthenticationException e) {
+//			throw new JiraAuthenticationException(e.getMessage());
+//		} catch (RemoteException e) {
+//			throw new JiraServiceUnavailableException(e.getMessage());
+//		} catch (java.rmi.RemoteException e) {
+//			throw new JiraServiceUnavailableException(unwrapRemoteException(e));
+//		} catch (JiraException e) {
+//			throw e;
+//		} catch (RuntimeException e) {
+//			throw e;
+//		} catch (Error e) {
+//			throw e;
+//		} catch (Throwable e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
+
+	@Override
+	protected <T> T call(IProgressMonitor monitor, Callable<T> runnable) throws JiraException {
 		try {
-			return callOnce(monitor, runnable);
-		} catch (JiraAuthenticationException e) {
-			loginToken.expire();
-			return callOnce(monitor, runnable);
+			return super.call(monitor, runnable);
+		} catch (JiraException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Error e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
-	private <T> T callOnce(IProgressMonitor monitor, final RemoteRunnable<T> runnable) throws JiraException,
-			JiraInsufficientPermissionException, JiraAuthenticationException, JiraServiceUnavailableException {
+	@Override
+	protected <T> T callOnce(IProgressMonitor monitor, Callable<T> runnable) throws JiraException {
 		try {
-			monitor = Policy.monitorFor(monitor);
-
-			final JiraRequest request = new JiraRequest(monitor);
-			return WebUtil.execute(monitor, new WebRequest<T>() {
-
-				@Override
-				public void abort() {
-					request.cancel();
-				}
-
-				public T call() throws Exception {
-					try {
-						JiraRequest.setCurrentRequest(request);
-						return runnable.run();
-					} finally {
-						request.done();
-					}
-				}
-
-			});
+			return super.callOnce(monitor, runnable);
 		} catch (RemotePermissionException e) {
 			throw new JiraInsufficientPermissionException(e.getMessage());
 		} catch (RemoteAuthenticationException e) {
@@ -461,30 +498,33 @@ public class JiraSoapClient {
 			throw e;
 		} catch (Error e) {
 			throw e;
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private <T> T call(IProgressMonitor monitor, RemoteRunnable<T> runnable) throws JiraException {
-		while (true) {
-			try {
-				return callWithRetry(monitor, runnable);
-			} catch (JiraAuthenticationException e) {
-				try {
-					jiraClient.getLocation().requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-				} catch (UnsupportedRequestException ignored) {
-					throw e;
-				}
-			}
-		}
+	@Override
+	protected AbstractWebLocation getLocation() {
+		return jiraClient.getLocation();
 	}
 
-	private interface RemoteRunnable<T> {
-
-		T run() throws java.rmi.RemoteException, JiraException;
-
+	@Override
+	protected boolean isAuthenticationException(Exception e) {
+		return e instanceof JiraAuthenticationException;
 	}
+
+	@Override
+	protected boolean doLogin(IProgressMonitor monitor) {
+		loginToken.expire();
+		return true;
+	}
+
+//
+//	private interface Callable<T> {
+//
+//		T call() throws java.rmi.RemoteException, JiraException;
+//
+//	}
 
 	private class LoginToken {
 

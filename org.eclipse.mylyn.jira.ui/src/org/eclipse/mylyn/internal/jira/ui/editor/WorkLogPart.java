@@ -51,9 +51,9 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class WorkLogPart extends AbstractTaskEditorPart {
 
-	private static final String ID_POPUP_MENU = "org.eclipse.mylyn.jira.ui.editor.menu.worklog";
+	private static final String ID_POPUP_MENU = "org.eclipse.mylyn.jira.ui.editor.menu.worklog"; //$NON-NLS-1$
 
-	private final String[] columns = { "Creator", "Date", "Worked", "Description" };
+	private final String[] columns = { Messages.WorkLogPart_Creator, Messages.WorkLogPart_Date, Messages.WorkLogPart_Worked, Messages.WorkLogPart_Description };
 
 	private final int[] columnWidths = { 130, 70, 100, 150 };
 
@@ -66,7 +66,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 	private Composite composite;
 
 	public WorkLogPart() {
-		setPartName("Work Log");
+		setPartName(Messages.WorkLogPart_Work_Log);
 	}
 
 	private void createTable(FormToolkit toolkit, final Composite composite) {
@@ -144,7 +144,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		initialize();
 
 		final Section section = createSection(parent, toolkit, hasIncoming);
-		section.setText(getPartName() + " (" + logEntries.size() + ")");
+		section.setText(getPartName() + " (" + logEntries.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (hasIncoming) {
 			expandSection(toolkit, section);
 		} else {
@@ -171,7 +171,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		if (logEntries.size() > 0) {
 			createTable(toolkit, composite);
 		} else {
-			Label label = toolkit.createLabel(composite, "No work has yet been logged on this issue.");
+			Label label = toolkit.createLabel(composite, Messages.WorkLogPart_No_work_logged);
 			getTaskEditorPage().registerDefaultDropListener(label);
 		}
 
