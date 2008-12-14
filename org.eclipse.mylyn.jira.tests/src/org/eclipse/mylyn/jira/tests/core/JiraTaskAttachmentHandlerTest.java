@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylyn.jira.tests;
+package org.eclipse.mylyn.jira.tests.core;
 
 import java.io.File;
 import java.io.InputStream;

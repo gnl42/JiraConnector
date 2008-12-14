@@ -9,7 +9,7 @@
  *     Eugene Kuleshov - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylyn.jira.tests.ui;
+package org.eclipse.mylyn.jira.tests.core;
 
 import junit.framework.TestCase;
 

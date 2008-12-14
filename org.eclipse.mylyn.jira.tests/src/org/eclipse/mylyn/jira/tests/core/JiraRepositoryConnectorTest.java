@@ -10,7 +10,7 @@
  *     Eugene Kuleshov - improvements
  *******************************************************************************/
 
-package org.eclipse.mylyn.jira.tests;
+package org.eclipse.mylyn.jira.tests.core;
 
 import java.io.File;
 import java.util.Arrays;

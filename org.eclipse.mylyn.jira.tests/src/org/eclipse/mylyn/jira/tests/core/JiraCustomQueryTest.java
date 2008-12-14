@@ -10,7 +10,7 @@
  *     Tasktop Technologies - improvements
  *******************************************************************************/
 
-package org.eclipse.mylyn.jira.tests;
+package org.eclipse.mylyn.jira.tests.core;
 
 import java.util.Date;
 
