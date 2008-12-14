@@ -765,7 +765,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (useCachedData(jiraIssue, oldTaskData)) {
 			// FIXME
 		}
-		JiraWorkLog[] remoteWorklogs = client.getSoapClient().getWorkLogs(jiraIssue.getKey(), monitor);
+		JiraWorkLog[] remoteWorklogs = client.getWorklogs(jiraIssue.getKey(), monitor);
 		int i = 1;
 		for (JiraWorkLog remoteWorklog : remoteWorklogs) {
 			String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i; //$NON-NLS-1$

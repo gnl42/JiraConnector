@@ -624,9 +624,9 @@ public class JiraClientTest extends TestCase {
 		assertEquals("UTF-8", client.getCharacterEncoding());
 	}
 
-	public void testGetServerInfo3_9() throws Exception {
-		getServerInfo(JiraTestConstants.JIRA_39_URL, "3.9", "233");
-	}
+//	public void testGetServerInfo3_9() throws Exception {
+//		getServerInfo(JiraTestConstants.JIRA_39_URL, "3.9", "233");
+//	}
 
 	public void testGetServerInfo3_13_1() throws Exception {
 		getServerInfo(JiraTestConstants.JIRA_3_13_1_URL, "3.13.1", "333");
