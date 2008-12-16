@@ -60,7 +60,7 @@
 
 		<!-- xstream -->
 		<fileset dir="${buildDirectory}/plugins" id="com.thoughtworks.xstream">
-			<include name="com.thoughtworks.xsteam*.jar"/>
+			<include name="com.thoughtworks.xstream*.jar"/>
 			<include name="org.apache.commons.io*.jar"/>				
 			<include name="org.jdom*.jar"/>				
 			<include name="org.joda.time*.jar"/>				

@@ -9,7 +9,7 @@
 	<target name="all" depends="clean,build,tests">
 	</target>
 
-	<target name="dev	" depends="all,pack,generate-metadata">
+	<target name="dev" depends="clean,build,pack,generate-metadata">
 	</target>
 
 	<target name="pack" depends="init">
