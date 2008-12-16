@@ -11,6 +11,10 @@
 	<target name="allElementsDelegator">
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.dependencies_feature" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse_feature" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
@@ -19,6 +23,13 @@
 		</ant>
 	</target>
 
+	<target name="siteElementsDelegator">
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse_feature" />
+		</ant>
+	</target>
+	
 	<!-- ===================================================================== -->
 	<!-- Targets to assemble the built elements for particular configurations  -->
 	<!-- These generally call the generated assemble scripts (named in         -->
@@ -26,6 +37,9 @@
 	<!-- Add one target for each root element and each configuration           -->
 	<!-- Replace element.id with the id of the top level element being built   -->
 	<!-- ===================================================================== -->
+	<target name="assemble.com.atlassian.connector.eclipse.dependencies_feature">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
 	<target name="assemble.com.atlassian.connector.eclipse_feature">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>

@@ -172,7 +172,7 @@
 		<antcall target="generateUpdateSite">
 			<param name="UpdateSiteLocation" value="${buildDirectory}/site" />
 			<param name="SiteXmlFile" value="site.xml" />
-			<param name="ElementsTarget" value="allElements" />
+			<param name="ElementsTarget" value="siteElementsDelegator" />
 			<param name="SiteName" value="standard" />
 		</antcall>
 	</target>

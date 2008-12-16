@@ -8,4 +8,33 @@
 	
 	<target name="all" depends="clean,build,tests">
 	</target>
+
+	<target name="dev	" depends="all,pack,generate-metadata">
+	</target>
+
+	<target name="pack" depends="init">
+		<antcall target="for-each-target">
+			<param name="call" value="pack-sites"/>
+		</antcall>
+	</target>
+
+	<target name="pack-sites" depends="init">
+		<antcall target="pack-helper">
+			<param name="dir" value="${build.home}/${build.target}/site"/>
+		</antcall>
+	</target>
+
+	<target name="generate-metadata" depends="init">
+		<antcall target="for-each-target">
+			<param name="call" value="generate-metadata-sites"/>
+		</antcall>
+	</target>
+
+	<target name="generate-metadata-sites" depends="init">
+		<antcall target="generate-metadata-helper">
+			<param name="dir" value="${build.home}/${build.target}/site"/>
+			<param name="name" value="Atlassian Eclipse Connector"/>
+		</antcall>
+	</target>
+
 </project>

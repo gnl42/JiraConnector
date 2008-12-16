@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<site pack200="true">
+<site pack200="true" associateSitesURL="https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.releng/config/associates.xml">
    <description url="http://update.atlassian.com/atlassian-eclipse-plugin">
       Atlassian Eclipse Connector
    </description>
