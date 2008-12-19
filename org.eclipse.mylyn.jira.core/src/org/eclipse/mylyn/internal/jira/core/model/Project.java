@@ -43,6 +43,8 @@ public class Project implements Serializable {
 
 	private Version[] versions;
 
+	private IssueType[] issueTypes;
+
 	public Project(String id) {
 		this.id = id;
 	}
@@ -199,6 +201,14 @@ public class Project implements Serializable {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	public IssueType[] getIssueTypes() {
+		return issueTypes;
+	}
+
+	public void setIssueTypes(IssueType[] issueTypes) {
+		this.issueTypes = issueTypes;
 	}
 
 }

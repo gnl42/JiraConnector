@@ -26,6 +26,8 @@ public class JiraVersion implements Comparable<JiraVersion> {
 
 	public static final JiraVersion JIRA_3_7 = new JiraVersion("3.7"); //$NON-NLS-1$
 
+	public static final JiraVersion JIRA_3_10 = new JiraVersion("3.10"); //$NON-NLS-1$
+
 	public static final JiraVersion JIRA_3_11 = new JiraVersion("3.11"); //$NON-NLS-1$
 
 	public static final JiraVersion JIRA_3_12 = new JiraVersion("3.12"); //$NON-NLS-1$

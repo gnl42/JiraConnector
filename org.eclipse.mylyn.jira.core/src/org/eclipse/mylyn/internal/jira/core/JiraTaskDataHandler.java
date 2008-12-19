@@ -209,11 +209,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		TaskAttribute types = createAttribute(data, JiraAttribute.TYPE);
-		IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
+		IssueType[] jiraIssueTypes = project.getIssueTypes();
+		if (jiraIssueTypes == null) {
+			jiraIssueTypes = client.getCache().getIssueTypes();
+		}
 		for (int i = 0; i < jiraIssueTypes.length; i++) {
 			IssueType type = jiraIssueTypes[i];
 			if (!type.isSubTaskType()) {
 				types.putOption(type.getId(), type.getName());
+				// set first as default
 				if (i == 0) {
 					types.setValue(type.getId());
 				}
@@ -763,7 +767,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	private void addWorklog(TaskData data, JiraIssue jiraIssue, JiraClient client, TaskData oldTaskData,
 			IProgressMonitor monitor) throws JiraException {
 		if (useCachedData(jiraIssue, oldTaskData)) {
-			// FIXME
+			if (useCachedInformation(jiraIssue, oldTaskData)) {
+				List<TaskAttribute> attributes = oldTaskData.getAttributeMapper().getAttributesByType(oldTaskData,
+						WorkLogConverter.TYPE_WORKLOG);
+				for (TaskAttribute taskAttribute : attributes) {
+					data.getRoot().deepAddCopy(taskAttribute);
+				}
+				return;
+			}
 		}
 		JiraWorkLog[] remoteWorklogs = client.getWorklogs(jiraIssue.getKey(), monitor);
 		int i = 1;

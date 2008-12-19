@@ -121,15 +121,6 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 					options.put(priority.getId(), priority.getName());
 				}
 				return options;
-			} else if (JiraAttribute.TYPE.id().equals(attribute.getId())) {
-				boolean isSubTask = JiraTaskDataHandler.hasSubTaskType(attribute);
-				IssueType[] jiraIssueTypes = client.getCache().getIssueTypes();
-				for (IssueType issueType : jiraIssueTypes) {
-					if (!isSubTask || issueType.isSubTaskType()) {
-						options.put(issueType.getId(), issueType.getName());
-					}
-				}
-				return options;
 			} else {
 				TaskAttribute projectAttribute = attribute.getTaskData().getRoot().getMappedAttribute(
 						JiraAttribute.PROJECT.id());
@@ -149,6 +140,18 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 						} else if (JiraAttribute.FIXVERSIONS.id().equals(attribute.getId())) {
 							for (Version version : project.getVersions()) {
 								options.put(version.getId(), version.getName());
+							}
+							return options;
+						} else if (JiraAttribute.TYPE.id().equals(attribute.getId())) {
+							boolean isSubTask = JiraTaskDataHandler.hasSubTaskType(attribute);
+							IssueType[] jiraIssueTypes = project.getIssueTypes();
+							if (jiraIssueTypes == null) {
+								jiraIssueTypes = client.getCache().getIssueTypes();
+							}
+							for (IssueType issueType : jiraIssueTypes) {
+								if (!isSubTask || issueType.isSubTaskType()) {
+									options.put(issueType.getId(), issueType.getName());
+								}
 							}
 							return options;
 						}

@@ -319,6 +319,10 @@ public class JiraClient {
 		return soapClient.getIssueTypes(monitor);
 	}
 
+	public IssueType[] getIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
+		return soapClient.getIssueTypes(projectId, monitor);
+	}
+
 	/**
 	 * Returns the corresponding key for <code>issueId</code>.
 	 * 
@@ -378,6 +382,10 @@ public class JiraClient {
 
 	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
 		return soapClient.getSubTaskIssueTypes(monitor);
+	}
+
+	public IssueType[] getSubTaskIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
+		return soapClient.getSubTaskIssueTypes(projectId, monitor);
 	}
 
 	public String getUserName() {

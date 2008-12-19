@@ -363,6 +363,25 @@ public class JiraSoapClient extends AbstractSoapClient {
 		});
 	}
 
+	public IssueType[] getIssueTypes(final String projectId, IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new Callable<IssueType[]>() {
+			public IssueType[] call() throws java.rmi.RemoteException, JiraException {
+				getSoapService().getIssueTypes(loginToken.getCurrentValue());
+				return JiraSoapConverter.convert(getSoapService().getIssueTypesForProject(loginToken.getCurrentValue(),
+						projectId));
+			}
+		});
+	}
+
+	public IssueType[] getSubTaskIssueTypes(final String projectId, IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new Callable<IssueType[]>() {
+			public IssueType[] call() throws java.rmi.RemoteException, JiraException {
+				return JiraSoapConverter.convert(getSoapService().getSubTaskIssueTypesForProject(
+						loginToken.getCurrentValue(), projectId));
+			}
+		});
+	}
+
 	/**
 	 * Remote exceptions sometimes have a cause and sometimes don't. If the exception is some sort of connection failure
 	 * it will be an AxisFault with no message that wraps a ConnectionException. If the exception was triggered by a
@@ -549,7 +568,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 			AuthenticationCredentials newCredentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (newCredentials == null) {
 				expire();
-				return ""; //$NON-NLS-1$
+				return "";
 			} else if (!newCredentials.equals(credentials)) {
 				expire();
 				credentials = newCredentials;
@@ -586,8 +605,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 		@Override
 		public String toString() {
 			long expiresIn = (timeout - (System.currentTimeMillis() - lastAccessed)) / 1000;
-			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid=" + isValidToken() + ", expires=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-					+ expiresIn + "]"; //$NON-NLS-1$
+			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid=" + isValidToken() + ", expires=" //$NON-NLS-1$ 
+					+ expiresIn + "]";
 		}
 
 	}

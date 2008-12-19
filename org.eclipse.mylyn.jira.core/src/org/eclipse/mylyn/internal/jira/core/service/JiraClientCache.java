@@ -11,7 +11,10 @@
 
 package org.eclipse.mylyn.internal.jira.core.service;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.Policy;
@@ -59,6 +62,8 @@ public class JiraClientCache {
 	}
 
 	private void initializeProjects(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		String version = data.serverInfo.getVersion();
+
 		data.projects = jiraClient.getProjects(monitor);
 
 		data.projectsById = new HashMap<String, Project>(data.projects.length);
@@ -67,6 +72,20 @@ public class JiraClientCache {
 		for (Project project : data.projects) {
 			project.setComponents(jiraClient.getComponents(project.getKey(), monitor));
 			project.setVersions(jiraClient.getVersions(project.getKey(), monitor));
+
+			if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_10) >= 0) {
+				IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), monitor);
+				IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), monitor);
+				for (IssueType issueType : subTaskIssueTypes) {
+					issueType.setSubTaskType(true);
+				}
+
+				IssueType[] projectIssueTypes = new IssueType[issueTypes.length + subTaskIssueTypes.length];
+				System.arraycopy(issueTypes, 0, projectIssueTypes, 0, issueTypes.length);
+				System.arraycopy(subTaskIssueTypes, 0, projectIssueTypes, issueTypes.length, subTaskIssueTypes.length);
+
+				project.setIssueTypes(projectIssueTypes);
+			}
 
 			data.projectsById.put(project.getId(), project);
 			data.projectsByKey.put(project.getKey(), project);
@@ -102,29 +121,46 @@ public class JiraClientCache {
 	}
 
 	private void initializeIssueTypes(JiraClientData data, IProgressMonitor monitor) throws JiraException {
-		IssueType[] issueTypes = jiraClient.getIssueTypes(monitor);
-		IssueType[] subTaskIssueTypes;
 		String version = data.serverInfo.getVersion();
-		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_3) >= 0) {
-			subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(monitor);
+		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_10) >= 0) {
+			// collect issue types from all projects to avoid additional SOAP request
+			Set<IssueType> issueTypes = new HashSet<IssueType>();
+			for (Project project : data.projects) {
+				IssueType[] projectIssueTypes = project.getIssueTypes();
+				if (projectIssueTypes != null) {
+					issueTypes.addAll(Arrays.asList(projectIssueTypes));
+				}
+			}
+
+			data.issueTypes = issueTypes.toArray(new IssueType[0]);
+			data.issueTypesById = new HashMap<String, IssueType>(data.issueTypes.length);
+			for (IssueType issueType : data.issueTypes) {
+				data.issueTypesById.put(issueType.getId(), issueType);
+			}
 		} else {
-			subTaskIssueTypes = new IssueType[0];
+			IssueType[] issueTypes = jiraClient.getIssueTypes(monitor);
+			IssueType[] subTaskIssueTypes;
+			if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_3) >= 0) {
+				subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(monitor);
+			} else {
+				subTaskIssueTypes = new IssueType[0];
+			}
+
+			data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length + subTaskIssueTypes.length);
+
+			for (IssueType issueType : issueTypes) {
+				data.issueTypesById.put(issueType.getId(), issueType);
+			}
+
+			for (IssueType issueType : subTaskIssueTypes) {
+				issueType.setSubTaskType(true);
+				data.issueTypesById.put(issueType.getId(), issueType);
+			}
+
+			data.issueTypes = new IssueType[issueTypes.length + subTaskIssueTypes.length];
+			System.arraycopy(issueTypes, 0, data.issueTypes, 0, issueTypes.length);
+			System.arraycopy(subTaskIssueTypes, 0, data.issueTypes, issueTypes.length, subTaskIssueTypes.length);
 		}
-
-		data.issueTypesById = new HashMap<String, IssueType>(issueTypes.length + subTaskIssueTypes.length);
-
-		for (IssueType issueType : issueTypes) {
-			data.issueTypesById.put(issueType.getId(), issueType);
-		}
-
-		for (IssueType issueType : subTaskIssueTypes) {
-			issueType.setSubTaskType(true);
-			data.issueTypesById.put(issueType.getId(), issueType);
-		}
-
-		data.issueTypes = new IssueType[issueTypes.length + subTaskIssueTypes.length];
-		System.arraycopy(issueTypes, 0, data.issueTypes, 0, issueTypes.length);
-		System.arraycopy(subTaskIssueTypes, 0, data.issueTypes, issueTypes.length, subTaskIssueTypes.length);
 	}
 
 	private void initializeStatuses(JiraClientData data, IProgressMonitor monitor) throws JiraException {
