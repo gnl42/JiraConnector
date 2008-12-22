@@ -11,8 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
+import com.atlassian.theplugin.commons.cfg.Server;
+import com.atlassian.theplugin.commons.cfg.ServerCfg;
+import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
+import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
+import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -23,12 +27,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
 
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
-import com.atlassian.theplugin.commons.cfg.Server;
-import com.atlassian.theplugin.commons.cfg.ServerCfg;
-import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
-import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
-import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An implementation of HttpSessionCallback that can handle setting the HttpClient information on a per-server basis
@@ -37,7 +37,7 @@ import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
  */
 public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 
-	public Map<CrucibleServerCfg, HttpClient> httpClients = new HashMap<CrucibleServerCfg, HttpClient>();
+	private final Map<CrucibleServerCfg, HttpClient> httpClients = new HashMap<CrucibleServerCfg, HttpClient>();
 
 	private final IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
 

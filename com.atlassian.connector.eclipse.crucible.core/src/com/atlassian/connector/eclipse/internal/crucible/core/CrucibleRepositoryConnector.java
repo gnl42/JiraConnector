@@ -11,8 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
-import java.io.File;
-import java.util.Date;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +26,8 @@ import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import java.io.File;
+import java.util.Date;
 
 /**
  * Core class for integration with Mylyn tasks framework and synchronization

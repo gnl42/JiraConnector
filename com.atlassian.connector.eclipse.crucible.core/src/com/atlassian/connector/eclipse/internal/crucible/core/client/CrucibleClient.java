@@ -11,8 +11,17 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
-import java.util.Date;
-import java.util.List;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapper;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
+import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
+import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
+import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
+import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,17 +37,8 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapper;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
-import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
-import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
-import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Bridge between Mylyn and the ACC API's
@@ -105,9 +105,9 @@ public class CrucibleClient {
 					TaskData taskData = getTaskDataForReview(taskRepository, review);
 					resultCollector.accept(taskData);
 				}
-			} else {
-				// this is where we could deal with custom filters
 			}
+			// TODO deal with custom filters
+
 		} catch (CrucibleLoginException e) {
 			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
@@ -157,7 +157,7 @@ public class CrucibleClient {
 
 	public boolean hasData() {
 		// TODO implement this once we start caching data
-		return true;
+		return clientData != null && clientData.hasData();
 	}
 
 	public CrucibleClientData getClientData() {

@@ -22,4 +22,12 @@ public class CrucibleClientData implements Serializable {
 
 	private static final long serialVersionUID = 5078330984585994532L;
 
+	public CrucibleClientData() {
+
+	}
+
+	public boolean hasData() {
+		return true;
+	}
+
 }

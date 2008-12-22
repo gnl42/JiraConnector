@@ -11,23 +11,26 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
+
 import org.eclipse.mylyn.internal.provisional.tasks.core.TasksUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
-
-import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 
 /**
  * Utility methods for dealing with Crucible
  * 
  * @author Shawn Minto
  */
-public class CrucibleUtil {
+public final class CrucibleUtil {
 
 	public static final String KEY_FILTER_ID = "FilterId";
 
 	private static final String CRUCIBLE_URL_START = "cru/";
 
 	private static final String PREDEFINED_FILER_START = CRUCIBLE_URL_START + "?filter=";
+
+	private CrucibleUtil() {
+	}
 
 	public static PredefinedFilter getPredefinedFilter(String filterUrl) {
 		for (PredefinedFilter filter : PredefinedFilter.values()) {

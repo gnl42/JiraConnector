@@ -21,6 +21,8 @@ import com.atlassian.theplugin.commons.cfg.ServerId;
  */
 public class EclipseCrucibleServerCfg extends CrucibleServerCfg {
 
+	private static final int HASCODE_MAGIC_NOT_TEMPORARY = 1237;
+	private static final int HASCODE_MAGIC_TEMPORARY = 1231;
 	private final boolean isTemporary;
 
 	public EclipseCrucibleServerCfg(String name, String url, boolean isTemporary) {
@@ -33,7 +35,7 @@ public class EclipseCrucibleServerCfg extends CrucibleServerCfg {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + (isTemporary ? 1231 : 1237);
+		result = prime * result + (isTemporary ? HASCODE_MAGIC_TEMPORARY : HASCODE_MAGIC_NOT_TEMPORARY);
 		result = prime * result + ((getUrl() == null) ? 0 : getUrl().hashCode());
 		return result;
 	}

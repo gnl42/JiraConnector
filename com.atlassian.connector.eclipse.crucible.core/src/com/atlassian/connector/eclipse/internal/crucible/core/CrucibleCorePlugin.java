@@ -11,15 +11,15 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
-import java.io.File;
+import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
+import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
-import com.atlassian.theplugin.commons.util.LoggerImpl;
+import java.io.File;
 
 /**
  * The activator class controls the plug-in life cycle
