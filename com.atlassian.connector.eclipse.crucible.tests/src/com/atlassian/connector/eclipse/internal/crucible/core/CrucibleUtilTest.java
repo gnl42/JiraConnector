@@ -11,11 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
-import junit.framework.TestCase;
+import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 
 import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 
-import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
+import junit.framework.TestCase;
 
 /**
  * @author Shawn Minto
