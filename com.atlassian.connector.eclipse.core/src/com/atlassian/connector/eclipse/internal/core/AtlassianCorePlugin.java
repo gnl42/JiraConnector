@@ -11,10 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.core;
 
+import com.atlassian.theplugin.commons.util.LoggerImpl;
+
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
-
-import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 /**
  * The activator class controls the plug-in life cycle

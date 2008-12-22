@@ -11,11 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.core;
 
+import com.atlassian.theplugin.commons.util.LoggerImpl;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-
-import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 /**
  * Class for handling Eclipse-based logging from the commons
