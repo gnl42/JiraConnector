@@ -102,7 +102,6 @@ public final class CrucibleUtil {
 
 	public static boolean isFilterDefinition(IRepositoryQuery query) {
 		String filterId = query.getAttribute(KEY_FILTER_ID);
-		System.out.println(filterId);
 		return filterId == null || filterId.length() == 0;
 	}
 }
