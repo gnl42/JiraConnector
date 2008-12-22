@@ -11,12 +11,15 @@
 
 package com.atlassian.connector.eclipse;
 
+import com.atlassian.connector.eclipse.internal.crucible.tests.AllCrucibleTests;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import com.atlassian.connector.eclipse.internal.crucible.tests.AllCrucibleTests;
+public final class AllConnectorTests {
 
-public class AllConnectorTests {
+	private AllConnectorTests() {
+	}
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for com.atlassian.connector.eclipse.tests");

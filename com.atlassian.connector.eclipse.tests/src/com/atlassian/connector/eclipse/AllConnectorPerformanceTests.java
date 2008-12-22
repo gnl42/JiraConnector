@@ -14,7 +14,10 @@ package com.atlassian.connector.eclipse;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class AllConnectorPerformanceTests {
+public final class AllConnectorPerformanceTests {
+
+	private AllConnectorPerformanceTests() {
+	}
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Performance tests for com.atlassian.connector.eclipse.tests");
