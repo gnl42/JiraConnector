@@ -11,8 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,10 +23,8 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Composite;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Wizard for configuring the Crucible repository settings
@@ -95,6 +95,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 				new URL(name);
 				return true;
 			} catch (MalformedURLException e) {
+				// ignore
 			}
 		}
 		return false;

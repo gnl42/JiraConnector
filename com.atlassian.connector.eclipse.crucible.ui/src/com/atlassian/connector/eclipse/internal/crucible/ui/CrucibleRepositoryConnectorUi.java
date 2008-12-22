@@ -11,6 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleNamedFilterPage;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPage;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
@@ -22,10 +26,6 @@ import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskSearchPage;
 import org.eclipse.mylyn.tasks.ui.wizards.RepositoryQueryWizard;
-
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleNamedFilterPage;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPage;
 
 /**
  * Core class for integration with Mylyn tasks framework UI
