@@ -11,24 +11,30 @@
 
 package com.atlassian.connector.eclipse.ui;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Common class for getting and creating images
  * 
  * @author sminto
  */
-public class AtlassianImages {
+public final class AtlassianImages {
 
 	private static ImageRegistry imageRegistry;
 
-	private static final URL baseURL = AtlassianUiPlugin.getDefault()
-			.getBundle().getEntry("/icons/");
+	private static final URL BASE_URL = AtlassianUiPlugin.getDefault().getBundle().getEntry("/icons/");
+
+//	private static final String TOOL = "tool16";
+//
+//	public static final ImageDescriptor DELETE = create(TOOL, "delete.gif");
+
+	private AtlassianImages() {
+	}
 
 	private static ImageDescriptor create(String prefix, String name) {
 		try {
@@ -38,16 +44,15 @@ public class AtlassianImages {
 		}
 	}
 
-	private static URL makeIconFileURL(String prefix, String name)
-			throws MalformedURLException {
-		if (baseURL == null) {
+	private static URL makeIconFileURL(String prefix, String name) throws MalformedURLException {
+		if (BASE_URL == null) {
 			throw new MalformedURLException();
 		}
 
 		StringBuffer buffer = new StringBuffer(prefix);
 		buffer.append('/');
 		buffer.append(name);
-		return new URL(baseURL, buffer.toString());
+		return new URL(BASE_URL, buffer.toString());
 	}
 
 	private static ImageRegistry getImageRegistry() {
@@ -59,12 +64,12 @@ public class AtlassianImages {
 	}
 
 	public static Image getImage(ImageDescriptor imageDescriptor) {
-		ImageRegistry imageRegistry = getImageRegistry();
+		ImageRegistry registry = getImageRegistry();
 
-		Image image = imageRegistry.get("" + imageDescriptor.hashCode());
+		Image image = registry.get("" + imageDescriptor.hashCode());
 		if (image == null) {
 			image = imageDescriptor.createImage();
-			imageRegistry.put("" + imageDescriptor.hashCode(), image);
+			registry.put("" + imageDescriptor.hashCode(), image);
 		}
 		return image;
 	}
