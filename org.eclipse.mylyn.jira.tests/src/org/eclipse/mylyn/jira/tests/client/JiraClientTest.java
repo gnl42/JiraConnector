@@ -395,7 +395,7 @@ public class JiraClientTest extends TestCase {
 
 		issue = new JiraIssue();
 		issue.setProject(client.getCache().getProjects()[0]);
-		issue.setType(client.getCache().getIssueTypes()[5]);
+		issue.setType(client.getCache().getIssueTypes()[1]);
 		issue.setParentId(parentIssue.getId());
 		issue.setSummary("testCreateSubTaskChild");
 
