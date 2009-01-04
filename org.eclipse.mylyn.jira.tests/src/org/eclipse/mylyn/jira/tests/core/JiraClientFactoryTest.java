@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2004, 2008 Tasktop Technologies and others.
+ * Copyright (c) 2004, 2008 Tasktop Technologies and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.tests.TaskTestUtil;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -36,12 +37,13 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  */
 public class JiraClientFactoryTest extends TestCase {
 
-	private JiraClientFactory clientFactory = null;
+	private JiraClientFactory clientFactory;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		clientFactory = JiraClientFactory.getDefault();
+		TaskTestUtil.resetTaskListAndRepositories();
 	}
 
 	@Override
@@ -56,7 +58,8 @@ public class JiraClientFactoryTest extends TestCase {
 	public void testValidate() throws Exception {
 		// invalid URL		
 		try {
-			clientFactory.validateConnection(new WebLocation("http://non.existant/repository", "user", "password"), null);
+			clientFactory.validateConnection(new WebLocation("http://non.existant/repository", "user", "password"),
+					null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 		}
@@ -72,8 +75,8 @@ public class JiraClientFactoryTest extends TestCase {
 
 		// RPC not enabled
 		try {
-			clientFactory.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-invalid", "user", "password"),
-					null);
+			clientFactory.validateConnection(new WebLocation("http://mylyn.eclipse.org/jira-invalid", "user",
+					"password"), null);
 			fail("Expected exception");
 		} catch (JiraServiceUnavailableException e) {
 			assertEquals("JIRA RPC services are not enabled. Please contact your JIRA administrator.", e.getMessage());
