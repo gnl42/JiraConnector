@@ -97,6 +97,7 @@ public class JiraClientFactoryTest extends TestCase {
 		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, JiraTestConstants.JIRA_LATEST_URL);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials(credentials.username,
 				credentials.password), false);
+		clientFactory.repositoryRemoved(repository);
 		TasksUiPlugin.getRepositoryManager().addRepository(repository);
 
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("Bogus User",
