@@ -210,7 +210,7 @@ public class JiraTestUtil {
 
 		JiraIssue issue = new JiraIssue();
 		issue.setProject(getProject(client, PROJECT1));
-		issue.setType(client.getCache().getIssueTypes()[5]);
+		issue.setType(client.getCache().getIssueTypes()[1]);
 		issue.setParentId(parent.getId());
 		issue.setSummary(summary);
 		issue.setAssignee(client.getUserName());
