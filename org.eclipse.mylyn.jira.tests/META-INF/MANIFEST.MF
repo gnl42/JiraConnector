@@ -22,6 +22,7 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.commons.soap
 Export-Package: org.eclipse.mylyn.jira.tests;x-internal:=true,
  org.eclipse.mylyn.jira.tests.client;x-internal:=true,
+ org.eclipse.mylyn.jira.tests.core;x-internal:=true,
  org.eclipse.mylyn.jira.tests.model;x-internal:=true,
  org.eclipse.mylyn.jira.tests.ui;x-internal:=true,
  org.eclipse.mylyn.jira.tests.util;x-internal:=true
