@@ -38,12 +38,14 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	@Override
 	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
 		Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
-		parts.add(new TaskEditorPartDescriptor("org.eclipse.mylyn.jira.worklog") { //$NON-NLS-1$
-			@Override
-			public AbstractTaskEditorPart createPart() {
-				return new WorkLogPart();
-			}
-		}.setPath(PATH_ATTRIBUTES));
+		if (getModel().getTaskData().getRoot().getAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED) == null) {
+			parts.add(new TaskEditorPartDescriptor("org.eclipse.mylyn.jira.worklog") { //$NON-NLS-1$
+				@Override
+				public AbstractTaskEditorPart createPart() {
+					return new WorkLogPart();
+				}
+			}.setPath(PATH_ATTRIBUTES));
+		}
 		return parts;
 	}
 

@@ -47,6 +47,8 @@ public class IJiraConstants {
 
 	public static final String ATTRIBUTE_READ_ONLY = "attribute.jira.read-only"; //$NON-NLS-1$
 
+	public static final String ATTRIBUTE_WORKLOG_NOT_SUPPORTED = "attribute.jira.worklog-not-supported"; //$NON-NLS-1$
+
 	public static final String JIRA_DATE_FORMAT = "dd MMM yyyy HH:mm:ss z"; //$NON-NLS-1$
 
 	public static final String META_TYPE = "type"; //$NON-NLS-1$

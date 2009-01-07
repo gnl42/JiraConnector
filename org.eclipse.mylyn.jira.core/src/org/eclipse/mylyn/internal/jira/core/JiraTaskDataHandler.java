@@ -773,17 +773,26 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				for (TaskAttribute taskAttribute : attributes) {
 					data.getRoot().deepAddCopy(taskAttribute);
 				}
+				TaskAttribute attribute = oldTaskData.getRoot().getAttribute(
+						IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED);
+				if (attribute != null) {
+					data.getRoot().deepAddCopy(attribute);
+				}
 				return;
 			}
 		}
 		JiraWorkLog[] remoteWorklogs = client.getWorklogs(jiraIssue.getKey(), monitor);
-		int i = 1;
-		for (JiraWorkLog remoteWorklog : remoteWorklogs) {
-			String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i; //$NON-NLS-1$
-			TaskAttribute attribute = data.getRoot().createAttribute(attributeId);
-			attribute.getMetaData().setType(WorkLogConverter.TYPE_WORKLOG);
-			new WorkLogConverter().applyTo(remoteWorklog, attribute);
-			i++;
+		if (remoteWorklogs != null) {
+			int i = 1;
+			for (JiraWorkLog remoteWorklog : remoteWorklogs) {
+				String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i; //$NON-NLS-1$
+				TaskAttribute attribute = data.getRoot().createAttribute(attributeId);
+				attribute.getMetaData().setType(WorkLogConverter.TYPE_WORKLOG);
+				new WorkLogConverter().applyTo(remoteWorklog, attribute);
+				i++;
+			}
+		} else {
+			data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED);
 		}
 	}
 

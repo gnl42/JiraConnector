@@ -14,6 +14,7 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.mylyn.jira.tests.client.JiraClientOfflineTest;
 import org.eclipse.mylyn.jira.tests.client.JiraClientTest;
 import org.eclipse.mylyn.jira.tests.client.JiraWebClientTest;
 import org.eclipse.mylyn.jira.tests.core.JiraTimeFormatTest;
@@ -26,6 +27,7 @@ public class AllJiraHeadlessStandaloneTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Headless Standalone Tests for org.eclipse.mylyn.jira.tests");
 		suite.addTestSuite(JiraTimeFormatTest.class);
+		suite.addTestSuite(JiraClientOfflineTest.class);
 		suite.addTestSuite(JiraClientTest.class);
 		suite.addTestSuite(JiraWebClientTest.class);
 		//suite.addTestSuite(JiraClientOfflineTest.class);

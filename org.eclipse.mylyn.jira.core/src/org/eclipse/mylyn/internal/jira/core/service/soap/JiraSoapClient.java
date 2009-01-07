@@ -38,6 +38,7 @@ import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
@@ -341,7 +342,14 @@ public class JiraSoapClient extends AbstractSoapClient {
 	public JiraWorkLog[] getWorkLogs(final String issueKey, IProgressMonitor monitor) throws JiraException {
 		return call(monitor, new Callable<JiraWorkLog[]>() {
 			public JiraWorkLog[] call() throws java.rmi.RemoteException, JiraException {
-				return JiraSoapConverter.convert(getSoapService().getWorklogs(loginToken.getCurrentValue(), issueKey));
+				String version = jiraClient.getCache().getServerInfo().getVersion();
+				boolean hasApi = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_10) >= 0);
+				if (hasApi) {
+					return JiraSoapConverter.convert(getSoapService().getWorklogs(loginToken.getCurrentValue(),
+							issueKey));
+				} else {
+					return null;
+				}
 			}
 		});
 	}
