@@ -576,7 +576,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 			AuthenticationCredentials newCredentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (newCredentials == null) {
 				expire();
-				return "";
+				return ""; //$NON-NLS-1$
 			} else if (!newCredentials.equals(credentials)) {
 				expire();
 				credentials = newCredentials;
@@ -613,8 +613,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 		@Override
 		public String toString() {
 			long expiresIn = (timeout - (System.currentTimeMillis() - lastAccessed)) / 1000;
-			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid=" + isValidToken() + ", expires=" //$NON-NLS-1$ 
-					+ expiresIn + "]";
+			return "[credentials=" + credentials + ", timeout=" + timeout + ", valid=" + isValidToken() + ", expires=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+					+ expiresIn + "]"; //$NON-NLS-1$
 		}
 
 	}
