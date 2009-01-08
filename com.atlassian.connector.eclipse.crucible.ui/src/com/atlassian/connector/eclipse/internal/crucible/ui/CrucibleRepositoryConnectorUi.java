@@ -12,6 +12,8 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleCustomFilterPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleNamedFilterPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPage;
 
@@ -52,20 +54,18 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 
 	@Override
 	public ITaskSearchPage getSearchPage(TaskRepository repository, IStructuredSelection selection) {
-		// TODO change this once we have the custom query page
-		return new CrucibleNamedFilterPage(repository);
+		return new CrucibleCustomFilterPage(repository);
 	}
 
 	@Override
 	public IWizard getQueryWizard(TaskRepository repository, IRepositoryQuery query) {
 		RepositoryQueryWizard wizard = new RepositoryQueryWizard(repository);
 		if (query != null) {
-			// TODO add this code back once we have support for custom queries
-//			if (CrucibleUtil.isFilterDefinition(query)) {
-//				wizard.addPage(new CrucibleFilterDefinitionPage(repository, query));
-//			} else {
-			wizard.addPage(new CrucibleNamedFilterPage(repository, query));
-//			}
+			if (CrucibleUtil.isFilterDefinition(query)) {
+				wizard.addPage(new CrucibleCustomFilterPage(repository, query));
+			} else {
+				wizard.addPage(new CrucibleNamedFilterPage(repository, query));
+			}
 		} else {
 			wizard.addPage(new CrucibleNamedFilterPage(repository));
 		}

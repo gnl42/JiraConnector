@@ -91,7 +91,7 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
 		CrucibleClient client = getClientManager().getClient(taskRepository);
-		return client.getReview(taskRepository, taskId, monitor);
+		return client.getTaskData(taskRepository, taskId, monitor);
 	}
 
 	@Override
@@ -130,6 +130,9 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateRepositoryConfiguration(TaskRepository taskRepository, IProgressMonitor monitor)
 			throws CoreException {
+		CrucibleClient client = getClientManager().getClient(taskRepository);
+		client.updateRepositoryData(monitor);
+
 	}
 
 	@Override
@@ -137,5 +140,10 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 		TaskMapper scheme = new TaskMapper(taskData);
 		scheme.applyTo(task);
 		task.setCompletionDate(scheme.getCompletionDate());
+	}
+
+	@Override
+	public boolean canSynchronizeTask(TaskRepository taskRepository, ITask task) {
+		return false;
 	}
 }

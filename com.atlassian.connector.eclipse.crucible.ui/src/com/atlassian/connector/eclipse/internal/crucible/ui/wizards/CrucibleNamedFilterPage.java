@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.internal.provisional.tasks.ui.wizards.AbstractRepositoryQueryPage2;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -48,14 +49,16 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 
 	private ListViewer filterList;
 
+	private CrucibleCustomFilterPage customPage;
+
 	public CrucibleNamedFilterPage(TaskRepository repository, IRepositoryQuery query) {
 		super(TITLE, repository, query);
 		setNeedsRepositoryConfiguration(false);
+		setDescription("Select a pre-defined filter to create a query");
 	}
 
 	public CrucibleNamedFilterPage(TaskRepository repository) {
-		super(TITLE, repository, null);
-		setNeedsRepositoryConfiguration(false);
+		this(repository, null);
 	}
 
 	@Override
@@ -77,7 +80,6 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 
 		customButton = new Button(composite, SWT.RADIO);
 		customButton.setText("Custom");
-		customButton.setEnabled(false);
 		customButton.setSelection(false);
 		customButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -135,12 +137,13 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 	}
 
 	private void updateQueryPage() {
+		// TODO disable the title??
 		if (customButton.getSelection()) {
 			filterList.getControl().setEnabled(false);
-			// TODO add the next page for custom queries
 		} else if (predefinedButton.getSelection()) {
 			filterList.getControl().setEnabled(true);
 		}
+		getContainer().updateButtons();
 	}
 
 	@Override
@@ -150,7 +153,7 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 
 	@Override
 	protected boolean hasRepositoryConfiguration() {
-		return getClient().hasData();
+		return getClient().hasRepositoryData();
 	}
 
 	private CrucibleClient getClient() {
@@ -193,7 +196,26 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return predefinedButton.getSelection() && getFilterId() != null && getFilterId().length() > 0;
+		return customButton.getSelection();
+	}
+
+	@Override
+	public boolean isPageComplete() {
+		return customButton.getSelection() ? false : !filterList.getSelection().isEmpty() && super.isPageComplete();
+	}
+
+	@Override
+	public IWizardPage getNextPage() {
+		if (!customButton.getSelection()) {
+			return null;
+		}
+		if (customPage == null) {
+			customPage = new CrucibleCustomFilterPage(getTaskRepository(), getQuery());
+			if (getWizard() instanceof Wizard) {
+				((Wizard) getWizard()).addPage(customPage);
+			}
+		}
+		return customPage;
 	}
 
 }

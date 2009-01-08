@@ -12,9 +12,16 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
+import com.atlassian.theplugin.commons.crucible.api.model.State;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.tasks.core.TasksUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Utility methods for dealing with Crucible
@@ -103,5 +110,24 @@ public final class CrucibleUtil {
 	public static boolean isFilterDefinition(IRepositoryQuery query) {
 		String filterId = query.getAttribute(KEY_FILTER_ID);
 		return filterId == null || filterId.length() == 0;
+	}
+
+	public static State[] getStatesFromString(String statesString) {
+		Set<State> states = new HashSet<State>();
+		String[] statesArray = statesString.split(",");
+		for (String stateString : statesArray) {
+			if (stateString.trim().length() == 0) {
+				continue;
+			}
+			try {
+				State state = State.fromValue(stateString);
+				if (state != null) {
+					states.add(state);
+				}
+			} catch (IllegalArgumentException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
+			}
+		}
+		return states.toArray(new State[0]);
 	}
 }

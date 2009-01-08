@@ -14,5 +14,6 @@ Require-Bundle: org.eclipse.core.runtime,
  com.atlassian.connector.eclipse.core
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.crucible.tests",
  com.atlassian.connector.eclipse.internal.crucible.core.client;x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.crucible.tests",
+ com.atlassian.connector.eclipse.internal.crucible.core.client.model,
  com.atlassian.connector.eclipse.internal.crucible.core.configuration;x-friends:="com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.ui"
 
