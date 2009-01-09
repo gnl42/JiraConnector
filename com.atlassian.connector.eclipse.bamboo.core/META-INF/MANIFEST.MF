@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Eclipse Connector Bamboo Core
+Bundle-SymbolicName: com.atlassian.connector.eclipse.bamboo.core;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.mylyn.tasks.core;bundle-version="3.1.0",
+ org.eclipse.mylyn.commons.core;bundle-version="3.1.0",
+ org.eclipse.mylyn.commons.net;bundle-version="3.1.0",
+ com.atlassian.connector.commons,
+ com.atlassian.connector.eclipse.core
+Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.bamboo.core.client;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.bamboo.core.configuration;x-internal:=true
+
