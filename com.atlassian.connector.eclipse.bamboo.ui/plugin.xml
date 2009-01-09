@@ -1,0 +1,16 @@
+<plugin>
+   <extension
+         point="org.eclipse.mylyn.tasks.ui.repositories">
+      <connectorCore
+            class="com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnector"
+            id="bamboo"
+            name="Bamboo">
+      </connectorCore>
+      <connectorUi
+            class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooRepositoryConnectorUi"
+            id="bamboo"
+            name="Bamboo">
+      </connectorUi>
+   </extension>
+
+</plugin>
