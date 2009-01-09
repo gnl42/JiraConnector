@@ -14,14 +14,15 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.ui.commons.TreeContentProvider;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.internal.provisional.tasks.ui.wizards.AbstractRepositoryQueryPage2;
@@ -91,34 +92,14 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(customButton);
 
 		filterList = new ListViewer(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-		filterList.setContentProvider(new ITreeContentProvider() {
+		filterList.setContentProvider(new TreeContentProvider() {
 
-			public Object[] getChildren(Object parentElement) {
-				return new Object[0];
-			}
-
-			public Object getParent(Object element) {
-				return null;
-			}
-
-			public boolean hasChildren(Object element) {
-				return false;
-			}
-
+			@Override
 			public Object[] getElements(Object inputElement) {
 				if (inputElement instanceof PredefinedFilter[]) {
 					return (Object[]) inputElement;
 				}
 				return new Object[0];
-			}
-
-			public void dispose() {
-				// ignore
-
-			}
-
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				// ignore
 			}
 
 		});
@@ -132,6 +113,13 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 			};
 		});
 		filterList.setInput(PredefinedFilter.values());
+		filterList.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			public void selectionChanged(SelectionChangedEvent event) {
+				updateQueryPage();
+			}
+
+		});
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(filterList.getControl());
 	}
