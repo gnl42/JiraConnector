@@ -7,9 +7,11 @@
             name="Crucible">
       </connectorCore>
       <connectorUi
+            brandingIcon="icons/obj16/crucible.png"
             class="com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleRepositoryConnectorUi"
             id="crucible"
-            name="Crucible">
+            name="Crucible"
+            overlayIcon="icons/obj16/crucible-overlay.png">
       </connectorUi>
    </extension>
    <extension
