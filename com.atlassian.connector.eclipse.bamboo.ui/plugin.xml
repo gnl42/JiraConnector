@@ -7,10 +7,27 @@
             name="Bamboo">
       </connectorCore>
       <connectorUi
+            brandingIcon="icons/obj16/bamboo.png"
             class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooRepositoryConnectorUi"
             id="bamboo"
-            name="Bamboo">
+            name="Bamboo"
+            overlayIcon="icons/obj16/bamboo-overlay.png">
       </connectorUi>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="com.atlassian.connector.eclipse.ui.category"
+            class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooView"
+            icon="icons/obj16/bamboo.png"
+            id="com.atlassian.connector.eclipse.bamboo.ui.plans"
+            name="Bamboo"
+            restorable="true">
+      </view>
+      <category
+            id="com.atlassian.connector.eclipse.ui.category"
+            name="Atlassian">
+      </category>
    </extension>
 
 </plugin>

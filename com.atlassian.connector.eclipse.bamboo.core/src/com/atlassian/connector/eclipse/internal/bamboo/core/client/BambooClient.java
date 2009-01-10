@@ -12,6 +12,8 @@
 package com.atlassian.connector.eclipse.internal.bamboo.core.client;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
+import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.bamboo.BambooServerFacade;
 import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
@@ -28,6 +30,7 @@ import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.util.Collection;
 
@@ -46,6 +49,8 @@ public class BambooClient {
 
 	private final BambooServerFacade server;
 
+	private final TaskRepository repository;
+
 	private abstract static class RemoteOperation<T> {
 
 		private final IProgressMonitor fMonitor;
@@ -63,9 +68,10 @@ public class BambooClient {
 
 	}
 
-	public BambooClient(AbstractWebLocation location, BambooServerCfg serverCfg, BambooServerFacade server,
-			BambooClientData data) {
+	public BambooClient(AbstractWebLocation location, TaskRepository repository, BambooServerCfg serverCfg,
+			BambooServerFacade server, BambooClientData data) {
 		this.location = location;
+		this.repository = repository;
 		this.clientData = data;
 		this.serverCfg = serverCfg;
 		this.server = server;
@@ -85,7 +91,7 @@ public class BambooClient {
 		IProgressMonitor monitor = op.getMonitor();
 		try {
 			monitor.beginTask("Connecting to Bamboo server", IProgressMonitor.UNKNOWN);
-			updateCredentials();
+			updateServer();
 			return op.run(op.getMonitor());
 		} catch (CrucibleLoginException e) {
 			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID,
@@ -100,7 +106,7 @@ public class BambooClient {
 		}
 	}
 
-	private void updateCredentials() {
+	private void updateServer() {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
 			String newUserName = credentials.getUserName();
@@ -108,6 +114,8 @@ public class BambooClient {
 			serverCfg.setUsername(newUserName);
 			serverCfg.setPassword(newPassword);
 		}
+		serverCfg.setPlans(BambooUtil.getSubscribedPlans(repository));
+		serverCfg.setUseFavourites(false);
 	}
 
 	public boolean hasRepositoryData() {
@@ -123,7 +131,7 @@ public class BambooClient {
 			@Override
 			public BambooClientData run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
-				monitor.subTask("Retrieving Bamboo plans");
+				monitor.subTask("Retrieving plans");
 				BambooClientData newClientData = new BambooClientData();
 				Collection<BambooPlan> projects = server.getPlanList(serverCfg);
 				newClientData.setPlans(projects);
@@ -132,4 +140,16 @@ public class BambooClient {
 		});
 		return clientData;
 	}
+
+	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor) throws CoreException {
+		return execute(new RemoteOperation<Collection<BambooBuild>>(monitor) {
+			@Override
+			public Collection<BambooBuild> run(IProgressMonitor monitor) throws CrucibleLoginException,
+					RemoteApiException, ServerPasswordNotProvidedException {
+				monitor.subTask("Retrieving builds");
+				return server.getSubscribedPlansResults(serverCfg);
+			}
+		});
+	}
+
 }

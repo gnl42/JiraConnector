@@ -91,7 +91,7 @@ public class BambooRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public String getRepositoryUrlFromTaskUrl(String taskFullUrl) {
-		return BambooUtil.getRepositoryUrlFromUrl(taskFullUrl);
+		return null;
 	}
 
 	@Override
@@ -102,12 +102,12 @@ public class BambooRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public String getTaskIdFromTaskUrl(String taskFullUrl) {
-		return BambooUtil.getTaskIdFromUrl(taskFullUrl);
+		return null;
 	}
 
 	@Override
 	public String getTaskUrl(String repositoryUrl, String taskId) {
-		return BambooUtil.getBuildPlanUrl(repositoryUrl, taskId);
+		return null;
 	}
 
 	@Override

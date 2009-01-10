@@ -62,13 +62,14 @@ public class BambooHttpSessionCallback implements HttpSessionCallback {
 		httpClients.remove(serverCfg);
 	}
 
-	public synchronized void initialize(AbstractWebLocation location, ServerCfg serverCfg) {
+	public synchronized HttpClient initialize(AbstractWebLocation location, ServerCfg serverCfg) {
 		HttpClient httpClient = httpClients.get(serverCfg);
 		if (httpClient == null) {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 			httpClients.put(serverCfg, httpClient);
 		}
 		initializeHttpClient(location, httpClient);
+		return httpClient;
 	}
 
 	private void initializeHttpClient(AbstractWebLocation location, HttpClient httpClient) {

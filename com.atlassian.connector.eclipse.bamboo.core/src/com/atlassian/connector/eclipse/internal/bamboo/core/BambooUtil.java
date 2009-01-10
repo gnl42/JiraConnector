@@ -11,7 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
-import org.eclipse.mylyn.internal.provisional.tasks.core.TasksUtil;
+import com.atlassian.theplugin.commons.SubscribedPlan;
+
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.StringTokenizer;
 
 /**
  * Provides utility methods for Bamboo.
@@ -20,65 +26,30 @@ import org.eclipse.mylyn.internal.provisional.tasks.core.TasksUtil;
  */
 public final class BambooUtil {
 
-	public static final String KEY_FILTER_ID = "FilterId";
-
-	private static final String CRUCIBLE_URL_START = "cru/";
-
-	private static final String PREDEFINED_FILER_START = CRUCIBLE_URL_START + "?filter=";
+	private static final String KEY_SUBSCRIBED_PLANS = "com.atlassian.connector.eclipse.bamboo.subscribedPlans";
 
 	private BambooUtil() {
 	}
 
-	public static String getPermIdFromTaskId(String taskId) {
-		if (!taskId.contains("%")) {
-			// this means that it was already encoded
-			return taskId;
+	public static void setSubcribedPlans(TaskRepository repository, Collection<SubscribedPlan> plans) {
+		StringBuffer sb = new StringBuffer();
+		for (SubscribedPlan plan : plans) {
+			sb.append(plan.getPlanId());
+			sb.append(",");
 		}
-		return TasksUtil.decode(taskId);
+		repository.setProperty(KEY_SUBSCRIBED_PLANS, sb.toString());
 	}
 
-	public static String getTaskIdFromPermId(String permId) {
-		if (permId.contains("%")) {
-			// this means that it was already encoded
-			return permId;
-		}
-		return TasksUtil.encode(permId);
-	}
-
-	public static String addTrailingSlash(String repositoryUrl) {
-		if (repositoryUrl.endsWith("/")) {
-			return repositoryUrl;
-		} else {
-			return repositoryUrl + "/";
-		}
-	}
-
-	public static String getBuildPlanUrl(String repositoryUrl, String taskId) {
-		// TODO handle both taskid and task key
-		String url = addTrailingSlash(repositoryUrl);
-		url += CRUCIBLE_URL_START + getPermIdFromTaskId(taskId);
-		return url;
-	}
-
-	public static String getTaskIdFromUrl(String taskFullUrl) {
-		int index = taskFullUrl.indexOf(CRUCIBLE_URL_START);
-		if (index != -1 && index + CRUCIBLE_URL_START.length() < taskFullUrl.length()) {
-			String permId = taskFullUrl.substring(index + CRUCIBLE_URL_START.length());
-			if (permId.contains("/")) {
-				// this isnt the url of the task
-				return null;
-			} else {
-				return getTaskIdFromPermId(permId);
+	public static Collection<SubscribedPlan> getSubscribedPlans(TaskRepository repository) {
+		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>();
+		String value = repository.getProperty(KEY_SUBSCRIBED_PLANS);
+		if (value != null) {
+			StringTokenizer t = new StringTokenizer(value, ",");
+			while (t.hasMoreTokens()) {
+				plans.add(new SubscribedPlan(t.nextToken()));
 			}
 		}
-		return null;
+		return plans;
 	}
 
-	public static String getRepositoryUrlFromUrl(String taskFullUrl) {
-		int index = taskFullUrl.indexOf(CRUCIBLE_URL_START);
-		if (index != -1) {
-			return taskFullUrl.substring(0, index);
-		}
-		return null;
-	}
 }
