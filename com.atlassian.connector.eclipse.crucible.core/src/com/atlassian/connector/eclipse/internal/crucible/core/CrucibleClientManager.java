@@ -26,6 +26,7 @@ import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.provisional.tasks.core.RepositoryClientManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
 import java.util.HashMap;
@@ -48,6 +49,17 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	public CrucibleClientManager(File cacheFile) {
 		super(cacheFile);
 		clientCallback = new CrucibleHttpSessionCallback();
+	}
+
+	@Override
+	public synchronized CrucibleClient getClient(TaskRepository taskRepository) {
+
+		CrucibleClient client = super.getClient(taskRepository);
+		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
+		CrucibleServerCfg serverCfg = getServerCfg(location, taskRepository, false);
+		updateHttpSessionCallback(location, serverCfg);
+
+		return client;
 	}
 
 	@Override
@@ -94,8 +106,12 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	}
 
 	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, CrucibleServerCfg serverCfg) {
-		clientCallback.initialize(location, serverCfg);
+		updateHttpSessionCallback(location, serverCfg);
 		return clientCallback;
+	}
+
+	private void updateHttpSessionCallback(AbstractWebLocation location, CrucibleServerCfg serverCfg) {
+		clientCallback.updateHostConfiguration(location, serverCfg);
 	}
 
 	private CrucibleServerCfg getServerCfg(AbstractWebLocation location, TaskRepository taskRepository,
@@ -120,5 +136,15 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	@Override
 	protected CrucibleClientData createRepositoryConfiguration() {
 		return new CrucibleClientData();
+	}
+
+	@Override
+	public TaskRepositoryLocationFactory getTaskRepositoryLocationFactory() {
+		TaskRepositoryLocationFactory parentFactory = super.getTaskRepositoryLocationFactory();
+		if (parentFactory == null) {
+			return new TaskRepositoryLocationFactory();
+		} else {
+			return parentFactory;
+		}
 	}
 }

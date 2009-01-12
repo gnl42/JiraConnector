@@ -65,16 +65,16 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 		}
 	}
 
-	public synchronized void initialize(AbstractWebLocation location, CrucibleServerCfg serverCfg) {
+	public synchronized void updateHostConfiguration(AbstractWebLocation location, CrucibleServerCfg serverCfg) {
 		HttpClient httpClient = httpClients.get(serverCfg);
 		if (httpClient == null) {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 			httpClients.put(serverCfg, httpClient);
 		}
-		initializeHttpClient(location, httpClient);
+		setupHttpClient(location, httpClient);
 	}
 
-	private void initializeHttpClient(AbstractWebLocation location, HttpClient httpClient) {
+	private void setupHttpClient(AbstractWebLocation location, HttpClient httpClient) {
 		HostConfiguration hostConfiguration = WebUtil.createHostConfiguration(httpClient, location,
 				new NullProgressMonitor());
 		httpClient.setHostConfiguration(hostConfiguration);
