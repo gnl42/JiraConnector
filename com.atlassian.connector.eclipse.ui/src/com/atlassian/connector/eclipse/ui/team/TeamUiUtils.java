@@ -139,7 +139,7 @@ public final class TeamUiUtils {
 		}
 	}
 
-	private static void openLocalResource(IResource resource) {
+	public static void openLocalResource(IResource resource) {
 		// the local revision matches the revision we care about and the file is in sync
 		try {
 			IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), (IFile) resource, true);

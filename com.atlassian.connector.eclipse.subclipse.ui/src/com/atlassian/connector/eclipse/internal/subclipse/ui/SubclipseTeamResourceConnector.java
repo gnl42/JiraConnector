@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -24,12 +25,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.tigris.subversion.subclipse.core.ISVNLocalFile;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
@@ -37,17 +38,12 @@ import org.tigris.subversion.subclipse.core.ISVNResource;
 import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.subclipse.core.SVNTeamProvider;
-import org.tigris.subversion.subclipse.core.resources.RemoteFile;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
 import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
-import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
-import org.tigris.subversion.svnclientadapter.ISVNInfo;
-import org.tigris.subversion.svnclientadapter.SVNClientException;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 import org.tigris.subversion.svnclientadapter.utils.SVNUrlUtils;
 
-import java.net.MalformedURLException;
 import java.text.ParseException;
 
 /**
@@ -80,16 +76,25 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			IResource localResource = getLocalResource(location, filePath);
 
 			if (localResource != null) {
-				ISVNRemoteFile remoteFile = getRemoteFile(localResource, revisionString, location);
+				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
+				ISVNLocalFile localFile = getLocalFile(localResource, location);
 
-				if (remoteFile != null) {
-					RemoteFileEditorInput editorInput = new RemoteFileEditorInput(remoteFile, monitor);
-					String editorId = getEditorId(workbench, remoteFile);
-					page.openEditor(editorInput, editorId);
-
+				if (localFile.getRevision().equals(svnRevision) && !localFile.isDirty()) {
+					// the file is not dirty and we have the right local copy
+					TeamUiUtils.openLocalResource(localResource);
 					return true;
 				} else {
-					MessageDialog.openInformation(null, "Unable to find file", "May have been deleted");
+					ISVNRemoteFile remoteFile = getRemoteFile(localResource, svnRevision, location);
+					if (remoteFile != null) {
+						// we need to open the remote resource since the file is either dirty or the wrong revision 
+						RemoteFileEditorInput editorInput = new RemoteFileEditorInput(remoteFile, monitor);
+						String editorId = getEditorId(workbench, remoteFile);
+						page.openEditor(editorInput, editorId);
+
+						return true;
+					} else {
+						MessageDialog.openInformation(null, "Unable to find file", "May have been deleted");
+					}
 				}
 			} else {
 				MessageDialog.openInformation(null, "Unable to find file",
@@ -105,10 +110,18 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return false;
 	}
 
-	private ISVNRemoteFile getRemoteFile(IResource localResource, String revisionString, ISVNRepositoryLocation location)
-			throws ParseException, SVNException {
+	private ISVNLocalFile getLocalFile(IResource localResource, ISVNRepositoryLocation location) throws SVNException {
+		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(localResource);
 
-		SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
+		if (local.isManaged()) {
+			return (ISVNLocalFile) local;
+		}
+		return null;
+	}
+
+	private ISVNRemoteFile getRemoteFile(IResource localResource, SVNRevision svnRevision,
+			ISVNRepositoryLocation location) throws ParseException, SVNException {
+
 		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(localResource);
 
 		if (local.isManaged()) {
@@ -147,44 +160,6 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	private RemoteFile getRemoteFile(String repoUrl, String filePath, String revisionString,
-			ISVNRepositoryLocation location) throws MalformedURLException, ParseException, SVNException {
-		RemoteFile file;
-		SVNUrl svnUrl = new SVNUrl(repoUrl).appendPath(filePath);
-		SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
-
-		ISVNClientAdapter svnClient = location.getSVNClient();
-		ISVNInfo info = null;
-		try {
-			if (location.getRepositoryRoot().equals(svnUrl)) {
-				file = new RemoteFile(location, svnUrl, svnRevision);
-			} else {
-				info = svnClient.getInfo(svnUrl, svnRevision, svnRevision);
-			}
-		} catch (SVNClientException e) {
-			throw new SVNException("Can't get latest remote resource for " + svnUrl);
-		}
-
-		if (info == null) {
-			file = null;//new RemoteFile(location, svnUrl, svnRevision);
-		} else {
-			file = new RemoteFile(
-					null, // we don't know its parent
-					location, svnUrl, svnRevision, info.getLastChangedRevision(), info.getLastChangedDate(),
-					info.getLastCommitAuthor());
-		}
-		return file;
-	}
-
-	private IResource getLocalResourceForRemove(IResourceVariant resource) throws SVNException {
-		return null;
-	}
-
-	private IResourceVariant getRemoteResourceForLocal(IResource resource) throws SVNException {
-		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(resource);
-		return local.getRemoteResource(SVNRevision.BASE);
-	}
-
 	private String getEditorId(IWorkbench workbench, ISVNRemoteFile file) {
 		IEditorRegistry registry = workbench.getEditorRegistry();
 		String filename = file.getName();
@@ -200,5 +175,35 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 		return id;
 	}
+
+// Code that can work if there is no file in the local workspace 
+//	private RemoteFile getRemoteFile(String repoUrl, String filePath, String revisionString,
+//	ISVNRepositoryLocation location) throws MalformedURLException, ParseException, SVNException {
+//RemoteFile file;
+//SVNUrl svnUrl = new SVNUrl(repoUrl).appendPath(filePath);
+//SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
+//
+//ISVNClientAdapter svnClient = location.getSVNClient();
+//ISVNInfo info = null;
+//try {
+//	if (location.getRepositoryRoot().equals(svnUrl)) {
+//		file = new RemoteFile(location, svnUrl, svnRevision);
+//	} else {
+//		info = svnClient.getInfo(svnUrl, svnRevision, svnRevision);
+//	}
+//} catch (SVNClientException e) {
+//	throw new SVNException("Can't get latest remote resource for " + svnUrl);
+//}
+//
+//if (info == null) {
+//	file = null;//new RemoteFile(location, svnUrl, svnRevision);
+//} else {
+//	file = new RemoteFile(
+//			null, // we don't know its parent
+//			location, svnUrl, svnRevision, info.getLastChangedRevision(), info.getLastChangedDate(),
+//			info.getLastCommitAuthor());
+//}
+//return file;
+//}
 
 }
