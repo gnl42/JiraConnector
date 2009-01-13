@@ -1,0 +1,10 @@
+<plugin>
+   <extension
+         point="com.atlassian.connector.eclipse.ui.teamConnector">
+      <teamConnector
+            class="com.atlassian.connector.eclipse.internal.subclipse.ui.SubclipseTeamResourceConnector">
+      </teamConnector>
+   </extension>
+  
+
+</plugin>

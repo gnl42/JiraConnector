@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Subclipse Ui Plug-in
+Bundle-SymbolicName: com.atlassian.connector.eclipse.subclipse.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.atlassian.connector.eclipse.internal.subclipse.ui.AtlassianSubclipseUiPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.atlassian.connector.eclipse.ui,
+ org.eclipse.mylyn.commons.core,
+ org.tigris.subversion.subclipse.core,
+ org.tigris.subversion.subclipse.ui,
+ org.eclipse.team.core,
+ org.eclipse.core.filesystem,
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources
+Eclipse-LazyStart: true
