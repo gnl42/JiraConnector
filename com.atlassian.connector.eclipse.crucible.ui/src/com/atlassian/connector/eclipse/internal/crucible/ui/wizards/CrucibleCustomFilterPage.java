@@ -36,10 +36,11 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,19 +52,23 @@ import java.util.Set;
  */
 public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
+	private static final String ANY = "<Any>";
+
+	private static final String ALL = "<All>";
+
+	private static final String COMPLETE = "Complete";
+
 	private static final int STATES_LIST_HEIGHT_HINT = 50;
 
 	private static final String TITLE = "New Crucible Query";
 
-	private static final CrucibleCachedUser USER_ANY = new CrucibleCachedUser("<Any>", "ANY_USER");
+	private static final CrucibleCachedUser USER_ANY = new CrucibleCachedUser(ANY, "ANY_USER");
 
-	private static final CrucibleCachedProject PROJECT_ANY = new CrucibleCachedProject("<Any>", "<Any>", "ANY_PROJECT");
+	private static final CrucibleCachedProject PROJECT_ANY = new CrucibleCachedProject(ANY, ANY, "ANY_PROJECT");
 
-	private Button allCompleteButton;
+	private ComboViewer orRolesCombo;
 
-	private Button orRolesButton;
-
-	private Button completeButton;
+	private ComboViewer reviewerStatusCombo;
 
 	private ComboViewer authorCombo;
 
@@ -121,48 +126,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		projectCombo.getControl()
 				.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 
-		label = new Label(composite, SWT.NONE);
-		label.setText("Author: ");
-		label.setLayoutData(new GridData());
-
-		authorCombo = new ComboViewer(composite, SWT.READ_ONLY);
-		authorCombo.setContentProvider(new CrucibleUserContentProvider());
-		authorCombo.setLabelProvider(new CrucibleUserLabelProvider());
-		authorCombo.setSorter(new CrucibleUserSorter());
-		authorCombo.getControl().setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-
-		label = new Label(composite, SWT.NONE);
-		label.setText("Moderator: ");
-		label.setLayoutData(new GridData());
-
-		moderatorCombo = new ComboViewer(composite, SWT.READ_ONLY);
-		moderatorCombo.setContentProvider(new CrucibleUserContentProvider());
-		moderatorCombo.setLabelProvider(new CrucibleUserLabelProvider());
-		moderatorCombo.setSorter(new CrucibleUserSorter());
-		moderatorCombo.getControl().setLayoutData(
-				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-
-		label = new Label(composite, SWT.NONE);
-		label.setText("Creator: ");
-		label.setLayoutData(new GridData());
-
-		creatorCombo = new ComboViewer(composite, SWT.READ_ONLY);
-		creatorCombo.setContentProvider(new CrucibleUserContentProvider());
-		creatorCombo.setLabelProvider(new CrucibleUserLabelProvider());
-		creatorCombo.setSorter(new CrucibleUserSorter());
-		creatorCombo.getControl()
-				.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-
-		label = new Label(composite, SWT.NONE);
-		label.setText("Reviewer: ");
-		label.setLayoutData(new GridData());
-
-		reviewerCombo = new ComboViewer(composite, SWT.READ_ONLY);
-		reviewerCombo.setContentProvider(new CrucibleUserContentProvider());
-		reviewerCombo.setLabelProvider(new CrucibleUserLabelProvider());
-		reviewerCombo.setSorter(new CrucibleUserSorter());
-		reviewerCombo.getControl().setLayoutData(
-				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+		createRolesGroup(composite);
 
 		label = new Label(composite, SWT.NONE);
 		label.setText("State: ");
@@ -193,25 +157,101 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		gd.heightHint = STATES_LIST_HEIGHT_HINT;
 		statesList.getControl().setLayoutData(gd);
 
-		allCompleteButton = new Button(composite, SWT.CHECK);
-		allCompleteButton.setText("All Complete");
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		allCompleteButton.setLayoutData(gd);
-
-		completeButton = new Button(composite, SWT.CHECK);
-		completeButton.setText("Complete");
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		completeButton.setLayoutData(gd);
-
-		orRolesButton = new Button(composite, SWT.CHECK);
-		orRolesButton.setText("Or Roles");
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		orRolesButton.setLayoutData(gd);
-
 		doRefresh();
+	}
+
+	private void createRolesGroup(Composite composite) {
+		Label label;
+		Group rolesGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+		rolesGroup.setText("Roles");
+		rolesGroup.setLayout(new GridLayout(2, false));
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		gd.horizontalIndent = 0;
+		gd.horizontalSpan = 2;
+		rolesGroup.setLayoutData(gd);
+
+		label = new Label(rolesGroup, SWT.NONE);
+		label.setText("Author: ");
+		label.setLayoutData(new GridData());
+
+		authorCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
+		authorCombo.setContentProvider(new CrucibleUserContentProvider());
+		authorCombo.setLabelProvider(new CrucibleUserLabelProvider());
+		authorCombo.setSorter(new CrucibleUserSorter());
+		authorCombo.getControl().setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+
+		label = new Label(rolesGroup, SWT.NONE);
+		label.setText("Moderator: ");
+		label.setLayoutData(new GridData());
+
+		moderatorCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
+		moderatorCombo.setContentProvider(new CrucibleUserContentProvider());
+		moderatorCombo.setLabelProvider(new CrucibleUserLabelProvider());
+		moderatorCombo.setSorter(new CrucibleUserSorter());
+		moderatorCombo.getControl().setLayoutData(
+				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+
+		label = new Label(rolesGroup, SWT.NONE);
+		label.setText("Creator: ");
+		label.setLayoutData(new GridData());
+
+		creatorCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
+		creatorCombo.setContentProvider(new CrucibleUserContentProvider());
+		creatorCombo.setLabelProvider(new CrucibleUserLabelProvider());
+		creatorCombo.setSorter(new CrucibleUserSorter());
+		creatorCombo.getControl()
+				.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+
+		label = new Label(rolesGroup, SWT.NONE);
+		label.setText("Reviewer: ");
+		label.setLayoutData(new GridData());
+
+		reviewerCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
+		reviewerCombo.setContentProvider(new CrucibleUserContentProvider());
+		reviewerCombo.setLabelProvider(new CrucibleUserLabelProvider());
+		reviewerCombo.setSorter(new CrucibleUserSorter());
+		reviewerCombo.getControl().setLayoutData(
+				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+
+		label = new Label(rolesGroup, SWT.NONE);
+		label.setText("Reviewer Status: ");
+		label.setLayoutData(new GridData());
+
+		reviewerStatusCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
+		reviewerStatusCombo.setContentProvider(new TreeContentProvider() {
+			@Override
+			@SuppressWarnings("unchecked")
+			public Object[] getElements(Object inputElement) {
+				if (inputElement instanceof Collection) {
+					return ((Collection) inputElement).toArray();
+				}
+				return new Object[0];
+			}
+		});
+		reviewerStatusCombo.setLabelProvider(new LabelProvider());
+		reviewerStatusCombo.setSorter(new ViewerSorter());
+		reviewerStatusCombo.getControl().setLayoutData(
+				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+
+		label = new Label(rolesGroup, SWT.NONE);
+		label.setText("Match Roles: ");
+		label.setLayoutData(new GridData());
+
+		orRolesCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
+		orRolesCombo.setContentProvider(new TreeContentProvider() {
+			@Override
+			@SuppressWarnings("unchecked")
+			public Object[] getElements(Object inputElement) {
+				if (inputElement instanceof Collection) {
+					return ((Collection) inputElement).toArray();
+				}
+				return new Object[0];
+			}
+		});
+		orRolesCombo.setLabelProvider(new LabelProvider());
+		orRolesCombo.setSorter(new ViewerSorter());
+		orRolesCombo.getControl()
+				.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 	}
 
 	@Override
@@ -241,6 +281,12 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		reviewerCombo.setSelection(new StructuredSelection(USER_ANY));
 
 		statesList.setInput(State.values());
+
+		orRolesCombo.setInput(Arrays.asList(ALL, ANY));
+		orRolesCombo.setSelection(new StructuredSelection(ALL));
+
+		reviewerStatusCombo.setInput(Arrays.asList(ANY, COMPLETE));
+		reviewerStatusCombo.setSelection(new StructuredSelection(ANY));
 
 	}
 
@@ -296,14 +342,23 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 			statesList.setSelection(new StructuredSelection(states));
 		}
 
-		String allComplete = query.getAttribute(CustomFilter.ALLCOMPLETE);
-		allCompleteButton.setSelection(Boolean.parseBoolean(allComplete));
+		String allCompleteString = query.getAttribute(CustomFilter.ALLCOMPLETE);
+		String completeString = query.getAttribute(CustomFilter.COMPLETE);
+		boolean allComplete = Boolean.parseBoolean(allCompleteString);
+		boolean complete = Boolean.parseBoolean(completeString);
 
-		String complete = query.getAttribute(CustomFilter.COMPLETE);
-		completeButton.setSelection(Boolean.parseBoolean(complete));
+		if (!complete && !allComplete) {
+			reviewerStatusCombo.setSelection(new StructuredSelection(ANY));
+		} else {
+			reviewerStatusCombo.setSelection(new StructuredSelection(COMPLETE));
+		}
 
 		String orRoles = query.getAttribute(CustomFilter.ORROLES);
-		orRolesButton.setSelection(Boolean.parseBoolean(orRoles));
+		if (Boolean.parseBoolean(orRoles)) {
+			orRolesCombo.setSelection(new StructuredSelection(ANY));
+		} else {
+			orRolesCombo.setSelection(new StructuredSelection(ALL));
+		}
 		return true;
 	}
 
@@ -345,15 +400,26 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 	public void applyTo(IRepositoryQuery query) {
 		query.setSummary(getQueryTitle());
 
-		query.setAttribute(CustomFilter.ALLCOMPLETE, getAllComplete());
 		query.setAttribute(CustomFilter.AUTHOR, getAuthor());
-		query.setAttribute(CustomFilter.COMPLETE, getComplete());
 		query.setAttribute(CustomFilter.CREATOR, getCreator());
 		query.setAttribute(CustomFilter.MODERATOR, getModerator());
-		query.setAttribute(CustomFilter.ORROLES, getOrRoles());
 		query.setAttribute(CustomFilter.PROJECT, getProject());
-		query.setAttribute(CustomFilter.REVIEWER, getReviewer());
+
+		String reviewer = getReviewer();
+		query.setAttribute(CustomFilter.REVIEWER, reviewer);
 		query.setAttribute(CustomFilter.STATES, getStates());
+
+		query.setAttribute(CustomFilter.ORROLES, getOrRoles());
+
+		String reviewerStatus = getReviewerStatus();
+		Boolean complete = ANY.equals(reviewerStatus) ? Boolean.FALSE : COMPLETE.equals(reviewerStatus);
+		if (reviewer != null && reviewer.length() > 0) {
+			query.setAttribute(CustomFilter.ALLCOMPLETE, "");
+			query.setAttribute(CustomFilter.COMPLETE, Boolean.toString(complete));
+		} else {
+			query.setAttribute(CustomFilter.ALLCOMPLETE, Boolean.toString(complete));
+			query.setAttribute(CustomFilter.COMPLETE, "");
+		}
 
 		// TODO figure out how to get a url for a custom filter
 //		query.setUrl(CrucibleUtil.createFilterWebUrl(getTaskRepository().getUrl(), query));
@@ -409,7 +475,18 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 	}
 
 	private String getOrRoles() {
-		return Boolean.toString(orRolesButton.getSelection());
+
+		ISelection selection = orRolesCombo.getSelection();
+		if (selection instanceof StructuredSelection) {
+			Object obj = ((StructuredSelection) selection).getFirstElement();
+			if (obj.equals(ALL)) {
+				return Boolean.toString(false);
+			} else if (obj.equals(ANY)) {
+				return Boolean.toString(true);
+			}
+		}
+
+		return Boolean.toString(false);
 	}
 
 	private String getModerator() {
@@ -442,10 +519,6 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		return "";
 	}
 
-	private String getComplete() {
-		return Boolean.toString(completeButton.getSelection());
-	}
-
 	private String getAuthor() {
 		ISelection selection = authorCombo.getSelection();
 		if (selection instanceof StructuredSelection) {
@@ -461,8 +534,15 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		return "";
 	}
 
-	private String getAllComplete() {
-		return Boolean.toString(allCompleteButton.getSelection());
+	private String getReviewerStatus() {
+		ISelection selection = reviewerStatusCombo.getSelection();
+		if (selection instanceof StructuredSelection) {
+			Object obj = ((StructuredSelection) selection).getFirstElement();
+			if (obj instanceof String) {
+				return (String) obj;
+			}
+		}
+		return null;
 	}
 
 	@Override

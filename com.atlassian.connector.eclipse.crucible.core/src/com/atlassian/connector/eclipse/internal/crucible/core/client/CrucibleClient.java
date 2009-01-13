@@ -81,14 +81,13 @@ public class CrucibleClient {
 		}
 	}
 
-	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
-			throws CoreException {
+	public Review getCrucibleReview(String taskId, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			updateCredentials();
 			String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
 			Review review = crucibleServer.getReview(serverCfg, new PermIdBean(permId));
-			return getTaskDataForReview(taskRepository, review);
+			return review;
 		} catch (CrucibleLoginException e) {
 			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
@@ -98,6 +97,13 @@ public class CrucibleClient {
 			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
 		}
+	}
+
+	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
+			throws CoreException {
+		monitor = Policy.monitorFor(monitor);
+		return getTaskDataForReview(taskRepository, getCrucibleReview(taskId, monitor));
+
 	}
 
 	public void performQuery(TaskRepository taskRepository, IRepositoryQuery query, TaskDataCollector resultCollector,
@@ -131,9 +137,17 @@ public class CrucibleClient {
 
 				CustomFilterBean customFilter = new CustomFilterBean();
 
-				customFilter.setAllReviewersComplete(Boolean.parseBoolean(allComplete));
+				if (allComplete != null && allComplete.length() > 0) {
+					customFilter.setAllReviewersComplete(Boolean.parseBoolean(allComplete));
+				} else {
+					customFilter.setAllReviewersComplete(null);
+				}
 				customFilter.setAuthor(author);
-				customFilter.setComplete(Boolean.parseBoolean(complete));
+				if (complete != null && complete.length() > 0) {
+					customFilter.setComplete(Boolean.parseBoolean(complete));
+				} else {
+					customFilter.setComplete(null);
+				}
 				customFilter.setCreator(creator);
 				customFilter.setModerator(moderator);
 				customFilter.setOrRoles(Boolean.parseBoolean(orRoles));
