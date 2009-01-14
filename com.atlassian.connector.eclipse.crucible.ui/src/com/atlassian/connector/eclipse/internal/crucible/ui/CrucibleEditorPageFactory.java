@@ -12,11 +12,11 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPageFactory;
-import org.eclipse.mylyn.tasks.ui.editors.BrowserFormPage;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.graphics.Image;
@@ -41,7 +41,7 @@ public class CrucibleEditorPageFactory extends AbstractTaskEditorPageFactory {
 
 	@Override
 	public IFormPage createPage(TaskEditor parentEditor) {
-		return new BrowserFormPage(parentEditor, TITLE);
+		return new CrucibleReviewEditorPage(parentEditor, TITLE);
 	}
 
 	@Override

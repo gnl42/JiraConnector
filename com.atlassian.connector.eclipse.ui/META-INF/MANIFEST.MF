@@ -12,9 +12,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.eclipse.core.filesystem,
  org.eclipse.mylyn.commons.core,
- org.eclipse.ui.ide
+ org.eclipse.ui.ide,
+ org.eclipse.ui.forms
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.ui,
  com.atlassian.connector.eclipse.ui.commons,
+ com.atlassian.connector.eclipse.ui.editor,
  com.atlassian.connector.eclipse.ui.team
