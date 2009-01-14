@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -178,6 +179,8 @@ public class CrucibleReviewEditorPage extends FormPage {
 				}
 				try {
 					review = client.getCrucibleReview(getTask().getTaskId(), monitor);
+
+					TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
 					return Status.OK_STATUS;
 				} catch (CoreException e) {
 					return e.getStatus();
