@@ -12,16 +12,27 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.ui.AtlassianImages;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
+
+import java.util.List;
 
 /**
  * A UI part that is expandable like a tree
@@ -42,19 +53,28 @@ public abstract class ExpandablePart {
 
 		String headerText = getSectionHeaderText();
 
-		int style = ExpandableComposite.TWISTIE;
+		int style = ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT | ExpandableComposite.TWISTIE;
+
 		commentSection = toolkit.createSection(parent, style);
 		commentSection.setText(headerText);
 		commentSection.setTitleBarForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(commentSection);
 
+		final Composite actionsComposite = createSectionAnnotationsAndToolbar(commentSection, toolkit);
+
 		if (commentSection.isExpanded() || crucibleEditor == null) {
+			fillToolBar(actionsComposite, toolkit, true);
 			Composite composite = createSectionContents(commentSection, toolkit);
 			commentSection.setClient(composite);
+
 		} else {
+			fillToolBar(actionsComposite, toolkit, false);
 			commentSection.addExpansionListener(new ExpansionAdapter() {
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
+
+					fillToolBar(actionsComposite, toolkit, e.getState());
+
 					if (commentSection.getClient() == null) {
 						try {
 							if (crucibleEditor != null) {
@@ -76,6 +96,77 @@ public abstract class ExpandablePart {
 		}
 		return commentSection;
 	}
+
+	private void fillToolBar(Composite actionsComposite, FormToolkit toolkit, boolean isExpanded) {
+		List<IAction> toolbarActions = getToolbarActions(isExpanded);
+
+		for (Control control : actionsComposite.getChildren()) {
+			if (control instanceof ImageHyperlink) {
+				control.dispose();
+			}
+		}
+
+		if (toolbarActions != null) {
+
+			for (final IAction action : toolbarActions) {
+				ImageHyperlink link = toolkit.createImageHyperlink(actionsComposite, SWT.NONE);
+				if (action.getImageDescriptor() != null) {
+					link.setImage(AtlassianImages.getImage(action.getImageDescriptor()));
+				} else {
+					link.setText(action.getText());
+				}
+				link.setToolTipText(action.getToolTipText());
+				link.addHyperlinkListener(new HyperlinkAdapter() {
+					@Override
+					public void linkActivated(HyperlinkEvent e) {
+						action.run();
+					}
+				});
+			}
+		}
+		actionsComposite.getParent().layout();
+	}
+
+	/**
+	 * @return A composite that image hyperlinks can be placed on
+	 */
+	protected Composite createSectionAnnotationsAndToolbar(Section section, FormToolkit toolkit) {
+
+		Composite toolbarComposite = toolkit.createComposite(section);
+		section.setTextClient(toolbarComposite);
+		toolbarComposite.setBackground(null);
+		RowLayout rowLayout = new RowLayout();
+		rowLayout.marginTop = 0;
+		rowLayout.marginBottom = 0;
+		toolbarComposite.setLayout(rowLayout);
+
+		ImageDescriptor annotationImage = getAnnotationImage();
+		if (annotationImage != null) {
+			Label imageLabel = toolkit.createLabel(toolbarComposite, "");
+			imageLabel.setImage(AtlassianImages.getImage(annotationImage));
+		}
+
+		String annotationsText = getAnnotationText();
+		if (annotationsText == null) {
+			annotationsText = "";
+		}
+		toolkit.createLabel(toolbarComposite, annotationsText);
+
+//		Composite actionsComposite = toolkit.createComposite(toolbarComposite);
+//		actionsComposite.setBackground(null);
+//		rowLayout = new RowLayout();
+//		rowLayout.marginTop = 0;
+//		rowLayout.marginBottom = 0;
+//		actionsComposite.setLayout(rowLayout);
+
+		return toolbarComposite;
+	}
+
+	protected abstract List<IAction> getToolbarActions(boolean isExpanded);
+
+	protected abstract String getAnnotationText();
+
+	protected abstract ImageDescriptor getAnnotationImage();
 
 	protected abstract String getSectionHeaderText();
 

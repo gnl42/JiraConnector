@@ -12,10 +12,13 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -66,7 +69,7 @@ public class CrucibleFilePart extends ExpandablePart {
 		});
 
 		for (VersionedComment comment : versionedComments) {
-			VersionedCommentPart fileComposite = new VersionedCommentPart(comment, crucibleEditor);
+			CommentPart fileComposite = new VersionedCommentPart(comment, crucibleEditor);
 			Control fileControl = fileComposite.createControl(composite, toolkit);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
 		}
@@ -76,10 +79,25 @@ public class CrucibleFilePart extends ExpandablePart {
 
 	@Override
 	protected String getSectionHeaderText() {
-		return crucibleFile.getFileDescriptor().getUrl() + "\t[Rev:"
-				+ crucibleFile.getOldFileDescriptor().getRevision() + "-"
-				+ crucibleFile.getFileDescriptor().getRevision() + "]" + "\t("
-				+ crucibleFile.getVersionedComments().size() + " comments)";
+		return crucibleFile.getFileDescriptor().getUrl();
+	}
+
+	@Override
+	protected String getAnnotationText() {
+		return "[Rev:" + crucibleFile.getOldFileDescriptor().getRevision() + "-"
+				+ crucibleFile.getFileDescriptor().getRevision() + "]";
+	}
+
+	@Override
+	protected ImageDescriptor getAnnotationImage() {
+		return null;
+	}
+
+	@Override
+	protected List<IAction> getToolbarActions(boolean isExpanded) {
+		List<IAction> actions = new ArrayList<IAction>();
+		actions.add(new OpenVersionedVirtualFileAction(crucibleFile.getFileDescriptor()));
+		return actions;
 	}
 
 }

@@ -45,14 +45,6 @@ public class VersionedCommentPart extends CommentPart {
 		String headerText = versionedComment.getAuthor().getDisplayName() + " ";
 		headerText += DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
 				versionedComment.getCreateDate());
-		if (versionedComment.getToEndLine() != 0) {
-			headerText += "\t[Lines: " + versionedComment.getToStartLine() + " - " + versionedComment.getToEndLine()
-					+ "]";
-		} else if (versionedComment.getToStartLine() != 0) {
-			headerText += "\t[Line: " + versionedComment.getToStartLine() + "]";
-		} else {
-			headerText += "\t[General File]";
-		}
 		return headerText;
 	}
 
@@ -74,13 +66,30 @@ public class VersionedCommentPart extends CommentPart {
 			});
 
 			for (VersionedComment comment : generalComments) {
-				VersionedCommentPart generalCommentsComposite = new VersionedCommentPart(comment, crucibleEditor);
+				CommentPart generalCommentsComposite = new VersionedCommentPart(comment, crucibleEditor);
 				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 			}
 
 		}
 		return composite;
+	}
+
+	@Override
+	protected String getAnnotationText() {
+
+		String text = "";
+		if (comment.isDefectRaised() || comment.isDefectApproved()) {
+			text += "DEFECT ";
+		}
+		if (versionedComment.getToEndLine() != 0) {
+			text += "[Lines: " + versionedComment.getToStartLine() + " - " + versionedComment.getToEndLine() + "]";
+		} else if (versionedComment.getToStartLine() != 0) {
+			text += "[Line: " + versionedComment.getToStartLine() + "]";
+		} else {
+			text += "[General File]";
+		}
+		return text;
 	}
 
 }

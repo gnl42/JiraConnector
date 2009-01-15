@@ -12,9 +12,12 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.ReplyToCommentAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -22,6 +25,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A UI part to represent a comment in a review
@@ -66,6 +72,27 @@ public abstract class CommentPart extends ExpandablePart {
 		toolkit.adapt(text, false, false);
 
 		return text;
+	}
+
+	@Override
+	protected ImageDescriptor getAnnotationImage() {
+		if (comment.isDefectRaised() || comment.isDefectApproved()) {
+
+			// TODO get an image for a bug
+			return null;
+		}
+		return null;
+	}
+
+	@Override
+	protected List<IAction> getToolbarActions(boolean isExpanded) {
+		List<IAction> actions = new ArrayList<IAction>();
+		if (isExpanded) {
+			if (!comment.isReply()) {
+				actions.add(new ReplyToCommentAction(comment));
+			}
+		}
+		return actions;
 	}
 
 }

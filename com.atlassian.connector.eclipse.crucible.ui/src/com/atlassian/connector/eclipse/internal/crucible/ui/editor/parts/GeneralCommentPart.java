@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleRevie
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -73,6 +74,27 @@ public class GeneralCommentPart extends CommentPart {
 
 		}
 		return composite;
+	}
+
+	@Override
+	protected String getAnnotationText() {
+		// TODO make the text be based on the numbers properly (e.g. s's)
+		String text = "";
+		if (generalComment.isDefectRaised() || generalComment.isDefectApproved()) {
+
+			text = "DEFECT ";
+		}
+		return text + "[" + generalComment.getReplies().size() + " replies]";
+	}
+
+	@Override
+	protected ImageDescriptor getAnnotationImage() {
+		if (generalComment.isDefectRaised() || generalComment.isDefectApproved()) {
+
+			// TODO get an image for a bug
+			return null;
+		}
+		return null;
 	}
 
 }
