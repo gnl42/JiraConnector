@@ -38,7 +38,9 @@
 	</target>
 
 	<target name="publish" depends="init">
-		<scp todir="${build.publish.user}:${build.publish.password}@${build.publish.location}" trust="true" verbose="true">
+		<property name="build.publish.release" value="/nightly"/>
+		<echo message="Uploading ${version}.${qualifier} to ${build.publish.release}" />
+		<scp todir="${build.publish.user}:${build.publish.password}@${build.publish.location}${build.publish.release}" trust="true" verbose="true">
 			<fileset dir="${build.home}/3.3/site"/>
 		</scp>
 	</target>	
