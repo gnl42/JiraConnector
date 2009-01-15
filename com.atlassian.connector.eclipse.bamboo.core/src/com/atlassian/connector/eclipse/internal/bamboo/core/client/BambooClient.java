@@ -87,10 +87,10 @@ public class BambooClient {
 		});
 	}
 
-	public <T> T execute(RemoteOperation<T> op) throws CoreException {
+	private <T> T execute(RemoteOperation<T> op) throws CoreException {
 		IProgressMonitor monitor = op.getMonitor();
 		try {
-			monitor.beginTask("Connecting to Bamboo server", IProgressMonitor.UNKNOWN);
+			monitor.beginTask("Connecting to Bamboo", IProgressMonitor.UNKNOWN);
 			updateServer();
 			return op.run(op.getMonitor());
 		} catch (CrucibleLoginException e) {

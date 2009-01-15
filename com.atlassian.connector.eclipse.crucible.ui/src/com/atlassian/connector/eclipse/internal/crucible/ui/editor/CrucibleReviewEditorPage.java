@@ -14,8 +14,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.State;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,12 +26,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
+import org.eclipse.mylyn.tasks.ui.editors.TaskFormPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -43,7 +48,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -57,7 +61,7 @@ import java.util.List;
  * 
  * @author Shawn Minto
  */
-public class CrucibleReviewEditorPage extends FormPage {
+public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	/**
 	 * Causes the form page to reflow on resize.
@@ -111,7 +115,8 @@ public class CrucibleReviewEditorPage extends FormPage {
 		parts = new ArrayList<AbstractCrucibleEditorFormPart>();
 	}
 
-	public TaskEditor getTaskEditor() {
+	@Override
+	public TaskEditor getEditor() {
 		return (TaskEditor) super.getEditor();
 	}
 
@@ -133,7 +138,7 @@ public class CrucibleReviewEditorPage extends FormPage {
 			editorComposite.setLayout(editorLayout);
 			editorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-			editorComposite.setMenu(getTaskEditor().getMenu());
+			editorComposite.setMenu(getEditor().getMenu());
 
 			Display.getCurrent().asyncExec(new Runnable() {
 
@@ -155,72 +160,22 @@ public class CrucibleReviewEditorPage extends FormPage {
 	}
 
 	private TaskRepository getTaskRepository() {
-		return getTaskEditor().getTaskEditorInput().getTaskRepository();
+		return getEditor().getTaskEditorInput().getTaskRepository();
 	}
 
 	private ITask getTask() {
-		return getTaskEditor().getTaskEditorInput().getTask();
+		return getEditor().getTaskEditorInput().getTask();
 	}
 
 	private void downloadReviewAndRefresh(long delay) {
-
-		setBusy(true);
-
-		Job getReviewJob = new Job("Retrieving Crucible Review " + getTask().getTaskKey()) {
+		SubmitReviewJob job = new SubmitReviewJob("Retrieving Crucible Review " + getTask().getTaskKey()) {
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-
-				CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
-				CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
-
-				if (client == null) {
-					return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-							"Unable to get client, please try to refresh");
-				}
-				try {
-					review = client.getCrucibleReview(getTask().getTaskId(), monitor);
-
-					TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
-					return Status.OK_STATUS;
-				} catch (CoreException e) {
-					return e.getStatus();
-				}
+			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+				// do nothing
+				return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
 			}
 		};
-
-		getReviewJob.addJobChangeListener(new JobChangeAdapter() {
-
-			@Override
-			public void done(final IJobChangeEvent event) {
-				Display.getDefault().asyncExec(new Runnable() {
-
-					public void run() {
-						setBusy(false);
-
-						// TODO setup the image descriptor properly too 
-
-						if (event.getResult().isOK() && review != null) {
-							// TODO use the status?
-							getTaskEditor().setMessage(null, IMessageProvider.NONE, null);
-							createFormContent();
-						} else {
-							// TODO use the status?
-							getTaskEditor().setMessage("Unable to retrieve Review.  Click to try again.",
-									IMessageProvider.WARNING, new HyperlinkAdapter() {
-										@Override
-										public void linkActivated(HyperlinkEvent e) {
-											downloadReviewAndRefresh(0);
-										}
-									});
-						}
-					}
-
-				});
-
-			}
-		});
-
-		getReviewJob.schedule(delay);
+		schedule(job, delay);
 	}
 
 	private void createFormContent() {
@@ -260,14 +215,19 @@ public class CrucibleReviewEditorPage extends FormPage {
 
 		parts.clear();
 
+		// preserve context menu
+		EditorUtil.setMenu(editorComposite, null);
+
 		// remove all of the old widgets so that we can redraw the editor
 		for (Control child : editorComposite.getChildren()) {
 			child.dispose();
 		}
+
+		// FIXME dispose parts
 	}
 
 	private void setBusy(boolean busy) {
-		getTaskEditor().showBusy(busy);
+		getEditor().showBusy(busy);
 	}
 
 	public void setReflow(boolean reflow) {
@@ -294,4 +254,119 @@ public class CrucibleReviewEditorPage extends FormPage {
 			form.reflow(true);
 		}
 	}
+
+	@Override
+	protected void fillToolBar(IToolBarManager manager) {
+		if (review != null) {
+			if (review.getState() == State.REVIEW) {
+				Action summarizeAction = new Action() {
+					@Override
+					public void run() {
+						SubmitReviewJob job = new SubmitReviewJob("Summarizing Crucible Review "
+								+ getTask().getTaskKey()) {
+							@Override
+							protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
+									throws CoreException {
+								client.summarizeReview(getTask().getTaskId(), monitor);
+								return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
+							}
+						};
+						schedule(job, 0L);
+					}
+				};
+				summarizeAction.setImageDescriptor(CrucibleImages.SUMMARIZE);
+				summarizeAction.setToolTipText("Summarize");
+				manager.add(summarizeAction);
+			}
+		}
+
+		Action refreshAction = new Action() {
+			@Override
+			public void run() {
+				downloadReviewAndRefresh(0L);
+			}
+		};
+		refreshAction.setImageDescriptor(CommonImages.REFRESH);
+		refreshAction.setToolTipText("Refresh");
+		manager.add(refreshAction);
+	}
+
+	private void schedule(final SubmitReviewJob job, long delay) {
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(final IJobChangeEvent event) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						setBusy(false);
+
+						// TODO setup the image descriptor properly too 
+
+						IStatus status = job.getStatus();
+						if (status == null || review == null) {
+							// TODO use the status?
+							getEditor().setMessage("Unable to retrieve Review.  Click to try again.",
+									IMessageProvider.WARNING, new HyperlinkAdapter() {
+										@Override
+										public void linkActivated(HyperlinkEvent e) {
+											downloadReviewAndRefresh(0);
+										}
+									});
+						} else if (status.isOK()) {
+							// TODO use the status?
+							getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
+							createFormContent();
+							getEditor().updateHeaderToolBar();
+						} else {
+							// TODO improve the message?
+							getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
+						}
+					}
+				});
+			}
+		});
+		job.schedule(delay);
+		setBusy(true);
+	}
+
+	private abstract class SubmitReviewJob extends Job {
+
+		IStatus status;
+
+		protected SubmitReviewJob(String name) {
+			super(name);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			setStatus(Status.CANCEL_STATUS);
+			CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
+			CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
+			if (client == null) {
+				return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+						"Unable to get client, please try to refresh");
+			}
+			try {
+				IStatus result = execute(client, monitor);
+
+				// refresh
+				review = client.getCrucibleReview(getTask().getTaskId(), monitor);
+				setStatus(result);
+			} catch (CoreException e) {
+				setStatus(e.getStatus());
+			}
+			return Status.OK_STATUS;
+		}
+
+		protected abstract IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException;
+
+		public IStatus getStatus() {
+			return status;
+		}
+
+		protected void setStatus(IStatus status) {
+			this.status = status;
+		}
+
+	};
+
 }

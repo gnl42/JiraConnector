@@ -58,36 +58,39 @@ public class CrucibleClient {
 
 	private final CrucibleServerCfg serverCfg;
 
-	private final CrucibleServerFacade crucibleServer;
+	private final CrucibleServerFacade server;
+
+	private abstract static class RemoteOperation<T> {
+
+		private final IProgressMonitor fMonitor;
+
+		public RemoteOperation(IProgressMonitor monitor) {
+			this.fMonitor = Policy.monitorFor(monitor);
+		}
+
+		public IProgressMonitor getMonitor() {
+			return fMonitor;
+		}
+
+		public abstract T run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+				ServerPasswordNotProvidedException;
+
+	}
 
 	public CrucibleClient(AbstractWebLocation location, CrucibleServerCfg serverCfg,
 			CrucibleServerFacade crucibleServer, CrucibleClientData data) {
 		this.location = location;
 		this.clientData = data;
 		this.serverCfg = serverCfg;
-		this.crucibleServer = crucibleServer;
+		this.server = crucibleServer;
 	}
 
-	public void validate(IProgressMonitor monitor) throws CoreException {
-		monitor = Policy.monitorFor(monitor);
+	private <T> T execute(RemoteOperation<T> op) throws CoreException {
+		IProgressMonitor monitor = op.getMonitor();
 		try {
-			updateCredentials();
-			crucibleServer.testServerConnection(serverCfg);
-		} catch (CrucibleLoginException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
-		} catch (RemoteApiException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
-		}
-	}
-
-	public Review getCrucibleReview(String taskId, IProgressMonitor monitor) throws CoreException {
-		monitor = Policy.monitorFor(monitor);
-		try {
-			updateCredentials();
-			String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
-			Review review = crucibleServer.getReview(serverCfg, new PermIdBean(permId));
-			return review;
+			monitor.beginTask("Connecting to Crucible", IProgressMonitor.UNKNOWN);
+			updateServer();
+			return op.run(op.getMonitor());
 		} catch (CrucibleLoginException e) {
 			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
@@ -96,7 +99,42 @@ public class CrucibleClient {
 		} catch (ServerPasswordNotProvidedException e) {
 			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
+		} finally {
+			monitor.done();
 		}
+	}
+
+	private void updateServer() {
+		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+		if (credentials != null) {
+			String newUserName = credentials.getUserName();
+			String newPassword = credentials.getPassword();
+			serverCfg.setUsername(newUserName);
+			serverCfg.setPassword(newPassword);
+		}
+	}
+
+	public void validate(IProgressMonitor monitor) throws CoreException {
+		execute(new RemoteOperation<Object>(monitor) {
+			@Override
+			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				server.testServerConnection(serverCfg);
+				return null;
+			}
+		});
+	}
+
+	public Review getCrucibleReview(final String taskId, IProgressMonitor monitor) throws CoreException {
+		return execute(new RemoteOperation<Review>(monitor) {
+			@Override
+			public Review run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
+				Review review = server.getReview(serverCfg, new PermIdBean(permId));
+				return review;
+			}
+		});
 	}
 
 	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
@@ -106,81 +144,64 @@ public class CrucibleClient {
 
 	}
 
-	public void performQuery(TaskRepository taskRepository, IRepositoryQuery query, TaskDataCollector resultCollector,
-			IProgressMonitor monitor) throws CoreException {
-		monitor = Policy.monitorFor(monitor);
-		try {
-			updateCredentials();
-			if (!CrucibleUtil.isFilterDefinition(query)) {
-				String filterId = query.getAttribute(CrucibleUtil.KEY_FILTER_ID);
-				PredefinedFilter filter = CrucibleUtil.getPredefinedFilter(filterId);
-				if (filter != null) {
-					List<Review> reviewsForFilter = crucibleServer.getReviewsForFilter(serverCfg, filter);
+	public void performQuery(final TaskRepository taskRepository, final IRepositoryQuery query,
+			final TaskDataCollector resultCollector, IProgressMonitor monitor) throws CoreException {
+		execute(new RemoteOperation<Object>(monitor) {
+			@Override
+			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				if (!CrucibleUtil.isFilterDefinition(query)) {
+					String filterId = query.getAttribute(CrucibleUtil.KEY_FILTER_ID);
+					PredefinedFilter filter = CrucibleUtil.getPredefinedFilter(filterId);
+					if (filter != null) {
+						List<Review> reviewsForFilter = server.getReviewsForFilter(serverCfg, filter);
+						for (Review review : reviewsForFilter) {
+							TaskData taskData = getTaskDataForReview(taskRepository, review);
+							resultCollector.accept(taskData);
+						}
+					} else {
+						throw new RemoteApiException("No predefined filter exists for string: " + filterId);
+					}
+				} else {
+					String allComplete = query.getAttribute(CustomFilter.ALLCOMPLETE);
+					String author = query.getAttribute(CustomFilter.AUTHOR);
+					String complete = query.getAttribute(CustomFilter.COMPLETE);
+					String creator = query.getAttribute(CustomFilter.CREATOR);
+					String moderator = query.getAttribute(CustomFilter.MODERATOR);
+					String orRoles = query.getAttribute(CustomFilter.ORROLES);
+					String project = query.getAttribute(CustomFilter.PROJECT);
+					String reviewer = query.getAttribute(CustomFilter.REVIEWER);
+					String states = query.getAttribute(CustomFilter.STATES);
+
+					CustomFilterBean customFilter = new CustomFilterBean();
+
+					if (allComplete != null && allComplete.length() > 0) {
+						customFilter.setAllReviewersComplete(Boolean.parseBoolean(allComplete));
+					} else {
+						customFilter.setAllReviewersComplete(null);
+					}
+					customFilter.setAuthor(author);
+					if (complete != null && complete.length() > 0) {
+						customFilter.setComplete(Boolean.parseBoolean(complete));
+					} else {
+						customFilter.setComplete(null);
+					}
+					customFilter.setCreator(creator);
+					customFilter.setModerator(moderator);
+					customFilter.setOrRoles(Boolean.parseBoolean(orRoles));
+					customFilter.setProjectKey(project);
+					customFilter.setReviewer(reviewer);
+					customFilter.setState(CrucibleUtil.getStatesFromString(states));
+
+					List<Review> reviewsForFilter = server.getReviewsForCustomFilter(serverCfg, customFilter);
 					for (Review review : reviewsForFilter) {
 						TaskData taskData = getTaskDataForReview(taskRepository, review);
 						resultCollector.accept(taskData);
 					}
-				} else {
-					throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-							"No predefined filter exists for string: " + filterId));
 				}
-			} else {
-				String allComplete = query.getAttribute(CustomFilter.ALLCOMPLETE);
-				String author = query.getAttribute(CustomFilter.AUTHOR);
-				String complete = query.getAttribute(CustomFilter.COMPLETE);
-				String creator = query.getAttribute(CustomFilter.CREATOR);
-				String moderator = query.getAttribute(CustomFilter.MODERATOR);
-				String orRoles = query.getAttribute(CustomFilter.ORROLES);
-				String project = query.getAttribute(CustomFilter.PROJECT);
-				String reviewer = query.getAttribute(CustomFilter.REVIEWER);
-				String states = query.getAttribute(CustomFilter.STATES);
-
-				CustomFilterBean customFilter = new CustomFilterBean();
-
-				if (allComplete != null && allComplete.length() > 0) {
-					customFilter.setAllReviewersComplete(Boolean.parseBoolean(allComplete));
-				} else {
-					customFilter.setAllReviewersComplete(null);
-				}
-				customFilter.setAuthor(author);
-				if (complete != null && complete.length() > 0) {
-					customFilter.setComplete(Boolean.parseBoolean(complete));
-				} else {
-					customFilter.setComplete(null);
-				}
-				customFilter.setCreator(creator);
-				customFilter.setModerator(moderator);
-				customFilter.setOrRoles(Boolean.parseBoolean(orRoles));
-				customFilter.setProjectKey(project);
-				customFilter.setReviewer(reviewer);
-				customFilter.setState(CrucibleUtil.getStatesFromString(states));
-
-				List<Review> reviewsForFilter = crucibleServer.getReviewsForCustomFilter(serverCfg, customFilter);
-				for (Review review : reviewsForFilter) {
-					TaskData taskData = getTaskDataForReview(taskRepository, review);
-					resultCollector.accept(taskData);
-				}
+				return null;
 			}
-		} catch (CrucibleLoginException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
-		} catch (RemoteApiException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
-		} catch (ServerPasswordNotProvidedException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
-		}
-
-	}
-
-	private void updateCredentials() {
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		if (credentials != null) {
-			String newUserName = credentials.getUserName();
-			String newPassword = credentials.getPassword();
-			serverCfg.setUsername(newUserName);
-			serverCfg.setPassword(newPassword);
-		}
+		});
 	}
 
 	private TaskData getTaskDataForReview(TaskRepository taskRepository, Review review) {
@@ -217,26 +238,32 @@ public class CrucibleClient {
 	}
 
 	public void updateRepositoryData(IProgressMonitor monitor) throws CoreException {
-		monitor = Policy.monitorFor(monitor);
-		updateCredentials();
-		try {
-			monitor.subTask("Retrieving Crucible projects");
-			List<CrucibleProject> projects = crucibleServer.getProjects(serverCfg);
-			clientData.setProjects(projects);
+		execute(new RemoteOperation<Object>(monitor) {
+			@Override
+			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				monitor.subTask("Retrieving Crucible projects");
+				List<CrucibleProject> projects = server.getProjects(serverCfg);
+				clientData.setProjects(projects);
 
-			monitor.subTask("Retrieving Crucible users");
-			List<User> users = crucibleServer.getUsers(serverCfg);
-			clientData.setUsers(users);
-		} catch (CrucibleLoginException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
-		} catch (RemoteApiException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
-		} catch (ServerPasswordNotProvidedException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
-		}
+				monitor.subTask("Retrieving Crucible users");
+				List<User> users = server.getUsers(serverCfg);
+				clientData.setUsers(users);
+				return null;
+			}
+		});
+	}
 
+	public Review summarizeReview(final String taskId, IProgressMonitor monitor) throws CoreException {
+		return execute(new RemoteOperation<Review>(monitor) {
+			@Override
+			public Review run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
+				Review review = server.summarizeReview(serverCfg, new PermIdBean(permId));
+				return review;
+			}
+		});
 	}
 
 }
