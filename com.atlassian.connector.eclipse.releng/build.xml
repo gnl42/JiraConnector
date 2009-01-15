@@ -12,24 +12,24 @@
 	<target name="dev" depends="clean,build,pack,generate-metadata">
 	</target>
 
-	<target name="pack" depends="init">
+	<target name="pack" depends="init,init-3.4">
 		<antcall target="for-each-target">
 			<param name="call" value="pack-sites"/>
 		</antcall>
 	</target>
-
+	
 	<target name="pack-sites" depends="init">
 		<antcall target="pack-helper">
 			<param name="dir" value="${build.home}/${build.target}/site"/>
 		</antcall>
 	</target>
 
-	<target name="generate-metadata" depends="init">
+	<target name="generate-metadata" depends="init,init-3.4">
 		<antcall target="for-each-target">
 			<param name="call" value="generate-metadata-sites"/>
 		</antcall>
 	</target>
-
+	
 	<target name="generate-metadata-sites" depends="init">
 		<antcall target="generate-metadata-helper">
 			<param name="dir" value="${build.home}/${build.target}/site"/>
@@ -37,7 +37,18 @@
 		</antcall>
 	</target>
 
-	
-	
+	<target name="publish" depends="init">
+		<scp todir="${build.publish.user}:${build.publish.password}@${build.publish.location}" trust="true" verbose="true">
+			<fileset dir="${build.home}/3.3/site"/>
+		</scp>
+	</target>	
+
+	<target name="init-3.4">
+		<antcall target="get-build-dependencies-helper">
+			<param name="build.target" value="3.4"/>
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.4}"/>
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.4}"/>
+		</antcall>
+	</target>
 	
 </project>
