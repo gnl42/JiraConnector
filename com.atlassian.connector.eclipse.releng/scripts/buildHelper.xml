@@ -292,7 +292,7 @@
 		<antcall target="get-build-dependencies-helper-svn"/>
 	</target>
 	
-	<target name="get-build-dependencies-helper-svn" if="${eclipse.url.svn}">
+	<target name="get-build-dependencies-helper-svn" if="eclipse.url.svn">
 		<basename property="file.svn" file="${eclipse.url.svn}"/>
 		<antcall target="getBundle">
 			<param name="file" value="${file.svn}" />
