@@ -3,9 +3,9 @@
 ! <type>@<id>=SVN,<tag>[:revision],<svnRepositoryURL>,<preTagPath>,<postTagPath>
 !*******************************************************************************************
 
-feature@com.atlassian.connector.eclipse_feature=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse-feature
-feature@com.atlassian.connector.eclipse.dependencies_feature=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.dependencies-feature
-feature@com.atlassian.connector.eclipse.test_feature=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.test-feature
+feature@com.atlassian.connector.eclipse=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse-feature
+feature@com.atlassian.connector.eclipse.dependencies=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.dependencies-feature
+feature@com.atlassian.connector.eclipse.test=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.test-feature
 
 plugin@com.atlassian.connector.eclipse.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.core
 plugin@com.atlassian.connector.eclipse.bamboo.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.bamboo.core

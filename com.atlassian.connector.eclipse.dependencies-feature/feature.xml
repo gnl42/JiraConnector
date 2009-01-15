@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.atlassian.connector.eclipse.dependencies_feature"
+      id="com.atlassian.connector.eclipse.dependencies"
       label="%featureName"
       version="0.0.0.qualifier"
       provider-name="%providerName">
