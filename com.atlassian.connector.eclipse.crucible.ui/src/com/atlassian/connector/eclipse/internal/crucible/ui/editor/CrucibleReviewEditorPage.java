@@ -30,6 +30,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -168,7 +169,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	}
 
 	private void downloadReviewAndRefresh(long delay) {
-		SubmitReviewJob job = new SubmitReviewJob("Retrieving Crucible Review " + getTask().getTaskKey()) {
+		CrucibleReviewJob job = new CrucibleReviewJob("Retrieving Crucible Review " + getTask().getTaskKey()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 				review = client.getCrucibleReview(getTask().getTaskId(), monitor);
@@ -262,7 +263,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				Action summarizeAction = new Action() {
 					@Override
 					public void run() {
-						SubmitReviewJob job = new SubmitReviewJob("Summarizing Crucible Review "
+						CrucibleReviewJob job = new CrucibleReviewJob("Summarizing Crucible Review "
 								+ getTask().getTaskKey()) {
 							@Override
 							protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
@@ -281,7 +282,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			Action abandonAction = new Action() {
 				@Override
 				public void run() {
-					SubmitReviewJob job = new SubmitReviewJob("Abandon Crucible Review " + getTask().getTaskKey()) {
+					CrucibleReviewJob job = new CrucibleReviewJob("Abandon Crucible Review " + getTask().getTaskKey()) {
 						@Override
 						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 							review = client.abondonReview(getTask().getTaskId(), monitor);
@@ -307,7 +308,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		manager.add(refreshAction);
 	}
 
-	private void schedule(final SubmitReviewJob job, long delay) {
+	private void schedule(final CrucibleReviewJob job, long delay) {
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {
@@ -332,6 +333,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 							getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
 							createFormContent();
 							getEditor().updateHeaderToolBar();
+							TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
 						} else {
 							// TODO improve the message?
 							getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
@@ -344,11 +346,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		setBusy(true);
 	}
 
-	private abstract class SubmitReviewJob extends Job {
+	private abstract class CrucibleReviewJob extends Job {
 
 		private IStatus status;
 
-		protected SubmitReviewJob(String name) {
+		protected CrucibleReviewJob(String name) {
 			super(name);
 		}
 
