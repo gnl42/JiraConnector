@@ -266,4 +266,16 @@ public class CrucibleClient {
 		});
 	}
 
+	public Review abondonReview(final String taskId, IProgressMonitor monitor) throws CoreException {
+		return execute(new RemoteOperation<Review>(monitor) {
+			@Override
+			public Review run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
+				Review review = server.abandonReview(serverCfg, new PermIdBean(permId));
+				return review;
+			}
+		});
+	}
+
 }

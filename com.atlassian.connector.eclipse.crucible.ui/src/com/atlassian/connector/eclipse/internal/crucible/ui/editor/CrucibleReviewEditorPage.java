@@ -171,7 +171,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		SubmitReviewJob job = new SubmitReviewJob("Retrieving Crucible Review " + getTask().getTaskKey()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				// do nothing
+				review = client.getCrucibleReview(getTask().getTaskId(), monitor);
 				return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
 			}
 		};
@@ -278,6 +278,22 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				summarizeAction.setToolTipText("Summarize");
 				manager.add(summarizeAction);
 			}
+			Action abandonAction = new Action() {
+				@Override
+				public void run() {
+					SubmitReviewJob job = new SubmitReviewJob("Abandon Crucible Review " + getTask().getTaskKey()) {
+						@Override
+						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+							review = client.abondonReview(getTask().getTaskId(), monitor);
+							return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was abandoned.");
+						}
+					};
+					schedule(job, 0L);
+				}
+			};
+			abandonAction.setImageDescriptor(CrucibleImages.ABANDON);
+			abandonAction.setToolTipText("Abandon");
+			manager.add(abandonAction);
 		}
 
 		Action refreshAction = new Action() {
@@ -347,9 +363,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			}
 			try {
 				IStatus result = execute(client, monitor);
-
-				// refresh
-				review = client.getCrucibleReview(getTask().getTaskId(), monitor);
 				setStatus(result);
 			} catch (CoreException e) {
 				setStatus(e.getStatus());
