@@ -19,7 +19,7 @@ import java.net.URL;
 /**
  * @author Steffen Pingel
  */
-public class CrucibleImages {
+public final class CrucibleImages {
 
 	private static final URL BASE_URL = CrucibleUiPlugin.getDefault().getBundle().getEntry("/icons/"); //$NON-NLS-1$
 
@@ -28,6 +28,10 @@ public class CrucibleImages {
 	public static final ImageDescriptor SUMMARIZE = create(T_OBJ, "icn_plan_passed.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor ABANDON = create(T_OBJ, "icn_plan_failed.gif"); //$NON-NLS-1$
+
+	private CrucibleImages() {
+		// ignore
+	}
 
 	private static ImageDescriptor create(String prefix, String name) {
 		try {

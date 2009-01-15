@@ -346,7 +346,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	private abstract class SubmitReviewJob extends Job {
 
-		IStatus status;
+		private IStatus status;
 
 		protected SubmitReviewJob(String name) {
 			super(name);
