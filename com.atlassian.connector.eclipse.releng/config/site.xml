@@ -3,7 +3,7 @@
    <description url="http://update.atlassian.com/atlassian-eclipse-plugin">
       Atlassian Eclipse Connector
    </description>
-   <feature url="features/com.atlassian.connector.eclipse_feature_@core@.jar" id="com.atlassian.connector.eclipse_feature" version="@core@">
+   <feature url="features/com.atlassian.connector.eclipse_@core@.jar" id="com.atlassian.connector.eclipse" version="@core@">
       <category name="Connector"/>
    </feature>
    <category-def name="Connector" label="Connector"/>

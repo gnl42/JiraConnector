@@ -187,7 +187,7 @@
 		<!-- Generate the "site.xml" file in the "updateSite folder -->
 		<copy file="${builder}/${SiteXmlFile}" tofile="${UpdateSiteLocation}/site.xml">
 			<filterset>
-				<filter token="core" value="${com.atlassian.connector.eclipse_feature}" />
+				<filter token="core" value="${com.atlassian.connector.eclipse}" />
 			</filterset>
 		</copy>
 
@@ -196,8 +196,8 @@
 			<param name="target" value="updateSiteExport" />
 		</antcall>
 
-		<zip destfile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse_feature}-site.zip" basedir="${UpdateSiteLocation}" />
-		<copy tofile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse_feature}.zip" file="${buildDirectory}/${buildLabel}/com.atlassian.connector.eclipse_feature-${com.atlassian.connector.eclipse_feature}.zip" />
+		<zip destfile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip" basedir="${UpdateSiteLocation}" />
+		<copy tofile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}.zip" file="${buildDirectory}/${buildLabel}/com.atlassian.connector.eclipse-${com.atlassian.connector.eclipse}.zip" />
 	</target>
 
 	<!-- ===================================================================== -->
