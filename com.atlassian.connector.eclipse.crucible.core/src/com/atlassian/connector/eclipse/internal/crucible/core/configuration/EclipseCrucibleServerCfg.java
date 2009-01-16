@@ -25,6 +25,8 @@ public class EclipseCrucibleServerCfg extends CrucibleServerCfg {
 
 	private static final int HASCODE_MAGIC_TEMPORARY = 1231;
 
+	private static final int HASHCODE_MAGIC = 31;
+
 	private final boolean isTemporary;
 
 	public EclipseCrucibleServerCfg(String name, String url, boolean isTemporary) {
@@ -35,9 +37,12 @@ public class EclipseCrucibleServerCfg extends CrucibleServerCfg {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = prime * (isTemporary ? HASCODE_MAGIC_TEMPORARY : HASCODE_MAGIC_NOT_TEMPORARY);
-		result = prime * result + ((getUrl() == null) ? 0 : getUrl().hashCode());
+		int result;
+		result = (isEnabled() ? 1 : 0);
+		result = HASHCODE_MAGIC * result + (getUrl() != null ? getUrl().hashCode() : 0);
+		result = HASHCODE_MAGIC * result + (getUsername() != null ? getUsername().hashCode() : 0);
+		result = HASHCODE_MAGIC * result + (getPassword() != null ? getPassword().hashCode() : 0);
+		result = HASHCODE_MAGIC * result + (isTemporary ? HASCODE_MAGIC_TEMPORARY : HASCODE_MAGIC_NOT_TEMPORARY);
 		return result;
 	}
 
@@ -46,19 +51,23 @@ public class EclipseCrucibleServerCfg extends CrucibleServerCfg {
 		if (this == obj) {
 			return true;
 		}
-
 		if (!(obj instanceof EclipseCrucibleServerCfg)) {
 			return false;
 		}
-		final EclipseCrucibleServerCfg other = (EclipseCrucibleServerCfg) obj;
-		if (isTemporary != other.isTemporary) {
+
+		final EclipseCrucibleServerCfg serverCfg = (EclipseCrucibleServerCfg) obj;
+
+		if (getPassword() != null ? !getPassword().equals(serverCfg.getPassword()) : serverCfg.getPassword() != null) {
 			return false;
 		}
-		if (getUrl() == null) {
-			if (other.getUrl() != null) {
-				return false;
-			}
-		} else if (!getUrl().equals(other.getUrl())) {
+		if (getUrl() != null ? !getUrl().equals(serverCfg.getUrl()) : serverCfg.getUrl() != null) {
+			return false;
+		}
+		if (getUsername() != null ? !getUsername().equals(serverCfg.getUsername()) : serverCfg.getUsername() != null) {
+			return false;
+		}
+
+		if (isTemporary != serverCfg.isTemporary) {
 			return false;
 		}
 		return true;
