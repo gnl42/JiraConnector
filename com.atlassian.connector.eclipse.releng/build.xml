@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Atlassian Eclipse Connector" default="all" basedir=".">
 	<property file="${build.config}" />
+	<!-- used normally to provide files with credentials and target place for publish target -->
+	<property file="${publish.config}" />
 	<property file="local.properties" />
 	<property file="defaults.properties" />
 
