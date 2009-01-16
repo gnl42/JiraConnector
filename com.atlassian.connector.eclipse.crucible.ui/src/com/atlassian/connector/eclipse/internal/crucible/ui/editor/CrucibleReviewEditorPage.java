@@ -14,10 +14,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.State;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,6 +28,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
@@ -259,42 +259,77 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	@Override
 	protected void fillToolBar(IToolBarManager manager) {
 		if (review != null) {
-			if (review.getState() == State.REVIEW) {
-				Action summarizeAction = new Action() {
-					@Override
-					public void run() {
-						CrucibleReviewJob job = new CrucibleReviewJob("Summarizing Crucible Review "
-								+ getTask().getTaskKey()) {
-							@Override
-							protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
-									throws CoreException {
-								client.summarizeReview(getTask().getTaskId(), monitor);
-								return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
-							}
-						};
-						schedule(job, 0L);
-					}
-				};
-				summarizeAction.setImageDescriptor(CrucibleImages.SUMMARIZE);
-				summarizeAction.setToolTipText("Summarize");
-				manager.add(summarizeAction);
-			}
-			Action abandonAction = new Action() {
-				@Override
-				public void run() {
-					CrucibleReviewJob job = new CrucibleReviewJob("Abandon Crucible Review " + getTask().getTaskKey()) {
+			try {
+				List<com.atlassian.theplugin.commons.crucible.api.model.Action> transitions = review.getTransitions();
+				if (transitions.contains(com.atlassian.theplugin.commons.crucible.api.model.Action.SUMMARIZE)) {
+					Action summarizeAction = new Action() {
 						@Override
-						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-							review = client.abondonReview(getTask().getTaskId(), monitor);
-							return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was abandoned.");
+						public void run() {
+							CrucibleReviewJob job = new CrucibleReviewJob("Summarizing Crucible Review "
+									+ getTask().getTaskKey()) {
+								@Override
+								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
+										throws CoreException {
+									client.summarizeReview(getTask().getTaskId(), monitor);
+									review = client.getCrucibleReview(getTask().getTaskId(), monitor);
+									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
+								}
+							};
+							schedule(job, 0L);
 						}
 					};
-					schedule(job, 0L);
+					//summarizeAction.setImageDescriptor(CrucibleImages.SUMMARIZE);
+					summarizeAction.setText("Summarize");
+					summarizeAction.setToolTipText("Summarize review");
+					manager.add(summarizeAction);
 				}
-			};
-			abandonAction.setImageDescriptor(CrucibleImages.ABANDON);
-			abandonAction.setToolTipText("Abandon");
-			manager.add(abandonAction);
+				if (transitions.contains(com.atlassian.theplugin.commons.crucible.api.model.Action.REOPEN)) {
+					Action abandonAction = new Action() {
+						@Override
+						public void run() {
+							CrucibleReviewJob job = new CrucibleReviewJob("Reopen Crucible Review "
+									+ getTask().getTaskKey()) {
+								@Override
+								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
+										throws CoreException {
+									client.reopenReview(getTask().getTaskId(), monitor);
+									review = client.getCrucibleReview(getTask().getTaskId(), monitor);
+									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was reopened.");
+								}
+							};
+							schedule(job, 0L);
+						}
+					};
+					abandonAction.setText("Reopen");
+					//abandonAction.setImageDescriptor(CrucibleImages.REOPEN);
+					abandonAction.setToolTipText("Reopen review");
+					manager.add(abandonAction);
+				}
+				if (transitions.contains(com.atlassian.theplugin.commons.crucible.api.model.Action.ABANDON)) {
+					Action abandonAction = new Action() {
+						@Override
+						public void run() {
+							CrucibleReviewJob job = new CrucibleReviewJob("Abandon Crucible Review "
+									+ getTask().getTaskKey()) {
+								@Override
+								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
+										throws CoreException {
+									client.abondonReview(getTask().getTaskId(), monitor);
+									review = client.getCrucibleReview(getTask().getTaskId(), monitor);
+									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was abandoned.");
+								}
+							};
+							schedule(job, 0L);
+						}
+					};
+					abandonAction.setText("Abandon");
+					//abandonAction.setImageDescriptor(CrucibleImages.ABANDON);
+					abandonAction.setToolTipText("Abandon review");
+					manager.add(abandonAction);
+				}
+			} catch (ValueNotYetInitialized e) {
+				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Unexpected error", e));
+			}
 		}
 
 		Action refreshAction = new Action() {
