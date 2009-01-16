@@ -11,9 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.ReplyToCommentAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -28,6 +30,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A UI part to represent a comment in a review
@@ -52,13 +55,62 @@ public abstract class CommentPart extends ExpandablePart {
 		composite.setLayout(layout);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 
-		// TODO add the rank and classification custom fields if they exists (e.g. a defect)
-		// generalComment.getCustomFields();
+		String commentText = getCommentText();
 
-		createReadOnlyText(toolkit, composite, comment.getMessage());
+		createReadOnlyText(toolkit, composite, commentText);
 
 		//CHECKSTYLE:MAGIC:ON
 		return composite;
+	}
+
+	private String getCommentText() {
+		String commentText = comment.getMessage();
+
+		String customFieldsString = "";
+		if (comment.getCustomFields() != null && comment.getCustomFields().size() > 0) {
+
+			Map<String, CustomField> customFields = comment.getCustomFields();
+			CustomField classificationField = customFields.get(CrucibleUtil.CLASSIFICATION_CUSTOM_FIELD_KEY);
+			CustomField rankField = customFields.get(CrucibleUtil.RANK_CUSTOM_FIELD_KEY);
+
+			String classification = null;
+			if (classificationField != null) {
+				classification = classificationField.getValue();
+			}
+
+			String rank = null;
+			if (rankField != null) {
+				rank = rankField.getValue();
+			}
+
+			if (rank != null || classification != null) {
+				customFieldsString = "(";
+
+				if (comment.isDefectApproved() || comment.isDefectRaised()) {
+					customFieldsString += "Defect, ";
+				}
+			}
+
+			if (classification != null) {
+				customFieldsString += "Classification:" + classification;
+				if (rank != null) {
+					customFieldsString += ", ";
+				}
+			}
+
+			if (rank != null) {
+				customFieldsString += "Rank:" + rank;
+			}
+
+			if (customFieldsString.length() > 0) {
+				customFieldsString += ")";
+			}
+
+		}
+		if (customFieldsString.length() > 0) {
+			commentText += "  " + customFieldsString;
+		}
+		return commentText;
 	}
 
 	private Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value) {

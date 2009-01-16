@@ -41,6 +41,10 @@ public final class CrucibleUtil {
 
 	private static final String CUSTOM_FILER_START = CRUCIBLE_URL_START + "?filter=custom&";
 
+	public static final String RANK_CUSTOM_FIELD_KEY = "rank";
+
+	public static final String CLASSIFICATION_CUSTOM_FIELD_KEY = "classification";
+
 	private CrucibleUtil() {
 	}
 
