@@ -18,7 +18,6 @@ import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
-import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
@@ -150,64 +149,31 @@ public class CrucibleClient {
 			@Override
 			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
-				return runQuery(taskRepository, query, resultCollector);
+				if (!CrucibleUtil.isFilterDefinition(query)) {
+					String filterId = query.getAttribute(CrucibleUtil.KEY_FILTER_ID);
+					PredefinedFilter filter = CrucibleUtil.getPredefinedFilter(filterId);
+					if (filter != null) {
+						List<Review> reviewsForFilter = server.getReviewsForFilter(serverCfg, filter);
+						for (Review review : reviewsForFilter) {
+							TaskData taskData = getTaskDataForReview(taskRepository, review);
+							resultCollector.accept(taskData);
+						}
+					} else {
+						throw new RemoteApiException("No predefined filter exists for string: " + filterId);
+					}
+				} else {
+					CustomFilterBean customFilter = CrucibleUtil.createCustomFilterFromQuery(query);
+
+					List<Review> reviewsForFilter = server.getReviewsForCustomFilter(serverCfg, customFilter);
+					for (Review review : reviewsForFilter) {
+						TaskData taskData = getTaskDataForReview(taskRepository, review);
+						resultCollector.accept(taskData);
+					}
+				}
+				return null;
 			}
 
 		});
-	}
-
-	private Object runQuery(final TaskRepository taskRepository, final IRepositoryQuery query,
-			final TaskDataCollector resultCollector) throws RemoteApiException, ServerPasswordNotProvidedException {
-		if (!CrucibleUtil.isFilterDefinition(query)) {
-			String filterId = query.getAttribute(CrucibleUtil.KEY_FILTER_ID);
-			PredefinedFilter filter = CrucibleUtil.getPredefinedFilter(filterId);
-			if (filter != null) {
-				List<Review> reviewsForFilter = server.getReviewsForFilter(serverCfg, filter);
-				for (Review review : reviewsForFilter) {
-					TaskData taskData = getTaskDataForReview(taskRepository, review);
-					resultCollector.accept(taskData);
-				}
-			} else {
-				throw new RemoteApiException("No predefined filter exists for string: " + filterId);
-			}
-		} else {
-			String allComplete = query.getAttribute(CustomFilter.ALLCOMPLETE);
-			String author = query.getAttribute(CustomFilter.AUTHOR);
-			String complete = query.getAttribute(CustomFilter.COMPLETE);
-			String creator = query.getAttribute(CustomFilter.CREATOR);
-			String moderator = query.getAttribute(CustomFilter.MODERATOR);
-			String orRoles = query.getAttribute(CustomFilter.ORROLES);
-			String project = query.getAttribute(CustomFilter.PROJECT);
-			String reviewer = query.getAttribute(CustomFilter.REVIEWER);
-			String states = query.getAttribute(CustomFilter.STATES);
-
-			CustomFilterBean customFilter = new CustomFilterBean();
-
-			if (allComplete != null && allComplete.length() > 0) {
-				customFilter.setAllReviewersComplete(Boolean.parseBoolean(allComplete));
-			} else {
-				customFilter.setAllReviewersComplete(null);
-			}
-			customFilter.setAuthor(author);
-			if (complete != null && complete.length() > 0) {
-				customFilter.setComplete(Boolean.parseBoolean(complete));
-			} else {
-				customFilter.setComplete(null);
-			}
-			customFilter.setCreator(creator);
-			customFilter.setModerator(moderator);
-			customFilter.setOrRoles(Boolean.parseBoolean(orRoles));
-			customFilter.setProjectKey(project);
-			customFilter.setReviewer(reviewer);
-			customFilter.setState(CrucibleUtil.getStatesFromString(states));
-
-			List<Review> reviewsForFilter = server.getReviewsForCustomFilter(serverCfg, customFilter);
-			for (Review review : reviewsForFilter) {
-				TaskData taskData = getTaskDataForReview(taskRepository, review);
-				resultCollector.accept(taskData);
-			}
-		}
-		return null;
 	}
 
 	private TaskData getTaskDataForReview(TaskRepository taskRepository, Review review) {

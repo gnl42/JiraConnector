@@ -36,6 +36,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -54,11 +55,9 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 	private static final String ANY = "<Any>";
 
-	private static final String ALL = "<All>";
-
 	private static final String COMPLETE = "Complete";
 
-	private static final int STATES_LIST_HEIGHT_HINT = 50;
+	private static final int STATES_LIST_HEIGHT_HINT = 70;
 
 	private static final String TITLE = "New Crucible Query";
 
@@ -66,7 +65,9 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 	private static final CrucibleCachedProject PROJECT_ANY = new CrucibleCachedProject(ANY, ANY, "ANY_PROJECT");
 
-	private ComboViewer orRolesCombo;
+	private Button allRolesButton;
+
+	private Button anyRolesButton;
 
 	private ComboViewer reviewerStatusCombo;
 
@@ -82,6 +83,13 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 	private ListViewer statesList;
 
+	private String queryTitle;
+
+	public CrucibleCustomFilterPage(TaskRepository repository, IRepositoryQuery query, String queryTitle) {
+		this(repository, query);
+		this.queryTitle = queryTitle;
+	}
+
 	public CrucibleCustomFilterPage(TaskRepository repository, IRepositoryQuery query) {
 		super(TITLE, repository, query);
 		setDescription("Select options to create a query");
@@ -93,6 +101,11 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 	@Override
 	protected void createPageContent(Composite parent) {
+
+		if (queryTitle != null) {
+			setQueryTitle(queryTitle);
+		}
+
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(2, false));
 
@@ -233,25 +246,18 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		reviewerStatusCombo.getControl().setLayoutData(
 				new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
 
-		label = new Label(rolesGroup, SWT.NONE);
-		label.setText("Match Roles: ");
-		label.setLayoutData(new GridData());
+		allRolesButton = new Button(rolesGroup, SWT.RADIO);
+		allRolesButton.setText("Match All Roles");
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		allRolesButton.setLayoutData(gd);
 
-		orRolesCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
-		orRolesCombo.setContentProvider(new TreeContentProvider() {
-			@Override
-			@SuppressWarnings("unchecked")
-			public Object[] getElements(Object inputElement) {
-				if (inputElement instanceof Collection) {
-					return ((Collection) inputElement).toArray();
-				}
-				return new Object[0];
-			}
-		});
-		orRolesCombo.setLabelProvider(new LabelProvider());
-		orRolesCombo.setSorter(new ViewerSorter());
-		orRolesCombo.getControl()
-				.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+		anyRolesButton = new Button(rolesGroup, SWT.RADIO);
+		anyRolesButton.setText("Match Any Roles");
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		anyRolesButton.setLayoutData(gd);
+
 	}
 
 	@Override
@@ -282,12 +288,13 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 		statesList.setInput(State.values());
 
-		orRolesCombo.setInput(Arrays.asList(ALL, ANY));
-		orRolesCombo.setSelection(new StructuredSelection(ALL));
+		allRolesButton.setSelection(true);
+		anyRolesButton.setSelection(false);
 
 		reviewerStatusCombo.setInput(Arrays.asList(ANY, COMPLETE));
 		reviewerStatusCombo.setSelection(new StructuredSelection(ANY));
 
+		restoreState(getQuery());
 	}
 
 	@Override
@@ -355,9 +362,11 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 		String orRoles = query.getAttribute(CustomFilter.ORROLES);
 		if (Boolean.parseBoolean(orRoles)) {
-			orRolesCombo.setSelection(new StructuredSelection(ANY));
+			allRolesButton.setSelection(false);
+			anyRolesButton.setSelection(true);
 		} else {
-			orRolesCombo.setSelection(new StructuredSelection(ALL));
+			allRolesButton.setSelection(true);
+			anyRolesButton.setSelection(false);
 		}
 		return true;
 	}
@@ -421,8 +430,8 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 			query.setAttribute(CustomFilter.COMPLETE, "");
 		}
 
-		// TODO figure out how to get a url for a custom filter
-//		query.setUrl(CrucibleUtil.createFilterWebUrl(getTaskRepository().getUrl(), query));
+		String customFilterUrl = CrucibleUtil.createFilterWebUrl(getTaskRepository().getUrl(), query);
+		query.setUrl(customFilterUrl);
 
 	}
 
@@ -475,18 +484,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 	}
 
 	private String getOrRoles() {
-
-		ISelection selection = orRolesCombo.getSelection();
-		if (selection instanceof StructuredSelection) {
-			Object obj = ((StructuredSelection) selection).getFirstElement();
-			if (obj.equals(ALL)) {
-				return Boolean.toString(false);
-			} else if (obj.equals(ANY)) {
-				return Boolean.toString(true);
-			}
-		}
-
-		return Boolean.toString(false);
+		return Boolean.toString(anyRolesButton.getSelection());
 	}
 
 	private String getModerator() {

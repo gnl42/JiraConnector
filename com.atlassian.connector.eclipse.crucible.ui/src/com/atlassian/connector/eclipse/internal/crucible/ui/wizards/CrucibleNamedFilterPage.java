@@ -67,18 +67,6 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout());
 
-		predefinedButton = new Button(composite, SWT.RADIO);
-		predefinedButton.setText("Predefined Filter");
-		predefinedButton.setEnabled(true);
-		predefinedButton.setSelection(true);
-		predefinedButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateQueryPage();
-			}
-		});
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(predefinedButton);
-
 		customButton = new Button(composite, SWT.RADIO);
 		customButton.setText("Custom");
 		customButton.setSelection(false);
@@ -90,6 +78,18 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 		});
 
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(customButton);
+
+		predefinedButton = new Button(composite, SWT.RADIO);
+		predefinedButton.setText("Predefined Filter");
+		predefinedButton.setEnabled(true);
+		predefinedButton.setSelection(true);
+		predefinedButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateQueryPage();
+			}
+		});
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(predefinedButton);
 
 		filterList = new ListViewer(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		filterList.setContentProvider(new TreeContentProvider() {
@@ -198,7 +198,7 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 			return null;
 		}
 		if (customPage == null) {
-			customPage = new CrucibleCustomFilterPage(getTaskRepository(), getQuery());
+			customPage = new CrucibleCustomFilterPage(getTaskRepository(), getQuery(), getQueryTitle());
 			if (getWizard() instanceof Wizard) {
 				((Wizard) getWizard()).addPage(customPage);
 			}

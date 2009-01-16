@@ -11,9 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
+import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -35,6 +38,8 @@ public final class CrucibleUtil {
 	private static final String CRUCIBLE_URL_START = "cru/";
 
 	private static final String PREDEFINED_FILER_START = CRUCIBLE_URL_START + "?filter=";
+
+	private static final String CUSTOM_FILER_START = CRUCIBLE_URL_START + "?filter=custom&";
 
 	private CrucibleUtil() {
 	}
@@ -129,5 +134,94 @@ public final class CrucibleUtil {
 			}
 		}
 		return states.toArray(new State[0]);
+	}
+
+	public static CustomFilterBean createCustomFilterFromQuery(final IRepositoryQuery query) {
+		String allComplete = query.getAttribute(CustomFilter.ALLCOMPLETE);
+		String author = query.getAttribute(CustomFilter.AUTHOR);
+		String complete = query.getAttribute(CustomFilter.COMPLETE);
+		String creator = query.getAttribute(CustomFilter.CREATOR);
+		String moderator = query.getAttribute(CustomFilter.MODERATOR);
+		String orRoles = query.getAttribute(CustomFilter.ORROLES);
+		String project = query.getAttribute(CustomFilter.PROJECT);
+		String reviewer = query.getAttribute(CustomFilter.REVIEWER);
+		String states = query.getAttribute(CustomFilter.STATES);
+
+		CustomFilterBean customFilter = new CustomFilterBean();
+
+		if (allComplete != null && allComplete.length() > 0) {
+			if (!Boolean.parseBoolean(allComplete)) {
+				customFilter.setAllReviewersComplete(null);
+			} else {
+				customFilter.setAllReviewersComplete(Boolean.parseBoolean(allComplete));
+			}
+		} else {
+			customFilter.setAllReviewersComplete(null);
+		}
+		customFilter.setAuthor(author);
+		if (complete != null && complete.length() > 0) {
+			if (!Boolean.parseBoolean(complete)) {
+				customFilter.setComplete(null);
+			} else {
+				customFilter.setComplete(Boolean.parseBoolean(complete));
+			}
+		} else {
+			customFilter.setComplete(null);
+		}
+		customFilter.setCreator(creator);
+		customFilter.setModerator(moderator);
+		customFilter.setOrRoles(Boolean.parseBoolean(orRoles));
+		customFilter.setProjectKey(project);
+		customFilter.setReviewer(reviewer);
+		customFilter.setState(getStatesFromString(states));
+		return customFilter;
+	}
+
+	public static String createFilterWebUrl(String repositoryUrl, IRepositoryQuery query) {
+
+		String allComplete = query.getAttribute(CustomFilter.ALLCOMPLETE);
+		String author = query.getAttribute(CustomFilter.AUTHOR);
+		String complete = query.getAttribute(CustomFilter.COMPLETE);
+		String creator = query.getAttribute(CustomFilter.CREATOR);
+		String moderator = query.getAttribute(CustomFilter.MODERATOR);
+		String orRoles = query.getAttribute(CustomFilter.ORROLES);
+		String project = query.getAttribute(CustomFilter.PROJECT);
+		String reviewer = query.getAttribute(CustomFilter.REVIEWER);
+		String states = query.getAttribute(CustomFilter.STATES);
+
+		StringBuilder url = new StringBuilder(addTrailingSlash(repositoryUrl) + CUSTOM_FILER_START);
+
+		addQueryParam(CustomFilter.AUTHOR, author, url);
+		addQueryParam(CustomFilter.CREATOR, creator, url);
+		addQueryParam(CustomFilter.MODERATOR, moderator, url);
+		addQueryParam(CustomFilter.REVIEWER, reviewer, url);
+		addQueryParam(CustomFilter.PROJECT, project, url);
+		for (State state : getStatesFromString(states)) {
+			addQueryParam("state", state.value(), url);
+		}
+
+		if (complete != null && complete.length() > 0) {
+			addQueryParam(CustomFilter.COMPLETE, complete, url);
+		}
+
+		if (orRoles != null && orRoles.length() > 0) {
+			addQueryParam(CustomFilter.ORROLES, orRoles, url);
+		}
+
+		if (allComplete != null && allComplete.length() > 0) {
+			addQueryParam(CustomFilter.ALLCOMPLETE, allComplete, url);
+		}
+
+		return url.toString();
+	}
+
+	private static void addQueryParam(String name, String value, StringBuilder builder) {
+		if (!StringUtils.isEmpty(value)) {
+			if (builder.length() > 0) {
+				builder.append("&");
+			}
+			builder.append(name).append("=").append(value);
+		}
+
 	}
 }
