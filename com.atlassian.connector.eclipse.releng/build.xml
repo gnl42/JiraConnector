@@ -40,6 +40,10 @@
 	</target>
 
 	<target name="publish" depends="init">
+		<fail message="Required property build.publish.user is not set" unless="build.publish.user"/>
+		<fail message="Required property build.publish.password is not set" unless="build.publish.password"/>
+		<fail message="Required property build.publish.location is not set" unless="build.publish.location"/>
+		
 		<property name="build.publish.release" value="/nightly"/>
 		<echo message="Uploading ${version}.${qualifier} to ${build.publish.release}" />
 		<scp todir="${build.publish.user}@${build.publish.location}${build.publish.release}" password="${build.publish.password}" trust="true" verbose="true">
