@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.core;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleHttpSessionCallback;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.connector.eclipse.internal.crucible.core.configuration.EclipseCrucibleServerCfg;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.cfg.ServerCfg;
@@ -46,9 +47,12 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 
 	private final CrucibleHttpSessionCallback clientCallback;
 
-	public CrucibleClientManager(File cacheFile) {
+	private final ReviewCache cachedReviewManager;
+
+	public CrucibleClientManager(File cacheFile, ReviewCache cachedReviewManager) {
 		super(cacheFile);
 		clientCallback = new CrucibleHttpSessionCallback();
+		this.cachedReviewManager = cachedReviewManager;
 	}
 
 	@Override
@@ -70,7 +74,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
 		CrucibleServerFacade crucibleServer = getCrucibleServer(serverCfg, callback);
 
-		return new CrucibleClient(location, serverCfg, crucibleServer, data);
+		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager);
 	}
 
 	public CrucibleClient createTempClient(TaskRepository taskRepository, CrucibleClientData data) {
@@ -80,7 +84,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
 		CrucibleServerFacade crucibleServer = getCrucibleServer(serverCfg, callback);
 
-		CrucibleClient tempClient = new CrucibleClient(location, serverCfg, crucibleServer, data);
+		CrucibleClient tempClient = new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager);
 		tempClients.put(tempClient, serverCfg);
 		return tempClient;
 	}

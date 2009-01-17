@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.core.runtime.IPath;
@@ -40,6 +41,8 @@ public class CrucibleCorePlugin extends Plugin {
 	// The shared instance
 	private static CrucibleCorePlugin plugin;
 
+	private ReviewCache reviewCache;
+
 	/**
 	 * The constructor
 	 */
@@ -58,6 +61,9 @@ public class CrucibleCorePlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+
+		reviewCache = new ReviewCache();
+
 	}
 
 	/*
@@ -66,6 +72,7 @@ public class CrucibleCorePlugin extends Plugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		reviewCache = null;
 		plugin = null;
 		super.stop(context);
 	}
@@ -93,4 +100,7 @@ public class CrucibleCorePlugin extends Plugin {
 		return cacheFile.toFile();
 	}
 
+	public ReviewCache getReviewCache() {
+		return reviewCache;
+	}
 }

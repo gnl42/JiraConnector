@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.core.client;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapper;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -59,6 +60,8 @@ public class CrucibleClient {
 
 	private final CrucibleServerFacade server;
 
+	private final ReviewCache cachedReviewManager;
+
 	private abstract static class RemoteOperation<T> {
 
 		private final IProgressMonitor fMonitor;
@@ -77,11 +80,12 @@ public class CrucibleClient {
 	}
 
 	public CrucibleClient(AbstractWebLocation location, CrucibleServerCfg serverCfg,
-			CrucibleServerFacade crucibleServer, CrucibleClientData data) {
+			CrucibleServerFacade crucibleServer, CrucibleClientData data, ReviewCache cachedReviewManager) {
 		this.location = location;
 		this.clientData = data;
 		this.serverCfg = serverCfg;
 		this.server = crucibleServer;
+		this.cachedReviewManager = cachedReviewManager;
 	}
 
 	private <T> T execute(RemoteOperation<T> op) throws CoreException {
@@ -124,22 +128,19 @@ public class CrucibleClient {
 		});
 	}
 
-	public Review getCrucibleReview(final String taskId, IProgressMonitor monitor) throws CoreException {
-		return execute(new RemoteOperation<Review>(monitor) {
+	public TaskData getTaskData(final TaskRepository taskRepository, final String taskId, IProgressMonitor monitor)
+			throws CoreException {
+
+		return execute(new RemoteOperation<TaskData>(monitor) {
 			@Override
-			public Review run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+			public TaskData run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
 				Review review = server.getReview(serverCfg, new PermIdBean(permId));
-				return review;
+				boolean hasChanged = cacheReview(taskId, review);
+				return getTaskDataForReview(taskRepository, review, hasChanged);
 			}
 		});
-	}
-
-	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
-			throws CoreException {
-		monitor = Policy.monitorFor(monitor);
-		return getTaskDataForReview(taskRepository, getCrucibleReview(taskId, monitor));
 
 	}
 
@@ -155,7 +156,13 @@ public class CrucibleClient {
 					if (filter != null) {
 						List<Review> reviewsForFilter = server.getReviewsForFilter(serverCfg, filter);
 						for (Review review : reviewsForFilter) {
-							TaskData taskData = getTaskDataForReview(taskRepository, review);
+
+							String taskId = CrucibleUtil.getTaskIdFromReview(review);
+
+							boolean hasChanged = cacheReview(taskId, review);
+
+							TaskData taskData = getTaskDataForReview(taskRepository, review, hasChanged);
+
 							resultCollector.accept(taskData);
 						}
 					} else {
@@ -166,20 +173,22 @@ public class CrucibleClient {
 
 					List<Review> reviewsForFilter = server.getReviewsForCustomFilter(serverCfg, customFilter);
 					for (Review review : reviewsForFilter) {
-						TaskData taskData = getTaskDataForReview(taskRepository, review);
+						String taskId = CrucibleUtil.getTaskIdFromReview(review);
+
+						boolean hasChanged = cacheReview(taskId, review);
+						TaskData taskData = getTaskDataForReview(taskRepository, review, hasChanged);
 						resultCollector.accept(taskData);
 					}
 				}
 				return null;
 			}
-
 		});
 	}
 
-	private TaskData getTaskDataForReview(TaskRepository taskRepository, Review review) {
+	private TaskData getTaskDataForReview(TaskRepository taskRepository, Review review, boolean hasChanged) {
 		String summary = review.getName();
 		String key = review.getPermId().getId();
-		String id = CrucibleUtil.getTaskIdFromPermId(key);
+		String id = CrucibleUtil.getTaskIdFromReview(review);
 		String owner = review.getAuthor().getUserName();
 		Date creationDate = review.getCreateDate();
 		Date closeDate = review.getCloseDate();
@@ -198,6 +207,9 @@ public class CrucibleClient {
 		mapper.setOwner(owner);
 		mapper.setCompletionDate(closeDate);
 		mapper.setTaskUrl(CrucibleUtil.getReviewUrl(taskRepository.getUrl(), id));
+
+		//TODO add the hasChanged flag to this manager
+
 		return taskData;
 	}
 
@@ -260,6 +272,17 @@ public class CrucibleClient {
 				return review;
 			}
 		});
+	}
+
+	/**
+	 * 
+	 * @return true if there was a change with the latest version of the review added to the cache
+	 */
+	private boolean cacheReview(String taskId, Review review) {
+		if (cachedReviewManager != null) {
+			return cachedReviewManager.updateCachedReview(location.getUrl(), taskId, review);
+		}
+		return false;
 	}
 
 }

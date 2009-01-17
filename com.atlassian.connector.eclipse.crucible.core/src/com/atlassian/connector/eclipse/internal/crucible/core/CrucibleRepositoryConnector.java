@@ -53,7 +53,8 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
 	public synchronized CrucibleClientManager getClientManager() {
 		if (clientManager == null) {
-			clientManager = new CrucibleClientManager(getRepositoryConfigurationCacheFile());
+			clientManager = new CrucibleClientManager(getRepositoryConfigurationCacheFile(),
+					CrucibleCorePlugin.getDefault().getReviewCache());
 		}
 		return clientManager;
 	}

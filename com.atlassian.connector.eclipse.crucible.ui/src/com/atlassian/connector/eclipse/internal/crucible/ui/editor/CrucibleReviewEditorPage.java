@@ -93,7 +93,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		}
 	}
 
-	private static final int OPEN_DOWNLOAD_DELAY = 200;
+	private static final int OPEN_DOWNLOAD_DELAY = 0;
 
 	private static final int VERTICAL_BAR_WIDTH = 15;
 
@@ -144,7 +144,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			Display.getCurrent().asyncExec(new Runnable() {
 
 				public void run() {
-					downloadReviewAndRefresh(OPEN_DOWNLOAD_DELAY);
+					downloadReviewAndRefresh(OPEN_DOWNLOAD_DELAY, false);
 				}
 
 			});
@@ -168,15 +168,34 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		return getEditor().getTaskEditorInput().getTask();
 	}
 
-	private void downloadReviewAndRefresh(long delay) {
+	private void downloadReviewAndRefresh(long delay, final boolean force) {
+
 		CrucibleReviewJob job = new CrucibleReviewJob("Retrieving Crucible Review " + getTask().getTaskKey()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				review = client.getCrucibleReview(getTask().getTaskId(), monitor);
-				return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
+
+				// TODO clean this up
+				Review cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getWorkingCopyReview(
+						getTask().getRepositoryUrl(), getTask().getTaskId());
+
+				if (cachedReview == null || force) {
+
+					client.getTaskData(getTaskRepository(), getTask().getTaskId(), monitor);
+					cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getWorkingCopyReview(
+							getTask().getRepositoryUrl(), getTask().getTaskId());
+
+					if (cachedReview != null) {
+						review = cachedReview;
+					}
+					return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
+				} else {
+					review = cachedReview;
+					return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
+				}
 			}
 		};
 		schedule(job, delay);
+
 	}
 
 	private void createFormContent() {
@@ -271,7 +290,15 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 										throws CoreException {
 									client.summarizeReview(getTask().getTaskId(), monitor);
-									review = client.getCrucibleReview(getTask().getTaskId(), monitor);
+
+									client.getTaskData(getTaskRepository(), getTask().getTaskId(), monitor);
+									Review cachedReview = CrucibleCorePlugin.getDefault()
+											.getReviewCache()
+											.getWorkingCopyReview(getTask().getRepositoryUrl(), getTask().getTaskId());
+
+									if (cachedReview != null) {
+										review = cachedReview;
+									}
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
 								}
 							};
@@ -293,7 +320,14 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 										throws CoreException {
 									client.reopenReview(getTask().getTaskId(), monitor);
-									review = client.getCrucibleReview(getTask().getTaskId(), monitor);
+									client.getTaskData(getTaskRepository(), getTask().getTaskId(), monitor);
+									Review cachedReview = CrucibleCorePlugin.getDefault()
+											.getReviewCache()
+											.getWorkingCopyReview(getTask().getRepositoryUrl(), getTask().getTaskId());
+
+									if (cachedReview != null) {
+										review = cachedReview;
+									}
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was reopened.");
 								}
 							};
@@ -315,7 +349,14 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 										throws CoreException {
 									client.abondonReview(getTask().getTaskId(), monitor);
-									review = client.getCrucibleReview(getTask().getTaskId(), monitor);
+									client.getTaskData(getTaskRepository(), getTask().getTaskId(), monitor);
+									Review cachedReview = CrucibleCorePlugin.getDefault()
+											.getReviewCache()
+											.getWorkingCopyReview(getTask().getRepositoryUrl(), getTask().getTaskId());
+
+									if (cachedReview != null) {
+										review = cachedReview;
+									}
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was abandoned.");
 								}
 							};
@@ -335,7 +376,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		Action refreshAction = new Action() {
 			@Override
 			public void run() {
-				downloadReviewAndRefresh(0L);
+				downloadReviewAndRefresh(0L, true);
 			}
 		};
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
@@ -360,7 +401,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 									IMessageProvider.WARNING, new HyperlinkAdapter() {
 										@Override
 										public void linkActivated(HyperlinkEvent e) {
-											downloadReviewAndRefresh(0);
+											downloadReviewAndRefresh(0, true);
 										}
 									});
 						} else if (status.isOK()) {
