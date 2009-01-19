@@ -21,6 +21,7 @@ import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskMapper;
@@ -107,6 +108,16 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
 	@Override
 	public boolean hasTaskChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
+
+		if (taskData != null) {
+			TaskAttribute hasChangedAttribute = taskData.getRoot().getAttribute(
+					CrucibleConstants.HAS_CHANGED_TASKDATA_KEY);
+			if (hasChangedAttribute != null) {
+				return taskData.getAttributeMapper().getBooleanValue(hasChangedAttribute);
+			}
+		}
+
+		// fall back for if we have a last modified date
 		TaskMapper scheme = new TaskMapper(taskData);
 		Date repositoryDate = scheme.getModificationDate();
 		Date localDate = task.getModificationDate();
@@ -141,6 +152,8 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 		TaskMapper scheme = new TaskMapper(taskData);
 		scheme.applyTo(task);
 		task.setCompletionDate(scheme.getCompletionDate());
+
+		// TODO notify listeners if there was a change and make a popup happen
 	}
 
 	@Override

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapper;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
@@ -38,6 +39,7 @@ import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
@@ -144,8 +146,8 @@ public class CrucibleClient {
 
 	}
 
-	public Review getReview(TaskRepository repository, String taskId, boolean getWorkingCopy,
-			IProgressMonitor monitor) throws CoreException {
+	public Review getReview(TaskRepository repository, String taskId, boolean getWorkingCopy, IProgressMonitor monitor)
+			throws CoreException {
 		getTaskData(repository, taskId, monitor);
 		if (getWorkingCopy) {
 			return cachedReviewManager.getWorkingCopyReview(repository.getRepositoryUrl(), taskId);
@@ -161,7 +163,7 @@ public class CrucibleClient {
 			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				if (!CrucibleUtil.isFilterDefinition(query)) {
-					String filterId = query.getAttribute(CrucibleUtil.KEY_FILTER_ID);
+					String filterId = query.getAttribute(CrucibleConstants.KEY_FILTER_ID);
 					PredefinedFilter filter = CrucibleUtil.getPredefinedFilter(filterId);
 					if (filter != null) {
 						List<Review> reviewsForFilter = server.getReviewsForFilter(serverCfg, filter);
@@ -218,7 +220,11 @@ public class CrucibleClient {
 		mapper.setCompletionDate(closeDate);
 		mapper.setTaskUrl(CrucibleUtil.getReviewUrl(taskRepository.getUrl(), id));
 
-		//TODO add the hasChanged flag to this manager
+		TaskAttribute hasChangedAttribute = taskData.getRoot().createAttribute(
+				CrucibleConstants.HAS_CHANGED_TASKDATA_KEY);
+		hasChangedAttribute.setValue(Boolean.toString(hasChanged));
+		hasChangedAttribute.getMetaData().defaults().setReadOnly(true).setKind(TaskAttribute.KIND_DEFAULT).setLabel(
+				"Has Changed").setType(TaskAttribute.TYPE_BOOLEAN);
 
 		return taskData;
 	}

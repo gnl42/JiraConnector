@@ -46,6 +46,7 @@ public class ReviewCache {
 		CrucibleCachedReview cachedReview = taskIdToReviewMap.get(taskId);
 		if (cachedReview == null) {
 			taskIdToReviewMap.put(taskId, new CrucibleCachedReview(review));
+			// TODO deal with the offline case here potentially
 			return false;
 		} else {
 			return cachedReview.addReview(review);

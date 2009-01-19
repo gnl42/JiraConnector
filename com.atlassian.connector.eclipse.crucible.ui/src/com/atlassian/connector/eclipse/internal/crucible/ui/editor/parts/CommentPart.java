@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.ReplyToCommentAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
@@ -70,8 +70,8 @@ public abstract class CommentPart extends ExpandablePart {
 		if (comment.getCustomFields() != null && comment.getCustomFields().size() > 0) {
 
 			Map<String, CustomField> customFields = comment.getCustomFields();
-			CustomField classificationField = customFields.get(CrucibleUtil.CLASSIFICATION_CUSTOM_FIELD_KEY);
-			CustomField rankField = customFields.get(CrucibleUtil.RANK_CUSTOM_FIELD_KEY);
+			CustomField classificationField = customFields.get(CrucibleConstants.CLASSIFICATION_CUSTOM_FIELD_KEY);
+			CustomField rankField = customFields.get(CrucibleConstants.RANK_CUSTOM_FIELD_KEY);
 
 			String classification = null;
 			if (classificationField != null) {

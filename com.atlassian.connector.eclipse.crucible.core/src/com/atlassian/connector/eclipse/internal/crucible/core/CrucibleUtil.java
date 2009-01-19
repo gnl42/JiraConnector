@@ -34,18 +34,6 @@ import java.util.Set;
  */
 public final class CrucibleUtil {
 
-	public static final String KEY_FILTER_ID = "FilterId";
-
-	private static final String CRUCIBLE_URL_START = "cru/";
-
-	private static final String PREDEFINED_FILER_START = CRUCIBLE_URL_START + "?filter=";
-
-	private static final String CUSTOM_FILER_START = CRUCIBLE_URL_START + "?filter=custom&";
-
-	public static final String RANK_CUSTOM_FIELD_KEY = "rank";
-
-	public static final String CLASSIFICATION_CUSTOM_FIELD_KEY = "classification";
-
 	private CrucibleUtil() {
 	}
 
@@ -76,7 +64,7 @@ public final class CrucibleUtil {
 
 	public static String getPredefinedFilterWebUrl(String repositoryUrl, String filterId) {
 		String url = addTrailingSlash(repositoryUrl);
-		url += PREDEFINED_FILER_START + filterId;
+		url += CrucibleConstants.PREDEFINED_FILER_START + filterId;
 		return url;
 	}
 
@@ -91,14 +79,14 @@ public final class CrucibleUtil {
 	public static String getReviewUrl(String repositoryUrl, String taskId) {
 		// TODO handle both taskid and task key
 		String url = addTrailingSlash(repositoryUrl);
-		url += CRUCIBLE_URL_START + getPermIdFromTaskId(taskId);
+		url += CrucibleConstants.CRUCIBLE_URL_START + getPermIdFromTaskId(taskId);
 		return url;
 	}
 
 	public static String getTaskIdFromUrl(String taskFullUrl) {
-		int index = taskFullUrl.indexOf(CRUCIBLE_URL_START);
-		if (index != -1 && index + CRUCIBLE_URL_START.length() < taskFullUrl.length()) {
-			String permId = taskFullUrl.substring(index + CRUCIBLE_URL_START.length());
+		int index = taskFullUrl.indexOf(CrucibleConstants.CRUCIBLE_URL_START);
+		if (index != -1 && index + CrucibleConstants.CRUCIBLE_URL_START.length() < taskFullUrl.length()) {
+			String permId = taskFullUrl.substring(index + CrucibleConstants.CRUCIBLE_URL_START.length());
 			if (permId.contains("/")) {
 				// this isnt the url of the task
 				return null;
@@ -110,7 +98,7 @@ public final class CrucibleUtil {
 	}
 
 	public static String getRepositoryUrlFromUrl(String taskFullUrl) {
-		int index = taskFullUrl.indexOf(CRUCIBLE_URL_START);
+		int index = taskFullUrl.indexOf(CrucibleConstants.CRUCIBLE_URL_START);
 		if (index != -1) {
 			return taskFullUrl.substring(0, index);
 		}
@@ -118,7 +106,7 @@ public final class CrucibleUtil {
 	}
 
 	public static boolean isFilterDefinition(IRepositoryQuery query) {
-		String filterId = query.getAttribute(KEY_FILTER_ID);
+		String filterId = query.getAttribute(CrucibleConstants.KEY_FILTER_ID);
 		return filterId == null || filterId.length() == 0;
 	}
 
@@ -194,7 +182,7 @@ public final class CrucibleUtil {
 		String reviewer = query.getAttribute(CustomFilter.REVIEWER);
 		String states = query.getAttribute(CustomFilter.STATES);
 
-		StringBuilder url = new StringBuilder(addTrailingSlash(repositoryUrl) + CUSTOM_FILER_START);
+		StringBuilder url = new StringBuilder(addTrailingSlash(repositoryUrl) + CrucibleConstants.CUSTOM_FILER_START);
 
 		addQueryParam(CustomFilter.AUTHOR, author, url);
 		addQueryParam(CustomFilter.CREATOR, creator, url);

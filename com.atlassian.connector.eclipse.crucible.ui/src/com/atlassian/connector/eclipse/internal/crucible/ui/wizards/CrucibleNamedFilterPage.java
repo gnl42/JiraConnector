@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
@@ -153,7 +154,7 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 		doRefresh();
 
 		if (query != null) {
-			String filterId = query.getAttribute(CrucibleUtil.KEY_FILTER_ID);
+			String filterId = query.getAttribute(CrucibleConstants.KEY_FILTER_ID);
 			PredefinedFilter filter = CrucibleUtil.getPredefinedFilter(filterId);
 			if (filter != null) {
 				filterList.setSelection(new StructuredSelection(filter));
@@ -166,7 +167,7 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 	public void applyTo(IRepositoryQuery query) {
 		String filterId = getFilterId();
 		query.setSummary(getQueryTitle());
-		query.setAttribute(CrucibleUtil.KEY_FILTER_ID, filterId);
+		query.setAttribute(CrucibleConstants.KEY_FILTER_ID, filterId);
 
 		query.setUrl(CrucibleUtil.getPredefinedFilterWebUrl(getTaskRepository().getUrl(), filterId));
 	}
