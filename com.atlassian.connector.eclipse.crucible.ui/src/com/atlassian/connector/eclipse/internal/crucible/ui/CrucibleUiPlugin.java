@@ -11,6 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -41,6 +44,10 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+
+		CrucibleCorePlugin.getDefault().initializeActiveReviewManager(TasksUi.getRepositoryManager());
+		TasksUi.getTaskActivityManager()
+				.addActivationListener(CrucibleCorePlugin.getDefault().getActiveReviewManager());
 	}
 
 	/*
@@ -49,6 +56,9 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		TasksUi.getTaskActivityManager().removeActivationListener(
+				CrucibleCorePlugin.getDefault().getActiveReviewManager());
+
 		plugin = null;
 		super.stop(context);
 	}

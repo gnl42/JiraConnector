@@ -18,6 +18,7 @@ import com.atlassian.theplugin.commons.util.LoggerImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.osgi.framework.BundleContext;
 
 import java.io.File;
@@ -43,6 +44,8 @@ public class CrucibleCorePlugin extends Plugin {
 
 	private ReviewCache reviewCache;
 
+	private ActiveReviewManager activeReviewManager;
+
 	/**
 	 * The constructor
 	 */
@@ -63,7 +66,6 @@ public class CrucibleCorePlugin extends Plugin {
 		plugin = this;
 
 		reviewCache = new ReviewCache();
-
 	}
 
 	/*
@@ -73,6 +75,8 @@ public class CrucibleCorePlugin extends Plugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		reviewCache = null;
+		activeReviewManager = null;
+
 		plugin = null;
 		super.stop(context);
 	}
@@ -102,5 +106,14 @@ public class CrucibleCorePlugin extends Plugin {
 
 	public ReviewCache getReviewCache() {
 		return reviewCache;
+	}
+
+	public void initializeActiveReviewManager(IRepositoryManager repositoryManager) {
+		assert (repositoryManager != null);
+		activeReviewManager = new ActiveReviewManager(repositoryManager);
+	}
+
+	public ActiveReviewManager getActiveReviewManager() {
+		return activeReviewManager;
 	}
 }
