@@ -42,6 +42,9 @@ public class ActiveReviewManager implements ITaskActivationListener {
 	}
 
 	public synchronized void taskActivated(ITask task) {
+		if (!task.getConnectorKind().equals(CrucibleCorePlugin.CONNECTOR_KIND)) {
+			return;
+		}
 		this.activeTask = task;
 		Review cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getLastReadReview(
 				task.getRepositoryUrl(), task.getTaskId());
