@@ -144,6 +144,16 @@ public class CrucibleClient {
 
 	}
 
+	public Review getReview(TaskRepository repository, String taskId, boolean getWorkingCopy,
+			IProgressMonitor monitor) throws CoreException {
+		getTaskData(repository, taskId, monitor);
+		if (getWorkingCopy) {
+			return cachedReviewManager.getWorkingCopyReview(repository.getRepositoryUrl(), taskId);
+		} else {
+			return cachedReviewManager.getServerReview(repository.getRepositoryUrl(), taskId);
+		}
+	}
+
 	public void performQuery(final TaskRepository taskRepository, final IRepositoryQuery query,
 			final TaskDataCollector resultCollector, IProgressMonitor monitor) throws CoreException {
 		execute(new RemoteOperation<Object>(monitor) {

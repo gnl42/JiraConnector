@@ -45,7 +45,11 @@ public class CrucibleCachedReview {
 	}
 
 	synchronized Review getServerReview() {
-		return serverReview;
+		if (serverReview != null) {
+			return serverReview;
+		} else {
+			return lastReadReview;
+		}
 	}
 
 	synchronized Review getWorkingCopy() {

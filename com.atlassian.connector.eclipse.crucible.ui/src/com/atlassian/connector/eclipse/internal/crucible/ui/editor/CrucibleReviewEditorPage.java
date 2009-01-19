@@ -180,13 +180,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 				if (cachedReview == null || force) {
 
-					client.getTaskData(getTaskRepository(), getTask().getTaskId(), monitor);
-					cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getWorkingCopyReview(
-							getTask().getRepositoryUrl(), getTask().getTaskId());
-
-					if (cachedReview != null) {
-						review = cachedReview;
-					}
+					review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
 					return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, null);
 				} else {
 					review = cachedReview;
@@ -291,14 +285,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 										throws CoreException {
 									client.summarizeReview(getTask().getTaskId(), monitor);
 
-									client.getTaskData(getTaskRepository(), getTask().getTaskId(), monitor);
-									Review cachedReview = CrucibleCorePlugin.getDefault()
-											.getReviewCache()
-											.getWorkingCopyReview(getTask().getRepositoryUrl(), getTask().getTaskId());
-
-									if (cachedReview != null) {
-										review = cachedReview;
-									}
+									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
 								}
 							};
@@ -320,14 +307,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 										throws CoreException {
 									client.reopenReview(getTask().getTaskId(), monitor);
-									client.getTaskData(getTaskRepository(), getTask().getTaskId(), monitor);
-									Review cachedReview = CrucibleCorePlugin.getDefault()
-											.getReviewCache()
-											.getWorkingCopyReview(getTask().getRepositoryUrl(), getTask().getTaskId());
-
-									if (cachedReview != null) {
-										review = cachedReview;
-									}
+									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was reopened.");
 								}
 							};
@@ -349,14 +329,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 										throws CoreException {
 									client.abondonReview(getTask().getTaskId(), monitor);
-									client.getTaskData(getTaskRepository(), getTask().getTaskId(), monitor);
-									Review cachedReview = CrucibleCorePlugin.getDefault()
-											.getReviewCache()
-											.getWorkingCopyReview(getTask().getRepositoryUrl(), getTask().getTaskId());
-
-									if (cachedReview != null) {
-										review = cachedReview;
-									}
+									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was abandoned.");
 								}
 							};
