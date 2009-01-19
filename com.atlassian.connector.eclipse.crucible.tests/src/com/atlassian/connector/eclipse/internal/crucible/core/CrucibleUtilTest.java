@@ -170,10 +170,15 @@ public class CrucibleUtilTest extends TestCase {
 		query.setAttribute("test", "tst");
 		assertTrue(CrucibleUtil.isFilterDefinition(query));
 
-		query.setAttribute(CrucibleUtil.KEY_FILTER_ID, "");
+		query.setAttribute(CrucibleConstants.KEY_FILTER_ID, "");
 		assertTrue(CrucibleUtil.isFilterDefinition(query));
 
-		query.setAttribute(CrucibleUtil.KEY_FILTER_ID, "someFilter");
+		query.setAttribute(CrucibleConstants.KEY_FILTER_ID, "someFilter");
 		assertFalse(CrucibleUtil.isFilterDefinition(query));
 	}
+
+	// TODO finish the util test
+	// TODO make a test to ensure that changing the creds gives us a new httpclient so the state is changed
+	// TODO test the cache
+	// TODO test the activeReviewManager
 }
