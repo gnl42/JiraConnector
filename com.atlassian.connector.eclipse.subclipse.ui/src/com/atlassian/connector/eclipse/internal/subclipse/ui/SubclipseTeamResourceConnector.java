@@ -59,11 +59,16 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean canHandleFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
+		if (repoUrl == null) {
+			return false;
+		}
 		return SVNProviderPlugin.getPlugin().getRepositories().isKnownRepository(repoUrl, false);
 	}
 
 	public boolean openFile(String repoUrl, String filePath, String revisionString, final IProgressMonitor monitor) {
-
+		if (repoUrl == null) {
+			return false;
+		}
 		try {
 
 			ISVNRepositoryLocation location = SVNProviderPlugin.getPlugin().getRepositories().getRepository(repoUrl);
