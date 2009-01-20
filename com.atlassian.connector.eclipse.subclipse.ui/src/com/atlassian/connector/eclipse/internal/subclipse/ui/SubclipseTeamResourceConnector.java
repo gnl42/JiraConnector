@@ -103,13 +103,13 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 						}
 						return true;
 					} else {
-						TeamUiUtils.openFileDeletedErrorMessage();
+						TeamUiUtils.openFileDeletedErrorMessage(repoUrl, filePath, revisionString);
 
 						return true;
 					}
 				}
 			} else {
-				TeamUiUtils.openFileDoesntExistErrorMessage();
+				TeamUiUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
 				return true;
 			}
 			// TODO display an error message for these errors?

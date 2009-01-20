@@ -109,15 +109,15 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 				}
 
 			} else {
-				openNotTeamResourceErrorMessage();
+				openNotTeamResourceErrorMessage(repoUrl, filePath, revisionString);
 			}
 		} else {
-			TeamUiUtils.openFileDoesntExistErrorMessage();
+			TeamUiUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
 		}
 	}
 
-	private static void openRemoteResource(String revisionString, IResource resource, IFileHistoryProvider historyProvider,
-			IProgressMonitor monitor) {
+	private static void openRemoteResource(String revisionString, IResource resource,
+			IFileHistoryProvider historyProvider, IProgressMonitor monitor) {
 		// we need a different revision than the one in the local workspace
 		IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE, monitor);
 
@@ -157,7 +157,24 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return inSync;
 	}
 
-	private static void openNotTeamResourceErrorMessage() {
-		MessageDialog.openWarning(null, "Unable to find file", "The file is not managed by a team provider");
+	public static void openNotTeamResourceErrorMessage(final String repoUrl, final String filePath,
+			final String revision) {
+		if (Display.getCurrent() != null) {
+			internalOpenNotTeamResourceErrorMessage(repoUrl, filePath, revision);
+		} else {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					internalOpenNotTeamResourceErrorMessage(repoUrl, filePath, revision);
+				}
+			});
+		}
+	}
+
+	private static void internalOpenNotTeamResourceErrorMessage(String repoUrl, String filePath, String revision) {
+		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
+		String message = "Please checkout the project as the following file is not managed by a team provider:\n\n"
+				+ fileUrl;
+
+		MessageDialog.openWarning(null, "Crucible", message);
 	}
 }

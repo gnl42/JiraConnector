@@ -33,6 +33,8 @@ import org.eclipse.ui.ide.IDE;
  */
 public final class TeamUiUtils {
 
+	private static final String MESSAGE_DIALOG_TITLE = "Crucible";
+
 	private static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
 
 	private TeamUiUtils() {
@@ -83,12 +85,47 @@ public final class TeamUiUtils {
 		}
 	}
 
-	public static void openFileDeletedErrorMessage() {
-		MessageDialog.openInformation(null, "Unable to find file", "May have been deleted");
+	public static void openFileDeletedErrorMessage(final String repoUrl, final String filePath, final String revision) {
+		if (Display.getCurrent() != null) {
+			internalOpenFileDeletedErrorMessage(repoUrl, filePath, revision);
+		} else {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					internalOpenFileDeletedErrorMessage(repoUrl, filePath, revision);
+				}
+			});
+		}
+
 	}
 
-	public static void openFileDoesntExistErrorMessage() {
-		MessageDialog.openInformation(null, "Unable to find file", "This file does not exist in your local workspace");
+	private static void internalOpenFileDeletedErrorMessage(String repoUrl, String filePath, String revision) {
+		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
+		String message = "Please update the project to revision " + revision
+				+ "as the following file may have been removed or deleted:\n\n" + fileUrl;
 
+		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
+
+	public static void openFileDoesntExistErrorMessage(final String repoUrl, final String filePath,
+			final String revision) {
+		if (Display.getCurrent() != null) {
+			internalOpenFileDoesntExistErrorMessage(repoUrl, filePath, revision);
+		} else {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					internalOpenFileDoesntExistErrorMessage(repoUrl, filePath, revision);
+				}
+			});
+		}
+	}
+
+	private static void internalOpenFileDoesntExistErrorMessage(String repoUrl, String filePath, String revision) {
+
+		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
+		String message = "Please update the project to revision " + revision
+				+ "as the following file may have been removed or deleted:\n\n" + fileUrl;
+
+		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
+	}
+
 }

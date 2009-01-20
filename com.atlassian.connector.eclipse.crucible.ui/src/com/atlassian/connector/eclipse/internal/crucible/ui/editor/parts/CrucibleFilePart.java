@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenVersionedVirtualFileAction;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
@@ -96,19 +97,22 @@ public class CrucibleFilePart extends ExpandablePart {
 	@Override
 	protected List<IAction> getToolbarActions(boolean isExpanded) {
 		List<IAction> actions = new ArrayList<IAction>();
-		if (crucibleFile.getOldFileDescriptor() != null) {
-			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
-					crucibleFile.getOldFileDescriptor());
+		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
+		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
+		if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null && oldFileDescriptor.getUrl().length() > 0
+				&& oldFileDescriptor.getRevision() != null && oldFileDescriptor.getRevision().length() > 0) {
+			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(oldFileDescriptor);
 			openOldAction.setText("Open Old");
-			openOldAction.setToolTipText("Open Revision " + crucibleFile.getOldFileDescriptor().getRevision());
+			openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
 			// TODO set the image descriptor
 			actions.add(openOldAction);
 		}
-		if (crucibleFile.getFileDescriptor() != null) {
-			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
-					crucibleFile.getFileDescriptor());
+
+		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
+				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0) {
+			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(newFileDescriptor);
 			openNewAction.setText("Open New");
-			openNewAction.setToolTipText("Open Revision " + crucibleFile.getOldFileDescriptor().getRevision());
+			openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
 			// TODO set the image descriptor
 			actions.add(openNewAction);
 		}
