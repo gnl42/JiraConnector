@@ -84,7 +84,10 @@ public class GeneralCommentPart extends CommentPart {
 
 			text = "DEFECT ";
 		}
-		return text + "[" + generalComment.getReplies().size() + " replies]";
+		if (generalComment.getReplies().size() > 0) {
+			text += "[" + generalComment.getReplies().size() + " replies]";
+		}
+		return text;
 	}
 
 	@Override

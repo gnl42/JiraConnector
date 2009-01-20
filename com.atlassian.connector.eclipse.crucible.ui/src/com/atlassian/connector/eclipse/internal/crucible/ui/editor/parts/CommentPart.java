@@ -55,9 +55,10 @@ public abstract class CommentPart extends ExpandablePart {
 		composite.setLayout(layout);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 
-		String commentText = getCommentText();
+		String commentString = getCommentText();
 
-		createReadOnlyText(toolkit, composite, commentText);
+		Text commentText = createReadOnlyText(toolkit, composite, commentString);
+		GridDataFactory.fillDefaults().hint(500, SWT.DEFAULT).applyTo(commentText);
 
 		//CHECKSTYLE:MAGIC:ON
 		return composite;
