@@ -85,8 +85,21 @@ public class CrucibleFilePart extends ExpandablePart {
 
 	@Override
 	protected String getAnnotationText() {
-		return "[Rev:" + crucibleFile.getOldFileDescriptor().getRevision() + "-"
-				+ crucibleFile.getFileDescriptor().getRevision() + "]";
+		String revisionString = "[Rev:";
+		if (crucibleFile.getOldFileDescriptor() != null && crucibleFile.getOldFileDescriptor().getRevision() != null
+				&& crucibleFile.getOldFileDescriptor().getRevision().length() > 0) {
+			revisionString += crucibleFile.getOldFileDescriptor().getRevision();
+
+			if (crucibleFile.getFileDescriptor() != null && crucibleFile.getFileDescriptor().getRevision() != null
+					&& crucibleFile.getFileDescriptor().getRevision().length() > 0) {
+				revisionString += "-";
+			}
+		}
+		if (crucibleFile.getFileDescriptor() != null && crucibleFile.getFileDescriptor().getRevision() != null
+				&& crucibleFile.getFileDescriptor().getRevision().length() > 0) {
+			revisionString += crucibleFile.getFileDescriptor().getRevision() + "]";
+		}
+		return revisionString;
 	}
 
 	@Override
