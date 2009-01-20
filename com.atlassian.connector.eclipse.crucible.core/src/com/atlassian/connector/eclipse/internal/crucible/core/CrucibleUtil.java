@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
@@ -220,5 +221,15 @@ public final class CrucibleUtil {
 	public static String getTaskIdFromReview(Review review) {
 		String key = review.getPermId().getId();
 		return CrucibleUtil.getTaskIdFromPermId(key);
+	}
+
+	public static boolean isPartialReview(Review review) {
+		try {
+			review.getFiles();
+		} catch (ValueNotYetInitialized e) {
+	
+			return true;
+		}
+		return false;
 	}
 }

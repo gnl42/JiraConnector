@@ -71,7 +71,8 @@ public class CrucibleCachedReview {
 		} else {
 			differences = null;
 		}
-		return differences != null;
+		return differences != null && differences.size() > 0 || !differencer.isShortEqual()
+				|| !differencer.isFilesEqual();
 	}
 
 	synchronized List<CrucibleNotification> getDifferences() {
