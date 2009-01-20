@@ -18,6 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
@@ -32,6 +33,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
@@ -296,6 +298,13 @@ public class CrucibleClient {
 	 */
 	private boolean cacheReview(String taskId, Review review) {
 		if (cachedReviewManager != null) {
+			try {
+				review.getFiles();
+			} catch (ValueNotYetInitialized e) {
+				StatusHandler.log(new Status(IStatus.WARNING, CrucibleCorePlugin.PLUGIN_ID,
+						"Cannot cache partial review", e));
+				return false;
+			}
 			return cachedReviewManager.updateCachedReview(location.getUrl(), taskId, review);
 		}
 		return false;
