@@ -11,12 +11,20 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.mylyn.tasks.ui.TasksUiImages;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.ui.PlatformUI;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Action to open a version file
@@ -31,19 +39,21 @@ public class OpenVersionedVirtualFileAction extends Action {
 	}
 
 	@Override
-	public ImageDescriptor getImageDescriptor() {
-		return TasksUiImages.REPOSITORY;
-	}
-
-	@Override
-	public String getText() {
-		return "Open File";
-	}
-
-	@Override
 	public void run() {
-		MessageDialog.openInformation(null, "Unsupported Operation", "This operation is currently unsupported");
-//		TeamUiUtils.openFile(virtualFile.getRepoUrl(), virtualFile.getUrl(), virtualFile.getRevision(),
-//				new NullProgressMonitor());
+		try {
+			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					TeamUiUtils.openFile(virtualFile.getRepoUrl(), virtualFile.getUrl(), virtualFile.getRevision(),
+							monitor);
+				}
+			});
+		} catch (InvocationTargetException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		} catch (InterruptedException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		} catch (OperationCanceledException e) {
+			// ignore since the user requested a cancel
+		}
+
 	}
 }

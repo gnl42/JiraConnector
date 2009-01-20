@@ -96,8 +96,22 @@ public class CrucibleFilePart extends ExpandablePart {
 	@Override
 	protected List<IAction> getToolbarActions(boolean isExpanded) {
 		List<IAction> actions = new ArrayList<IAction>();
-		actions.add(new OpenVersionedVirtualFileAction(crucibleFile.getFileDescriptor()));
+		if (crucibleFile.getOldFileDescriptor() != null) {
+			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
+					crucibleFile.getOldFileDescriptor());
+			openOldAction.setText("Open Old");
+			openOldAction.setToolTipText("Open Revision " + crucibleFile.getOldFileDescriptor().getRevision());
+			// TODO set the image descriptor
+			actions.add(openOldAction);
+		}
+		if (crucibleFile.getFileDescriptor() != null) {
+			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
+					crucibleFile.getFileDescriptor());
+			openNewAction.setText("Open New");
+			openNewAction.setToolTipText("Open Revision " + crucibleFile.getOldFileDescriptor().getRevision());
+			// TODO set the image descriptor
+			actions.add(openNewAction);
+		}
 		return actions;
 	}
-
 }

@@ -14,26 +14,14 @@ package com.atlassian.connector.eclipse.ui.team;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.team.core.TeamException;
-import org.eclipse.team.core.history.IFileHistory;
-import org.eclipse.team.core.history.IFileHistoryProvider;
-import org.eclipse.team.core.history.IFileRevision;
-import org.eclipse.team.core.subscribers.Subscriber;
-import org.eclipse.team.core.synchronize.SyncInfo;
-import org.eclipse.team.internal.ui.Utils;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
@@ -44,6 +32,8 @@ import org.eclipse.ui.ide.IDE;
  * @author Shawn Minto
  */
 public final class TeamUiUtils {
+
+	private static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
 
 	private TeamUiUtils() {
 	}
@@ -69,77 +59,22 @@ public final class TeamUiUtils {
 		}
 
 		// try a backup solution
-		openFileWithTeamApi(repoUrl, filePath, revisionString, monitor);
-
+		defaultConnector.openFile(repoUrl, filePath, revisionString, monitor);
 	}
 
-	private static void openFileWithTeamApi(String repoUrl, String filePath, String revisionString,
-			IProgressMonitor monitor) {
-		// this is a good backup (Works for cvs and anyone that uses the history provider
-
-		// TODO add support for finding a project in the path so that we can find the proper resource 
-		// (i.e. file path and project name may be different)
-		IPath path = new Path(filePath);
-		IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
-
-		if (resource != null) {
-			if (!(resource instanceof IFile)) {
-				MessageDialog.openWarning(null, "Not a File", "The resource to open is not a File.");
-				return;
-			}
-
-			IProject project = resource.getProject();
-
-			if (project == null) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
-						"Unable to get project for resource", new Exception()));
-				return;
-			}
-
-			RepositoryProvider rp = RepositoryProvider.getProvider(project);
-			if (rp != null && rp.getFileHistoryProvider() != null) {
-
-				// this project has a team nature associated with it in the workspace
-				IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
-
-				IFileRevision localFileRevision = historyProvider.getWorkspaceFileRevision(resource);
-
-				boolean inSync = isRemoteFileInSync(resource, rp);
-
-				if (inSync && localFileRevision.getContentIdentifier() != null
-						&& localFileRevision.getContentIdentifier().equals(revisionString)) {
-					openLocalResource(resource);
-				} else {
-					openRemoteResource(revisionString, monitor, resource, historyProvider);
-				}
-
-			} else {
-				MessageDialog.openWarning(null, "Unable to find file", "The file is not managed by a team provider");
-			}
+	public static void openLocalResource(final IResource resource) {
+		if (Display.getCurrent() != null) {
+			openLocalResourceInternal(resource);
 		} else {
-			MessageDialog.openWarning(null, "Unable to find file", "The file does not exist in your local workspace");
-		}
-	}
-
-	private static void openRemoteResource(String revisionString, IProgressMonitor monitor, IResource resource,
-			IFileHistoryProvider historyProvider) {
-		// we need a different revision than the one in the local workspace
-		IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE, monitor);
-
-		if (fileHistory != null) {
-			IFileRevision remoteFileRevision = fileHistory.getFileRevision(revisionString);
-			if (remoteFileRevision != null) {
-				try {
-					Utils.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
-							remoteFileRevision, monitor);
-				} catch (CoreException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					openLocalResourceInternal(resource);
 				}
-			}
+			});
 		}
 	}
 
-	public static void openLocalResource(IResource resource) {
+	private static void openLocalResourceInternal(IResource resource) {
 		// the local revision matches the revision we care about and the file is in sync
 		try {
 			IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), (IFile) resource, true);
@@ -148,26 +83,12 @@ public final class TeamUiUtils {
 		}
 	}
 
-	private static boolean isRemoteFileInSync(IResource resource, RepositoryProvider rp) {
-		boolean inSync = false;
-		Subscriber subscriber = rp.getSubscriber();
-		if (subscriber != null) {
-			try {
-				SyncInfo syncInfo = subscriber.getSyncInfo(resource);
-				if (syncInfo != null) {
-					inSync = SyncInfo.isInSync(syncInfo.getKind());
-				} else {
-					StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-							"Unable to determine if file is in sync.  Trying to open remote file.", new Exception()));
-				}
-			} catch (TeamException e) {
-				StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-						"Unable to determine if file is in sync.  Trying to open remote file.", e));
-			}
-		} else {
-			StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-					"Unable to determine if file is in sync.  Trying to open remote file.", new Exception()));
-		}
-		return inSync;
+	public static void openFileDeletedErrorMessage() {
+		MessageDialog.openInformation(null, "Unable to find file", "May have been deleted");
+	}
+
+	public static void openFileDoesntExistErrorMessage() {
+		MessageDialog.openInformation(null, "Unable to find file", "This file does not exist in your local workspace");
+
 	}
 }
