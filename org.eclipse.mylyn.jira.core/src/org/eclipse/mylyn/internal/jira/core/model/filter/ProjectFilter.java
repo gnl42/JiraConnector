@@ -14,6 +14,7 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 
 /**
@@ -33,9 +34,16 @@ public class ProjectFilter implements Filter, Serializable {
 	private final Project[] projects;
 
 	public ProjectFilter(Project[] projects) {
-		assert (projects != null);
-		assert (projects.length > 0);
+		Assert.isNotNull(projects);
+		Assert.isTrue(projects.length > 0);
+		for (Project project : projects) {
+			Assert.isNotNull(project);
+		}
 		this.projects = projects;
+	}
+
+	public ProjectFilter(Project project) {
+		this(new Project[] { project });
 	}
 
 	public Project[] getProjects() {
