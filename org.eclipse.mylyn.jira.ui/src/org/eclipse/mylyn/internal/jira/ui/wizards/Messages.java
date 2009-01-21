@@ -29,6 +29,8 @@ public class Messages extends NLS {
 
 	public static String JiraFilterDefinitionPage_All_Projects;
 
+	public static String JiraFilterDefinitionPage_Any;
+
 	public static String JiraFilterDefinitionPage_Assigned_To;
 
 	public static String JiraFilterDefinitionPage_Comments;
@@ -58,6 +60,8 @@ public class Messages extends NLS {
 	public static String JiraFilterDefinitionPage_No_Component;
 
 	public static String JiraFilterDefinitionPage_No_Fix_Version;
+
+	public static String JiraFilterDefinitionPage_No_Project;
 
 	public static String JiraFilterDefinitionPage_No_Reporter;
 

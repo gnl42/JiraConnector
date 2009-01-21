@@ -48,10 +48,11 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 /**
  * @author Eugene Kuleshov
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class JiraCustomQueryTest extends TestCase {
 
-	private Project project;
+	private Project[] projects;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -73,10 +74,15 @@ public class JiraCustomQueryTest extends TestCase {
 		vers[2] = new Version();
 		vers[2].setId("ver2");
 
-		project = new Project();
-		project.setId("000");
-		project.setComponents(comps);
-		project.setVersions(vers);
+		projects = new Project[2];
+		projects[0] = new Project();
+		projects[0].setId("prj0");
+		projects[0].setComponents(comps);
+		projects[0].setVersions(vers);
+		projects[1] = new Project();
+		projects[1].setId("prj1");
+		projects[1].setComponents(comps);
+		projects[1].setVersions(vers);
 	}
 
 	public void testJiraCustomQuery() {
@@ -119,7 +125,7 @@ public class JiraCustomQueryTest extends TestCase {
 		resolutions[1].setId("resolution1");
 
 		FilterDefinition filter = new FilterDefinition();
-		filter.setProjectFilter(new ProjectFilter(project));
+		filter.setProjectFilter(new ProjectFilter(projects));
 		filter.setComponentFilter(new ComponentFilter(components));
 		filter.setFixForVersionFilter(new VersionFilter(fixVersions));
 		filter.setReportedInVersionFilter(new VersionFilter(repoVersions));
@@ -146,7 +152,17 @@ public class JiraCustomQueryTest extends TestCase {
 		JiraClientCache cache = new JiraClientCache(client) {
 			@Override
 			public Project getProjectById(String id) {
-				return project;
+				for (Project prj : projects) {
+					if (prj.getId().equals(id)) {
+						return prj;
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public Project[] getProjects() {
+				return projects;
 			}
 
 			@Override
@@ -176,7 +192,9 @@ public class JiraCustomQueryTest extends TestCase {
 		FilterDefinition filter2 = converter.toFilter(client, queryUrl, true);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();
-		assertEquals(project.getId(), projectFilter2.getProject().getId());
+		assertEquals(2, projects.length);
+		assertEquals(projects[0].getId(), projectFilter2.getProjects()[0].getId());
+		assertEquals(projects[1].getId(), projectFilter2.getProjects()[1].getId());
 
 		Component[] components2 = filter2.getComponentFilter().getComponents();
 		assertEquals(2, components2.length);

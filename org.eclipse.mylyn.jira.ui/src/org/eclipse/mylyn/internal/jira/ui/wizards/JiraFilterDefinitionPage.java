@@ -15,9 +15,12 @@ package org.eclipse.mylyn.internal.jira.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -96,6 +99,7 @@ import org.eclipse.ui.progress.IProgressService;
  * @author Eugene Kuleshov (layout and other improvements)
  * @author Mik Kersten (generalized for search dialog)
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
@@ -183,25 +187,29 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private static final String SEARCH_URL_ID = PAGE_NAME + ".SEARCHURL"; //$NON-NLS-1$
 
-	final Placeholder ANY_ASSIGNEE = new Placeholder("Any"); //$NON-NLS-1$
+	private static final Project[] NO_PROJECTS = new Project[0];
 
-	final Placeholder ANY_COMPONENT = new Placeholder("Any"); //$NON-NLS-1$
+	final Placeholder ALL_PROJECTS = new Placeholder(Messages.JiraFilterDefinitionPage_All_Projects);
 
-	final Placeholder ANY_FIX_VERSION = new Placeholder("Any"); //$NON-NLS-1$
+	final Placeholder ANY_ASSIGNEE = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
 
-	final Placeholder ANY_ISSUE_TYPE = new Placeholder("Any"); //$NON-NLS-1$
+	final Placeholder ANY_COMPONENT = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
 
-	final Placeholder ANY_PRIORITY = new Placeholder("Any"); //$NON-NLS-1$
+	final Placeholder ANY_FIX_VERSION = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
+
+	final Placeholder ANY_ISSUE_TYPE = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
+
+	final Placeholder ANY_PRIORITY = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
 
 	// attributes
 
-	final Placeholder ANY_REPORTED_VERSION = new Placeholder("Any"); //$NON-NLS-1$
+	final Placeholder ANY_REPORTED_VERSION = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
 
-	final Placeholder ANY_REPORTER = new Placeholder("Any"); //$NON-NLS-1$
+	final Placeholder ANY_REPORTER = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
 
-	final Placeholder ANY_RESOLUTION = new Placeholder("Any"); //$NON-NLS-1$
+	final Placeholder ANY_RESOLUTION = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
 
-	final Placeholder ANY_STATUS = new Placeholder("Any"); //$NON-NLS-1$
+	final Placeholder ANY_STATUS = new Placeholder(Messages.JiraFilterDefinitionPage_Any);
 
 	private Text assignee;
 
@@ -232,6 +240,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	final Placeholder NO_COMPONENT = new Placeholder(Messages.JiraFilterDefinitionPage_No_Component);
 
 	final Placeholder NO_FIX_VERSION = new Placeholder(Messages.JiraFilterDefinitionPage_No_Fix_Version);
+
+	final Placeholder NO_PROJECT = new Placeholder(Messages.JiraFilterDefinitionPage_No_Project);
 
 	final Placeholder NO_REPORTED_VERSION = new Placeholder(Messages.JiraFilterDefinitionPage_No_Version);
 
@@ -314,10 +324,32 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		}
 
 		IStructuredSelection projectSelection = (IStructuredSelection) this.project.getSelection();
-		if (!projectSelection.isEmpty() && projectSelection.getFirstElement() instanceof Project) {
-			workingCopy.setProjectFilter(new ProjectFilter((Project) projectSelection.getFirstElement()));
-		} else {
+		if (projectSelection.isEmpty()) {
 			workingCopy.setProjectFilter(null);
+		} else {
+			boolean selectionContainsAll = false;
+			boolean selectionContainsNone = false;
+			List<Project> selectedProjects = new ArrayList<Project>();
+			for (Iterator i = projectSelection.iterator(); i.hasNext();) {
+				Object selection = i.next();
+				if (ALL_PROJECTS.equals(selection)) {
+					selectionContainsAll = true;
+				} else if (NO_PROJECT.equals(selection)) {
+					selectionContainsNone = true;
+				} else if (selection instanceof Project) {
+					selectedProjects.add((Project) selection);
+				}
+			}
+			if (selectionContainsAll) {
+				workingCopy.setProjectFilter(null);
+			} else if (selectedProjects.size() > 0) {
+				workingCopy.setProjectFilter(new ProjectFilter(
+						selectedProjects.toArray(new Project[selectedProjects.size()])));
+			} else if (selectionContainsNone) {
+				workingCopy.setProjectFilter(new ProjectFilter(new Project[0]));
+			} else {
+				workingCopy.setProjectFilter(null);
+			}
 		}
 
 		IStructuredSelection reportedInSelection = (IStructuredSelection) reportedIn.getSelection();
@@ -599,31 +631,35 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		components.getControl().setLayoutData(gridData);
 
 		components.setContentProvider(new IStructuredContentProvider() {
-			private Project project;
+			private Object[] currentElements;
 
 			public void dispose() {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				if (project != null) {
-					Component[] components = project.getComponents();
-
-					Object[] elements = new Object[components.length + 2];
-					elements[0] = ANY_COMPONENT;
-					elements[1] = NO_COMPONENT;
-					System.arraycopy(components, 0, elements, 2, components.length);
-					return elements;
-				}
-				return new Object[] { ANY_COMPONENT };
+				return currentElements;
 			}
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				project = (Project) newInput;
+				Project[] projects = (Project[]) newInput;
+				if (projects.length == 0) {
+					currentElements = new Object[] { ANY_COMPONENT };
+				} else {
+					Set<Object> elements = new LinkedHashSet<Object>();
+					elements.add(ANY_COMPONENT);
+					elements.add(NO_COMPONENT);
+					for (Project project : projects) {
+						if (project != null) {
+							elements.addAll(Arrays.asList(project.getComponents()));
+						}
+					}
+					currentElements = elements.toArray(new Object[elements.size()]);
+				}
 			}
 
 		});
 		components.setLabelProvider(new ComponentLabelProvider());
-		components.setInput(null);
+		components.setInput(NO_PROJECTS);
 	}
 
 	public void createControl(final Composite parent) {
@@ -1111,38 +1147,45 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		fixFor.getControl().setLayoutData(gridData);
 
 		fixFor.setContentProvider(new IStructuredContentProvider() {
-			private Project project;
+			private Object[] currentElements;
 
 			public void dispose() {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				if (project != null) {
-					Version[] versions = project.getVersions();
-					Version[] releasedVersions = project.getReleasedVersions();
-					Version[] unreleasedVersions = project.getUnreleasedVersions();
-
-					Object[] elements = new Object[versions.length + 4];
-					elements[0] = ANY_FIX_VERSION;
-					elements[1] = NO_FIX_VERSION;
-					elements[2] = RELEASED_VERSION;
-					System.arraycopy(releasedVersions, 0, elements, 3, releasedVersions.length);
-
-					elements[releasedVersions.length + 3] = UNRELEASED_VERSION;
-
-					System.arraycopy(unreleasedVersions, 0, elements, releasedVersions.length + 4,
-							unreleasedVersions.length);
-					return elements;
-				}
-				return new Object[] { ANY_REPORTED_VERSION };
+				return currentElements;
 			}
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				project = (Project) newInput;
+				Project[] projects = (Project[]) newInput;
+				if (projects.length == 0) {
+					currentElements = new Object[] { ANY_FIX_VERSION };
+				} else {
+					List<Object> elements = new ArrayList<Object>();
+					elements.add(ANY_FIX_VERSION);
+					elements.add(NO_FIX_VERSION);
+
+					Set<Version> releasedVersions = new LinkedHashSet<Version>();
+					Set<Version> unreleasedVersions = new LinkedHashSet<Version>();
+
+					for (Project project : projects) {
+						if (project != null) {
+							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions()));
+							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions()));
+						}
+					}
+
+					elements.add(RELEASED_VERSION);
+					elements.addAll(releasedVersions);
+					elements.add(UNRELEASED_VERSION);
+					elements.addAll(unreleasedVersions);
+
+					currentElements = elements.toArray(new Object[elements.size()]);
+				}
 			}
 		});
 		fixFor.setLabelProvider(new VersionLabelProvider());
-		fixFor.setInput(null);
+		fixFor.setInput(NO_PROJECTS);
 	}
 
 	private void createProjectsViewer(Composite c) {
@@ -1165,12 +1208,16 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		project.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = ((IStructuredSelection) event.getSelection());
-				Project selectedProject = null;
-				if (!selection.isEmpty() && !(selection.getFirstElement() instanceof Placeholder)) {
-					selectedProject = (Project) selection.getFirstElement();
+				List<Project> selectedProjects = new ArrayList<Project>();
+				if (!selection.isEmpty()) {
+					for (Iterator<?> i = selection.iterator(); i.hasNext();) {
+						Object sel = i.next();
+						if (!(sel instanceof Placeholder)) {
+							selectedProjects.add((Project) sel);
+						}
+					}
 				}
-
-				updateCurrentProject(selectedProject);
+				updateCurrentProjects(selectedProjects.toArray(new Project[selectedProjects.size()]));
 				// validatePage();
 			}
 		});
@@ -1184,39 +1231,46 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		reportedIn.getControl().setLayoutData(gridData);
 
 		reportedIn.setContentProvider(new IStructuredContentProvider() {
-			private Project project;
+			private Object[] currentElements;
 
 			public void dispose() {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				if (project != null) {
-					Version[] versions = project.getVersions();
-					Version[] releasedVersions = project.getReleasedVersions();
-					Version[] unreleasedVersions = project.getUnreleasedVersions();
-
-					Object[] elements = new Object[versions.length + 4];
-					elements[0] = ANY_REPORTED_VERSION;
-					elements[1] = NO_REPORTED_VERSION;
-					elements[2] = RELEASED_VERSION;
-					System.arraycopy(releasedVersions, 0, elements, 3, releasedVersions.length);
-
-					elements[releasedVersions.length + 3] = UNRELEASED_VERSION;
-
-					System.arraycopy(unreleasedVersions, 0, elements, releasedVersions.length + 4,
-							unreleasedVersions.length);
-					return elements;
-				}
-				return new Object[] { ANY_REPORTED_VERSION };
+				return currentElements;
 			}
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				project = (Project) newInput;
+				Project[] projects = (Project[]) newInput;
+				if (projects.length == 0) {
+					currentElements = new Object[] { ANY_REPORTED_VERSION };
+				} else {
+					List<Object> elements = new ArrayList<Object>();
+					elements.add(ANY_REPORTED_VERSION);
+					elements.add(NO_REPORTED_VERSION);
+
+					Set<Object> releasedVersions = new LinkedHashSet<Object>();
+					Set<Object> unreleasedVersions = new LinkedHashSet<Object>();
+
+					for (Project project : projects) {
+						if (project != null) {
+							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions()));
+							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions()));
+						}
+					}
+
+					elements.add(RELEASED_VERSION);
+					elements.addAll(releasedVersions);
+					elements.add(UNRELEASED_VERSION);
+					elements.addAll(unreleasedVersions);
+
+					currentElements = elements.toArray(new Object[elements.size()]);
+				}
 			}
 
 		});
 		reportedIn.setLabelProvider(new VersionLabelProvider());
-		reportedIn.setInput(null);
+		reportedIn.setInput(NO_PROJECTS);
 	}
 
 	protected void createUpdateButton(final Composite control) {
@@ -1266,7 +1320,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			public Object[] getElements(Object inputElement) {
 				JiraClient server = (JiraClient) inputElement;
 				Object[] elements = new Object[server.getCache().getProjects().length + 1];
-				elements[0] = new Placeholder(Messages.JiraFilterDefinitionPage_All_Projects);
+				elements[0] = ALL_PROJECTS;
 				System.arraycopy(server.getCache().getProjects(), 0, elements, 1,
 						server.getCache().getProjects().length);
 				return elements;
@@ -1389,10 +1443,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private void loadFromWorkingCopy() {
 		if (workingCopy.getProjectFilter() != null) {
-			project.setSelection(new StructuredSelection(workingCopy.getProjectFilter().getProject()), true);
+			project.setSelection(new StructuredSelection(workingCopy.getProjectFilter().getProjects()), true);
 		} else {
-			project.setSelection(new StructuredSelection(
-					new Placeholder(Messages.JiraFilterDefinitionPage_All_Projects)), true);
+			project.setSelection(new StructuredSelection(ALL_PROJECTS), true);
 		}
 
 		if (workingCopy.getFixForVersionFilter() != null) {
@@ -1637,10 +1690,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		initializeContentProviders();
 	}
 
-	void updateCurrentProject(Project project) {
-		this.fixFor.setInput(project);
-		this.components.setInput(project);
-		this.reportedIn.setInput(project);
+	void updateCurrentProjects(Project[] projects) {
+		this.fixFor.setInput(projects);
+		this.components.setInput(projects);
+		this.reportedIn.setInput(projects);
 	}
-
 }

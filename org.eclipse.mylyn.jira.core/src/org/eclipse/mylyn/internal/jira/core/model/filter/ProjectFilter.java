@@ -25,22 +25,24 @@ import org.eclipse.mylyn.internal.jira.core.model.Project;
  * @see com.gbst.jira.core.model.filter.FixForVersionFilter
  * 
  * @author Brock Janiczak
+ * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class ProjectFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final Project project;
+	private final Project[] projects;
 
-	public ProjectFilter(Project project) {
-		assert (project != null);
-		this.project = project;
+	public ProjectFilter(Project[] projects) {
+		assert (projects != null);
+		assert (projects.length > 0);
+		this.projects = projects;
 	}
 
-	public Project getProject() {
-		return this.project;
+	public Project[] getProjects() {
+		return this.projects;
 	}
 
 	ProjectFilter copy() {
-		return new ProjectFilter(this.project);
+		return new ProjectFilter(this.projects);
 	}
 }

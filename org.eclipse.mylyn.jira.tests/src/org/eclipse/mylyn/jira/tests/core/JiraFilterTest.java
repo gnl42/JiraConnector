@@ -21,6 +21,7 @@ import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -44,6 +45,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
  * @author Wesley Coelho (initial integration patch)
  * @author Mik Kersten
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class JiraFilterTest extends TestCase {
 
@@ -137,7 +139,7 @@ public class JiraFilterTest extends TestCase {
 		JiraTestUtil.createIssue(client, issue2);
 
 		FilterDefinition filter = new FilterDefinition();
-		filter.setProjectFilter(new ProjectFilter(issue2.getProject()));
+		filter.setProjectFilter(new ProjectFilter(new Project[] { issue2.getProject() }));
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
 

@@ -75,6 +75,7 @@ import org.eclipse.ui.progress.UIJob;
  * 
  * @author Steffen Pingel
  * @author Eugene Kuleshov
+ * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class JiraProjectPage extends WizardPage {
 
@@ -90,6 +91,7 @@ public class JiraProjectPage extends WizardPage {
 		this.repository = repository;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void createControl(Composite parent) {
 		// create the composite to hold the widgets
 		Composite composite = new Composite(parent, SWT.NULL);
@@ -98,6 +100,7 @@ public class JiraProjectPage extends WizardPage {
 		composite.setLayout(new GridLayout());
 
 		// create the list of bug reports
+		// TODO e3.5 use new FilteredTree API
 		projectTree = new FilteredTree(composite, SWT.SINGLE | SWT.BORDER, //
 				new PatternFilter() { // matching on project keys
 					@Override
@@ -157,15 +160,15 @@ public class JiraProjectPage extends WizardPage {
 
 		updateProjectsFromRepository(false);
 
-		final Project project = discoverProject();
-		if (project != null) {
+		final Project[] projects = discoverProject();
+		if (projects != null && projects.length > 0) {
 			new UIJob("") { // waiting on delayed refresh of filtered tree //$NON-NLS-1$
 				@Override
 				public IStatus runInUIThread(IProgressMonitor monitor) {
 					TreeViewer viewer = projectTree.getViewer();
 					if (viewer != null && viewer.getTree() != null && !viewer.getTree().isDisposed()) {
-						viewer.setSelection(new StructuredSelection(project));
-						viewer.reveal(project);
+						viewer.setSelection(new StructuredSelection(projects));
+						viewer.reveal(projects);
 						viewer.getTree().showSelection();
 						viewer.getTree().setFocus();
 					}
@@ -272,11 +275,11 @@ public class JiraProjectPage extends WizardPage {
 		return (Project) selection.getFirstElement();
 	}
 
-	private Project discoverProject() {
+	private Project[] discoverProject() {
 		// TODO similarity with TasksUiUtil and Bugzilla implementation. consider adapting to TaskSelection or RepositoryTaskData
 		Object element = getSelectedElement();
 		if (element == null) {
-			return null;
+			return new Project[0];
 		}
 		if (element instanceof ITask) {
 			ITask task = (ITask) element;
@@ -285,7 +288,7 @@ public class JiraProjectPage extends WizardPage {
 					TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
 					Project project = getProject(taskData);
 					if (project != null) {
-						return project;
+						return new Project[] { project };
 					}
 				} catch (CoreException e) {
 					// FIXME 3.1 replace with proper exception handling
@@ -301,12 +304,12 @@ public class JiraProjectPage extends WizardPage {
 				if (filter != null) {
 					ProjectFilter projectFilter = filter.getProjectFilter();
 					if (projectFilter != null) {
-						return projectFilter.getProject();
+						return projectFilter.getProjects();
 					}
 				}
 			}
 		}
-		return null;
+		return new Project[0];
 	}
 
 	private Object getSelectedElement() {

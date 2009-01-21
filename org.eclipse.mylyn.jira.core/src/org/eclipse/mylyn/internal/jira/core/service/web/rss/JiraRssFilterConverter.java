@@ -19,6 +19,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
+import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
@@ -45,6 +46,7 @@ import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 
 /**
  * @author Brock Janiczak
+ * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class JiraRssFilterConverter {
 
@@ -262,8 +264,19 @@ public class JiraRssFilterConverter {
 	}
 
 	protected String convertProjectFilter(ProjectFilter projectFilter) {
-		return new StringBuilder().append("pid=").append(projectFilter.getProject().getId()) //$NON-NLS-1$
-				.toString();
+		StringBuilder builder = new StringBuilder();
+		Project[] projects = projectFilter.getProjects();
+		if (projects.length == 0) {
+			return ""; //$NON-NLS-1$
+		}
+
+		builder.append("pid=").append(projects[0].getId()); //$NON-NLS-1$
+
+		for (int i = 1; i < projects.length; i++) {
+			builder.append("&pid=").append(projects[i].getId()); //$NON-NLS-1$
+		}
+
+		return builder.toString();
 	}
 
 	protected String convertReportedByFilter(UserFilter reportedByFilter) {

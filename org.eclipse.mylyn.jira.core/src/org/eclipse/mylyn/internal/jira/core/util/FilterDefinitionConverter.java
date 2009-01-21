@@ -18,6 +18,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,6 +59,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
  * @author Mik Kersten
  * @author Eugene Kuleshov
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class FilterDefinitionConverter {
 
@@ -153,6 +155,7 @@ public class FilterDefinitionConverter {
 		}
 
 		List<String> projectIds = getIds(params, PROJECT_KEY);
+		List<Project> projects = new ArrayList<Project>();
 		for (String projectId : projectIds) {
 			Project project = client.getCache().getProjectById(projectId);
 			if (project == null) {
@@ -163,25 +166,32 @@ public class FilterDefinitionConverter {
 					continue;
 				}
 			}
+			projects.add(project);
+		}
 
-			filter.setProjectFilter(new ProjectFilter(project));
+		if (projects.size() > 0) {
+			filter.setProjectFilter(new ProjectFilter(projects.toArray(new Project[projects.size()])));
 
 			List<String> componentIds = getIds(params, COMPONENT_KEY);
 			List<Component> components = new ArrayList<Component>();
-			for (String componentId : componentIds) {
-				Component[] projectComponents = project.getComponents();
-				for (Component component : projectComponents) {
-					if (component.getId().equals(componentId)) {
-						components.add(component);
+			List<Version> versions = new ArrayList<Version>();
+
+			for (Project project : projects) {
+				for (String componentId : componentIds) {
+					Component[] projectComponents = project.getComponents();
+					for (Component component : projectComponents) {
+						if (component.getId().equals(componentId)) {
+							components.add(component);
+						}
 					}
 				}
+				versions.addAll(Arrays.asList(project.getVersions()));
 			}
 			if (!componentIds.isEmpty()) {
 				filter.setComponentFilter(new ComponentFilter(components.toArray(new Component[components.size()])));
 			}
 
-			Version[] projectVersions = project.getVersions();
-
+			Version[] projectVersions = versions.toArray(new Version[versions.size()]);
 			filter.setFixForVersionFilter(getVersionFilter(filter, getIds(params, FIXFOR_KEY), projectVersions));
 			filter.setReportedInVersionFilter(getVersionFilter(filter, getIds(params, VERSION_KEY), projectVersions));
 		}
@@ -361,9 +371,9 @@ public class FilterDefinitionConverter {
 
 		ProjectFilter projectFilter = filter.getProjectFilter();
 		if (projectFilter != null) {
-			Project project = projectFilter.getProject();
-			// TODO all projects
-			addParameter(sb, PROJECT_KEY, project.getId());
+			for (Project project : projectFilter.getProjects()) {
+				addParameter(sb, PROJECT_KEY, project.getId());
+			}
 		}
 
 		ComponentFilter componentFilter = filter.getComponentFilter();
