@@ -1,18 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="buildHelper" default="all" basedir=".">
+<project name="build-helper" default="all" basedir=".">
+	
 	<import file="getDependenciesHelper.xml"/>
 
-	<available classname="java.lang.Enum" property="java.isVersion5OrHigher"/>
+	<!-- ===================================================================== -->
+	<!-- build targets -->
+	<!-- ===================================================================== -->
 
     <condition property="skip3.3"><not><contains string="${targets}" substring="3.3"/></not></condition>
     <condition property="skip3.4"><not><contains string="${targets}" substring="3.4"/></not></condition>
     <condition property="skip3.5"><not><contains string="${targets}" substring="3.5"/></not></condition>
+	
+	<target name="for-each-target">
+		<antcall target="e3.3"/>
+		<antcall target="e3.4"/>
+		<antcall target="e3.5"/>
+	</target>
 
-	<available property="customTargets" file="${basedir}/customTargets.xml" value="${basedir}/customTargets.xml"/>
-	<property name="customTargets" location="${basedir}/scripts/customTargets.xml"/>
+	<target name="e3.3" unless="skip3.3">
+		<antcall target="${call}">
+			<param name="build.target" value="3.3"/>
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.3}"/>
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.3}"/>
+		</antcall>
+	</target>
+
+	<target name="e3.4" unless="skip3.4">
+		<antcall target="${call}">
+			<param name="build.target" value="3.4"/>
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.4}"/>
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.4}"/>
+		</antcall>
+	</target>
+		
+	<target name="e3.5" unless="skip3.5">
+		<antcall target="${call}">
+			<param name="build.target" value="3.5"/>
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.5}"/>
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.5}"/>
+		</antcall>
+	</target>
 
 	<!-- ===================================================================== -->
-	<!-- Top-level targets -->
+	<!-- global properties -->
+	<!-- ===================================================================== -->
+
+	<available classname="java.lang.Enum" property="java.isVersion5OrHigher"/>
+	
+	<!-- ===================================================================== -->
+	<!-- top-level targets -->
 	<!-- ===================================================================== -->
 
 	<target name="all" depends="clean,build,tests">
@@ -50,6 +86,12 @@
 		</antcall>
 	</target>
 
+	<target name="install-bundle">
+		<!-- else="p2" -->
+  	    <condition property="install.target" value="um" else="um"><equals arg1="${build.target}" arg2="3.3"/></condition>
+		<antcall target="install-bundle-helper-${install.target}"/>
+    </target>
+
 	<target name="tests" depends="eclipse-tests,performance-tests">
 	</target>
 
@@ -80,7 +122,29 @@
 	</target>
 
 	<!-- ===================================================================== -->
-	<!-- Helper targets -->
+	<!-- hook targets -->
+	<!-- ===================================================================== -->
+
+	<target name="pre-build">
+	</target>
+
+	<target name="post-build">
+	</target>
+
+	<target name="pre-tests">
+	</target>
+
+	<target name="post-tests">
+	</target>
+
+	<target name="pre-report">
+	</target>
+
+	<target name="post-report">
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- helper targets -->
 	<!-- ===================================================================== -->
 
 	<target name="check-java" unless="java.isVersion5OrHigher">
@@ -117,7 +181,7 @@
 	<target name="init" depends="init-base">		
 		<property file="${build.timestamp}" />
 		<fail message="No qualifier specified. Please run build first." unless="qualifier"/>
-		<echo message="Building ${version}.${qualifier}" />		
+		<echo message="Building ${version}.${qualifier} on ${build.os}-${build.arch}-${build.ws}" />		
 	</target>
 	
 	<target name="init-scripts">
@@ -126,151 +190,9 @@
 		</chmod>
 	</target>
 
-	<target name="for-each-target">
-		<antcall target="e3.3"/>
-		<antcall target="e3.4"/>
-		<antcall target="e3.5"/>
-	</target>
-
-	<target name="e3.3" unless="skip3.3">
-		<antcall target="${call}">
-			<param name="build.target" value="3.3"/>
-			<param name="eclipse.sdk.url" value="${eclipse.url.3.3}"/>
-			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.3}"/>
-		</antcall>
-	</target>
-
-	<target name="e3.4" unless="skip3.4">
-		<antcall target="${call}">
-			<param name="build.target" value="3.4"/>
-			<param name="eclipse.sdk.url" value="${eclipse.url.3.4}"/>
-			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.4}"/>
-		</antcall>
-	</target>
-		
-	<target name="e3.5" unless="skip3.5">
-		<antcall target="${call}">
-			<param name="build.target" value="3.5"/>
-			<param name="eclipse.sdk.url" value="${eclipse.url.3.5}"/>
-			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.5}"/>
-		</antcall>
-	</target>
-
-	<target name="copy-maps-helper">
-		<copy todir="${build.home}/${build.target}/maps">
-			<fileset dir="${basedir}/maps">
-				<include name="*.map"/>
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="build-helper" depends="copy-maps-helper">
-		<ant antfile="${customTargets}" target="preBuild" />
-		
-    	<property name="timeout" value="3600000" />
-		<property name="application" value="org.eclipse.ant.core.antRunner" />
-    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
-		<property name="vmargs" value=" -Xms40m -Xmx256m"/>    	
-    	<path id="pde.build.script.id"> 
-    		<fileset dir="${eclipse.home}/plugins">
-            	<include name="org.eclipse.pde.build_*/scripts/build.xml"/>
-          	</fileset>
-    	</path> 
-    	<property name="pde.build.script" refid="pde.build.script.id"/>
-		<property name="build.forceContextQualifier" value="${qualifier}" />
-		<property name="build.extraBuildArgs" value="-Dnoextrabuildargs=true" />
-		<available property="builder" file="${basedir}/config/${build.target}" value="${basedir}/config/${build.target}"/>
-		<property name="builder" location="${basedir}/config"/>
-    	<property name="log" value="${build.results}/build-${build.target}.log" />
-		
-		<echo message="Building ${version}.${build.forceContextQualifier} on Eclipse ${eclipse.sdk.version}" />
-		<echo message="Output is logged to ${log}" />
-    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true"  
-    		classname="org.eclipse.core.launcher.Main" output="${log}">
-	        <classpath>
-	    		<fileset dir="${eclipse.home}/plugins">
-	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
-	          	</fileset>
-	        </classpath>
-		    <jvmarg line="${vmargs}"/>
-		    <arg value="-consolelog"/>
-		    <arg value="-application"/>
-    		<arg value="${application}"/>
-    		<arg value="-buildfile"/>
-    		<arg value="${pde.build.script}"/>
-    		<arg value="-DbaseLocation=${eclipse.home}"/>    		
-    		<arg value="-Dbuilder=${builder}"/>
-    		<arg value="-DbuildDirectory=${build.home}/${build.target}"/>
-    		<arg value="-DforceContextQualifier=${build.forceContextQualifier}"/>
-    		<arg value="-DmajorVersion=${version}"/>
-    		<arg value="${build.extraBuildArgs}"/>
-		</java>
-    </target>
-	
-	<target name="clean-build-helper">
-		<delete dir="${build.home}/${build.target}" />
-	</target>
-
-	<target name="clean-tests-helper">
-    	<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
-		<delete dir="${eclipse.home}/results" />
-		<delete failonerror="false">
-			<fileset dir="${eclipse.home}" includes="*tests*.xml" />
-		</delete>
-	</target>
-
-	<target name="clean-tools-helper">
-    	<property name="eclipse.sdk.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}" />
-		<delete dir="${eclipse.sdk.home}" />
-    	<property name="eclipse.test.home" value="${eclipse.base}/test-${eclipse.sdk.version}" />
-		<delete dir="${eclipse.test.home}" />
-	</target>
-
-	<target name="report-helper">
-		<property name="results.home" value="${build.results}/test-${build.target}" />
-		<mkdir dir="${results.home}" />
-		
-		<xslt style="${basedir}/scripts/JUNIT.XSL" basedir="${results.home}" includes="org*.xml" destdir="${results.home}" />
-		
-		<antcall target="performance-report-helper"/>
-		
-		<ant antfile="${customTargets}" target="postReport" />
-	</target>
-
-	<target name="performance-report-helper">
-    	<property name="timeout" value="3600000" />
-		<property name="application" value="org.eclipse.test.performance.ui.resultGenerator" />
-    	<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
-		<property name="vmargs" value="-Xms40m -Xmx256m"/>    	
-		
-		<echo message="Creating performance test report for ${version}.${qualifier} on Eclipse ${eclipse.sdk.version}" />
-    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="false" 
-    		classname="org.eclipse.core.launcher.Main">
-	        <classpath>
-	    		<fileset dir="${eclipse.home}/plugins">
-	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
-	          	</fileset>
-	        </classpath>
-    		<jvmarg line="${vmargs}"/>
-		    <arg value="-consolelog"/>
-		    <arg value="-application"/>
-    		<arg value="${application}"/>
-    		<arg value="-Declipse.perf.dbloc=${build.db}"/>
-    		<arg value="-baseline"/>
-    		<arg value="${build.baseline}"/>
-    		<arg value="-current"/>
-    		<arg value="${qualifier}"/>
-    		<arg value="-config"/>
-    		<arg value="${build.host}-${build.target}"/>
-    		<arg value="-jvm"/>
-    		<arg value="${java.version}"/>
-    		<arg value="-output"/>
-    		<arg value="${build.results}/performance-${build.target}"/>
-    		<arg value="-print"/>
-    		<arg value="-scenario.pattern"/>
-    		<arg value="${build.scenario}%"/>
-		</java>
-    </target>
+	<!-- ===================================================================== -->
+	<!-- build helper targets -->
+	<!-- ===================================================================== -->
 
 	<target name="get-build-dependencies-helper">
 		<property name="downloadsDir" value="${eclipse.base}"/> 
@@ -316,6 +238,295 @@
 		<delete dir="${eclipse.base}/sdk-${eclipse.sdk.version}/org.eclipse.releng.basebuilder" failonerror="false"/>
 	</target>
 		
+	<target name="build-helper-init">
+    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
+  	    <condition property="install.dir" value="${eclipse.home}" else="${eclipse.home}/dropins/test"><equals arg1="${build.target}" arg2="3.3"/></condition>
+		
+		<copy todir="${build.home}/${build.target}/maps">
+			<fileset dir="${basedir}/maps">
+				<include name="*.map"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build-helper" depends="build-helper-init,pre-build">
+    	<property name="timeout" value="3600000" />
+		<property name="application" value="org.eclipse.ant.core.antRunner" />
+    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
+		<property name="vmargs" value=" -Xms40m -Xmx256m"/>    	
+    	<path id="pde.build.script.id"> 
+    		<fileset dir="${eclipse.home}/plugins">
+            	<include name="org.eclipse.pde.build_*/scripts/build.xml"/>
+          	</fileset>
+    	</path> 
+    	<property name="pde.build.script" refid="pde.build.script.id"/>
+		<property name="build.forceContextQualifier" value="${qualifier}" />
+		<condition property="build.skipFetch" value="-DskipFetch=true" else="-DnoSkipFetch=true"><equals arg1="${skipFetch}" arg2="true"/></condition>
+		<property name="build.extraBuildArgs" value="-Dnoextrabuildargs=true" />
+		<available property="builder" file="${basedir}/config/${build.target}" value="${basedir}/config/${build.target}"/>
+		<property name="builder" location="${basedir}/config"/>
+    	<property name="log" value="${build.results}/build-${build.target}.log" />
+		
+		<echo message="Building ${version}.${build.forceContextQualifier} on Eclipse ${eclipse.sdk.version}" />
+		<echo message="Output is logged to ${log}" />
+    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true"  
+    		classname="org.eclipse.core.launcher.Main" output="${log}">
+	        <classpath>
+	    		<fileset dir="${eclipse.home}/plugins">
+	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
+	          	</fileset>
+	        </classpath>
+		    <jvmarg line="${vmargs}"/>
+		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
+		    <arg value="-application"/>
+    		<arg value="${application}"/>
+    		<arg value="-buildfile"/>
+    		<arg value="${pde.build.script}"/>
+    		<arg value="-DbaseLocation=${eclipse.home}"/>    		
+    		<arg value="-Dbuilder=${builder}"/>
+    		<arg value="-DbuildDirectory=${build.home}/${build.target}"/>
+    		<arg value="-DbuildLabel=${build.dist}"/>
+    		<arg value="-DforceContextQualifier=${build.forceContextQualifier}"/>
+    		<arg value="-DmajorVersion=${version}"/>
+    		<arg value="${build.skipFetch}"/>
+    		<arg value="${build.extraBuildArgs}"/>
+    	</java>
+		
+		<antcall target="post-build"/>
+    </target>
+	
+	<!-- ===================================================================== -->
+	<!-- clean helper targets -->
+	<!-- ===================================================================== -->
+
+	<target name="clean-build-helper">
+		<delete dir="${build.home}/${build.target}" />
+	</target>
+
+	<target name="clean-tests-helper">
+    	<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
+		<delete dir="${eclipse.home}/results" />
+		<delete failonerror="false">
+			<fileset dir="${eclipse.home}" includes="*tests*.xml" />
+		</delete>
+	</target>
+
+	<target name="clean-tools-helper">
+    	<property name="eclipse.sdk.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}" />
+		<delete dir="${eclipse.sdk.home}" />
+    	<property name="eclipse.test.home" value="${eclipse.base}/test-${eclipse.sdk.version}" />
+		<delete dir="${eclipse.test.home}" />
+	</target>
+
+	<!-- ===================================================================== -->
+	<!-- report helper targets -->
+	<!-- ===================================================================== -->
+
+	<target name="report-helper-init">
+		<property name="results.home" value="${build.results}/test-${build.target}" />
+		<mkdir dir="${results.home}" />
+	</target>
+	
+	<target name="report-helper" depends="report-helper-init,pre-report">
+		<xslt style="${basedir}/scripts/JUNIT.XSL" basedir="${results.home}" includes="org*.xml" destdir="${results.home}" />
+		
+		<antcall target="performance-report-helper"/>
+		
+		<antcall target="post-report"/>
+	</target>
+
+	<target name="performance-report-helper">
+    	<property name="timeout" value="3600000" />
+		<property name="application" value="org.eclipse.test.performance.ui.resultGenerator" />
+    	<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
+		<property name="vmargs" value="-Xms40m -Xmx256m"/>    	
+		
+		<echo message="Creating performance test report for ${version}.${qualifier} on Eclipse ${eclipse.sdk.version}" />
+    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="false" 
+    		classname="org.eclipse.core.launcher.Main">
+	        <classpath>
+	    		<fileset dir="${eclipse.home}/plugins">
+	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
+	          	</fileset>
+	        </classpath>
+    		<jvmarg line="${vmargs}"/>
+		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
+		    <arg value="-application"/>
+    		<arg value="${application}"/>
+    		<arg value="-Declipse.perf.dbloc=${build.db}"/>
+    		<arg value="-baseline"/>
+    		<arg value="${build.baseline}"/>
+    		<arg value="-current"/>
+    		<arg value="${qualifier}"/>
+    		<arg value="-config"/>
+    		<arg value="${build.host}-${build.target}"/>
+    		<arg value="-jvm"/>
+    		<arg value="${java.version}"/>
+    		<arg value="-output"/>
+    		<arg value="${build.results}/performance-${build.target}"/>
+    		<arg value="-print"/>
+    		<arg value="-scenario.pattern"/>
+    		<arg value="${build.scenario}%"/>
+		</java>
+    </target>
+
+	<!-- ===================================================================== -->
+	<!-- install helper targets -->
+	<!-- ===================================================================== -->
+
+	<target name="install-bundle-helper-p2" unless="update.version">
+    	<property name="timeout" value="3600000" />
+		<property name="application" value="org.eclipse.equinox.p2.director.app.application" />
+    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
+		<property name="vmargs" value="-Xms40m -Xmx256m"/>    	
+
+		<echo message="Installing ${update.feature}"/>
+    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
+    		classname="org.eclipse.core.launcher.Main">
+	        <classpath>
+	    		<fileset dir="${eclipse.home}/plugins">
+	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
+	          	</fileset>
+	        </classpath>
+    		<jvmarg line="${vmargs}"/>
+		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
+		    <arg value="-application"/>
+    		<arg value="${application}"/>
+    		<arg value="-metadataRepository"/>
+    		<arg value="${update.site},${update.p2.sites}"/>
+    		<arg value="-artifactRepository"/>
+    		<arg value="${update.site},${update.p2.sites}"/>
+			<arg value="-installIU"/>
+			<arg value="${update.feature}.feature.group"/>
+		</java>
+	</target>
+
+<!--
+	<target name="install-bundle-helper-p2" unless="update.version">
+    	<property name="timeout" value="3600000" />
+		<property name="application" value="org.eclipse.equinox.p2.director.app.application" />
+    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
+		<property name="vmargs" value="-Xms40m -Xmx256m -Declipse.p2.data.area=${eclipse.home}/p2"/>    	
+
+		<echo message="Installing ${update.feature}"/>
+    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
+    		classname="org.eclipse.core.launcher.Main">
+	        <classpath>
+	    		<fileset dir="${eclipse.home}/plugins">
+	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
+	          	</fileset>
+	        </classpath>
+    		<jvmarg line="${vmargs}"/>
+		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
+    		<arg value="-clean"/>
+		    <arg value="-application"/>
+    		<arg value="${application}"/>
+    		<arg value="-metadataRepository"/>
+    		<arg value="${update.site},${update.p2.sites}"/>
+    		<arg value="-artifactRepository"/>
+    		<arg value="${update.site},${update.p2.sites}"/>
+			<arg value="-installIU"/>
+			<arg value="${update.feature}.feature.group"/>
+    		<arg value="-bundlepool"/>
+			<arg value="${eclipse.home}/dropins/dependencies/eclipse"/>
+    		<arg value="-destination"/>
+    		<arg value="${eclipse.home}"/>
+    		<arg value="-profile"/>
+			<arg value="dependencies.profile"/>
+			<arg value="-profileProperties"/>
+    		<arg value="org.eclipse.update.install.features=true"/>
+		</java>
+	</target>
+-->
+	
+	<target name="install-bundle-helper-um">
+		<property name="output" value="${build.home}/update.properties"/>
+
+		<antcall target="install-bundle-get-version-helper-um"/>
+		<property file="${output}"/>
+		
+	    <condition property="failed"><contains string="${output}" substring="Command completed"/></condition>
+		<fail message="Failed to download ${update.feature} from ${update.site}" if="failed"/>
+		
+		<available property="bundle.exists" file="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse/features/${update.feature}_${update.version}"/>
+		<antcall target="install-bundle-helper-install-um"/>		
+	</target>
+	
+	<target name="install-bundle-get-version-helper-um" unless="update.version">
+    	<property name="timeout" value="3600000" />
+		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
+    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
+		<property name="vmargs" value="-Xms40m -Xmx256m"/>    	
+
+		<echo message="Checking version for ${update.feature}"/>
+    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
+    		classname="org.eclipse.core.launcher.Main" output="${output}">
+	        <classpath>
+	    		<fileset dir="${eclipse.home}/plugins">
+	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
+	          	</fileset>
+	        </classpath>
+    		<jvmarg line="${vmargs}"/>
+		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
+		    <arg value="-application"/>
+    		<arg value="${application}"/>
+    		<arg value="-command"/>
+    		<arg value="search"/>
+    		<arg value="-from"/>
+    		<arg value="${update.site}"/>
+		</java>
+		
+		<replaceregexp file="${output}" 
+			match=".*${update.feature} (\S*).*"
+		    replace="update.version=\1"
+			flags="s"/>
+	</target>
+		
+	<target name="install-bundle-helper-install-um" unless="bundle.exists">
+    	<property name="timeout" value="3600000" />
+		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
+    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
+		<property name="vmargs" value="-Xms40m -Xmx256m"/>    	
+
+		<echo message="Installing ${update.feature} ${update.version} into ${eclipse.home}"/>
+		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
+			classname="org.eclipse.core.launcher.Main">
+	        <classpath>
+	    		<fileset dir="${eclipse.home}/plugins">
+	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
+	          	</fileset>
+	        </classpath>
+			<jvmarg line="${vmargs}"/>
+		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
+		    <arg value="-application"/>
+			<arg value="${application}"/>
+			<arg value="-command"/>
+			<arg value="install"/>
+			<arg value="-from"/>
+			<arg value="${update.site}"/>
+			<arg value="-featureId"/>
+			<arg value="${update.feature}"/>
+			<arg value="-version"/>
+			<arg value="${update.version}"/>    		
+		</java>
+	</target>
+	
+	<!-- ===================================================================== -->
+	<!-- test helper targets -->
+	<!-- ===================================================================== -->
+
 	<target name="get-test-dependencies-helper" depends="get-build-dependencies-helper">
 		<property name="downloadsDir" value="${eclipse.base}"/> 
 
@@ -358,8 +569,6 @@
     	<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
   	    <condition property="install.dir" value="${eclipse.home}" else="${eclipse.home}/dropins/test"><equals arg1="${build.target}" arg2="3.3"/></condition>
 		
-		<ant antfile="${customTargets}" target="preTestInstall" />
-
 		<!-- replace performance plug-in with patched version from test feature -->
 		<delete failonerror="false" includeemptydirs="true">
 			<fileset dir="${eclipse.home}">
@@ -367,8 +576,9 @@
 			</fileset>
 		</delete>
 
+		<!-- copy build features to eclipse directory -->
 		<unzip dest="${install.dir}">
-			<fileset dir="${build.home}/${build.target}/dist">
+			<fileset dir="${build.home}/${build.target}/${build.dist}">
 				<include name="*.zip"/>
 				<exclude name="*sdk*"/>
 			</fileset>
@@ -376,7 +586,7 @@
 
 	</target>
 
-	<target name="tests-helper" depends="install-tests-helper">
+	<target name="tests-helper" depends="install-tests-helper,pre-tests">
     	<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.ant.core.antRunner" />
     	<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
@@ -422,8 +632,14 @@
 		<copy todir="${build.results}/test-${build.target}">
 			<fileset dir="${eclipse.home}/results"/>
 		</copy>
+		
+		<antcall target="post-tests"/>
     </target>
 	
+	<!-- ===================================================================== -->
+	<!-- package helper targets -->
+	<!-- ===================================================================== -->
+
 	<target name="fix-permissions">
 		<chmod perm="g+w">
 			<fileset dir="${dir}"/>
@@ -458,6 +674,8 @@
 	        </classpath>
 		    <jvmarg line="${vmargs}"/>
 		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
 		    <arg value="-application"/>
     		<arg value="${application}"/>
     		<arg value="-jarProcessor"/>
@@ -487,6 +705,8 @@
 	        </classpath>
 		    <jvmarg line="${vmargs}"/>
 		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
 		    <arg value="-application"/>
     		<arg value="${application}"/>
     		<arg value="-updateSite"/>
@@ -531,6 +751,8 @@
 	        </classpath>
 		    <jvmarg line="${vmargs}"/>
 		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
 		    <arg value="-application"/>
     		<arg value="${application}"/>
     		<arg value="-buildfile"/>

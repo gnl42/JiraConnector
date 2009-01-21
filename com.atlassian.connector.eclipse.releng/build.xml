@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Atlassian Eclipse Connector" default="all" basedir=".">
 	<property file="${build.config}" />
-	<!-- used normally to provide files with credentials and target place for publish target -->
-	<property file="${publish.config}" />
 	<property file="local.properties" />
+	<import file="scripts/osHelper.xml" />
 	<property file="defaults.properties" />
-
 	<import file="scripts/buildHelper.xml" />
 	
 	<target name="all" depends="clean,build,tests">
@@ -14,6 +12,14 @@
 	<target name="dev" depends="clean,build,pack,generate-metadata">
 	</target>
 
+	<target name="pre-build">
+		<antcall target="install-bundle">
+			<param name="update.feature" value="org.tigris.subversion.subclipse"/>
+			<param name="update.site" value="${subclipse.site}"/>
+			<param name="update.version" value="1.4.7"/>
+		</antcall>
+	</target>
+	
 	<target name="pack" depends="init,init-3.4">
 		<antcall target="for-each-target">
 			<param name="call" value="pack-sites"/>
