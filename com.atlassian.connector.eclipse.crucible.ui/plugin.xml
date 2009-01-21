@@ -21,5 +21,34 @@
             id="com.atlassian.connector.eclipse.internal.crucible.ui.crucible.edior.factory">
       </pageFactory>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation"
+            colorPreferenceKey="comment_color"
+            colorPreferenceValue="192,255,192"
+            contributesToHeader="true"
+            highlightPreferenceKey="comment_highlight"
+            highlightPreferenceValue="true"
+            icon="/icons/obj16/crucible.png"
+            includeOnPreferencePage="true"
+            isGoToNextNavigationTarget="false"
+            isGoToNextNavigationTargetKey="comment_isGoToNextNavigationTargetKey"
+            isGoToPreviousNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="commet_isGoToPreviousNavigationTargetKey"
+            label="Active Review Comments"
+            overviewRulerPreferenceKey="comment_overviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="0"
+            showInNextPrevDropdownToolbarAction="false"
+            showInNextPrevDropdownToolbarActionKey="comment_showInNextPrevDropdownToolbarAction"
+            textPreferenceKey="comment_text"
+            textPreferenceValue="true"
+            textStylePreferenceKey="comment_stylePreferences"
+            textStylePreferenceValue="BOX"
+            verticalRulerPreferenceKey="comment_verticalRuler"
+            verticalRulerPreferenceValue="true"/>
+            </extension>
 
 </plugin>
