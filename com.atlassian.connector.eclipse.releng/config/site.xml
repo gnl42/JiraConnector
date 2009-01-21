@@ -6,5 +6,8 @@
    <feature url="features/com.atlassian.connector.eclipse_@core@.jar" id="com.atlassian.connector.eclipse" version="@core@">
       <category name="Connector"/>
    </feature>
+   <feature url="features/com.atlassian.connector.eclipse.subclipse_@core@.jar" id="com.atlassian.connector.eclipse.subclipse" version="@core@">
+      <category name="Connector"/>
+   </feature>
    <category-def name="Connector" label="Connector"/>
 </site>
