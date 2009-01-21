@@ -42,17 +42,21 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.CurrentUserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.EstimateVsActualFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueTypeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.NobodyFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.Order;
 import org.eclipse.mylyn.internal.jira.core.model.filter.PriorityFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ResolutionFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.SpecificUserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.StatusFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 
 /**
@@ -64,6 +68,8 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
  * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class FilterDefinitionConverter {
+
+	private static final String DATE_FORMAT = "d/MMM/yy"; //$NON-NLS-1$
 
 	private static final String PROJECT_KEY = "pid"; //$NON-NLS-1$
 
@@ -319,7 +325,7 @@ public class FilterDefinitionConverter {
 		String after = getId(params, key + ":after"); //$NON-NLS-1$
 		String before = getId(params, key + ":before"); //$NON-NLS-1$
 
-		SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US); //$NON-NLS-1$
+		SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 		Date fromDate;
 		try {
 			fromDate = df.parse(after);
@@ -368,7 +374,7 @@ public class FilterDefinitionConverter {
 		return ids;
 	}
 
-	private String getQueryParams(FilterDefinition filter) {
+	public String getQueryParams(FilterDefinition filter) {
 		StringBuilder sb = new StringBuilder();
 
 		ProjectFilter projectFilter = filter.getProjectFilter();
@@ -379,7 +385,6 @@ public class FilterDefinitionConverter {
 		}
 
 		ComponentFilter componentFilter = filter.getComponentFilter();
-		// TODO all components
 		if (componentFilter != null) {
 			if (componentFilter.hasNoComponent()) {
 				addParameter(sb, COMPONENT_KEY, COMPONENT_NONE);
@@ -390,7 +395,6 @@ public class FilterDefinitionConverter {
 			}
 		}
 
-		// TODO
 		VersionFilter fixForVersionFilter = filter.getFixForVersionFilter();
 		if (fixForVersionFilter != null) {
 			if (fixForVersionFilter.hasNoVersion()) {
@@ -409,7 +413,6 @@ public class FilterDefinitionConverter {
 			}
 		}
 
-		// TODO
 		VersionFilter reportedInVersionFilter = filter.getReportedInVersionFilter();
 		if (reportedInVersionFilter != null) {
 			if (reportedInVersionFilter.hasNoVersion()) {
@@ -428,7 +431,6 @@ public class FilterDefinitionConverter {
 			}
 		}
 
-		// TODO
 		IssueTypeFilter issueTypeFilter = filter.getIssueTypeFilter();
 		if (issueTypeFilter != null) {
 			for (IssueType issueType : issueTypeFilter.getIsueTypes()) {
@@ -436,7 +438,6 @@ public class FilterDefinitionConverter {
 			}
 		}
 
-		// TODO
 		StatusFilter statusFilter = filter.getStatusFilter();
 		if (statusFilter != null) {
 			for (JiraStatus status : statusFilter.getStatuses()) {
@@ -490,16 +491,66 @@ public class FilterDefinitionConverter {
 		addDateFilter(sb, filter.getUpdatedDateFilter(), UPDATED_KEY);
 		addDateFilter(sb, filter.getDueDateFilter(), DUEDATE_KEY);
 
+		addOrdering(sb, filter.getOrdering());
+
+		EstimateVsActualFilter estimateFilter = filter.getEstimateVsActualFilter();
+		if (estimateFilter != null) {
+			float min = estimateFilter.getMinVariation();
+			if (min != 0L) {
+				addParameter(sb, "minRatioLimit", Float.toString(min)); //$NON-NLS-1$
+			}
+			float max = estimateFilter.getMaxVariation();
+			if (max != 0L) {
+				addParameter(sb, "maxRatioLimit", Float.toString(max)); //$NON-NLS-1$
+			}
+		}
+
 		return sb.toString();
+	}
+
+	private void addOrdering(StringBuilder sb, Order[] ordering) {
+		for (Order order : ordering) {
+			String fieldName = getNameFromField(order.getField());
+			if (fieldName == null) {
+				continue;
+			}
+			addParameter(sb, "sorter/field", fieldName); //$NON-NLS-1$
+			addParameter(sb, "sorter/order", order.isAscending() ? "ASC" : "DESC"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 	}
 
 	private void addDateFilter(StringBuilder sb, DateFilter filter, String type) {
 		if (filter instanceof DateRangeFilter) {
-			SimpleDateFormat df = new SimpleDateFormat("d/MMM/yy", Locale.US); //$NON-NLS-1$
+			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
 			addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate())); //$NON-NLS-1$
 			addParameter(sb, type + ":before", df.format(rangeFilter.getToDate())); //$NON-NLS-1$
+		} else if (filter instanceof RelativeDateRangeFilter) {
+			RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) filter;
+			if (rangeFilter.previousMilliseconds() != 0L) {
+				addParameter(sb, type + ":previous", createRelativeDateString(rangeFilter.getPreviousRangeType(), //$NON-NLS-1$
+						rangeFilter.getPreviousCount()));
+			}
+			if (rangeFilter.nextMilliseconds() != 0L) {
+				addParameter(sb, type + ":next", createRelativeDateString(rangeFilter.getNextRangeType(), //$NON-NLS-1$
+						rangeFilter.getNextCount()));
+			}
 		}
+	}
+
+	private String createRelativeDateString(RelativeDateRangeFilter.RangeType rangeType, long count) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(Long.toString(count));
+		if (RangeType.MINUTE.equals(rangeType)) {
+			sb.append('m');
+		} else if (RangeType.HOUR.equals(rangeType)) {
+			sb.append('h');
+		} else if (RangeType.DAY.equals(rangeType)) {
+			sb.append('d');
+		} else if (RangeType.WEEK.equals(rangeType)) {
+			sb.append('w');
+		}
+		return sb.toString();
 	}
 
 	private void addUserFilter(StringBuilder sb, UserFilter filter, String type) {
@@ -522,6 +573,36 @@ public class FilterDefinitionConverter {
 		} catch (UnsupportedEncodingException ex) {
 			// ignore
 		}
+	}
+
+	// TODO there should be an easier way of doing this
+	// Would it be so bad to have the field name in the field?
+	private String getNameFromField(Order.Field field) {
+		if (Order.Field.ISSUE_TYPE == field) {
+			return "issuetype"; //$NON-NLS-1$
+		} else if (Order.Field.ISSUE_KEY == field) {
+			return "issuekey"; //$NON-NLS-1$
+		} else if (Order.Field.SUMMARY == field) {
+			return "summary"; //$NON-NLS-1$
+		} else if (Order.Field.ASSIGNEE == field) {
+			return "assignee"; //$NON-NLS-1$
+		} else if (Order.Field.REPORTER == field) {
+			return "reporter"; //$NON-NLS-1$
+		} else if (Order.Field.PRIORITY == field) {
+			return "priority"; //$NON-NLS-1$
+		} else if (Order.Field.STATUS == field) {
+			return "status"; //$NON-NLS-1$
+		} else if (Order.Field.RESOLUTION == field) {
+			return "resolution"; //$NON-NLS-1$
+		} else if (Order.Field.CREATED == field) {
+			return "created"; //$NON-NLS-1$
+		} else if (Order.Field.UPDATED == field) {
+			return "updated"; //$NON-NLS-1$
+		} else if (Order.Field.DUE_DATE == field) {
+			return "duedate"; //$NON-NLS-1$
+		}
+
+		return null;
 	}
 
 }

@@ -14,6 +14,7 @@ package org.eclipse.mylyn.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 
 /*
@@ -292,6 +293,7 @@ public class FilterDefinition implements JiraFilter, Serializable {
 	}
 
 	public void setOrdering(Order[] ordering) {
+		Assert.isNotNull(ordering);
 		this.ordering = ordering;
 	}
 

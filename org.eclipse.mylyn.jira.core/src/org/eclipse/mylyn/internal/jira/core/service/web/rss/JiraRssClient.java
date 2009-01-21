@@ -24,6 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSession;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
+import org.eclipse.mylyn.internal.jira.core.util.FilterDefinitionConverter;
 
 /**
  * @author Brock Janiczak
@@ -33,14 +34,11 @@ public class JiraRssClient {
 
 	private final JiraClient client;
 
-	private final JiraRssFilterConverter filterService;
-
 	private final boolean useGZipCompression;
 
 	public JiraRssClient(JiraClient client) {
 		this.client = client;
 		this.useGZipCompression = client.useCompression();
-		this.filterService = new JiraRssFilterConverter();
 	}
 
 	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {
@@ -91,7 +89,8 @@ public class JiraRssClient {
 						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&'); //$NON-NLS-1$
 					}
 				}
-				rssUrlBuffer.append(filterService.convert(filterDefinition, client.getCharacterEncoding()));
+				FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(client.getCharacterEncoding());
+				rssUrlBuffer.append(filterConverter.getQueryParams(filterDefinition));
 
 				return rssUrlBuffer.toString();
 			}
