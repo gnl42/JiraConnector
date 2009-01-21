@@ -12,7 +12,9 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
 
+import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -30,6 +32,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static CrucibleUiPlugin plugin;
 
+	private CrucibleEditorTracker crucibleEditorTracker;
+
 	/**
 	 * The constructor
 	 */
@@ -45,9 +49,14 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 
+		crucibleEditorTracker = new CrucibleEditorTracker();
+
 		CrucibleCorePlugin.getDefault().initializeActiveReviewManager(TasksUi.getRepositoryManager());
 		TasksUi.getTaskActivityManager()
 				.addActivationListener(CrucibleCorePlugin.getDefault().getActiveReviewManager());
+
+		// TODO determine if we should be doing this differently and not through mylyn
+		MonitorUiPlugin.getDefault().addWindowPartListener(crucibleEditorTracker);
 	}
 
 	/*
@@ -58,9 +67,12 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		TasksUi.getTaskActivityManager().removeActivationListener(
 				CrucibleCorePlugin.getDefault().getActiveReviewManager());
-
+		MonitorUiPlugin.getDefault().removeWindowPartListener(crucibleEditorTracker);
+		crucibleEditorTracker.dispose();
+		crucibleEditorTracker = null;
 		plugin = null;
 		super.stop(context);
+
 	}
 
 	/**
