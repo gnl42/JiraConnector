@@ -24,6 +24,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
@@ -39,10 +40,12 @@ public final class TeamUiUtils {
 
 	private static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
 
+	private static final NotOpenedEditorPart NOT_OPENED_EDITOR = new NotOpenedEditorPart();
+
 	private TeamUiUtils() {
 	}
 
-	public static void openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
+	public static IEditorPart openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
 		// TODO if the repo url is null, we should probably use the task repo host and look at all repos
 
 		assert (filePath != null);
@@ -56,35 +59,51 @@ public final class TeamUiUtils {
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, revisionString, monitor)) {
-				if (connector.openFile(repoUrl, filePath, revisionString, monitor)) {
-					return;
+				IEditorPart part = connector.openFile(repoUrl, filePath, revisionString, monitor);
+				if (part != null) {
+					return getRealEditorPart(part);
 				}
 			}
 		}
 
 		// try a backup solution
-		defaultConnector.openFile(repoUrl, filePath, revisionString, monitor);
+		return getRealEditorPart(defaultConnector.openFile(repoUrl, filePath, revisionString, monitor));
 	}
 
-	public static void openLocalResource(final IResource resource) {
+	public static IEditorPart getNotOpenedEditor() {
+		return NOT_OPENED_EDITOR;
+	}
+
+	private static IEditorPart getRealEditorPart(IEditorPart editorPart) {
+		if (editorPart == NOT_OPENED_EDITOR) {
+			return null;
+		}
+		return editorPart;
+	}
+
+	public static IEditorPart openLocalResource(final IResource resource) {
 		if (Display.getCurrent() != null) {
-			openLocalResourceInternal(resource);
+			return openLocalResourceInternal(resource);
 		} else {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			final IEditorPart[] part = new IEditorPart[1];
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 				public void run() {
-					openLocalResourceInternal(resource);
+					part[0] = openLocalResourceInternal(resource);
 				}
 			});
+			return part[0];
 		}
 	}
 
-	private static void openLocalResourceInternal(IResource resource) {
+	private static IEditorPart openLocalResourceInternal(IResource resource) {
 		// the local revision matches the revision we care about and the file is in sync
 		try {
-			IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), (IFile) resource, true);
+			return IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
+					(IFile) resource, true);
 		} catch (PartInitException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
+		return null;
 	}
 
 	public static void openFileDeletedErrorMessage(final String repoUrl, final String filePath, final String revision) {

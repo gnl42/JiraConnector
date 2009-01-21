@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenVersionedVirtualFileAction;
+import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
@@ -114,7 +115,8 @@ public class CrucibleFilePart extends ExpandablePart {
 		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
 		if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null && oldFileDescriptor.getUrl().length() > 0
 				&& oldFileDescriptor.getRevision() != null && oldFileDescriptor.getRevision().length() > 0) {
-			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(oldFileDescriptor);
+			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(oldFileDescriptor,
+					new CrucibleFile(crucibleFile, true));
 			openOldAction.setText("Open Old");
 			openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
 			// TODO set the image descriptor
@@ -123,7 +125,8 @@ public class CrucibleFilePart extends ExpandablePart {
 
 		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
 				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0) {
-			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(newFileDescriptor);
+			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(newFileDescriptor,
+					new CrucibleFile(crucibleFile, false));
 			openNewAction.setText("Open New");
 			openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
 			// TODO set the image descriptor

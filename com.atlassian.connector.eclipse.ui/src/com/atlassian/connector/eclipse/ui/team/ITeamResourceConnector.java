@@ -15,6 +15,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 
 /**
  * Interface for Team connectors for opening files in the local workspace
@@ -27,7 +28,7 @@ public interface ITeamResourceConnector {
 
 	boolean canHandleFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor);
 
-	boolean openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor);
+	IEditorPart openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor);
 
 	boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput);
 

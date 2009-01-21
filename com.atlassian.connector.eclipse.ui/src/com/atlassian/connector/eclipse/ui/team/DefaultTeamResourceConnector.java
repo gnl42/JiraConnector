@@ -39,6 +39,7 @@ import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -59,9 +60,8 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return true;
 	}
 
-	public boolean openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
-		openFileWithTeamApi(repoUrl, filePath, revisionString, monitor);
-		return true;
+	public IEditorPart openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
+		return openFileWithTeamApi(repoUrl, filePath, revisionString, monitor);
 	}
 
 	public boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput) {
@@ -131,7 +131,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	private static void openFileWithTeamApi(String repoUrl, String filePath, final String revisionString,
+	private static IEditorPart openFileWithTeamApi(String repoUrl, String filePath, final String revisionString,
 			final IProgressMonitor monitor) {
 		// this is a good backup (Works for cvs and anyone that uses the history provider
 
@@ -144,7 +144,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 			if (!(resource instanceof IFile)) {
 				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, "Resource is not a file: "
 						+ resource.getProjectRelativePath(), new Exception()));
-				return;
+				return null;
 			}
 
 			IProject project = resource.getProject();
@@ -152,7 +152,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 			if (project == null) {
 				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
 						"Unable to get project for resource", new Exception()));
-				return;
+				return null;
 			}
 
 			RepositoryProvider rp = RepositoryProvider.getProvider(project);
@@ -167,16 +167,18 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 				if (inSync && localFileRevision.getContentIdentifier() != null
 						&& localFileRevision.getContentIdentifier().equals(revisionString)) {
-					TeamUiUtils.openLocalResource(resource);
+					return TeamUiUtils.openLocalResource(resource);
 				} else {
 					if (Display.getCurrent() != null) {
-						openRemoteResource(revisionString, resource, historyProvider, monitor);
+						return openRemoteResource(revisionString, resource, historyProvider, monitor);
 					} else {
-						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+						final IEditorPart[] part = new IEditorPart[1];
+						PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 							public void run() {
-								openRemoteResource(revisionString, resource, historyProvider, monitor);
+								part[0] = openRemoteResource(revisionString, resource, historyProvider, monitor);
 							}
 						});
+						return part[0];
 					}
 
 				}
@@ -187,9 +189,10 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		} else {
 			TeamUiUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
 		}
+		return null;
 	}
 
-	private static void openRemoteResource(String revisionString, IResource resource,
+	private static IEditorPart openRemoteResource(String revisionString, IResource resource,
 			IFileHistoryProvider historyProvider, IProgressMonitor monitor) {
 		// we need a different revision than the one in the local workspace
 		IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE, monitor);
@@ -198,13 +201,14 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 			IFileRevision remoteFileRevision = fileHistory.getFileRevision(revisionString);
 			if (remoteFileRevision != null) {
 				try {
-					Utils.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
+					return Utils.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
 							remoteFileRevision, monitor);
 				} catch (CoreException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
 			}
 		}
+		return null;
 	}
 
 	private static boolean isRemoteFileInSync(IResource resource, RepositoryProvider rp) {

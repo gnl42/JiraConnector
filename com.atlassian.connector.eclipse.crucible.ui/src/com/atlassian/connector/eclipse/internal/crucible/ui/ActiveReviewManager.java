@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.CoreException;
@@ -60,8 +60,7 @@ public class ActiveReviewManager implements ITaskActivationListener {
 	public synchronized void taskDeactivated(ITask task) {
 		this.activeTask = null;
 		this.activeReview = null;
-		CrucibleAnnotationModel.dettachAllOpenEditors();
-		// TODO fire off listeners?
+		CrucibleAnnotationModelManager.dettachAllOpenEditors();
 	}
 
 	public void preTaskActivated(ITask task) {
@@ -75,9 +74,8 @@ public class ActiveReviewManager implements ITaskActivationListener {
 	private synchronized void activeReviewUpdated(Review cachedReview, ITask task) {
 		if (activeTask != null && task != null && activeTask.equals(task)) {
 			this.activeReview = cachedReview;
-			CrucibleAnnotationModel.attachAllOpenEditors();
+			CrucibleAnnotationModelManager.attachAllOpenEditors();
 		}
-		// TODO fire off listeners?
 	}
 
 	public synchronized Review getActiveReview() {
@@ -121,6 +119,10 @@ public class ActiveReviewManager implements ITaskActivationListener {
 		};
 		downloadJob.setUser(true);
 		downloadJob.schedule();
+	}
+
+	public synchronized boolean isReviewActive() {
+		return activeTask != null && activeReview != null;
 	}
 
 }

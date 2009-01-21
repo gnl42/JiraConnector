@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -74,9 +75,9 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return SVNProviderPlugin.getPlugin().getRepositories().isKnownRepository(repoUrl, false);
 	}
 
-	public boolean openFile(String repoUrl, String filePath, String revisionString, final IProgressMonitor monitor) {
+	public IEditorPart openFile(String repoUrl, String filePath, String revisionString, final IProgressMonitor monitor) {
 		if (repoUrl == null) {
-			return false;
+			return null;
 		}
 		try {
 
@@ -94,32 +95,33 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 				if (localFile.getRevision().equals(svnRevision) && !localFile.isDirty()) {
 					// the file is not dirty and we have the right local copy
-					TeamUiUtils.openLocalResource(localResource);
-					return true;
+					return getOpenedPart(TeamUiUtils.openLocalResource(localResource));
+
 				} else {
 					final ISVNRemoteFile remoteFile = getRemoteFile(localResource, svnRevision, location);
 					if (remoteFile != null) {
 						// we need to open the remote resource since the file is either dirty or the wrong revision
 
 						if (Display.getCurrent() != null) {
-							openRemoteSvnFile(remoteFile, monitor);
+							return getOpenedPart(openRemoteSvnFile(remoteFile, monitor));
 						} else {
+							final IEditorPart[] part = new IEditorPart[1];
 							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 								public void run() {
-									openRemoteSvnFile(remoteFile, monitor);
+									part[0] = openRemoteSvnFile(remoteFile, monitor);
 								}
 							});
+							return getOpenedPart(part[0]);
 						}
-						return true;
 					} else {
 						TeamUiUtils.openFileDeletedErrorMessage(repoUrl, filePath, revisionString);
 
-						return true;
+						return getOpenedPart(null);
 					}
 				}
 			} else {
 				TeamUiUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
-				return true;
+				return getOpenedPart(null);
 			}
 			// TODO display an error message for these errors?
 		} catch (SVNException e) {
@@ -127,7 +129,14 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		} catch (ParseException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
-		return false;
+		return null;
+	}
+
+	private IEditorPart getOpenedPart(IEditorPart editorPart) {
+		if (editorPart == null) {
+			return TeamUiUtils.getNotOpenedEditor();
+		}
+		return editorPart;
 	}
 
 	public boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput) {
@@ -214,17 +223,18 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return absoluteUrl;
 	}
 
-	private void openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) {
+	private IEditorPart openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) {
 		try {
 			IWorkbench workbench = AtlassianSubclipseUiPlugin.getDefault().getWorkbench();
 			IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 
 			RemoteFileEditorInput editorInput = new RemoteFileEditorInput(remoteFile, monitor);
 			String editorId = getEditorId(workbench, remoteFile);
-			page.openEditor(editorInput, editorId);
+			return page.openEditor(editorInput, editorId);
 		} catch (PartInitException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
+		return null;
 	}
 
 	private ISVNLocalFile getLocalFile(IResource localResource) throws SVNException {

@@ -14,8 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IStatus;
@@ -28,17 +26,10 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationModelEvent;
 import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import java.util.ArrayList;
@@ -52,10 +43,6 @@ import java.util.List;
  */
 public class CrucibleAnnotationModel implements IAnnotationModel {
 
-	private final Review activeReview = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-
-	private static final Object CRUCIBLE_ANNOTATION_MODEL_KEY = new Object();
-
 	private final List<CrucibleCommentAnnotation> annotations = new ArrayList<CrucibleCommentAnnotation>(32);
 
 	private final List<IAnnotationModelListener> annotationModelListeners = new ArrayList<IAnnotationModelListener>(2);
@@ -65,6 +52,8 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 	private final IEditorInput editorInput;
 
 	private final IDocument editorDocument;
+
+	private CrucibleFile crucibleFile;
 
 	private boolean annotated = false;
 
@@ -77,30 +66,30 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 		}
 	};
 
-	public CrucibleAnnotationModel(ITextEditor editor, IEditorInput editorInput, IDocument document) {
+	public CrucibleAnnotationModel(ITextEditor editor, IEditorInput editorInput, IDocument document,
+			CrucibleFile crucibleFile) {
 		this.textEditor = editor;
 		this.editorInput = editorInput;
 		this.editorDocument = document;
+		this.crucibleFile = crucibleFile;
 		updateAnnotations(true);
 	}
 
 	protected void updateAnnotations(boolean force) {
-		CrucibleFile crucibleFile = null;
+
 		boolean annotate = false;
-		if (!textEditor.isDirty() && editorInput != null) {
-			crucibleFile = getCrucibleFile(editorInput);
-			if (crucibleFile != null) {
-				annotate = true;
-			} else {
-				annotate = false;
-			}
+
+		// TODO make sure that the local files is in sync otherwise remove the annotations
+
+		if (!textEditor.isDirty() && editorInput != null && crucibleFile != null) {
+			annotate = true;
 		} else {
 			annotate = false;
 		}
 
 		if (annotate) {
 			if (!annotated || force) {
-				createAnnotations(crucibleFile);
+				createAnnotations();
 				annotated = true;
 			}
 		} else {
@@ -109,10 +98,6 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 				annotated = false;
 			}
 		}
-	}
-
-	protected CrucibleFile getCrucibleFile(IEditorInput input) {
-		return TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(input, activeReview);
 	}
 
 	protected void clear() {
@@ -128,11 +113,11 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 		annotations.clear();
 	}
 
-	protected void createAnnotations(CrucibleFile crucibleFile) {
+	protected void createAnnotations() {
 		AnnotationModelEvent event = new AnnotationModelEvent(this);
 		clear(event);
 
-		if (activeReview != null && crucibleFile != null) {
+		if (crucibleFile != null) {
 
 			for (VersionedComment comment : crucibleFile.getCrucibleFileInfo().getVersionedComments()) {
 				try {
@@ -152,7 +137,6 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 							endLine = startLine + 1;
 						}
 						int length = editorDocument.getLineOffset(endLine) - offset;
-						Position p = new Position(offset, length);
 
 						CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length);
 						annotations.add(ca);
@@ -234,71 +218,8 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 		}
 	}
 
-	public static void attach(ITextEditor editor) {
-		IDocumentProvider documentProvider = editor.getDocumentProvider();
-		IEditorInput editorInput = editor.getEditorInput();
-		if (documentProvider == null) {
-			return;
-		}
-		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editorInput);
-		if (!(annotationModel instanceof IAnnotationModelExtension)) {
-			// we need to piggyback on another annotation mode
-			return;
-		}
-		IAnnotationModelExtension annotationModelExtension = (IAnnotationModelExtension) annotationModel;
-
-		IDocument document = documentProvider.getDocument(editorInput);
-
-		IAnnotationModel crucibleAnnotationModel = annotationModelExtension.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
-		if (crucibleAnnotationModel == null) {
-			crucibleAnnotationModel = new CrucibleAnnotationModel(editor, editorInput, document);
-			annotationModelExtension.addAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY, crucibleAnnotationModel);
-		}
-	}
-
-	public static void detach(ITextEditor editor) {
-		IDocumentProvider documentProvider = editor.getDocumentProvider();
-		IEditorInput editorInput = editor.getEditorInput();
-		if (documentProvider == null) {
-			return;
-		}
-		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editorInput);
-		if (!(annotationModel instanceof IAnnotationModelExtension)) {
-			// we need to piggyback on another annotation mode
-			return;
-		}
-
-		IAnnotationModelExtension annotationModelExtension = (IAnnotationModelExtension) annotationModel;
-		IAnnotationModel crucibleAnnotationModel = annotationModelExtension.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
-		if (crucibleAnnotationModel instanceof CrucibleAnnotationModel) {
-			((CrucibleAnnotationModel) crucibleAnnotationModel).clear();
-		}
-		annotationModelExtension.removeAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
-	}
-
-	public static void dettachAllOpenEditors() {
-		for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {
-			for (IWorkbenchPage page : window.getPages()) {
-				for (IEditorReference editorReference : page.getEditorReferences()) {
-					IWorkbenchPart editorPart = editorReference.getPart(false);
-					if (editorPart instanceof ITextEditor) {
-						detach((ITextEditor) editorPart);
-					}
-				}
-			}
-		}
-	}
-
-	public static void attachAllOpenEditors() {
-		for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {
-			for (IWorkbenchPage page : window.getPages()) {
-				for (IEditorReference editorReference : page.getEditorReferences()) {
-					IWorkbenchPart editorPart = editorReference.getPart(false);
-					if (editorPart instanceof ITextEditor) {
-						attach((ITextEditor) editorPart);
-					}
-				}
-			}
-		}
+	public void updateCrucibleFile(CrucibleFile newCrucibleFile) {
+		this.crucibleFile = newCrucibleFile;
+		updateAnnotations(true);
 	}
 }

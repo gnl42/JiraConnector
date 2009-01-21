@@ -12,6 +12,8 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
+import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 
@@ -22,7 +24,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -34,8 +38,11 @@ import java.lang.reflect.InvocationTargetException;
 public class OpenVersionedVirtualFileAction extends Action {
 	private final VersionedVirtualFile virtualFile;
 
-	public OpenVersionedVirtualFileAction(VersionedVirtualFile fileDescriptor) {
+	private final CrucibleFile crucibleFile;
+
+	public OpenVersionedVirtualFileAction(VersionedVirtualFile fileDescriptor, CrucibleFile crucibleFile) {
 		this.virtualFile = fileDescriptor;
+		this.crucibleFile = crucibleFile;
 	}
 
 	@Override
@@ -43,9 +50,11 @@ public class OpenVersionedVirtualFileAction extends Action {
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					TeamUiUtils.openFile(virtualFile.getRepoUrl(), virtualFile.getUrl(), virtualFile.getRevision(),
-							monitor);
-					// TODO attach the editor input and editor with the virtual file and crucible file info
+					IEditorPart editor = TeamUiUtils.openFile(virtualFile.getRepoUrl(), virtualFile.getUrl(),
+							virtualFile.getRevision(), monitor);
+					if (editor != null && editor instanceof ITextEditor) {
+						CrucibleAnnotationModelManager.attach((ITextEditor) editor, crucibleFile);
+					}
 				}
 			});
 		} catch (InvocationTargetException e) {

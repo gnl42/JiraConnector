@@ -23,11 +23,11 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class CrucibleEditorTracker implements IPartListener {
 
 	public CrucibleEditorTracker() {
-		CrucibleAnnotationModel.attachAllOpenEditors();
+		CrucibleAnnotationModelManager.attachAllOpenEditors();
 	}
 
 	public void dispose() {
-		CrucibleAnnotationModel.dettachAllOpenEditors();
+		CrucibleAnnotationModelManager.dettachAllOpenEditors();
 	}
 
 	public void partActivated(IWorkbenchPart part) {
@@ -43,7 +43,7 @@ public class CrucibleEditorTracker implements IPartListener {
 	public void partClosed(IWorkbenchPart part) {
 		if (part instanceof ITextEditor) {
 			ITextEditor editor = (ITextEditor) part;
-			CrucibleAnnotationModel.detach(editor);
+			CrucibleAnnotationModelManager.detach(editor);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class CrucibleEditorTracker implements IPartListener {
 	private void annotateEditor(IWorkbenchPart part) {
 		if (part instanceof ITextEditor) {
 			ITextEditor editor = (ITextEditor) part;
-			CrucibleAnnotationModel.attach(editor);
+			CrucibleAnnotationModelManager.attach(editor);
 		}
 	}
 
