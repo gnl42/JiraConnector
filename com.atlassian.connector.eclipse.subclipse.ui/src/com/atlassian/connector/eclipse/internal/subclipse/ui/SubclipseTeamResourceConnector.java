@@ -11,8 +11,14 @@
 
 package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -26,11 +32,13 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.tigris.subversion.subclipse.core.ISVNLocalFile;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
@@ -45,6 +53,7 @@ import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 import org.tigris.subversion.svnclientadapter.utils.SVNUrlUtils;
 
+import java.net.MalformedURLException;
 import java.text.ParseException;
 
 /**
@@ -81,7 +90,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 			if (localResource != null) {
 				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
-				ISVNLocalFile localFile = getLocalFile(localResource, location);
+				ISVNLocalFile localFile = getLocalFile(localResource);
 
 				if (localFile.getRevision().equals(svnRevision) && !localFile.isDirty()) {
 					// the file is not dirty and we have the right local copy
@@ -121,6 +130,90 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return false;
 	}
 
+	public boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput) {
+		if (editorInput instanceof FileEditorInput) {
+			try {
+				IFile file = ((FileEditorInput) editorInput).getFile();
+				ISVNLocalFile localFile = getLocalFile(file);
+				if (localFile != null && !localFile.isDirty()) {
+					return true;
+				}
+			} catch (SVNException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+						"Unable to get svn information for local file.", e));
+			}
+		} else if (editorInput instanceof RemoteFileEditorInput) {
+			return true;
+		}
+		return false;
+	}
+
+	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
+		SVNUrl fileUrl = null;
+		String revision = null;
+		if (editorInput instanceof FileEditorInput) {
+			// this is a local file that we know how to deal with
+			try {
+				IFile file = ((FileEditorInput) editorInput).getFile();
+				ISVNLocalFile localFile = getLocalFile(file);
+				if (localFile != null && !localFile.isDirty()) {
+					fileUrl = localFile.getUrl();
+					revision = localFile.getRevision().toString();
+				}
+			} catch (SVNException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+						"Unable to get svn information for local file.", e));
+			}
+		} else if (editorInput instanceof RemoteFileEditorInput) {
+			// this is a remote file that we know how to deal with
+			RemoteFileEditorInput input = (RemoteFileEditorInput) editorInput;
+			ISVNRemoteFile remoteFile = input.getSVNRemoteFile();
+			fileUrl = remoteFile.getUrl();
+			revision = remoteFile.getRevision().toString();
+		}
+
+		if (fileUrl != null && revision != null) {
+			try {
+				for (CrucibleFileInfo file : activeReview.getFiles()) {
+					VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
+					VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
+					SVNUrl newFileUrl = new SVNUrl(getAbsoluteUrl(fileDescriptor));
+					SVNUrl oldFileUrl = new SVNUrl(getAbsoluteUrl(oldFileDescriptor));
+					if (newFileUrl.equals(fileUrl) || oldFileUrl.equals(fileUrl)) {
+						if (revision.equals(fileDescriptor.getRevision())) {
+							return new CrucibleFile(file, false);
+						}
+						if (revision.equals(oldFileDescriptor.getRevision())) {
+							return new CrucibleFile(file, true);
+						}
+						return null;
+					}
+				}
+			} catch (ValueNotYetInitialized e) {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+						"Review is not fully initialized.  Unable to get file from review.", e));
+			} catch (MalformedURLException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			}
+		}
+		return null;
+	}
+
+	private String getAbsoluteUrl(VersionedVirtualFile fileDescriptor) {
+		String absoluteUrl = "";
+		if (fileDescriptor.getRepoUrl() != null) {
+			absoluteUrl += fileDescriptor.getRepoUrl();
+		}
+
+		if (fileDescriptor.getUrl() != null) {
+			if ((fileDescriptor.getUrl().startsWith("/") && absoluteUrl.endsWith("/")) || absoluteUrl.endsWith("//")) {
+				absoluteUrl = absoluteUrl.substring(0, absoluteUrl.length() - 1);
+			}
+			absoluteUrl += fileDescriptor.getUrl();
+		}
+		return absoluteUrl;
+	}
+
 	private void openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) {
 		try {
 			IWorkbench workbench = AtlassianSubclipseUiPlugin.getDefault().getWorkbench();
@@ -134,7 +227,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 	}
 
-	private ISVNLocalFile getLocalFile(IResource localResource, ISVNRepositoryLocation location) throws SVNException {
+	private ISVNLocalFile getLocalFile(IResource localResource) throws SVNException {
 		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(localResource);
 
 		if (local.isManaged()) {

@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -22,9 +23,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * A utility class for doing UI related operations for team items
@@ -128,4 +131,18 @@ public final class TeamUiUtils {
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
 
+	public static CrucibleFile getFileFromReview(IEditorInput editorInput, ITextEditor editor, Review activeReview) {
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled() && connector.canGetCrucibleFileFromEditorInput(editorInput)) {
+				CrucibleFile fileInfo = connector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+				if (fileInfo != null) {
+					return fileInfo;
+				}
+			}
+		}
+
+		return defaultConnector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+	}
 }

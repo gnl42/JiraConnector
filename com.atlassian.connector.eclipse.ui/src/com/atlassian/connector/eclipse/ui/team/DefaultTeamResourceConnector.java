@@ -12,6 +12,10 @@
 package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -34,7 +38,9 @@ import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.internal.ui.Utils;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * A default team resource provider that just uses the Eclipse team API
@@ -56,6 +62,73 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	public boolean openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
 		openFileWithTeamApi(repoUrl, filePath, revisionString, monitor);
 		return true;
+	}
+
+	public boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput) {
+		// we cannot deal with remote files since they are team provider specific
+		return editorInput instanceof FileEditorInput;
+	}
+
+	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
+		if (editorInput instanceof FileEditorInput) {
+			// this will only work on local files since they remote files are team provider specific
+
+			IFile file = ((FileEditorInput) editorInput).getFile();
+
+			try {
+				IProject project = file.getProject();
+
+				if (project == null) {
+					StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+							"Unable to get project for resource", new Exception()));
+					return null;
+				}
+
+				RepositoryProvider rp = RepositoryProvider.getProvider(project);
+				if (rp != null && rp.getFileHistoryProvider() != null) {
+
+					// this project has a team nature associated with it in the workspace
+					final IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
+
+					IFileRevision localFileRevision = historyProvider.getWorkspaceFileRevision(file);
+
+					boolean inSync = isRemoteFileInSync(file, rp);
+
+					if (inSync && localFileRevision.getContentIdentifier() != null) {
+
+						for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
+							VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
+							VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
+
+							IPath newPath = new Path(fileDescriptor.getUrl());
+							final IResource newResource = ResourcesPlugin.getWorkspace().getRoot().findMember(newPath);
+
+							IPath oldPath = new Path(fileDescriptor.getUrl());
+							final IResource oldResource = ResourcesPlugin.getWorkspace().getRoot().findMember(oldPath);
+
+							if ((newResource != null && newResource.equals(file))
+									|| (oldResource != null && oldResource.equals(file))) {
+
+								String revision = localFileRevision.getContentIdentifier();
+
+								if (revision.equals(fileDescriptor.getRevision())) {
+									return new CrucibleFile(fileInfo, false);
+								}
+								if (revision.equals(oldFileDescriptor.getRevision())) {
+									return new CrucibleFile(fileInfo, true);
+								}
+							}
+						}
+
+						return null;
+					}
+				}
+			} catch (ValueNotYetInitialized e) {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+						"Review is not fully initialized.  Unable to get file from review.", e));
+			}
+		}
+		return null;
 	}
 
 	private static void openFileWithTeamApi(String repoUrl, String filePath, final String revisionString,
