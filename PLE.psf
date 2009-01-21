@@ -14,6 +14,7 @@
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.crucible.ui"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.releng,com.atlassian.connector.eclipse.releng"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subclipse.ui,com.atlassian.connector.eclipse.subclipse.ui"/>
+<project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.subclipse-feature,com.atlassian.connector.eclipse.subclipse-feature"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.test-feature,com.atlassian.connector.eclipse.test-feature"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.tests,com.atlassian.connector.eclipse.tests"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.ui,com.atlassian.connector.eclipse.ui"/>
