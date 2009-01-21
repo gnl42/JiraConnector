@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * Class that tracks the opening and closing of editors for use in the annotation model
@@ -22,11 +23,11 @@ import org.eclipse.ui.IWorkbenchPart;
 public class CrucibleEditorTracker implements IPartListener {
 
 	public CrucibleEditorTracker() {
-		// TODO apply the annotations to all of the open editors
+		CrucibleAnnotationModel.attachAllOpenEditors();
 	}
 
 	public void dispose() {
-		// TODO detach all editors from the annotation model
+		CrucibleAnnotationModel.dettachAllOpenEditors();
 	}
 
 	public void partActivated(IWorkbenchPart part) {
@@ -40,7 +41,10 @@ public class CrucibleEditorTracker implements IPartListener {
 	}
 
 	public void partClosed(IWorkbenchPart part) {
-		// TODO detach the editor from the annotation model
+		if (part instanceof ITextEditor) {
+			ITextEditor editor = (ITextEditor) part;
+			CrucibleAnnotationModel.detach(editor);
+		}
 	}
 
 	public void partDeactivated(IWorkbenchPart part) {
@@ -53,10 +57,10 @@ public class CrucibleEditorTracker implements IPartListener {
 	}
 
 	private void annotateEditor(IWorkbenchPart part) {
-//		if (part instanceof ITextEditor) {
-//			ITextEditor editor = (ITextEditor) part;
-		// TODO attach the editor to the annotation model
-//		}
+		if (part instanceof ITextEditor) {
+			ITextEditor editor = (ITextEditor) part;
+			CrucibleAnnotationModel.attach(editor);
+		}
 	}
 
 }

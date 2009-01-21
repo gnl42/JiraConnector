@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
 
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
@@ -34,6 +33,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 	private CrucibleEditorTracker crucibleEditorTracker;
 
+	private ActiveReviewManager activeReviewManager;
+
 	/**
 	 * The constructor
 	 */
@@ -51,9 +52,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		crucibleEditorTracker = new CrucibleEditorTracker();
 
-		CrucibleCorePlugin.getDefault().initializeActiveReviewManager(TasksUi.getRepositoryManager());
-		TasksUi.getTaskActivityManager()
-				.addActivationListener(CrucibleCorePlugin.getDefault().getActiveReviewManager());
+		activeReviewManager = new ActiveReviewManager(TasksUi.getRepositoryManager());
+		TasksUi.getTaskActivityManager().addActivationListener(activeReviewManager);
 
 		// TODO determine if we should be doing this differently and not through mylyn
 		MonitorUiPlugin.getDefault().addWindowPartListener(crucibleEditorTracker);
@@ -65,11 +65,12 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		TasksUi.getTaskActivityManager().removeActivationListener(
-				CrucibleCorePlugin.getDefault().getActiveReviewManager());
+		TasksUi.getTaskActivityManager().removeActivationListener(activeReviewManager);
 		MonitorUiPlugin.getDefault().removeWindowPartListener(crucibleEditorTracker);
 		crucibleEditorTracker.dispose();
 		crucibleEditorTracker = null;
+
+		activeReviewManager = null;
 		plugin = null;
 		super.stop(context);
 
@@ -82,6 +83,10 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	 */
 	public static CrucibleUiPlugin getDefault() {
 		return plugin;
+	}
+
+	public ActiveReviewManager getActiveReviewManager() {
+		return activeReviewManager;
 	}
 
 }

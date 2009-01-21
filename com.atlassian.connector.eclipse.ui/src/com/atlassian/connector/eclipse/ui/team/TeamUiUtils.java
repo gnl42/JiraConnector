@@ -27,7 +27,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * A utility class for doing UI related operations for team items
@@ -131,7 +130,10 @@ public final class TeamUiUtils {
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
 
-	public static CrucibleFile getFileFromReview(IEditorInput editorInput, ITextEditor editor, Review activeReview) {
+	public static CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
+		if (activeReview == null) {
+			return null;
+		}
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {

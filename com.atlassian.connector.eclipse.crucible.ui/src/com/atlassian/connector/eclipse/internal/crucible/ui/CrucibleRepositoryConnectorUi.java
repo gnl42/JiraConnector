@@ -83,6 +83,11 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 	}
 
 	@Override
+	public boolean hasCustomNotifications() {
+		return true;
+	}
+
+	@Override
 	public String getTaskKindLabel(ITask task) {
 		return "Review";
 	}

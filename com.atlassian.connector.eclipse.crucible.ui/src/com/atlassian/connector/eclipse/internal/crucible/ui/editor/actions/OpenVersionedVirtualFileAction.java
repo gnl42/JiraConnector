@@ -45,6 +45,7 @@ public class OpenVersionedVirtualFileAction extends Action {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					TeamUiUtils.openFile(virtualFile.getRepoUrl(), virtualFile.getUrl(), virtualFile.getRevision(),
 							monitor);
+					// TODO attach the editor input and editor with the virtual file and crucible file info
 				}
 			});
 		} catch (InvocationTargetException e) {
