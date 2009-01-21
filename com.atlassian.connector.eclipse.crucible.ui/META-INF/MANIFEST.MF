@@ -17,10 +17,15 @@ Require-Bundle: com.atlassian.connector.commons,
  org.eclipse.mylyn.commons.core,
  com.atlassian.connector.eclipse.ui,
  org.eclipse.ui.ide,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.eclipse.mylyn.monitor.ui
 Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.ui;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.annotations,
  com.atlassian.connector.eclipse.internal.crucible.ui.commons;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.editor,
+ com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions,
+ com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts,
  com.atlassian.connector.eclipse.internal.crucible.ui.wizards;x-internal:=true
