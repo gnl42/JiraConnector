@@ -642,7 +642,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				Project[] projects = (Project[]) newInput;
-				if (projects.length == 0) {
+				if (projects == null || projects.length == 0) {
 					currentElements = new Object[] { ANY_COMPONENT };
 				} else {
 					Set<Object> elements = new LinkedHashSet<Object>();
@@ -1158,7 +1158,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				Project[] projects = (Project[]) newInput;
-				if (projects.length == 0) {
+				if (projects == null || projects.length == 0) {
 					currentElements = new Object[] { ANY_FIX_VERSION };
 				} else {
 					List<Object> elements = new ArrayList<Object>();
@@ -1242,7 +1242,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				Project[] projects = (Project[]) newInput;
-				if (projects.length == 0) {
+				if (projects == null || projects.length == 0) {
 					currentElements = new Object[] { ANY_REPORTED_VERSION };
 				} else {
 					List<Object> elements = new ArrayList<Object>();

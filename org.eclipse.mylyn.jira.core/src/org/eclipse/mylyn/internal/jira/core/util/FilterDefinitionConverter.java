@@ -22,9 +22,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.mylyn.internal.jira.core.InvalidJiraQueryException;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
@@ -173,8 +175,8 @@ public class FilterDefinitionConverter {
 			filter.setProjectFilter(new ProjectFilter(projects.toArray(new Project[projects.size()])));
 
 			List<String> componentIds = getIds(params, COMPONENT_KEY);
-			List<Component> components = new ArrayList<Component>();
-			List<Version> versions = new ArrayList<Version>();
+			Set<Component> components = new LinkedHashSet<Component>();
+			Set<Version> versions = new LinkedHashSet<Version>();
 
 			for (Project project : projects) {
 				for (String componentId : componentIds) {
