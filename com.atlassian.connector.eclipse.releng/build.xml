@@ -14,6 +14,11 @@
 
 	<target name="pre-build">
 		<antcall target="install-bundle">
+			<param name="update.feature" value="org.tigris.subversion.clientadapter.feature"/>
+			<param name="update.site" value="${subclipse.site}"/>
+			<param name="update.version" value="1.5.2"/>
+		</antcall>
+		<antcall target="install-bundle">
 			<param name="update.feature" value="org.tigris.subversion.subclipse"/>
 			<param name="update.site" value="${subclipse.site}"/>
 			<param name="update.version" value="1.4.7"/>
