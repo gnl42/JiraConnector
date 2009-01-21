@@ -219,7 +219,13 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 	}
 
 	public void updateCrucibleFile(CrucibleFile newCrucibleFile) {
+		// TODO we could just update the annotations appropriately instaed of remove and re-add
+
 		this.crucibleFile = newCrucibleFile;
 		updateAnnotations(true);
+	}
+
+	public CrucibleFile getCrucibleFile() {
+		return crucibleFile;
 	}
 }

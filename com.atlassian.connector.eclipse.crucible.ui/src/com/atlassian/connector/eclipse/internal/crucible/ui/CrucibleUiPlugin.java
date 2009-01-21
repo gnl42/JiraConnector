@@ -70,6 +70,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		crucibleEditorTracker.dispose();
 		crucibleEditorTracker = null;
 
+		activeReviewManager.dispose();
 		activeReviewManager = null;
 		plugin = null;
 		super.stop(context);

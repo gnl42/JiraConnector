@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -31,7 +32,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
  * 
  * @author sminto
  */
-public class ActiveReviewManager implements ITaskActivationListener {
+public class ActiveReviewManager implements ITaskActivationListener, IReviewCacheListener {
 
 	private Review activeReview;
 
@@ -41,6 +42,11 @@ public class ActiveReviewManager implements ITaskActivationListener {
 
 	public ActiveReviewManager(IRepositoryManager repositoryManager) {
 		this.repositoryManager = repositoryManager;
+		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(this);
+	}
+
+	public void dispose() {
+		CrucibleCorePlugin.getDefault().getReviewCache().removeCacheChangedListener(this);
 	}
 
 	public synchronized void taskActivated(ITask task) {
@@ -48,8 +54,8 @@ public class ActiveReviewManager implements ITaskActivationListener {
 			return;
 		}
 		this.activeTask = task;
-		Review cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getLastReadReview(
-				task.getRepositoryUrl(), task.getTaskId());
+		Review cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getServerReview(task.getRepositoryUrl(),
+				task.getTaskId());
 		if (cachedReview == null) {
 			scheduleDownloadJob(task);
 		} else {
@@ -73,8 +79,13 @@ public class ActiveReviewManager implements ITaskActivationListener {
 
 	private synchronized void activeReviewUpdated(Review cachedReview, ITask task) {
 		if (activeTask != null && task != null && activeTask.equals(task)) {
-			this.activeReview = cachedReview;
-			CrucibleAnnotationModelManager.attachAllOpenEditors();
+			if (activeReview == null) {
+				this.activeReview = cachedReview;
+				CrucibleAnnotationModelManager.attachAllOpenEditors();
+			} else {
+				this.activeReview = cachedReview;
+				CrucibleAnnotationModelManager.updateAllOpenEditors(activeReview);
+			}
 		}
 	}
 
@@ -125,4 +136,15 @@ public class ActiveReviewManager implements ITaskActivationListener {
 		return activeTask != null && activeReview != null;
 	}
 
+	public void reviewAdded(String repositoryUrl, String taskId, Review review) {
+		// ignore
+	}
+
+	public synchronized void reviewUpdated(String repositoryUrl, String taskId, Review review) {
+		if (activeTask != null && activeReview != null) {
+			if (activeTask.getRepositoryUrl().equals(repositoryUrl) && activeTask.getTaskId().equals(taskId)) {
+				activeReviewUpdated(review, activeTask);
+			}
+		}
+	}
 }

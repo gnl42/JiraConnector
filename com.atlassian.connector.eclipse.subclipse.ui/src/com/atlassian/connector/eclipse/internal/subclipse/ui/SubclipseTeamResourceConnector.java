@@ -202,7 +202,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
 						"Review is not fully initialized.  Unable to get file from review.", e));
 			} catch (MalformedURLException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+				StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
 			}
 		}
 		return null;
