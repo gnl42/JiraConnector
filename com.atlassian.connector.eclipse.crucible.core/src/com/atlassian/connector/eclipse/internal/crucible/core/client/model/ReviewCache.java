@@ -20,7 +20,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Class to manage cached reviews for access by models other than the editor (i.e. annotations)
@@ -34,8 +36,11 @@ public class ReviewCache {
 	 */
 	private final Map<String, Map<String, CrucibleCachedReview>> cachedReviews;
 
+	private final Set<IReviewCacheListener> cacheListeners;
+
 	public ReviewCache() {
 		cachedReviews = new HashMap<String, Map<String, CrucibleCachedReview>>();
+		cacheListeners = new HashSet<IReviewCacheListener>();
 	}
 
 	/**
@@ -57,11 +62,34 @@ public class ReviewCache {
 		CrucibleCachedReview cachedReview = taskIdToReviewMap.get(taskId);
 		if (cachedReview == null) {
 			taskIdToReviewMap.put(taskId, new CrucibleCachedReview(review));
+			fireReviewAdded(repositoryUrl, taskId, review);
 			// TODO deal with the offline case here potentially
 			return false;
 		} else {
-			return cachedReview.addReview(review);
+			boolean changed = cachedReview.addReview(review);
+			fireReviewUpdated(repositoryUrl, taskId, review);
+			return changed;
 		}
+	}
+
+	private void fireReviewUpdated(String repositoryUrl, String taskId, Review review) {
+		for (IReviewCacheListener cacheListener : cacheListeners) {
+			cacheListener.reviewUpdated(repositoryUrl, taskId, review);
+		}
+	}
+
+	private void fireReviewAdded(String repositoryUrl, String taskId, Review review) {
+		for (IReviewCacheListener cacheListener : cacheListeners) {
+			cacheListener.reviewAdded(repositoryUrl, taskId, review);
+		}
+	}
+
+	public void addCacheChangedListener(IReviewCacheListener cacheListener) {
+		cacheListeners.add(cacheListener);
+	}
+
+	public void removeCacheChangedListener(IReviewCacheListener cacheListener) {
+		cacheListeners.remove(cacheListener);
 	}
 
 	public synchronized Review getLastReadReview(String repositoryUrl, String taskId) {

@@ -32,9 +32,9 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 /**
  * The model for the annotations
@@ -43,9 +43,9 @@ import java.util.List;
  */
 public class CrucibleAnnotationModel implements IAnnotationModel {
 
-	private final List<CrucibleCommentAnnotation> annotations = new ArrayList<CrucibleCommentAnnotation>(32);
+	private final Set<CrucibleCommentAnnotation> annotations = new HashSet<CrucibleCommentAnnotation>(32);
 
-	private final List<IAnnotationModelListener> annotationModelListeners = new ArrayList<IAnnotationModelListener>(2);
+	private final Set<IAnnotationModelListener> annotationModelListeners = new HashSet<IAnnotationModelListener>(2);
 
 	private final ITextEditor textEditor;
 
@@ -134,7 +134,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 					if (startLine != 0) {
 						int offset = editorDocument.getLineOffset(startLine - 1);
 						if (endLine == 0) {
-							endLine = startLine + 1;
+							endLine = startLine;
 						}
 						int length = editorDocument.getLineOffset(endLine) - offset;
 
