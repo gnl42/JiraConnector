@@ -71,7 +71,7 @@ public class CrucibleFilePart extends ExpandablePart {
 		});
 
 		for (VersionedComment comment : versionedComments) {
-			CommentPart fileComposite = new VersionedCommentPart(comment, crucibleEditor);
+			CommentPart fileComposite = new VersionedCommentPart(comment, crucibleFile, crucibleEditor);
 			Control fileControl = fileComposite.createControl(composite, toolkit);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
 		}
@@ -115,8 +115,8 @@ public class CrucibleFilePart extends ExpandablePart {
 		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
 		if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null && oldFileDescriptor.getUrl().length() > 0
 				&& oldFileDescriptor.getRevision() != null && oldFileDescriptor.getRevision().length() > 0) {
-			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(oldFileDescriptor,
-					new CrucibleFile(crucibleFile, true));
+			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(new CrucibleFile(
+					crucibleFile, true));
 			openOldAction.setText("Open Old");
 			openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
 			// TODO set the image descriptor
@@ -125,8 +125,8 @@ public class CrucibleFilePart extends ExpandablePart {
 
 		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
 				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0) {
-			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(newFileDescriptor,
-					new CrucibleFile(crucibleFile, false));
+			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(new CrucibleFile(
+					crucibleFile, false));
 			openNewAction.setText("Open New");
 			openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
 			// TODO set the image descriptor

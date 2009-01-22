@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,13 +37,19 @@ import java.lang.reflect.InvocationTargetException;
  * @author Shawn Minto
  */
 public class OpenVersionedVirtualFileAction extends Action {
-	private final VersionedVirtualFile virtualFile;
 
 	private final CrucibleFile crucibleFile;
 
-	public OpenVersionedVirtualFileAction(VersionedVirtualFile fileDescriptor, CrucibleFile crucibleFile) {
-		this.virtualFile = fileDescriptor;
+	private VersionedComment versionedComment;
+
+	public OpenVersionedVirtualFileAction(CrucibleFile crucibleFile, VersionedComment versionedComment) {
+		this(crucibleFile);
+		this.versionedComment = versionedComment;
+	}
+
+	public OpenVersionedVirtualFileAction(CrucibleFile crucibleFile) {
 		this.crucibleFile = crucibleFile;
+
 	}
 
 	@Override
@@ -50,12 +57,23 @@ public class OpenVersionedVirtualFileAction extends Action {
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+
+					VersionedVirtualFile virtualFile = crucibleFile.getCrucibleFileInfo().getFileDescriptor();
+					if (crucibleFile.isOldFile()) {
+						virtualFile = crucibleFile.getCrucibleFileInfo().getOldFileDescriptor();
+					}
+
 					IEditorPart editor = TeamUiUtils.openFile(virtualFile.getRepoUrl(), virtualFile.getUrl(),
 							virtualFile.getRevision(), monitor);
-					if (editor != null && editor instanceof ITextEditor) {
-						CrucibleAnnotationModelManager.attach((ITextEditor) editor, crucibleFile);
+					if (editor instanceof ITextEditor) {
+						ITextEditor textEditor = ((ITextEditor) editor);
+						CrucibleAnnotationModelManager.attach(textEditor, crucibleFile);
+						if (versionedComment != null) {
+							selectAndRevealComment(textEditor, versionedComment, crucibleFile);
+						}
 					}
 				}
+
 			});
 		} catch (InvocationTargetException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
@@ -64,6 +82,27 @@ public class OpenVersionedVirtualFileAction extends Action {
 		} catch (OperationCanceledException e) {
 			// ignore since the user requested a cancel
 		}
+
+	}
+
+	private void selectAndRevealComment(ITextEditor textEditor, VersionedComment comment, CrucibleFile file) {
+
+		int startLine = comment.getToStartLine();
+		if (file.isOldFile()) {
+			startLine = comment.getFromStartLine();
+		}
+
+		int endLine = comment.getToEndLine();
+		if (file.isOldFile()) {
+			endLine = comment.getFromEndLine();
+		}
+		if (endLine == 0) {
+			endLine = startLine;
+		}
+		if (startLine != 0) {
+			startLine--;
+		}
+		TeamUiUtils.selectAndReveal(textEditor, startLine, endLine);
 
 	}
 }

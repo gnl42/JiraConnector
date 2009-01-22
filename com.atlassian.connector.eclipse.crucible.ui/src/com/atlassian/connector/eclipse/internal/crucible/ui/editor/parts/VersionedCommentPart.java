@@ -12,8 +12,12 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenVersionedVirtualFileAction;
+import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -35,9 +39,13 @@ public class VersionedCommentPart extends CommentPart {
 
 	private final VersionedComment versionedComment;
 
-	public VersionedCommentPart(VersionedComment comment, CrucibleReviewEditorPage editor) {
+	private final CrucibleFileInfo crucibleFileInfo;
+
+	public VersionedCommentPart(VersionedComment comment, CrucibleFileInfo crucibleFileInfo,
+			CrucibleReviewEditorPage editor) {
 		super(comment, editor);
 		this.versionedComment = comment;
+		this.crucibleFileInfo = crucibleFileInfo;
 	}
 
 	@Override
@@ -66,7 +74,8 @@ public class VersionedCommentPart extends CommentPart {
 			});
 
 			for (VersionedComment comment : generalComments) {
-				CommentPart generalCommentsComposite = new VersionedCommentPart(comment, crucibleEditor);
+				CommentPart generalCommentsComposite = new VersionedCommentPart(comment, crucibleFileInfo,
+						crucibleEditor);
 				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 			}
@@ -90,6 +99,17 @@ public class VersionedCommentPart extends CommentPart {
 			text += "[General File]";
 		}
 		return text;
+	}
+
+	@Override
+	protected List<IAction> getToolbarActions(boolean isExpanded) {
+		List<IAction> actions = new ArrayList<IAction>();
+		actions.addAll(super.getToolbarActions(isExpanded));
+		OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
+				new CrucibleFile(crucibleFileInfo, false), versionedComment);
+		openVersionedVirtualFileAction.setText("Open Comment");
+		actions.add(openVersionedVirtualFileAction);
+		return actions;
 	}
 
 }

@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 
@@ -24,13 +26,25 @@ public class CrucibleCommentAnnotation extends Annotation {
 
 	private final Position position;
 
-	public CrucibleCommentAnnotation(int offset, int length) {
+	private final VersionedComment comment;
+
+	public CrucibleCommentAnnotation(int offset, int length, VersionedComment comment) {
 		super(COMMENT_ANNOTATION_ID, false, null);
 		position = new Position(offset, length);
+		this.comment = comment;
 	}
 
 	public Position getPosition() {
 		return position;
 	}
 
+	@Override
+	public String getText() {
+		String message = comment.getAuthor().getDisplayName() + "\n" + comment.getMessage();
+		for (VersionedComment reply : comment.getReplies()) {
+			message += "\n\t" + reply.getAuthor().getDisplayName() + "\n\t" + reply.getMessage();
+		}
+
+		return message;
+	}
 }
