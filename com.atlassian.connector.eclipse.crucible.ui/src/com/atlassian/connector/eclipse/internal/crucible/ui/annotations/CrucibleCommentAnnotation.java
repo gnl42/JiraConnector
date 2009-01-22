@@ -40,10 +40,10 @@ public class CrucibleCommentAnnotation extends Annotation {
 
 	@Override
 	public String getText() {
-		String message = comment.getAuthor().getDisplayName() + "\n" + comment.getMessage();
-		for (VersionedComment reply : comment.getReplies()) {
-			message += "\n\t" + reply.getAuthor().getDisplayName() + "\n\t" + reply.getMessage();
-		}
+		String message = comment.getAuthor().getDisplayName() + "--" + comment.getMessage();
+//		for (VersionedComment reply : comment.getReplies()) {
+//			message += "\n\t" + reply.getAuthor().getDisplayName() + "\n\t" + reply.getMessage();
+//		}
 
 		return message;
 	}
