@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
  com.atlassian.connector.commons,
  org.eclipse.ui.editors,
- org.eclipse.jface.text
+ org.eclipse.jface.text,
+ org.eclipse.compare
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.ui,

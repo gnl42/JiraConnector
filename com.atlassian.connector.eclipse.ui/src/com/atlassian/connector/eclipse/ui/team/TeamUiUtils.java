@@ -14,19 +14,22 @@ package com.atlassian.connector.eclipse.ui.team;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.compare.CompareEditorInput;
+import org.eclipse.compare.CompareUI;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
@@ -39,8 +42,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * @author Shawn Minto
  */
 public final class TeamUiUtils {
-
-	private static final String MESSAGE_DIALOG_TITLE = "Crucible";
 
 	private static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
 
@@ -62,7 +63,7 @@ public final class TeamUiUtils {
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
-			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, revisionString, monitor)) {
+			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
 				IEditorPart part = connector.openFile(repoUrl, filePath, revisionString, monitor);
 				if (part != null) {
 					return getRealEditorPart(part);
@@ -72,6 +73,30 @@ public final class TeamUiUtils {
 
 		// try a backup solution
 		return getRealEditorPart(defaultConnector.openFile(repoUrl, filePath, revisionString, monitor));
+	}
+
+	public static void openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
+			String newRevisionString, IProgressMonitor monitor) {
+		assert (filePath != null);
+		assert (oldRevisionString != null);
+		assert (newRevisionString != null);
+
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
+
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
+				if (connector.openCompareEditor(repoUrl, filePath, oldRevisionString, newRevisionString, monitor)) {
+					return;
+				}
+			}
+		}
+		if (!defaultConnector.openCompareEditor(repoUrl, filePath, oldRevisionString, newRevisionString, monitor)) {
+			TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString, newRevisionString);
+		}
 	}
 
 	public static IEditorPart getNotOpenedEditor() {
@@ -108,49 +133,6 @@ public final class TeamUiUtils {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 		return null;
-	}
-
-	public static void openFileDeletedErrorMessage(final String repoUrl, final String filePath, final String revision) {
-		if (Display.getCurrent() != null) {
-			internalOpenFileDeletedErrorMessage(repoUrl, filePath, revision);
-		} else {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					internalOpenFileDeletedErrorMessage(repoUrl, filePath, revision);
-				}
-			});
-		}
-
-	}
-
-	private static void internalOpenFileDeletedErrorMessage(String repoUrl, String filePath, String revision) {
-		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
-		String message = "Please update the project to revision " + revision
-				+ "as the following file may have been removed or deleted:\n\n" + fileUrl;
-
-		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
-	}
-
-	public static void openFileDoesntExistErrorMessage(final String repoUrl, final String filePath,
-			final String revision) {
-		if (Display.getCurrent() != null) {
-			internalOpenFileDoesntExistErrorMessage(repoUrl, filePath, revision);
-		} else {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					internalOpenFileDoesntExistErrorMessage(repoUrl, filePath, revision);
-				}
-			});
-		}
-	}
-
-	private static void internalOpenFileDoesntExistErrorMessage(String repoUrl, String filePath, String revision) {
-
-		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
-		String message = "Please update the project to revision " + revision
-				+ "as the following file may have been removed or deleted:\n\n" + fileUrl;
-
-		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
 
 	public static CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
@@ -195,6 +177,24 @@ public final class TeamUiUtils {
 				}
 			}
 		}
+	}
+
+	public static void openCompareEditorForInput(final CompareEditorInput compareEditorInput) {
+		if (Display.getCurrent() != null) {
+			internalOpenCompareEditorForInput(compareEditorInput);
+		} else {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					internalOpenCompareEditorForInput(compareEditorInput);
+				}
+			});
+		}
+	}
+
+	private static void internalOpenCompareEditorForInput(CompareEditorInput compareEditorInput) {
+		IWorkbench workbench = AtlassianUiPlugin.getDefault().getWorkbench();
+		IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+		CompareUI.openCompareEditorOnPage(compareEditorInput, page);
 	}
 
 	private static void internalSelectAndReveal(ITextEditor textEditor, final int offset, final int length) {

@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.CompareVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -131,6 +132,20 @@ public class CrucibleFilePart extends ExpandablePart {
 			openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
 			// TODO set the image descriptor
 			actions.add(openNewAction);
+		}
+
+		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
+				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0) {
+			if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
+					&& oldFileDescriptor.getUrl().length() > 0 && oldFileDescriptor.getRevision() != null
+					&& oldFileDescriptor.getRevision().length() > 0) {
+				CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(crucibleFile);
+				compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
+						+ oldFileDescriptor.getRevision());
+				compareAction.setText("Compare");
+				// TODO set the image descriptor
+				actions.add(compareAction);
+			}
 		}
 		return actions;
 	}

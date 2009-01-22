@@ -14,12 +14,14 @@ package com.atlassian.connector.eclipse.internal.subclipse.ui;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.ui.team.TeamMessageUtils;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -43,12 +45,15 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.tigris.subversion.subclipse.core.ISVNLocalFile;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
+import org.tigris.subversion.subclipse.core.ISVNRemoteResource;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.ISVNResource;
 import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.subclipse.core.SVNTeamProvider;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
+import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
+import org.tigris.subversion.subclipse.ui.compare.SVNCompareEditorInput;
 import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
@@ -68,11 +73,54 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return true;
 	}
 
-	public boolean canHandleFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
+	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
 		if (repoUrl == null) {
 			return false;
 		}
 		return SVNProviderPlugin.getPlugin().getRepositories().isKnownRepository(repoUrl, false);
+	}
+
+	public boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
+			String newRevisionString, final IProgressMonitor monitor) {
+		ISVNRemoteResource oldRemoteFile = getSvnRemoteFile(repoUrl, filePath, oldRevisionString, monitor);
+		ISVNRemoteResource newRemoteFile = getSvnRemoteFile(repoUrl, filePath, newRevisionString, monitor);
+
+		if (oldRemoteFile != null && newRemoteFile != null) {
+			ResourceEditionNode left = new ResourceEditionNode(newRemoteFile);
+			ResourceEditionNode right = new ResourceEditionNode(oldRemoteFile);
+			CompareEditorInput compareEditorInput = new SVNCompareEditorInput(left, right);
+			TeamUiUtils.openCompareEditorForInput(compareEditorInput);
+
+			return true;
+		}
+		return false;
+	}
+
+	public ISVNRemoteFile getSvnRemoteFile(String repoUrl, String filePath, String revisionString,
+			final IProgressMonitor monitor) {
+		if (repoUrl == null) {
+			return null;
+		}
+		try {
+
+			ISVNRepositoryLocation location = SVNProviderPlugin.getPlugin().getRepositories().getRepository(repoUrl);
+
+			if (filePath.startsWith("/")) {
+				filePath = filePath.substring(1);
+			}
+
+			IResource localResource = getLocalResourceFromFilePath(location, filePath);
+
+			if (localResource != null) {
+				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
+				return getRemoteFile(localResource, svnRevision, location);
+			}
+		} catch (SVNException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		} catch (ParseException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		}
+		return null;
 	}
 
 	public IEditorPart openFile(String repoUrl, String filePath, String revisionString, final IProgressMonitor monitor) {
@@ -114,13 +162,13 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 							return getOpenedPart(part[0]);
 						}
 					} else {
-						TeamUiUtils.openFileDeletedErrorMessage(repoUrl, filePath, revisionString);
+						TeamMessageUtils.openFileDeletedErrorMessage(repoUrl, filePath, revisionString);
 
 						return getOpenedPart(null);
 					}
 				}
 			} else {
-				TeamUiUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
+				TeamMessageUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
 				return getOpenedPart(null);
 			}
 			// TODO display an error message for these errors?

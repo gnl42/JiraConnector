@@ -17,6 +17,8 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.compare.CompareEditorInput;
+import org.eclipse.compare.ITypedElement;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -27,7 +29,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
@@ -37,20 +38,23 @@ import org.eclipse.team.core.history.IFileHistoryProvider;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
+import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.Utils;
+import org.eclipse.team.internal.ui.history.CompareFileRevisionEditorInput;
+import org.eclipse.team.internal.ui.history.FileRevisionTypedElement;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
- * A default team resource provider that just uses the Eclipse team API
+ * A default team resource provider that just uses the limited Eclipse team API
  * 
  * @author Shawn Minto
  */
 public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
-	public boolean canHandleFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
+	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
 		// the default one handles anything
 		return true;
 	}
@@ -62,6 +66,71 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 	public IEditorPart openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
 		return openFileWithTeamApi(repoUrl, filePath, revisionString, monitor);
+	}
+
+	public boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
+			String newRevisionString, IProgressMonitor monitor) {
+
+		IResource resource = findResourceForPath(filePath);
+		if (resource != null) {
+			IFileRevision oldFile = getFileRevision(resource, oldRevisionString, monitor);
+			IFileRevision newFile = getFileRevision(resource, newRevisionString, monitor);
+
+			if (oldFile != null && newFile != null) {
+				final ITypedElement left = new FileRevisionTypedElement(newFile, getLocalEncoding(resource));
+				final ITypedElement right = new FileRevisionTypedElement(oldFile, getLocalEncoding(resource));
+
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						CompareEditorInput input = new CompareFileRevisionEditorInput(left, right,
+								AtlassianUiPlugin.getDefault()
+										.getWorkbench()
+										.getActiveWorkbenchWindow()
+										.getActivePage());
+						TeamUiUtils.openCompareEditorForInput(input);
+					}
+				});
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	private IFileRevision getFileRevision(IResource resource, String revisionString, IProgressMonitor monitor) {
+		IProject project = resource.getProject();
+
+		if (project == null) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+					"Unable to get project for resource", new Exception()));
+			return null;
+		}
+
+		RepositoryProvider rp = RepositoryProvider.getProvider(project);
+		if (rp != null && rp.getFileHistoryProvider() != null) {
+
+			// this project has a team nature associated with it in the workspace
+			IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
+			IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE, monitor);
+
+			if (fileHistory != null) {
+				return fileHistory.getFileRevision(revisionString);
+			}
+		}
+		return null;
+
+	}
+
+	private String getLocalEncoding(IResource resource) {
+		if (resource instanceof IFile) {
+			IFile file = (IFile) resource;
+			try {
+				return file.getCharset();
+			} catch (CoreException e) {
+				TeamUIPlugin.log(e);
+			}
+		}
+		return null;
 	}
 
 	public boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput) {
@@ -137,8 +206,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 		// TODO add support for finding a project in the path so that we can find the proper resource 
 		// (i.e. file path and project name may be different)
-		IPath path = new Path(filePath);
-		final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+		final IResource resource = findResourceForPath(filePath);
 
 		if (resource != null) {
 			if (!(resource instanceof IFile)) {
@@ -184,12 +252,18 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 				}
 
 			} else {
-				openNotTeamResourceErrorMessage(repoUrl, filePath, revisionString);
+				TeamMessageUtils.openNotTeamResourceErrorMessage(repoUrl, filePath, revisionString);
 			}
 		} else {
-			TeamUiUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
+			TeamMessageUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
 		}
 		return null;
+	}
+
+	private static IResource findResourceForPath(String filePath) {
+		IPath path = new Path(filePath);
+		final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+		return resource;
 	}
 
 	private static IEditorPart openRemoteResource(String revisionString, IResource resource,
@@ -234,24 +308,4 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return inSync;
 	}
 
-	public static void openNotTeamResourceErrorMessage(final String repoUrl, final String filePath,
-			final String revision) {
-		if (Display.getCurrent() != null) {
-			internalOpenNotTeamResourceErrorMessage(repoUrl, filePath, revision);
-		} else {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					internalOpenNotTeamResourceErrorMessage(repoUrl, filePath, revision);
-				}
-			});
-		}
-	}
-
-	private static void internalOpenNotTeamResourceErrorMessage(String repoUrl, String filePath, String revision) {
-		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
-		String message = "Please checkout the project as the following file is not managed by a team provider:\n\n"
-				+ fileUrl;
-
-		MessageDialog.openWarning(null, "Crucible", message);
-	}
 }
