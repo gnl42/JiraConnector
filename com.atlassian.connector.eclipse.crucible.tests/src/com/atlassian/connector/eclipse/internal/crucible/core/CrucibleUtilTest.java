@@ -179,6 +179,6 @@ public class CrucibleUtilTest extends TestCase {
 
 	// TODO finish the util test
 	// TODO make a test to ensure that changing the creds gives us a new httpclient so the state is changed
-	// TODO test the cache
-	// TODO test the activeReviewManager
+	// TODO test the cache - cache a partial review
+	// TODO test the activeReviewManager - esp activating a task that is not a review
 }

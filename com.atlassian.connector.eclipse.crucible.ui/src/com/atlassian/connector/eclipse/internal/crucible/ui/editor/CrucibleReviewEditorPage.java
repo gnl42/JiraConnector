@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -47,6 +48,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -93,6 +97,35 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		}
 	}
 
+	private final IReviewCacheListener reviewCacheListener = new IReviewCacheListener() {
+
+		public void reviewAdded(String repositoryUrl, String taskId, Review addedReview) {
+			// ignore
+		}
+
+		public void reviewUpdated(String repositoryUrl, String taskId, Review updatedReview) {
+			// ignore
+
+			if (getTask() != null) {
+				ITask task = getTask();
+				if (task.getRepositoryUrl().equals(repositoryUrl) && task.getTaskId().equals(taskId)) {
+					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							getEditor().setMessage("Review has incoming changes", IMessageProvider.WARNING,
+									new HyperlinkAdapter() {
+										@Override
+										public void linkActivated(HyperlinkEvent e) {
+											downloadReviewAndRefresh(0, false);
+										}
+									});
+						}
+					});
+				}
+			}
+		}
+
+	};
+
 	private static final int OPEN_DOWNLOAD_DELAY = 0;
 
 	private static final int VERTICAL_BAR_WIDTH = 15;
@@ -114,6 +147,19 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	public CrucibleReviewEditorPage(FormEditor editor, String title) {
 		super(editor, CRUCIBLE_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractCrucibleEditorFormPart>();
+	}
+
+	@Override
+	public void init(IEditorSite site, IEditorInput input) {
+		super.init(site, input);
+
+		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(reviewCacheListener);
+	}
+
+	@Override
+	public void dispose() {
+		CrucibleCorePlugin.getDefault().getReviewCache().removeCacheChangedListener(reviewCacheListener);
+		super.dispose();
 	}
 
 	@Override
