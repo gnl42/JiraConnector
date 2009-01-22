@@ -54,6 +54,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
@@ -739,17 +740,25 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 		}
 		if (retrieveComments) {
-			Comment[] remoteComments = client.getSoapClient().getComments(jiraIssue.getKey(), monitor);
-			int i = 1;
-			for (Comment remoteComment : remoteComments) {
-				String attributeId = TaskAttribute.PREFIX_COMMENT + i;
-				TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
-				if (attribute != null) {
-					TaskCommentMapper comment = TaskCommentMapper.createFrom(attribute);
-					comment.setText(remoteComment.getComment());
-					comment.applyTo(attribute);
+			try {
+				Comment[] remoteComments = client.getSoapClient().getComments(jiraIssue.getKey(), monitor);
+				int i = 1;
+				for (Comment remoteComment : remoteComments) {
+					String attributeId = TaskAttribute.PREFIX_COMMENT + i;
+					TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
+					if (attribute != null) {
+						TaskCommentMapper comment = TaskCommentMapper.createFrom(attribute);
+						comment.setText(remoteComment.getComment());
+						comment.applyTo(attribute);
+					}
+					i++;
 				}
-				i++;
+			} catch (JiraServiceUnavailableException e) {
+				if ("Invalid element in org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComment - level".equals(e.getMessage())) { //$NON-NLS-1$
+					// XXX ignore, see bug 260614
+				} else {
+					throw e;
+				}
 			}
 		}
 	}
