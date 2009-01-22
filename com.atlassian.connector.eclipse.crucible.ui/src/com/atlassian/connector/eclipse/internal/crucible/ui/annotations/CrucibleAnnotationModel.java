@@ -120,36 +120,41 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 		if (crucibleFile != null) {
 
 			for (VersionedComment comment : crucibleFile.getCrucibleFileInfo().getVersionedComments()) {
-				try {
-					int startLine = comment.getToStartLine();
-					if (crucibleFile.isOldFile()) {
-						startLine = comment.getFromStartLine();
-					}
-
-					int endLine = comment.getToEndLine();
-					if (crucibleFile.isOldFile()) {
-						endLine = comment.getFromEndLine();
-					}
-
-					if (startLine != 0) {
-						int offset = editorDocument.getLineOffset(startLine - 1);
-						if (endLine == 0) {
-							endLine = startLine;
-						}
-						int length = editorDocument.getLineOffset(endLine) - offset;
-
-						CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length, comment);
-						annotations.add(ca);
-						event.annotationAdded(ca);
-					}
-				} catch (BadLocationException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-							"Unable to add annoation.", e));
-				}
+				createCommentAnnotation(event, comment);
 			}
 		}
 
 		fireModelChanged(event);
+	}
+
+	private void createCommentAnnotation(AnnotationModelEvent event, VersionedComment comment) {
+		try {
+			int startLine = comment.getToStartLine();
+			if (crucibleFile.isOldFile()) {
+				startLine = comment.getFromStartLine();
+			}
+
+			int endLine = comment.getToEndLine();
+			if (crucibleFile.isOldFile()) {
+				endLine = comment.getFromEndLine();
+			}
+			int offset = 0;
+			int length = 0;
+			if (startLine != 0) {
+				offset = editorDocument.getLineOffset(startLine - 1);
+				if (endLine == 0) {
+					endLine = startLine;
+				}
+				length = editorDocument.getLineOffset(endLine) - offset;
+
+			}
+			CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length, comment);
+			annotations.add(ca);
+			event.annotationAdded(ca);
+
+		} catch (BadLocationException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, "Unable to add annoation.", e));
+		}
 	}
 
 	public void addAnnotationModelListener(IAnnotationModelListener listener) {
