@@ -21,8 +21,11 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.AnnotationBarHoverManager;
+import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
@@ -30,8 +33,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class to manage the annotation model for the open editors
@@ -39,6 +48,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * @author Shawn Minto
  */
 public final class CrucibleAnnotationModelManager {
+
+	private static final Map<ITextEditor, IAnnotationHover> EDITOR_TO_HOVER_MAP = new HashMap<ITextEditor, IAnnotationHover>();
 
 	private CrucibleAnnotationModelManager() {
 		// ignore
@@ -76,8 +87,86 @@ public final class CrucibleAnnotationModelManager {
 		if (crucibleAnnotationModel == null) {
 			crucibleAnnotationModel = new CrucibleAnnotationModel(editor, editorInput, document, crucibleFile);
 			annotationModelExtension.addAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY, crucibleAnnotationModel);
+
+			addAnnotationHover(editor);
+
 		} else if (crucibleAnnotationModel instanceof CrucibleAnnotationModel) {
 			((CrucibleAnnotationModel) crucibleAnnotationModel).updateCrucibleFile(crucibleFile);
+		}
+
+	}
+
+	private static void addAnnotationHover(ITextEditor editor) {
+
+		if (editor instanceof AbstractTextEditor) {
+			AbstractTextEditor textEditor = (AbstractTextEditor) editor;
+
+			try {
+				Method getSourceViewer = AbstractTextEditor.class.getDeclaredMethod("getSourceViewer");
+				getSourceViewer.setAccessible(true);
+				SourceViewer viewer = (SourceViewer) getSourceViewer.invoke(textEditor);
+
+				if (viewer != null) {
+					Field hoverManager = SourceViewer.class.getDeclaredField("fVerticalRulerHoveringController");
+					hoverManager.setAccessible(true);
+					AnnotationBarHoverManager manager = (AnnotationBarHoverManager) hoverManager.get(viewer);
+					if (manager != null) {
+
+						Field annotationHover = AnnotationBarHoverManager.class.getDeclaredField("fAnnotationHover");
+						annotationHover.setAccessible(true);
+						IAnnotationHover hover = (IAnnotationHover) annotationHover.get(manager);
+
+						annotationHover.set(manager, new CrucibleAnnotationHover(hover));
+
+						EDITOR_TO_HOVER_MAP.put(editor, hover);
+					}
+				}
+
+			} catch (Exception e) {
+				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+						"Unable to attach custom annotation hover", e));
+			}
+
+		}
+	}
+
+	private static void removeAnnotationHover(ITextEditor editor) {
+
+		if (editor instanceof AbstractTextEditor) {
+			AbstractTextEditor textEditor = (AbstractTextEditor) editor;
+
+			IAnnotationHover annotationHover = EDITOR_TO_HOVER_MAP.remove(editor);
+			if (annotationHover != null) {
+
+				try {
+					Method getSourceViewer = AbstractTextEditor.class.getDeclaredMethod("getSourceViewer");
+					getSourceViewer.setAccessible(true);
+					SourceViewer viewer = (SourceViewer) getSourceViewer.invoke(textEditor);
+
+					if (viewer != null) {
+						Field hoverManager = SourceViewer.class.getDeclaredField("fVerticalRulerHoveringController");
+						hoverManager.setAccessible(true);
+						AnnotationBarHoverManager manager = (AnnotationBarHoverManager) hoverManager.get(viewer);
+						if (manager != null) {
+
+							Field annotationHoverField = AnnotationBarHoverManager.class.getDeclaredField("fAnnotationHover");
+							annotationHoverField.setAccessible(true);
+							IAnnotationHover hover = (IAnnotationHover) annotationHoverField.get(manager);
+
+							if (hover instanceof CrucibleAnnotationHover) {
+								annotationHoverField.set(manager, annotationHover);
+								((CrucibleAnnotationHover) hover).dispose();
+							}
+
+						}
+					}
+
+				} catch (Exception e) {
+					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"Unable to detach custom annotation hover", e));
+				}
+			}
+
 		}
 	}
 
@@ -112,6 +201,8 @@ public final class CrucibleAnnotationModelManager {
 			((CrucibleAnnotationModel) crucibleAnnotationModel).clear();
 		}
 		annotationModelExtension.removeAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
+
+		removeAnnotationHover(editor);
 	}
 
 	public static void dettachAllOpenEditors() {

@@ -40,11 +40,44 @@ public class CrucibleCommentAnnotation extends Annotation {
 
 	@Override
 	public String getText() {
-		String message = comment.getAuthor().getDisplayName() + "--" + comment.getMessage();
-//		for (VersionedComment reply : comment.getReplies()) {
-//			message += "\n\t" + reply.getAuthor().getDisplayName() + "\n\t" + reply.getMessage();
-//		}
+		return comment.getAuthor().getDisplayName() + "--" + comment.getMessage();
+	}
 
-		return message;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+		result = prime * result + ((position == null) ? 0 : position.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof CrucibleCommentAnnotation)) {
+			return false;
+		}
+		final CrucibleCommentAnnotation other = (CrucibleCommentAnnotation) obj;
+		if (comment == null) {
+			if (other.comment != null) {
+				return false;
+			}
+		} else if (!comment.equals(other.comment)) {
+			return false;
+		}
+		if (position == null) {
+			if (other.position != null) {
+				return false;
+			}
+		} else if (!position.equals(other.position)) {
+			return false;
+		}
+		return true;
 	}
 }
