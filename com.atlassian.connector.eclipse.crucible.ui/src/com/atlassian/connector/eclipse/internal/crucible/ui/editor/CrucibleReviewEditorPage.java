@@ -160,6 +160,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	public void dispose() {
 		CrucibleCorePlugin.getDefault().getReviewCache().removeCacheChangedListener(reviewCacheListener);
 		super.dispose();
+		editorComposite = null;
 	}
 
 	@Override
@@ -210,7 +211,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		return getEditor().getTaskEditorInput().getTaskRepository();
 	}
 
-	private ITask getTask() {
+	public ITask getTask() {
 		return getEditor().getTaskEditorInput().getTask();
 	}
 
@@ -239,7 +240,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	}
 
 	private void createFormContent() {
-		assert (editorComposite != null);
+		if (editorComposite == null) {
+			return;
+		}
+
 		assert (review != null);
 		try {
 

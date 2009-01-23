@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
@@ -26,7 +25,6 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.text.source.projection.AnnotationBag;
-import org.eclipse.swt.widgets.Shell;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,11 +43,7 @@ public class CrucibleAnnotationHover implements IAnnotationHover, IAnnotationHov
 
 	public CrucibleAnnotationHover(IAnnotationHover hover) {
 		this.parentHover = hover;
-		informationControlCreator = new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell parent) {
-				return new CrucibleInformationControl(parent);
-			}
-		};
+		informationControlCreator = new CrucibleInformationControlCreator();
 	}
 
 	public void dispose() {

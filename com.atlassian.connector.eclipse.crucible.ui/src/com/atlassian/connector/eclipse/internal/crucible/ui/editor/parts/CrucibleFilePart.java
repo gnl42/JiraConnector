@@ -112,39 +112,45 @@ public class CrucibleFilePart extends ExpandablePart {
 	@Override
 	protected List<IAction> getToolbarActions(boolean isExpanded) {
 		List<IAction> actions = new ArrayList<IAction>();
-		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
-		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
-		if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null && oldFileDescriptor.getUrl().length() > 0
-				&& oldFileDescriptor.getRevision() != null && oldFileDescriptor.getRevision().length() > 0) {
-			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(new CrucibleFile(
-					crucibleFile, true));
-			openOldAction.setText("Open Old");
-			openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
-			// TODO set the image descriptor
-			actions.add(openOldAction);
-		}
-
-		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
-				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0) {
-			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(new CrucibleFile(
-					crucibleFile, false));
-			openNewAction.setText("Open New");
-			openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
-			// TODO set the image descriptor
-			actions.add(openNewAction);
-		}
-
-		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
-				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0) {
+		if (getCrucibleEditor() != null) {
+			VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
+			VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
 			if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
 					&& oldFileDescriptor.getUrl().length() > 0 && oldFileDescriptor.getRevision() != null
 					&& oldFileDescriptor.getRevision().length() > 0) {
-				CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(crucibleFile);
-				compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
-						+ oldFileDescriptor.getRevision());
-				compareAction.setText("Compare");
+				OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
+						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true));
+				openOldAction.setText("Open Old");
+				openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
 				// TODO set the image descriptor
-				actions.add(compareAction);
+				actions.add(openOldAction);
+			}
+
+			if (newFileDescriptor != null && newFileDescriptor.getUrl() != null
+					&& newFileDescriptor.getUrl().length() > 0 && newFileDescriptor.getRevision() != null
+					&& newFileDescriptor.getRevision().length() > 0) {
+				OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
+						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false));
+				openNewAction.setText("Open New");
+				openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
+				// TODO set the image descriptor
+				actions.add(openNewAction);
+			}
+
+			if (newFileDescriptor != null && newFileDescriptor.getUrl() != null
+					&& newFileDescriptor.getUrl().length() > 0 && newFileDescriptor.getRevision() != null
+					&& newFileDescriptor.getRevision().length() > 0) {
+				if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
+						&& oldFileDescriptor.getUrl().length() > 0 && oldFileDescriptor.getRevision() != null
+						&& oldFileDescriptor.getRevision().length() > 0) {
+					CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
+							crucibleFile);
+					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
+							+ oldFileDescriptor.getRevision());
+					compareAction.setText("Compare");
+					// TODO set the image descriptor
+					actions.add(compareAction);
+				}
 			}
 		}
 		return actions;

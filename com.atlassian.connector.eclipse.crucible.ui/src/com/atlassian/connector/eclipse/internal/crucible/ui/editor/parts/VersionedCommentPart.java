@@ -105,10 +105,12 @@ public class VersionedCommentPart extends CommentPart {
 	protected List<IAction> getToolbarActions(boolean isExpanded) {
 		List<IAction> actions = new ArrayList<IAction>();
 		actions.addAll(super.getToolbarActions(isExpanded));
-		OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
-				new CrucibleFile(crucibleFileInfo, false), versionedComment);
-		openVersionedVirtualFileAction.setText("Open Comment");
-		actions.add(openVersionedVirtualFileAction);
+		if (getCrucibleEditor() != null) {
+			OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
+					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFileInfo, false), versionedComment);
+			openVersionedVirtualFileAction.setText("Open Comment");
+			actions.add(openVersionedVirtualFileAction);
+		}
 		return actions;
 	}
 

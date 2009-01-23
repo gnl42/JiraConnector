@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -42,14 +43,16 @@ public class OpenVersionedVirtualFileAction extends Action {
 
 	private VersionedComment versionedComment;
 
-	public OpenVersionedVirtualFileAction(CrucibleFile crucibleFile, VersionedComment versionedComment) {
-		this(crucibleFile);
+	private final ITask task;
+
+	public OpenVersionedVirtualFileAction(ITask task, CrucibleFile crucibleFile, VersionedComment versionedComment) {
+		this(task, crucibleFile);
 		this.versionedComment = versionedComment;
 	}
 
-	public OpenVersionedVirtualFileAction(CrucibleFile crucibleFile) {
+	public OpenVersionedVirtualFileAction(ITask task, CrucibleFile crucibleFile) {
 		this.crucibleFile = crucibleFile;
-
+		this.task = task;
 	}
 
 	@Override
@@ -67,7 +70,9 @@ public class OpenVersionedVirtualFileAction extends Action {
 							virtualFile.getRevision(), monitor);
 					if (editor instanceof ITextEditor) {
 						ITextEditor textEditor = ((ITextEditor) editor);
-						CrucibleAnnotationModelManager.attach(textEditor, crucibleFile);
+						if (CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask().equals(task)) {
+							CrucibleAnnotationModelManager.attach(textEditor, crucibleFile);
+						}
 						if (versionedComment != null) {
 							selectAndRevealComment(textEditor, versionedComment, crucibleFile);
 						}

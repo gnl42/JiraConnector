@@ -15,7 +15,11 @@ import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControlExtension2;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -28,22 +32,27 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	private Object input;
 
-	private final Shell shell;
+	private CrucibleCommentPopupDialog commentPopupDialog;
 
 	@SuppressWarnings("restriction")
 	public CrucibleInformationControl(Shell parent) {
 		super(parent, SWT.NONE, new HTMLTextPresenter(true));
-		this.shell = parent;
+
+		commentPopupDialog = new CrucibleCommentPopupDialog(parent, SWT.NO_FOCUS | SWT.ON_TOP);
+		// Force create early so that listeners can be added at all times with API.
+		commentPopupDialog.create();
 	}
 
 	@Override
 	public void setInformation(String content) {
 		this.input = content;
+		commentPopupDialog.setInput(input);
 		super.setInformation(content);
 	}
 
 	public void setInput(Object input) {
 		this.input = input;
+		commentPopupDialog.setInput(input);
 	}
 
 	@Override
@@ -57,11 +66,119 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 			setInformation((String) input);
 			super.setVisible(visible);
 		} else if (input instanceof CrucibleAnnotationHoverInput) {
-			// TODO display stuff properly
-			super.setVisible(visible);
+			if (visible) {
+				commentPopupDialog.open();
+			} else {
+				commentPopupDialog.getShell().setVisible(false);
+			}
 		} else {
 			super.setVisible(visible);
 		}
+	}
+
+	@Override
+	public void dispose() {
+		commentPopupDialog.dispose();
+		commentPopupDialog = null;
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		super.setSize(width, height);
+		commentPopupDialog.setSize(width, height);
+	}
+
+	@Override
+	public void setLocation(Point location) {
+		super.setLocation(location);
+		commentPopupDialog.setLocation(location);
+	}
+
+	@Override
+	public void setSizeConstraints(int maxWidth, int maxHeight) {
+		super.setSizeConstraints(maxWidth, maxHeight);
+		commentPopupDialog.setSizeConstraints(maxWidth, maxHeight);
+	}
+
+	@Override
+	public Rectangle computeTrim() {
+		if (input instanceof String) {
+			return super.computeTrim();
+		} else if (input instanceof CrucibleAnnotationHoverInput) {
+			return commentPopupDialog.computeTrim();
+		} else {
+			return super.computeTrim();
+		}
+
+	}
+
+	@Override
+	public Rectangle getBounds() {
+		if (input instanceof String) {
+			return super.getBounds();
+		} else if (input instanceof CrucibleAnnotationHoverInput) {
+			return commentPopupDialog.getBounds();
+		} else {
+			return super.getBounds();
+		}
+	}
+
+	@Override
+	public void addDisposeListener(DisposeListener listener) {
+		super.addDisposeListener(listener);
+		commentPopupDialog.addDisposeListener(listener);
+	}
+
+	@Override
+	public void removeDisposeListener(DisposeListener listener) {
+		super.removeDisposeListener(listener);
+		commentPopupDialog.removeDisposeListener(listener);
+	}
+
+	@Override
+	public void setForegroundColor(Color foreground) {
+		super.setForegroundColor(foreground);
+	}
+
+	@Override
+	public void setBackgroundColor(Color background) {
+		super.setBackgroundColor(background);
+	}
+
+	@Override
+	public boolean isFocusControl() {
+		if (input instanceof String) {
+			return super.isFocusControl();
+		} else if (input instanceof CrucibleAnnotationHoverInput) {
+			return commentPopupDialog.isFocusControl();
+		} else {
+			return super.isFocusControl();
+		}
+
+	}
+
+	@Override
+	public void setFocus() {
+
+		if (input instanceof String) {
+			super.setFocus();
+		} else if (input instanceof CrucibleAnnotationHoverInput) {
+			commentPopupDialog.setFocus();
+		} else {
+			super.setFocus();
+		}
+	}
+
+	@Override
+	public void addFocusListener(FocusListener listener) {
+		super.addFocusListener(listener);
+		commentPopupDialog.addFocusListener(listener);
+	}
+
+	@Override
+	public void removeFocusListener(FocusListener listener) {
+		super.removeFocusListener(listener);
+		commentPopupDialog.removeFocusListener(listener);
 	}
 
 	@Override
@@ -70,8 +187,7 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 			setInformation((String) input);
 			return super.computeSizeHint();
 		} else if (input instanceof CrucibleAnnotationHoverInput) {
-			// TODO compute the size properly
-			return super.computeSizeHint();
+			return commentPopupDialog.computeSizeHint();
 		} else {
 			return super.computeSizeHint();
 		}

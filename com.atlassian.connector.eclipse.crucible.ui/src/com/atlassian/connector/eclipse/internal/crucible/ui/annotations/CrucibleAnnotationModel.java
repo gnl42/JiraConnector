@@ -148,7 +148,8 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 				length = editorDocument.getLineOffset(endLine) - offset;
 
 			}
-			CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length, comment);
+			CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length, comment,
+					crucibleFile.getCrucibleFileInfo());
 			annotations.add(ca);
 			event.annotationAdded(ca);
 

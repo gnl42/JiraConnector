@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.text.Position;
@@ -28,10 +29,13 @@ public class CrucibleCommentAnnotation extends Annotation {
 
 	private final VersionedComment comment;
 
-	public CrucibleCommentAnnotation(int offset, int length, VersionedComment comment) {
+	private final CrucibleFileInfo crucibleFileInfo;
+
+	public CrucibleCommentAnnotation(int offset, int length, VersionedComment comment, CrucibleFileInfo crucibleFileInfo) {
 		super(COMMENT_ANNOTATION_ID, false, null);
 		position = new Position(offset, length);
 		this.comment = comment;
+		this.crucibleFileInfo = crucibleFileInfo;
 	}
 
 	public Position getPosition() {
@@ -40,7 +44,15 @@ public class CrucibleCommentAnnotation extends Annotation {
 
 	@Override
 	public String getText() {
-		return comment.getAuthor().getDisplayName() + "--" + comment.getMessage();
+		return comment.getAuthor().getDisplayName() + " - " + comment.getMessage();
+	}
+
+	public VersionedComment getVersionedComment() {
+		return comment;
+	}
+
+	public CrucibleFileInfo getCrucibleFileInfo() {
+		return crucibleFileInfo;
 	}
 
 	@Override

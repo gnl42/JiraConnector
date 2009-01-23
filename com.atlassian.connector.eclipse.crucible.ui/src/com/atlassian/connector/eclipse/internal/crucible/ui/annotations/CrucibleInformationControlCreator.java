@@ -11,26 +11,18 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
-import java.util.List;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- * Data model to represent the annotations that we need to display in the hover.
+ * The class that will created the information control for the annotation
  * 
  * @author Shawn Minto
  */
-public class CrucibleAnnotationHoverInput {
+public class CrucibleInformationControlCreator implements IInformationControlCreator {
 
-	private final List<CrucibleCommentAnnotation> annotations;
-
-	public CrucibleAnnotationHoverInput(List<CrucibleCommentAnnotation> annotations) {
-		this.annotations = annotations;
-	}
-
-	public boolean containsInput() {
-		return annotations != null && annotations.size() > 0;
-	}
-
-	public List<CrucibleCommentAnnotation> getCrucibleAnnotations() {
-		return annotations;
+	public IInformationControl createInformationControl(Shell parent) {
+		return new CrucibleInformationControl(parent);
 	}
 }

@@ -49,11 +49,19 @@ public abstract class ExpandablePart {
 		this.crucibleEditor = editor;
 	}
 
+	public CrucibleReviewEditorPage getCrucibleEditor() {
+		return crucibleEditor;
+	}
+
 	public Control createControl(Composite parent, final FormToolkit toolkit) {
 
 		String headerText = getSectionHeaderText();
 
 		int style = ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT | ExpandableComposite.TWISTIE;
+
+		if (crucibleEditor == null) {
+			style |= ExpandableComposite.EXPANDED;
+		}
 
 		commentSection = toolkit.createSection(parent, style);
 		commentSection.setText(headerText);
@@ -134,7 +142,7 @@ public abstract class ExpandablePart {
 
 		Composite toolbarComposite = toolkit.createComposite(section);
 		section.setTextClient(toolbarComposite);
-		toolbarComposite.setBackground(null);
+//		toolbarComposite.setBackground(null);
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.marginTop = 0;
 		rowLayout.marginBottom = 0;
