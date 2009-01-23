@@ -16,6 +16,7 @@ import junit.framework.TestSuite;
 
 import org.eclipse.mylyn.jira.tests.core.JiraClientFactoryTest;
 import org.eclipse.mylyn.jira.tests.core.JiraCustomQueryTest;
+import org.eclipse.mylyn.jira.tests.core.FilterDefinitionConverterTest;
 import org.eclipse.mylyn.jira.tests.core.JiraFilterTest;
 import org.eclipse.mylyn.jira.tests.core.JiraRepositoryConnectorTest;
 import org.eclipse.mylyn.jira.tests.core.JiraStackTraceDuplicateDetectorTest;
@@ -42,6 +43,7 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraTaskDataHandlerTest.class);
 		suite.addTestSuite(JiraStackTraceDuplicateDetectorTest.class);
 		suite.addTestSuite(JiraConnectorUiTest.class);
+		suite.addTestSuite(FilterDefinitionConverterTest.class);
 		return suite;
 	}
 

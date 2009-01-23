@@ -17,6 +17,7 @@ import junit.framework.TestSuite;
 import org.eclipse.mylyn.jira.tests.client.JiraClientOfflineTest;
 import org.eclipse.mylyn.jira.tests.client.JiraClientTest;
 import org.eclipse.mylyn.jira.tests.client.JiraWebClientTest;
+import org.eclipse.mylyn.jira.tests.core.FilterDefinitionConverterTest;
 import org.eclipse.mylyn.jira.tests.core.JiraTimeFormatTest;
 
 /**
@@ -30,7 +31,8 @@ public class AllJiraHeadlessStandaloneTests {
 		suite.addTestSuite(JiraClientOfflineTest.class);
 		suite.addTestSuite(JiraClientTest.class);
 		suite.addTestSuite(JiraWebClientTest.class);
-		//suite.addTestSuite(JiraClientOfflineTest.class);
+		suite.addTestSuite(FilterDefinitionConverterTest.class);
+		suite.addTestSuite(JiraClientOfflineTest.class);
 		return suite;
 	}
 
