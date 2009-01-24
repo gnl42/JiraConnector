@@ -22,10 +22,12 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
@@ -87,21 +89,54 @@ public class CrucibleFilePart extends ExpandablePart {
 
 	@Override
 	protected String getAnnotationText() {
-		String revisionString = "[Rev:";
+		return null;
+	}
+
+	@Override
+	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
+
+		ImageHyperlink textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+		textHyperlink.setText("[Rev:");
+		textHyperlink.setEnabled(false);
+		textHyperlink.setUnderlined(false);
+
+		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
+		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
+		if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null && oldFileDescriptor.getUrl().length() > 0
+				&& oldFileDescriptor.getRevision() != null && oldFileDescriptor.getRevision().length() > 0) {
+			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
+					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true));
+			openOldAction.setText(oldFileDescriptor.getRevision());
+			openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
+			createActionHyperlink(toolbarComposite, toolkit, openOldAction);
+		}
+
 		if (crucibleFile.getOldFileDescriptor() != null && crucibleFile.getOldFileDescriptor().getRevision() != null
 				&& crucibleFile.getOldFileDescriptor().getRevision().length() > 0) {
-			revisionString += crucibleFile.getOldFileDescriptor().getRevision();
 
 			if (crucibleFile.getFileDescriptor() != null && crucibleFile.getFileDescriptor().getRevision() != null
 					&& crucibleFile.getFileDescriptor().getRevision().length() > 0) {
-				revisionString += "-";
+				textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+				textHyperlink.setText("-");
+				textHyperlink.setEnabled(false);
+				textHyperlink.setUnderlined(false);
 			}
 		}
-		if (crucibleFile.getFileDescriptor() != null && crucibleFile.getFileDescriptor().getRevision() != null
-				&& crucibleFile.getFileDescriptor().getRevision().length() > 0) {
-			revisionString += crucibleFile.getFileDescriptor().getRevision() + "]";
+
+		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
+				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0) {
+			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
+					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false));
+			openNewAction.setText(newFileDescriptor.getRevision());
+			openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
+			createActionHyperlink(toolbarComposite, toolkit, openNewAction);
 		}
-		return revisionString;
+
+		textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+		textHyperlink.setText("]");
+		textHyperlink.setEnabled(false);
+		textHyperlink.setUnderlined(false);
+
 	}
 
 	@Override
@@ -115,27 +150,6 @@ public class CrucibleFilePart extends ExpandablePart {
 		if (getCrucibleEditor() != null) {
 			VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
 			VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
-			if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
-					&& oldFileDescriptor.getUrl().length() > 0 && oldFileDescriptor.getRevision() != null
-					&& oldFileDescriptor.getRevision().length() > 0) {
-				OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
-						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true));
-				openOldAction.setText("Open Old");
-				openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
-				// TODO set the image descriptor
-				actions.add(openOldAction);
-			}
-
-			if (newFileDescriptor != null && newFileDescriptor.getUrl() != null
-					&& newFileDescriptor.getUrl().length() > 0 && newFileDescriptor.getRevision() != null
-					&& newFileDescriptor.getRevision().length() > 0) {
-				OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
-						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false));
-				openNewAction.setText("Open New");
-				openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
-				// TODO set the image descriptor
-				actions.add(openNewAction);
-			}
 
 			if (newFileDescriptor != null && newFileDescriptor.getUrl() != null
 					&& newFileDescriptor.getUrl().length() > 0 && newFileDescriptor.getRevision() != null

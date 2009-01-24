@@ -117,22 +117,27 @@ public abstract class ExpandablePart {
 		if (toolbarActions != null) {
 
 			for (final IAction action : toolbarActions) {
-				ImageHyperlink link = toolkit.createImageHyperlink(actionsComposite, SWT.NONE);
-				if (action.getImageDescriptor() != null) {
-					link.setImage(AtlassianImages.getImage(action.getImageDescriptor()));
-				} else {
-					link.setText(action.getText());
-				}
-				link.setToolTipText(action.getToolTipText());
-				link.addHyperlinkListener(new HyperlinkAdapter() {
-					@Override
-					public void linkActivated(HyperlinkEvent e) {
-						action.run();
-					}
-				});
+				createActionHyperlink(actionsComposite, toolkit, action);
 			}
 		}
 		actionsComposite.getParent().layout();
+	}
+
+	protected ImageHyperlink createActionHyperlink(Composite actionsComposite, FormToolkit toolkit, final IAction action) {
+		ImageHyperlink link = toolkit.createImageHyperlink(actionsComposite, SWT.NONE);
+		if (action.getImageDescriptor() != null) {
+			link.setImage(AtlassianImages.getImage(action.getImageDescriptor()));
+		} else {
+			link.setText(action.getText());
+		}
+		link.setToolTipText(action.getToolTipText());
+		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
+			public void linkActivated(HyperlinkEvent e) {
+				action.run();
+			}
+		});
+		return link;
 	}
 
 	/**
@@ -142,15 +147,23 @@ public abstract class ExpandablePart {
 
 		Composite toolbarComposite = toolkit.createComposite(section);
 		section.setTextClient(toolbarComposite);
-//		toolbarComposite.setBackground(null);
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.marginTop = 0;
 		rowLayout.marginBottom = 0;
 		toolbarComposite.setLayout(rowLayout);
 
+		Composite annotationsComposite = toolkit.createComposite(toolbarComposite);
+
+		rowLayout = new RowLayout();
+		rowLayout.marginTop = 0;
+		rowLayout.marginBottom = 0;
+		rowLayout.spacing = 0;
+
+		annotationsComposite.setLayout(rowLayout);
+
 		ImageDescriptor annotationImage = getAnnotationImage();
 		if (annotationImage != null) {
-			Label imageLabel = toolkit.createLabel(toolbarComposite, "");
+			Label imageLabel = toolkit.createLabel(annotationsComposite, "");
 			imageLabel.setImage(AtlassianImages.getImage(annotationImage));
 		}
 
@@ -158,7 +171,9 @@ public abstract class ExpandablePart {
 		if (annotationsText == null) {
 			annotationsText = "";
 		}
-		toolkit.createLabel(toolbarComposite, annotationsText);
+		toolkit.createLabel(annotationsComposite, annotationsText);
+
+		createCustomAnnotations(annotationsComposite, toolkit);
 
 //		Composite actionsComposite = toolkit.createComposite(toolbarComposite);
 //		actionsComposite.setBackground(null);
@@ -168,6 +183,10 @@ public abstract class ExpandablePart {
 //		actionsComposite.setLayout(rowLayout);
 
 		return toolbarComposite;
+	}
+
+	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
+		// default do nothing
 	}
 
 	protected abstract List<IAction> getToolbarActions(boolean isExpanded);
