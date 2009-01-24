@@ -56,6 +56,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
 /**
  * @author Steffen Pingel
  * @author Eugene Kuleshov
+ * @author Thomas Ehrnhoefer
  */
 public class JiraTaskDataHandlerTest extends TestCase {
 
@@ -512,6 +513,165 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		TaskAttribute affectsVersionsAttr = data.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_AFFECTSVERSIONS);
 		assertNotNull(affectsVersionsAttr);
 		assertTrue(!affectsVersionsAttr.getOptions().isEmpty());
+	}
+
+	public void testPostTaskDataChangeDescription() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testDescrPostTaskDataTask");
+		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
+
+		//change attribute(s), submit and check
+		taskDataTestPostTaskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue("newDescr");
+		dataHandler.postTaskData(repository, taskDataTestPostTaskData, null, new NullProgressMonitor());
+
+		taskDataTestPostTaskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("newDescr", taskDataTestPostTaskData.getRoot()
+				.getAttribute(JiraAttribute.DESCRIPTION.id())
+				.getValue());
+	}
+
+	public void testPostTaskDataAddComment() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testCommentPostTaskDataTask");
+		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
+
+		//change attribute(s), submit and check
+		TaskAttribute taskAttribute = taskDataTestPostTaskData.getRoot().getMappedAttribute(TaskAttribute.COMMENT_NEW);
+		taskAttribute.setValue("comment3");
+		dataHandler.postTaskData(repository, taskDataTestPostTaskData, null, new NullProgressMonitor());
+		taskDataTestPostTaskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		List<ITaskComment> comments = JiraTestUtil.getTaskComments(taskDataTestPostTaskData);
+		assertEquals(3, comments.size());
+		assertEquals("comment1", comments.get(0).getText());
+		assertEquals("comment2", comments.get(1).getText());
+		assertEquals("comment3", comments.get(2).getText());
+	}
+
+	public void testPostTaskDataStartProgress() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testWorkfPostTaskDataTask");
+		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
+
+		//change attribute(s), submit and check
+		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "start");
+		setAttributeValue(taskDataTestPostTaskData, TaskAttribute.OPERATION, operation);
+		dataHandler.postTaskData(repository, taskDataTestPostTaskData, null, new NullProgressMonitor());
+		taskDataTestPostTaskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("3", taskDataTestPostTaskData.getRoot().getAttribute(TaskAttribute.STATUS).getValue());
+	}
+
+	public void testPostTaskDataStartProgressChangeDescription() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testDescrWorkfPostTaskDataTask");
+		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
+
+		//change attribute(s), submit and check
+		taskDataTestPostTaskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue("newerDescr");
+		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "start");
+		setAttributeValue(taskDataTestPostTaskData, TaskAttribute.OPERATION, operation);
+		dataHandler.postTaskData(repository, taskDataTestPostTaskData, null, new NullProgressMonitor());
+		taskDataTestPostTaskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("3", taskDataTestPostTaskData.getRoot().getAttribute(TaskAttribute.STATUS).getValue());
+		assertEquals("newerDescr", taskDataTestPostTaskData.getRoot()
+				.getAttribute(JiraAttribute.DESCRIPTION.id())
+				.getValue());
+	}
+
+	public void testPostTaskDataStartProgressAddComment() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testCommentWorkfPostTaskDataTask");
+		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
+
+		TaskAttribute taskAttribute = taskDataTestPostTaskData.getRoot().getMappedAttribute(TaskAttribute.COMMENT_NEW);
+		taskAttribute.setValue("comment3");
+		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "start");
+		setAttributeValue(taskDataTestPostTaskData, TaskAttribute.OPERATION, operation);
+		dataHandler.postTaskData(repository, taskDataTestPostTaskData, null, new NullProgressMonitor());
+
+		taskDataTestPostTaskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("3", taskDataTestPostTaskData.getRoot().getAttribute(TaskAttribute.STATUS).getValue());
+		List<ITaskComment> comments = JiraTestUtil.getTaskComments(taskDataTestPostTaskData);
+		assertEquals(3, comments.size());
+		assertEquals("comment1", comments.get(0).getText());
+		assertEquals("comment2", comments.get(1).getText());
+		assertEquals("comment3", comments.get(2).getText());
+	}
+
+	public void testPostTaskDataStartProgressAddCommentChangeDescription() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testDescrCommentWorkfPostTaskDataTask");
+		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
+
+		//change attribute(s), submit and check
+		taskDataTestPostTaskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue("newestDescr");
+		TaskAttribute taskAttribute = taskDataTestPostTaskData.getRoot().getMappedAttribute(TaskAttribute.COMMENT_NEW);
+		taskAttribute.setValue("comment3");
+		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "start");
+		setAttributeValue(taskDataTestPostTaskData, TaskAttribute.OPERATION, operation);
+		dataHandler.postTaskData(repository, taskDataTestPostTaskData, null, new NullProgressMonitor());
+
+		taskDataTestPostTaskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("3", taskDataTestPostTaskData.getRoot().getAttribute(TaskAttribute.STATUS).getValue());
+		List<ITaskComment> comments = JiraTestUtil.getTaskComments(taskDataTestPostTaskData);
+		assertEquals(3, comments.size());
+		assertEquals("comment1", comments.get(0).getText());
+		assertEquals("comment2", comments.get(1).getText());
+		assertEquals("comment3", comments.get(2).getText());
+		assertEquals(taskDataTestPostTaskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).getValue(),
+				"newestDescr");
+	}
+
+	public void testPostTaskDataStartProgressChangeAttributes() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testWorkfAndOtherAttrPostTaskDataTask");
+		TaskData taskDataTestPostTaskData = initTestPostTaskData(issue);
+
+		//change attribute(s), submit and check
+		taskDataTestPostTaskData.getRoot().getAttribute(JiraAttribute.PRIORITY.id()).setValue(Priority.BLOCKER_ID);
+		taskDataTestPostTaskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).setValue("newSummary");
+		taskDataTestPostTaskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).setValue("newestDescr");
+		TaskAttribute taskAttribute = taskDataTestPostTaskData.getRoot().getMappedAttribute(TaskAttribute.COMMENT_NEW);
+		taskAttribute.setValue("comment3");
+		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "start");
+		setAttributeValue(taskDataTestPostTaskData, TaskAttribute.OPERATION, operation);
+		dataHandler.postTaskData(repository, taskDataTestPostTaskData, null, new NullProgressMonitor());
+
+		taskDataTestPostTaskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("3", taskDataTestPostTaskData.getRoot().getAttribute(TaskAttribute.STATUS).getValue());
+		List<ITaskComment> comments = JiraTestUtil.getTaskComments(taskDataTestPostTaskData);
+		assertEquals(3, comments.size());
+		assertEquals("comment1", comments.get(0).getText());
+		assertEquals("comment2", comments.get(1).getText());
+		assertEquals("comment3", comments.get(2).getText());
+		assertEquals(Priority.BLOCKER_ID, taskDataTestPostTaskData.getRoot()
+				.getAttribute(JiraAttribute.PRIORITY.id())
+				.getValue());
+		assertEquals("newSummary", taskDataTestPostTaskData.getRoot()
+				.getAttribute(JiraAttribute.SUMMARY.id())
+				.getValue());
+		assertEquals("newestDescr", taskDataTestPostTaskData.getRoot()
+				.getAttribute(JiraAttribute.DESCRIPTION.id())
+				.getValue());
+	}
+
+	private TaskData initTestPostTaskData(JiraIssue issue) throws Exception {
+		String summary = issue.getSummary();
+		issue.setDescription("descr");
+		issue.setPriority(new Priority(Priority.MINOR_ID));
+		client.updateIssue(issue, "comment1", new NullProgressMonitor());
+		client.updateIssue(issue, "comment2", new NullProgressMonitor());
+		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
+		assertEquals(summary, task.getSummary());
+		assertEquals(false, task.isCompleted());
+		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals(summary, taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).getValue());
+		assertEquals("descr", taskData.getRoot().getAttribute(JiraAttribute.DESCRIPTION.id()).getValue());
+		assertEquals(Priority.MINOR_ID, taskData.getRoot().getAttribute(JiraAttribute.PRIORITY.id()).getValue());
+		List<ITaskComment> comments = JiraTestUtil.getTaskComments(taskData);
+		assertEquals(2, comments.size());
+		assertEquals("comment1", comments.get(0).getText());
+		assertEquals("comment2", comments.get(1).getText());
+		return taskData;
 	}
 
 }

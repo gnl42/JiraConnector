@@ -887,15 +887,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				} else {
 					String operationId = getOperationId(taskData);
 					String newComment = getNewComment(taskData);
-					if (LEAVE_OPERATION.equals(operationId) || REASSIGN_OPERATION.equals(operationId)) {
-						if (!JiraRepositoryConnector.isClosed(issue)
-								&& taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null) {
-							client.updateIssue(issue, newComment, monitor);
-						} else if (newComment.length() > 0) {
-							client.addCommentToIssue(issue, newComment, monitor);
-						}
-					} else {
-						client.advanceIssueWorkflow(issue, operationId, newComment, monitor);
+					//do normal workflow all the time
+					if (!JiraRepositoryConnector.isClosed(issue)
+							&& taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null) {
+						client.updateIssue(issue, newComment, monitor);
+					} else if (newComment.length() > 0) {
+						client.addCommentToIssue(issue, newComment, monitor);
+					}
+					//and do advanced workflow if necessarry
+					if (!LEAVE_OPERATION.equals(operationId) && !REASSIGN_OPERATION.equals(operationId)) {
+						client.advanceIssueWorkflow(issue, operationId, null, monitor); //comment gets updated in the normal workflow already, so don"t post it a second time
 					}
 					return new RepositoryResponse(ResponseKind.TASK_UPDATED, issue.getId());
 				}

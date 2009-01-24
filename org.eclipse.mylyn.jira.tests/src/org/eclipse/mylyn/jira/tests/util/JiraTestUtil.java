@@ -164,6 +164,10 @@ public class JiraTestUtil {
 
 	public static List<ITaskComment> getTaskComments(ITask task) throws CoreException {
 		TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
+		return getTaskComments(taskData);
+	}
+
+	public static List<ITaskComment> getTaskComments(TaskData taskData) {
 		List<ITaskComment> comments = new ArrayList<ITaskComment>();
 		List<TaskAttribute> attributes = taskData.getAttributeMapper().getAttributesByType(taskData,
 				TaskAttribute.TYPE_COMMENT);
