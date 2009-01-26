@@ -86,7 +86,13 @@ public class VersionedCommentPart extends CommentPart {
 
 	@Override
 	protected String getAnnotationText() {
+		if (getCrucibleEditor() == null) {
+			return getLineNumberText();
+		}
+		return null;
+	}
 
+	private String getLineNumberText() {
 		String text = "";
 		if (comment.isDefectRaised() || comment.isDefectApproved()) {
 			text += "DEFECT ";
@@ -102,15 +108,21 @@ public class VersionedCommentPart extends CommentPart {
 	}
 
 	@Override
-	protected List<IAction> getToolbarActions(boolean isExpanded) {
-		List<IAction> actions = new ArrayList<IAction>();
-		actions.addAll(super.getToolbarActions(isExpanded));
+	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
 		if (getCrucibleEditor() != null) {
 			OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
 					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFileInfo, false), versionedComment);
-			openVersionedVirtualFileAction.setText("Open Comment");
-			actions.add(openVersionedVirtualFileAction);
+			openVersionedVirtualFileAction.setText(getLineNumberText());
+			openVersionedVirtualFileAction.setToolTipText("Open the file to the comment");
+			createActionHyperlink(toolbarComposite, toolkit, openVersionedVirtualFileAction);
 		}
+	}
+
+	@Override
+	protected List<IAction> getToolbarActions(boolean isExpanded) {
+		List<IAction> actions = new ArrayList<IAction>();
+		actions.addAll(super.getToolbarActions(isExpanded));
+
 		return actions;
 	}
 
