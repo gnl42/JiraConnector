@@ -64,6 +64,17 @@ public class CrucibleCachedReview {
 	synchronized boolean addReview(Review review) {
 		ReviewDifferenceProducer differencer = new ReviewDifferenceProducer(new ReviewAdapter(lastReadReview, null),
 				new ReviewAdapter(review, null));
+
+		if (serverReview != null) {
+			ReviewDifferenceProducer serverDifferencer = new ReviewDifferenceProducer(new ReviewAdapter(serverReview,
+					null), new ReviewAdapter(review, null));
+			List<CrucibleNotification> serverDiffs = differencer.getDiff();
+			if (differences == null
+					|| (differences.size() == 0 && differencer.isShortEqual() && differencer.isFilesEqual())) {
+				return false;
+			}
+		}
+
 		differences = differencer.getDiff();
 		if (differences.size() > 0 || !differencer.isShortEqual() || !differencer.isFilesEqual()) {
 			serverRevision++;

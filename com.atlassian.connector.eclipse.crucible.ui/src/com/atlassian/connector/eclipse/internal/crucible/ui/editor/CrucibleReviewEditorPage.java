@@ -23,6 +23,7 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
@@ -109,8 +110,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			// ignore
 		}
 
-		public void reviewUpdated(String repositoryUrl, String taskId, Review updatedReview) {
-			// ignore
+		public void reviewUpdated(String repositoryUrl, String taskId, Review updatedReview,
+				List<CrucibleNotification> differences) {
 
 			if (getTask() != null) {
 				ITask task = getTask();

@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.core.client.model;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,6 +22,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,14 +69,17 @@ public class ReviewCache {
 			return false;
 		} else {
 			boolean changed = cachedReview.addReview(review);
-			fireReviewUpdated(repositoryUrl, taskId, review);
+			if (changed) {
+				fireReviewUpdated(repositoryUrl, taskId, review, cachedReview.getDifferences());
+			}
 			return changed;
 		}
 	}
 
-	private void fireReviewUpdated(String repositoryUrl, String taskId, Review review) {
+	private void fireReviewUpdated(String repositoryUrl, String taskId, Review review,
+			List<CrucibleNotification> differences) {
 		for (IReviewCacheListener cacheListener : cacheListeners) {
-			cacheListener.reviewUpdated(repositoryUrl, taskId, review);
+			cacheListener.reviewUpdated(repositoryUrl, taskId, review, differences);
 		}
 	}
 

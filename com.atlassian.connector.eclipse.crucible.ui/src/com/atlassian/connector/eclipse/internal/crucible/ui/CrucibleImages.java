@@ -12,6 +12,8 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,6 +22,8 @@ import java.net.URL;
  * @author Steffen Pingel
  */
 public final class CrucibleImages {
+
+	private static ImageRegistry imageRegistry;
 
 	private static final URL BASE_URL = CrucibleUiPlugin.getDefault().getBundle().getEntry("/icons/"); //$NON-NLS-1$
 
@@ -50,6 +54,25 @@ public final class CrucibleImages {
 		buffer.append('/');
 		buffer.append(name);
 		return new URL(BASE_URL, buffer.toString());
+	}
+
+	private static ImageRegistry getImageRegistry() {
+		if (imageRegistry == null) {
+			imageRegistry = new ImageRegistry();
+		}
+
+		return imageRegistry;
+	}
+
+	public static Image getImage(ImageDescriptor imageDescriptor) {
+		ImageRegistry registry = getImageRegistry();
+
+		Image image = registry.get("" + imageDescriptor.hashCode());
+		if (image == null) {
+			image = imageDescriptor.createImage();
+			registry.put("" + imageDescriptor.hashCode(), image);
+		}
+		return image;
 	}
 
 }

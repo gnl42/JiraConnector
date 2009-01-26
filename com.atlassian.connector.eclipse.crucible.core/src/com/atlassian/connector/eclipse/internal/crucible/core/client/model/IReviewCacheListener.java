@@ -12,10 +12,18 @@
 package com.atlassian.connector.eclipse.internal.crucible.core.client.model;
 
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 
+import java.util.List;
+
+/**
+ * Listener for cache model changes
+ * 
+ * @author Shawn Minto
+ */
 public interface IReviewCacheListener {
 
-	void reviewUpdated(String repositoryUrl, String taskId, Review review);
+	void reviewUpdated(String repositoryUrl, String taskId, Review review, List<CrucibleNotification> differences);
 
 	void reviewAdded(String repositoryUrl, String taskId, Review review);
 

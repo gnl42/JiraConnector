@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,6 +27,8 @@ import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+
+import java.util.List;
 
 /**
  * Class to manage the currently active review for other models
@@ -140,7 +143,8 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		// ignore
 	}
 
-	public synchronized void reviewUpdated(String repositoryUrl, String taskId, Review review) {
+	public synchronized void reviewUpdated(String repositoryUrl, String taskId, Review review,
+			List<CrucibleNotification> differences) {
 		if (activeTask != null && activeReview != null) {
 			if (activeTask.getRepositoryUrl().equals(repositoryUrl) && activeTask.getTaskId().equals(taskId)) {
 				activeReviewUpdated(review, activeTask);
