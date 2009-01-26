@@ -12,11 +12,17 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.model.Action;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
+import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
@@ -34,6 +40,10 @@ import java.util.Set;
  * @author Shawn Minto
  */
 public final class CrucibleUtil {
+
+	private static final int FALSE_HASH_MAGIC = 1237;
+
+	private static final int TRUE_HASH_MAGIC = 1231;
 
 	private CrucibleUtil() {
 	}
@@ -227,9 +237,125 @@ public final class CrucibleUtil {
 		try {
 			review.getFiles();
 		} catch (ValueNotYetInitialized e) {
-	
+
 			return true;
 		}
 		return false;
+	}
+
+	public static int createHash(Review review) {
+
+		try {
+			final int prime = 31;
+			int result = 1;
+
+			int miniResult = 0;
+			for (Action action : review.getActions()) {
+				miniResult += ((action == null) ? 0 : action.actionName().hashCode());
+			}
+			result = prime * result + miniResult;
+
+			result = prime * result + (review.isAllowReviewerToJoin() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
+			result = prime * result + ((review.getAuthor() == null) ? 0 : review.getAuthor().getUserName().hashCode());
+			result = prime * result + ((review.getCloseDate() == null) ? 0 : review.getCloseDate().hashCode());
+			result = prime * result + ((review.getCreateDate() == null) ? 0 : review.getCreateDate().hashCode());
+			result = prime * result
+					+ ((review.getCreator() == null) ? 0 : review.getCreator().getUserName().hashCode());
+			result = prime * result
+					+ ((review.getCrucibleProject() == null) ? 0 : review.getCrucibleProject().getId().hashCode());
+			result = prime * result + ((review.getDescription() == null) ? 0 : review.getDescription().hashCode());
+
+			miniResult = 0;
+			for (CrucibleFileInfo file : review.getFiles()) {
+				miniResult += ((file.getFileDescriptor() == null) ? 0 : file.getFileDescriptor().getUrl().hashCode());
+				for (VersionedComment comment : file.getVersionedComments()) {
+					miniResult = createHashForVersionedComment(miniResult, comment);
+				}
+			}
+			result = prime * result + miniResult;
+
+			miniResult = 0;
+			for (GeneralComment comment : review.getGeneralComments()) {
+				miniResult = createHashForGeneralComment(miniResult, comment);
+			}
+			result = prime * result + miniResult;
+
+			result = prime * result + review.getMetricsVersion();
+			result = prime * result
+					+ ((review.getModerator() == null) ? 0 : review.getModerator().getUserName().hashCode());
+			result = prime * result + ((review.getName() == null) ? 0 : review.getName().hashCode());
+			result = prime * result
+					+ ((review.getParentReview() == null) ? 0 : review.getParentReview().getId().hashCode());
+			result = prime * result + ((review.getPermId() == null) ? 0 : review.getPermId().getId().hashCode());
+			result = prime * result + ((review.getProjectKey() == null) ? 0 : review.getProjectKey().hashCode());
+			result = prime * result + ((review.getRepoName() == null) ? 0 : review.getRepoName().hashCode());
+
+			miniResult = 0;
+			for (Reviewer reviewer : review.getReviewers()) {
+				miniResult += (reviewer.getUserName().hashCode());
+				miniResult += (reviewer.isCompleted() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
+			}
+			result = prime * result + miniResult;
+
+			result = prime * result + ((review.getState() == null) ? 0 : review.getState().name().hashCode());
+			result = prime * result + ((review.getSummary() == null) ? 0 : review.getSummary().hashCode());
+
+			miniResult = 0;
+			for (Action action : review.getTransitions()) {
+				miniResult += ((action == null) ? 0 : action.actionName().hashCode());
+			}
+			result = prime * result + miniResult;
+
+			return result;
+		} catch (ValueNotYetInitialized e) {
+			//ingore
+		}
+
+		return -1;
+
+	}
+
+	private static int createHashForGeneralComment(int result, GeneralComment comment) {
+
+		result += (comment.isDraft() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
+		result += ((comment.getMessage() == null) ? 0 : comment.getMessage().hashCode());
+		result += ((comment.getAuthor() == null) ? 0 : comment.getAuthor().getUserName().hashCode());
+		result += ((comment.getCreateDate() == null) ? 0 : comment.getCreateDate().hashCode());
+		result += ((comment.getPermId() == null) ? 0 : comment.getPermId().getId().hashCode());
+
+		for (CustomField customValue : comment.getCustomFields().values()) {
+			result += ((customValue == null) ? 0 : customValue.getValue().hashCode());
+			result += ((customValue == null) ? 0 : customValue.getConfigVersion());
+		}
+
+		for (GeneralComment reply : comment.getReplies()) {
+			result = createHashForGeneralComment(result, reply);
+		}
+
+		return result;
+	}
+
+	private static int createHashForVersionedComment(int result, VersionedComment comment) {
+
+		result += comment.getFromEndLine();
+		result += comment.getFromStartLine();
+		result += comment.getToEndLine();
+		result += comment.getToStartLine();
+		result += (comment.isDraft() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
+		result += ((comment.getMessage() == null) ? 0 : comment.getMessage().hashCode());
+		result += ((comment.getAuthor() == null) ? 0 : comment.getAuthor().getUserName().hashCode());
+		result += ((comment.getCreateDate() == null) ? 0 : comment.getCreateDate().hashCode());
+		result += ((comment.getPermId() == null) ? 0 : comment.getPermId().getId().hashCode());
+
+		for (CustomField customValue : comment.getCustomFields().values()) {
+			result += ((customValue == null) ? 0 : customValue.getValue().hashCode());
+			result += ((customValue == null) ? 0 : customValue.getConfigVersion());
+		}
+
+		for (VersionedComment reply : comment.getReplies()) {
+			result = createHashForVersionedComment(result, reply);
+		}
+
+		return result;
 	}
 }

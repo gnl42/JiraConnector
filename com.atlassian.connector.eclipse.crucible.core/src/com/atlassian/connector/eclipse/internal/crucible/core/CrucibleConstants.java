@@ -36,4 +36,6 @@ public final class CrucibleConstants {
 
 	public static final String HAS_CHANGED_TASKDATA_KEY = "hasChanged";
 
+	public static final String CHANGED_HASH_CODE_KEY = "hasChangedHash";
+
 }

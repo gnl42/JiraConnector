@@ -113,7 +113,29 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 			TaskAttribute hasChangedAttribute = taskData.getRoot().getAttribute(
 					CrucibleConstants.HAS_CHANGED_TASKDATA_KEY);
 			if (hasChangedAttribute != null) {
-				return taskData.getAttributeMapper().getBooleanValue(hasChangedAttribute);
+				if (!taskData.getAttributeMapper().getBooleanValue(hasChangedAttribute)) {
+
+					TaskAttribute hashAttribute = taskData.getRoot().getAttribute(
+							CrucibleConstants.CHANGED_HASH_CODE_KEY);
+					if (hashAttribute != null) {
+						int tdHash = taskData.getAttributeMapper().getIntegerValue(hashAttribute);
+						int taskHash = tdHash;
+						String taskHashString = task.getAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY);
+						if (taskHashString != null) {
+							try {
+								taskHash = Integer.parseInt(taskHashString);
+							} catch (NumberFormatException e) {
+								//ignore
+							}
+						}
+
+						return tdHash != taskHash;
+					}
+
+					return false;
+				} else {
+					return true;
+				}
 			}
 		}
 
@@ -152,6 +174,12 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 		TaskMapper scheme = new TaskMapper(taskData);
 		scheme.applyTo(task);
 		task.setCompletionDate(scheme.getCompletionDate());
+
+		TaskAttribute hashAttribute = taskData.getRoot().getAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY);
+		if (hashAttribute != null) {
+			int hash = taskData.getAttributeMapper().getIntegerValue(hashAttribute);
+			task.setAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY, hash + "");
+		}
 
 		// TODO notify listeners if there was a change and make a popup happen
 	}

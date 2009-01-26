@@ -208,8 +208,8 @@ public class CrucibleClient {
 		Date creationDate = review.getCreateDate();
 		Date closeDate = review.getCloseDate();
 
-//		int hash = CrucibleUtil.createHash(review);
-//		System.out.println(id + " " + hash);
+		int hash = CrucibleUtil.createHash(review);
+
 		Date dateModified = creationDate;
 
 		TaskData taskData = new TaskData(new TaskAttributeMapper(taskRepository), CrucibleCorePlugin.CONNECTOR_KIND,
@@ -231,13 +231,13 @@ public class CrucibleClient {
 		hasChangedAttribute.getMetaData().defaults().setReadOnly(true).setKind(TaskAttribute.KIND_DEFAULT).setLabel(
 				"Has Changed").setType(TaskAttribute.TYPE_BOOLEAN);
 
-//		if (hash != -1) {
-//			TaskAttribute hashAttribute = taskData.getRoot().createAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY);
-//			hashAttribute.setValue(Integer.toString(hash));
-//			hashAttribute.getMetaData().defaults().setReadOnly(true).setKind(TaskAttribute.KIND_DEFAULT).setLabel(
-//					"Hash").setType(TaskAttribute.TYPE_INTEGER);
-//
-//		}
+		if (hash != -1) {
+			TaskAttribute hashAttribute = taskData.getRoot().createAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY);
+			hashAttribute.setValue(Integer.toString(hash));
+			hashAttribute.getMetaData().defaults().setReadOnly(true).setKind(TaskAttribute.KIND_DEFAULT).setLabel(
+					"Hash").setType(TaskAttribute.TYPE_INTEGER);
+
+		}
 		return taskData;
 	}
 
