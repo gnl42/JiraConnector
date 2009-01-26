@@ -57,6 +57,28 @@ public class AddLineCommentToFileAction extends BaseSelectionListenerAction impl
 		// TODO ask the user for the comment and post it
 //		System.out.println(selectedRange.getStartLine() + " " + selectedRange.getNumberOfLines()
 //				+ crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl());
+
+//		CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Summarizing Crucible Review "
+//				+ getTask().getTaskKey(), getTaskRepository()) {
+//			@Override
+//			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
+//					throws CoreException {
+//				client.execute(new RemoteOperation<Review>(monitor) {
+//					@Override
+//					public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+//							IProgressMonitor monitor) throws CrucibleLoginException,
+//							RemoteApiException, ServerPasswordNotProvidedException {
+//
+//						String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+//						return server.summarizeReview(serverCfg, new PermIdBean(permId));
+//
+//					}
+//				});
+//				review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+//
+//				return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
+//			}
+//		};
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {

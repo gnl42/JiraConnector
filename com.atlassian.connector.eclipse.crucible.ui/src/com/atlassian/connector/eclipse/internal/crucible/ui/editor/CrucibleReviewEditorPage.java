@@ -12,19 +12,25 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
+import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
+import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -207,7 +213,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		super.createPartControl(parent);
 	}
 
-	private TaskRepository getTaskRepository() {
+	TaskRepository getTaskRepository() {
 		return getEditor().getTaskEditorInput().getTaskRepository();
 	}
 
@@ -217,7 +223,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	private void downloadReviewAndRefresh(long delay, final boolean force) {
 
-		CrucibleReviewJob job = new CrucibleReviewJob("Retrieving Crucible Review " + getTask().getTaskKey()) {
+		CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Retrieving Crucible Review "
+				+ getTask().getTaskKey(), getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 
@@ -328,14 +335,24 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 					Action summarizeAction = new Action() {
 						@Override
 						public void run() {
-							CrucibleReviewJob job = new CrucibleReviewJob("Summarizing Crucible Review "
-									+ getTask().getTaskKey()) {
+							CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Summarizing Crucible Review "
+									+ getTask().getTaskKey(), getTaskRepository()) {
 								@Override
 								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 										throws CoreException {
-									client.summarizeReview(getTask().getTaskId(), monitor);
+									client.execute(new RemoteOperation<Review>(monitor) {
+										@Override
+										public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+												IProgressMonitor monitor) throws CrucibleLoginException,
+												RemoteApiException, ServerPasswordNotProvidedException {
 
+											String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+											return server.summarizeReview(serverCfg, new PermIdBean(permId));
+
+										}
+									});
 									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
 								}
 							};
@@ -351,12 +368,20 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 					Action abandonAction = new Action() {
 						@Override
 						public void run() {
-							CrucibleReviewJob job = new CrucibleReviewJob("Reopen Crucible Review "
-									+ getTask().getTaskKey()) {
+							CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Reopen Crucible Review "
+									+ getTask().getTaskKey(), getTaskRepository()) {
 								@Override
 								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 										throws CoreException {
-									client.reopenReview(getTask().getTaskId(), monitor);
+									client.execute(new RemoteOperation<Review>(monitor) {
+										@Override
+										public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+												IProgressMonitor monitor) throws CrucibleLoginException,
+												RemoteApiException, ServerPasswordNotProvidedException {
+											String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+											return server.reopenReview(serverCfg, new PermIdBean(permId));
+										}
+									});
 									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was reopened.");
 								}
@@ -373,12 +398,20 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 					Action abandonAction = new Action() {
 						@Override
 						public void run() {
-							CrucibleReviewJob job = new CrucibleReviewJob("Abandon Crucible Review "
-									+ getTask().getTaskKey()) {
+							CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Abandon Crucible Review "
+									+ getTask().getTaskKey(), getTaskRepository()) {
 								@Override
 								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 										throws CoreException {
-									client.abondonReview(getTask().getTaskId(), monitor);
+									client.execute(new RemoteOperation<Review>(monitor) {
+										@Override
+										public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+												IProgressMonitor monitor) throws CrucibleLoginException,
+												RemoteApiException, ServerPasswordNotProvidedException {
+											String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+											return server.abandonReview(serverCfg, new PermIdBean(permId));
+										}
+									});
 									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
 									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was abandoned.");
 								}
@@ -407,7 +440,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		manager.add(refreshAction);
 	}
 
-	private void schedule(final CrucibleReviewJob job, long delay) {
+	private void schedule(final CrucibleReviewChangeJob job, long delay) {
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {
@@ -443,44 +476,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		});
 		job.schedule(delay);
 		setBusy(true);
-	}
-
-	private abstract class CrucibleReviewJob extends Job {
-
-		private IStatus status;
-
-		protected CrucibleReviewJob(String name) {
-			super(name);
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			setStatus(Status.CANCEL_STATUS);
-			CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
-			CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
-			if (client == null) {
-				return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-						"Unable to get client, please try to refresh");
-			}
-			try {
-				IStatus result = execute(client, monitor);
-				setStatus(result);
-			} catch (CoreException e) {
-				setStatus(e.getStatus());
-			}
-			return Status.OK_STATUS;
-		}
-
-		protected abstract IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException;
-
-		public IStatus getStatus() {
-			return status;
-		}
-
-		protected void setStatus(IStatus status) {
-			this.status = status;
-		}
-
 	};
 
 }
