@@ -41,6 +41,7 @@ import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.history.CompareFileRevisionEditorInput;
+import org.eclipse.team.internal.ui.history.FileRevisionEditorInput;
 import org.eclipse.team.internal.ui.history.FileRevisionTypedElement;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -133,9 +134,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	public boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput) {
+	public boolean canHandleEditorInput(IEditorInput editorInput) {
 		// we cannot deal with remote files since they are team provider specific
-		return editorInput instanceof FileEditorInput;
+		return editorInput instanceof FileEditorInput || editorInput instanceof FileRevisionEditorInput;
 	}
 
 	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
@@ -197,6 +198,10 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 						"Review is not fully initialized.  Unable to get file from review.", e));
 			}
 		}
+//		else if (editorInput instanceof FileRevisionEditorInput){
+//			FileRevisionEditorInput fileRevisionEditorInput = (FileRevisionEditorInput)editorInput;
+//			IFileRevision fileRevision = fileRevisionEditorInput.getFileRevision()
+//		}
 		return null;
 	}
 

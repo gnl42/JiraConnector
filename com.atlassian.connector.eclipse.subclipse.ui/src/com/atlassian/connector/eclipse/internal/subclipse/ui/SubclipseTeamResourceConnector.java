@@ -187,7 +187,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return editorPart;
 	}
 
-	public boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput) {
+	public boolean canHandleEditorInput(IEditorInput editorInput) {
 		if (editorInput instanceof FileEditorInput) {
 			try {
 				IFile file = ((FileEditorInput) editorInput).getFile();

@@ -50,5 +50,20 @@
             verticalRulerPreferenceKey="comment_verticalRuler"
             verticalRulerPreferenceValue="true"/>
             </extension>
+   <extension
+         id="com.atlassian.connector.eclipse.crucible.ui.popup"
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="com.atlassian.connector.eclipse.crucible.ui.objectContribution1"
+            objectClass="org.eclipse.ui.IEditorInput">
+         <action
+               class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction"
+               enablesFor="1"
+               id="com.atlassian.connector.eclipse.crucible.ui.action.add.comment"
+               label="Add Crucible Comment"
+               tooltip="Add Comment to Active Review">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>

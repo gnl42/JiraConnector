@@ -30,10 +30,11 @@ public interface ITeamResourceConnector {
 
 	IEditorPart openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor);
 
-	boolean canGetCrucibleFileFromEditorInput(IEditorInput editorInput);
+	boolean canHandleEditorInput(IEditorInput editorInput);
 
 	CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview);
 
 	boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString, String newRevisionString,
 			IProgressMonitor monitor);
+
 }

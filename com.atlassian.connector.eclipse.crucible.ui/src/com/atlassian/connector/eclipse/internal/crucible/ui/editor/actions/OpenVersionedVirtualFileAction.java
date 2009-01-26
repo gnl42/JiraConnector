@@ -70,7 +70,8 @@ public class OpenVersionedVirtualFileAction extends Action {
 							virtualFile.getRevision(), monitor);
 					if (editor instanceof ITextEditor) {
 						ITextEditor textEditor = ((ITextEditor) editor);
-						if (CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask().equals(task)) {
+						ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
+						if (activeTask != null && activeTask.equals(task)) {
 							CrucibleAnnotationModelManager.attach(textEditor, crucibleFile);
 						}
 						if (versionedComment != null) {

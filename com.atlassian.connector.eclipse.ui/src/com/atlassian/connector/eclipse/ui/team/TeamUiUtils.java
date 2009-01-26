@@ -24,6 +24,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -99,6 +102,19 @@ public final class TeamUiUtils {
 		}
 	}
 
+	public static LineRange getSelectedLineNumberRangeFromEditorInput(IEditorPart editor, IEditorInput editorInput) {
+
+		if (editor instanceof ITextEditor && editor.getEditorInput() == editorInput) {
+			ISelection selection = ((ITextEditor) editor).getSelectionProvider().getSelection();
+			if (selection instanceof TextSelection) {
+				TextSelection textSelection = ((TextSelection) selection);
+				return new LineRange(textSelection.getStartLine() + 1, textSelection.getEndLine()
+						- textSelection.getStartLine());
+			}
+		}
+		return null;
+	}
+
 	public static IEditorPart getNotOpenedEditor() {
 		return NOT_OPENED_EDITOR;
 	}
@@ -142,7 +158,7 @@ public final class TeamUiUtils {
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
-			if (connector.isEnabled() && connector.canGetCrucibleFileFromEditorInput(editorInput)) {
+			if (connector.isEnabled() && connector.canHandleEditorInput(editorInput)) {
 				CrucibleFile fileInfo = connector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
 				if (fileInfo != null) {
 					return fileInfo;
@@ -200,4 +216,5 @@ public final class TeamUiUtils {
 	private static void internalSelectAndReveal(ITextEditor textEditor, final int offset, final int length) {
 		textEditor.selectAndReveal(offset, length);
 	}
+
 }

@@ -23,6 +23,7 @@ Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleU
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.ui;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.actions,
  com.atlassian.connector.eclipse.internal.crucible.ui.annotations,
  com.atlassian.connector.eclipse.internal.crucible.ui.commons;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.editor,
