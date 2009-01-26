@@ -54,6 +54,7 @@ public class AddLineCommentToFileAction extends BaseSelectionListenerAction impl
 	}
 
 	public void run(IAction action) {
+		// TODO ask the user for the comment and post it
 //		System.out.println(selectedRange.getStartLine() + " " + selectedRange.getNumberOfLines()
 //				+ crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl());
 	}
