@@ -77,6 +77,7 @@ public class VersionedCommentPart extends CommentPart {
 			for (VersionedComment comment : generalComments) {
 				CommentPart generalCommentsComposite = new VersionedCommentPart(comment, crucibleReview,
 						crucibleFileInfo, crucibleEditor);
+				addChildPart(generalCommentsComposite);
 				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 			}
@@ -88,7 +89,7 @@ public class VersionedCommentPart extends CommentPart {
 	@Override
 	protected String getAnnotationText() {
 
-		String text = "";
+		String text = super.getAnnotationText();
 		if (comment.isDefectRaised() || comment.isDefectApproved()) {
 			text += "DEFECT ";
 		}

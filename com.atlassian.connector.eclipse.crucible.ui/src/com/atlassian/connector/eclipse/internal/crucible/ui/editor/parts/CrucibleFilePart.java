@@ -54,6 +54,11 @@ public class CrucibleFilePart extends ExpandablePart {
 	}
 
 	@Override
+	protected boolean canExpand() {
+		return crucibleFile.getVersionedComments().size() != 0;
+	}
+
+	@Override
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
 		//CHECKSTYLE:MAGIC:OFF
 		Composite composite = toolkit.createComposite(section);
@@ -79,6 +84,7 @@ public class CrucibleFilePart extends ExpandablePart {
 
 		for (VersionedComment comment : versionedComments) {
 			CommentPart fileComposite = new VersionedCommentPart(comment, review, crucibleFile, crucibleEditor);
+			addChildPart(fileComposite);
 			Control fileControl = fileComposite.createControl(composite, toolkit);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
 		}

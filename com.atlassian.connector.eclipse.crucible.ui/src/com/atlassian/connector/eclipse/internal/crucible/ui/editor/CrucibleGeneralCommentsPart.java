@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CommentPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.GeneralCommentPart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
@@ -20,6 +21,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.layout.GridLayout;
@@ -32,6 +34,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -49,10 +52,23 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 
 	private Section commentsSection;
 
+	private List<CommentPart> parts;
+
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review) {
 		this.crucibleEditor = editor;
 		this.crucibleReview = review;
+		parts = new ArrayList<CommentPart>();
+	}
+
+	@Override
+	public Collection<? extends ExpandablePart> getExpandableParts() {
+		return parts;
+	}
+
+	@Override
+	public CrucibleReviewEditorPage getReviewEditor() {
+		return crucibleEditor;
 	}
 
 	@Override
@@ -62,6 +78,8 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 		commentsSection = toolkit.createSection(parent, style);
 		commentsSection.setText(getSectionTitle());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(commentsSection);
+
+		setSection(toolkit, commentsSection);
 
 		if (commentsSection.isExpanded()) {
 			Composite composite = createCommentViewers(toolkit);
@@ -90,7 +108,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 	private String getSectionTitle() {
 		String title = "General Comments";
 		try {
-			return title + " (" + crucibleReview.getGeneralComments().size() + " comments)";
+			return title + " (" + crucibleReview.getNumberOfGeneralComments() + " comments)";
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
@@ -119,6 +137,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 
 			for (GeneralComment comment : generalComments) {
 				CommentPart generalCommentsComposite = new GeneralCommentPart(comment, crucibleReview, crucibleEditor);
+				parts.add(generalCommentsComposite);
 				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 			}
@@ -130,4 +149,10 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 		//CHECKSTYLE:MAGIC:ON
 		return composite;
 	}
+
+	@Override
+	protected void fillToolBar(ToolBarManager barManager) {
+		super.fillToolBar(barManager);
+	}
+
 }

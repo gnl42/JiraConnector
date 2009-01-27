@@ -70,6 +70,7 @@ public class GeneralCommentPart extends CommentPart {
 			for (GeneralComment comment : generalComments) {
 				GeneralCommentPart generalCommentsComposite = new GeneralCommentPart(comment, crucibleReview,
 						crucibleEditor);
+				addChildPart(generalCommentsComposite);
 				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 			}
@@ -81,7 +82,7 @@ public class GeneralCommentPart extends CommentPart {
 	@Override
 	protected String getAnnotationText() {
 		// TODO make the text be based on the numbers properly (e.g. s's)
-		String text = "";
+		String text = super.getAnnotationText();
 		if (generalComment.isDefectRaised() || generalComment.isDefectApproved()) {
 
 			text = "DEFECT ";

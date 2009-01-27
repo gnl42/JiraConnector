@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,6 +33,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,10 +45,19 @@ public abstract class ExpandablePart {
 
 	private Section commentSection;
 
+	private boolean isExpanded;
+
+	private final List<ExpandablePart> childrenParts;
+
 	protected final CrucibleReviewEditorPage crucibleEditor;
 
 	public ExpandablePart(CrucibleReviewEditorPage editor) {
 		this.crucibleEditor = editor;
+		childrenParts = new ArrayList<ExpandablePart>();
+	}
+
+	protected void addChildPart(ExpandablePart part) {
+		childrenParts.add(part);
 	}
 
 	public CrucibleReviewEditorPage getCrucibleEditor() {
@@ -57,7 +68,10 @@ public abstract class ExpandablePart {
 
 		String headerText = getSectionHeaderText();
 
-		int style = ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT | ExpandableComposite.TWISTIE;
+		int style = ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT;
+		if (canExpand()) {
+			style |= ExpandableComposite.TWISTIE;
+		}
 
 		if (crucibleEditor == null) {
 			style |= ExpandableComposite.EXPANDED;
@@ -71,7 +85,8 @@ public abstract class ExpandablePart {
 		final Composite actionsComposite = createSectionAnnotationsAndToolbar(commentSection, toolkit);
 
 		if (commentSection.isExpanded() || crucibleEditor == null) {
-			fillToolBar(actionsComposite, toolkit, true);
+			isExpanded = true;
+			fillToolBar(actionsComposite, toolkit, isExpanded);
 			Composite composite = createSectionContents(commentSection, toolkit);
 			commentSection.setClient(composite);
 
@@ -80,8 +95,8 @@ public abstract class ExpandablePart {
 			commentSection.addExpansionListener(new ExpansionAdapter() {
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
-
-					fillToolBar(actionsComposite, toolkit, e.getState());
+					isExpanded = e.getState();
+					fillToolBar(actionsComposite, toolkit, isExpanded);
 
 					if (commentSection.getClient() == null) {
 						try {
@@ -105,8 +120,12 @@ public abstract class ExpandablePart {
 		return commentSection;
 	}
 
-	private void fillToolBar(Composite actionsComposite, FormToolkit toolkit, boolean isExpanded) {
-		List<IAction> toolbarActions = getToolbarActions(isExpanded);
+	protected boolean canExpand() {
+		return true;
+	}
+
+	private void fillToolBar(Composite actionsComposite, FormToolkit toolkit, boolean expanded) {
+		List<IAction> toolbarActions = getToolbarActions(expanded);
 
 		for (Control control : actionsComposite.getChildren()) {
 			if (control instanceof ImageHyperlink) {
@@ -185,11 +204,31 @@ public abstract class ExpandablePart {
 		return toolbarComposite;
 	}
 
+	public boolean isExpanded() {
+		return isExpanded && areChildrenExpanded();
+	}
+
+	private boolean areChildrenExpanded() {
+		for (ExpandablePart child : childrenParts) {
+			if (!child.isExpanded()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void setExpanded(boolean expanded) {
+		EditorUtil.toggleExpandableComposite(expanded, commentSection);
+		for (ExpandablePart child : childrenParts) {
+			child.setExpanded(expanded);
+		}
+	}
+
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
 		// default do nothing
 	}
 
-	protected abstract List<IAction> getToolbarActions(boolean isExpanded);
+	protected abstract List<IAction> getToolbarActions(boolean expanded);
 
 	protected abstract String getAnnotationText();
 

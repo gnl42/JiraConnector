@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
@@ -31,6 +32,7 @@ import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import java.text.DateFormat;
+import java.util.Collection;
 
 /**
  * The form part that displays the details of the review
@@ -41,9 +43,22 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	private Review crucibleReview;
 
+	private CrucibleReviewEditorPage crucibleEditor;
+
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review) {
 		this.crucibleReview = review;
+		this.crucibleEditor = editor;
+	}
+
+	@Override
+	public Collection<? extends ExpandablePart> getExpandableParts() {
+		return null;
+	}
+
+	@Override
+	public CrucibleReviewEditorPage getReviewEditor() {
+		return crucibleEditor;
 	}
 
 	@Override

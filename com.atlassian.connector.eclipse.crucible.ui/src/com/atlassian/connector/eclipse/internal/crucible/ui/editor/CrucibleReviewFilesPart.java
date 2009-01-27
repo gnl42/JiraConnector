@@ -13,12 +13,14 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleFilePart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.layout.GridLayout;
@@ -31,6 +33,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -48,10 +51,23 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	private Section filesSection;
 
+	private List<CrucibleFilePart> parts;
+
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review) {
 		this.crucibleEditor = editor;
 		this.crucibleReview = review;
+		parts = new ArrayList<CrucibleFilePart>();
+	}
+
+	@Override
+	public Collection<? extends ExpandablePart> getExpandableParts() {
+		return parts;
+	}
+
+	@Override
+	public CrucibleReviewEditorPage getReviewEditor() {
+		return crucibleEditor;
 	}
 
 	@Override
@@ -60,6 +76,8 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 		filesSection = toolkit.createSection(parent, style);
 		filesSection.setText(getSectionTitle());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(filesSection);
+
+		setSection(toolkit, filesSection);
 
 		if (filesSection.isExpanded()) {
 			Composite composite = createCommentViewers(toolkit);
@@ -88,7 +106,9 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	private String getSectionTitle() {
 		String title = "Review Files";
 		try {
-			return title + " (" + crucibleReview.getFiles().size() + " files)";
+			return title + " (" + crucibleReview.getFiles().size() + " files) ("
+					+ crucibleReview.getNumberOfVersionedComments() + " comments)";
+
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
@@ -117,6 +137,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 			for (CrucibleFileInfo file : files) {
 				CrucibleFilePart fileComposite = new CrucibleFilePart(file, crucibleReview, crucibleEditor);
+				parts.add(fileComposite);
 				Control fileControl = fileComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
 			}
@@ -126,6 +147,11 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 		}
 		//CHECKSTYLE:MAGIC:ON
 		return composite;
+	}
+
+	@Override
+	protected void fillToolBar(ToolBarManager barManager) {
+		super.fillToolBar(barManager);
 	}
 
 }

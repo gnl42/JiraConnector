@@ -124,6 +124,15 @@ public abstract class CommentPart extends ExpandablePart {
 		return commentText;
 	}
 
+	@Override
+	protected String getAnnotationText() {
+		String text = "";
+		if (comment.isDraft()) {
+			text = "DRAFT ";
+		}
+		return text;
+	}
+
 	private Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value) {
 
 		int style = SWT.FLAT | SWT.READ_ONLY | SWT.MULTI | SWT.WRAP;
