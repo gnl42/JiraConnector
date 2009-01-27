@@ -93,7 +93,7 @@ public class VersionedCommentPart extends CommentPart {
 			text += "DEFECT ";
 		}
 
-		if (getCrucibleEditor() == null) {
+		if (getCrucibleEditor() == null && !comment.isReply()) {
 			text += getLineNumberText();
 		}
 		return text;
@@ -113,7 +113,7 @@ public class VersionedCommentPart extends CommentPart {
 
 	@Override
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
-		if (getCrucibleEditor() != null) {
+		if (getCrucibleEditor() != null && !comment.isReply()) {
 			OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
 					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFileInfo, false), versionedComment,
 					crucibleReview);

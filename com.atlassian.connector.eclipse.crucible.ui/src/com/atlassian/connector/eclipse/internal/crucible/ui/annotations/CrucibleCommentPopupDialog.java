@@ -156,6 +156,9 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 
 				toolkit.adapt(part.createControl(composite, toolkit), true, true);
 				toolkit.adapt(composite);
+				toolkit.adapt(scrolledComposite);
+				toolkit.adapt(scrolledComposite.getParent());
+				getShell().setBackground(toolkit.getColors().getBackground());
 			}
 		} else {
 			input = null;
