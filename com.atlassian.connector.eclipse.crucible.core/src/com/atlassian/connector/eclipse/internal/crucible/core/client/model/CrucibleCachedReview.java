@@ -69,8 +69,8 @@ public class CrucibleCachedReview {
 			ReviewDifferenceProducer serverDifferencer = new ReviewDifferenceProducer(new ReviewAdapter(serverReview,
 					null), new ReviewAdapter(review, null));
 			List<CrucibleNotification> serverDiffs = differencer.getDiff();
-			if (differences == null
-					|| (differences.size() == 0 && differencer.isShortEqual() && differencer.isFilesEqual())) {
+			if (serverDiffs == null
+					|| (serverDiffs.size() == 0 && serverDifferencer.isShortEqual() && serverDifferencer.isFilesEqual())) {
 				return false;
 			}
 		}
