@@ -694,10 +694,12 @@ public class JiraClientTest extends TestCase {
 				new NullProgressMonitor());
 		assertNotNull(securityLevels);
 
-		assertEquals(2, securityLevels.length);
+		assertEquals(3, securityLevels.length);
 		assertEquals("Developers", securityLevels[0].getName());
 		assertEquals("10000", securityLevels[0].getId());
-		assertEquals("Users", securityLevels[1].getName());
-		assertEquals("10001", securityLevels[1].getId());
+		assertEquals("Reporter", securityLevels[1].getName());
+		assertEquals("10010", securityLevels[1].getId());
+		assertEquals("Users", securityLevels[2].getName());
+		assertEquals("10001", securityLevels[2].getId());
 	}
 }
