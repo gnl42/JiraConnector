@@ -149,7 +149,14 @@ public class CrucibleClient {
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 				String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
 				Review review = server.getReview(serverCfg, new PermIdBean(permId));
+
+				int metricsVersion = review.getMetricsVersion();
+				if (cachedReviewManager != null && !cachedReviewManager.hasMetrics(metricsVersion)) {
+					cachedReviewManager.setMetrics(metricsVersion, server.getMetrics(serverCfg, metricsVersion));
+				}
+
 				boolean hasChanged = cacheReview(taskId, review);
+
 				return getTaskDataForReview(taskRepository, review, hasChanged);
 			}
 		});

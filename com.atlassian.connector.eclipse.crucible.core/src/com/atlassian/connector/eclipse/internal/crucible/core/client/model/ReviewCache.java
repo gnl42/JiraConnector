@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.core.client.model;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 
@@ -40,9 +41,12 @@ public class ReviewCache {
 
 	private final Set<IReviewCacheListener> cacheListeners;
 
+	private final Map<Integer, List<CustomFieldDef>> metricsMap;
+
 	public ReviewCache() {
 		cachedReviews = new HashMap<String, Map<String, CrucibleCachedReview>>();
 		cacheListeners = new HashSet<IReviewCacheListener>();
+		metricsMap = new HashMap<Integer, List<CustomFieldDef>>();
 	}
 
 	/**
@@ -128,5 +132,17 @@ public class ReviewCache {
 		}
 
 		return null;
+	}
+
+	public synchronized boolean hasMetrics(int version) {
+		return getMetrics(version) != null;
+	}
+
+	public synchronized List<CustomFieldDef> getMetrics(int version) {
+		return metricsMap.get(version);
+	}
+
+	public synchronized void setMetrics(int version, List<CustomFieldDef> metrics) {
+		metricsMap.put(version, metrics);
 	}
 }
