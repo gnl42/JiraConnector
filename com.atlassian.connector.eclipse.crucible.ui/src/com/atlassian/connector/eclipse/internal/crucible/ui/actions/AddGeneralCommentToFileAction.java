@@ -22,18 +22,16 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 /**
- * Action for adding a comment to a line in the active review
+ * Action to add a general file comment to the active review
  * 
  * @author Shawn Minto
  */
-public class AddLineCommentToFileAction extends AbstractAddCommentToFileAction {
-
-	private LineRange selectedRange = null;
+public class AddGeneralCommentToFileAction extends AbstractAddCommentToFileAction {
 
 	private CrucibleFile crucibleFile = null;
 
-	public AddLineCommentToFileAction() {
-		super("Create Line Comment");
+	public AddGeneralCommentToFileAction() {
+		super("Create General File Comment");
 	}
 
 	@Override
@@ -43,26 +41,20 @@ public class AddLineCommentToFileAction extends AbstractAddCommentToFileAction {
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
 			if (editorInput != null && editorPart != null) {
-				selectedRange = TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
-
-				if (selectedRange != null) {
-					crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
-							CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
-					if (crucibleFile != null) {
-						action.setEnabled(true);
-						setEnabled(true);
-						return;
-					}
+				crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
+						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+				if (crucibleFile != null) {
+					action.setEnabled(true);
+					setEnabled(true);
+					return;
 				}
 			}
 			action.setEnabled(false);
 			setEnabled(false);
-			selectedRange = null;
 			crucibleFile = null;
 		} else {
 			action.setEnabled(false);
 			setEnabled(false);
-			selectedRange = null;
 			crucibleFile = null;
 		}
 	}
@@ -74,6 +66,6 @@ public class AddLineCommentToFileAction extends AbstractAddCommentToFileAction {
 
 	@Override
 	protected LineRange getSelectedRange() {
-		return selectedRange;
+		return null;
 	}
 }
