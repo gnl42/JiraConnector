@@ -87,17 +87,20 @@ public class VersionedCommentPart extends CommentPart {
 
 	@Override
 	protected String getAnnotationText() {
-		if (getCrucibleEditor() == null) {
-			return getLineNumberText();
-		}
-		return null;
-	}
 
-	private String getLineNumberText() {
 		String text = "";
 		if (comment.isDefectRaised() || comment.isDefectApproved()) {
 			text += "DEFECT ";
 		}
+
+		if (getCrucibleEditor() == null) {
+			text += getLineNumberText();
+		}
+		return text;
+	}
+
+	private String getLineNumberText() {
+		String text = "";
 		if (versionedComment.getToEndLine() != 0) {
 			text += "[Lines: " + versionedComment.getToStartLine() + " - " + versionedComment.getToEndLine() + "]";
 		} else if (versionedComment.getToStartLine() != 0) {
