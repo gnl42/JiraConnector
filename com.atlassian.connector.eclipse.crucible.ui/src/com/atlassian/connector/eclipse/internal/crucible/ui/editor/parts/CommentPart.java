@@ -36,6 +36,7 @@ import java.util.Map;
  * A UI part to represent a comment in a review
  * 
  * @author Shawn Minto
+ * @author Thomas Ehrnhoefer
  */
 public abstract class CommentPart extends ExpandablePart {
 
@@ -142,10 +143,11 @@ public abstract class CommentPart extends ExpandablePart {
 		List<IAction> actions = new ArrayList<IAction>();
 		if (isExpanded) {
 			if (!comment.isReply()) {
-				actions.add(new ReplyToCommentAction(comment));
+				actions.add(new ReplyToCommentAction(comment, crucibleEditor.getTask(), crucibleEditor.getEditor()
+						.getTaskEditorInput()
+						.getTaskRepository()));
 			}
 		}
 		return actions;
 	}
-
 }

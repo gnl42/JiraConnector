@@ -51,6 +51,7 @@ import java.util.List;
  * Bridge between Mylyn and the ACC API's
  * 
  * @author Shawn Minto
+ * @author Thomas Ehrnhoefer
  */
 public class CrucibleClient {
 
@@ -106,6 +107,15 @@ public class CrucibleClient {
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
 		} finally {
 			monitor.done();
+		}
+	}
+
+	public String getUserName() {
+		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+		if (credentials != null) {
+			return credentials.getUserName();
+		} else {
+			return null;
 		}
 	}
 
