@@ -18,6 +18,8 @@ package com.atlassian.connector.eclipse.internal.crucible.core;
  */
 public final class CrucibleConstants {
 
+	public static final String REVIEW_ACTIVE_SYSTEM_PROPERTY = "com.atlassian.connector.eclipse.crucible.ui.review.active";
+
 	private CrucibleConstants() {
 		// ignore
 	}

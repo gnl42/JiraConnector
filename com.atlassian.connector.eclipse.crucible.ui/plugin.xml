@@ -65,6 +65,12 @@
                menubarPath="group.undo"
                tooltip="Add Comment to Active Review">
          </action>
+         <visibility>
+            <systemProperty
+                  name="com.atlassian.connector.eclipse.crucible.ui.review.active"
+                  value="true">
+            </systemProperty>
+         </visibility>
       </objectContribution>
    </extension>
 

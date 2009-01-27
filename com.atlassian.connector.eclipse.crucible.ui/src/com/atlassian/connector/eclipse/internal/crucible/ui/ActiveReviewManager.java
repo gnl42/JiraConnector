@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
@@ -56,6 +57,9 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		if (!task.getConnectorKind().equals(CrucibleCorePlugin.CONNECTOR_KIND)) {
 			return;
 		}
+
+		System.setProperty(CrucibleConstants.REVIEW_ACTIVE_SYSTEM_PROPERTY, "true");
+
 		this.activeTask = task;
 		Review cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getServerReview(task.getRepositoryUrl(),
 				task.getTaskId());
@@ -69,6 +73,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 	public synchronized void taskDeactivated(ITask task) {
 		this.activeTask = null;
 		this.activeReview = null;
+		System.setProperty(CrucibleConstants.REVIEW_ACTIVE_SYSTEM_PROPERTY, "false");
 		CrucibleAnnotationModelManager.dettachAllOpenEditors();
 	}
 
