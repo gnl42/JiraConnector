@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import java.text.DateFormat;
 import java.util.Collection;
@@ -91,21 +93,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 				"Moderator:", false);
 		GridDataFactory.fillDefaults().applyTo(moderatorText);
 
-		String reviewerString = "";
-		try {
-			for (Reviewer reviewer : crucibleReview.getReviewers()) {
-				reviewerString += reviewer.getDisplayName() + ", ";
-			}
-		} catch (ValueNotYetInitialized e) {
-			// TODO do something different here?
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-		}
-		if (reviewerString.length() > 0) {
-			reviewerString = reviewerString.substring(0, reviewerString.length() - 2);
-		}
-
-		Text reviewersText = createReadOnlyText(toolkit, composite, reviewerString, "Reviewers:", false);
-		GridDataFactory.fillDefaults().span(3, 1).applyTo(reviewersText);
+		createReviewersControl(toolkit, composite);
 
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(
 				createLabelControl(toolkit, composite, "Statement of Objectives:"));
@@ -117,6 +105,58 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		toolkit.paintBordersFor(composite);
 
 		return composite;
+	}
+
+	private void createReviewersControl(FormToolkit toolkit, Composite parent) {
+		//CHECKSTYLE:MAGIC:OFF
+
+		Label label = createLabelControl(toolkit, parent, "Reviewers:");
+		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.TOP).applyTo(label);
+
+		Composite reviewersComposite = toolkit.createComposite(parent);
+		GridLayout gl = new GridLayout(5, false);
+		gl.horizontalSpacing = 0;
+		gl.marginWidth = 0;
+		gl.marginHeight = 0;
+		gl.marginTop = 0;
+		gl.marginBottom = 0;
+		gl.verticalSpacing = 0;
+		reviewersComposite.setLayout(gl);
+		GridDataFactory.fillDefaults().grab(true, true).span(3, 1).applyTo(reviewersComposite);
+
+		String reviewerString = "";
+		try {
+			for (Reviewer reviewer : crucibleReview.getReviewers()) {
+				Composite reviewerComposite = toolkit.createComposite(reviewersComposite);
+				gl = new GridLayout(3, false);
+				gl.marginRight = 0;
+				gl.marginLeft = 0;
+				gl.marginTop = 0;
+				gl.marginBottom = 0;
+				gl.marginWidth = 0;
+				gl.marginHeight = 0;
+				gl.horizontalSpacing = 0;
+				gl.verticalSpacing = 0;
+				reviewerComposite.setLayout(gl);
+				GridDataFactory.fillDefaults().applyTo(reviewerComposite);
+
+				createReadOnlyText(toolkit, reviewerComposite, reviewer.getDisplayName(), null, false);
+				ImageHyperlink completedLink = toolkit.createImageHyperlink(reviewerComposite, SWT.NONE);
+				completedLink.setUnderlined(false);
+				completedLink.setEnabled(false);
+				if (reviewer.isCompleted()) {
+
+					completedLink.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_COMPLETE));
+				} else {
+					completedLink.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_NOT_COMPLETE));
+				}
+			}
+		} catch (ValueNotYetInitialized e) {
+			// TODO do something different here?
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		}
+
+		//CHECKSTYLE:MAGIC:ON
 	}
 
 	private Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
