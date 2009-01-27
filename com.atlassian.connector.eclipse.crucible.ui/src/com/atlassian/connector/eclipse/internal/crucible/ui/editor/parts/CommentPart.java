@@ -14,8 +14,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.ReplyToCommentAction;
+import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -42,9 +44,16 @@ public abstract class CommentPart extends ExpandablePart {
 
 	protected final Comment comment;
 
-	public CommentPart(Comment comment, CrucibleReviewEditorPage editor) {
+	protected final Review crucibleReview;
+
+	protected final CrucibleFile crucibleFile;
+
+	public CommentPart(Comment comment, Review crucibleReview, CrucibleReviewEditorPage editor,
+			CrucibleFile crucibleFile) {
 		super(editor);
 		this.comment = comment;
+		this.crucibleReview = crucibleReview;
+		this.crucibleFile = crucibleFile;
 	}
 
 	@Override
@@ -143,9 +152,7 @@ public abstract class CommentPart extends ExpandablePart {
 		List<IAction> actions = new ArrayList<IAction>();
 		if (isExpanded) {
 			if (!comment.isReply()) {
-				actions.add(new ReplyToCommentAction(comment, crucibleEditor.getTask(), crucibleEditor.getEditor()
-						.getTaskEditorInput()
-						.getTaskRepository()));
+				actions.add(new ReplyToCommentAction(comment, crucibleReview, crucibleFile));
 			}
 		}
 		return actions;

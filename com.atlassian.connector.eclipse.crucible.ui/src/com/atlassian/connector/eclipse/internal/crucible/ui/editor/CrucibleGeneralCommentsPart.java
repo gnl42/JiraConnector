@@ -118,7 +118,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 			});
 
 			for (GeneralComment comment : generalComments) {
-				CommentPart generalCommentsComposite = new GeneralCommentPart(comment, crucibleEditor);
+				CommentPart generalCommentsComposite = new GeneralCommentPart(comment, crucibleReview, crucibleEditor);
 				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 			}

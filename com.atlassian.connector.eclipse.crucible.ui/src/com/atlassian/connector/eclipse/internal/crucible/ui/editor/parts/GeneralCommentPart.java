@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -36,8 +37,8 @@ public class GeneralCommentPart extends CommentPart {
 
 	private final GeneralComment generalComment;
 
-	public GeneralCommentPart(GeneralComment comment, CrucibleReviewEditorPage editor) {
-		super(comment, editor);
+	public GeneralCommentPart(GeneralComment comment, Review review, CrucibleReviewEditorPage editor) {
+		super(comment, review, editor, null);
 		this.generalComment = comment;
 	}
 
@@ -67,7 +68,8 @@ public class GeneralCommentPart extends CommentPart {
 			});
 
 			for (GeneralComment comment : generalComments) {
-				GeneralCommentPart generalCommentsComposite = new GeneralCommentPart(comment, crucibleEditor);
+				GeneralCommentPart generalCommentsComposite = new GeneralCommentPart(comment, crucibleReview,
+						crucibleEditor);
 				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 			}

@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenV
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.action.IAction;
@@ -44,9 +45,12 @@ public class CrucibleFilePart extends ExpandablePart {
 
 	private final CrucibleFileInfo crucibleFile;
 
-	public CrucibleFilePart(CrucibleFileInfo file, CrucibleReviewEditorPage editor) {
+	private final Review review;
+
+	public CrucibleFilePart(CrucibleFileInfo file, Review review, CrucibleReviewEditorPage editor) {
 		super(editor);
 		this.crucibleFile = file;
+		this.review = review;
 	}
 
 	@Override
@@ -74,7 +78,7 @@ public class CrucibleFilePart extends ExpandablePart {
 		});
 
 		for (VersionedComment comment : versionedComments) {
-			CommentPart fileComposite = new VersionedCommentPart(comment, crucibleFile, crucibleEditor);
+			CommentPart fileComposite = new VersionedCommentPart(comment, review, crucibleFile, crucibleEditor);
 			Control fileControl = fileComposite.createControl(composite, toolkit);
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
 		}
@@ -105,7 +109,7 @@ public class CrucibleFilePart extends ExpandablePart {
 		if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null && oldFileDescriptor.getUrl().length() > 0
 				&& oldFileDescriptor.getRevision() != null && oldFileDescriptor.getRevision().length() > 0) {
 			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
-					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true));
+					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true), review);
 			openOldAction.setText(oldFileDescriptor.getRevision());
 			openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
 			createActionHyperlink(toolbarComposite, toolkit, openOldAction);
@@ -126,7 +130,7 @@ public class CrucibleFilePart extends ExpandablePart {
 		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
 				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0) {
 			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
-					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false));
+					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false), review);
 			openNewAction.setText(newFileDescriptor.getRevision());
 			openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
 			createActionHyperlink(toolbarComposite, toolkit, openNewAction);

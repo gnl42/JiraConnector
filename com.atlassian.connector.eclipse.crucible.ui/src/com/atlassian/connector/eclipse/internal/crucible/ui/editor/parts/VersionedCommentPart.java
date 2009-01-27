@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleRevie
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.action.IAction;
@@ -41,9 +42,9 @@ public class VersionedCommentPart extends CommentPart {
 
 	private final CrucibleFileInfo crucibleFileInfo;
 
-	public VersionedCommentPart(VersionedComment comment, CrucibleFileInfo crucibleFileInfo,
+	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo,
 			CrucibleReviewEditorPage editor) {
-		super(comment, editor);
+		super(comment, review, editor, new CrucibleFile(crucibleFileInfo, false));
 		this.versionedComment = comment;
 		this.crucibleFileInfo = crucibleFileInfo;
 	}
@@ -74,8 +75,8 @@ public class VersionedCommentPart extends CommentPart {
 			});
 
 			for (VersionedComment comment : generalComments) {
-				CommentPart generalCommentsComposite = new VersionedCommentPart(comment, crucibleFileInfo,
-						crucibleEditor);
+				CommentPart generalCommentsComposite = new VersionedCommentPart(comment, crucibleReview,
+						crucibleFileInfo, crucibleEditor);
 				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
 			}
@@ -111,7 +112,8 @@ public class VersionedCommentPart extends CommentPart {
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
 		if (getCrucibleEditor() != null) {
 			OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
-					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFileInfo, false), versionedComment);
+					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFileInfo, false), versionedComment,
+					crucibleReview);
 			openVersionedVirtualFileAction.setText(getLineNumberText());
 			openVersionedVirtualFileAction.setToolTipText("Open the file to the comment");
 			createActionHyperlink(toolbarComposite, toolkit, openVersionedVirtualFileAction);

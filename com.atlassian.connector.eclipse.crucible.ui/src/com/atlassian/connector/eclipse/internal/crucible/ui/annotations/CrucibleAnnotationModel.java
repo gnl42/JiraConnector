@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IStatus;
@@ -57,6 +58,8 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 
 	private boolean annotated = false;
 
+	private Review review;
+
 	private final IDocumentListener documentListener = new IDocumentListener() {
 		public void documentChanged(DocumentEvent event) {
 			updateAnnotations(false);
@@ -67,11 +70,12 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 	};
 
 	public CrucibleAnnotationModel(ITextEditor editor, IEditorInput editorInput, IDocument document,
-			CrucibleFile crucibleFile) {
+			CrucibleFile crucibleFile, Review review) {
 		this.textEditor = editor;
 		this.editorInput = editorInput;
 		this.editorDocument = document;
 		this.crucibleFile = crucibleFile;
+		this.review = review;
 		updateAnnotations(true);
 	}
 
@@ -149,7 +153,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 
 			}
 			CrucibleCommentAnnotation ca = new CrucibleCommentAnnotation(offset, length, comment,
-					crucibleFile.getCrucibleFileInfo());
+					crucibleFile.getCrucibleFileInfo(), review);
 			annotations.add(ca);
 			event.annotationAdded(ca);
 
@@ -224,9 +228,9 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 		}
 	}
 
-	public void updateCrucibleFile(CrucibleFile newCrucibleFile) {
+	public void updateCrucibleFile(CrucibleFile newCrucibleFile, Review newReview) {
 		// TODO we could just update the annotations appropriately instaed of remove and re-add
-
+		this.review = newReview;
 		this.crucibleFile = newCrucibleFile;
 		updateAnnotations(true);
 	}

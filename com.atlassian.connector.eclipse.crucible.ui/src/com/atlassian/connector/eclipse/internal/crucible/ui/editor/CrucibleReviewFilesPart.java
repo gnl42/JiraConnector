@@ -116,7 +116,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 			});
 
 			for (CrucibleFileInfo file : files) {
-				CrucibleFilePart fileComposite = new CrucibleFilePart(file, crucibleEditor);
+				CrucibleFilePart fileComposite = new CrucibleFilePart(file, crucibleReview, crucibleEditor);
 				Control fileControl = fileComposite.createControl(composite, toolkit);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
 			}

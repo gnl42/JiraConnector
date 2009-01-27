@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,14 +46,19 @@ public class OpenVersionedVirtualFileAction extends Action {
 
 	private final ITask task;
 
-	public OpenVersionedVirtualFileAction(ITask task, CrucibleFile crucibleFile, VersionedComment versionedComment) {
-		this(task, crucibleFile);
+	private final Review review;
+
+	public OpenVersionedVirtualFileAction(ITask task, CrucibleFile crucibleFile, VersionedComment versionedComment,
+			Review review) {
+		this(task, crucibleFile, review);
 		this.versionedComment = versionedComment;
+
 	}
 
-	public OpenVersionedVirtualFileAction(ITask task, CrucibleFile crucibleFile) {
+	public OpenVersionedVirtualFileAction(ITask task, CrucibleFile crucibleFile, Review review) {
 		this.crucibleFile = crucibleFile;
 		this.task = task;
+		this.review = review;
 	}
 
 	@Override
@@ -72,7 +78,7 @@ public class OpenVersionedVirtualFileAction extends Action {
 						ITextEditor textEditor = ((ITextEditor) editor);
 						ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
 						if (activeTask != null && activeTask.equals(task)) {
-							CrucibleAnnotationModelManager.attach(textEditor, crucibleFile);
+							CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
 						}
 						if (versionedComment != null) {
 							selectAndRevealComment(textEditor, versionedComment, crucibleFile);

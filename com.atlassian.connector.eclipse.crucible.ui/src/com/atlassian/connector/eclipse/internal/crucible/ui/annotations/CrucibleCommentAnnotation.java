@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.text.Position;
@@ -31,10 +32,14 @@ public class CrucibleCommentAnnotation extends Annotation {
 
 	private final CrucibleFileInfo crucibleFileInfo;
 
-	public CrucibleCommentAnnotation(int offset, int length, VersionedComment comment, CrucibleFileInfo crucibleFileInfo) {
+	private final Review review;
+
+	public CrucibleCommentAnnotation(int offset, int length, VersionedComment comment,
+			CrucibleFileInfo crucibleFileInfo, Review review) {
 		super(COMMENT_ANNOTATION_ID, false, null);
 		position = new Position(offset, length);
 		this.comment = comment;
+		this.review = review;
 		this.crucibleFileInfo = crucibleFileInfo;
 	}
 
@@ -91,5 +96,9 @@ public class CrucibleCommentAnnotation extends Annotation {
 			return false;
 		}
 		return true;
+	}
+
+	public Review getReview() {
+		return review;
 	}
 }

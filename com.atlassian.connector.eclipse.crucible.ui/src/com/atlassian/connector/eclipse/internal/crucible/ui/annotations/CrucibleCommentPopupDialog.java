@@ -136,7 +136,7 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 
 			for (CrucibleCommentAnnotation annotation : annotationInput.getCrucibleAnnotations()) {
 				VersionedCommentPart part = new VersionedCommentPart(annotation.getVersionedComment(),
-						annotation.getCrucibleFileInfo(), null);
+						annotation.getReview(), annotation.getCrucibleFileInfo(), null);
 				toolkit.adapt(part.createControl(composite, toolkit), true, true);
 				toolkit.adapt(composite);
 			}

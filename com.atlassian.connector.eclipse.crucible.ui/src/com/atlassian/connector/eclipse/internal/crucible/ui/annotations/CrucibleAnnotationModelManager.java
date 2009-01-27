@@ -62,11 +62,12 @@ public final class CrucibleAnnotationModelManager {
 		CrucibleFile crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
 				CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 
-		attach(editor, crucibleFile);
+		attach(editor, crucibleFile, CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 	}
 
-	public static void attach(ITextEditor editor, CrucibleFile crucibleFile) {
-		if (!CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive() || crucibleFile == null) {
+	public static void attach(ITextEditor editor, CrucibleFile crucibleFile, Review review) {
+		if (!CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive() || crucibleFile == null
+				|| review == null || CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview() != review) {
 			return;
 		}
 		IDocumentProvider documentProvider = editor.getDocumentProvider();
@@ -85,13 +86,13 @@ public final class CrucibleAnnotationModelManager {
 
 		IAnnotationModel crucibleAnnotationModel = annotationModelExtension.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
 		if (crucibleAnnotationModel == null) {
-			crucibleAnnotationModel = new CrucibleAnnotationModel(editor, editorInput, document, crucibleFile);
+			crucibleAnnotationModel = new CrucibleAnnotationModel(editor, editorInput, document, crucibleFile, review);
 			annotationModelExtension.addAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY, crucibleAnnotationModel);
 
 			addAnnotationHover(editor);
 
 		} else if (crucibleAnnotationModel instanceof CrucibleAnnotationModel) {
-			((CrucibleAnnotationModel) crucibleAnnotationModel).updateCrucibleFile(crucibleFile);
+			((CrucibleAnnotationModel) crucibleAnnotationModel).updateCrucibleFile(crucibleFile, review);
 		}
 
 	}
@@ -232,7 +233,8 @@ public final class CrucibleAnnotationModelManager {
 	}
 
 	private static void update(ITextEditor editor, Review activeReview) {
-		if (!CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive() || activeReview == null) {
+		if (!CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive() || activeReview == null
+				|| CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview() != activeReview) {
 			return;
 		}
 		IDocumentProvider documentProvider = editor.getDocumentProvider();
@@ -259,7 +261,7 @@ public final class CrucibleAnnotationModelManager {
 							.getPermId());
 					if (newFileInfo != null) {
 						crucibleAnnotationModel.updateCrucibleFile(new CrucibleFile(newFileInfo,
-								crucibleFile.isOldFile()));
+								crucibleFile.isOldFile()), activeReview);
 					}
 				} catch (ValueNotYetInitialized e) {
 					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));

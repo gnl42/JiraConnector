@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
@@ -26,7 +27,7 @@ import org.eclipse.ui.IEditorPart;
  * 
  * @author Shawn Minto
  */
-public class AddLineCommentToFileAction extends AbstractAddCommentToFileAction {
+public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 
 	private LineRange selectedRange = null;
 
@@ -65,6 +66,11 @@ public class AddLineCommentToFileAction extends AbstractAddCommentToFileAction {
 			selectedRange = null;
 			crucibleFile = null;
 		}
+	}
+
+	@Override
+	protected Review getReview() {
+		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
 	}
 
 	@Override
