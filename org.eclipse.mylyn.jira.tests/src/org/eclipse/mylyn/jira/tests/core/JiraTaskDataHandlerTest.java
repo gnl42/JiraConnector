@@ -46,6 +46,7 @@ import org.eclipse.mylyn.jira.tests.util.MockJiraClient;
 import org.eclipse.mylyn.jira.tests.util.MockJiraClientFactory;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskComment;
+import org.eclipse.mylyn.tasks.core.RepositoryResponse;
 import org.eclipse.mylyn.tasks.core.TaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -59,6 +60,10 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
  * @author Thomas Ehrnhoefer
  */
 public class JiraTaskDataHandlerTest extends TestCase {
+
+	private static final String SECURITY_LEVEL_USERS = "10001";
+
+	private static final String SECURITY_LEVEL_DEVELOPERS = "10000";
 
 	private TaskRepository repository;
 
@@ -313,40 +318,108 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertNotNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_TYPE));
 	}
 
-	public void testSecurityLevel() throws Exception {
+	public void testSecurityLevelNoLevelsDefined() throws Exception {
 		init(JiraTestConstants.JIRA_LATEST_URL);
 
+		JiraIssue issue = JiraTestUtil.newIssue(client, "testSecurityLevel");
+		issue = JiraTestUtil.createIssue(client, issue);
+
+		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL));
+	}
+
+	public void testUpdateSecurityLevel() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+
+		// test security level is set to none for new issues
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testSecurityLevel");
 		issue.setProject(client.getCache().getProjectByKey("SECURITY"));
 		issue = JiraTestUtil.createIssue(client, issue);
 
 		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL));
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
+		assertNotNull(attribute);
+		assertEquals("-1", attribute.getValue());
+		assertEquals(4, attribute.getOptions().size());
+		assertFalse(attribute.getMetaData().isReadOnly());
 
+		// change security level through JiraClient
 		SecurityLevel securityLevel = new SecurityLevel();
-		securityLevel.setId("10000");
+		securityLevel.setId(SECURITY_LEVEL_DEVELOPERS);
 		issue.setSecurityLevel(securityLevel);
 		client.updateIssue(issue, "", null);
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		TaskAttribute attribute = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
 		assertNotNull(attribute);
-		assertEquals("10000", attribute.getValue());
-		assertEquals("Developers", attribute.getOption("10000"));
+		assertEquals(SECURITY_LEVEL_DEVELOPERS, attribute.getValue());
+		assertEquals("Developers", attribute.getOption(SECURITY_LEVEL_DEVELOPERS));
 
+		// change security level through TaskDataHandler
+		attribute.setValue(SECURITY_LEVEL_USERS);
+		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
+		assertNotNull(attribute);
+		assertEquals(SECURITY_LEVEL_USERS, attribute.getValue());
+		assertEquals("Users", attribute.getOption(SECURITY_LEVEL_USERS));
+
+		taskData.getRoot().removeAttribute(JiraAttribute.SECURITY_LEVEL.id());
 		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
 
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		attribute = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
+		assertEquals("-1", taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id()).getValue());
+	}
+
+	public void testSetSecurityLevelToNone() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+
+		JiraIssue issue = JiraTestUtil.newIssue(client, "testSecurityLevel");
+		issue.setProject(client.getCache().getProjectByKey("SECURITY"));
+		issue.setSecurityLevel(new SecurityLevel(SECURITY_LEVEL_DEVELOPERS));
+		issue = JiraTestUtil.createIssue(client, issue);
+
+		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
 		assertNotNull(attribute);
-		assertEquals("10000", attribute.getValue());
-		assertEquals("Developers", attribute.getOption("10000"));
+		assertEquals(SECURITY_LEVEL_DEVELOPERS, attribute.getValue());
 
-		taskData.getRoot().removeAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL);
+		attribute.setValue(SecurityLevel.NONE.getId());
 		dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
-
 		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
-		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL));
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
+		assertNotNull(attribute);
+		assertEquals("-1", attribute.getValue());
+		assertEquals("None", attribute.getOption("-1"));
+	}
+
+	public void testPostTaskDataCreateTaskWithSecurityLevel() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+
+		// initialize task data
+		JiraTestUtil.refreshDetails(client);
+		final Project project = client.getCache().getProjectByKey("SECURITY");
+		TaskData taskData = new TaskData(dataHandler.getAttributeMapper(repository), repository.getConnectorKind(),
+				repository.getRepositoryUrl(), "");
+		boolean result = dataHandler.initializeTaskData(repository, taskData, new TaskMapping() {
+			@Override
+			public String getProduct() {
+				return project.getName();
+			}
+		}, null);
+		assertTrue(result);
+
+		// create issue
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
+		assertNotNull(attribute);
+		attribute.setValue(SECURITY_LEVEL_DEVELOPERS);
+		RepositoryResponse response = dataHandler.postTaskData(repository, taskData, null, new NullProgressMonitor());
+
+		// verify security level
+		taskData = dataHandler.getTaskData(repository, response.getTaskId(), new NullProgressMonitor());
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
+		assertNotNull(attribute);
+		assertEquals(SECURITY_LEVEL_DEVELOPERS, attribute.getValue());
 	}
 
 	/**
@@ -450,7 +523,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals("testEditClosed", taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).getValue());
 	}
 
-	public void testInitializeTaskData1() throws Exception {
+	public void testInitializeTaskDataNoProject() throws Exception {
 		init(JiraTestConstants.JIRA_LATEST_URL);
 		TaskData data = new TaskData(dataHandler.getAttributeMapper(repository), repository.getConnectorKind(),
 				repository.getRepositoryUrl(), "");
@@ -659,6 +732,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		issue.setDescription("descr");
 		issue.setPriority(new Priority(Priority.MINOR_ID));
 		client.updateIssue(issue, "comment1", new NullProgressMonitor());
+		// make sure comments are created in the right order
+		Thread.sleep(10);
 		client.updateIssue(issue, "comment2", new NullProgressMonitor());
 		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertEquals(summary, task.getSummary());

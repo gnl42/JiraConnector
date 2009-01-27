@@ -17,6 +17,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 /**
  * @author Eugene Kuleshov
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 public enum JiraAttribute {
 
@@ -73,7 +74,7 @@ public enum JiraAttribute {
 			"resolution"), //$NON-NLS-1$
 
 	SECURITY_LEVEL(IJiraConstants.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT,
-			Messages.JiraAttribute_Security_Level, false, true),
+			Messages.JiraAttribute_Security_Level, false, false),
 
 	STATUS(TaskAttribute.STATUS, JiraFieldType.SELECT, Messages.JiraAttribute_Status),
 

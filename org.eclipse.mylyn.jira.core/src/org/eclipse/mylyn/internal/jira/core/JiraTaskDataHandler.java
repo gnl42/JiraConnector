@@ -78,6 +78,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskOperation;
  * @author Rob Elves
  * @author Eugene Kuleshov
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  * @since 3.0
  */
 public class JiraTaskDataHandler extends AbstractTaskDataHandler {
@@ -256,6 +257,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			TaskAttribute commentAttribute = createAttribute(data, JiraAttribute.COMMENT_NEW);
 			commentAttribute.getMetaData().setType(TaskAttribute.TYPE_LONG_RICH_TEXT);
 		}
+
+		SecurityLevel[] securityLevels = project.getSecurityLevels();
+		if (securityLevels != null) {
+			TaskAttribute securityLevelAttribute = createAttribute(data, JiraAttribute.SECURITY_LEVEL);
+			for (SecurityLevel securityLevel : securityLevels) {
+				securityLevelAttribute.putOption(securityLevel.getId(), securityLevel.getName());
+			}
+			securityLevelAttribute.setValue(SecurityLevel.NONE.getId());
+		}
 	}
 
 	public TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
@@ -359,8 +369,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		SecurityLevel securityLevel = jiraIssue.getSecurityLevel();
 		if (securityLevel != null) {
-			TaskAttribute attribute = createAttribute(data, JiraAttribute.SECURITY_LEVEL);
-			attribute.putOption(securityLevel.getId(), securityLevel.getName());
+			TaskAttribute attribute = data.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
+			if (attribute == null) {
+				// the repository configuration may not have information about available security 
+				// information for older JIRA versions
+				attribute = createAttribute(data, JiraAttribute.SECURITY_LEVEL);
+				attribute.getMetaData().setReadOnly(true);
+			}
+			if (!attribute.getOptions().containsKey(securityLevel.getId())) {
+				attribute.putOption(securityLevel.getId(), securityLevel.getName());
+			}
 			attribute.setValue(securityLevel.getId());
 		}
 
@@ -1346,7 +1364,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (key.startsWith("customfield")) { //$NON-NLS-1$
 			return IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX + key;
 		}
+		if ("security".equals(key)) { //$NON-NLS-1$
+			return JiraAttribute.SECURITY_LEVEL.id();
+		}
 		return key;
 	}
-
 }

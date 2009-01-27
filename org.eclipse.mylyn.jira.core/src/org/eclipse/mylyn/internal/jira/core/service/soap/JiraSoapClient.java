@@ -44,6 +44,7 @@ import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
@@ -55,6 +56,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableExcept
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteField;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteNamedObject;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
@@ -66,6 +68,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Brock Janiczak
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 public class JiraSoapClient extends AbstractSoapClient {
 
@@ -617,6 +620,21 @@ public class JiraSoapClient extends AbstractSoapClient {
 					+ expiresIn + "]"; //$NON-NLS-1$
 		}
 
+	}
+
+	public SecurityLevel[] getAvailableSecurityLevels(final String projectKey, IProgressMonitor monitor)
+			throws JiraException {
+		return call(monitor, new Callable<SecurityLevel[]>() {
+			public SecurityLevel[] call() throws java.rmi.RemoteException, JiraException {
+				RemoteSecurityLevel[] remoteSecurityLevels = getSoapService().getSecurityLevels(
+						loginToken.getCurrentValue(), projectKey);
+				if (remoteSecurityLevels == null) {
+					return new SecurityLevel[0];
+				}
+				SecurityLevel[] securityLevels = JiraSoapConverter.convert(remoteSecurityLevels);
+				return securityLevels;
+			}
+		});
 	}
 
 }

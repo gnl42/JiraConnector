@@ -31,6 +31,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -45,6 +46,7 @@ import org.eclipse.mylyn.jira.tests.util.MockIssueCollector;
 /**
  * @author Steffen Pingel
  * @author Eugene Kuleshov
+ * @author Thomas Ehrnhoefer
  */
 public class JiraClientTest extends TestCase {
 
@@ -674,4 +676,28 @@ public class JiraClientTest extends TestCase {
 //		JiraWorkLog log = new JiraWorkLog();
 	}
 
+	/**
+	 * Tests soap retrieval of the SecurityLevels
+	 */
+	public void testAvailableGetSecurityLevels() throws Exception {
+		getSecurityLevels(JiraTestConstants.JIRA_LATEST_URL);
+	}
+
+	private void getSecurityLevels(String url) throws Exception {
+		init(url, PrivilegeLevel.USER);
+
+		JiraIssue issue = JiraTestUtil.newIssue(client, "testAvailableGetSecurityLevels");
+		issue.setProject(client.getCache().getProjectByKey(("SECURITY")));
+		issue = JiraTestUtil.createIssue(client, issue);
+
+		SecurityLevel[] securityLevels = client.getAvailableSecurityLevels(issue.getProject().getKey(),
+				new NullProgressMonitor());
+		assertNotNull(securityLevels);
+
+		assertEquals(2, securityLevels.length);
+		assertEquals("Developers", securityLevels[0].getName());
+		assertEquals("10000", securityLevels[0].getId());
+		assertEquals("Users", securityLevels[1].getName());
+		assertEquals("10001", securityLevels[1].getId());
+	}
 }

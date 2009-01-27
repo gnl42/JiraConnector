@@ -25,6 +25,7 @@ import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
@@ -36,6 +37,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssueType;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePriority;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteResolution;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteStatus;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteUser;
@@ -45,6 +47,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog;
 /**
  * @author Brock Janiczak
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 class JiraSoapConverter {
 
@@ -275,5 +278,16 @@ class JiraSoapConverter {
 			comments[i] = comment;
 		}
 		return comments;
+	}
+
+	protected static SecurityLevel[] convert(RemoteSecurityLevel[] remoteSecurityLevels) {
+		SecurityLevel[] securityLevels = new SecurityLevel[remoteSecurityLevels.length];
+		for (int i = 0; i < remoteSecurityLevels.length; i++) {
+			SecurityLevel securityLevel = new SecurityLevel();
+			securityLevel.setId(remoteSecurityLevels[i].getId());
+			securityLevel.setName(remoteSecurityLevels[i].getName());
+			securityLevels[i] = securityLevel;
+		}
+		return securityLevels;
 	}
 }

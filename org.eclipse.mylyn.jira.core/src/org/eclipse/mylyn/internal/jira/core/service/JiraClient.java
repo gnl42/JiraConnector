@@ -38,6 +38,7 @@ import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
@@ -67,6 +68,7 @@ import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssClient;
  * 
  * @author Brock Janiczak
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 public class JiraClient {
 
@@ -517,6 +519,10 @@ public class JiraClient {
 
 	public JiraWorkLog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {
 		return soapClient.getWorkLogs(issueKey, monitor);
+	}
+
+	public SecurityLevel[] getAvailableSecurityLevels(String projectKey, IProgressMonitor monitor) throws JiraException {
+		return soapClient.getAvailableSecurityLevels(projectKey, monitor);
 	}
 
 }

@@ -15,6 +15,7 @@ package org.eclipse.mylyn.internal.jira.core.model;
  * JIRA version holder
  * 
  * @author Eugene Kuleshov
+ * @author Thomas Ehrnhoefer
  */
 public class JiraVersion implements Comparable<JiraVersion> {
 
@@ -31,6 +32,8 @@ public class JiraVersion implements Comparable<JiraVersion> {
 	public static final JiraVersion JIRA_3_11 = new JiraVersion("3.11"); //$NON-NLS-1$
 
 	public static final JiraVersion JIRA_3_12 = new JiraVersion("3.12"); //$NON-NLS-1$
+
+	public static final JiraVersion JIRA_3_13 = new JiraVersion("3.13"); //$NON-NLS-1$
 
 	private final int major;
 

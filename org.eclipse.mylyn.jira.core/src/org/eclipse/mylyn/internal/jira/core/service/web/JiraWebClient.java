@@ -475,6 +475,10 @@ public class JiraWebClient {
 					post.addParameter("parentIssueId", issue.getParentId()); //$NON-NLS-1$
 				}
 
+				if (issue.getSecurityLevel() != null) {
+					post.addParameter("security", issue.getSecurityLevel().getId()); //$NON-NLS-1$
+				}
+
 				addCustomFields(client, issue, post);
 
 				try {
@@ -546,6 +550,7 @@ public class JiraWebClient {
 			throws JiraException {
 		doInSession(monitor, new JiraWebSessionCallback() {
 
+			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder urlBuffer = new StringBuilder(baseUrl);
 				urlBuffer.append("/browse/").append(issue.getKey()); //$NON-NLS-1$
@@ -568,6 +573,7 @@ public class JiraWebClient {
 	public void deleteIssue(final JiraIssue issue, IProgressMonitor monitor) throws JiraException {
 		doInSession(monitor, new JiraWebSessionCallback() {
 
+			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				StringBuilder urlBuffer = new StringBuilder(baseUrl);
 				urlBuffer.append("/secure/DeleteIssue.jspa"); //$NON-NLS-1$
@@ -593,6 +599,7 @@ public class JiraWebClient {
 		final JiraWebSession s = new JiraWebSession(client);
 		s.setLogEnabled(true);
 		s.doInSession(new JiraWebSessionCallback() {
+			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				webServerInfo.setBaseUrl(s.getBaseURL());
 				webServerInfo.setCharacterEncoding(s.getCharacterEncoding());
@@ -642,15 +649,15 @@ public class JiraWebClient {
 
 						String classValue = tag.getAttribute("class"); //$NON-NLS-1$
 						if (classValue != null) {
-							if (tag.getTagType() == HtmlTag.Type.DIV) {
+							if (tag.getTagType() == Tag.DIV) {
 								if (classValue.startsWith("infoBox")) { //$NON-NLS-1$
-									throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
+									throw new JiraRemoteMessageException(getContent(tokenizer, Tag.DIV));
 								} else if (classValue.startsWith("errorArea")) { //$NON-NLS-1$
-									throw new JiraRemoteMessageException(getContent(tokenizer, HtmlTag.Type.DIV));
+									throw new JiraRemoteMessageException(getContent(tokenizer, Tag.DIV));
 								}
-							} else if (tag.getTagType() == HtmlTag.Type.SPAN) {
+							} else if (tag.getTagType() == Tag.SPAN) {
 								if (classValue.startsWith("errMsg")) { //$NON-NLS-1$
-									msg.append(getContent(tokenizer, HtmlTag.Type.SPAN));
+									msg.append(getContent(tokenizer, Tag.SPAN));
 								}
 							}
 						}

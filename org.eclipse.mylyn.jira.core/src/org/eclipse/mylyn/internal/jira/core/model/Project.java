@@ -20,6 +20,7 @@ import java.util.List;
  * TODO need mapping statuses -> actions -> fields TODO need mapping statuses -> fields
  * 
  * @author Brock Janiczak
+ * @author Thomas Ehrnhoefer
  */
 public class Project implements Serializable {
 
@@ -44,6 +45,8 @@ public class Project implements Serializable {
 	private Version[] versions;
 
 	private IssueType[] issueTypes;
+
+	private SecurityLevel[] securityLevels;
 
 	public Project(String id) {
 		this.id = id;
@@ -209,6 +212,14 @@ public class Project implements Serializable {
 
 	public void setIssueTypes(IssueType[] issueTypes) {
 		this.issueTypes = issueTypes;
+	}
+
+	public SecurityLevel[] getSecurityLevels() {
+		return securityLevels;
+	}
+
+	public void setSecurityLevels(SecurityLevel[] securityLevels) {
+		this.securityLevels = securityLevels;
 	}
 
 }

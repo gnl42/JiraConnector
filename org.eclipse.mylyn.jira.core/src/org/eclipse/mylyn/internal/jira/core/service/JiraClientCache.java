@@ -24,11 +24,13 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 
 /**
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 public class JiraClientCache {
 
@@ -73,7 +75,7 @@ public class JiraClientCache {
 			project.setComponents(jiraClient.getComponents(project.getKey(), monitor));
 			project.setVersions(jiraClient.getVersions(project.getKey(), monitor));
 
-			if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) >= 0) {
+			if (supportsPerProjectIssueTypes(version) >= 0) {
 				IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), monitor);
 				IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), monitor);
 				for (IssueType issueType : subTaskIssueTypes) {
@@ -85,6 +87,15 @@ public class JiraClientCache {
 				System.arraycopy(subTaskIssueTypes, 0, projectIssueTypes, issueTypes.length, subTaskIssueTypes.length);
 
 				project.setIssueTypes(projectIssueTypes);
+			}
+			if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_13) >= 0) {
+				SecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(), monitor);
+				if (securityLevels.length > 0) {
+					SecurityLevel[] projectSecurityLevels = new SecurityLevel[securityLevels.length + 1];
+					projectSecurityLevels[0] = SecurityLevel.NONE;
+					System.arraycopy(securityLevels, 0, projectSecurityLevels, 1, securityLevels.length);
+					project.setSecurityLevels(projectSecurityLevels);
+				}
 			}
 
 			data.projectsById.put(project.getId(), project);
@@ -122,7 +133,7 @@ public class JiraClientCache {
 
 	private void initializeIssueTypes(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		String version = data.serverInfo.getVersion();
-		if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_10) >= 0) {
+		if (supportsPerProjectIssueTypes(version) >= 0) {
 			// collect issue types from all projects to avoid additional SOAP request
 			Set<IssueType> issueTypes = new HashSet<IssueType>();
 			for (Project project : data.projects) {
@@ -262,6 +273,10 @@ public class JiraClientCache {
 			this.data.usersByName.put(name, user);
 		}
 		return user;
+	}
+
+	private int supportsPerProjectIssueTypes(String version) {
+		return new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12);
 	}
 
 }
