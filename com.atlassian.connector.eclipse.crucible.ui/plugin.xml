@@ -27,7 +27,7 @@
       <specification
             annotationType="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation"
             colorPreferenceKey="comment_color"
-            colorPreferenceValue="192,255,192"
+            colorPreferenceValue="255,231,198"
             contributesToHeader="true"
             highlightPreferenceKey="comment_highlight"
             highlightPreferenceValue="true"
