@@ -410,6 +410,8 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertTrue(result);
 
 		// create issue
+		taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).setValue(
+				"testPostTaskDataCreateTaskWithSecurityLevel");
 		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SECURITY_LEVEL.id());
 		assertNotNull(attribute);
 		attribute.setValue(SECURITY_LEVEL_DEVELOPERS);
