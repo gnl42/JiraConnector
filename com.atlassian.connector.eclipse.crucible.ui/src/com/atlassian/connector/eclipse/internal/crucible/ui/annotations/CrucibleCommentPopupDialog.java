@@ -137,6 +137,10 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 	}
 
 	public void setSize(int width, int height) {
+		Point computeSize = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		if (computeSize.x > width) {
+			width = computeSize.x;
+		}
 		getShell().setSize(width, height);
 		scrolledComposite.setSize(width, height);
 	}
