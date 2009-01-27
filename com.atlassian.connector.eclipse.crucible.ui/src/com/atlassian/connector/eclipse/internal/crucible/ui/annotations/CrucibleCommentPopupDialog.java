@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Version
 
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Point;
@@ -42,6 +43,8 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 
 	private Composite composite;
 
+	private ScrolledComposite scrolledComposite;
+
 	public CrucibleCommentPopupDialog(Shell parent, int shellStyle) {
 		super(parent, shellStyle, false, false, false, false, null, null);
 	}
@@ -53,8 +56,14 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 			toolkit = new FormToolkit(getShell().getDisplay());
 		}
 
-		composite = toolkit.createComposite(parent, SWT.NONE);
+		scrolledComposite = new ScrolledComposite(parent, SWT.V_SCROLL);
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+		toolkit.adapt(scrolledComposite);
+
+		composite = toolkit.createComposite(scrolledComposite, SWT.NONE);
 		composite.setLayout(new GridLayout());
+		scrolledComposite.setContent(composite);
 
 		parent.setBackground(toolkit.getColors().getBackground());
 		getShell().setBackground(toolkit.getColors().getBackground());
@@ -71,6 +80,12 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 		getShell().forceFocus();
 		if (composite.getChildren().length > 0) {
 			composite.getChildren()[0].setFocus();
+		}
+
+		Point computeSize = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		if (computeSize.y > scrolledComposite.getSize().y) {
+			scrolledComposite.setExpandVertical(false);
+			composite.setSize(computeSize);
 		}
 	}
 
@@ -123,6 +138,7 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 
 	public void setSize(int width, int height) {
 		getShell().setSize(width, height);
+		scrolledComposite.setSize(width, height);
 	}
 
 	public void setInput(Object input) {
@@ -137,6 +153,7 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 			for (CrucibleCommentAnnotation annotation : annotationInput.getCrucibleAnnotations()) {
 				VersionedCommentPart part = new VersionedCommentPart(annotation.getVersionedComment(),
 						annotation.getReview(), annotation.getCrucibleFileInfo(), null);
+
 				toolkit.adapt(part.createControl(composite, toolkit), true, true);
 				toolkit.adapt(composite);
 			}
