@@ -87,8 +87,10 @@ public abstract class ExpandablePart {
 		if (commentSection.isExpanded() || crucibleEditor == null) {
 			isExpanded = true;
 			fillToolBar(actionsComposite, toolkit, isExpanded);
-			Composite composite = createSectionContents(commentSection, toolkit);
-			commentSection.setClient(composite);
+			if (canExpand()) {
+				Composite composite = createSectionContents(commentSection, toolkit);
+				commentSection.setClient(composite);
+			}
 
 		} else {
 			fillToolBar(actionsComposite, toolkit, false);
