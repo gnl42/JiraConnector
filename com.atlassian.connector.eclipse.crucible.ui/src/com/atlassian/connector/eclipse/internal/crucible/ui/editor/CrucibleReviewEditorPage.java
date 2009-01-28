@@ -36,10 +36,13 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.mylyn.internal.tasks.ui.util.SelectionProviderAdapter;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
@@ -152,6 +155,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	private final List<AbstractCrucibleEditorFormPart> parts;
 
+	private ISelectionProvider selectionProviderAdapter;
+
 	public CrucibleReviewEditorPage(FormEditor editor, String title) {
 		super(editor, CRUCIBLE_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractCrucibleEditorFormPart>();
@@ -161,6 +166,9 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	public void init(IEditorSite site, IEditorInput input) {
 		super.init(site, input);
 
+		selectionProviderAdapter = new SelectionProviderAdapter();
+		selectionProviderAdapter.setSelection(new StructuredSelection(getTask()));
+		site.setSelectionProvider(selectionProviderAdapter);
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(reviewCacheListener);
 	}
 
@@ -266,13 +274,22 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				part.initialize(this, review);
 				part.createControl(editorComposite, toolkit);
 			}
-			EditorUtil.setMenu(editorComposite, editorComposite.getMenu());
+
+			EditorUtil.setMenu(editorComposite, getMenu());
 		} finally {
 			setReflow(true);
 			reflow();
 		}
 
 	}
+
+	public Menu getMenu() {
+		if (editorComposite != null) {
+			return editorComposite.getMenu();
+		}
+		return null;
+
+	};
 
 	private void createFormParts() {
 		parts.add(new CrucibleDetailsPart());
@@ -483,6 +500,5 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		});
 		job.schedule(delay);
 		setBusy(true);
-	};
-
+	}
 }

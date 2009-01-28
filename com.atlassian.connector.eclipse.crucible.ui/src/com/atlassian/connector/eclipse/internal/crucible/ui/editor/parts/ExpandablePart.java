@@ -106,6 +106,10 @@ public abstract class ExpandablePart {
 								crucibleEditor.setReflow(false);
 							}
 							Composite composite = createSectionContents(commentSection, toolkit);
+
+							if (crucibleEditor != null && crucibleEditor.getMenu() != null) {
+								EditorUtil.setMenu(composite, crucibleEditor.getMenu());
+							}
 							commentSection.setClient(composite);
 						} finally {
 							if (crucibleEditor != null) {

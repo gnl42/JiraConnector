@@ -64,7 +64,6 @@ public abstract class CommentPart extends ExpandablePart {
 		layout.marginLeft = 15;
 		composite.setLayout(layout);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
-
 		String commentString = getCommentText();
 
 		Text commentText = createReadOnlyText(toolkit, composite, commentString);
@@ -141,7 +140,7 @@ public abstract class CommentPart extends ExpandablePart {
 		text.setFont(EditorUtil.TEXT_FONT);
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
-		toolkit.adapt(text, false, false);
+		toolkit.adapt(text, true, true);
 
 		return text;
 	}

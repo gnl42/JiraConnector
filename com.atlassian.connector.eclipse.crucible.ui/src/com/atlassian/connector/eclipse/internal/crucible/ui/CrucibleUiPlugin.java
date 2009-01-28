@@ -15,7 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationManager;
 
-import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
+import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -63,7 +63,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(crucibleNotificationManager);
 
 		// TODO determine if we should be doing this differently and not through mylyn
-		MonitorUiPlugin.getDefault().addWindowPartListener(crucibleEditorTracker);
+		MonitorUi.addWindowPartListener(crucibleEditorTracker);
 	}
 
 	/*
@@ -76,7 +76,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		crucibleNotificationManager = null;
 
 		TasksUi.getTaskActivityManager().removeActivationListener(activeReviewManager);
-		MonitorUiPlugin.getDefault().removeWindowPartListener(crucibleEditorTracker);
+		MonitorUi.removeWindowPartListener(crucibleEditorTracker);
 		crucibleEditorTracker.dispose();
 		crucibleEditorTracker = null;
 
