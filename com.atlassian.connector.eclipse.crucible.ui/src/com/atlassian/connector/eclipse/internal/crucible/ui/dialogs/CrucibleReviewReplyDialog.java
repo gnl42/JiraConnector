@@ -360,7 +360,6 @@ public class CrucibleReviewReplyDialog extends Dialog {
 		return composite;
 	}
 
-	@Override
 	protected boolean isResizable() {
 		return true;
 	}
