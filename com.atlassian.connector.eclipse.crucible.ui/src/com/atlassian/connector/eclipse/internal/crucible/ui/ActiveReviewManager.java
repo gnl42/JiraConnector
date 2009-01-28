@@ -23,13 +23,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.sync.SynchronizationJob;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class to manage the currently active review for other models
@@ -38,11 +44,23 @@ import java.util.List;
  */
 public class ActiveReviewManager implements ITaskActivationListener, IReviewCacheListener {
 
+	private static final long ACTIVE_REVIEW_POLLING_INTERVAL = 120000L;
+
+	private final JobChangeAdapter refreshJobRescheduler = new JobChangeAdapter() {
+		@Override
+		public void done(IJobChangeEvent event) {
+			synchronizeJob = null;
+			createAndScheduleRefreshJob();
+		}
+	};
+
 	private Review activeReview;
 
 	private ITask activeTask;
 
 	private final IRepositoryManager repositoryManager;
+
+	private SynchronizationJob synchronizeJob;
 
 	public ActiveReviewManager(IRepositoryManager repositoryManager) {
 		this.repositoryManager = repositoryManager;
@@ -68,6 +86,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		} else {
 			activeReviewUpdated(cachedReview, task);
 		}
+		startIncreasedChangePolling();
 	}
 
 	public synchronized void taskDeactivated(ITask task) {
@@ -75,6 +94,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		this.activeReview = null;
 		System.setProperty(CrucibleConstants.REVIEW_ACTIVE_SYSTEM_PROPERTY, "false");
 		CrucibleAnnotationModelManager.dettachAllOpenEditors();
+		stopIncreasedChangePolling();
 	}
 
 	public void preTaskActivated(ITask task) {
@@ -103,6 +123,29 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 
 	public synchronized ITask getActiveTask() {
 		return activeTask;
+	}
+
+	private void startIncreasedChangePolling() {
+		createAndScheduleRefreshJob();
+	}
+
+	private synchronized void createAndScheduleRefreshJob() {
+		if (synchronizeJob == null && getActiveTask() != null) {
+			Set<ITask> tasks = new HashSet<ITask>();
+			tasks.add(getActiveTask());
+			synchronizeJob = TasksUiPlugin.getTaskJobFactory().createSynchronizeTasksJob(
+					CrucibleCorePlugin.getRepositoryConnector(), tasks);
+			synchronizeJob.addJobChangeListener(refreshJobRescheduler);
+			synchronizeJob.schedule(ACTIVE_REVIEW_POLLING_INTERVAL);
+		}
+	}
+
+	private void stopIncreasedChangePolling() {
+		if (synchronizeJob != null) {
+			synchronizeJob.removeJobChangeListener(refreshJobRescheduler);
+			synchronizeJob.cancel();
+			synchronizeJob = null;
+		}
 	}
 
 	private void scheduleDownloadJob(final ITask task) {

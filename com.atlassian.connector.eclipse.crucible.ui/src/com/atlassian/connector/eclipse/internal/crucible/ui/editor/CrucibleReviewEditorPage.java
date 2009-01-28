@@ -456,24 +456,26 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 						// TODO setup the image descriptor properly too 
 
 						IStatus status = job.getStatus();
-						if (status == null || review == null) {
-							// TODO use the status?
-							getEditor().setMessage("Unable to retrieve Review.  Click to try again.",
-									IMessageProvider.WARNING, new HyperlinkAdapter() {
-										@Override
-										public void linkActivated(HyperlinkEvent e) {
-											downloadReviewAndRefresh(0, true);
-										}
-									});
-						} else if (status.isOK()) {
-							// TODO use the status?
-							getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
-							createFormContent();
-							getEditor().updateHeaderToolBar();
-							TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
-						} else {
-							// TODO improve the message?
-							getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
+						if (editorComposite != null) {
+							if (status == null || review == null) {
+								// TODO use the status?
+								getEditor().setMessage("Unable to retrieve Review.  Click to try again.",
+										IMessageProvider.WARNING, new HyperlinkAdapter() {
+											@Override
+											public void linkActivated(HyperlinkEvent e) {
+												downloadReviewAndRefresh(0, true);
+											}
+										});
+							} else if (status.isOK()) {
+								// TODO use the status?
+								getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
+								createFormContent();
+								getEditor().updateHeaderToolBar();
+								TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
+							} else {
+								// TODO improve the message?
+								getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
+							}
 						}
 					}
 				});
