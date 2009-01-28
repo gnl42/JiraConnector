@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -265,7 +266,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				part.initialize(this, review);
 				part.createControl(editorComposite, toolkit);
 			}
-
+			EditorUtil.setMenu(editorComposite, editorComposite.getMenu());
 		} finally {
 			setReflow(true);
 			reflow();
@@ -287,6 +288,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 		parts.clear();
 
+		Menu menu = editorComposite.getMenu();
 		// preserve context menu
 		EditorUtil.setMenu(editorComposite, null);
 
@@ -294,6 +296,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		for (Control child : editorComposite.getChildren()) {
 			child.dispose();
 		}
+
+		editorComposite.setMenu(menu);
 
 		// FIXME dispose parts
 	}

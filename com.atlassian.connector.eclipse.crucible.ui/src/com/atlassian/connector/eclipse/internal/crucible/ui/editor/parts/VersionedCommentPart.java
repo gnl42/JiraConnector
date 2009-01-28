@@ -90,7 +90,7 @@ public class VersionedCommentPart extends CommentPart {
 	protected String getAnnotationText() {
 
 		String text = super.getAnnotationText();
-		if (comment.isDefectRaised() || comment.isDefectApproved()) {
+		if ((comment.isDefectRaised() || comment.isDefectApproved()) && !comment.isReply()) {
 			text += "DEFECT ";
 		}
 

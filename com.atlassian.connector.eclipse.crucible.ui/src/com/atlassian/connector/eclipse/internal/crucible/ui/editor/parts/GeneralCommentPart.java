@@ -83,9 +83,8 @@ public class GeneralCommentPart extends CommentPart {
 	protected String getAnnotationText() {
 		// TODO make the text be based on the numbers properly (e.g. s's)
 		String text = super.getAnnotationText();
-		if (generalComment.isDefectRaised() || generalComment.isDefectApproved()) {
-
-			text = "DEFECT ";
+		if ((generalComment.isDefectRaised() || generalComment.isDefectApproved()) && !generalComment.isReply()) {
+			text += "DEFECT ";
 		}
 		if (generalComment.getReplies().size() > 0) {
 			text += "[" + generalComment.getReplies().size() + " replies]";
