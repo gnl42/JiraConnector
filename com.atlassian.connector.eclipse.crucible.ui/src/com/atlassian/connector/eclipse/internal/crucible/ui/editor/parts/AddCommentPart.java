@@ -61,6 +61,8 @@ public class AddCommentPart {
 
 	private static final String DRAFT_LABEL = "Save as Draft";
 
+	private static final String DEFECT_LABEL = "Defect";
+
 	private final Review review;
 
 	private final Comment replyToComment;
@@ -234,7 +236,7 @@ public class AddCommentPart {
 		// increment the number of columns in the button bar
 		((GridLayout) parent.getLayout()).numColumns++;
 		Button button = new Button(parent, SWT.CHECK);
-		button.setText("Defect");
+		button.setText(DEFECT_LABEL);
 		button.setFont(JFaceResources.getDialogFont());
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
