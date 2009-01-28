@@ -101,6 +101,9 @@ public final class AddCommentRemoteOperation extends CrucibleClient.RemoteOperat
 			String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId());
 			PermId riId = reviewItem.getCrucibleFileInfo().getPermId();
 			VersionedCommentBean newComment = createNewVersionedComment();
+			newComment.setDefectRaised(isDefect);
+			newComment.setDraft(isDraft);
+			newComment.getCustomFields().putAll(customFields);
 
 			if (parentComment != null && newComment.isReply()) {
 				return server.addVersionedCommentReply(serverCfg, new PermIdBean(permId), parentComment.getPermId(),
