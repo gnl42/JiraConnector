@@ -14,27 +14,15 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleReviewReplyDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
+import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
-import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
-import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
-import com.atlassian.theplugin.commons.crucible.api.model.PermId;
-import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
-import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
-import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -112,9 +100,14 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 					@Override
 					protected IStatus execute(final CrucibleClient client, IProgressMonitor monitor)
 							throws CoreException {
-						submitNewComment(commentLines, reviewItem, parentComment, message, isDraft, isDefect,
-								customFields, client, monitor);
+						AddCommentRemoteOperation operation = new AddCommentRemoteOperation(monitor, review, client,
+								reviewItem, message);
+						operation.setDefect(isDefect);
+						operation.setDraft(isDraft);
+						operation.setCustomFields(customFields);
+						operation.setParentComment(parentComment);
 
+						client.execute(operation);
 						client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 
 						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
@@ -126,90 +119,11 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 		}
 	}
 
-	private void submitNewComment(final LineRange commentLines, final CrucibleFile reviewItem,
-			final Comment parentComment, final String message, final boolean isDraft, final boolean isDefect,
-			final HashMap<String, CustomField> customFields, final CrucibleClient client, IProgressMonitor monitor)
-			throws CoreException {
-		client.execute(new RemoteOperation<Comment>(monitor) {
-			@Override
-			public Comment run(CrucibleServerFacade server, CrucibleServerCfg serverCfg, IProgressMonitor monitor)
-					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-
-				if (reviewItem != null) {
-					String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId());
-					PermId riId = reviewItem.getCrucibleFileInfo().getPermId();
-					VersionedCommentBean newComment = createNewVersionedComment(parentComment, commentLines,
-							reviewItem, message, isDraft, client.getUserName());
-
-					if (parentComment != null && newComment.isReply()) {
-						return server.addVersionedCommentReply(serverCfg, new PermIdBean(permId),
-								parentComment.getPermId(), newComment);
-					} else {
-						return server.addVersionedComment(serverCfg, new PermIdBean(permId), riId, newComment);
-					}
-				} else {
-					GeneralCommentBean newComment = createNewGeneralComment(parentComment, message, client);
-					newComment.setDefectRaised(isDefect);
-					newComment.setDraft(isDraft);
-					newComment.getCustomFields().putAll(customFields);
-					String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId());
-
-					if (parentComment != null && newComment.isReply()) {
-						return server.addGeneralCommentReply(serverCfg, new PermIdBean(permId),
-								parentComment.getPermId(), newComment);
-					} else {
-						return server.addGeneralComment(serverCfg, new PermIdBean(permId), newComment);
-					}
-				}
-			}
-
-		});
-	}
-
-	private GeneralCommentBean createNewGeneralComment(final Comment parentComment, final String message,
-			final CrucibleClient client) {
-		GeneralCommentBean newComment = new GeneralCommentBean();
-		newComment.setMessage(message);
-		if (parentComment != null && parentComment instanceof GeneralComment) {
-			newComment.setReply(true);
-		} else {
-			newComment.setReply(false);
+	private String getTaskId() {
+		if (review == null) {
+			return null;
 		}
-		newComment.setAuthor(new UserBean(client.getUserName()));
-		return newComment;
-	}
-
-	private VersionedCommentBean createNewVersionedComment(Comment parentComment, LineRange commentLines,
-			CrucibleFile reviewItem, String message, boolean isDraft, String userName) {
-		VersionedCommentBean newComment = new VersionedCommentBean();
-
-		if (commentLines != null) {
-			if (reviewItem.isOldFile()) {
-				newComment.setFromStartLine(commentLines.getStartLine());
-				newComment.setFromEndLine(commentLines.getStartLine() + commentLines.getNumberOfLines());
-				newComment.setFromLineInfo(true);
-				newComment.setToLineInfo(false);
-			} else {
-				newComment.setToStartLine(commentLines.getStartLine());
-				newComment.setToEndLine(commentLines.getStartLine() + commentLines.getNumberOfLines());
-				newComment.setFromLineInfo(false);
-				newComment.setToLineInfo(true);
-			}
-		} else {
-			newComment.setFromLineInfo(false);
-			newComment.setToLineInfo(false);
-		}
-
-		newComment.setAuthor(new UserBean(userName));
-		newComment.setDraft(isDraft);
-		newComment.setMessage(message);
-		if (parentComment != null && parentComment instanceof VersionedComment) {
-			newComment.setReply(true);
-		} else {
-			newComment.setReply(false);
-		}
-
-		return newComment;
+		return CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId());
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
@@ -262,13 +176,6 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 		String serverUrl = activeReviewBean.getServerUrl();
 
 		return TasksUi.getRepositoryManager().getRepository(CrucibleCorePlugin.CONNECTOR_KIND, serverUrl);
-	}
-
-	private String getTaskId() {
-		if (review == null) {
-			return null;
-		}
-		return CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId());
 	}
 
 	private String getTaskKey() {
