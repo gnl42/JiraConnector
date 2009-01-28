@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ImageHyperlink;
 
 import java.text.DateFormat;
 import java.util.Collection;
@@ -124,11 +123,10 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		reviewersComposite.setLayout(gl);
 		GridDataFactory.fillDefaults().grab(true, true).span(3, 1).applyTo(reviewersComposite);
 
-		String reviewerString = "";
 		try {
 			for (Reviewer reviewer : crucibleReview.getReviewers()) {
 				Composite reviewerComposite = toolkit.createComposite(reviewersComposite);
-				gl = new GridLayout(3, false);
+				gl = new GridLayout(2, false);
 				gl.marginRight = 0;
 				gl.marginLeft = 0;
 				gl.marginTop = 0;
@@ -140,19 +138,18 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 				reviewerComposite.setLayout(gl);
 				GridDataFactory.fillDefaults().applyTo(reviewerComposite);
 
-				createReadOnlyText(toolkit, reviewerComposite, reviewer.getDisplayName(), null, false);
-				ImageHyperlink completedLink = toolkit.createImageHyperlink(reviewerComposite, SWT.NONE);
-				completedLink.setUnderlined(false);
-				completedLink.setEnabled(false);
-				if (reviewer.isCompleted()) {
+				Text text = createReadOnlyText(toolkit, reviewerComposite, reviewer.getDisplayName(), null, false);
 
-					completedLink.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_COMPLETE));
+				if (reviewer.isCompleted()) {
+					GridDataFactory.fillDefaults().grab(true, true).applyTo(text);
+					Label imageLabel = toolkit.createLabel(reviewerComposite, "");
+					imageLabel.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_COMPLETE));
 				} else {
-					completedLink.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_NOT_COMPLETE));
+					GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(text);
+
 				}
 			}
 		} catch (ValueNotYetInitialized e) {
-			// TODO do something different here?
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 
