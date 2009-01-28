@@ -16,6 +16,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import java.util.List;
 
@@ -36,9 +38,12 @@ public class CrucibleNotificationManager implements IReviewCacheListener {
 			public void run() {
 				CrucibleNotificationPopupInput input = new CrucibleNotificationPopupInput(repositoryUrl, taskId,
 						review, differences);
-				CrucibleNotificationPopup popup = new CrucibleNotificationPopup(Display.getCurrent().getActiveShell());
-				popup.setContents(input);
-				popup.open();
+				Shell shell = new Shell(PlatformUI.getWorkbench().getDisplay());
+				if (shell != null) {
+					CrucibleNotificationPopup popup = new CrucibleNotificationPopup(shell);
+					popup.setContents(input);
+					popup.open();
+				}
 			}
 		});
 
