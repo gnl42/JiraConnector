@@ -67,7 +67,9 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -275,7 +277,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				part.createControl(editorComposite, toolkit);
 			}
 
-			EditorUtil.setMenu(editorComposite, getMenu());
+			setMenu(editorComposite, editorComposite.getMenu());
 		} finally {
 			setReflow(true);
 			reflow();
@@ -285,11 +287,24 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	public Menu getMenu() {
 		if (editorComposite != null) {
-			return editorComposite.getMenu();
+			editorComposite.getMenu();
 		}
 		return null;
+	}
 
-	};
+	public void setMenu(Composite composite, Menu menu) {
+		if (!composite.isDisposed()) {
+			composite.setMenu(menu);
+			for (Control child : composite.getChildren()) {
+				if (!(child instanceof Section || child instanceof Hyperlink)) {
+					child.setMenu(menu);
+				}
+				if (child instanceof Composite) {
+					setMenu((Composite) child, menu);
+				}
+			}
+		}
+	}
 
 	private void createFormParts() {
 		parts.add(new CrucibleDetailsPart());

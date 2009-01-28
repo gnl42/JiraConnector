@@ -108,7 +108,7 @@ public abstract class ExpandablePart {
 							Composite composite = createSectionContents(commentSection, toolkit);
 
 							if (crucibleEditor != null && crucibleEditor.getMenu() != null) {
-								EditorUtil.setMenu(composite, crucibleEditor.getMenu());
+								crucibleEditor.setMenu(composite, crucibleEditor.getMenu());
 							}
 							commentSection.setClient(composite);
 						} finally {
@@ -135,6 +135,7 @@ public abstract class ExpandablePart {
 
 		for (Control control : actionsComposite.getChildren()) {
 			if (control instanceof ImageHyperlink) {
+				control.setMenu(null);
 				control.dispose();
 			}
 		}

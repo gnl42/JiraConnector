@@ -72,7 +72,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	@Override
 	public Control createControl(Composite parent, final FormToolkit toolkit) {
-		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
+		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED;
 		filesSection = toolkit.createSection(parent, style);
 		filesSection.setText(getSectionTitle());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(filesSection);
