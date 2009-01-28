@@ -16,12 +16,14 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleReviewReplyDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
+import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
@@ -39,7 +41,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -52,6 +53,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
+
+import java.util.HashMap;
 
 /**
  * Abstract class to deal with adding comments to a review
@@ -95,18 +98,22 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 		final CrucibleFile reviewItem = getCrucibleFile();
 		final Comment parentComment = getParentComment();
 
-		InputDialog replyDialog = new InputDialog(null, "Add Comment", "", "", null);
-		if (replyDialog.open() == Window.OK) {
-			if (replyDialog.getValue().length() > 0) {
-				final String message = replyDialog.getValue();
-				final boolean isDraft = false;
+		CrucibleReviewReplyDialog commentDialog = new CrucibleReviewReplyDialog(null, review, reviewItem,
+				parentComment, commentLines);
+		if (commentDialog.open() == Window.OK) {
+			if (commentDialog.getValue().length() > 0) {
+				final String message = commentDialog.getValue();
+				final boolean isDraft = commentDialog.isDraft();
+				final boolean isDefect = commentDialog.isDefect();
+				final HashMap<String, CustomField> customFields = commentDialog.getCustomFieldSelections();
 
 				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Submitting comment" + getTaskKey(),
 						getTaskRepository()) {
 					@Override
 					protected IStatus execute(final CrucibleClient client, IProgressMonitor monitor)
 							throws CoreException {
-						submitNewComment(commentLines, reviewItem, parentComment, message, isDraft, client, monitor);
+						submitNewComment(commentLines, reviewItem, parentComment, message, isDraft, isDefect,
+								customFields, client, monitor);
 
 						client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 
@@ -120,8 +127,9 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 	}
 
 	private void submitNewComment(final LineRange commentLines, final CrucibleFile reviewItem,
-			final Comment parentComment, final String message, final boolean isDraft, final CrucibleClient client,
-			IProgressMonitor monitor) throws CoreException {
+			final Comment parentComment, final String message, final boolean isDraft, final boolean isDefect,
+			final HashMap<String, CustomField> customFields, final CrucibleClient client, IProgressMonitor monitor)
+			throws CoreException {
 		client.execute(new RemoteOperation<Comment>(monitor) {
 			@Override
 			public Comment run(CrucibleServerFacade server, CrucibleServerCfg serverCfg, IProgressMonitor monitor)
@@ -141,6 +149,9 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 					}
 				} else {
 					GeneralCommentBean newComment = createNewGeneralComment(parentComment, message, client);
+					newComment.setDefectRaised(isDefect);
+					newComment.setDraft(isDraft);
+					newComment.getCustomFields().putAll(customFields);
 					String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId());
 
 					if (parentComment != null && newComment.isReply()) {
