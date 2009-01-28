@@ -27,11 +27,11 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -52,30 +52,20 @@ import java.util.List;
 public class AddCommentPart {
 
 	public interface IAddCommentPartListener {
-
 		void cancelAddComment();
 
 		void addComment();
-
 	}
 
 	private static final String SAVE_LABEL = "Save";
 
 	private static final String DRAFT_LABEL = "Save as Draft";
 
-	private static int idIncrementor = 1;
-
-	private static final int DEFECT_ID = IDialogConstants.CLIENT_ID + idIncrementor++;
-
-	private static final int DRAFT_ID = IDialogConstants.CLIENT_ID + idIncrementor++;
-
 	private final Review review;
 
 	private final Comment replyToComment;
 
 	private final boolean edit; //temporary flag for marking if a comment is edited or a new one created
-
-	private final HashMap<Integer, Button> customButtons;
 
 	private final HashMap<CustomFieldDef, ComboViewer> customCombos;
 
@@ -89,22 +79,20 @@ public class AddCommentPart {
 
 	private String newComment;
 
+	private IAddCommentPartListener listener;
+
 	public AddCommentPart(Review review, Comment replyToComment) {
 		this.review = review;
 		this.replyToComment = replyToComment;
 		this.edit = false;
-		customButtons = new HashMap<Integer, Button>();
 		customCombos = new HashMap<CustomFieldDef, ComboViewer>();
 		customFieldSelections = new HashMap<String, CustomField>();
 	}
 
 	public Composite createControl(Composite parent) {
 		//CHECKSTYLE:MAGIC:OFF
-
-		// create composite
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
-		// create message
 		if (review != null) {
 			Label label = new Label(composite, SWT.WRAP);
 			if (replyToComment == null) {
@@ -113,7 +101,6 @@ public class AddCommentPart {
 				label.setText("Reply to:\n" + replyToComment.getMessage());
 			}
 			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
-//			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 			label.setLayoutData(data);
 			label.setFont(parent.getFont());
 		}
@@ -122,53 +109,13 @@ public class AddCommentPart {
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
 		textGridData.heightHint = 80;
 		commentText.setLayoutData(textGridData);
-
 		Composite buttonComposite = new Composite(parent, SWT.NONE);
 		buttonComposite.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).grab(true, true).applyTo(buttonComposite);
 		createButtonsForButtonBar(buttonComposite);
-
 		//CHECKSTYLE:MAGIC:ON
 		return composite;
 	}
-
-	protected void buttonPressed(int buttonId) {
-		if (buttonId == DRAFT_ID) {
-			draft = true;
-			buttonId = Window.OK;
-		} else if (buttonId == DEFECT_ID) {
-			defect = !defect;
-			//toggle combos
-			for (CustomFieldDef field : customCombos.keySet()) {
-				customCombos.get(field).getCombo().setEnabled(defect);
-			}
-		} else if (buttonId == Window.CANCEL) {
-			newComment = "";
-		}
-
-		if (buttonId == Window.OK) {
-			newComment = commentText.getText();
-			if (defect) { //process custom field selection only when defect is selected
-				for (CustomFieldDef field : customCombos.keySet()) {
-					CustomFieldValue customValue = (CustomFieldValue) customCombos.get(field).getElementAt(
-							customCombos.get(field).getCombo().getSelectionIndex());
-					if (customValue != null) {
-						CustomFieldBean bean = new CustomFieldBean();
-						bean.setConfigVersion(field.getConfigVersion());
-						bean.setValue(customValue.getName());
-						customFieldSelections.put(field.getName(), bean);
-					}
-				}
-			}
-			notifyOk();
-		} else if (buttonId == Window.CANCEL) {
-			newComment = "";
-			notifyCanceled();
-		}
-
-	}
-
-	private IAddCommentPartListener listener;
 
 	public void setListener(IAddCommentPartListener listener) {
 		this.listener = listener;
@@ -188,45 +135,69 @@ public class AddCommentPart {
 		((GridLayout) parent.getLayout()).makeColumnsEqualWidth = false;
 		// create buttons according to (implicit) reply type
 		if (replyToComment == null) { //"defect button" needed if new comment
-
 			Composite composite = new Composite(parent, SWT.NONE);
 			composite.setLayout(new GridLayout(1, false));
 			GridDataFactory.fillDefaults().grab(true, true).span(3, 1).applyTo(composite);
-
-			createButton(composite, SWT.CHECK, DEFECT_ID, "Defect", false);
-			//add custom fields
+			createDefectButton(composite);
 			addCustomFields(composite);
 		}
-		createButton(parent, IDialogConstants.OK_ID, SAVE_LABEL, true);
+		createButton(parent, SAVE_LABEL, true, new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				processFields();
+				notifyOk();
+			}
+		});
 		if (!edit) { //if it is a new reply, saving as draft is possible
-			createButton(parent, DRAFT_ID, DRAFT_LABEL, false);
+			createButton(parent, DRAFT_LABEL, false, new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					draft = true;
+					processFields();
+					notifyOk();
+				}
+			});
 		}
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+		createButton(parent, IDialogConstants.CANCEL_LABEL, false, new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				notifyCanceled();
+			}
+		});
 		((GridLayout) parent.getLayout()).numColumns = 3;
 		//CHECKSTYLE:MAGIC:ON
 	}
 
-	protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
+	protected void processFields() {
+		newComment = commentText.getText();
+		if (defect) { //process custom field selection only when defect is selected
+			for (CustomFieldDef field : customCombos.keySet()) {
+				CustomFieldValue customValue = (CustomFieldValue) customCombos.get(field).getElementAt(
+						customCombos.get(field).getCombo().getSelectionIndex());
+				if (customValue != null) {
+					CustomFieldBean bean = new CustomFieldBean();
+					bean.setConfigVersion(field.getConfigVersion());
+					bean.setValue(customValue.getName());
+					customFieldSelections.put(field.getName(), bean);
+				}
+			}
+		}
+	}
+
+	protected Button createButton(Composite parent, String label, boolean defaultButton,
+			SelectionListener buttonListener) {
 		// increment the number of columns in the button bar
 		((GridLayout) parent.getLayout()).numColumns++;
 		Button button = new Button(parent, SWT.PUSH);
 		button.setText(label);
 		button.setFont(JFaceResources.getDialogFont());
-		button.setData(new Integer(id));
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				buttonPressed(((Integer) event.widget.getData()).intValue());
-			}
-		});
+		button.addSelectionListener(buttonListener);
 		if (defaultButton) {
 			Shell shell = parent.getShell();
 			if (shell != null) {
 				shell.setDefaultButton(button);
 			}
 		}
-//		buttons.put(new Integer(id), button);
-//		setButtonLayoutData(button);
 		return button;
 	}
 
@@ -254,41 +225,34 @@ public class AddCommentPart {
 			});
 		} else {
 			for (CustomFieldDef customField : customFields) {
-				int customFieldID = idIncrementor++;
-				createCombo(parent, customFieldID, customField, 0);
+				createCombo(parent, customField, 0);
 			}
 		}
 	}
 
-	protected Button createButton(Composite parent, int style, int id, String label, boolean defaultButton) {
+	protected Button createDefectButton(Composite parent) {
 		// increment the number of columns in the button bar
 		((GridLayout) parent.getLayout()).numColumns++;
-		Button button = new Button(parent, style);
-		button.setText(label);
+		Button button = new Button(parent, SWT.CHECK);
+		button.setText("Defect");
 		button.setFont(JFaceResources.getDialogFont());
-		button.setData(new Integer(id));
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				buttonPressed(((Integer) event.widget.getData()).intValue());
+				defect = !defect;
+				//toggle combos
+				for (CustomFieldDef field : customCombos.keySet()) {
+					customCombos.get(field).getCombo().setEnabled(defect);
+				}
 			}
 		});
-		if (defaultButton) {
-			Shell shell = parent.getShell();
-			if (shell != null) {
-				shell.setDefaultButton(button);
-			}
-		}
-		customButtons.put(new Integer(id), button);
-
 		return button;
 	}
 
-	protected void createCombo(Composite parent, final int id, final CustomFieldDef customField, int selection) {
+	protected void createCombo(Composite parent, final CustomFieldDef customField, int selection) {
 		((GridLayout) parent.getLayout()).numColumns++;
 		Label label = new Label(parent, SWT.NONE);
 		label.setText("Select " + customField.getName());
-
 		((GridLayout) parent.getLayout()).numColumns++;
 		ComboViewer comboViewer = new ComboViewer(parent);
 		comboViewer.setContentProvider(new ArrayContentProvider());
@@ -301,7 +265,6 @@ public class AddCommentPart {
 		});
 		comboViewer.setInput(customField.getValues());
 		comboViewer.getCombo().setEnabled(false);
-
 		customCombos.put(customField, comboViewer);
 	}
 
