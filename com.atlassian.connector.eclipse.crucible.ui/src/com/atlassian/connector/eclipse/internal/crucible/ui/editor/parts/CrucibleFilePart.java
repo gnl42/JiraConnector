@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.CompareVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenVersionedVirtualFileAction;
@@ -157,16 +158,14 @@ public class CrucibleFilePart extends ExpandablePart {
 	@Override
 	protected List<IAction> getToolbarActions(boolean isExpanded) {
 		List<IAction> actions = new ArrayList<IAction>();
+		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
+		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
+		boolean hasNewFile = checkHasFile(newFileDescriptor);
+		boolean hasOldFile = checkHasFile(oldFileDescriptor);
 		if (getCrucibleEditor() != null) {
-			VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
-			VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
 
-			if (newFileDescriptor != null && newFileDescriptor.getUrl() != null
-					&& newFileDescriptor.getUrl().length() > 0 && newFileDescriptor.getRevision() != null
-					&& newFileDescriptor.getRevision().length() > 0) {
-				if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
-						&& oldFileDescriptor.getUrl().length() > 0 && oldFileDescriptor.getRevision() != null
-						&& oldFileDescriptor.getRevision().length() > 0) {
+			if (hasNewFile) {
+				if (hasOldFile) {
 					CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
 							crucibleFile);
 					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
@@ -177,6 +176,15 @@ public class CrucibleFilePart extends ExpandablePart {
 				}
 			}
 		}
+		actions.add(new AddGeneralCommentToFileAction(new CrucibleFile(crucibleFile, hasOldFile), review));
 		return actions;
+	}
+
+	private boolean checkHasFile(VersionedVirtualFile fileDescriptor) {
+		if (fileDescriptor != null && fileDescriptor.getUrl() != null && fileDescriptor.getUrl().length() > 0
+				&& fileDescriptor.getRevision() != null && fileDescriptor.getRevision().length() > 0) {
+			return true;
+		}
+		return false;
 	}
 }

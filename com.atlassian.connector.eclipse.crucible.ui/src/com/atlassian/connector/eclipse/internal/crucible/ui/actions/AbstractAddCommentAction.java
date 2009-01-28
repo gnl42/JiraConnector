@@ -158,9 +158,13 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 		return null;
 	}
 
-	protected abstract CrucibleFile getCrucibleFile();
+	protected CrucibleFile getCrucibleFile() {
+		return null;
+	}
 
-	protected abstract LineRange getSelectedRange();
+	protected LineRange getSelectedRange() {
+		return null;
+	}
 
 	protected abstract Review getReview();
 
