@@ -55,6 +55,7 @@ public class CrucibleCachedReview {
 	synchronized Review getWorkingCopy() {
 		if (serverRevision != lastReadRevision && serverReview != null) {
 			lastReadReview = serverReview;
+			serverReview = null;
 			lastReadRevision = serverRevision;
 			differences = null;
 		}
@@ -68,9 +69,9 @@ public class CrucibleCachedReview {
 		if (serverReview != null) {
 			ReviewDifferenceProducer serverDifferencer = new ReviewDifferenceProducer(new ReviewAdapter(serverReview,
 					null), new ReviewAdapter(review, null));
-			List<CrucibleNotification> serverDiffs = differencer.getDiff();
-			if (serverDiffs == null
-					|| (serverDiffs.size() == 0 && serverDifferencer.isShortEqual() && serverDifferencer.isFilesEqual())) {
+			List<CrucibleNotification> serverDiffs = serverDifferencer.getDiff();
+			if ((serverDiffs == null || serverDiffs.size() == 0) && serverDifferencer.isShortEqual()
+					&& serverDifferencer.isFilesEqual() && serverDifferencer.getChangesCount() == 0) {
 				return false;
 			}
 		}
@@ -79,15 +80,16 @@ public class CrucibleCachedReview {
 		if (differences.size() > 0 || !differencer.isShortEqual() || !differencer.isFilesEqual()) {
 			serverRevision++;
 			serverReview = review;
+
+			return true;
 		} else {
 			differences = null;
+			return false;
 		}
-		return differences != null && differences.size() > 0 || !differencer.isShortEqual()
-				|| !differencer.isFilesEqual();
 	}
 
 	synchronized List<CrucibleNotification> getDifferences() {
-		return differences; // remove changes from me?
+		return differences; // TODO remove changes from me?
 	}
 
 }
