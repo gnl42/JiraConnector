@@ -51,8 +51,12 @@ public class JiraVersion implements Comparable<JiraVersion> {
 		qualifier = segments.length == 0 ? "" : getQualifier(segments[segments.length - 1]); //$NON-NLS-1$
 	}
 
-	private int parse(String segment) throws NumberFormatException {
-		return segment.length() == 0 ? 0 : Integer.parseInt(getVersion(segment));
+	private int parse(String segment) {
+		try {
+			return segment.length() == 0 ? 0 : Integer.parseInt(getVersion(segment));
+		} catch (NumberFormatException e) {
+			return 0;
+		}
 	}
 
 	private String getVersion(String segment) {
