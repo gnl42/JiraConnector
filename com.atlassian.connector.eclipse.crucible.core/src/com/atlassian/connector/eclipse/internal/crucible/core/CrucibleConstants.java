@@ -40,4 +40,6 @@ public final class CrucibleConstants {
 
 	public static final String CHANGED_HASH_CODE_KEY = "hasChangedHash";
 
+	public static final String HAS_NOTIFIED_NEW = "hasNotifiedNew";
+
 }

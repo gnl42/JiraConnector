@@ -33,6 +33,8 @@ public class CrucibleNotificationPopupInput {
 
 	private final String taskId;
 
+	private boolean isNew;
+
 	public CrucibleNotificationPopupInput(String repositoryUrl, String taskId, Review review,
 			List<CrucibleNotification> differences) {
 		this.differences = differences;
@@ -41,15 +43,28 @@ public class CrucibleNotificationPopupInput {
 		this.taskId = taskId;
 	}
 
+	public CrucibleNotificationPopupInput(String repositoryUrl, String taskId, Review review) {
+		this(repositoryUrl, taskId, review, null);
+		this.isNew = true;
+	}
+
+	public boolean isNew() {
+		return isNew;
+	}
+
 	public String getDescription() {
-		if (differences == null || differences.size() == 0) {
-			return "Review Details Changed";
+		if (isNew()) {
+			return "New Review";
 		} else {
-			String changedText = "";
-			for (CrucibleNotification notification : differences) {
-				changedText += notification.getPresentationMessage() + "\n";
+			if (differences == null || differences.size() == 0) {
+				return "Review Details Changed";
+			} else {
+				String changedText = "";
+				for (CrucibleNotification notification : differences) {
+					changedText += notification.getPresentationMessage() + "\n";
+				}
+				return changedText;
 			}
-			return changedText;
 		}
 	}
 

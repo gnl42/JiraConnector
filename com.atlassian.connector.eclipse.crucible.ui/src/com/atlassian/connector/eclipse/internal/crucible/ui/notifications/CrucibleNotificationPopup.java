@@ -63,7 +63,12 @@ public class CrucibleNotificationPopup extends AbstractNotificationPopup {
 
 		final TaskHyperlink itemLink = new TaskHyperlink(notificationComposite, SWT.BEGINNING | SWT.WRAP | SWT.NO_FOCUS);
 		itemLink.setText(input.getLabel());
-		itemLink.setImage(CrucibleImages.getImage(CommonImages.OVERLAY_SYNC_INCOMMING));
+
+		if (input.isNew()) {
+			itemLink.setImage(CrucibleImages.getImage(CommonImages.OVERLAY_SYNC_INCOMMING_NEW));
+		} else {
+			itemLink.setImage(CrucibleImages.getImage(CommonImages.OVERLAY_SYNC_INCOMMING));
+		}
 		itemLink.setBackground(parent.getBackground());
 		itemLink.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
