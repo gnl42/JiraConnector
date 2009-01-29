@@ -58,11 +58,13 @@ public final class TeamResourceConnectorExtensionReader {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 
 		IExtensionPoint teamConnectorExtensionPoint = registry.getExtensionPoint(EXTENSION_TEAM_CONNECTOR);
-		for (IExtension templateExtension : teamConnectorExtensionPoint.getExtensions()) {
-			IConfigurationElement[] elements = templateExtension.getConfigurationElements();
-			for (IConfigurationElement element : elements) {
-				if (element.getName().equals(ELEMENT_TEAM_CONNECTOR)) {
-					readTeamConnector(element);
+		if (teamConnectorExtensionPoint != null) {
+			for (IExtension templateExtension : teamConnectorExtensionPoint.getExtensions()) {
+				IConfigurationElement[] elements = templateExtension.getConfigurationElements();
+				for (IConfigurationElement element : elements) {
+					if (element.getName().equals(ELEMENT_TEAM_CONNECTOR)) {
+						readTeamConnector(element);
+					}
 				}
 			}
 		}
