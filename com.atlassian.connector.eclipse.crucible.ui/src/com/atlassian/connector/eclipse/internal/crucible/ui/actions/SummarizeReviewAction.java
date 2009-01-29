@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -23,7 +22,6 @@ import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
@@ -32,44 +30,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 /**
+ * Action for summarizing and closing a review
+ * 
  * @author Thomas Ehrnhoefer
  */
-public class SummarizeReviewAction extends BaseSelectionListenerAction implements IWorkbenchWindowActionDelegate {
-
-	private IWorkbenchWindow workbenchWindow;
-
-	private Review review;
+public class SummarizeReviewAction extends AbstractReviewAction implements IWorkbenchWindowActionDelegate {
 
 	public SummarizeReviewAction(Review review, String text) {
 		super(text);
 		this.review = review;
-	}
-
-	public void dispose() {
-		// ignore
-	}
-
-	public void init(IWorkbenchWindow window) {
-		this.workbenchWindow = window;
-	}
-
-	@Override
-	public void run() {
-		run(this);
 	}
 
 	public void run(IAction action) {
@@ -131,59 +105,8 @@ public class SummarizeReviewAction extends BaseSelectionListenerAction implement
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (review != null) {
-			action.setEnabled(true);
-			setEnabled(true);
-		} else {
-			action.setEnabled(false);
-			setEnabled(false);
-		}
+	@Override
+	protected Review getReview() {
+		return review;
 	}
-
-	protected IEditorPart getActiveEditor() {
-		IWorkbenchWindow window = workbenchWindow;
-		if (window == null) {
-			window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		}
-		if (window != null && window.getActivePage() != null) {
-			return window.getActivePage().getActiveEditor();
-		}
-		return null;
-	}
-
-	protected IEditorInput getEditorInputFromSelection(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = ((IStructuredSelection) selection);
-			if (structuredSelection.getFirstElement() instanceof IEditorInput) {
-				return (IEditorInput) structuredSelection.getFirstElement();
-			}
-		}
-		return null;
-	}
-
-	private String getTaskKey() {
-		if (review == null) {
-			return null;
-		}
-		return review.getPermId().getId();
-	}
-
-	private String getTaskId() {
-		if (review == null) {
-			return null;
-		}
-		return CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId());
-	}
-
-	private TaskRepository getTaskRepository() {
-		if (review == null) {
-			return null;
-		}
-		ReviewBean activeReviewBean = (ReviewBean) review;
-		String serverUrl = activeReviewBean.getServerUrl();
-
-		return TasksUi.getRepositoryManager().getRepository(CrucibleCorePlugin.CONNECTOR_KIND, serverUrl);
-	}
-
 }

@@ -29,14 +29,12 @@ import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 public class ReplyToCommentAction extends AbstractAddCommentAction {
 	private final Comment comment;
 
-	private final Review review;
-
 	private final CrucibleFile crucibleFile;
 
 	public ReplyToCommentAction(Comment comment, Review review, CrucibleFile crucibleFile) {
 		super("Reply to Comment");
 		this.comment = comment;
-		this.review = review;
+		super.review = review;
 		this.crucibleFile = crucibleFile;
 	}
 

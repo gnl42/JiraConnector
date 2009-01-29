@@ -77,6 +77,7 @@ import java.util.List;
  * The rich editor for crucible reviews
  * 
  * @author Shawn Minto
+ * @author Thomas Ehrnhoefer
  */
 public class CrucibleReviewEditorPage extends TaskFormPage {
 

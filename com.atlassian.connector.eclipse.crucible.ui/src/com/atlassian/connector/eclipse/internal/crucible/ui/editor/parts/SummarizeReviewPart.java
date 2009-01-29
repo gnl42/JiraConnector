@@ -30,12 +30,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
+ * Part for summarizing a review
+ * 
  * @author Thomas Ehrnhoefer
  */
 public class SummarizeReviewPart {
@@ -133,7 +136,8 @@ public class SummarizeReviewPart {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(
 					formToolkit.createLabel(draftComp, "", SWT.SEPARATOR | SWT.HORIZONTAL));
 			new CrucibleReviewersPart(openReviewers).createControl(formToolkit, draftComp, OPEN_REVIEWS_WARNING);
-			formToolkit.createLabel(draftComp, OTHER_DRAFTS_WARNING, SWT.WRAP);
+			Label labelControl = formToolkit.createLabel(draftComp, OTHER_DRAFTS_WARNING, SWT.WRAP);
+			labelControl.setForeground(formToolkit.getColors().getColor(IFormColors.TITLE));
 			if (hasOthersDrafts) {
 				Set<Reviewer> othersDrafts = getOthersDrafts();
 				new CrucibleReviewersPart(othersDrafts).createControl(formToolkit, draftComp,

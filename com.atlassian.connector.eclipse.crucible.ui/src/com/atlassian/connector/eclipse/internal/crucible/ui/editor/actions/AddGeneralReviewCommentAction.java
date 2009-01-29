@@ -18,15 +18,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 
 /**
- * @author thomas
+ * Action for adding a general review comment
+ * 
+ * @author Thomas Ehrnhoefer
  */
 public class AddGeneralReviewCommentAction extends AbstractAddCommentAction {
 
-	private final Review review;
-
 	public AddGeneralReviewCommentAction(Review review) {
 		super("Add General Review Comment");
-		this.review = review;
+		super.review = review;
 	}
 
 	@Override

@@ -21,16 +21,15 @@ import org.eclipse.mylyn.tasks.ui.TasksUiImages;
  * Action to add a general file comment to the active review
  * 
  * @author Shawn Minto
+ * @author Thomas Ehrnhoefer
  */
 public class AddGeneralCommentToFileAction extends AbstractAddCommentAction {
 
 	private final CrucibleFile crucibleFile;
 
-	private final Review crucibleReview;
-
 	public AddGeneralCommentToFileAction(CrucibleFile file, Review review) {
 		super("Create General File Comment");
-		this.crucibleReview = review;
+		super.review = review;
 		this.crucibleFile = file;
 	}
 
@@ -51,7 +50,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction {
 
 	@Override
 	protected Review getReview() {
-		return crucibleReview;
+		return review;
 	}
 
 	@Override
