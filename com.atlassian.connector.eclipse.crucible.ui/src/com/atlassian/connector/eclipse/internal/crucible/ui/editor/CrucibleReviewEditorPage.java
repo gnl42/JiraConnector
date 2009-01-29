@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -365,34 +366,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			try {
 				List<com.atlassian.theplugin.commons.crucible.api.model.Action> transitions = review.getTransitions();
 				if (transitions.contains(com.atlassian.theplugin.commons.crucible.api.model.Action.SUMMARIZE)) {
-					Action summarizeAction = new Action() {
-						@Override
-						public void run() {
-							CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Summarizing Crucible Review "
-									+ getTask().getTaskKey(), getTaskRepository()) {
-								@Override
-								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
-										throws CoreException {
-									client.execute(new RemoteOperation<Review>(monitor) {
-										@Override
-										public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
-												IProgressMonitor monitor) throws CrucibleLoginException,
-												RemoteApiException, ServerPasswordNotProvidedException {
-
-											String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-											return server.summarizeReview(serverCfg, new PermIdBean(permId));
-
-										}
-									});
-									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
-
-									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
-								}
-							};
-							schedule(job, 0L);
-						}
-					};
-					//summarizeAction.setImageDescriptor(CrucibleImages.SUMMARIZE);
+					Action summarizeAction = new SummarizeReviewAction(review, "Summarizing Crucible Review "
+							+ getTask().getTaskKey());
 					summarizeAction.setText("Summarize");
 					summarizeAction.setToolTipText("Summarize review");
 					manager.add(summarizeAction);

@@ -124,11 +124,15 @@ public class AddCommentPart {
 	}
 
 	private void notifyCanceled() {
-		listener.cancelAddComment();
+		if (listener != null) {
+			listener.cancelAddComment();
+		}
 	}
 
 	private void notifyOk() {
-		listener.addComment();
+		if (listener != null) {
+			listener.addComment();
+		}
 
 	}
 

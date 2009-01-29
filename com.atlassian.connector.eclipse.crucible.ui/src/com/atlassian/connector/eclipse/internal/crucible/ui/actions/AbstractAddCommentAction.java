@@ -110,7 +110,7 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 						client.execute(operation);
 						client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 
-						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
+						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Comment was submitted.");
 					}
 
 				};
