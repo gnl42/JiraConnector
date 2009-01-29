@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Eugene Kuleshov - initial API and implementation
+ *     Tasktop Technologies - improvements
  *******************************************************************************/
 
 package org.eclipse.mylyn.jira.tests.model;
@@ -17,6 +18,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 
 /**
  * @author Eugene Kuleshov
+ * @author Steffen Pingel
  */
 public class JiraVersionTest extends TestCase {
 
@@ -76,6 +78,11 @@ public class JiraVersionTest extends TestCase {
 		assertEquals("3.10-DEV-190607-#251", new JiraVersion("3.10-DEV-190607-#251").toString());
 	}
 
+	public void testNonNumbericVersion() throws Exception {
+		assertEquals("3.6-#161", new JiraVersion("3.6.xx-#161").toString());
+		assertEquals("0.0", new JiraVersion("a.b").toString());
+	}
+
 	private void assertVersion(String s1, String s2, int expected) {
 		JiraVersion v1 = v(s1);
 		JiraVersion v2 = v(s2);
@@ -84,17 +91,6 @@ public class JiraVersionTest extends TestCase {
 
 	private JiraVersion v(String v) {
 		return new JiraVersion(v);
-	}
-
-	public void testwrongVersion() throws Exception {
-		try {
-			@SuppressWarnings("unused")
-			JiraVersion wrong = new JiraVersion("3.1.X");
-			fail("NumberFormatException expected!");
-		} catch (Exception e) {
-			assertTrue(e instanceof NumberFormatException);
-			assertEquals("For input string: \"X\"", e.getMessage());
-		}
 	}
 
 }
