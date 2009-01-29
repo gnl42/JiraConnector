@@ -86,4 +86,15 @@ public class JiraVersionTest extends TestCase {
 		return new JiraVersion(v);
 	}
 
+	public void testwrongVersion() throws Exception {
+		try {
+			@SuppressWarnings("unused")
+			JiraVersion wrong = new JiraVersion("3.1.X");
+			fail("NumberFormatException expected!");
+		} catch (Exception e) {
+			assertTrue(e instanceof NumberFormatException);
+			assertEquals("For input string: \"X\"", e.getMessage());
+		}
+	}
+
 }
