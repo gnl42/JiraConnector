@@ -97,7 +97,6 @@ public class SummarizeReviewAction extends BaseSelectionListenerAction implement
 					@Override
 					protected IStatus execute(final CrucibleClient client, IProgressMonitor monitor)
 							throws CoreException {
-						// TODO
 						if (!discardDrafts) {
 							//post all drafts
 							RemoteOperation<Object> publishDraftsOp = new RemoteOperation<Object>(monitor) {

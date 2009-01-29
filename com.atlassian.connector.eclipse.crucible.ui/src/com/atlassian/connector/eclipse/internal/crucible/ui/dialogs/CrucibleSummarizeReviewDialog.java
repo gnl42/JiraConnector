@@ -16,9 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Summari
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -42,13 +40,10 @@ public class CrucibleSummarizeReviewDialog extends Dialog implements ISummarizeR
 
 	@Override
 	protected Control createContents(Composite parent) {
-		//CHECKSTYLE:MAGIC:OFF
 		part = new SummarizeReviewPart(review, userName);
 		Composite composite = part.createControl(parent);
 		part.setListener(this);
-		GridDataFactory.fillDefaults().grab(true, true).hint(400, SWT.DEFAULT).applyTo(composite);
 		return composite;
-		//CHECKSTYLE:MAGIC:ON
 	}
 
 	public void cancelSummarizeReview() {
