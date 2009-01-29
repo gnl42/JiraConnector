@@ -38,6 +38,11 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 	}
 
 	@Override
+	protected String getDialogTitle() {
+		return getText();
+	}
+
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
 		if (action.isEnabled() && isEnabled()) {

@@ -24,6 +24,8 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -136,11 +138,25 @@ public abstract class CommentPart extends ExpandablePart {
 
 		int style = SWT.FLAT | SWT.READ_ONLY | SWT.MULTI | SWT.WRAP;
 
-		Text text = new Text(composite, style);
+		final Text text = new Text(composite, style);
 		text.setFont(EditorUtil.TEXT_FONT);
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
 		toolkit.adapt(text, true, true);
+
+		// HACK: this is to make sure that we can't have multiple things highlighted
+		text.addFocusListener(new FocusListener() {
+
+			public void focusGained(FocusEvent e) {
+				// ignore
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				text.setSelection(0);
+			}
+
+		});
 
 		return text;
 	}

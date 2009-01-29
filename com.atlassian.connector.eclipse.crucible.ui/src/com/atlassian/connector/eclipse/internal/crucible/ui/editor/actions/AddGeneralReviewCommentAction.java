@@ -30,6 +30,11 @@ public class AddGeneralReviewCommentAction extends AbstractAddCommentAction {
 	}
 
 	@Override
+	protected String getDialogTitle() {
+		return getText();
+	}
+
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return TasksUiImages.COMMENT;
 	}

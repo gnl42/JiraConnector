@@ -38,90 +38,22 @@ public class CrucibleReviewReplyDialog extends Dialog implements IAddCommentPart
 
 	private final Comment replyToComment;
 
-	/**
-	 * Add new general comment
-	 * 
-	 * @param parentShell
-	 * @param review
-	 */
-	public CrucibleReviewReplyDialog(Shell parentShell, Review review) {
-		this(parentShell, "Add general comment " + review.getName(), review, null);
-	}
+	private AddCommentPart part;
 
-	/**
-	 * Add new general comment reply
-	 * 
-	 * @param parentShell
-	 * @param review
-	 * @param comment
-	 */
-	public CrucibleReviewReplyDialog(Shell parentShell, Review review, Comment replyToComment) {
-		this(parentShell, "Add a reply to: ", review, replyToComment);
-	}
+	private final String shellTitle;
 
-	/**
-	 * Add new versioned comment on a file
-	 * 
-	 * @param parentShell
-	 * @param review
-	 * @param file
-	 */
-	public CrucibleReviewReplyDialog(Shell parentShell, Review review, CrucibleFile file) {
-		this(parentShell, "Add versioned comment on file: "
-				+ file.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl(), review, null);
-	}
-
-	/**
-	 * Add new versioned comment reply on a file
-	 * 
-	 * @param parentShell
-	 * @param review
-	 * @param file
-	 * @param comment
-	 */
-	public CrucibleReviewReplyDialog(Shell parentShell, Review review, CrucibleFile file, Comment replyToComment) {
-		this(parentShell, "Reply to: ", review, replyToComment);
-	}
-
-	/**
-	 * Add new versioned comment on a specific line of code
-	 * 
-	 * @param parentShell
-	 * @param review
-	 * @param file
-	 * @param replyToComment
-	 * @param lineRange
-	 */
-	public CrucibleReviewReplyDialog(Shell parentShell, Review review, CrucibleFile file, LineRange lineRange) {
-		this(parentShell, "Add new versioned comment on line(s) " + String.valueOf(lineRange.getStartLine()) + "-"
-				+ String.valueOf(lineRange.getStartLine() + lineRange.getNumberOfLines()), review, null);
-	}
-
-	/**
-	 * Add new versioned comment reply on a specific line of code
-	 * 
-	 * @param parentShell
-	 * @param review
-	 * @param file
-	 * @param comment
-	 * @param lineRange
-	 */
-	public CrucibleReviewReplyDialog(Shell parentShell, Review review, CrucibleFile file, Comment replyToComment,
-			LineRange lineRange) {
-		this(parentShell, "Reply to: ", review, replyToComment);
-	}
-
-	private CrucibleReviewReplyDialog(Shell parentShell, String dialogMessage, Review review, Comment replyToComment) {
+	public CrucibleReviewReplyDialog(Shell parentShell, String shellTitle, Review review, CrucibleFile file,
+			Comment replyToComment, LineRange lineRange) {
 		super(parentShell);
+		this.shellTitle = shellTitle;
 		this.review = review;
 		this.replyToComment = replyToComment;
 	}
 
-	private AddCommentPart part;
-
 	@Override
 	protected Control createContents(Composite parent) {
 		//CHECKSTYLE:MAGIC:OFF
+		getShell().setText(shellTitle);
 		part = new AddCommentPart(review, replyToComment);
 		Composite composite = part.createControl(parent);
 		part.setListener(this);

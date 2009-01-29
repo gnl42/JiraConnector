@@ -41,6 +41,11 @@ public class ReplyToCommentAction extends AbstractAddCommentAction {
 	}
 
 	@Override
+	protected String getDialogTitle() {
+		return getText();
+	}
+
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return TasksUiImages.COMMENT_REPLY;
 	}

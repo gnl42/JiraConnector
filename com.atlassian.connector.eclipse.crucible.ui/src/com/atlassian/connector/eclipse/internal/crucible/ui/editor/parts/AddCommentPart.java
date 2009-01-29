@@ -139,11 +139,16 @@ public class AddCommentPart {
 		if (replyToComment == null) { //"defect button" needed if new comment
 			Composite composite = new Composite(parent, SWT.NONE);
 			composite.setLayout(new GridLayout(1, false));
-			GridDataFactory.fillDefaults().grab(true, true).span(3, 1).applyTo(composite);
+			GridDataFactory.fillDefaults().grab(true, true).align(SWT.RIGHT, SWT.CENTER).span(3, 1).applyTo(composite);
 			createDefectButton(composite);
 			addCustomFields(composite);
 		}
-		createButton(parent, SAVE_LABEL, true, new SelectionAdapter() {
+
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(new GridLayout(3, false));
+		GridDataFactory.fillDefaults().grab(true, true).align(SWT.RIGHT, SWT.CENTER).span(3, 1).applyTo(composite);
+
+		createButton(composite, SAVE_LABEL, true, new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				processFields();
@@ -151,7 +156,7 @@ public class AddCommentPart {
 			}
 		});
 		if (!edit) { //if it is a new reply, saving as draft is possible
-			createButton(parent, DRAFT_LABEL, false, new SelectionAdapter() {
+			createButton(composite, DRAFT_LABEL, false, new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					draft = true;
@@ -160,13 +165,12 @@ public class AddCommentPart {
 				}
 			});
 		}
-		createButton(parent, IDialogConstants.CANCEL_LABEL, false, new SelectionAdapter() {
+		createButton(composite, IDialogConstants.CANCEL_LABEL, false, new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				notifyCanceled();
 			}
 		});
-		((GridLayout) parent.getLayout()).numColumns = 3;
 		//CHECKSTYLE:MAGIC:ON
 	}
 

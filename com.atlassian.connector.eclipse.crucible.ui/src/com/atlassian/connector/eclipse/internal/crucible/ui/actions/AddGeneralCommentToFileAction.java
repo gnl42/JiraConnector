@@ -35,13 +35,18 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction {
 	}
 
 	@Override
+	protected String getDialogTitle() {
+		return getText();
+	}
+
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return TasksUiImages.COMMENT;
 	}
 
 	@Override
 	public String getToolTipText() {
-		return "Add General Review Comment";
+		return "Add General File Comment";
 	}
 
 	@Override

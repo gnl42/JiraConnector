@@ -86,8 +86,8 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 		final CrucibleFile reviewItem = getCrucibleFile();
 		final Comment parentComment = getParentComment();
 
-		CrucibleReviewReplyDialog commentDialog = new CrucibleReviewReplyDialog(null, review, reviewItem,
-				parentComment, commentLines);
+		CrucibleReviewReplyDialog commentDialog = new CrucibleReviewReplyDialog(null, getDialogTitle(), review,
+				reviewItem, parentComment, commentLines);
 		if (commentDialog.open() == Window.OK) {
 			if (commentDialog.getValue().length() > 0) {
 				final String message = commentDialog.getValue();
@@ -118,6 +118,8 @@ public abstract class AbstractAddCommentAction extends BaseSelectionListenerActi
 			}
 		}
 	}
+
+	protected abstract String getDialogTitle();
 
 	private String getTaskId() {
 		if (review == null) {
