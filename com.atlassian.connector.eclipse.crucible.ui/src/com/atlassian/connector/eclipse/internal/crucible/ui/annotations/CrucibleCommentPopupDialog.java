@@ -11,8 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.VersionedCommentPart;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -31,7 +34,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * 
  * @author Shawn Minto
  */
-public class CrucibleCommentPopupDialog extends PopupDialog {
+public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewActionListener {
 
 	private static final int MAX_WIDTH = 500;
 
@@ -158,6 +161,9 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 				VersionedCommentPart part = new VersionedCommentPart(annotation.getVersionedComment(),
 						annotation.getReview(), annotation.getCrucibleFileInfo(), null);
 
+				part.addCustomAction(new OpenReviewEditorToCommentAction(annotation.getReview(),
+						annotation.getVersionedComment(), annotation.getCrucibleFileInfo()));
+				part.hookCustomActionRunListener(this);
 				toolkit.adapt(part.createControl(composite, toolkit), true, true);
 				toolkit.adapt(composite);
 				toolkit.adapt(scrolledComposite);
@@ -168,5 +174,9 @@ public class CrucibleCommentPopupDialog extends PopupDialog {
 			input = null;
 		}
 
+	}
+
+	public void actionRan(Action action) {
+		close();
 	}
 }

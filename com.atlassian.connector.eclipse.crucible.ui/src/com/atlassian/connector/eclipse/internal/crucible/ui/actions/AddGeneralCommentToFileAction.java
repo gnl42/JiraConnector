@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -23,9 +25,11 @@ import org.eclipse.mylyn.tasks.ui.TasksUiImages;
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
  */
-public class AddGeneralCommentToFileAction extends AbstractAddCommentAction {
+public class AddGeneralCommentToFileAction extends AbstractAddCommentAction implements IReviewAction {
 
 	private final CrucibleFile crucibleFile;
+
+	private IReviewActionListener actionListener;
 
 	public AddGeneralCommentToFileAction(CrucibleFile file, Review review) {
 		super("Create General File Comment");
@@ -44,6 +48,14 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction {
 	}
 
 	@Override
+	public final void run() {
+		super.run();
+		if (actionListener != null) {
+			actionListener.actionRan(this);
+		}
+	}
+
+	@Override
 	public String getToolTipText() {
 		return "Add General File Comment";
 	}
@@ -57,4 +69,9 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction {
 	protected CrucibleFile getCrucibleFile() {
 		return crucibleFile;
 	}
+
+	public void setActionListener(IReviewActionListener listener) {
+		this.actionListener = listener;
+	}
+
 }

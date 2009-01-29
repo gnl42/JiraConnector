@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 
@@ -51,6 +53,8 @@ public abstract class ExpandablePart {
 
 	protected final CrucibleReviewEditorPage crucibleEditor;
 
+	private IReviewActionListener actionListener;
+
 	public ExpandablePart(CrucibleReviewEditorPage editor) {
 		this.crucibleEditor = editor;
 		childrenParts = new ArrayList<ExpandablePart>();
@@ -58,6 +62,10 @@ public abstract class ExpandablePart {
 
 	protected void addChildPart(ExpandablePart part) {
 		childrenParts.add(part);
+	}
+
+	protected List<ExpandablePart> getChildrenParts() {
+		return childrenParts;
 	}
 
 	public CrucibleReviewEditorPage getCrucibleEditor() {
@@ -130,8 +138,12 @@ public abstract class ExpandablePart {
 		return true;
 	}
 
+	public Section getSection() {
+		return commentSection;
+	}
+
 	private void fillToolBar(Composite actionsComposite, FormToolkit toolkit, boolean expanded) {
-		List<IAction> toolbarActions = getToolbarActions(expanded);
+		List<IReviewAction> toolbarActions = getToolbarActions(expanded);
 
 		for (Control control : actionsComposite.getChildren()) {
 			if (control instanceof ImageHyperlink) {
@@ -142,7 +154,8 @@ public abstract class ExpandablePart {
 
 		if (toolbarActions != null) {
 
-			for (final IAction action : toolbarActions) {
+			for (final IReviewAction action : toolbarActions) {
+				action.setActionListener(actionListener);
 				createActionHyperlink(actionsComposite, toolkit, action);
 			}
 		}
@@ -231,11 +244,19 @@ public abstract class ExpandablePart {
 		}
 	}
 
+	public void hookCustomActionRunListener(IReviewActionListener actionRunListener) {
+		this.actionListener = actionRunListener;
+	}
+
+	public IReviewActionListener getActionListener() {
+		return actionListener;
+	}
+
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
 		// default do nothing
 	}
 
-	protected abstract List<IAction> getToolbarActions(boolean expanded);
+	protected abstract List<IReviewAction> getToolbarActions(boolean expanded);
 
 	protected abstract String getAnnotationText();
 

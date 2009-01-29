@@ -42,9 +42,9 @@ public final class TeamMessageUtils {
 	}
 
 	private static void internalOpenFileDeletedErrorMessage(String repoUrl, String filePath, String revision) {
-		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
+		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
 		String message = "Please update the project to revision " + revision
-				+ "as the following file may have been removed or deleted:\n\n" + fileUrl;
+				+ " as the following file may have been removed or deleted:\n\n" + fileUrl;
 
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
@@ -64,9 +64,9 @@ public final class TeamMessageUtils {
 
 	private static void internalOpenFileDoesntExistErrorMessage(String repoUrl, String filePath, String revision) {
 
-		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
+		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
 		String message = "Please update the project to revision " + revision
-				+ "as the following file may have been removed or deleted:\n\n" + fileUrl;
+				+ " as the following file may have been removed or deleted:\n\n" + fileUrl;
 
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
@@ -87,9 +87,9 @@ public final class TeamMessageUtils {
 	private static void internalOpenUnableToCompareErrorMessage(String repoUrl, String filePath, String oldRevision,
 			String newRevision) {
 
-		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
+		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
 		String message = "Unable to compare revisions.  Please update the project to revision " + newRevision
-				+ "as the following file may have been removed or deleted:\n\n" + fileUrl;
+				+ " as the following file may have been removed or deleted:\n\n" + fileUrl;
 
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}

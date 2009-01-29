@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AbstractAddCommentAction;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
@@ -26,10 +28,12 @@ import org.eclipse.mylyn.tasks.ui.TasksUiImages;
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
  */
-public class ReplyToCommentAction extends AbstractAddCommentAction {
+public class ReplyToCommentAction extends AbstractAddCommentAction implements IReviewAction {
 	private final Comment comment;
 
 	private final CrucibleFile crucibleFile;
+
+	private IReviewActionListener actionListener;
 
 	public ReplyToCommentAction(Comment comment, Review review, CrucibleFile crucibleFile) {
 		super("Reply to Comment");
@@ -46,6 +50,19 @@ public class ReplyToCommentAction extends AbstractAddCommentAction {
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return TasksUiImages.COMMENT_REPLY;
+	}
+
+	@Override
+	public final void run() {
+		super.run();
+
+		if (actionListener != null) {
+			actionListener.actionRan(this);
+		}
+	}
+
+	public void setActionListener(IReviewActionListener listener) {
+		this.actionListener = listener;
 	}
 
 	@Override

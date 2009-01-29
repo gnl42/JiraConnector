@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.CompareVersionedVirtualFileAction;
@@ -21,9 +22,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -171,8 +172,8 @@ public class CrucibleFilePart extends ExpandablePart {
 	}
 
 	@Override
-	protected List<IAction> getToolbarActions(boolean isExpanded) {
-		List<IAction> actions = new ArrayList<IAction>();
+	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
+		List<IReviewAction> actions = new ArrayList<IReviewAction>();
 		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
 		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
 		boolean hasNewFile = checkHasFile(newFileDescriptor);
@@ -202,4 +203,28 @@ public class CrucibleFilePart extends ExpandablePart {
 		}
 		return false;
 	}
+
+	public boolean isCrucibleFile(CrucibleFileInfo crucibleFileToReveal) {
+		return crucibleFileToReveal.getPermId().equals(crucibleFile.getPermId());
+	}
+
+	public void selectAndReveal(VersionedComment commentToReveal) {
+		if (!getSection().isExpanded()) {
+			EditorUtil.toggleExpandableComposite(true, getSection());
+		}
+
+		for (ExpandablePart part : getChildrenParts()) {
+			if (part instanceof VersionedCommentPart) {
+				if (((VersionedCommentPart) part).isComment(commentToReveal)) {
+					part.setExpanded(true);
+					EditorUtil.ensureVisible(part.getSection());
+
+					crucibleEditor.setHighlightedPart(part);
+
+					return;
+				}
+			}
+		}
+	}
+
 }

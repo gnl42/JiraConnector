@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
@@ -19,7 +20,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
@@ -172,8 +172,8 @@ public abstract class CommentPart extends ExpandablePart {
 	}
 
 	@Override
-	protected List<IAction> getToolbarActions(boolean isExpanded) {
-		List<IAction> actions = new ArrayList<IAction>();
+	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
+		List<IReviewAction> actions = new ArrayList<IReviewAction>();
 		if (isExpanded) {
 			if (!comment.isReply()) {
 				actions.add(new ReplyToCommentAction(comment, crucibleReview, crucibleFile));

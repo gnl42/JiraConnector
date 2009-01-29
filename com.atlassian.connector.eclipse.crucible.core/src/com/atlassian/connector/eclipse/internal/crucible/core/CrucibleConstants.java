@@ -20,6 +20,8 @@ public final class CrucibleConstants {
 
 	public static final String REVIEW_ACTIVE_SYSTEM_PROPERTY = "com.atlassian.connector.eclipse.crucible.ui.review.active";
 
+	public static final String CRUCIBLE_EDITOR_PAGE_ID = "com.atlassian.connector.eclipse.crucible.review.editor";
+
 	private CrucibleConstants() {
 		// ignore
 	}

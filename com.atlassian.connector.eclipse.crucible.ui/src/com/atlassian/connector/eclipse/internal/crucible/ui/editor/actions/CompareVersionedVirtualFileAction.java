@@ -12,6 +12,8 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -32,16 +34,18 @@ import java.lang.reflect.InvocationTargetException;
  * 
  * @author Shawn Minto
  */
-public class CompareVersionedVirtualFileAction extends Action {
+public class CompareVersionedVirtualFileAction extends Action implements IReviewAction {
 
 	private final CrucibleFileInfo crucibleFile;
+
+	private IReviewActionListener actionListener;
 
 	public CompareVersionedVirtualFileAction(CrucibleFileInfo crucibleFile) {
 		this.crucibleFile = crucibleFile;
 	}
 
 	@Override
-	public void run() {
+	public final void run() {
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -61,6 +65,13 @@ public class CompareVersionedVirtualFileAction extends Action {
 		} catch (OperationCanceledException e) {
 			// ignore since the user requested a cancel
 		}
+		if (actionListener != null) {
+			actionListener.actionRan(this);
+		}
+	}
+
+	public void setActionListener(IReviewActionListener listener) {
+		this.actionListener = listener;
 	}
 
 }

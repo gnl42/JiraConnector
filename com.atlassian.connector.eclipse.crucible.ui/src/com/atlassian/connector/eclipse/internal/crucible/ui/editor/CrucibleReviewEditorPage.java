@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
@@ -18,12 +19,15 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
@@ -49,6 +53,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskFormPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -69,6 +74,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,8 +149,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	private static final int VERTICAL_BAR_WIDTH = 15;
 
-	private static final String CRUCIBLE_EDITOR_PAGE_ID = "com.atlassian.connector.eclipse.crucible.review.editor";
-
 	private FormToolkit toolkit;
 
 	private ScrolledForm form;
@@ -159,8 +163,16 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	private ISelectionProvider selectionProviderAdapter;
 
+	private Control highlightedControl;
+
+	private CrucibleFileInfo selectedCrucibleFile;
+
+	private VersionedComment selectedComment;
+
+	private Color selectionColor;
+
 	public CrucibleReviewEditorPage(FormEditor editor, String title) {
-		super(editor, CRUCIBLE_EDITOR_PAGE_ID, title);
+		super(editor, CrucibleConstants.CRUCIBLE_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractCrucibleEditorFormPart>();
 	}
 
@@ -179,6 +191,9 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		CrucibleCorePlugin.getDefault().getReviewCache().removeCacheChangedListener(reviewCacheListener);
 		super.dispose();
 		editorComposite = null;
+		toolkit = null;
+		selectionColor.dispose();
+		selectionColor = null;
 	}
 
 	@Override
@@ -192,6 +207,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		form = managedForm.getForm();
 
 		toolkit = managedForm.getToolkit();
+
+		selectionColor = new Color(getSite().getShell().getDisplay(), 255, 231, 198);
 
 		EditorUtil.disableScrollingOnFocus(form);
 
@@ -278,6 +295,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			}
 
 			setMenu(editorComposite, editorComposite.getMenu());
+
+			if (selectedComment != null && selectedCrucibleFile != null) {
+				selectAndReveal(selectedCrucibleFile, selectedComment);
+			}
+
 		} finally {
 			setReflow(true);
 			reflow();
@@ -317,6 +339,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		}
 
 		parts.clear();
+
+		highlightedControl = null;
 
 		Menu menu = editorComposite.getMenu();
 		// preserve context menu
@@ -487,5 +511,49 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		});
 		job.schedule(delay);
 		setBusy(true);
+	}
+
+	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment) {
+		this.selectedCrucibleFile = crucibleFile;
+		this.selectedComment = comment;
+		for (AbstractCrucibleEditorFormPart part : parts) {
+			if (part instanceof CrucibleReviewFilesPart) {
+				((CrucibleReviewFilesPart) part).selectAndReveal(crucibleFile, comment);
+			}
+		}
+	}
+
+	public void setHighlightedPart(ExpandablePart part) {
+		if (highlightedControl != null) {
+			setControlHighlighted(highlightedControl, false);
+			highlightedControl = null;
+		}
+
+		if (part != null) {
+			Section highlightedSection = part.getSection();
+			if (highlightedSection != null) {
+				Control client = highlightedSection.getClient();
+				if (client != null) {
+					setControlHighlighted(client, true);
+					highlightedControl = client;
+				}
+			}
+		}
+
+	}
+
+	private void setControlHighlighted(Control client, boolean shouldHighlight) {
+		if (toolkit != null && !client.isDisposed() && selectionColor != null) {
+			if (shouldHighlight) {
+				client.setBackground(selectionColor);
+			} else {
+				client.setBackground(toolkit.getColors().getBackground());
+			}
+			if (client instanceof Composite) {
+				for (Control child : ((Composite) client).getChildren()) {
+					setControlHighlighted(child, shouldHighlight);
+				}
+			}
+		}
 	}
 }

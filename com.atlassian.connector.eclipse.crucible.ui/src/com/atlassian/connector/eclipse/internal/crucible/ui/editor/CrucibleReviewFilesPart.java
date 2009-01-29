@@ -17,12 +17,14 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Expanda
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -152,6 +154,18 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	@Override
 	protected void fillToolBar(ToolBarManager barManager) {
 		super.fillToolBar(barManager);
+	}
+
+	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment) {
+		if (!filesSection.isExpanded()) {
+			EditorUtil.toggleExpandableComposite(true, filesSection);
+		}
+
+		for (CrucibleFilePart part : parts) {
+			if (part.isCrucibleFile(crucibleFile)) {
+				part.selectAndReveal(comment);
+			}
+		}
 	}
 
 }

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
@@ -18,7 +19,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -42,11 +42,14 @@ public class VersionedCommentPart extends CommentPart {
 
 	private final CrucibleFileInfo crucibleFileInfo;
 
+	private final List<IReviewAction> customActions;
+
 	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo,
 			CrucibleReviewEditorPage editor) {
 		super(comment, review, editor, new CrucibleFile(crucibleFileInfo, false));
 		this.versionedComment = comment;
 		this.crucibleFileInfo = crucibleFileInfo;
+		customActions = new ArrayList<IReviewAction>();
 	}
 
 	@Override
@@ -125,11 +128,19 @@ public class VersionedCommentPart extends CommentPart {
 	}
 
 	@Override
-	protected List<IAction> getToolbarActions(boolean isExpanded) {
-		List<IAction> actions = new ArrayList<IAction>();
+	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
+		List<IReviewAction> actions = new ArrayList<IReviewAction>();
 		actions.addAll(super.getToolbarActions(isExpanded));
+		actions.addAll(customActions);
 
 		return actions;
 	}
 
+	public void addCustomAction(IReviewAction action) {
+		customActions.add(action);
+	}
+
+	public boolean isComment(VersionedComment commentToReveal) {
+		return commentToReveal.getPermId().equals(comment.getPermId());
+	}
 }
