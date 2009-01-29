@@ -28,7 +28,7 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.apache.commons.logging"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.1.0.I20090116" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.1.0.I20090129" match="compatible"/>
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.1.0" match="greaterOrEqual"/>
