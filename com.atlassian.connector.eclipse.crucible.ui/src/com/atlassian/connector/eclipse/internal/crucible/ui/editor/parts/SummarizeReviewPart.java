@@ -77,7 +77,7 @@ public class SummarizeReviewPart {
 		Label summaryLabel = new Label(composite, SWT.NONE);
 		summaryLabel.setText("Summarize the Review Outcomes (optional)");
 
-		summaryText = new Text(composite, SWT.MULTI | SWT.V_SCROLL);
+		summaryText = new Text(composite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
 		textGridData.heightHint = 120;
