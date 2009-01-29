@@ -17,6 +17,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -43,6 +45,11 @@ public class CrucibleSummarizeReviewDialog extends Dialog implements ISummarizeR
 		part = new SummarizeReviewPart(review, userName);
 		Composite composite = part.createControl(parent);
 		part.setListener(this);
+		getShell().addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				part.dispose();
+			}
+		});
 		return composite;
 	}
 

@@ -17,6 +17,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -28,11 +29,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author Thomas Ehrnhoefer
@@ -63,6 +64,8 @@ public class SummarizeReviewPart {
 
 	private Text summaryText;
 
+	private FormToolkit formToolkit;
+
 	public SummarizeReviewPart(Review review, String userName) {
 		super();
 		this.review = review;
@@ -71,13 +74,16 @@ public class SummarizeReviewPart {
 
 	public Composite createControl(Composite parent) {
 		//CHECKSTYLE:MAGIC:OFF
-		Composite composite = new Composite(parent, SWT.NONE);
+		if (formToolkit == null) {
+			formToolkit = new FormToolkit(parent.getDisplay());
+		}
+
+		Composite composite = formToolkit.createComposite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 
-		Label summaryLabel = new Label(composite, SWT.NONE);
-		summaryLabel.setText("Summarize the Review Outcomes (optional)");
+		formToolkit.createLabel(composite, "Summarize the Review Outcomes (optional)", SWT.NONE);
 
-		summaryText = new Text(composite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
+		summaryText = formToolkit.createText(composite, "", SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
 		textGridData.heightHint = 120;
@@ -86,11 +92,10 @@ public class SummarizeReviewPart {
 
 		handleOpenReviewsAndDrafts(composite);
 
-		Composite buttonComp = new Composite(composite, SWT.NONE);
+		Composite buttonComp = formToolkit.createComposite(composite, SWT.NONE);
 		buttonComp.setLayout(new GridLayout(2, false));
 		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(buttonComp);
-		Button summarizeButton = new Button(buttonComp, SWT.PUSH);
-		summarizeButton.setText("Summarize and Close Review");
+		Button summarizeButton = formToolkit.createButton(buttonComp, "Summarize and Close Review", SWT.PUSH);
 		summarizeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -98,8 +103,7 @@ public class SummarizeReviewPart {
 				notifyOK();
 			}
 		});
-		Button cancelButton = new Button(buttonComp, SWT.PUSH);
-		cancelButton.setText("Cancel");
+		Button cancelButton = formToolkit.createButton(buttonComp, "Cancel", SWT.PUSH);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -113,71 +117,45 @@ public class SummarizeReviewPart {
 	private void handleOpenReviewsAndDrafts(Composite composite) {
 		boolean hasDrafts = checkForDrafts();
 		boolean hasOthersDrafts = checkForOthersDrafts();
-		java.util.List<Reviewer> openReviewers = getOpenReviewers();
-		java.util.List<Reviewer> completedReviewers = getCompletedReviewers();
+		Set<Reviewer> openReviewers = getOpenReviewers();
+		Set<Reviewer> completedReviewers = getCompletedReviewers();
 
-		Composite draftComp = new Composite(composite, SWT.NONE);
+		Composite draftComp = formToolkit.createComposite(composite, SWT.NONE);
 		draftComp.setLayout(new GridLayout(1, false));
 
 		if (completedReviewers.size() > 0) {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(
-					new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
-			Label completedReviewsLabel = new Label(draftComp, SWT.WRAP);
-			completedReviewsLabel.setText(COMPLETED_REVIEWS_INFO);
-			List completedReviewsList = new List(draftComp, SWT.SINGLE | SWT.BORDER);
-			completedReviewsList.setEnabled(false);
-			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(completedReviewsList);
-			for (Reviewer reviewer : completedReviewers) {
-				completedReviewsList.add(reviewer.getDisplayName());
-			}
+					formToolkit.createLabel(draftComp, "", SWT.SEPARATOR | SWT.HORIZONTAL));
+			new CrucibleReviewersPart(completedReviewers).createControl(formToolkit, draftComp, COMPLETED_REVIEWS_INFO);
 		}
 
 		if (openReviewers.size() > 0) {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(
-					new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
-			Label openReviewsLabel = new Label(draftComp, SWT.WRAP);
-			openReviewsLabel.setText(OPEN_REVIEWS_WARNING);
-			List openReviewsList = new List(draftComp, SWT.SINGLE | SWT.BORDER);
-			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(openReviewsList);
-			openReviewsList.setEnabled(false);
-			for (Reviewer reviewer : openReviewers) {
-				openReviewsList.add(reviewer.getDisplayName());
-			}
-			Label looseDraftsLabel = new Label(draftComp, SWT.WRAP);
-			looseDraftsLabel.setText(OTHER_DRAFTS_WARNING);
-
+					formToolkit.createLabel(draftComp, "", SWT.SEPARATOR | SWT.HORIZONTAL));
+			new CrucibleReviewersPart(openReviewers).createControl(formToolkit, draftComp, OPEN_REVIEWS_WARNING);
+			formToolkit.createLabel(draftComp, OTHER_DRAFTS_WARNING, SWT.WRAP);
 			if (hasOthersDrafts) {
-				HashMap<String, Integer> othersDrafts = getOthersDrafts();
-				List othersDraftsList = new List(draftComp, SWT.SINGLE | SWT.BORDER);
-				GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(othersDraftsList);
-				othersDraftsList.setEnabled(false);
-				for (String user : othersDrafts.keySet()) {
-					if (user.equals(me)) {
-						othersDraftsList.add(user + "(" + othersDrafts.get(user).toString() + ")", 0);
-					} else {
-						othersDraftsList.add(user + "(" + othersDrafts.get(user).toString() + ")");
-					}
-				}
+				Set<Reviewer> othersDrafts = getOthersDrafts();
+				new CrucibleReviewersPart(othersDrafts).createControl(formToolkit, draftComp,
+						"Reviewers with draft comments:");
 			}
 		}
 
 		if (hasDrafts) {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(
-					new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
-			Label draftComments = new Label(draftComp, SWT.NONE);
-			draftComments.setText("You have open drafts in this review. Please choose an action:");
+					formToolkit.createLabel(draftComp, "", SWT.SEPARATOR | SWT.HORIZONTAL));
+			Label draftComments = formToolkit.createLabel(draftComp,
+					"You have open drafts in this review. Please choose an action:", SWT.NONE);
 			GridDataFactory.fillDefaults().span(2, 1).applyTo(draftComments);
 
-			Button deleteDrafts = new Button(draftComp, SWT.RADIO);
-			deleteDrafts.setText("Discard Drafts");
+			Button deleteDrafts = formToolkit.createButton(draftComp, "Discard Drafts", SWT.RADIO);
 			deleteDrafts.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					discardDrafts = true;
 				}
 			});
-			Button postDrafts = new Button(draftComp, SWT.RADIO);
-			postDrafts.setText("Post Drafts");
+			Button postDrafts = formToolkit.createButton(draftComp, "Post Drafts", SWT.RADIO);
 			postDrafts.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -188,8 +166,8 @@ public class SummarizeReviewPart {
 		}
 	}
 
-	private HashMap<String, Integer> getOthersDrafts() {
-		HashMap<String, Integer> othersDrafts = new HashMap<String, Integer>();
+	private Set<Reviewer> getOthersDrafts() {
+		Set<Reviewer> othersDrafts = new LinkedHashSet<Reviewer>();
 		try {
 			for (GeneralComment comment : review.getGeneralComments()) {
 				checkCommentForDraft(comment, othersDrafts);
@@ -206,12 +184,15 @@ public class SummarizeReviewPart {
 		} catch (ValueNotYetInitialized e) {
 			// 
 		}
+		if (othersDrafts.contains(null)) {
+			othersDrafts.remove(null);
+		}
 		return othersDrafts;
 	}
 
-	private void checkCommentForDraft(Comment comment, HashMap<String, Integer> othersDrafts) {
+	private void checkCommentForDraft(Comment comment, Set<Reviewer> othersDrafts) {
 		if (comment.isDraft()) {
-			addOthersDraft(othersDrafts, comment.getAuthor().getUserName());
+			othersDrafts.add(getReviewer(comment.getAuthor()));
 		}
 		if (!comment.isReply()) {
 			if (comment instanceof VersionedComment) {
@@ -227,18 +208,21 @@ public class SummarizeReviewPart {
 		}
 	}
 
-	private void addOthersDraft(HashMap<String, Integer> othersDrafts, String user) {
-		Integer i = othersDrafts.get(user);
-		if (i == null) {
-			i = new Integer(1);
-		} else {
-			i = new Integer(i.intValue() + 1);
+	private Reviewer getReviewer(User author) {
+		try {
+			for (Reviewer reviewer : review.getReviewers()) {
+				if (reviewer.getUserName().equals(author.getUserName())) {
+					return reviewer;
+				}
+			}
+		} catch (ValueNotYetInitialized e) {
+			// 
 		}
-		othersDrafts.put(user, i);
+		return null;
 	}
 
-	private java.util.List<Reviewer> getOpenReviewers() {
-		java.util.List<Reviewer> openReviewers = new ArrayList<Reviewer>();
+	private Set<Reviewer> getOpenReviewers() {
+		Set<Reviewer> openReviewers = new LinkedHashSet<Reviewer>();
 		try {
 			for (Reviewer reviewer : review.getReviewers()) {
 				if (!reviewer.isCompleted()) {
@@ -251,8 +235,8 @@ public class SummarizeReviewPart {
 		return openReviewers;
 	}
 
-	private java.util.List<Reviewer> getCompletedReviewers() {
-		java.util.List<Reviewer> completedReviewers = new ArrayList<Reviewer>();
+	private Set<Reviewer> getCompletedReviewers() {
+		Set<Reviewer> completedReviewers = new LinkedHashSet<Reviewer>();
 		try {
 			for (Reviewer reviewer : review.getReviewers()) {
 				if (reviewer.isCompleted()) {
@@ -317,4 +301,11 @@ public class SummarizeReviewPart {
 	public String getSummarizeText() {
 		return summarizedText == null ? "" : summarizedText;
 	}
+
+	public void dispose() {
+		if (formToolkit != null) {
+			formToolkit.dispose();
+		}
+	}
+
 }
