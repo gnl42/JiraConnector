@@ -43,6 +43,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	// list of clients used for validating credentials.  Should only be created through the RepositorySettingsPage
 	private final Map<CrucibleClient, ServerCfg> tempClients = new HashMap<CrucibleClient, ServerCfg>();
 
+	// the server facade
 	private CrucibleServerFacade crucibleServerFacade;
 
 	private final CrucibleHttpSessionCallback clientCallback;
