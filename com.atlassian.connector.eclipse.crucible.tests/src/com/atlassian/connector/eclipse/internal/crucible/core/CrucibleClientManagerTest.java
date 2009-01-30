@@ -91,6 +91,7 @@ public class CrucibleClientManagerTest extends TestCase {
 			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
 		} catch (AssertionFailedError e) {
 			// ignore since this is what we want
+			return;
 		}
 		fail();
 
