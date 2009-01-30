@@ -155,6 +155,7 @@
 		<mkdir dir="${eclipse.base}"/>
 		<mkdir dir="${build.home}"/>
 		<mkdir dir="${build.results}"/>
+		<echo>Running on ${os.name} ${os.version} (${os.arch}) / ${build.system} / ${build.os}-${build.arch}-${build.ws}, ${ant.version}, Java ${ant.java.version}</echo>
 	</target>
 
 	<target name="init-timestamp" unless="qualifier">
@@ -181,7 +182,7 @@
 	<target name="init" depends="init-base">		
 		<property file="${build.timestamp}" />
 		<fail message="No qualifier specified. Please run build first." unless="qualifier"/>
-		<echo message="Building ${version}.${qualifier} on ${build.os}-${build.arch}-${build.ws}" />		
+		<echo message="Building ${version}.${qualifier}" />
 	</target>
 	
 	<target name="init-scripts">
@@ -280,6 +281,7 @@
 		    <arg value="-consolelog"/>
     		<arg value="-data"/>
     		<arg value="${build.home}/workspace"/>
+        	<arg value="-clean"/>    		
 		    <arg value="-application"/>
     		<arg value="${application}"/>
     		<arg value="-buildfile"/>
@@ -379,9 +381,10 @@
 	<!-- ===================================================================== -->
 
 	<target name="install-bundle-helper-p2" unless="update.version">
-    	<property name="timeout" value="3600000" />
+		<fail message="Require property 'eclipse.home' is not set" unless="eclipse.home"/>
+		
+		<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.equinox.p2.director.app.application" />
-    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value="-Xms40m -Xmx256m"/>    	
 
 		<echo message="Installing ${update.feature}"/>
@@ -411,7 +414,7 @@
 	<target name="install-bundle-helper-p2" unless="update.version">
     	<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.equinox.p2.director.app.application" />
-    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
+    	<property name="eclipse.home" value="${eclipse.home}" />
 		<property name="vmargs" value="-Xms40m -Xmx256m -Declipse.p2.data.area=${eclipse.home}/p2"/>    	
 
 		<echo message="Installing ${update.feature}"/>
@@ -448,6 +451,8 @@
 -->
 	
 	<target name="install-bundle-helper-um">
+		<fail message="Require property 'eclipse.home' is not set" unless="eclipse.home"/>
+		
 		<property name="output" value="${build.home}/update.properties"/>
 
 		<antcall target="install-bundle-get-version-helper-um"/>
@@ -456,14 +461,13 @@
 	    <condition property="failed"><contains string="${output}" substring="Command completed"/></condition>
 		<fail message="Failed to download ${update.feature} from ${update.site}" if="failed"/>
 		
-		<available property="bundle.exists" file="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse/features/${update.feature}_${update.version}"/>
+		<available property="bundle.exists" file="${eclipse.home}/features/${update.feature}_${update.version}"/>
 		<antcall target="install-bundle-helper-install-um"/>		
 	</target>
 	
 	<target name="install-bundle-get-version-helper-um" unless="update.version">
     	<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
-    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value="-Xms40m -Xmx256m"/>    	
 
 		<echo message="Checking version for ${update.feature}"/>
@@ -495,7 +499,6 @@
 	<target name="install-bundle-helper-install-um" unless="bundle.exists">
     	<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
-    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value="-Xms40m -Xmx256m"/>    	
 
 		<echo message="Installing ${update.feature} ${update.version} into ${eclipse.home}"/>
@@ -565,17 +568,14 @@
 			match="org.apache.derby.core" replace="org.apache.derby" byline="true"/>
 	</target>
 
-	<target name="install-tests-helper">
+	<target name="tests-helper-init">
     	<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
   	    <condition property="install.dir" value="${eclipse.home}" else="${eclipse.home}/dropins/test"><equals arg1="${build.target}" arg2="3.3"/></condition>
 		
-		<!-- replace performance plug-in with patched version from test feature -->
-		<delete failonerror="false" includeemptydirs="true">
-			<fileset dir="${eclipse.home}">
-				<include name="plugins/org.eclipse.test.performance*/**"/>
-			</fileset>
-		</delete>
-
+		<antcall target="install-tests-helper-performance-tests"/>
+	</target>
+		
+	<target name="install-tests-helper">
 		<!-- copy build features to eclipse directory -->
 		<unzip dest="${install.dir}">
 			<fileset dir="${build.home}/${build.target}/${build.dist}">
@@ -583,13 +583,20 @@
 				<exclude name="*sdk*"/>
 			</fileset>
 		</unzip>
-
 	</target>
 
-	<target name="tests-helper" depends="install-tests-helper,pre-tests">
+	<target name="install-tests-helper-performance-tests" if="build.replacePerformanceTestPlugin">
+		<!-- replace performance plug-in with patched version from test feature -->
+		<delete failonerror="false" includeemptydirs="true">
+			<fileset dir="${eclipse.home}">
+				<include name="plugins/org.eclipse.test.performance*/**"/>
+			</fileset>
+		</delete>
+	</target>
+	
+	<target name="tests-helper" depends="tests-helper-init,pre-tests,install-tests-helper">
     	<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.ant.core.antRunner" />
-    	<property name="eclipse.home" value="${eclipse.base}/test-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value=" -Xms40m -Xmx256m"/>    	
     	<path id="library.id"> 
     		<fileset dir="${eclipse.home}/plugins">
@@ -621,7 +628,9 @@
     		<arg value="-Declipse-home=${eclipse.home}"/>    		
     		<arg value="-Dlibrary-file=${library}"/>
     		<arg value="-DextraVMargs= 
-    	    -ea 
+    	    -ea
+    		-Xmx384m
+    		-XX:MaxPermSize=128m
     	    -Declipse.perf.dbloc=${build.db} 
     	    -Declipse.perf.config=build=${qualifier};config=${build.host}-${build.target};jvm=${java.version}
     	    -Declipse.perf.assertAgainst=build=${build.assertAgainst}
