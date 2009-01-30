@@ -23,6 +23,7 @@ import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 public class CrucibleClientManagerTest extends TestCase {
@@ -69,7 +70,7 @@ public class CrucibleClientManagerTest extends TestCase {
 		assertFalse(httpClient1 == httpClient2);
 	}
 
-	public void testRepositoryRemoved() {
+	public void testRepositoryRemoved() throws HttpProxySettingsException {
 		TaskRepository repo = new TaskRepository(CrucibleCorePlugin.CONNECTOR_KIND, "http://crucible.atlassian.com");
 		repo.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("user", "pass"), false);
 
@@ -80,20 +81,18 @@ public class CrucibleClientManagerTest extends TestCase {
 
 		clientManager.getClient(repo);
 		HttpClient httpClient1 = null;
-		try {
-			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
-		} catch (HttpProxySettingsException e) {
-			//
-		}
+
+		httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
+
 		assertNotNull(httpClient1);
 		clientManager.repositoryRemoved(repo);
 		httpClient1 = null;
 		try {
 			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
-		} catch (HttpProxySettingsException e) {
-			//
+		} catch (AssertionFailedError e) {
+			// ignore since this is what we want
 		}
-		assertNull(httpClient1);
+		fail();
 
 	}
 
