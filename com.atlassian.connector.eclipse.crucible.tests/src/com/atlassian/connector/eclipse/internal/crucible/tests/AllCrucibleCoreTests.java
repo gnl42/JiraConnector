@@ -2,6 +2,7 @@ package com.atlassian.connector.eclipse.internal.crucible.tests;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManagerTest;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnectorTest;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapperTest;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest;
 import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparatorTest;
 
@@ -15,9 +16,7 @@ import junit.framework.TestSuite;
  */
 public final class AllCrucibleCoreTests {
 
-	// TODO make a test to ensure that changing the creds gives us a new httpclient so the state is changed
 	// TODO test the cache - cache a partial review
-	// TODO test the crucible task mapper 
 	// TODO test CrucibleServerCfg equals and hashcode
 
 	private AllCrucibleCoreTests() {
@@ -32,6 +31,8 @@ public final class AllCrucibleCoreTests {
 		suite.addTestSuite(CrucibleRepositoryConnectorTest.class);
 		suite.addTestSuite(CrucibleUtilTest.class);
 		suite.addTestSuite(VersionedCommentDateComparatorTest.class);
+		suite.addTestSuite(CrucibleClientManagerTest.class);
+		suite.addTestSuite(CrucibleTaskMapperTest.class);
 
 		// $JUnit-END$
 		return suite;
