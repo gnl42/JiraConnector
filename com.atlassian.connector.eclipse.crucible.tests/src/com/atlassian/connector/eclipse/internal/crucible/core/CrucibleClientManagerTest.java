@@ -23,7 +23,6 @@ import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
-import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 public class CrucibleClientManagerTest extends TestCase {
@@ -89,7 +88,7 @@ public class CrucibleClientManagerTest extends TestCase {
 		httpClient1 = null;
 		try {
 			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
-		} catch (AssertionFailedError e) {
+		} catch (AssertionError e) {
 			// ignore since this is what we want
 			return;
 		}
