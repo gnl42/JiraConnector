@@ -24,7 +24,18 @@
 			<param name="update.version" value="1.4.7"/>
 		</antcall>
 	</target>
-	
+
+	<target name="pre-tests">
+		<delete failonerror="false" includeemptydirs="true">
+			<fileset dir="${eclipse.home}">
+				<include name="features/org.eclipse.mylyn*/**"/>
+				<include name="plugins/org.eclipse.mylyn*/**"/>
+				<include name="features/com.atlassian.connector*/**"/>
+				<include name="plugins/com.atlassian.connector*/**"/>
+			</fileset>
+		</delete>
+	</target>
+
 	<target name="pack" depends="init,init-3.4">
 		<antcall target="for-each-target">
 			<param name="call" value="pack-sites"/>
