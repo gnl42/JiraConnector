@@ -93,8 +93,7 @@ public class CrucibleClientManagerTest extends TestCase {
 			// ignore since this is what we want
 			return;
 		}
-		fail();
-
+		assertNull(httpClient1);
 	}
 
 	public void testCreateDeleteTempClient() {
