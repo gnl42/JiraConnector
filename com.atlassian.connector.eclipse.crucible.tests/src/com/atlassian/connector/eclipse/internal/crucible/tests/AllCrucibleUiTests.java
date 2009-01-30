@@ -1,5 +1,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.tests;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.ActiveReviewManagerTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.RepositoryConnectorUiTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.UserContentProviderTest;
@@ -16,7 +17,6 @@ import junit.framework.TestSuite;
  */
 public final class AllCrucibleUiTests {
 
-	// TODO test the activeReviewManager - esp activating a task that is not a review
 	// TODO test notification manager
 
 	// TODO test annotations model stuff
@@ -34,6 +34,7 @@ public final class AllCrucibleUiTests {
 		suite.addTestSuite(UserLabelProviderTest.class);
 		suite.addTestSuite(UserContentProviderTest.class);
 		suite.addTestSuite(UserSorterTest.class);
+		suite.addTestSuite(ActiveReviewManagerTest.class);
 
 		// $JUnit-END$
 		return suite;

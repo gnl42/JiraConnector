@@ -59,7 +59,10 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 
 	private SynchronizationJob synchronizeJob;
 
-	public ActiveReviewManager() {
+	private final boolean increasedRefresh;
+
+	public ActiveReviewManager(boolean increasedRefresh) {
+		this.increasedRefresh = increasedRefresh;
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(this);
 	}
 
@@ -82,7 +85,10 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 		} else {
 			activeReviewUpdated(cachedReview, task);
 		}
-		startIncreasedChangePolling();
+
+		if (increasedRefresh) {
+			startIncreasedChangePolling();
+		}
 	}
 
 	public synchronized void taskDeactivated(ITask task) {
@@ -183,7 +189,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 	}
 
 	public void reviewAdded(String repositoryUrl, String taskId, Review review) {
-		// ignore
+		// ignore if the current active review is added, we should already have it
 	}
 
 	public synchronized void reviewUpdated(String repositoryUrl, String taskId, Review review,

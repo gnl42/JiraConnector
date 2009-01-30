@@ -48,6 +48,9 @@ public class CrucibleTaskMapperTest extends TestCase {
 
 		taskMapper.setTaskKey("key");
 		key = taskMapper.getTaskKey();
+
+		assertEquals("key", key);
+
 		key = taskMapper.getValue(TaskAttribute.TASK_KEY);
 		assertEquals("key", key);
 

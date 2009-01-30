@@ -56,8 +56,9 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		crucibleEditorTracker = new CrucibleEditorTracker();
 
-		activeReviewManager = new ActiveReviewManager();
-		TasksUi.getTaskActivityManager().addActivationListener(activeReviewManager);
+		activeReviewManager = new ActiveReviewManager(true);
+
+		enableActiveReviewManager();
 
 		crucibleNotificationManager = new CrucibleNotificationManager();
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(crucibleNotificationManager);
@@ -75,7 +76,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		CrucibleCorePlugin.getDefault().getReviewCache().removeCacheChangedListener(crucibleNotificationManager);
 		crucibleNotificationManager = null;
 
-		TasksUi.getTaskActivityManager().removeActivationListener(activeReviewManager);
+		disableActiveReviewManager();
+
 		MonitorUi.removeWindowPartListener(crucibleEditorTracker);
 		crucibleEditorTracker.dispose();
 		crucibleEditorTracker = null;
@@ -100,4 +102,21 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		return activeReviewManager;
 	}
 
+	/**
+	 * Method for testing purposes
+	 */
+	public void disableActiveReviewManager() {
+		if (activeReviewManager != null) {
+			TasksUi.getTaskActivityManager().removeActivationListener(activeReviewManager);
+		}
+	}
+
+	/**
+	 * Method for testing purposes
+	 */
+	public void enableActiveReviewManager() {
+		if (activeReviewManager != null) {
+			TasksUi.getTaskActivityManager().addActivationListener(activeReviewManager);
+		}
+	}
 }
