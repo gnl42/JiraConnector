@@ -735,7 +735,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		issue.setPriority(new Priority(Priority.MINOR_ID));
 		client.updateIssue(issue, "comment1", new NullProgressMonitor());
 		// make sure comments are created in the right order
-		Thread.sleep(250);
+		Thread.sleep(500);
 		client.updateIssue(issue, "comment2", new NullProgressMonitor());
 		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
 		assertEquals(summary, task.getSummary());
