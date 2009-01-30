@@ -2,6 +2,7 @@ package com.atlassian.connector.eclipse.internal.crucible.tests;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnectorTest;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtilTest;
+import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparatorTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -29,6 +30,7 @@ public final class AllCrucibleCoreTests {
 
 		suite.addTestSuite(CrucibleRepositoryConnectorTest.class);
 		suite.addTestSuite(CrucibleUtilTest.class);
+		suite.addTestSuite(VersionedCommentDateComparatorTest.class);
 
 		// $JUnit-END$
 		return suite;

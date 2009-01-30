@@ -25,6 +25,9 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
 
 import junit.framework.TestCase;
 
+/**
+ * @author Shawn Minto
+ */
 public class CrucibleUiUtilTest extends TestCase {
 
 	public void testGetCrucibleTaskRepositoryFromString() {

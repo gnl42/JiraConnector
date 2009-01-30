@@ -1,6 +1,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.tests;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtilTest;
+import com.atlassian.connector.eclipse.internal.crucible.ui.RepositoryConnectorUiTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -12,8 +13,6 @@ import junit.framework.TestSuite;
  */
 public final class AllCrucibleUiTests {
 
-	// TODO test repositoryConnectorUI getQueryWizard
-	// TODO test VersionedCOmmentComparator
 	// TODO test annotations model stuff
 	// TODO test user sorter & label provider
 	// TODO test notification manager
@@ -27,6 +26,7 @@ public final class AllCrucibleUiTests {
 		// $JUnit-BEGIN$
 
 		suite.addTestSuite(CrucibleUiUtilTest.class);
+		suite.addTestSuite(RepositoryConnectorUiTest.class);
 
 		// $JUnit-END$
 		return suite;

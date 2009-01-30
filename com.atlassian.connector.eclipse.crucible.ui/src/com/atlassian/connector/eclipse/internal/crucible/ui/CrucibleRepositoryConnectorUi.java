@@ -59,6 +59,7 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 
 	@Override
 	public IWizard getQueryWizard(TaskRepository repository, IRepositoryQuery query) {
+
 		RepositoryQueryWizard wizard = new RepositoryQueryWizard(repository);
 		if (query != null) {
 			if (CrucibleUtil.isFilterDefinition(query)) {

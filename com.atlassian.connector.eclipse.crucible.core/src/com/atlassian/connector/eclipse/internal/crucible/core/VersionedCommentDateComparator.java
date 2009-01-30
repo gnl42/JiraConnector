@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.crucible.ui;
+package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
@@ -21,7 +21,7 @@ import java.util.Date;
  * 
  * @author Shawn Minto
  */
-public class VersionedCommentComparator implements Comparator<VersionedComment> {
+public class VersionedCommentDateComparator implements Comparator<VersionedComment> {
 
 	public int compare(VersionedComment o1, VersionedComment o2) {
 		if (o1 != null && o2 != null) {

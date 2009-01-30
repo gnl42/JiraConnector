@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparator;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.VersionedCommentComparator;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.CompareVersionedVirtualFileAction;
@@ -70,7 +70,7 @@ public class CrucibleFilePart extends ExpandablePart {
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 
 		List<VersionedComment> versionedComments = new ArrayList<VersionedComment>(crucibleFile.getVersionedComments());
-		Collections.sort(versionedComments, new VersionedCommentComparator());
+		Collections.sort(versionedComments, new VersionedCommentDateComparator());
 
 		for (VersionedComment comment : versionedComments) {
 			CommentPart fileComposite = new VersionedCommentPart(comment, review, crucibleFile, crucibleEditor);

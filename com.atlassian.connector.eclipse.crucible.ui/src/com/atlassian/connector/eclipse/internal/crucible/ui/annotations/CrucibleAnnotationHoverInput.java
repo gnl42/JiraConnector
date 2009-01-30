@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.VersionedCommentComparator;
+import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparator;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import java.util.Collections;
@@ -31,7 +31,7 @@ public class CrucibleAnnotationHoverInput {
 		this.annotations = annotations;
 		Collections.sort(annotations, new Comparator<CrucibleCommentAnnotation>() {
 
-			private final VersionedCommentComparator comparator = new VersionedCommentComparator();
+			private final VersionedCommentDateComparator comparator = new VersionedCommentDateComparator();
 
 			public int compare(CrucibleCommentAnnotation o1, CrucibleCommentAnnotation o2) {
 				if (o1 != null && o2 != null) {
