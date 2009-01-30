@@ -432,7 +432,9 @@ public class CrucibleUtilTest extends TestCase {
 		Set<CrucibleFileInfo> files = new LinkedHashSet<CrucibleFileInfo>();
 		review1.setFiles(files);
 		List<GeneralComment> genC = new ArrayList<GeneralComment>();
-		genC.add(new GeneralCommentBean());
+		GeneralCommentBean genCBean = new GeneralCommentBean();
+		genCBean.setCreateDate(new Date(2L));
+		genC.add(genCBean);
 		review1.setGeneralComments(genC);
 		review1.setMetricsVersion(5);
 		review1.setModerator(new UserBean("mod"));
@@ -447,7 +449,6 @@ public class CrucibleUtilTest extends TestCase {
 		reviewers.add(reviewer);
 		review1.setReviewers(reviewers);
 		review1.setState(State.CLOSED);
-		review1.setTransitions(null);
 
 		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
 		actions = new LinkedHashSet<Action>();
@@ -464,7 +465,9 @@ public class CrucibleUtilTest extends TestCase {
 		files = new LinkedHashSet<CrucibleFileInfo>();
 		review.setFiles(files);
 		genC = new ArrayList<GeneralComment>();
-		genC.add(new GeneralCommentBean());
+		genCBean = new GeneralCommentBean();
+		genCBean.setCreateDate(new Date(2L));
+		genC.add(genCBean);
 		review.setGeneralComments(genC);
 		review.setMetricsVersion(5);
 		review.setModerator(new UserBean("mod"));
@@ -479,12 +482,27 @@ public class CrucibleUtilTest extends TestCase {
 		reviewers.add(reviewer);
 		review.setReviewers(reviewers);
 		review.setState(State.CLOSED);
-		review.setTransitions(null);
 
-		assertEquals(CrucibleUtil.createHash(review), CrucibleUtil.createHash(review1));
-
-		review1.setAuthor(new UserBean("new"));
+		//test for incomplete reviews
+		assertTrue(-1 == CrucibleUtil.createHash(review));
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
-	}
 
+		List<Action> transitions = new ArrayList<Action>();
+		transitions.add(Action.CLOSE);
+		review1.setTransitions(transitions);
+
+		transitions = new ArrayList<Action>();
+		transitions.add(Action.CLOSE);
+		review.setTransitions(transitions);
+
+		//test for same object
+		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review));
+
+		//test for equal reviews
+		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
+
+		//test for unequal reviews
+		review1.setAuthor(new UserBean("new"));
+		assertTrue(CrucibleUtil.createHash(review) != CrucibleUtil.createHash(review1));
+	}
 }
