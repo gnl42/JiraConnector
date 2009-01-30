@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.VersionedCommentComparator;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.CompareVersionedVirtualFileAction;
@@ -35,8 +36,6 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -71,33 +70,7 @@ public class CrucibleFilePart extends ExpandablePart {
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 
 		List<VersionedComment> versionedComments = new ArrayList<VersionedComment>(crucibleFile.getVersionedComments());
-		Collections.sort(versionedComments, new Comparator<VersionedComment>() {
-
-			public int compare(VersionedComment o1, VersionedComment o2) {
-				if (o1 != null && o2 != null) {
-					int difference = 0;
-					if (o1.isToLineInfo() && o2.isToLineInfo()) {
-						Integer start1 = o1.getToStartLine();
-						Integer start2 = o2.getToStartLine();
-
-						difference = start1.compareTo(start2);
-					} else if (o1.isToLineInfo()) {
-						difference = 1;
-					} else if (o2.isToLineInfo()) {
-						difference = -1;
-					}
-
-					if (difference == 0) {
-						Date d1 = o1.getCreateDate();
-						Date d2 = o2.getCreateDate();
-						difference = d1.compareTo(d2);
-					}
-					return difference;
-				}
-				return 0;
-			}
-
-		});
+		Collections.sort(versionedComments, new VersionedCommentComparator());
 
 		for (VersionedComment comment : versionedComments) {
 			CommentPart fileComposite = new VersionedCommentPart(comment, review, crucibleFile, crucibleEditor);
