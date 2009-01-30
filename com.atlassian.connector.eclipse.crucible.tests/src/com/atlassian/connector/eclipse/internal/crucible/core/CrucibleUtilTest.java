@@ -487,7 +487,4 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
 	}
 
-	// TODO make a test to ensure that changing the creds gives us a new httpclient so the state is changed
-	// TODO test the cache - cache a partial review
-	// TODO test the activeReviewManager - esp activating a task that is not a review
 }

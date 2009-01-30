@@ -18,6 +18,9 @@ import junit.framework.TestCase;
  */
 public class CrucibleRepositoryConnectorTest extends TestCase {
 
+	// TODO test hasChanged that the hash or a change in review notifies correctly
+	// TODO test updateTaskFromTaskData (that the hash is properly stored
+
 	public void testPass() {
 
 	}
