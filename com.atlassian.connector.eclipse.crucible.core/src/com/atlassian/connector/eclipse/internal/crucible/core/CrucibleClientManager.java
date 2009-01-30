@@ -152,4 +152,23 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 			return parentFactory;
 		}
 	}
+
+	/**
+	 * For testing purposes only
+	 * 
+	 * @return
+	 */
+	public CrucibleHttpSessionCallback getClientCallback() {
+		return clientCallback;
+	}
+
+	/**
+	 * For testing purposes only
+	 * 
+	 * @return
+	 */
+	public Map<CrucibleClient, ServerCfg> getTempClients() {
+		return tempClients;
+	}
+
 }
