@@ -12,15 +12,13 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IStatus;
@@ -29,7 +27,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -72,15 +69,10 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 
 	@Override
 	public void run() {
-
-		String repositoryUrl = ((ReviewBean) review).getServerUrl();
-		String taskId = CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId());
-
-		if (repositoryUrl != null && taskId != null) {
-			TaskRepository taskRepository = TasksUi.getRepositoryManager().getRepository(
-					CrucibleCorePlugin.CONNECTOR_KIND, repositoryUrl);
+		if (review != null) {
+			TaskRepository taskRepository = CrucibleUiUtil.getCrucibleTaskRepository(review);
 			if (taskRepository != null) {
-				ITask task = TasksUi.getRepositoryModel().getTask(taskRepository, taskId);
+				ITask task = CrucibleUiUtil.getCrucibleTask(review);
 				if (task != null) {
 					TaskEditorInput editorInput = new TaskEditorInput(taskRepository, task);
 					for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {

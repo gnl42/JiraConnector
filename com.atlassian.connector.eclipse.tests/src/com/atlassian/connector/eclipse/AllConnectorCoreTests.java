@@ -11,19 +11,20 @@
 
 package com.atlassian.connector.eclipse;
 
+import com.atlassian.connector.eclipse.internal.crucible.tests.AllCrucibleCoreTests;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public final class AllConnectorTests {
+public final class AllConnectorCoreTests {
 
-	private AllConnectorTests() {
+	private AllConnectorCoreTests() {
 	}
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for com.atlassian.connector.eclipse.tests");
 
-		suite.addTest(AllConnectorCoreTests.suite());
-		suite.addTest(AllConnectorUiTests.suite());
+		suite.addTest(AllCrucibleCoreTests.suite());
 
 		return suite;
 	}

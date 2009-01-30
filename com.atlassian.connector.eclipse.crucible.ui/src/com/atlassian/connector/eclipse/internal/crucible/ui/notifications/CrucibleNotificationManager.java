@@ -11,14 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.notifications;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -34,10 +33,9 @@ public class CrucibleNotificationManager implements IReviewCacheListener {
 
 	public void reviewAdded(final String repositoryUrl, final String taskId, final Review review) {
 
-		TaskRepository taskRepository = TasksUi.getRepositoryManager().getRepository(CrucibleCorePlugin.CONNECTOR_KIND,
-				repositoryUrl);
+		TaskRepository taskRepository = CrucibleUiUtil.getCrucibleTaskRepository(repositoryUrl);
 		if (taskRepository != null) {
-			ITask task = TasksUi.getRepositoryModel().getTask(taskRepository, taskId);
+			ITask task = CrucibleUiUtil.getCrucibleTask(taskRepository, taskId);
 			if (task == null) {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {

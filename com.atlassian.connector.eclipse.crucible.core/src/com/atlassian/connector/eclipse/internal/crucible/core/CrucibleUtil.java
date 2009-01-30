@@ -358,4 +358,5 @@ public final class CrucibleUtil {
 
 		return result;
 	}
+
 }

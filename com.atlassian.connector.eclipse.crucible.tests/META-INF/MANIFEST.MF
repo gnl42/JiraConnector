@@ -8,7 +8,10 @@ Require-Bundle: org.junit,
  com.atlassian.connector.eclipse.crucible.core,
  org.eclipse.mylyn.tasks.core,
  com.atlassian.connector.commons,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ com.atlassian.connector.eclipse.crucible.ui,
+ org.eclipse.mylyn.tasks.ui
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-internal:=true,
- com.atlassian.connector.eclipse.internal.crucible.tests;x-internal:=true
+ com.atlassian.connector.eclipse.internal.crucible.tests;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui;x-internal:=true

@@ -11,16 +11,14 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -110,10 +108,8 @@ public abstract class AbstractReviewAction extends BaseSelectionListenerAction i
 		if (review == null) {
 			return null;
 		}
-		ReviewBean activeReviewBean = (ReviewBean) review;
-		String serverUrl = activeReviewBean.getServerUrl();
 
-		return TasksUi.getRepositoryManager().getRepository(CrucibleCorePlugin.CONNECTOR_KIND, serverUrl);
+		return CrucibleUiUtil.getCrucibleTaskRepository(review);
 	}
 
 }

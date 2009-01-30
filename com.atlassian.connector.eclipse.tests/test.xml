@@ -30,7 +30,7 @@
     <ant target="${test-target}" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${workspace}"/>
       <property name="plugin-name" value="${plugin-name}"/>
-      <property name="classname" value="com.atlassian.connector.eclipse.AllConnectorTests"/>
+      <property name="classname" value="com.atlassian.connector.eclipse.AllConnectorCoreTests"/>
     </ant>
   </target>
   

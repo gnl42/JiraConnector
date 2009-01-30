@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -58,12 +57,9 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 
 	private ITask activeTask;
 
-	private final IRepositoryManager repositoryManager;
-
 	private SynchronizationJob synchronizeJob;
 
-	public ActiveReviewManager(IRepositoryManager repositoryManager) {
-		this.repositoryManager = repositoryManager;
+	public ActiveReviewManager() {
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(this);
 	}
 
@@ -154,8 +150,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 			protected IStatus run(IProgressMonitor monitor) {
 
 				try {
-					TaskRepository repository = repositoryManager.getRepository(CrucibleCorePlugin.CONNECTOR_KIND,
-							task.getRepositoryUrl());
+					TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(task.getRepositoryUrl());
 
 					if (repository != null) {
 						String taskId = task.getTaskId();
