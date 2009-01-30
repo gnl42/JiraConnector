@@ -16,7 +16,6 @@ public final class AllCrucibleCoreTests {
 
 	// TODO make a test to ensure that changing the creds gives us a new httpclient so the state is changed
 	// TODO test the cache - cache a partial review
-	// TODO test the activeReviewManager - esp activating a task that is not a review
 	// TODO test the crucible task mapper 
 	// TODO test CrucibleServerCfg equals and hashcode
 
