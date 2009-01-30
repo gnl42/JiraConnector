@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AbstractAddCommentAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 
 /**
@@ -26,22 +25,14 @@ public class AddGeneralReviewCommentAction extends AbstractAddCommentAction {
 
 	public AddGeneralReviewCommentAction(Review review) {
 		super("Add General Review Comment");
+		setImageDescriptor(TasksUiImages.COMMENT);
+		setToolTipText("Add General Review Comment");
 		super.review = review;
 	}
 
 	@Override
 	protected String getDialogTitle() {
 		return getText();
-	}
-
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		return TasksUiImages.COMMENT;
-	}
-
-	@Override
-	public String getToolTipText() {
-		return "Add General Review Comment";
 	}
 
 	@Override

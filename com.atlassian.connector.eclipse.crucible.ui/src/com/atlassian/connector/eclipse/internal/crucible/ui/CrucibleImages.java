@@ -31,6 +31,8 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor REVIEWER_COMPLETE = create(T_OBJ, "reviewerComplete.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor COMMENT_SMALL = create(T_OBJ, "comment-small.gif"); //$NON-NLS-1$
+
 	private CrucibleImages() {
 		// ignore
 	}
