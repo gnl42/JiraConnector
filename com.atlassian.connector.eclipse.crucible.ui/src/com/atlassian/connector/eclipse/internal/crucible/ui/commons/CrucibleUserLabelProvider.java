@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.commons;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import org.eclipse.jface.viewers.LabelProvider;
 
@@ -26,6 +27,8 @@ public class CrucibleUserLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		if (element instanceof CrucibleCachedUser) {
 			return ((CrucibleCachedUser) element).getDisplayName();
+		} else if (element instanceof User) {
+			return ((User) element).getDisplayName();
 		}
 		return super.getText(element);
 	}
