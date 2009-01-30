@@ -105,9 +105,13 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	}
 
 	@Override
-	public synchronized void repositoryRemoved(TaskRepository repository) {
-		super.repositoryRemoved(repository);
-		// TODO remove the client from the callback
+	public synchronized void repositoryRemoved(TaskRepository taskRepository) {
+		super.repositoryRemoved(taskRepository);
+
+		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
+		CrucibleServerCfg serverCfg = getServerCfg(location, taskRepository, false);
+		clientCallback.removeClient(serverCfg);
+
 	}
 
 	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, CrucibleServerCfg serverCfg) {

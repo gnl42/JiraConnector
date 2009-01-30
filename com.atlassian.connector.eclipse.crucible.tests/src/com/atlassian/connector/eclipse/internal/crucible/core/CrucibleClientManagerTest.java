@@ -87,7 +87,6 @@ public class CrucibleClientManagerTest extends TestCase {
 		}
 		assertNotNull(httpClient1);
 		clientManager.repositoryRemoved(repo);
-		clientManager.getClient(repo);
 		httpClient1 = null;
 		try {
 			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
