@@ -27,7 +27,6 @@ public final class AllCrucibleCoreTests {
 		TestSuite suite = new TestSuite("Tests for Crucible");
 		// $JUnit-BEGIN$
 
-		suite.addTestSuite(CrucibleClientManagerTest.class);
 		suite.addTestSuite(CrucibleRepositoryConnectorTest.class);
 		suite.addTestSuite(CrucibleUtilTest.class);
 		suite.addTestSuite(VersionedCommentDateComparatorTest.class);
