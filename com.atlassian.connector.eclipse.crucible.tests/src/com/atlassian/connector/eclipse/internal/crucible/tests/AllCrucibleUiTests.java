@@ -13,6 +13,7 @@ import junit.framework.TestSuite;
  */
 public final class AllCrucibleUiTests {
 
+	// TODO test the activeReviewManager - esp activating a task that is not a review
 	// TODO test annotations model stuff
 	// TODO test user sorter & label provider
 	// TODO test notification manager
