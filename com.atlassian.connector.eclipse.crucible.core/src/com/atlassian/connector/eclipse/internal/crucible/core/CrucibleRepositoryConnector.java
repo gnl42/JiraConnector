@@ -178,7 +178,7 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 		TaskAttribute hashAttribute = taskData.getRoot().getAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY);
 		if (hashAttribute != null) {
 			int hash = taskData.getAttributeMapper().getIntegerValue(hashAttribute);
-			task.setAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY, hash + "");
+			task.setAttribute(CrucibleConstants.CHANGED_HASH_CODE_KEY, String.valueOf(hash));
 		}
 
 		// TODO notify listeners if there was a change and make a popup happen
