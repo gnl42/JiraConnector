@@ -48,7 +48,7 @@ public final class AddCommentRemoteOperation extends CrucibleClient.RemoteOperat
 
 	private final CrucibleClient client;
 
-	private final LineRange commentLines = null;
+	private LineRange commentLines = null;
 
 	private boolean isDraft = false;
 
@@ -84,6 +84,10 @@ public final class AddCommentRemoteOperation extends CrucibleClient.RemoteOperat
 
 	public void setParentComment(Comment parentComment) {
 		this.parentComment = parentComment;
+	}
+
+	public void setCommentLines(LineRange commentLines) {
+		this.commentLines = commentLines;
 	}
 
 	private String getTaskId() {

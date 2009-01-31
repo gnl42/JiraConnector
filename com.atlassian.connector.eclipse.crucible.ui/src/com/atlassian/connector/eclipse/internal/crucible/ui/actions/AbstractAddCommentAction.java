@@ -71,6 +71,8 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 						operation.setDefect(isDefect);
 						operation.setDraft(isDraft);
 						operation.setCustomFields(customFields);
+						operation.setCommentLines(commentLines);
+
 						operation.setParentComment(parentComment);
 
 						client.execute(operation);
