@@ -42,6 +42,7 @@ public class CrucibleSummarizeReviewDialog extends Dialog implements ISummarizeR
 
 	@Override
 	protected Control createContents(Composite parent) {
+		getShell().setText("Summarize Review");
 		part = new SummarizeReviewPart(review, userName);
 		Composite composite = part.createControl(parent);
 		part.setListener(this);
