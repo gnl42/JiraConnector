@@ -19,6 +19,8 @@ plugin@com.atlassian.connector.eclipse.tests=SVN,trunk,https://studio.atlassian.
 plugin@com.atlassian.connector.eclipse.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.ui
 
 plugin@com.atlassian.connector.commons=SVN,trunk,https://studio.atlassian.com/svn/ACC,,com.atlassian.connector.commons
+plugin@com.atlassian.connector.commons.tests.dependencies=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.commons.tests.dependencies
+
 
 !plugin@com.thoughtworks.xstream=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.thoughtworks.xstream
 !plugin@org.joda.time=SVN,trunk,https://studio.atlassian.com/svn/PLE,,org.joda.time
