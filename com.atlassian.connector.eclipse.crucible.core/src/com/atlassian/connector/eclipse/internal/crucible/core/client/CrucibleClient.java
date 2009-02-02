@@ -225,6 +225,10 @@ public class CrucibleClient {
 		Date creationDate = review.getCreateDate();
 		Date closeDate = review.getCloseDate();
 
+		if (!review.isCompleted()) {
+			closeDate = null;
+		}
+
 		int hash = CrucibleUtil.createHash(review);
 
 		Date dateModified = creationDate;
