@@ -24,6 +24,7 @@ import com.atlassian.connector.eclipse.ui.commons.TreeContentProvider;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -107,7 +108,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		}
 
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
+		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
 		// TODO fix other 3 fields
 

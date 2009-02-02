@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 
@@ -21,6 +21,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -81,14 +82,18 @@ public abstract class ExpandablePart {
 			style |= ExpandableComposite.TWISTIE;
 		}
 
-		if (crucibleEditor == null) {
-			style |= ExpandableComposite.EXPANDED;
-		}
+//		if (crucibleEditor == null) {
+		style |= ExpandableComposite.EXPANDED;
+//		}
 
 		commentSection = toolkit.createSection(parent, style);
 		commentSection.setText(headerText);
 		commentSection.setTitleBarForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(commentSection);
+		GridData gd = GridDataFactory.fillDefaults().grab(true, false).create();
+		if (!canExpand()) {
+			gd.horizontalIndent = 9;
+		}
+		commentSection.setLayoutData(gd);
 
 		final Composite actionsComposite = createSectionAnnotationsAndToolbar(commentSection, toolkit);
 
@@ -238,7 +243,9 @@ public abstract class ExpandablePart {
 	}
 
 	public void setExpanded(boolean expanded) {
-		EditorUtil.toggleExpandableComposite(expanded, commentSection);
+		if (expanded != commentSection.isExpanded()) {
+			EditorUtil.toggleExpandableComposite(expanded, commentSection);
+		}
 		for (ExpandablePart child : childrenParts) {
 			child.setExpanded(expanded);
 		}

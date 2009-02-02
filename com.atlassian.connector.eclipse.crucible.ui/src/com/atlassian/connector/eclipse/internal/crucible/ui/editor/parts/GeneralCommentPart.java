@@ -45,7 +45,7 @@ public class GeneralCommentPart extends CommentPart {
 	@Override
 	protected String getSectionHeaderText() {
 		return generalComment.getAuthor().getDisplayName()
-				+ " "
+				+ "   "
 				+ DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
 						generalComment.getCreateDate());
 	}

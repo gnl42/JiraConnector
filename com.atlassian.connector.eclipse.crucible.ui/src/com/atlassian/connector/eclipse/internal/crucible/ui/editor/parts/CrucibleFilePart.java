@@ -56,7 +56,7 @@ public class CrucibleFilePart extends ExpandablePart {
 	}
 
 	@Override
-	protected boolean canExpand() {
+	public boolean canExpand() {
 		return crucibleFile.getVersionedComments().size() != 0;
 	}
 

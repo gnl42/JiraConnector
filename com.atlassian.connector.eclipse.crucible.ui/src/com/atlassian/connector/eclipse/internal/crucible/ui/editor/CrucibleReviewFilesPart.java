@@ -23,9 +23,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
@@ -77,6 +79,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED;
 		filesSection = toolkit.createSection(parent, style);
 		filesSection.setText(getSectionTitle());
+		filesSection.clientVerticalSpacing = 0;
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(filesSection);
 
 		setSection(toolkit, filesSection);
@@ -108,8 +111,8 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	private String getSectionTitle() {
 		String title = "Review Files";
 		try {
-			return title + " (" + crucibleReview.getFiles().size() + " files) ("
-					+ crucibleReview.getNumberOfVersionedComments() + " comments)";
+			return NLS.bind("{0}   ({1} files, {2} comments)", new Object[] { title, crucibleReview.getFiles().size(),
+					crucibleReview.getNumberOfVersionedComments() });
 
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
@@ -121,8 +124,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	private Composite createCommentViewers(FormToolkit toolkit) {
 		//CHECKSTYLE:MAGIC:OFF
 		Composite composite = toolkit.createComposite(filesSection);
-		composite.setLayout(new GridLayout(1, false));
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
+		composite.setLayout(GridLayoutFactory.fillDefaults().create());
 
 		try {
 			List<CrucibleFileInfo> files = new ArrayList<CrucibleFileInfo>(crucibleReview.getFiles());
@@ -138,10 +140,15 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 			});
 
 			for (CrucibleFileInfo file : files) {
-				CrucibleFilePart fileComposite = new CrucibleFilePart(file, crucibleReview, crucibleEditor);
-				parts.add(fileComposite);
-				Control fileControl = fileComposite.createControl(composite, toolkit);
-				GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
+				CrucibleFilePart part = new CrucibleFilePart(file, crucibleReview, crucibleEditor);
+				parts.add(part);
+				Control fileControl = part.createControl(composite, toolkit);
+				//GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
+				GridData gd = GridDataFactory.fillDefaults().grab(true, false).create();
+				if (!part.canExpand()) {
+					gd.horizontalIndent = 15;
+				}
+				fileControl.setLayoutData(gd);
 			}
 		} catch (ValueNotYetInitialized e) {
 			// TODO do something different here?

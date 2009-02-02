@@ -111,7 +111,8 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 	}
 
 	public boolean isFocusControl() {
-		return composite.isFocusControl();
+		//return composite.isFocusControl();
+		return getShell().getDisplay().getActiveShell() == getShell();
 	}
 
 	public void removeDisposeListener(DisposeListener listener) {

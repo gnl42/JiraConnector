@@ -54,7 +54,7 @@ public class VersionedCommentPart extends CommentPart {
 
 	@Override
 	protected String getSectionHeaderText() {
-		String headerText = versionedComment.getAuthor().getDisplayName() + " ";
+		String headerText = versionedComment.getAuthor().getDisplayName() + "   ";
 		headerText += DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
 				versionedComment.getCreateDate());
 		return headerText;

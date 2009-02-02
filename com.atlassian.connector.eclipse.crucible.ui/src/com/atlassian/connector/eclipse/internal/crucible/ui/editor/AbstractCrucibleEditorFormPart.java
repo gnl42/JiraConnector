@@ -52,10 +52,6 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 			for (ExpandablePart part : getExpandableParts()) {
 				part.setExpanded(false);
 			}
-
-			if (expandableSection != null) {
-				EditorUtil.toggleExpandableComposite(false, expandableSection);
-			}
 		} finally {
 			getReviewEditor().setReflow(true);
 		}
@@ -69,15 +65,12 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 		try {
 			getReviewEditor().setReflow(false);
 
+			for (ExpandablePart part : getExpandableParts()) {
+				part.setExpanded(true);
+			}
 			if (expandableSection != null && !expandableSection.isExpanded()) {
 				EditorUtil.toggleExpandableComposite(true, expandableSection);
 			}
-
-			for (ExpandablePart part : getExpandableParts()) {
-				part.setExpanded(true);
-
-			}
-
 		} finally {
 			getReviewEditor().setReflow(true);
 		}

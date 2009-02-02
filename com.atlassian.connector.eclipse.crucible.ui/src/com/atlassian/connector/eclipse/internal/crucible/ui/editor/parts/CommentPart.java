@@ -61,9 +61,12 @@ public abstract class CommentPart extends ExpandablePart {
 	@Override
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
 		//CHECKSTYLE:MAGIC:OFF
+		section.clientVerticalSpacing = 0;
+
 		Composite composite = toolkit.createComposite(section);
 		GridLayout layout = new GridLayout(1, false);
-		layout.marginLeft = 15;
+		layout.marginTop = 0;
+		layout.marginLeft = 9;
 		composite.setLayout(layout);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 		String commentString = getCommentText();

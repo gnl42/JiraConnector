@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.ui.commons.TreeContentProvider;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -32,9 +33,9 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * Query page for predefined filters
@@ -66,31 +67,36 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 	@Override
 	protected void createPageContent(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout());
+		composite.setLayout(GridLayoutFactory.fillDefaults().create());
 
-		customButton = new Button(composite, SWT.RADIO);
-		customButton.setText("Custom");
-		customButton.setSelection(false);
-		customButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateQueryPage();
-			}
-		});
+		if (getQuery() == null) {
+			customButton = new Button(composite, SWT.RADIO);
+			customButton.setText("Custom");
+			customButton.setSelection(false);
+			customButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					updateQueryPage();
+				}
+			});
 
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(customButton);
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(customButton);
 
-		predefinedButton = new Button(composite, SWT.RADIO);
-		predefinedButton.setText("Predefined Filter");
-		predefinedButton.setEnabled(true);
-		predefinedButton.setSelection(true);
-		predefinedButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateQueryPage();
-			}
-		});
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(predefinedButton);
+			predefinedButton = new Button(composite, SWT.RADIO);
+			predefinedButton.setText("Predefined Filter");
+			predefinedButton.setEnabled(true);
+			predefinedButton.setSelection(true);
+			predefinedButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					updateQueryPage();
+				}
+			});
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(predefinedButton);
+		} else {
+			Label label = new Label(composite, SWT.NONE);
+			label.setText("Predefined Filter:");
+		}
 
 		filterList = new ListViewer(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		filterList.setContentProvider(new TreeContentProvider() {
@@ -127,9 +133,9 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 
 	private void updateQueryPage() {
 		// TODO disable the title??
-		if (customButton.getSelection()) {
+		if (isCustomSelected()) {
 			filterList.getControl().setEnabled(false);
-		} else if (predefinedButton.getSelection()) {
+		} else {
 			filterList.getControl().setEnabled(true);
 		}
 		getContainer().updateButtons();
@@ -173,7 +179,7 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 	}
 
 	private String getFilterId() {
-		if (predefinedButton.getSelection()) {
+		if (!isCustomSelected()) {
 			StructuredSelection selection = (StructuredSelection) filterList.getSelection();
 			Object element = selection.getFirstElement();
 			if (element instanceof PredefinedFilter) {
@@ -185,17 +191,21 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return customButton.getSelection();
+		return isCustomSelected();
 	}
 
 	@Override
 	public boolean isPageComplete() {
-		return customButton.getSelection() ? false : !filterList.getSelection().isEmpty() && super.isPageComplete();
+		return isCustomSelected() ? false : !filterList.getSelection().isEmpty() && super.isPageComplete();
+	}
+
+	private boolean isCustomSelected() {
+		return customButton != null && customButton.getSelection();
 	}
 
 	@Override
 	public IWizardPage getNextPage() {
-		if (!customButton.getSelection()) {
+		if (!isCustomSelected()) {
 			return null;
 		}
 		if (customPage == null) {

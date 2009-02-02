@@ -19,19 +19,20 @@ import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonsUiUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Action to open a version file
@@ -64,9 +65,8 @@ public class OpenVersionedVirtualFileAction extends Action {
 	@Override
 	public void run() {
 		try {
-			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-
+			CommonsUiUtil.run(PlatformUI.getWorkbench().getProgressService(), new ICoreRunnable() {
+				public void run(IProgressMonitor monitor) throws CoreException {
 					VersionedVirtualFile virtualFile = crucibleFile.getCrucibleFileInfo().getFileDescriptor();
 					if (crucibleFile.isOldFile()) {
 						virtualFile = crucibleFile.getCrucibleFileInfo().getOldFileDescriptor();
@@ -85,16 +85,13 @@ public class OpenVersionedVirtualFileAction extends Action {
 						}
 					}
 				}
-
 			});
-		} catch (InvocationTargetException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-		} catch (InterruptedException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		} catch (CoreException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, NLS.bind(
+					"Problems encoutered opening editor: {0}", e.getMessage(), e)));
 		} catch (OperationCanceledException e) {
 			// ignore since the user requested a cancel
 		}
-
 	}
 
 	private void selectAndRevealComment(ITextEditor textEditor, VersionedComment comment, CrucibleFile file) {

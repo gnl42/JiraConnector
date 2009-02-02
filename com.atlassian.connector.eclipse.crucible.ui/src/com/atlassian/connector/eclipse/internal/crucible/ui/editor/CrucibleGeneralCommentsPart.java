@@ -25,8 +25,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
@@ -110,7 +111,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 	private String getSectionTitle() {
 		String title = "General Comments";
 		try {
-			return title + " (" + crucibleReview.getNumberOfGeneralComments() + " comments)";
+			return NLS.bind("{0}   ({1} comments)", title, crucibleReview.getNumberOfGeneralComments());
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
@@ -121,8 +122,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 	private Composite createCommentViewers(FormToolkit toolkit) {
 		//CHECKSTYLE:MAGIC:OFF
 		Composite composite = toolkit.createComposite(commentsSection);
-		composite.setLayout(new GridLayout(1, false));
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
+		composite.setLayout(GridLayoutFactory.fillDefaults().create());
 
 		try {
 			List<GeneralComment> generalComments = new ArrayList<GeneralComment>(crucibleReview.getGeneralComments());

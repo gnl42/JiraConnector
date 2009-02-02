@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.text.DefaultInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension2;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeListener;
@@ -193,4 +194,9 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 		}
 
 	}
+
+	public IInformationControlCreator getInformationPresenterControlCreator() {
+		return new CrucibleInformationControlCreator();
+	}
+
 }
