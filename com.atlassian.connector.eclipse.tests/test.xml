@@ -9,8 +9,8 @@
   <property name="plugin-name" value="com.atlassian.connector.eclipse.tests"/>
   <property name="library-file" value="${eclipse-home}/plugins/org.eclipse.test/library.xml"/>
 	
-  <!-- TODO: change to 'ui-test' -->
-  <property name="test-target" value="core-test"/>
+  <!-- use ui-test or core-test -->
+  <property name="test-target" value="ui-test"/>
 
   <!-- This target holds all initialization code that needs to be done for -->
   <!-- all tests that are to be run. Initialization for individual tests -->
