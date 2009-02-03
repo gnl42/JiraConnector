@@ -4,5 +4,9 @@ Bundle-Name: Atlassian Eclipse Connector Bamboo Tests Plug-in
 Bundle-SymbolicName: com.atlassian.connector.eclipse.bamboo.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ com.atlassian.connector.eclipse.bamboo.core,
+ com.atlassian.connector.eclipse.bamboo.ui,
+ org.eclipse.mylyn.tasks.core,
+ com.atlassian.connector.commons
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.net;bundle-version="3.1.0",
  com.atlassian.connector.commons,
  com.atlassian.connector.eclipse.core
-Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-internal:=true,
- com.atlassian.connector.eclipse.internal.bamboo.core.client;x-internal:=true,
- com.atlassian.connector.eclipse.internal.bamboo.core.configuration;x-internal:=true
+Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-friends:="com.atlassian.connector.eclipse.bamboo.tests",
+ com.atlassian.connector.eclipse.internal.bamboo.core.client;x-friends:="com.atlassian.connector.eclipse.bamboo.tests",
+ com.atlassian.connector.eclipse.internal.bamboo.core.configuration;x-friends:="com.atlassian.connector.eclipse.bamboo.tests"
 
