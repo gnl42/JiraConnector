@@ -67,7 +67,7 @@ public final class AddCommentRemoteOperation extends CrucibleClient.RemoteOperat
 		this.client = client;
 		this.reviewItem = reviewItem;
 		this.message = newComment;
-
+		this.customFields = new HashMap<String, CustomField>();
 	}
 
 	public void setDefect(boolean newIsDefect) {
