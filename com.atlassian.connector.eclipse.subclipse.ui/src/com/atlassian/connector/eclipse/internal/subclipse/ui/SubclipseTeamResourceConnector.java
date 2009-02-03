@@ -189,7 +189,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 							return getOpenedPart(openRemoteSvnFile(remoteFile, monitor));
 						} else {
 							final IEditorPart[] part = new IEditorPart[1];
-							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+							PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 								public void run() {
 									part[0] = openRemoteSvnFile(remoteFile, monitor);
 								}
