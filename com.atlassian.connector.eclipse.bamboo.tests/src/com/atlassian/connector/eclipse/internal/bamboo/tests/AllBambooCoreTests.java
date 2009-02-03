@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.atlassian.connector.eclipse.internal.crucible.tests;
+package com.atlassian.connector.eclipse.internal.bamboo.tests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
