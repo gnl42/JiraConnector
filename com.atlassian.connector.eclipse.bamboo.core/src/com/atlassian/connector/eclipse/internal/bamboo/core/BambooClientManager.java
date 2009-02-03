@@ -90,7 +90,10 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	@Override
 	public synchronized void repositoryRemoved(TaskRepository repository) {
 		super.repositoryRemoved(repository);
-		// TODO remove the client from the callback
+
+		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(repository);
+		BambooServerCfg serverCfg = getServerCfg(location, repository, false);
+		clientCallback.removeClient(serverCfg);
 	}
 
 	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, BambooServerCfg serverCfg) {
