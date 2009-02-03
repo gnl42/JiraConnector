@@ -595,7 +595,7 @@
 	</target>
 	
 	<target name="tests-helper" depends="tests-helper-init,pre-tests,install-tests-helper">
-    	<property name="timeout" value="3600000" />
+    	<property name="timeout" value="${build.test.timeout}" />
 		<property name="application" value="org.eclipse.ant.core.antRunner" />
 		<property name="vmargs" value=" -Xms40m -Xmx256m"/>    	
     	<path id="library.id"> 

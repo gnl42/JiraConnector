@@ -34,6 +34,10 @@
 				<include name="plugins/com.atlassian.connector*/**"/>
 			</fileset>
 		</delete>
+		
+		<exec executable="/usr/bin/Xvfb" spawn="true">
+			<arg value=":99"/>
+		</exec>
 	</target>
 
 	<target name="pack" depends="init,init-3.4">
