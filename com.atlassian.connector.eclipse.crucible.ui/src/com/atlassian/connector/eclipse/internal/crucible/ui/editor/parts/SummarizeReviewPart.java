@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.IFormColors;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -67,8 +65,6 @@ public class SummarizeReviewPart {
 
 	private Text summaryText;
 
-	private FormToolkit formToolkit;
-
 	public SummarizeReviewPart(Review review, String userName) {
 		super();
 		this.review = review;
@@ -77,16 +73,13 @@ public class SummarizeReviewPart {
 
 	public Composite createControl(Composite parent) {
 		//CHECKSTYLE:MAGIC:OFF
-		if (formToolkit == null) {
-			formToolkit = new FormToolkit(parent.getDisplay());
-		}
 
-		Composite composite = formToolkit.createComposite(parent, SWT.NONE);
+		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 
-		formToolkit.createLabel(composite, "Summarize the Review Outcomes (optional)", SWT.NONE);
+		new Label(composite, SWT.NONE).setText("Summarize the Review Outcomes (optional)");
 
-		summaryText = formToolkit.createText(composite, "", SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
+		summaryText = new Text(composite, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
 		textGridData.heightHint = 120;
@@ -95,10 +88,11 @@ public class SummarizeReviewPart {
 
 		handleOpenReviewsAndDrafts(composite);
 
-		Composite buttonComp = formToolkit.createComposite(composite, SWT.NONE);
+		Composite buttonComp = new Composite(composite, SWT.NONE);
 		buttonComp.setLayout(new GridLayout(2, false));
 		GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(buttonComp);
-		Button summarizeButton = formToolkit.createButton(buttonComp, "Summarize and Close Review", SWT.PUSH);
+		Button summarizeButton = new Button(buttonComp, SWT.PUSH);
+		summarizeButton.setText("Summarize and Close Review");
 		summarizeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -106,7 +100,8 @@ public class SummarizeReviewPart {
 				notifyOK();
 			}
 		});
-		Button cancelButton = formToolkit.createButton(buttonComp, "Cancel", SWT.PUSH);
+		Button cancelButton = new Button(buttonComp, SWT.PUSH);
+		cancelButton.setText("Cancel");
 		cancelButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -123,43 +118,44 @@ public class SummarizeReviewPart {
 		Set<Reviewer> openReviewers = getOpenReviewers();
 		Set<Reviewer> completedReviewers = getCompletedReviewers();
 
-		Composite draftComp = formToolkit.createComposite(composite, SWT.NONE);
+		Composite draftComp = new Composite(composite, SWT.NONE);
 		draftComp.setLayout(new GridLayout(1, false));
 
 		if (completedReviewers.size() > 0) {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(
-					formToolkit.createLabel(draftComp, "", SWT.SEPARATOR | SWT.HORIZONTAL));
-			new CrucibleReviewersPart(completedReviewers).createControl(formToolkit, draftComp, COMPLETED_REVIEWS_INFO);
+					new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
+			new CrucibleReviewersPart(completedReviewers).createControl(null, draftComp, COMPLETED_REVIEWS_INFO);
 		}
 
 		if (openReviewers.size() > 0) {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(
-					formToolkit.createLabel(draftComp, "", SWT.SEPARATOR | SWT.HORIZONTAL));
-			new CrucibleReviewersPart(openReviewers).createControl(formToolkit, draftComp, OPEN_REVIEWS_WARNING);
-			Label labelControl = formToolkit.createLabel(draftComp, OTHER_DRAFTS_WARNING, SWT.WRAP);
-			labelControl.setForeground(formToolkit.getColors().getColor(IFormColors.TITLE));
+					new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
+			new CrucibleReviewersPart(openReviewers).createControl(null, draftComp, OPEN_REVIEWS_WARNING);
+			Label labelControl = new Label(draftComp, SWT.WRAP);
+			labelControl.setText(OTHER_DRAFTS_WARNING);
 			if (hasOthersDrafts) {
 				Set<Reviewer> othersDrafts = getOthersDrafts();
-				new CrucibleReviewersPart(othersDrafts).createControl(formToolkit, draftComp,
-						"Reviewers with draft comments:");
+				new CrucibleReviewersPart(othersDrafts).createControl(null, draftComp, "Reviewers with draft comments:");
 			}
 		}
 
 		if (hasDrafts) {
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(
-					formToolkit.createLabel(draftComp, "", SWT.SEPARATOR | SWT.HORIZONTAL));
-			Label draftComments = formToolkit.createLabel(draftComp,
-					"You have open drafts in this review. Please choose an action:", SWT.NONE);
+					new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
+			Label draftComments = new Label(draftComp, SWT.NONE);
+			draftComments.setText("You have open drafts in this review. Please choose an action:");
 			GridDataFactory.fillDefaults().span(2, 1).applyTo(draftComments);
 
-			Button deleteDrafts = formToolkit.createButton(draftComp, "Discard Drafts", SWT.RADIO);
+			Button deleteDrafts = new Button(draftComp, SWT.RADIO);
+			deleteDrafts.setText("Discard Drafts");
 			deleteDrafts.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					discardDrafts = true;
 				}
 			});
-			Button postDrafts = formToolkit.createButton(draftComp, "Post Drafts", SWT.RADIO);
+			Button postDrafts = new Button(draftComp, SWT.RADIO);
+			postDrafts.setText("Post Drafts");
 			postDrafts.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -307,9 +303,7 @@ public class SummarizeReviewPart {
 	}
 
 	public void dispose() {
-		if (formToolkit != null) {
-			formToolkit.dispose();
-		}
+		//ignore
 	}
 
 }

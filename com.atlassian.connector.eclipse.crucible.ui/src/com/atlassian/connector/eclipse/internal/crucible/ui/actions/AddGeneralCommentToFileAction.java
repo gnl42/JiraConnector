@@ -39,12 +39,12 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 	private IReviewActionListener actionListener;
 
 	public AddGeneralCommentToFileAction() {
-		super("Create General File Comment");
+		super("Create General File Comment...");
 		crucibleFile = null;
 	}
 
 	public AddGeneralCommentToFileAction(CrucibleFile file, Review review) {
-		super("Create General File Comment");
+		super("Create General File Comment...");
 		super.review = review;
 		this.crucibleFile = file;
 	}

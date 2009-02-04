@@ -50,7 +50,7 @@ public class CrucibleReviewersPart {
 		Label label = createLabelControl(toolkit, parent, labelText);
 		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.TOP).applyTo(label);
 
-		Composite reviewersComposite = toolkit.createComposite(parent);
+		Composite reviewersComposite = createComposite(toolkit, parent);
 		// use indent to make up for forms border gap
 		GridDataFactory.fillDefaults().indent(0, -2).grab(true, false).span(3, 1).hint(300, SWT.DEFAULT).applyTo(
 				reviewersComposite);
@@ -63,21 +63,29 @@ public class CrucibleReviewersPart {
 		reviewersComposite.setLayout(layout);
 		if (reviewers.isEmpty()) {
 			// avoid blank gap on Linux
-			toolkit.createLabel(reviewersComposite, " ");
+			createLabelControl(toolkit, reviewersComposite, " ");
 		} else {
 			for (Reviewer reviewer : reviewers) {
 				Text text = createReadOnlyText(toolkit, reviewersComposite, reviewer.getDisplayName(), null, false);
 
 				if (reviewer.isCompleted()) {
-					Label imageLabel = toolkit.createLabel(reviewersComposite, "");
+					Label imageLabel = createLabelControl(toolkit, reviewersComposite, "");
 					imageLabel.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_COMPLETE));
 				}
 
 				// XXX padding
-				toolkit.createLabel(reviewersComposite, " ");
+				createLabelControl(toolkit, reviewersComposite, " ");
 			}
 		}
 		//CHECKSTYLE:MAGIC:ON
+	}
+
+	private Composite createComposite(FormToolkit toolkit, Composite parent) {
+		if (toolkit != null) {
+			return toolkit.createComposite(parent);
+		} else {
+			return new Composite(parent, SWT.NONE);
+		}
 	}
 
 	private Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
@@ -94,14 +102,25 @@ public class CrucibleReviewersPart {
 		text.setFont(EditorUtil.TEXT_FONT);
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
-		toolkit.adapt(text, true, true);
+
+		if (toolkit != null) {
+			toolkit.adapt(text, true, true);
+		}
 
 		return text;
 	}
 
 	private Label createLabelControl(FormToolkit toolkit, Composite composite, String labelString) {
-		Label labelControl = toolkit.createLabel(composite, labelString);
-		labelControl.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+
+		Label labelControl = null;
+		if (toolkit != null) {
+			labelControl = toolkit.createLabel(composite, labelString);
+			labelControl.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		} else {
+			labelControl = new Label(composite, SWT.NONE);
+			labelControl.setText(labelString);
+		}
+
 		return labelControl;
 	}
 }

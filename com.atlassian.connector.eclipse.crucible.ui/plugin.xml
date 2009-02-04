@@ -61,7 +61,7 @@
                class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction"
                enablesFor="1"
                id="com.atlassian.connector.eclipse.crucible.ui.action.add.line.comment"
-               label="Add Crucible Comment To Lines"
+               label="Add Crucible Comment To Selected Lines..."
                menubarPath="group.undo"
                tooltip="Add Line Comment to Active Review">
          </action>
@@ -69,7 +69,7 @@
                class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction"
                enablesFor="1"
                id="com.atlassian.connector.eclipse.crucible.ui.action.add.file.comment"
-               label="Add Crucible General File Comment"
+               label="Add Crucible General File Comment..."
                menubarPath="group.undo"
                tooltip="Add Comment to Active Review">
          </action>

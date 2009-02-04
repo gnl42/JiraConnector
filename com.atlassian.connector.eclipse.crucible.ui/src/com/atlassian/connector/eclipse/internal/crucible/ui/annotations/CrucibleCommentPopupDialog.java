@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Version
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.PopupDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeListener;
@@ -26,7 +27,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -45,6 +48,8 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 	private FormToolkit toolkit;
 
 	private Composite composite;
+
+	private Label focusLabel;
 
 	private ScrolledComposite scrolledComposite;
 
@@ -81,6 +86,11 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 
 	public void setFocus() {
 		getShell().forceFocus();
+
+		if (focusLabel != null) {
+			focusLabel.dispose();
+		}
+
 		if (composite.getChildren().length > 0) {
 			composite.getChildren()[0].setFocus();
 		}
@@ -165,10 +175,17 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 				part.addCustomAction(new OpenReviewEditorToCommentAction(annotation.getReview(),
 						annotation.getVersionedComment(), annotation.getCrucibleFileInfo()));
 				part.hookCustomActionRunListener(this);
+
 				toolkit.adapt(part.createControl(composite, toolkit), true, true);
+
+				focusLabel = toolkit.createLabel(composite, "Press 'F2' for focus.");
+				focusLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+				GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(focusLabel);
+
 				toolkit.adapt(composite);
 				toolkit.adapt(scrolledComposite);
 				toolkit.adapt(scrolledComposite.getParent());
+
 				getShell().setBackground(toolkit.getColors().getBackground());
 			}
 		} else {

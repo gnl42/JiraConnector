@@ -24,7 +24,7 @@ import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 public class AddGeneralReviewCommentAction extends AbstractAddCommentAction {
 
 	public AddGeneralReviewCommentAction(Review review) {
-		super("Add General Review Comment");
+		super("Add General Review Comment...");
 		setImageDescriptor(TasksUiImages.COMMENT);
 		setToolTipText("Add General Review Comment");
 		super.review = review;
