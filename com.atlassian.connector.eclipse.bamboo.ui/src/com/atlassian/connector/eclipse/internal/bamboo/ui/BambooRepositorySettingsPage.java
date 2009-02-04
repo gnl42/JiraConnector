@@ -18,7 +18,6 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.model.BambooCachedPlan;
 import com.atlassian.theplugin.commons.SubscribedPlan;
-import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -121,8 +120,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		Object[] items = planViewer.getCheckedElements();
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
 		for (Object item : items) {
-			if (item instanceof BambooPlan) {
-				plans.add(new SubscribedPlan(((BambooPlan) item).getPlanKey()));
+			if (item instanceof BambooCachedPlan) {
+				plans.add(new SubscribedPlan(((BambooCachedPlan) item).getKey()));
 			}
 		}
 		BambooUtil.setSubcribedPlans(repository, plans);

@@ -168,6 +168,34 @@ public class BambooView extends ViewPart {
 			}
 		});
 
+		column = new TreeViewerColumn(buildViewer, SWT.NONE);
+		column.getColumn().setText("Build Reason");
+		column.getColumn().setWidth(200);
+		column.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof BambooBuild) {
+					BambooBuild build = ((BambooBuild) element);
+					return build.getBuildReason();
+				}
+				return super.getText(element);
+			}
+		});
+
+		column = new TreeViewerColumn(buildViewer, SWT.NONE);
+		column.getColumn().setText("Build Reason");
+		column.getColumn().setWidth(200);
+		column.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof BambooBuild) {
+					BambooBuild build = ((BambooBuild) element);
+					return build.getBuildRelativeBuildDate();
+				}
+				return super.getText(element);
+			}
+		});
+
 		//GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(planViewer.getControl());
 
 		contributeToActionBars();
