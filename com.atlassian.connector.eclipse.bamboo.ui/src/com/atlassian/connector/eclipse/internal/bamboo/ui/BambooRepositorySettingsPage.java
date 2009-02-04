@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
+import com.atlassian.connector.eclipse.internal.bamboo.core.client.model.BambooCachedPlan;
 import com.atlassian.theplugin.commons.SubscribedPlan;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 
@@ -125,6 +126,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			}
 		}
 		BambooUtil.setSubcribedPlans(repository, plans);
+		//update cache
+		updateAndWriteCache();
 	}
 
 	@Override
@@ -142,6 +145,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		planViewer = new CheckboxTreeViewer(composite, SWT.V_SCROLL | SWT.BORDER);
 		planViewer.setContentProvider(new BuildPlanContentProvider());
 		planViewer.setLabelProvider(new BambooLabelProvider());
+		setCachedPlanInput();
 		GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(planViewer.getControl());
 
 		Button refreshButton = new Button(composite, SWT.PUSH);
@@ -153,6 +157,29 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 				refreshBuildPlans();
 			}
 		});
+	}
+
+	private void setCachedPlanInput() {
+		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
+		BambooClient client = clientManager.getClient(repository);
+		clientManager.readCache();
+		BambooClientData data = client.getClientData();
+		updateUIRestoreState(new Object[0], data);
+	}
+
+	private void updateAndWriteCache() {
+		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
+		BambooClient client = clientManager.getClient(repository);
+		BambooClientData data = client.getClientData();
+		for (Object obj : planViewer.getCheckedElements()) {
+			BambooCachedPlan checkedPlan = (BambooCachedPlan) obj;
+			for (BambooCachedPlan cachedPlan : data.getPlans()) {
+				if (checkedPlan.equals(cachedPlan)) {
+					cachedPlan.setSubscribed(true);
+				}
+			}
+		}
+		BambooCorePlugin.getRepositoryConnector().getClientManager().writeCache();
 	}
 
 	@Override
@@ -193,7 +220,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 					BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 					BambooClient client = null;
 					try {
-						client = clientManager.createTempClient(repository, new BambooClientData());
+						client = clientManager.getClient(repository);
 						data[0] = client.updateRepositoryData(monitor);
 					} finally {
 						if (client != null) {
@@ -205,25 +232,39 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 			// update ui and restore state
 			if (data[0] != null) {
-				boolean initialize = planViewer.getInput() == null;
-				Collection<BambooPlan> plans = data[0].getPlans();
-				planViewer.setInput(plans);
-				if (initialize && getRepository() != null) {
-					Set<SubscribedPlan> subscribedPlans = new HashSet<SubscribedPlan>(
-							BambooUtil.getSubscribedPlans(getRepository()));
-					for (BambooPlan plan : plans) {
-						if (subscribedPlans.contains(new SubscribedPlan(plan.getPlanKey()))) {
-							planViewer.setChecked(plan, true);
-						}
-					}
-				} else {
-					planViewer.setCheckedElements(checkedElements);
-				}
+				updateUIRestoreState(checkedElements, data[0]);
 			}
 		} catch (CoreException e) {
 			CommonsUiUtil.setMessage(this, e.getStatus());
 		} catch (OperationCanceledException e) {
 			// ignore
+		}
+	}
+
+	private void updateUIRestoreState(Object[] checkedElements, final BambooClientData data) {
+		boolean initialize = planViewer.getInput() == null;
+		Collection<BambooCachedPlan> plans = data.getPlans();
+		if (plans != null) {
+			planViewer.setInput(plans);
+			if (initialize && getRepository() != null) {
+				Set<SubscribedPlan> subscribedPlans = new HashSet<SubscribedPlan>(
+						BambooUtil.getSubscribedPlans(getRepository()));
+				for (BambooCachedPlan plan : plans) {
+					if (plan.isSubscribed() || subscribedPlans.contains(new SubscribedPlan(plan.getKey()))) {
+						planViewer.setChecked(plan, true);
+					}
+				}
+			} else {
+				for (BambooCachedPlan plan : plans) {
+					if (plan.isSubscribed()) {
+						planViewer.setChecked(plan, true);
+					}
+				}
+				for (Object plan : checkedElements) {
+					planViewer.setChecked(plan, true);
+				}
+				planViewer.setCheckedElements(checkedElements);
+			}
 		}
 	}
 

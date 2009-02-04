@@ -25,7 +25,6 @@ import com.atlassian.theplugin.commons.util.LoggerImpl;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.internal.provisional.tasks.core.RepositoryClientManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.io.File;

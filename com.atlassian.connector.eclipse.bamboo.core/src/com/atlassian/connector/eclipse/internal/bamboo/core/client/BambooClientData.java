@@ -11,38 +11,44 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core.client;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.client.model.BambooCachedPlan;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * Cached repository configuration for Bamboo server.
  * 
  * @author Shawn Minto
+ * @author Thomas Ehrnhoefer
  */
 public class BambooClientData implements Serializable {
 
 	private static final long serialVersionUID = 5078330984585994532L;
 
-	private List<BambooPlan> plans;
+	private Collection<BambooCachedPlan> cachedPlans;
 
 	public BambooClientData() {
 	}
 
 	public synchronized boolean hasData() {
-		return plans != null;
+		return cachedPlans != null;
 	}
 
-	public synchronized Collection<BambooPlan> getPlans() {
-		return plans;
+	public synchronized Collection<BambooCachedPlan> getPlans() {
+		return cachedPlans;
 	}
 
 	public synchronized void setPlans(Collection<BambooPlan> plans) {
-		this.plans = Collections.unmodifiableList(new ArrayList<BambooPlan>(plans));
+		this.cachedPlans = new ArrayList<BambooCachedPlan>();
+		Iterator<BambooPlan> plansIterator = plans.iterator();
+		for (int i = 0; i < plans.size(); i++) {
+			BambooPlan plan = plansIterator.next();
+			cachedPlans.add(new BambooCachedPlan(plan.getPlanName(), plan.getPlanKey(), plan.isFavourite(),
+					plan.isEnabled()));
+		}
 	}
-
 }

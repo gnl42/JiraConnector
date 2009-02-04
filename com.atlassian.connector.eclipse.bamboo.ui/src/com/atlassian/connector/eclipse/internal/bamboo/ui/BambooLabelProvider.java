@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
-import com.atlassian.theplugin.commons.bamboo.BambooPlan;
+import com.atlassian.connector.eclipse.internal.bamboo.core.client.model.BambooCachedPlan;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -25,8 +25,8 @@ public class BambooLabelProvider implements ILabelProvider {
 	}
 
 	public String getText(Object element) {
-		if (element instanceof BambooPlan) {
-			return ((BambooPlan) element).getPlanName() + " (" + ((BambooPlan) element).getPlanKey() + ")";
+		if (element instanceof BambooCachedPlan) {
+			return ((BambooCachedPlan) element).getName() + " (" + ((BambooCachedPlan) element).getKey() + ")";
 		}
 		return null;
 	}
