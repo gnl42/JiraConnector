@@ -11,9 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
@@ -53,6 +56,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 			}
 		};
 		job.schedule();
+		TasksUi.getRepositoryManager().addListener(BambooCorePlugin.getRepositoryConnector().getClientManager());
 	}
 
 	/*
