@@ -49,6 +49,7 @@ public class BambooCachedPlan implements Serializable {
 		this.key = key;
 		this.favourite = favourite;
 		this.enabled = enabled;
+		this.subscribed = false;
 	}
 
 	public boolean isSubscribed() {

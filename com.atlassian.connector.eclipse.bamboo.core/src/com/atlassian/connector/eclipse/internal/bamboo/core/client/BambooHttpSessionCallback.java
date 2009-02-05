@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core.client;
 
+import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
 import com.atlassian.theplugin.commons.cfg.Server;
 import com.atlassian.theplugin.commons.cfg.ServerCfg;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
@@ -21,6 +22,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
@@ -39,10 +41,13 @@ public class BambooHttpSessionCallback implements HttpSessionCallback {
 
 	private final MultiThreadedHttpConnectionManager connectionManager;
 
+	private final IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
+
 	public BambooHttpSessionCallback() {
 		this.httpClients = new HashMap<ServerCfg, HttpClient>();
 		this.connectionManager = new MultiThreadedHttpConnectionManager();
 		WebUtil.addConnectionManager(connectionManager);
+		idleConnectionTimeoutThread.start();
 	}
 
 	public synchronized HttpClient getHttpClient(Server server) throws HttpProxySettingsException {
@@ -59,7 +64,10 @@ public class BambooHttpSessionCallback implements HttpSessionCallback {
 	}
 
 	public synchronized void removeClient(ServerCfg serverCfg) {
-		httpClients.remove(serverCfg);
+		HttpClient client = httpClients.remove(serverCfg);
+		if (client != null) {
+			shutdown(client);
+		}
 	}
 
 	public synchronized HttpClient initialize(AbstractWebLocation location, ServerCfg serverCfg) {
@@ -82,6 +90,31 @@ public class BambooHttpSessionCallback implements HttpSessionCallback {
 	@Override
 	protected void finalize() throws Throwable {
 		WebUtil.removeConnectionManager(connectionManager);
+		for (HttpClient httpClient : httpClients.values()) {
+			shutdown(httpClient);
+		}
+	}
+
+	public synchronized void updateHostConfiguration(AbstractWebLocation location, BambooServerCfg serverCfg) {
+		HttpClient httpClient = httpClients.get(serverCfg);
+		if (httpClient == null) {
+			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+			httpClients.put(serverCfg, httpClient);
+		}
+		setupHttpClient(location, httpClient);
+	}
+
+	private void setupHttpClient(AbstractWebLocation location, HttpClient httpClient) {
+		HostConfiguration hostConfiguration = WebUtil.createHostConfiguration(httpClient, location,
+				new NullProgressMonitor());
+		httpClient.setHostConfiguration(hostConfiguration);
+		httpClient.getParams().setAuthenticationPreemptive(true);
+		idleConnectionTimeoutThread.addConnectionManager(httpClient.getHttpConnectionManager());
+	}
+
+	public void shutdown(HttpClient httpClient) {
+		((MultiThreadedHttpConnectionManager) httpClient.getHttpConnectionManager()).shutdown();
+		idleConnectionTimeoutThread.removeConnectionManager(httpClient.getHttpConnectionManager());
 	}
 
 }

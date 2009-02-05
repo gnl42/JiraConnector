@@ -114,6 +114,8 @@ public class BambooView extends ViewPart {
 
 	private TreeViewer buildViewer;
 
+	private BambooViewDataProvider bambooDataprovider;
+
 	@Override
 	public void createPartControl(Composite parent) {
 		buildViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
@@ -199,6 +201,9 @@ public class BambooView extends ViewPart {
 		//GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(planViewer.getControl());
 
 		contributeToActionBars();
+
+		bambooDataprovider = BambooViewDataProvider.getInstance();
+		bambooDataprovider.setView(this);
 	}
 
 	@Override
@@ -217,22 +222,7 @@ public class BambooView extends ViewPart {
 		Action refreshAction = new Action() {
 			@Override
 			public void run() {
-				RefreshBuildsJob job = new RefreshBuildsJob("Refreshing builds");
-				job.addJobChangeListener(new JobChangeAdapter() {
-					@Override
-					public void done(final IJobChangeEvent event) {
-						if (event.getResult().isOK()) {
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									if (buildViewer.getControl() != null && !buildViewer.getControl().isDisposed()) {
-										refresh(((RefreshBuildsJob) event.getJob()).getBuilds());
-									}
-								}
-							});
-						}
-					}
-				});
-				job.schedule();
+				refreshBuilds();
 			}
 		};
 		refreshAction.setText("Refresh");
@@ -248,4 +238,34 @@ public class BambooView extends ViewPart {
 	private void fillPopupMenu(IMenuManager menuManager) {
 	}
 
+	public void buildsChanged() {
+		if (bambooDataprovider.getBuilds() == null) {
+			refreshBuilds();
+		} else {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					refresh(bambooDataprovider.getBuilds());
+				}
+			});
+		}
+	}
+
+	private void refreshBuilds() {
+		RefreshBuildsJob job = new RefreshBuildsJob("Refreshing builds");
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(final IJobChangeEvent event) {
+				if (event.getResult().isOK()) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							if (buildViewer.getControl() != null && !buildViewer.getControl().isDisposed()) {
+								refresh(((RefreshBuildsJob) event.getJob()).getBuilds());
+							}
+						}
+					});
+				}
+			}
+		});
+		job.schedule();
+	}
 }

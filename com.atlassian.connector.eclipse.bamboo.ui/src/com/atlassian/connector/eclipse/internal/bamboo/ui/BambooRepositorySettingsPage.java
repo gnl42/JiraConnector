@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
+import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.model.BambooCachedPlan;
@@ -127,6 +128,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		BambooUtil.setSubcribedPlans(repository, plans);
 		//update cache
 		updateAndWriteCache();
+		BuildPlanManager.getInstance().buildSubscriptionsChanged(repository);
 	}
 
 	@Override
@@ -170,9 +172,10 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 		BambooClient client = clientManager.getClient(repository);
 		BambooClientData data = client.getClientData();
-		for (Object obj : planViewer.getCheckedElements()) {
-			BambooCachedPlan checkedPlan = (BambooCachedPlan) obj;
-			for (BambooCachedPlan cachedPlan : data.getPlans()) {
+		for (BambooCachedPlan cachedPlan : data.getPlans()) {
+			cachedPlan.setSubscribed(false);
+			for (Object obj : planViewer.getCheckedElements()) {
+				BambooCachedPlan checkedPlan = (BambooCachedPlan) obj;
 				if (checkedPlan.equals(cachedPlan)) {
 					cachedPlan.setSubscribed(true);
 				}

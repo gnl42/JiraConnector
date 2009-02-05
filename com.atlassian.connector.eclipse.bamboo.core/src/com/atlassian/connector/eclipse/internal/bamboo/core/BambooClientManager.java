@@ -51,6 +51,20 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	}
 
 	@Override
+	public synchronized BambooClient getClient(TaskRepository taskRepository) {
+		BambooClient client = super.getClient(taskRepository);
+		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
+		BambooServerCfg serverCfg = getServerCfg(location, taskRepository, false);
+		updateHttpSessionCallback(location, serverCfg);
+
+		return client;
+	}
+
+	private void updateHttpSessionCallback(AbstractWebLocation location, BambooServerCfg serverCfg) {
+		clientCallback.updateHostConfiguration(location, serverCfg);
+	}
+
+	@Override
 	protected BambooClient createClient(TaskRepository taskRepository, BambooClientData data) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 

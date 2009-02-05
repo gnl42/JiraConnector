@@ -11,7 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -41,6 +45,14 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		UIJob job = new UIJob("Initialize Bamboo View") {
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				BambooViewDataProvider.getInstance().init();
+				return Status.OK_STATUS;
+			}
+		};
+		job.schedule();
 	}
 
 	/*
@@ -49,6 +61,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		BambooViewDataProvider.getInstance().dispose();
 		plugin = null;
 		super.stop(context);
 	}
@@ -61,5 +74,4 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	public static BambooUiPlugin getDefault() {
 		return plugin;
 	}
-
 }
