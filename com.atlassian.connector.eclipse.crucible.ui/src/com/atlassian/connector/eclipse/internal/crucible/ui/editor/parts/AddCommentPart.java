@@ -231,8 +231,8 @@ public class AddCommentPart {
 				review.getMetricsVersion());
 		if (customFields == null) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					"Could not retrieve custom fields for review: " + review.getName()) {
-			});
+					"Metrics are for review version are not cached: " + review.getMetricsVersion() + " "
+							+ review.getName(), new Exception()));
 		} else {
 			for (CustomFieldDef customField : customFields) {
 				createCombo(parent, customField, 0);
