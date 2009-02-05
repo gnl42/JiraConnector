@@ -41,6 +41,8 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -62,6 +64,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -222,6 +225,15 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 			editorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 			editorComposite.setMenu(getEditor().getMenu());
+
+			Composite createComposite = toolkit.createComposite(editorComposite);
+			createComposite.setLayout(new GridLayout());
+			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createComposite);
+
+			Label createLabel = toolkit.createLabel(createComposite, "Initializing review editor...");
+			createLabel.setFont(JFaceResources.getBannerFont());
+
+			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createLabel);
 
 			Display.getCurrent().asyncExec(new Runnable() {
 
