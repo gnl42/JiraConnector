@@ -93,7 +93,7 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 	public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
 			throws CoreException {
 		CrucibleClient client = getClientManager().getClient(taskRepository);
-		return client.getTaskData(taskRepository, taskId, monitor);
+		return client.getTaskData(taskRepository, CrucibleUtil.getTaskIdFromPermId(taskId), monitor);
 	}
 
 	@Override
