@@ -32,6 +32,7 @@ public class BambooClientData implements Serializable {
 	private Collection<BambooCachedPlan> cachedPlans;
 
 	public BambooClientData() {
+		cachedPlans = new ArrayList<BambooCachedPlan>();
 	}
 
 	public synchronized boolean hasData() {

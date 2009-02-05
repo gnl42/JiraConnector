@@ -14,9 +14,6 @@ package com.atlassian.connector.eclipse.internal.bamboo.core;
 import com.atlassian.theplugin.commons.SubscribedPlan;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.util.ArrayList;
@@ -57,21 +54,29 @@ public final class BambooUtil {
 	}
 
 	public static boolean isSameBuildPlan(BambooBuild buildOne, BambooBuild buildTwo) {
-		String[] keyElementsOne = buildOne.getBuildKey().split("-");
-		String[] keyElementsTwo = buildTwo.getBuildKey().split("-");
-		//check if at least 2 elements
-		if (keyElementsOne.length < 2) {
-			StatusHandler.log(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID, "Invalid Bamboo Build Key: "
-					+ buildOne.getBuildKey()));
+		if (buildOne.getBuildUrl().equals(buildTwo.getServerUrl())) {
 			return false;
 		}
-		if (keyElementsTwo.length < 2) {
-			StatusHandler.log(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID, "Invalid Bamboo Build Key: "
-					+ buildTwo.getBuildKey()));
-			return false;
-		}
-		//check if same project and same build plan
-		return keyElementsOne[0].equals(keyElementsTwo[0]) && keyElementsOne[1].equals(keyElementsTwo[1]);
+		//check if same planKey
+		return buildOne.getBuildKey().equals(buildTwo.getBuildKey());
+
+//		//check if from same server
+//		String[] keyElementsOne = buildOne.getBuildKey().split("-");
+//		String[] keyElementsTwo = buildTwo.getBuildKey().split("-");
+
+//		//check if at least 2 elements
+//		if (keyElementsOne.length < 2) {
+//			StatusHandler.log(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID, "Invalid Bamboo Build Key: "
+//					+ buildOne.getBuildKey()));
+//			return false;
+//		}
+//		if (keyElementsTwo.length < 2) {
+//			StatusHandler.log(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID, "Invalid Bamboo Build Key: "
+//					+ buildTwo.getBuildKey()));
+//			return false;
+//		}
+//		//check if same project and same build plan
+//		return keyElementsOne[0].equals(keyElementsTwo[0]) && keyElementsOne[1].equals(keyElementsTwo[1]);
 	}
 
 }

@@ -11,18 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
-import com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManager;
-import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
+import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -46,47 +38,16 @@ import org.eclipse.ui.part.ViewPart;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * @author Steffen Pingel
  */
 public class BambooView extends ViewPart {
 
-	private class RefreshBuildsJob extends Job {
-
-		private final ArrayList<BambooBuild> builds;
-
-		public RefreshBuildsJob(String name) {
-			super(name);
-			this.builds = new ArrayList<BambooBuild>();
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-			Set<TaskRepository> repositories = TasksUi.getRepositoryManager().getRepositories(
-					BambooCorePlugin.CONNECTOR_KIND);
-			MultiStatus result = new MultiStatus(BambooUiPlugin.PLUGIN_ID, 0, "Retrieval of Bamboo builds failed", null);
-			for (TaskRepository repository : repositories) {
-				BambooClient client = clientManager.getClient(repository);
-				try {
-					this.builds.addAll(client.getBuilds(monitor));
-				} catch (CoreException e) {
-					result.add(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, NLS.bind(
-							"Update of builds from {0} failed", repository.getRepositoryLabel()), e));
-				}
-			}
-			return result;
-		}
-
-		public List<BambooBuild> getBuilds() {
-			return builds;
-		}
-
-	}
-
 	private class BuildContentProvider implements ITreeContentProvider {
+
+		private List<BambooBuild> allBuilds;
 
 		public void dispose() {
 		}
@@ -96,7 +57,7 @@ public class BambooView extends ViewPart {
 		}
 
 		public Object[] getElements(Object inputElement) {
-			return ((Collection<?>) inputElement).toArray();
+			return allBuilds.toArray();
 		}
 
 		public Object getParent(Object element) {
@@ -107,9 +68,14 @@ public class BambooView extends ViewPart {
 			return false;
 		}
 
+		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			List<BambooBuild> allBuilds = new ArrayList<BambooBuild>();
+			for (Collection<BambooBuild> collection : ((Map<TaskRepository, Collection<BambooBuild>>) newInput).values()) {
+				allBuilds.addAll(collection);
+			}
+			this.allBuilds = allBuilds;
 		}
-
 	}
 
 	private TreeViewer buildViewer;
@@ -231,17 +197,15 @@ public class BambooView extends ViewPart {
 		toolBarManager.add(refreshAction);
 	}
 
-	private void refresh(List<BambooBuild> builds) {
-		buildViewer.setInput(builds);
+	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {
+		buildViewer.setInput(map);
 	}
 
 	private void fillPopupMenu(IMenuManager menuManager) {
 	}
 
 	public void buildsChanged() {
-		if (bambooDataprovider.getBuilds() == null) {
-			refreshBuilds();
-		} else {
+		if (bambooDataprovider.getBuilds() != null) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					refresh(bambooDataprovider.getBuilds());
@@ -251,7 +215,8 @@ public class BambooView extends ViewPart {
 	}
 
 	private void refreshBuilds() {
-		RefreshBuildsJob job = new RefreshBuildsJob("Refreshing builds");
+		RefreshBuildsForAllRepositoriesJob job = new RefreshBuildsForAllRepositoriesJob("Refreshing builds",
+				TasksUi.getRepositoryManager());
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {
@@ -259,7 +224,7 @@ public class BambooView extends ViewPart {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							if (buildViewer.getControl() != null && !buildViewer.getControl().isDisposed()) {
-								refresh(((RefreshBuildsJob) event.getJob()).getBuilds());
+								refresh(((RefreshBuildsForAllRepositoriesJob) event.getJob()).getBuilds());
 							}
 						}
 					});

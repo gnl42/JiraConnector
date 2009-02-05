@@ -13,19 +13,24 @@ package com.atlassian.connector.eclipse.internal.bamboo.core;
 
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import java.util.List;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+
+import java.util.Collection;
+import java.util.Map;
 
 public class BuildsChangedEvent {
-	private final List<BambooBuild> addedBuilds;
+	private final Map<TaskRepository, Collection<BambooBuild>> addedBuilds;
 
-	private final List<BambooBuild> removedBuilds;
+	private final Map<TaskRepository, Collection<BambooBuild>> removedBuilds;
 
-	private final List<BambooBuild> changedBuilds;
+	private final Map<TaskRepository, Collection<BambooBuild>> changedBuilds;
 
-	private final List<BambooBuild> allBuilds;
+	private final Map<TaskRepository, Collection<BambooBuild>> allBuilds;
 
-	public BuildsChangedEvent(List<BambooBuild> addedBuilds, List<BambooBuild> removedBuilds,
-			List<BambooBuild> changedBuilds, List<BambooBuild> allBuilds) {
+	public BuildsChangedEvent(Map<TaskRepository, Collection<BambooBuild>> addedBuilds,
+			Map<TaskRepository, Collection<BambooBuild>> removedBuilds,
+			Map<TaskRepository, Collection<BambooBuild>> changedBuilds,
+			Map<TaskRepository, Collection<BambooBuild>> allBuilds) {
 		super();
 		this.addedBuilds = addedBuilds;
 		this.removedBuilds = removedBuilds;
@@ -33,19 +38,19 @@ public class BuildsChangedEvent {
 		this.allBuilds = allBuilds;
 	}
 
-	public List<BambooBuild> getAddedBuilds() {
+	public Map<TaskRepository, Collection<BambooBuild>> getAddedBuilds() {
 		return addedBuilds;
 	}
 
-	public List<BambooBuild> getRemovedBuilds() {
+	public Map<TaskRepository, Collection<BambooBuild>> getRemovedBuilds() {
 		return removedBuilds;
 	}
 
-	public List<BambooBuild> getChangedBuilds() {
+	public Map<TaskRepository, Collection<BambooBuild>> getChangedBuilds() {
 		return changedBuilds;
 	}
 
-	public List<BambooBuild> getAllBuilds() {
+	public Map<TaskRepository, Collection<BambooBuild>> getAllBuilds() {
 		return allBuilds;
 	}
 

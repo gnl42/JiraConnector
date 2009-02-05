@@ -16,7 +16,11 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import java.util.List;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Provides the data (a.k.a. Bamboo builds) for the view
@@ -27,7 +31,7 @@ public class BambooViewDataProvider implements BuildsChangedListener {
 
 	private static BambooViewDataProvider uniqueInstance;
 
-	private List<BambooBuild> builds;
+	private Map<TaskRepository, Collection<BambooBuild>> builds;
 
 	private BambooView bambooView;
 
@@ -42,18 +46,20 @@ public class BambooViewDataProvider implements BuildsChangedListener {
 	}
 
 	public void init() {
+		BuildPlanManager buildPlanMgr = BuildPlanManager.getInstance();
+		buildPlanMgr.initializeScheduler(TasksUi.getRepositoryManager());
 		BuildPlanManager.getInstance().addBuildsChangedListener(this);
 		if (bambooView != null) {
 			bambooView.buildsChanged();
 		}
 	}
 
-	public List<BambooBuild> getBuilds() {
-		return builds;
+	public Collection<BambooBuild> getBuilds(TaskRepository repository) {
+		return builds.get(repository);
 	}
 
-	public void setBuilds(List<BambooBuild> builds) {
-		this.builds = builds;
+	public Map<TaskRepository, Collection<BambooBuild>> getBuilds() {
+		return builds;
 	}
 
 	public void dispose() {

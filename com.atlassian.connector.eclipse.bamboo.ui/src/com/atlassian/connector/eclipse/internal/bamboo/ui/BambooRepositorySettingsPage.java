@@ -51,6 +51,9 @@ import java.util.Set;
  * 
  * @author Shawn Minto
  */
+/**
+ * @author thomas
+ */
 public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	private class BambooValidator extends Validator {
@@ -115,9 +118,9 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	}
 
 	@Override
-	public void applyTo(TaskRepository repository) {
+	public void applyTo(final TaskRepository repository) {
 		// ignore
-		super.applyTo(repository);
+		this.repository = applyToValidate(repository);
 		Object[] items = planViewer.getCheckedElements();
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
 		for (Object item : items) {
@@ -129,6 +132,21 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		//update cache
 		updateAndWriteCache();
 		BuildPlanManager.getInstance().buildSubscriptionsChanged(repository);
+	}
+
+	/**
+	 * Helper method for distinguishing between hitting Finish and Validate (because Validation leads to calling applyTo
+	 * in the superclass)
+	 */
+	public TaskRepository applyToValidate(TaskRepository repository) {
+		super.applyTo(repository);
+		return repository;
+	}
+
+	@Override
+	public TaskRepository createTaskRepository() {
+		TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
+		return applyToValidate(repository);
 	}
 
 	@Override
@@ -161,11 +179,13 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	}
 
 	private void setCachedPlanInput() {
-		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-		BambooClient client = clientManager.getClient(repository);
-		clientManager.readCache();
-		BambooClientData data = client.getClientData();
-		updateUIRestoreState(new Object[0], data);
+		if (repository != null) {
+			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
+			BambooClient client = clientManager.getClient(repository);
+			clientManager.readCache();
+			BambooClientData data = client.getClientData();
+			updateUIRestoreState(new Object[0], data);
+		}
 	}
 
 	private void updateAndWriteCache() {

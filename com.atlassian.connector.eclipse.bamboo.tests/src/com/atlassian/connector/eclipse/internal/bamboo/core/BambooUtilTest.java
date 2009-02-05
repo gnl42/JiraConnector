@@ -52,4 +52,8 @@ public class BambooUtilTest extends TestCase {
 				"com.atlassian.connector.eclipse.bamboo.subscribedPlans").substring(0, 3)));
 	}
 
+	public void testIsSameBuildPlan() {
+		fail("not implemented");
+	}
+
 }
