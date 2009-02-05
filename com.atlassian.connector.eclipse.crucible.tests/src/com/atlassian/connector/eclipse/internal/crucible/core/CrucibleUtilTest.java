@@ -505,4 +505,21 @@ public class CrucibleUtilTest extends TestCase {
 		review1.setAuthor(new UserBean("new"));
 		assertTrue(CrucibleUtil.createHash(review) != CrucibleUtil.createHash(review1));
 	}
+
+	public void testCanAddCommentToReview() {
+
+		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
+		assertFalse(CrucibleUtil.canAddCommentToReview(review));
+
+		Set<Action> actions = new LinkedHashSet<Action>();
+		actions.add(Action.ABANDON);
+		actions.add(Action.APPROVE);
+		review.setActions(actions);
+
+		assertFalse(CrucibleUtil.canAddCommentToReview(review));
+
+		actions.add(Action.COMMENT);
+		review.setActions(actions);
+		assertTrue(CrucibleUtil.canAddCommentToReview(review));
+	}
 }

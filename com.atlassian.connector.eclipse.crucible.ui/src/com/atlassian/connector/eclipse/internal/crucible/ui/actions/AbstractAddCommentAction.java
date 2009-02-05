@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleReviewReplyDialog;
@@ -19,6 +20,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommen
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,6 +29,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.window.Window;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 
 import java.util.HashMap;
 
@@ -75,7 +78,12 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 
 						operation.setParentComment(parentComment);
 
-						client.execute(operation);
+						try {
+							client.execute(operation);
+						} catch (CoreException e) {
+							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+									"Unable to post Comment", e));
+						}
 						client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 
 						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Comment was submitted.");
@@ -85,6 +93,13 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 				job.schedule(0L);
 			}
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		Review review = getReview();
+
+		return super.isEnabled() && CrucibleUtil.canAddCommentToReview(review);
 	}
 
 	protected abstract String getDialogTitle();

@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleRevie
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
@@ -26,6 +27,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
@@ -97,21 +99,26 @@ public abstract class ExpandablePart {
 
 		final Composite actionsComposite = createSectionAnnotationsAndToolbar(commentSection, toolkit);
 
+		final ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+
+		ToolBar toolbarControl = toolBarManager.createControl(actionsComposite);
+		toolkit.adapt(toolbarControl);
+
 		if (commentSection.isExpanded() || crucibleEditor == null) {
 			isExpanded = true;
-			fillToolBar(actionsComposite, toolkit, isExpanded);
+			fillToolBar(toolBarManager, toolkit, isExpanded);
 			if (canExpand()) {
 				Composite composite = createSectionContents(commentSection, toolkit);
 				commentSection.setClient(composite);
 			}
 
 		} else {
-			fillToolBar(actionsComposite, toolkit, false);
+			fillToolBar(toolBarManager, toolkit, false);
 			commentSection.addExpansionListener(new ExpansionAdapter() {
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
 					isExpanded = e.getState();
-					fillToolBar(actionsComposite, toolkit, isExpanded);
+					fillToolBar(toolBarManager, toolkit, isExpanded);
 
 					if (commentSection.getClient() == null) {
 						try {
@@ -147,24 +154,32 @@ public abstract class ExpandablePart {
 		return commentSection;
 	}
 
-	private void fillToolBar(Composite actionsComposite, FormToolkit toolkit, boolean expanded) {
+	private void fillToolBar(ToolBarManager toolbarManager, FormToolkit toolkit, boolean expanded) {
 		List<IReviewAction> toolbarActions = getToolbarActions(expanded);
 
-		for (Control control : actionsComposite.getChildren()) {
-			if (control instanceof ImageHyperlink) {
-				control.setMenu(null);
-				control.dispose();
-			}
-		}
+//		for (Control control : actionsComposite.getChildren()) {
+//			if (control instanceof ImageHyperlink) {
+//				control.setMenu(null);
+//				control.dispose();
+//			}
+//		}
+
+		toolbarManager.removeAll();
 
 		if (toolbarActions != null) {
 
 			for (final IReviewAction action : toolbarActions) {
 				action.setActionListener(actionListener);
-				createActionHyperlink(actionsComposite, toolkit, action);
+				toolbarManager.add(action);
+//				ImageHyperlink link = createActionHyperlink(actionsComposite, toolkit, action);
+//				if (!action.isEnabled()) {
+//					link.setEnabled(false);
+//				}
 			}
 		}
-		actionsComposite.getParent().layout();
+		toolbarManager.markDirty();
+		toolbarManager.update(true);
+//		actionsComposite.getParent().layout();
 	}
 
 	protected ImageHyperlink createActionHyperlink(Composite actionsComposite, FormToolkit toolkit, final IAction action) {

@@ -20,9 +20,11 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.text.DateFormat;
@@ -125,13 +127,21 @@ public class VersionedCommentPart extends CommentPart {
 			openVersionedVirtualFileAction.setToolTipText("Open the file to the comment");
 			createActionHyperlink(toolbarComposite, toolkit, openVersionedVirtualFileAction);
 		}
+
+		for (IReviewAction customAction : customActions) {
+			ImageHyperlink textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+			textHyperlink.setText(" ");
+			textHyperlink.setEnabled(false);
+			textHyperlink.setUnderlined(false);
+
+			createActionHyperlink(toolbarComposite, toolkit, customAction);
+		}
 	}
 
 	@Override
 	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
 		List<IReviewAction> actions = new ArrayList<IReviewAction>();
 		actions.addAll(super.getToolbarActions(isExpanded));
-		actions.addAll(customActions);
 
 		return actions;
 	}

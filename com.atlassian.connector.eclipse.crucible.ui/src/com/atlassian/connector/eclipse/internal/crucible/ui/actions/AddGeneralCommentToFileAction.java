@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
@@ -72,6 +73,13 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 			setEnabled(false);
 			crucibleFile = null;
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		Review review = getReview();
+
+		return super.isEnabled() && CrucibleUtil.canAddCommentToReview(review);
 	}
 
 	@Override

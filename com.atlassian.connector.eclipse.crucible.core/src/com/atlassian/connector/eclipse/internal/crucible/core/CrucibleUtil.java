@@ -359,4 +359,18 @@ public final class CrucibleUtil {
 		return result;
 	}
 
+	public static boolean canAddCommentToReview(Review review) {
+		if (review != null) {
+			try {
+				for (Action action : review.getActions()) {
+					if (action == Action.COMMENT) {
+						return true;
+					}
+				}
+			} catch (ValueNotYetInitialized e) {
+				StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
+			}
+		}
+		return false;
+	}
 }

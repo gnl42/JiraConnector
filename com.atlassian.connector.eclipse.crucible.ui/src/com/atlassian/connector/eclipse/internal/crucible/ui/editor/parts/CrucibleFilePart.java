@@ -137,6 +137,29 @@ public class CrucibleFilePart extends ExpandablePart {
 		textHyperlink.setEnabled(false);
 		textHyperlink.setUnderlined(false);
 
+		boolean hasNewFile = checkHasFile(newFileDescriptor);
+		boolean hasOldFile = checkHasFile(oldFileDescriptor);
+		if (getCrucibleEditor() != null) {
+
+			if (hasNewFile) {
+				if (hasOldFile) {
+
+					textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+					textHyperlink.setText(" ");
+					textHyperlink.setEnabled(false);
+					textHyperlink.setUnderlined(false);
+
+					CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
+							crucibleFile);
+					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
+							+ oldFileDescriptor.getRevision());
+					compareAction.setText("Compare");
+					// TODO set the image descriptor
+					createActionHyperlink(toolbarComposite, toolkit, compareAction);
+				}
+			}
+		}
+
 	}
 
 	@Override
@@ -147,25 +170,7 @@ public class CrucibleFilePart extends ExpandablePart {
 	@Override
 	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
 		List<IReviewAction> actions = new ArrayList<IReviewAction>();
-		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
-		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
-		boolean hasNewFile = checkHasFile(newFileDescriptor);
-		boolean hasOldFile = checkHasFile(oldFileDescriptor);
-		if (getCrucibleEditor() != null) {
-
-			if (hasNewFile) {
-				if (hasOldFile) {
-					CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
-							crucibleFile);
-					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
-							+ oldFileDescriptor.getRevision());
-					compareAction.setText("Compare");
-					// TODO set the image descriptor
-					actions.add(compareAction);
-				}
-			}
-		}
-		actions.add(new AddGeneralCommentToFileAction(new CrucibleFile(crucibleFile, hasOldFile), review));
+		actions.add(new AddGeneralCommentToFileAction(new CrucibleFile(crucibleFile, false), review));
 		return actions;
 	}
 

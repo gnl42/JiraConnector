@@ -12,8 +12,8 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
