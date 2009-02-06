@@ -171,6 +171,19 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		//CHECKSTYLE:MAGIC:OFF
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
+
+		if (replyToComment != null) {
+
+			Label label = new Label(composite, SWT.NONE);
+			label.setText("Comment:");
+
+			Text commentReplyText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY);
+			commentReplyText.setText(replyToComment.getMessage());
+			GridData textGridData = new GridData(GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
+			textGridData.widthHint = 500;
+			commentReplyText.setLayoutData(textGridData);
+		}
+
 		commentText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
