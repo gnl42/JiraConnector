@@ -35,7 +35,7 @@ public final class BambooUtil {
 	public static void setSubcribedPlans(TaskRepository repository, Collection<SubscribedPlan> plans) {
 		StringBuffer sb = new StringBuffer();
 		for (SubscribedPlan plan : plans) {
-			sb.append(plan.getPlanId());
+			sb.append(plan.getKey());
 			sb.append(",");
 		}
 		repository.setProperty(KEY_SUBSCRIBED_PLANS, sb.toString());
