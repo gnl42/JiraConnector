@@ -32,6 +32,8 @@
       <import plugin="com.atlassian.connector.eclipse.crucible.tests" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="com.atlassian.connector.eclipse.crucible.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="com.atlassian.connector.eclipse.ui" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="com.atlassian.connector.eclipse.bamboo.core"/>
+      <import plugin="com.atlassian.connector.eclipse.bamboo.ui"/>
    </requires>
 
    <plugin
@@ -58,5 +60,12 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="com.atlassian.connector.eclipse.bamboo.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

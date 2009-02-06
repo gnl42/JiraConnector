@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse;
 
+import com.atlassian.connector.eclipse.internal.bamboo.tests.AllBambooCoreTests;
 import com.atlassian.connector.eclipse.internal.crucible.tests.AllCrucibleCoreTests;
 
 import junit.framework.Test;
@@ -22,9 +23,10 @@ public final class AllConnectorCoreTests {
 	}
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for com.atlassian.connector.eclipse.tests");
+		TestSuite suite = new TestSuite("Core Test for com.atlassian.connector.eclipse.tests");
 
 		suite.addTest(AllCrucibleCoreTests.suite());
+		suite.addTest(AllBambooCoreTests.suite());
 
 		return suite;
 	}

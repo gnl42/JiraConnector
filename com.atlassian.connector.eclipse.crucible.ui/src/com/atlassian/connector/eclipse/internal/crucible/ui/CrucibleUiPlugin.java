@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
-import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationManager;
+import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
 
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -37,7 +37,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 	private ActiveReviewManager activeReviewManager;
 
-	private CrucibleNotificationManager crucibleNotificationManager;
+	private CrucibleNotificationProvider crucibleNotificationManager;
 
 	/**
 	 * The constructor
@@ -62,7 +62,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		enableActiveReviewManager();
 
-		crucibleNotificationManager = new CrucibleNotificationManager();
+		crucibleNotificationManager = new CrucibleNotificationProvider();
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(crucibleNotificationManager);
 
 		// TODO determine if we should be doing this differently and not through mylyn

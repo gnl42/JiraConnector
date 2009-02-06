@@ -189,6 +189,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
 		textGridData.heightHint = 80;
 		commentText.setLayoutData(textGridData);
+		commentText.forceFocus();
 
 		//CHECKSTYLE:MAGIC:OFF
 		((GridLayout) parent.getLayout()).makeColumnsEqualWidth = false;
