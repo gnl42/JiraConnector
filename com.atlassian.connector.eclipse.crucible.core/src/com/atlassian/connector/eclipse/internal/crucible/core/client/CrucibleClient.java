@@ -225,7 +225,11 @@ public class CrucibleClient {
 		Date creationDate = review.getCreateDate();
 		Date closeDate = review.getCloseDate();
 
-		if (!review.isCompleted()) {
+		if (CrucibleUtil.isCompleted(review) || CrucibleUtil.isUserCompleted(getUserName(), review)) {
+			if (closeDate == null) {
+				closeDate = new Date();
+			}
+		} else {
 			closeDate = null;
 		}
 

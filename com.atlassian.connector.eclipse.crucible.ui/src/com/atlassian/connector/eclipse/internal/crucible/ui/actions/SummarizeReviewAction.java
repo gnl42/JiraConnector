@@ -14,24 +14,15 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleSummarizeReviewDialog;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
-import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
@@ -59,50 +50,9 @@ public class SummarizeReviewAction extends AbstractReviewAction implements IWork
 			return;
 		}
 
-		CrucibleSummarizeReviewDialog summarizeDialog = new CrucibleSummarizeReviewDialog(null, review,
-				client.getUserName());
-		if (summarizeDialog.open() == Window.OK) {
-			//store own drafts
-			final boolean discardDrafts = summarizeDialog.isDiscardDrafts();
-			final String summarizeText = summarizeDialog.getSummarizeText();
-			CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Summarize Review" + getTaskKey(),
-					getTaskRepository()) {
-
-				@Override
-				protected IStatus execute(final CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-					if (!discardDrafts) {
-						//post all drafts
-						RemoteOperation<Object> publishDraftsOp = new RemoteOperation<Object>(monitor) {
-							@Override
-							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
-									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
-									ServerPasswordNotProvidedException {
-								server.publishAllCommentsForReview(serverCfg, review.getPermId());
-								return null;
-							}
-						};
-						client.execute(publishDraftsOp);
-						review = client.getReview(getTaskRepository(), getTaskId(), true, monitor);
-					}
-					//summarize
-					RemoteOperation<Object> summarizeOp = new RemoteOperation<Object>(monitor) {
-						@Override
-						public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
-								IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
-								ServerPasswordNotProvidedException {
-							// ignore
-							server.summarizeReview(serverCfg, review.getPermId());
-							server.closeReview(serverCfg, review.getPermId(), summarizeText);
-							return null;
-						}
-					};
-					client.execute(summarizeOp);
-					client.getReview(getTaskRepository(), getTaskId(), true, monitor);
-					return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was summarized.");
-				}
-			};
-			job.schedule(0L);
-		}
+		CrucibleSummarizeReviewDialog summarizeDialog = new CrucibleSummarizeReviewDialog(TasksUiInternal.getShell(),
+				review, client.getUserName(), getTaskKey(), getTaskId(), getTaskRepository(), client);
+		summarizeDialog.open();
 	}
 
 	@Override

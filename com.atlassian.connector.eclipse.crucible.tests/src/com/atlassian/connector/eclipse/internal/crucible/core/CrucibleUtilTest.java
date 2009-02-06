@@ -33,6 +33,7 @@ import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -521,5 +522,72 @@ public class CrucibleUtilTest extends TestCase {
 		actions.add(Action.COMMENT);
 		review.setActions(actions);
 		assertTrue(CrucibleUtil.canAddCommentToReview(review));
+	}
+
+	public void testIsReviewComplete() {
+		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
+		review.setState(State.ABANDONED);
+		assertTrue(CrucibleUtil.isCompleted(review));
+
+		review.setState(State.APPROVAL);
+		assertFalse(CrucibleUtil.isCompleted(review));
+
+		review.setState(State.CLOSED);
+		assertTrue(CrucibleUtil.isCompleted(review));
+
+		review.setState(State.DEAD);
+		assertTrue(CrucibleUtil.isCompleted(review));
+
+		review.setState(State.DRAFT);
+		assertFalse(CrucibleUtil.isCompleted(review));
+
+		review.setState(State.REJECTED);
+		assertTrue(CrucibleUtil.isCompleted(review));
+
+		review.setState(State.REVIEW);
+		assertFalse(CrucibleUtil.isCompleted(review));
+
+		review.setState(State.SUMMARIZE);
+		assertFalse(CrucibleUtil.isCompleted(review));
+
+		review.setState(State.UNKNOWN);
+		assertFalse(CrucibleUtil.isCompleted(review));
+	}
+
+	public void testIsReviewerComplete() {
+		String repositoryUrl = "http://crucible.atlassian.com/cru/";
+		String username = "username";
+		String username2 = "username2";
+
+		Review review = new ReviewBean(repositoryUrl);
+
+		Set<Reviewer> reviewers = new HashSet<Reviewer>();
+		review.setReviewers(reviewers);
+
+		assertFalse(CrucibleUtil.isUserCompleted(username, review));
+
+		ReviewerBean reviewer = new ReviewerBean();
+		reviewer.setUserName(username);
+		reviewers.add(reviewer);
+		review.setReviewers(reviewers);
+
+		assertFalse(CrucibleUtil.isUserCompleted(username, review));
+
+		reviewer.setCompleted(true);
+
+		assertTrue(CrucibleUtil.isUserCompleted(username, review));
+
+		assertFalse(CrucibleUtil.isUserCompleted(username2, review));
+
+		ReviewerBean reviewer2 = new ReviewerBean();
+		reviewer2.setUserName(username2);
+		reviewers.add(reviewer);
+		reviewers.add(reviewer2);
+		review.setReviewers(reviewers);
+
+		assertTrue(CrucibleUtil.isUserCompleted(username, review));
+
+		assertFalse(CrucibleUtil.isUserCompleted(username2, review));
+
 	}
 }

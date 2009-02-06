@@ -109,8 +109,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		super.repositoryRemoved(taskRepository);
 
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
-		CrucibleServerCfg serverCfg = getServerCfg(location, taskRepository, false);
-		clientCallback.removeClient(serverCfg);
+		clientCallback.removeClient(location);
 
 	}
 
@@ -123,7 +122,10 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		clientCallback.updateHostConfiguration(location, serverCfg);
 	}
 
-	private CrucibleServerCfg getServerCfg(AbstractWebLocation location, TaskRepository taskRepository,
+	/**
+	 * public for testing
+	 */
+	public CrucibleServerCfg getServerCfg(AbstractWebLocation location, TaskRepository taskRepository,
 			boolean isTemporary) {
 
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);

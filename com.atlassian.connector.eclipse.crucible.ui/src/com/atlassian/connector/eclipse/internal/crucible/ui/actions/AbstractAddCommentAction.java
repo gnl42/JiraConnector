@@ -11,27 +11,22 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleReviewReplyDialog;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
-import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
+import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
-import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-
-import java.util.HashMap;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 
 /**
  * Abstract class to deal with adding comments to a review
@@ -51,48 +46,22 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 			return;
 		}
 
-		final LineRange commentLines = getSelectedRange();
-		final CrucibleFile reviewItem = getCrucibleFile();
-		final Comment parentComment = getParentComment();
+		LineRange commentLines = getSelectedRange();
+		CrucibleFile reviewItem = getCrucibleFile();
+		Comment parentComment = getParentComment();
 
-		CrucibleReviewReplyDialog commentDialog = new CrucibleReviewReplyDialog(null, getDialogTitle(), review,
-				reviewItem, parentComment, commentLines);
-		if (commentDialog.open() == Window.OK) {
-			if (commentDialog.getValue().length() > 0) {
-				final String message = commentDialog.getValue();
-				final boolean isDraft = commentDialog.isDraft();
-				final boolean isDefect = commentDialog.isDefect();
-				final HashMap<String, CustomField> customFields = commentDialog.getCustomFieldSelections();
-
-				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Submitting comment" + getTaskKey(),
-						getTaskRepository()) {
-					@Override
-					protected IStatus execute(final CrucibleClient client, IProgressMonitor monitor)
-							throws CoreException {
-						AddCommentRemoteOperation operation = new AddCommentRemoteOperation(monitor, review, client,
-								reviewItem, message);
-						operation.setDefect(isDefect);
-						operation.setDraft(isDraft);
-						operation.setCustomFields(customFields);
-						operation.setCommentLines(commentLines);
-
-						operation.setParentComment(parentComment);
-
-						try {
-							client.execute(operation);
-						} catch (CoreException e) {
-							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-									"Unable to post Comment", e));
-						}
-						client.getReview(getTaskRepository(), getTaskId(), true, monitor);
-
-						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Comment was submitted.");
-					}
-
-				};
-				job.schedule(0L);
-			}
+		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
+		CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
+		if (client == null) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Unable to get client, please try to refresh"));
+			return;
 		}
+
+		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(TasksUiInternal.getShell(),
+				getDialogTitle(), review, reviewItem, parentComment, commentLines, getTaskKey(), getTaskId(),
+				getTaskRepository(), client);
+		commentDialog.open();
 	}
 
 	@Override

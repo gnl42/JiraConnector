@@ -178,16 +178,15 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 
 				toolkit.adapt(part.createControl(composite, toolkit), true, true);
 
-				focusLabel = toolkit.createLabel(composite, "Press 'F2' for focus.");
-				focusLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-				GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(focusLabel);
-
 				toolkit.adapt(composite);
 				toolkit.adapt(scrolledComposite);
 				toolkit.adapt(scrolledComposite.getParent());
 
 				getShell().setBackground(toolkit.getColors().getBackground());
 			}
+			focusLabel = toolkit.createLabel(composite, "Press 'F2' for focus.");
+			focusLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+			GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).applyTo(focusLabel);
 		} else {
 			input = null;
 		}

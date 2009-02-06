@@ -54,6 +54,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 
+		TasksUi.getRepositoryManager().addListener(CrucibleCorePlugin.getRepositoryConnector().getClientManager());
+
 		crucibleEditorTracker = new CrucibleEditorTracker();
 
 		activeReviewManager = new ActiveReviewManager(true);

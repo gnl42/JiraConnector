@@ -373,4 +373,22 @@ public final class CrucibleUtil {
 		}
 		return false;
 	}
+
+	public static boolean isCompleted(Review review) {
+		State state = review.getState();
+		return state == State.ABANDONED || state == State.CLOSED || state == State.DEAD || state == State.REJECTED;
+	}
+
+	public static boolean isUserCompleted(String userName, Review review) {
+		try {
+			for (Reviewer reviewer : review.getReviewers()) {
+				if (reviewer.getUserName().equals(userName)) {
+					return reviewer.isCompleted();
+				}
+			}
+		} catch (ValueNotYetInitialized e) {
+			// ignore
+		}
+		return false;
+	}
 }

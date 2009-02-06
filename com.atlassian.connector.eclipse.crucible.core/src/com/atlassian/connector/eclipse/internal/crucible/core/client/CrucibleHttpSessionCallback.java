@@ -39,6 +39,8 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 
 	private final Map<CrucibleServerCfg, HttpClient> httpClients = new HashMap<CrucibleServerCfg, HttpClient>();
 
+	private final Map<String, CrucibleServerCfg> locations = new HashMap<String, CrucibleServerCfg>();
+
 	private final IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
 
 	public CrucibleHttpSessionCallback() {
@@ -58,10 +60,17 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 		// we don't need to do anything here right now	
 	}
 
-	public synchronized void removeClient(ServerCfg serverCfg) {
-		HttpClient client = httpClients.remove(serverCfg);
+	public synchronized void removeClient(ServerCfg server) {
+		HttpClient client = httpClients.remove(server);
 		if (client != null) {
 			shutdown(client);
+		}
+	}
+
+	public synchronized void removeClient(AbstractWebLocation location) {
+		ServerCfg server = locations.remove(location.getUrl());
+		if (server != null) {
+			removeClient(server);
 		}
 	}
 
@@ -70,6 +79,7 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 		if (httpClient == null) {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 			httpClients.put(serverCfg, httpClient);
+			locations.put(location.getUrl(), serverCfg);
 		}
 		setupHttpClient(location, httpClient);
 	}
