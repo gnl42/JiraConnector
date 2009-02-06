@@ -251,7 +251,7 @@ public class ActiveReviewManagerTest extends TestCase {
 		activeReviewManager.reviewAdded(repositoryUrl, taskId, updatedReview);
 
 		assertTrue(activeReviewManager.isReviewActive());
-		assertEquals(review, activeReviewManager.getActiveReview());
+		assertEquals(updatedReview, activeReviewManager.getActiveReview());
 		assertEquals(createdTask, activeReviewManager.getActiveTask());
 
 	}
