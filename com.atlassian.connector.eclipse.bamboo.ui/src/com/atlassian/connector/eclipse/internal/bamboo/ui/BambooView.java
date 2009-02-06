@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -34,6 +35,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 import java.util.ArrayList;
@@ -73,9 +75,16 @@ public class BambooView extends ViewPart {
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			allBuilds = new ArrayList<BambooBuild>();
 			if (newInput != null) {
+				boolean hasFailed = false;
 				for (Collection<BambooBuild> collection : ((Map<TaskRepository, Collection<BambooBuild>>) newInput).values()) {
 					allBuilds.addAll(collection);
+					for (BambooBuild build : collection) {
+						if (build.getStatus() == BuildStatus.BUILD_FAILED) {
+							hasFailed = true;
+						}
+					}
 				}
+				updateViewIcon(hasFailed);
 			}
 		}
 	}
@@ -85,6 +94,16 @@ public class BambooView extends ViewPart {
 	private TreeViewer buildViewer;
 
 	private BambooViewDataProvider bambooDataprovider;
+
+	private final Image buildFailedImage = CommonImages.getImage(BambooImages.STATUS_FAILED);
+
+	private final Image buildPassedImage = CommonImages.getImage(BambooImages.STATUS_PASSED);
+
+	private final Image buildDisabledImage = CommonImages.getImage(BambooImages.STATUS_DISABLED);
+
+	private final Image bambooImage = CommonImages.getImage(BambooImages.BAMBOO);
+
+	private Image currentTitleImage = bambooImage;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -109,11 +128,11 @@ public class BambooView extends ViewPart {
 				if (element instanceof BambooBuild) {
 					switch (((BambooBuild) element).getStatus()) {
 					case BUILD_FAILED:
-						return CommonImages.getImage(BambooImages.STATUS_FAILED);
+						return buildFailedImage;
 					case BUILD_SUCCEED:
-						return CommonImages.getImage(BambooImages.STATUS_PASSED);
+						return buildPassedImage;
 					default:
-						return CommonImages.getImage(BambooImages.STATUS_DISABLED);
+						return buildDisabledImage;
 					}
 				}
 				return super.getImage(element);
@@ -177,6 +196,15 @@ public class BambooView extends ViewPart {
 	}
 
 	@Override
+	public void dispose() {
+		buildFailedImage.dispose();
+		buildPassedImage.dispose();
+		buildDisabledImage.dispose();
+		bambooImage.dispose();
+		super.dispose();
+	}
+
+	@Override
 	public void setFocus() {
 		// ignore
 
@@ -216,6 +244,26 @@ public class BambooView extends ViewPart {
 				}
 			});
 		}
+	}
+
+	private void updateViewIcon(boolean buildsFailed) {
+		if (buildsFailed) {
+			currentTitleImage = buildFailedImage;
+		} else {
+			currentTitleImage = bambooImage;
+		}
+		firePropertyChange(IWorkbenchPart.PROP_TITLE);
+	}
+
+	/*
+	 * @see IWorkbenchPart#getTitleImage()
+	 */
+	@Override
+	public Image getTitleImage() {
+		if (currentTitleImage == null) {
+			return super.getTitleImage();
+		}
+		return currentTitleImage;
 	}
 
 	private void refreshBuilds() {
