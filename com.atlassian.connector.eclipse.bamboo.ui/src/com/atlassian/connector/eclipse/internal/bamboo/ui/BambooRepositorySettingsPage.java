@@ -120,7 +120,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	@Override
 	public void applyTo(final TaskRepository repository) {
 		// ignore
-		taskRepository = applyToValidate(repository);
+		this.repository = applyToValidate(repository);
 		Object[] items = planViewer.getCheckedElements();
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
 		for (Object item : items) {
@@ -128,10 +128,10 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 				plans.add(new SubscribedPlan(((BambooCachedPlan) item).getKey()));
 			}
 		}
-		BambooUtil.setSubcribedPlans(taskRepository, plans);
+		BambooUtil.setSubcribedPlans(this.repository, plans);
 		//update cache
 		updateAndWriteCache();
-		BuildPlanManager.getInstance().buildSubscriptionsChanged(taskRepository);
+		BuildPlanManager.getInstance().buildSubscriptionsChanged(this.repository);
 	}
 
 	/**
@@ -179,9 +179,9 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	}
 
 	private void setCachedPlanInput() {
-		if (taskRepository != null) {
+		if (repository != null) {
 			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-			BambooClient client = clientManager.getClient(taskRepository);
+			BambooClient client = clientManager.getClient(repository);
 			BambooClientData data = client.getClientData();
 			updateUIRestoreState(new Object[0], data);
 		}
@@ -189,7 +189,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	private void updateAndWriteCache() {
 		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-		BambooClient client = clientManager.getClient(taskRepository);
+		BambooClient client = clientManager.getClient(repository);
 		BambooClientData data = client.getClientData();
 		for (BambooCachedPlan cachedPlan : data.getPlans()) {
 			cachedPlan.setSubscribed(false);
