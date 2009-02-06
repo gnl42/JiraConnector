@@ -127,9 +127,10 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 							} catch (NumberFormatException e) {
 								//ignore
 							}
-						} else {
-							return true;
 						}
+						/*else {
+							return true;
+						}*/
 
 						return tdHash != taskHash;
 					}
