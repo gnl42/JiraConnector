@@ -177,4 +177,11 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		return tempClients;
 	}
 
+	/**
+	 * For testing purposes only
+	 */
+	public void clear() {
+		clientCallback.clear();
+	}
+
 }

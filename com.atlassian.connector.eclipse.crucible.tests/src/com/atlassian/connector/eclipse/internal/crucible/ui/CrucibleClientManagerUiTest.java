@@ -11,8 +11,17 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -30,6 +39,8 @@ public class CrucibleClientManagerUiTest extends TestCase {
 			((TaskRepositoryManager) TasksUi.getRepositoryManager()).removeRepository(repository,
 					TasksUiPlugin.getDefault().getRepositoriesFilePath());
 		}
+
+		CrucibleCorePlugin.getRepositoryConnector().getClientManager().clear();
 	}
 
 	@Override
@@ -38,34 +49,38 @@ public class CrucibleClientManagerUiTest extends TestCase {
 	}
 
 	public void testRepositoryRemoved() throws HttpProxySettingsException {
-//		TaskRepository repo = new TaskRepository(CrucibleCorePlugin.CONNECTOR_KIND, "http://crucible.atlassian.com");
-//		repo.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("user", "pass"), true);
-//
-//		TasksUi.getRepositoryManager().addRepository(repo);
-//
-//		CrucibleRepositoryConnector repoConnector = CrucibleCorePlugin.getRepositoryConnector();
-//		CrucibleClientManager clientManager = repoConnector.getClientManager();
-//		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
-//		CrucibleServerCfg serverCfg = clientManager.getServerCfg(location, repo, false);
-//
-//		CrucibleClient client = clientManager.getClient(repo);
-//		assertNotNull(client);
-//
-//		HttpClient httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
-//
-//		assertNotNull(httpClient1);
-//
-//		((TaskRepositoryManager) TasksUi.getRepositoryManager()).removeRepository(repo, TasksUiPlugin.getDefault()
-//				.getRepositoriesFilePath());
-//
-//		httpClient1 = null;
-//		try {
-//			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
-//		} catch (AssertionError e) {
-//			// ignore since this is what we want
-//			return;
-//		}
-//		assertNull(httpClient1);
+		TaskRepository repo = new TaskRepository(CrucibleCorePlugin.CONNECTOR_KIND, "http://crucible.atlassian.com");
+		repo.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("user", "pass"), true);
+
+		TasksUi.getRepositoryManager().addRepository(repo);
+
+		CrucibleRepositoryConnector repoConnector = CrucibleCorePlugin.getRepositoryConnector();
+		CrucibleClientManager clientManager = repoConnector.getClientManager();
+		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
+		CrucibleServerCfg serverCfg = clientManager.getServerCfg(location, repo, false);
+
+		HttpClient httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
+
+		assertNull(httpClient1);
+
+		CrucibleClient client = clientManager.getClient(repo);
+		assertNotNull(client);
+
+		httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
+
+		assertNotNull(httpClient1);
+
+		((TaskRepositoryManager) TasksUi.getRepositoryManager()).removeRepository(repo, TasksUiPlugin.getDefault()
+				.getRepositoriesFilePath());
+
+		httpClient1 = null;
+		try {
+			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
+		} catch (AssertionError e) {
+			// ignore since this is what we want
+			return;
+		}
+		assertNull(httpClient1);
 	}
 
 	// TODO test added and changed as well

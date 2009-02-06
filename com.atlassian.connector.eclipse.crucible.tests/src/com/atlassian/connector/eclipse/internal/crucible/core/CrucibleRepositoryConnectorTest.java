@@ -44,6 +44,10 @@ public class CrucibleRepositoryConnectorTest extends TestCase {
 				CrucibleConstants.CHANGED_HASH_CODE_KEY);
 
 		taskData1.getAttributeMapper().setValue(taskAttributeCHCK, String.valueOf(123456789));
+		assertTrue(connector.hasTaskChanged(repo, task1, taskData1));
+
+		taskData1.getAttributeMapper().setValue(taskAttributeCHCK, String.valueOf(123456789));
+		task1.setAttribute(taskAttributeCHCK.getId(), String.valueOf(123456789));
 		assertFalse(connector.hasTaskChanged(repo, task1, taskData1));
 
 		task1.setAttribute(taskAttributeCHCK.getId(), String.valueOf(987654321));

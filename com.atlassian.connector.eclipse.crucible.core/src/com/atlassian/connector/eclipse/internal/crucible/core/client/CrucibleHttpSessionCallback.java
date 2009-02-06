@@ -104,4 +104,8 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 		idleConnectionTimeoutThread.removeConnectionManager(httpClient.getHttpConnectionManager());
 	}
 
+	public void clear() {
+		locations.clear();
+		httpClients.clear();
+	}
 }

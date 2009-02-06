@@ -16,8 +16,11 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.model.Revie
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.osgi.framework.BundleContext;
 
 import java.io.File;
@@ -87,7 +90,12 @@ public class CrucibleCorePlugin extends Plugin {
 	}
 
 	static void setRepositoryConnector(CrucibleRepositoryConnector repositoryConnector) {
-		CrucibleCorePlugin.repositoryConnector = repositoryConnector;
+		if (CrucibleCorePlugin.repositoryConnector == null) {
+			CrucibleCorePlugin.repositoryConnector = repositoryConnector;
+		} else {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
+					"Cannot register a repository connector twice"));
+		}
 	}
 
 	public static CrucibleRepositoryConnector getRepositoryConnector() {
