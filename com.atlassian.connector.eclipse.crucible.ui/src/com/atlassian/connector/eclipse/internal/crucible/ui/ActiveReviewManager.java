@@ -165,7 +165,8 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 								.getClientManager()
 								.getClient(repository);
 						if (client != null) {
-							activeReviewUpdated(client.getReview(repository, taskId, false, monitor), task);
+							// This should fire off a listener that we listen to to update the review properly
+							client.getReview(repository, taskId, false, monitor);
 						} else {
 							return new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 									"Unable to get crucible client for repository");
@@ -189,12 +190,16 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 	}
 
 	public void reviewAdded(String repositoryUrl, String taskId, Review review) {
-		// ignore if the current active review is added, we should already have it
+		if (activeTask != null) {
+			if (activeTask.getRepositoryUrl().equals(repositoryUrl) && activeTask.getTaskId().equals(taskId)) {
+				activeReviewUpdated(review, activeTask);
+			}
+		}
 	}
 
 	public synchronized void reviewUpdated(String repositoryUrl, String taskId, Review review,
 			List<CrucibleNotification> differences) {
-		if (activeTask != null && activeReview != null) {
+		if (activeTask != null) {
 			if (activeTask.getRepositoryUrl().equals(repositoryUrl) && activeTask.getTaskId().equals(taskId)) {
 				activeReviewUpdated(review, activeTask);
 			}
