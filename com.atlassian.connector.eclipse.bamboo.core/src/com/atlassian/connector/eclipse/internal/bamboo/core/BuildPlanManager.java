@@ -62,7 +62,7 @@ public final class BuildPlanManager {
 		protected IStatus run(IProgressMonitor monitor) {
 			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 			try {
-				this.builds.addAll(clientManager.getClient(taskRepository).getBuilds(monitor));
+				this.builds.addAll(clientManager.getClient(taskRepository).getBuilds(monitor, taskRepository));
 			} catch (CoreException e) {
 				return new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
 						"Update of builds from {0} failed", taskRepository.getRepositoryLabel()), e);
@@ -267,6 +267,6 @@ public final class BuildPlanManager {
 				refreshBuildsForAllRepositoriesJob.schedule(REVIEW_SYNCHRONISATION_DELAY_MS);
 			}
 		});
-		refreshBuildsForAllRepositoriesJob.schedule(); //first without delay
+		refreshBuildsForAllRepositoriesJob.schedule(); //first iteration without delay
 	}
 }

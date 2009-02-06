@@ -49,8 +49,6 @@ public class BambooClient {
 
 	private final BambooServerFacade server;
 
-	private final TaskRepository repository;
-
 	private abstract static class RemoteOperation<T> {
 
 		private final IProgressMonitor fMonitor;
@@ -68,30 +66,29 @@ public class BambooClient {
 
 	}
 
-	public BambooClient(AbstractWebLocation location, TaskRepository repository, BambooServerCfg serverCfg,
-			BambooServerFacade server, BambooClientData data) {
+	public BambooClient(AbstractWebLocation location, BambooServerCfg serverCfg, BambooServerFacade server,
+			BambooClientData data) {
 		this.location = location;
-		this.repository = repository;
 		this.clientData = data;
 		this.serverCfg = serverCfg;
 		this.server = server;
 	}
 
-	public void validate(IProgressMonitor monitor) throws CoreException {
+	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
 		execute(new RemoteOperation<Object>(monitor) {
 			@Override
 			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException {
 				server.testServerConnection(serverCfg);
 				return null;
 			}
-		});
+		}, taskRepository);
 	}
 
-	private <T> T execute(RemoteOperation<T> op) throws CoreException {
+	private <T> T execute(RemoteOperation<T> op, TaskRepository taskRepository) throws CoreException {
 		IProgressMonitor monitor = op.getMonitor();
 		try {
 			monitor.beginTask("Connecting to Bamboo", IProgressMonitor.UNKNOWN);
-			updateServer();
+			updateServer(taskRepository);
 			return op.run(op.getMonitor());
 		} catch (CrucibleLoginException e) {
 			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID,
@@ -106,7 +103,7 @@ public class BambooClient {
 		}
 	}
 
-	private void updateServer() {
+	private void updateServer(TaskRepository taskrepository) {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
 			String newUserName = credentials.getUserName();
@@ -114,7 +111,7 @@ public class BambooClient {
 			serverCfg.setUsername(newUserName);
 			serverCfg.setPassword(newPassword);
 		}
-		serverCfg.setPlans(BambooUtil.getSubscribedPlans(repository));
+		serverCfg.setPlans(BambooUtil.getSubscribedPlans(taskrepository));
 		serverCfg.setUseFavourites(false);
 	}
 
@@ -126,7 +123,8 @@ public class BambooClient {
 		return clientData;
 	}
 
-	public BambooClientData updateRepositoryData(IProgressMonitor monitor) throws CoreException {
+	public BambooClientData updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository)
+			throws CoreException {
 		this.clientData = execute(new RemoteOperation<BambooClientData>(monitor) {
 			@Override
 			public BambooClientData run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -137,11 +135,12 @@ public class BambooClient {
 				newClientData.setPlans(projects);
 				return newClientData;
 			}
-		});
+		}, taskRepository);
 		return clientData;
 	}
 
-	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor) throws CoreException {
+	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, TaskRepository taskRepository)
+			throws CoreException {
 		return execute(new RemoteOperation<Collection<BambooBuild>>(monitor) {
 			@Override
 			public Collection<BambooBuild> run(IProgressMonitor monitor) throws CrucibleLoginException,
@@ -149,7 +148,7 @@ public class BambooClient {
 				monitor.subTask("Retrieving builds");
 				return server.getSubscribedPlansResults(serverCfg);
 			}
-		});
+		}, taskRepository);
 	}
 
 }

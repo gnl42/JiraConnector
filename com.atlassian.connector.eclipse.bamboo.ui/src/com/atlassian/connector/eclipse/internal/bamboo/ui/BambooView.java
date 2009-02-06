@@ -70,11 +70,12 @@ public class BambooView extends ViewPart {
 
 		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			List<BambooBuild> allBuilds = new ArrayList<BambooBuild>();
-			for (Collection<BambooBuild> collection : ((Map<TaskRepository, Collection<BambooBuild>>) newInput).values()) {
-				allBuilds.addAll(collection);
+			allBuilds = new ArrayList<BambooBuild>();
+			if (newInput != null) {
+				for (Collection<BambooBuild> collection : ((Map<TaskRepository, Collection<BambooBuild>>) newInput).values()) {
+					allBuilds.addAll(collection);
+				}
 			}
-			this.allBuilds = allBuilds;
 		}
 	}
 

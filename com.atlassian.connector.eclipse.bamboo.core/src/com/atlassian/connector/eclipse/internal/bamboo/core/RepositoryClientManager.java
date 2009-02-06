@@ -75,8 +75,6 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 	}
 
 	public synchronized void repositoryAdded(TaskRepository repository) {
-		removeClient(repository);
-		clientDataByUrl.remove(repository.getRepositoryUrl());
 	}
 
 	private void removeClient(TaskRepository repository) {

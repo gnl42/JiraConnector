@@ -72,7 +72,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
 		BambooServerFacade crucibleServer = getServer(serverCfg, callback);
 
-		return new BambooClient(location, taskRepository, serverCfg, crucibleServer, data);
+		return new BambooClient(location, serverCfg, crucibleServer, data);
 	}
 
 	public BambooClient createTempClient(TaskRepository taskRepository, BambooClientData data) {
@@ -82,7 +82,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
 		BambooServerFacade crucibleServer = getServer(serverCfg, callback);
 
-		BambooClient tempClient = new BambooClient(location, taskRepository, serverCfg, crucibleServer, data);
+		BambooClient tempClient = new BambooClient(location, serverCfg, crucibleServer, data);
 		tempClients.put(tempClient, serverCfg);
 		return tempClient;
 	}

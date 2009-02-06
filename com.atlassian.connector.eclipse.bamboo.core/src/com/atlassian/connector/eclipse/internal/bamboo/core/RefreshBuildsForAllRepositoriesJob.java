@@ -49,7 +49,7 @@ public class RefreshBuildsForAllRepositoriesJob extends Job {
 		for (TaskRepository repository : repositories) {
 			BambooClient client = clientManager.getClient(repository);
 			try {
-				this.builds2.put(repository, client.getBuilds(monitor));
+				this.builds2.put(repository, client.getBuilds(monitor, repository));
 			} catch (CoreException e) {
 				result.add(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
 						"Update of builds from {0} failed", repository.getRepositoryLabel()), e));
