@@ -38,14 +38,12 @@ public final class BambooUtil {
 			sb.append(plan.getKey());
 			sb.append(",");
 		}
-		System.err.println("setting " + sb.toString() + " on " + repository); //FIXME
 		repository.setProperty(KEY_SUBSCRIBED_PLANS, sb.toString());
 	}
 
 	public static Collection<SubscribedPlan> getSubscribedPlans(TaskRepository repository) {
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>();
 		String value = repository.getProperty(KEY_SUBSCRIBED_PLANS);
-		System.err.println("getting " + value + " on " + repository); //FIXME
 		if (value != null) {
 			StringTokenizer t = new StringTokenizer(value, ",");
 			while (t.hasMoreTokens()) {

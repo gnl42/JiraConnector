@@ -31,6 +31,8 @@ public class BambooImages {
 
 	public static final ImageDescriptor STATUS_PASSED = create(T_OBJ, "icn_plan_passed.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor BAMBOO = create(T_OBJ, "bamboo.png"); //$NON-NLS-1$
+
 	private static ImageDescriptor create(String prefix, String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));

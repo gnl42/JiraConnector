@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
@@ -78,6 +79,8 @@ public class BambooView extends ViewPart {
 			}
 		}
 	}
+
+	public static final String ID = "com.atlassian.connector.eclipse.bamboo.ui.plans";
 
 	private TreeViewer buildViewer;
 
@@ -222,13 +225,7 @@ public class BambooView extends ViewPart {
 			@Override
 			public void done(final IJobChangeEvent event) {
 				if (event.getResult().isOK()) {
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							if (buildViewer.getControl() != null && !buildViewer.getControl().isDisposed()) {
-								refresh(((RefreshBuildsForAllRepositoriesJob) event.getJob()).getBuilds());
-							}
-						}
-					});
+					BuildPlanManager.getInstance().handleFinishedRefreshAllBuildsJob(event);
 				}
 			}
 		});

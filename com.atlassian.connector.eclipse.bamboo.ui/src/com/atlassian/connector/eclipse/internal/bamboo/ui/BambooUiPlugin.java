@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.notifications.BambooNotificationProvider;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -34,6 +35,8 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static BambooUiPlugin plugin;
 
+	private BambooNotificationProvider bambooNotificationProvider;
+
 	/**
 	 * The constructor
 	 */
@@ -52,6 +55,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				BambooViewDataProvider.getInstance().init();
+				bambooNotificationProvider = new BambooNotificationProvider();
 				return Status.OK_STATUS;
 			}
 		};

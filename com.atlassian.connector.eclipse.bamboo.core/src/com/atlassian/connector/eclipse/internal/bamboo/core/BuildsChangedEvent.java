@@ -27,15 +27,19 @@ public class BuildsChangedEvent {
 
 	private final Map<TaskRepository, Collection<BambooBuild>> allBuilds;
 
+	private final Map<TaskRepository, Collection<BambooBuild>> oldBuilds;
+
 	public BuildsChangedEvent(Map<TaskRepository, Collection<BambooBuild>> addedBuilds,
 			Map<TaskRepository, Collection<BambooBuild>> removedBuilds,
 			Map<TaskRepository, Collection<BambooBuild>> changedBuilds,
-			Map<TaskRepository, Collection<BambooBuild>> allBuilds) {
+			Map<TaskRepository, Collection<BambooBuild>> allBuilds,
+			Map<TaskRepository, Collection<BambooBuild>> oldBuilds) {
 		super();
 		this.addedBuilds = addedBuilds;
 		this.removedBuilds = removedBuilds;
 		this.changedBuilds = changedBuilds;
 		this.allBuilds = allBuilds;
+		this.oldBuilds = oldBuilds;
 	}
 
 	public Map<TaskRepository, Collection<BambooBuild>> getAddedBuilds() {
@@ -52,6 +56,10 @@ public class BuildsChangedEvent {
 
 	public Map<TaskRepository, Collection<BambooBuild>> getAllBuilds() {
 		return allBuilds;
+	}
+
+	public Map<TaskRepository, Collection<BambooBuild>> getOldBuilds() {
+		return oldBuilds;
 	}
 
 }
