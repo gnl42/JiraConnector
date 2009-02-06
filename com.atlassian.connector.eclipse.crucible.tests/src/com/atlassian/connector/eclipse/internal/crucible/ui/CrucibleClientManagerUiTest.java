@@ -59,7 +59,15 @@ public class CrucibleClientManagerUiTest extends TestCase {
 		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
 		CrucibleServerCfg serverCfg = clientManager.getServerCfg(location, repo, false);
 
-		HttpClient httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
+		boolean assertion = false;
+		HttpClient httpClient1 = null;
+		try {
+			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
+		} catch (AssertionError e) {
+			assertion = true;
+		}
+
+		assertTrue(assertion || httpClient1 == null);
 
 		assertNull(httpClient1);
 
