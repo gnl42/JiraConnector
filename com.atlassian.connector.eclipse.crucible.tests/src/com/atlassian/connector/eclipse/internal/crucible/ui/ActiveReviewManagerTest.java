@@ -226,6 +226,7 @@ public class ActiveReviewManagerTest extends TestCase {
 		String taskKey = "test-2";
 		String taskKey2 = "test-3";
 		String taskId = CrucibleUtil.getTaskIdFromPermId(taskKey);
+		String taskId2 = CrucibleUtil.getTaskIdFromPermId(taskKey2);
 
 		String repositoryUrl = "https://testServer.com";
 
@@ -248,6 +249,13 @@ public class ActiveReviewManagerTest extends TestCase {
 		assertEquals(createdTask, activeReviewManager.getActiveTask());
 
 		Review updatedReview = createReview(repositoryUrl, taskKey2);
+		activeReviewManager.reviewAdded(repositoryUrl, taskId2, updatedReview);
+
+		assertTrue(activeReviewManager.isReviewActive());
+		assertEquals(review, activeReviewManager.getActiveReview());
+		assertEquals(createdTask, activeReviewManager.getActiveTask());
+
+		updatedReview = createReview(repositoryUrl, taskKey);
 		activeReviewManager.reviewAdded(repositoryUrl, taskId, updatedReview);
 
 		assertTrue(activeReviewManager.isReviewActive());
