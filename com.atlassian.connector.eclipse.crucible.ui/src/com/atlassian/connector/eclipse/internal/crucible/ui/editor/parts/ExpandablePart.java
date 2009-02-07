@@ -52,6 +52,8 @@ public abstract class ExpandablePart {
 
 	private boolean isExpanded;
 
+	private boolean enableToolbar = true;
+
 	private final List<ExpandablePart> childrenParts;
 
 	protected final CrucibleReviewEditorPage crucibleEditor;
@@ -155,6 +157,11 @@ public abstract class ExpandablePart {
 	}
 
 	private void fillToolBar(ToolBarManager toolbarManager, FormToolkit toolkit, boolean expanded) {
+
+		if (!enableToolbar) {
+			return;
+		}
+
 		List<IReviewAction> toolbarActions = getToolbarActions(expanded);
 
 //		for (Control control : actionsComposite.getChildren()) {
@@ -276,6 +283,10 @@ public abstract class ExpandablePart {
 
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
 		// default do nothing
+	}
+
+	public void disableToolbar() {
+		enableToolbar = false;
 	}
 
 	protected abstract List<IReviewAction> getToolbarActions(boolean expanded);

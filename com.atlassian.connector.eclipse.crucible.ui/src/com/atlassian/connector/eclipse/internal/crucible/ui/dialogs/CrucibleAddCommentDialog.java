@@ -14,6 +14,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CommentPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.GeneralCommentPart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.VersionedCommentPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
@@ -21,7 +24,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldDef;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
+import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,6 +44,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -49,6 +59,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -128,6 +139,10 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	private final HashMap<String, CustomField> customFieldSelections;
 
+	private CommentPart commentPart;
+
+	private FormToolkit toolkit;
+
 	private boolean draft = false;
 
 	private boolean defect = false;
@@ -137,6 +152,10 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 	private String newComment;
 
 	private Button defectButton;
+
+	private Button saveButton;
+
+	private Button saveDraftButton;
 
 	public CrucibleAddCommentDialog(Shell parentShell, String shellTitle, Review review, CrucibleFile file,
 			Comment replyToComment, LineRange lineRange, String taskKey, String taskId, TaskRepository taskRepository,
@@ -172,22 +191,66 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 
+		if (toolkit == null) {
+			toolkit = new FormToolkit(getShell().getDisplay());
+		}
+		parent.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				if (toolkit != null) {
+					toolkit.dispose();
+				}
+			}
+		});
+
 		if (replyToComment != null) {
 
-			Label label = new Label(composite, SWT.NONE);
-			label.setText("Comment:");
+			if (replyToComment instanceof GeneralComment) {
+				commentPart = new GeneralCommentPart((GeneralComment) replyToComment, review, null);
+			} else {
+				commentPart = new VersionedCommentPart((VersionedComment) replyToComment, review,
+						crucibleFile.getCrucibleFileInfo(), null);
+			}
 
-			Text commentReplyText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY);
-			commentReplyText.setText(replyToComment.getMessage());
-			GridData textGridData = new GridData(GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
-			textGridData.widthHint = 500;
-			commentReplyText.setLayoutData(textGridData);
+			if (commentPart != null) {
+				commentPart.disableToolbar();
+
+				ScrolledComposite scrolledComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.BORDER);
+				scrolledComposite.setExpandHorizontal(true);
+
+				scrolledComposite.setBackground(toolkit.getColors().getBackground());
+				GridDataFactory.fillDefaults().hint(SWT.DEFAULT, 100).applyTo(scrolledComposite);
+
+				Composite commentComposite = toolkit.createComposite(scrolledComposite, SWT.NONE);
+				commentComposite.setLayout(new GridLayout());
+				scrolledComposite.setContent(commentComposite);
+
+				Control commentControl = commentPart.createControl(commentComposite, toolkit);
+				commentComposite.setSize(commentControl.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+			}
 		}
 
 		commentText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
-		textGridData.heightHint = 80;
+		textGridData.heightHint = 100;
+		commentText.addModifyListener(new ModifyListener() {
+
+			public void modifyText(ModifyEvent e) {
+				boolean enabled = false;
+				if (commentText != null && commentText.getText().trim().length() > 0) {
+					enabled = true;
+				}
+				if (saveButton != null && !saveButton.isDisposed()) {
+					saveButton.setEnabled(enabled);
+				}
+
+				if (saveDraftButton != null && !saveDraftButton.isDisposed()) {
+					saveDraftButton.setEnabled(enabled);
+				}
+			}
+
+		});
 		commentText.setLayoutData(textGridData);
 		commentText.forceFocus();
 
@@ -318,22 +381,24 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 
-		createButton(parent, IDialogConstants.CLIENT_ID + 2, SAVE_LABEL, false).addSelectionListener(
-				new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						addComment();
-					}
-				});
+		saveButton = createButton(parent, IDialogConstants.CLIENT_ID + 2, SAVE_LABEL, false);
+		saveButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				addComment();
+			}
+		});
+		saveButton.setEnabled(false);
 		if (!edit) { //if it is a new reply, saving as draft is possible
-			createButton(parent, IDialogConstants.CLIENT_ID + 2, DRAFT_LABEL, false).addSelectionListener(
-					new SelectionAdapter() {
-						@Override
-						public void widgetSelected(SelectionEvent e) {
-							draft = true;
-							addComment();
-						}
-					});
+			saveDraftButton = createButton(parent, IDialogConstants.CLIENT_ID + 2, DRAFT_LABEL, false);
+			saveDraftButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					draft = true;
+					addComment();
+				}
+			});
+			saveDraftButton.setEnabled(false);
 		}
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false).addSelectionListener(
 				new SelectionAdapter() {

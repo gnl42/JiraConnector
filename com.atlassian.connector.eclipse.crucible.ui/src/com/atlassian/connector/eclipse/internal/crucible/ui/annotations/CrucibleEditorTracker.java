@@ -29,7 +29,6 @@ public class CrucibleEditorTracker implements IPartListener {
 			public void run() {
 				CrucibleAnnotationModelManager.attachAllOpenEditors();
 			}
-
 		});
 
 	}
