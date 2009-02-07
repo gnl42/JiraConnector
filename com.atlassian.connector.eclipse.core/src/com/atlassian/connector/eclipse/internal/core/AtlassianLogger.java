@@ -45,6 +45,9 @@ public class AtlassianLogger extends LoggerImpl {
 		} else if (level == LOG_WARN) {
 			statusCode = IStatus.WARNING;
 		}
-		StatusHandler.log(new Status(statusCode, pluginId, msg, t));
+
+		if (!msg.startsWith("Cannot parse buildCompletedDate")) {
+			StatusHandler.log(new Status(statusCode, pluginId, msg, t));
+		}
 	}
 }
