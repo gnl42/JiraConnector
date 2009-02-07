@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
+import com.atlassian.theplugin.commons.util.DateUtil;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -174,14 +175,14 @@ public class BambooView extends ViewPart {
 		});
 
 		column = new TreeViewerColumn(buildViewer, SWT.NONE);
-		column.getColumn().setText("Build Reason");
+		column.getColumn().setText("Last Built");
 		column.getColumn().setWidth(200);
 		column.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof BambooBuild) {
 					BambooBuild build = ((BambooBuild) element);
-					return build.getBuildRelativeBuildDate();
+					return DateUtil.getRelativeBuildTime(build.getBuildCompletedDate());
 				}
 				return super.getText(element);
 			}
@@ -193,15 +194,6 @@ public class BambooView extends ViewPart {
 
 		bambooDataprovider = BambooViewDataProvider.getInstance();
 		bambooDataprovider.setView(this);
-	}
-
-	@Override
-	public void dispose() {
-		buildFailedImage.dispose();
-		buildPassedImage.dispose();
-		buildDisabledImage.dispose();
-		bambooImage.dispose();
-		super.dispose();
 	}
 
 	@Override
