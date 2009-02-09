@@ -82,9 +82,9 @@ public class BambooNotification extends AbstractNotification {
 	@Override
 	public Image getNotificationKindImage() {
 		switch (build.getStatus()) {
-		case BUILD_FAILED:
+		case FAILURE:
 			return CommonImages.getImage(BambooImages.STATUS_FAILED);
-		case BUILD_SUCCEED:
+		case SUCCESS:
 			return CommonImages.getImage(BambooImages.STATUS_PASSED);
 		default:
 			return CommonImages.getImage(BambooImages.STATUS_DISABLED);

@@ -80,7 +80,7 @@ public class BambooView extends ViewPart {
 				for (Collection<BambooBuild> collection : ((Map<TaskRepository, Collection<BambooBuild>>) newInput).values()) {
 					allBuilds.addAll(collection);
 					for (BambooBuild build : collection) {
-						if (build.getStatus() == BuildStatus.BUILD_FAILED) {
+						if (build.getStatus() == BuildStatus.FAILURE) {
 							hasFailed = true;
 						}
 					}
@@ -128,9 +128,9 @@ public class BambooView extends ViewPart {
 			public Image getImage(Object element) {
 				if (element instanceof BambooBuild) {
 					switch (((BambooBuild) element).getStatus()) {
-					case BUILD_FAILED:
+					case FAILURE:
 						return buildFailedImage;
-					case BUILD_SUCCEED:
+					case SUCCESS:
 						return buildPassedImage;
 					default:
 						return buildDisabledImage;
