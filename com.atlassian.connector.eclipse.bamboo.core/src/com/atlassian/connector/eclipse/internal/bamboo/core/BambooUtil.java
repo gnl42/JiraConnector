@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
-import com.atlassian.theplugin.commons.SubscribedPlan;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.theplugin.commons.cfg.SubscribedPlan;
 
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 

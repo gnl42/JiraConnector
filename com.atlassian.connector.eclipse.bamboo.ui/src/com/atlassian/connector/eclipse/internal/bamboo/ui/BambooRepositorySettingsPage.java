@@ -18,7 +18,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.model.BambooCachedPlan;
-import com.atlassian.theplugin.commons.SubscribedPlan;
+import com.atlassian.theplugin.commons.cfg.SubscribedPlan;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
