@@ -28,5 +28,15 @@
             name="Atlassian">
       </category>
    </extension>
+   <!--<extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditor"
+            contributorClass="com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditorActionContribution"
+            icon="icons/obj16/bamboo.png"
+            id="com.atlassian.connector.eclipse.bamboo.ui.editors.build"
+            name="Bamboo Build Editor">
+      </editor>
+   </extension>-->
 
 </plugin>
