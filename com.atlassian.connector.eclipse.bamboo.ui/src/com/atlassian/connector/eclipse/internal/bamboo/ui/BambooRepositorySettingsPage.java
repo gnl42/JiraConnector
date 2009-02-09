@@ -23,6 +23,7 @@ import com.atlassian.theplugin.commons.SubscribedPlan;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -109,6 +110,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	private CheckboxTreeViewer planViewer;
 
+	private boolean validSettings = false;
+
 	public BambooRepositorySettingsPage(TaskRepository taskRepository) {
 		super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
 		setNeedsHttpAuth(true);
@@ -173,7 +176,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		refreshButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
-				refreshBuildPlans();
+				validateSettings();
 			}
 		});
 	}
@@ -226,10 +229,23 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		return false;
 	}
 
+	@Override
+	protected void applyValidatorResult(Validator validator) {
+		this.validSettings = validator != null && validator.getStatus() == Status.OK_STATUS;
+		super.applyValidatorResult(validator);
+	}
+
+	@Override
+	protected void validateSettings() {
+		super.validateSettings();
+		if (validSettings) {
+			refreshBuildPlans();
+		}
+	}
+
 	private void refreshBuildPlans() {
 		try {
-			final TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
-			applyToValidate(repository);
+			final TaskRepository repository = createTaskRepository();
 
 			// preserve ui state
 			Object[] checkedElements = planViewer.getCheckedElements();
