@@ -25,6 +25,8 @@ public class EclipseBambooServerCfg extends BambooServerCfg {
 
 	private static final int HASCODE_MAGIC_TEMPORARY = 1231;
 
+	private static final int HASHCODE_MAGIC = 31;
+
 	private final boolean isTemporary;
 
 	public EclipseBambooServerCfg(String name, String url, boolean isTemporary) {
@@ -35,10 +37,12 @@ public class EclipseBambooServerCfg extends BambooServerCfg {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + (isTemporary ? HASCODE_MAGIC_TEMPORARY : HASCODE_MAGIC_NOT_TEMPORARY);
-		result = prime * result + ((getUrl() == null) ? 0 : getUrl().hashCode());
+		int result;
+		result = (isEnabled() ? 1 : 0);
+		result = HASHCODE_MAGIC * result + (getUrl() != null ? getUrl().hashCode() : 0);
+		result = HASHCODE_MAGIC * result + (getUsername() != null ? getUsername().hashCode() : 0);
+		result = HASHCODE_MAGIC * result + (getPassword() != null ? getPassword().hashCode() : 0);
+		result = HASHCODE_MAGIC * result + (isTemporary ? HASCODE_MAGIC_TEMPORARY : HASCODE_MAGIC_NOT_TEMPORARY);
 		return result;
 	}
 
@@ -47,21 +51,23 @@ public class EclipseBambooServerCfg extends BambooServerCfg {
 		if (this == obj) {
 			return true;
 		}
-		if (!super.equals(obj)) {
-			return false;
-		}
 		if (!(obj instanceof EclipseBambooServerCfg)) {
 			return false;
 		}
-		final EclipseBambooServerCfg other = (EclipseBambooServerCfg) obj;
-		if (isTemporary != other.isTemporary) {
+
+		final EclipseBambooServerCfg serverCfg = (EclipseBambooServerCfg) obj;
+
+		if (getPassword() != null ? !getPassword().equals(serverCfg.getPassword()) : serverCfg.getPassword() != null) {
 			return false;
 		}
-		if (getUrl() == null) {
-			if (other.getUrl() != null) {
-				return false;
-			}
-		} else if (!getUrl().equals(other.getUrl())) {
+		if (getUrl() != null ? !getUrl().equals(serverCfg.getUrl()) : serverCfg.getUrl() != null) {
+			return false;
+		}
+		if (getUsername() != null ? !getUsername().equals(serverCfg.getUsername()) : serverCfg.getUsername() != null) {
+			return false;
+		}
+
+		if (isTemporary != serverCfg.isTemporary) {
 			return false;
 		}
 		return true;
