@@ -19,6 +19,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.views.TaskListView;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -29,6 +30,26 @@ import junit.framework.TestCase;
  * @author Shawn Minto
  */
 public class CrucibleUiUtilTest extends TestCase {
+
+	@Override
+	protected void setUp() throws Exception {
+		resetTaskListAndRepositories();
+	}
+
+	public static void resetTaskListAndRepositories() throws Exception {
+		TasksUiPlugin.getRepositoryManager().clearRepositories(TasksUiPlugin.getDefault().getRepositoriesFilePath());
+		TasksUiPlugin.getDefault().getLocalTaskRepository();
+		resetTaskList();
+	}
+
+	public static void resetTaskList() throws Exception {
+		TasksUi.getTaskActivityManager().deactivateActiveTask();
+		TasksUiPlugin.getTaskListExternalizationParticipant().resetTaskList();
+		TaskListView view = TaskListView.getFromActivePerspective();
+		if (view != null) {
+			view.refresh();
+		}
+	}
 
 	public void testGetCrucibleTaskRepositoryFromString() {
 
