@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
-import com.atlassian.theplugin.commons.crucible.api.model.Action;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
@@ -419,9 +419,9 @@ public class CrucibleUtilTest extends TestCase {
 
 	public void testCreateHash() {
 		Review review1 = new ReviewBean("http://crucible.atlassian.com/cru/");
-		Set<Action> actions = new LinkedHashSet<Action>();
-		actions.add(Action.ABANDON);
-		actions.add(Action.APPROVE);
+		Set<CrucibleAction> actions = new LinkedHashSet<CrucibleAction>();
+		actions.add(CrucibleAction.ABANDON);
+		actions.add(CrucibleAction.APPROVE);
 		review1.setActions(actions);
 		review1.setAllowReviewerToJoin(true);
 		review1.setAuthor(new UserBean("aut"));
@@ -452,9 +452,9 @@ public class CrucibleUtilTest extends TestCase {
 		review1.setState(State.CLOSED);
 
 		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
-		actions = new LinkedHashSet<Action>();
-		actions.add(Action.ABANDON);
-		actions.add(Action.APPROVE);
+		actions = new LinkedHashSet<CrucibleAction>();
+		actions.add(CrucibleAction.ABANDON);
+		actions.add(CrucibleAction.APPROVE);
 		review.setActions(actions);
 		review.setAllowReviewerToJoin(true);
 		review.setAuthor(new UserBean("aut"));
@@ -488,12 +488,12 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(-1 == CrucibleUtil.createHash(review));
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
 
-		List<Action> transitions = new ArrayList<Action>();
-		transitions.add(Action.CLOSE);
+		List<CrucibleAction> transitions = new ArrayList<CrucibleAction>();
+		transitions.add(CrucibleAction.CLOSE);
 		review1.setTransitions(transitions);
 
-		transitions = new ArrayList<Action>();
-		transitions.add(Action.CLOSE);
+		transitions = new ArrayList<CrucibleAction>();
+		transitions.add(CrucibleAction.CLOSE);
 		review.setTransitions(transitions);
 
 		//test for same object
@@ -512,14 +512,14 @@ public class CrucibleUtilTest extends TestCase {
 		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
 		assertFalse(CrucibleUtil.canAddCommentToReview(review));
 
-		Set<Action> actions = new LinkedHashSet<Action>();
-		actions.add(Action.ABANDON);
-		actions.add(Action.APPROVE);
+		Set<CrucibleAction> actions = new LinkedHashSet<CrucibleAction>();
+		actions.add(CrucibleAction.ABANDON);
+		actions.add(CrucibleAction.APPROVE);
 		review.setActions(actions);
 
 		assertFalse(CrucibleUtil.canAddCommentToReview(review));
 
-		actions.add(Action.COMMENT);
+		actions.add(CrucibleAction.COMMENT);
 		review.setActions(actions);
 		assertTrue(CrucibleUtil.canAddCommentToReview(review));
 	}

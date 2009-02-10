@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
-import com.atlassian.theplugin.commons.crucible.api.model.Action;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
@@ -291,9 +291,9 @@ public class ActiveReviewManagerTest extends TestCase {
 
 	private Review createReview(String repositoryUrl, String taskKey) {
 		Review review = new ReviewBean(repositoryUrl);
-		Set<Action> actions = new LinkedHashSet<Action>();
-		actions.add(Action.ABANDON);
-		actions.add(Action.APPROVE);
+		Set<CrucibleAction> actions = new LinkedHashSet<CrucibleAction>();
+		actions.add(CrucibleAction.ABANDON);
+		actions.add(CrucibleAction.APPROVE);
 		review.setActions(actions);
 		review.setAllowReviewerToJoin(true);
 		review.setAuthor(new UserBean("aut"));

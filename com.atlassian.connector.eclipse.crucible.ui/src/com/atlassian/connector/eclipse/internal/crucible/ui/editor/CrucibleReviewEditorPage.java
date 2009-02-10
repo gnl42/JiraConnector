@@ -24,6 +24,7 @@ import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -80,6 +81,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -401,15 +403,15 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	protected void fillToolBar(IToolBarManager manager) {
 		if (review != null) {
 			try {
-				List<com.atlassian.theplugin.commons.crucible.api.model.Action> transitions = review.getTransitions();
-				if (transitions.contains(com.atlassian.theplugin.commons.crucible.api.model.Action.SUMMARIZE)) {
+				EnumSet<CrucibleAction> transitions = review.getTransitions();
+				if (transitions.contains(CrucibleAction.SUMMARIZE)) {
 					Action summarizeAction = new SummarizeReviewAction(review, "Summarizing Crucible Review "
 							+ getTask().getTaskKey());
 					summarizeAction.setText("Summarize");
 					summarizeAction.setToolTipText("Summarize review");
 					manager.add(summarizeAction);
 				}
-				if (transitions.contains(com.atlassian.theplugin.commons.crucible.api.model.Action.REOPEN)) {
+				if (transitions.contains(CrucibleAction.REOPEN)) {
 					Action abandonAction = new Action() {
 						@Override
 						public void run() {
@@ -439,7 +441,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 					abandonAction.setToolTipText("Reopen review");
 					manager.add(abandonAction);
 				}
-				if (transitions.contains(com.atlassian.theplugin.commons.crucible.api.model.Action.ABANDON)) {
+				if (transitions.contains(CrucibleAction.ABANDON)) {
 					Action abandonAction = new Action() {
 						@Override
 						public void run() {

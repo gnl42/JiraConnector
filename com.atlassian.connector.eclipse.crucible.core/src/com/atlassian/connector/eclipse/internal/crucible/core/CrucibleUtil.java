@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
-import com.atlassian.theplugin.commons.crucible.api.model.Action;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
@@ -250,7 +250,7 @@ public final class CrucibleUtil {
 			int result = 1;
 
 			int miniResult = 0;
-			for (Action action : review.getActions()) {
+			for (CrucibleAction action : review.getActions()) {
 				miniResult += ((action == null) ? 0 : action.actionName().hashCode());
 			}
 			result = prime * result + miniResult;
@@ -301,14 +301,14 @@ public final class CrucibleUtil {
 			result = prime * result + ((review.getSummary() == null) ? 0 : review.getSummary().hashCode());
 
 			miniResult = 0;
-			for (Action action : review.getTransitions()) {
+			for (CrucibleAction action : review.getTransitions()) {
 				miniResult += ((action == null) ? 0 : action.actionName().hashCode());
 			}
 			result = prime * result + miniResult;
 
 			return result;
 		} catch (ValueNotYetInitialized e) {
-			//ingore
+			//ignore
 		}
 
 		return -1;
@@ -362,11 +362,7 @@ public final class CrucibleUtil {
 	public static boolean canAddCommentToReview(Review review) {
 		if (review != null) {
 			try {
-				for (Action action : review.getActions()) {
-					if (action == Action.COMMENT) {
-						return true;
-					}
-				}
+				return review.getActions().contains(CrucibleAction.COMMENT);
 			} catch (ValueNotYetInitialized e) {
 				StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
 			}
