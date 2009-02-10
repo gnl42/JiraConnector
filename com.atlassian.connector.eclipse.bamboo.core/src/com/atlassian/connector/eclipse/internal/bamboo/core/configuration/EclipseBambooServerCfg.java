@@ -41,7 +41,6 @@ public class EclipseBambooServerCfg extends BambooServerCfg {
 		result = (isEnabled() ? 1 : 0);
 		result = HASHCODE_MAGIC * result + (getUrl() != null ? getUrl().hashCode() : 0);
 		result = HASHCODE_MAGIC * result + (getUsername() != null ? getUsername().hashCode() : 0);
-		result = HASHCODE_MAGIC * result + (getPassword() != null ? getPassword().hashCode() : 0);
 		result = HASHCODE_MAGIC * result + (isTemporary ? HASCODE_MAGIC_TEMPORARY : HASCODE_MAGIC_NOT_TEMPORARY);
 		return result;
 	}
@@ -57,9 +56,6 @@ public class EclipseBambooServerCfg extends BambooServerCfg {
 
 		final EclipseBambooServerCfg serverCfg = (EclipseBambooServerCfg) obj;
 
-		if (getPassword() != null ? !getPassword().equals(serverCfg.getPassword()) : serverCfg.getPassword() != null) {
-			return false;
-		}
 		if (getUrl() != null ? !getUrl().equals(serverCfg.getUrl()) : serverCfg.getUrl() != null) {
 			return false;
 		}

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
@@ -35,6 +36,8 @@ public class RefreshBuildsForAllRepositoriesJob extends Job {
 
 	private final IRepositoryManager repositoryManager;
 
+	private MultiStatus result;
+
 	public RefreshBuildsForAllRepositoriesJob(String name, IRepositoryManager repositoryManager) {
 		super(name);
 		this.builds2 = new HashMap<TaskRepository, Collection<BambooBuild>>();
@@ -45,20 +48,26 @@ public class RefreshBuildsForAllRepositoriesJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 		Set<TaskRepository> repositories = repositoryManager.getRepositories(BambooCorePlugin.CONNECTOR_KIND);
-		MultiStatus result = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0, "Retrieval of Bamboo builds failed", null);
+		result = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0, "Retrieval of Bamboo builds failed", null);
 		for (TaskRepository repository : repositories) {
 			BambooClient client = clientManager.getClient(repository);
 			try {
 				this.builds2.put(repository, client.getBuilds(monitor, repository));
 			} catch (CoreException e) {
-				result.add(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
-						"Update of builds from {0} failed", repository.getRepositoryLabel()), e));
+				Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
+						"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
+				result.add(status);
+				StatusHandler.log(status);
 			}
 		}
-		return result;
+		return Status.OK_STATUS;
 	}
 
 	public Map<TaskRepository, Collection<BambooBuild>> getBuilds() {
 		return builds2;
 	}
+
+	public IStatus getStatus() {
+		return result;
+	};
 }

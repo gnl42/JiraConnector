@@ -29,6 +29,7 @@ import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.Policy;
+import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
@@ -88,6 +89,13 @@ public class BambooClient {
 		IProgressMonitor monitor = op.getMonitor();
 		try {
 			monitor.beginTask("Connecting to Bamboo", IProgressMonitor.UNKNOWN);
+			if (taskRepository.getCredentials(AuthenticationType.REPOSITORY).getPassword().length() < 1) {
+				try {
+					location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
+				} catch (UnsupportedRequestException e) {
+					// ignore
+				}
+			}
 			updateServer(taskRepository);
 			return op.run(op.getMonitor());
 		} catch (CrucibleLoginException e) {

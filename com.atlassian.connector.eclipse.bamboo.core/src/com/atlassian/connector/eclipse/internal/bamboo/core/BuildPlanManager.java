@@ -266,7 +266,7 @@ public final class BuildPlanManager {
 		refreshBuildsForAllRepositoriesJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
-				if (event.getResult().isOK()) {
+				if (((RefreshBuildsForAllRepositoriesJob) event.getJob()).getStatus().isOK()) {
 					handleFinishedRefreshAllBuildsJob(event);
 				}
 				refreshBuildsForAllRepositoriesJob.schedule(REVIEW_SYNCHRONISATION_DELAY_MS);

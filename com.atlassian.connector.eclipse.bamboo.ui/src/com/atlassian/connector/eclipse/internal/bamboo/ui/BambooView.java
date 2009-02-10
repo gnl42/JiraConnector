@@ -264,7 +264,7 @@ public class BambooView extends ViewPart {
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {
-				if (event.getResult().isOK()) {
+				if (((RefreshBuildsForAllRepositoriesJob) event.getJob()).getStatus().isOK()) {
 					BuildPlanManager.getInstance().handleFinishedRefreshAllBuildsJob(event);
 				}
 			}
