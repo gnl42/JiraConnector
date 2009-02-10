@@ -11,20 +11,15 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.notifications;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooView;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.AbstractNotification;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import java.util.Date;
@@ -95,15 +90,7 @@ public class BambooNotification extends AbstractNotification {
 	public void open() {
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 			public void run() {
-				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-				if (window != null && window.getActivePage() != null) {
-					try {
-						window.getActivePage().showView(BambooView.ID);
-					} catch (PartInitException e) {
-						StatusHandler.fail(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-								"Failed to open Bamboo View"));
-					}
-				}
+				TasksUiUtil.openUrl(BambooUtil.getUrlFromBuild(build));
 			}
 		});
 	}

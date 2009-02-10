@@ -79,4 +79,15 @@ public final class BambooUtil {
 //		return keyElementsOne[0].equals(keyElementsTwo[0]) && keyElementsOne[1].equals(keyElementsTwo[1]);
 	}
 
+	public static String getUrlFromBuild(BambooBuild build) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(build.getServerUrl());
+		builder.append("/build/viewBuildResults.action?buildKey=");
+		builder.append(build.getBuildKey());
+		builder.append("&buildNumber=");
+		builder.append(build.getBuildNumber());
+		// ignore
+		return builder.toString();
+	}
+
 }

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -23,6 +24,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -30,6 +33,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -41,6 +45,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +53,22 @@ import java.util.Map;
  * @author Steffen Pingel
  */
 public class BambooView extends ViewPart {
+
+	private class OpenInBrowserAction extends Action {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void run() {
+			ISelection s = buildViewer.getSelection();
+			if (s instanceof IStructuredSelection) {
+				IStructuredSelection selection = (IStructuredSelection) s;
+				for (Iterator<BambooBuild> it = selection.iterator(); it.hasNext();) {
+					String url = BambooUtil.getUrlFromBuild(it.next());
+					TasksUiUtil.openUrl(url);
+				}
+			}
+		}
+	}
 
 	private class BuildContentProvider implements ITreeContentProvider {
 
@@ -218,7 +239,12 @@ public class BambooView extends ViewPart {
 		refreshAction.setText("Refresh");
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
 
+		Action openInBrowserAction = new OpenInBrowserAction();
+		openInBrowserAction.setText("Open in Browser");
+		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
+
 		toolBarManager.add(refreshAction);
+		toolBarManager.add(openInBrowserAction);
 	}
 
 	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {
