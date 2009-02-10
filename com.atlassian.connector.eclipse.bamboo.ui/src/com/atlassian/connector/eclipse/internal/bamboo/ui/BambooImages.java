@@ -33,6 +33,8 @@ public class BambooImages {
 
 	public static final ImageDescriptor BAMBOO = create(T_OBJ, "bamboo.png"); //$NON-NLS-1$
 
+	public static final ImageDescriptor CONSOLE = create(T_OBJ, "console_view.gif"); //$NON-NLS-1$
+
 	private static ImageDescriptor create(String prefix, String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));

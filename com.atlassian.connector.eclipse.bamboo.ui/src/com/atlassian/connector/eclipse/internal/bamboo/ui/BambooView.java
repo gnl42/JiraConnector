@@ -11,18 +11,26 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
+import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.DateUtil;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -30,19 +38,29 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.ViewPart;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -51,6 +69,7 @@ import java.util.Map;
 
 /**
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 public class BambooView extends ViewPart {
 
@@ -67,6 +86,91 @@ public class BambooView extends ViewPart {
 					TasksUiUtil.openUrl(url);
 				}
 			}
+		}
+	}
+
+	private class ShowBuildLogsAction extends Action {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void run() {
+			ISelection s = buildViewer.getSelection();
+			if (s instanceof IStructuredSelection) {
+				IStructuredSelection selection = (IStructuredSelection) s;
+				for (Iterator<BambooBuild> it = selection.iterator(); it.hasNext();) {
+					BambooBuild build = it.next();
+					RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager()
+							.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+					job.addJobChangeListener(new JobChangeAdapter() {
+						@Override
+						public void done(IJobChangeEvent event) {
+							if (event.getResult() == Status.OK_STATUS) {
+								byte[] buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
+								prepareConsole();
+								MessageConsoleStream messageStream = buildLogConsole.newMessageStream();
+								messageStream.print(new String(buildLog));
+								try {
+									messageStream.close();
+								} catch (IOException e) {
+									StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+											"Failed to close console message stream"));
+								}
+							}
+						}
+					});
+					job.schedule();
+
+				}
+			}
+		}
+
+		private void prepareConsole() {
+			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+			IConsole[] existing = consoleManager.getConsoles();
+			for (IConsole element : existing) {
+				if (BAMBOO_BUILD_LOG_CONSOLE.equals(element.getName())) {
+					buildLogConsole = (MessageConsole) element;
+				}
+			}
+			if (buildLogConsole == null) {
+				buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE, BambooImages.CONSOLE);
+				consoleManager.addConsoles(new IConsole[] { buildLogConsole });
+			}
+			buildLogConsole.clearConsole();
+			consoleManager.showConsoleView(buildLogConsole);
+
+		}
+	}
+
+	private class RetrieveBuildLogsJob extends Job {
+
+		private final BambooBuild build;
+
+		private final TaskRepository repository;
+
+		private byte[] buildLog;
+
+		public RetrieveBuildLogsJob(BambooBuild build, TaskRepository repository) {
+			super("Retrieve build log");
+			this.build = build;
+			this.repository = repository;
+		}
+
+		public byte[] getBuildLog() {
+			return buildLog;
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			// ignore
+			BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
+			try {
+				buildLog = client.getBuildLogs(monitor, repository, build);
+			} catch (CoreException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+						"Failed to retrieve build logs for build " + build.getBuildKey()));
+			}
+			return Status.OK_STATUS;
 		}
 	}
 
@@ -111,6 +215,8 @@ public class BambooView extends ViewPart {
 		}
 	}
 
+	private static final String BAMBOO_BUILD_LOG_CONSOLE = "Bamboo Build Log";
+
 	public static final String ID = "com.atlassian.connector.eclipse.bamboo.ui.plans";
 
 	private TreeViewer buildViewer;
@@ -126,6 +232,8 @@ public class BambooView extends ViewPart {
 	private final Image bambooImage = CommonImages.getImage(BambooImages.BAMBOO);
 
 	private Image currentTitleImage = bambooImage;
+
+	private MessageConsole buildLogConsole;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -209,12 +317,48 @@ public class BambooView extends ViewPart {
 			}
 		});
 
+		buildViewer.getTree().addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				new OpenInBrowserAction().run();
+			}
+		});
+
+		fillTreeContextMenu();
+
 		//GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(planViewer.getControl());
 
 		contributeToActionBars();
 
 		bambooDataprovider = BambooViewDataProvider.getInstance();
 		bambooDataprovider.setView(this);
+	}
+
+	private void fillTreeContextMenu() {
+		MenuManager contextMenuManager = new MenuManager("BAMBOO");
+		Action refreshAction = new Action() {
+			@Override
+			public void run() {
+				refreshBuilds();
+			}
+		};
+		refreshAction.setText("Refresh");
+		refreshAction.setImageDescriptor(CommonImages.REFRESH);
+
+		Action openInBrowserAction = new OpenInBrowserAction();
+		openInBrowserAction.setText("Open in Browser");
+		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
+
+		Action showBuildLogAction = new ShowBuildLogsAction();
+		showBuildLogAction.setText("Show build log");
+		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
+
+		contextMenuManager.add(refreshAction);
+		contextMenuManager.add(openInBrowserAction);
+		contextMenuManager.add(showBuildLogAction);
+		Menu contextMenu = contextMenuManager.createContextMenu(buildViewer.getControl());
+		buildViewer.getControl().setMenu(contextMenu);
+		getSite().registerContextMenu(contextMenuManager, buildViewer);
 	}
 
 	@Override
@@ -243,8 +387,13 @@ public class BambooView extends ViewPart {
 		openInBrowserAction.setText("Open in Browser");
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
 
+		Action showBuildLogAction = new ShowBuildLogsAction();
+		showBuildLogAction.setText("Show build log");
+		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
+
 		toolBarManager.add(refreshAction);
 		toolBarManager.add(openInBrowserAction);
+		toolBarManager.add(showBuildLogAction);
 	}
 
 	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {

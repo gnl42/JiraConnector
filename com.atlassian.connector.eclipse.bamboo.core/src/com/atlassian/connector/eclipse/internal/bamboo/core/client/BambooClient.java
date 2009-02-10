@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.bamboo.BambooServerFacade;
+import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
@@ -156,6 +157,32 @@ public class BambooClient {
 				monitor.subTask("Retrieving builds");
 				return server.getSubscribedPlansResults(serverCfg);
 			}
+		}, taskRepository);
+	}
+
+	public BuildDetails getBuildDetails(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
+			throws CoreException {
+		return execute(new RemoteOperation<BuildDetails>(monitor) {
+			@Override
+			public BuildDetails run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				monitor.subTask("Retrieving build details");
+				return server.getBuildDetails(serverCfg, build.getBuildKey(), build.getBuildNumber());
+			}
+
+		}, taskRepository);
+	}
+
+	public byte[] getBuildLogs(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
+			throws CoreException {
+		return execute(new RemoteOperation<byte[]>(monitor) {
+			@Override
+			public byte[] run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				monitor.subTask("Retrieving build details");
+				return server.getBuildLogs(serverCfg, build.getBuildKey(), build.getBuildNumber());
+			}
+
 		}, taskRepository);
 	}
 
