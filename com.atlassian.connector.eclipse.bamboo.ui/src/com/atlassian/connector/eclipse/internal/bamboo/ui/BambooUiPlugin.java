@@ -17,7 +17,11 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.notifications.BambooNo
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
@@ -56,6 +60,12 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				BambooViewDataProvider.getInstance().init();
 				bambooNotificationProvider = new BambooNotificationProvider();
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(BambooView.ID, null,
+							IWorkbenchPage.VIEW_CREATE);
+				} catch (PartInitException e) {
+					StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID, "Could not initialize Bamboo view."));
+				}
 				return Status.OK_STATUS;
 			}
 		};

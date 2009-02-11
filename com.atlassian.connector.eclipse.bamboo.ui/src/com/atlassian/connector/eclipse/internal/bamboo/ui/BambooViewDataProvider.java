@@ -87,5 +87,8 @@ public class BambooViewDataProvider implements BuildsChangedListener {
 
 	public void setView(BambooView bambooView) {
 		this.bambooView = bambooView;
+		if (builds != null && this.builds.size() > 0 && bambooView != null) {
+			this.bambooView.buildsChanged();
+		}
 	}
 }
