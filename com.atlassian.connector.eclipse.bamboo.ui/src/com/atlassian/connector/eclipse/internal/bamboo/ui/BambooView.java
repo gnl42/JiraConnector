@@ -15,8 +15,10 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
+import com.atlassian.connector.eclipse.internal.bamboo.core.TestResultExternalizer;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.DateUtil;
 
@@ -27,6 +29,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jdt.internal.junit.model.JUnitModel;
+import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -53,6 +57,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -60,6 +65,7 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.ViewPart;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,16 +95,19 @@ public class BambooView extends ViewPart {
 		}
 	}
 
-	private class ShowBuildLogsAction extends Action {
+	private class ShowBuildLogsAction extends BaseSelectionListenerAction {
 
-		@SuppressWarnings("unchecked")
+		public ShowBuildLogsAction() {
+			super(null);
+		}
+
 		@Override
 		public void run() {
 			ISelection s = buildViewer.getSelection();
 			if (s instanceof IStructuredSelection) {
 				IStructuredSelection selection = (IStructuredSelection) s;
-				for (Iterator<BambooBuild> it = selection.iterator(); it.hasNext();) {
-					BambooBuild build = it.next();
+				BambooBuild build = (BambooBuild) selection.iterator().next();
+				if (build != null) {
 					RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager()
 							.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
 					job.addJobChangeListener(new JobChangeAdapter() {
@@ -140,6 +149,66 @@ public class BambooView extends ViewPart {
 			consoleManager.showConsoleView(buildLogConsole);
 
 		}
+
+		@Override
+		protected boolean updateSelection(IStructuredSelection selection) {
+			return selection.size() == 1;
+		}
+	}
+
+	private class ShowTestResultsAction extends BaseSelectionListenerAction {
+
+		public ShowTestResultsAction() {
+			super(null);
+		}
+
+		@Override
+		public void run() {
+			ISelection s = buildViewer.getSelection();
+			if (s instanceof IStructuredSelection) {
+				IStructuredSelection selection = (IStructuredSelection) s;
+				BambooBuild build = (BambooBuild) selection.iterator().next();
+				if (build != null) {
+					RetrieveTestResultsJob job = new RetrieveTestResultsJob(build, TasksUi.getRepositoryManager()
+							.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+					job.addJobChangeListener(new JobChangeAdapter() {
+						@Override
+						public void done(IJobChangeEvent event) {
+							if (event.getResult() == Status.OK_STATUS) {
+								File testResults = ((RetrieveTestResultsJob) event.getJob()).getTestResultsFile();
+								if (testResults != null) {
+									showJUnitView(testResults);
+								}
+							}
+						}
+					});
+					job.schedule();
+
+				}
+			}
+		}
+
+		@Override
+		protected boolean updateSelection(IStructuredSelection selection) {
+			return selection.size() == 1;
+		}
+
+		private void showJUnitView(final File testResults) {
+			getSite().getShell().getDisplay().asyncExec(new Runnable() {
+				@SuppressWarnings("restriction")
+				public void run() {
+					if (!getSite().getShell().isDisposed()) {
+						try {
+							JUnitModel.importTestRunSession(testResults);
+							getViewSite().getPage().showView(TestRunnerViewPart.NAME);
+						} catch (Exception e) {
+							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+									"Error opening JUnit View"));
+						}
+					}
+				}
+			});
+		}
 	}
 
 	private class RetrieveBuildLogsJob extends Job {
@@ -166,11 +235,48 @@ public class BambooView extends ViewPart {
 			BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
 			try {
 				buildLog = client.getBuildLogs(monitor, repository, build);
+				client.getBuildDetails(monitor, repository, build);
 			} catch (CoreException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 						"Failed to retrieve build logs for build " + build.getBuildKey()));
 			}
 			return Status.OK_STATUS;
+		}
+	}
+
+	private class RetrieveTestResultsJob extends Job {
+		private final BambooBuild build;
+
+		private final TaskRepository repository;
+
+		private File testResults;
+
+		public RetrieveTestResultsJob(BambooBuild build, TaskRepository repository) {
+			super("Retrieve build log");
+			this.build = build;
+			this.repository = repository;
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			// ignore
+			BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
+			try {
+				BuildDetails details = client.getBuildDetails(monitor, repository, build);
+				TestResultExternalizer tre = new TestResultExternalizer();
+				testResults = tre.writeApplicationsToXML(build, details, File.createTempFile("bamboo_result", ".xml"));
+			} catch (CoreException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+						"Failed to retrieve build logs for build " + build.getBuildKey()));
+			} catch (IOException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+						"Failed to process test results for build " + build.getBuildKey()));
+			}
+			return Status.OK_STATUS;
+		}
+
+		public File getTestResultsFile() {
+			return testResults;
 		}
 	}
 
@@ -349,13 +455,22 @@ public class BambooView extends ViewPart {
 		openInBrowserAction.setText("Open in Browser");
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
 
-		Action showBuildLogAction = new ShowBuildLogsAction();
+		BaseSelectionListenerAction showBuildLogAction = new ShowBuildLogsAction();
 		showBuildLogAction.setText("Show build log");
 		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
+		showBuildLogAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(showBuildLogAction);
+
+		BaseSelectionListenerAction showTestResultsAction = new ShowTestResultsAction();
+		showTestResultsAction.setText("Show test results");
+		showTestResultsAction.setImageDescriptor(BambooImages.JUNIT);
+		showTestResultsAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(showTestResultsAction);
 
 		contextMenuManager.add(refreshAction);
 		contextMenuManager.add(openInBrowserAction);
 		contextMenuManager.add(showBuildLogAction);
+		contextMenuManager.add(showTestResultsAction);
 		Menu contextMenu = contextMenuManager.createContextMenu(buildViewer.getControl());
 		buildViewer.getControl().setMenu(contextMenu);
 		getSite().registerContextMenu(contextMenuManager, buildViewer);
@@ -387,13 +502,22 @@ public class BambooView extends ViewPart {
 		openInBrowserAction.setText("Open in Browser");
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
 
-		Action showBuildLogAction = new ShowBuildLogsAction();
+		BaseSelectionListenerAction showBuildLogAction = new ShowBuildLogsAction();
 		showBuildLogAction.setText("Show build log");
 		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
+		showBuildLogAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(showBuildLogAction);
+
+		BaseSelectionListenerAction showTestResultsAction = new ShowTestResultsAction();
+		showTestResultsAction.setText("Show test results");
+		showTestResultsAction.setImageDescriptor(BambooImages.JUNIT);
+		showTestResultsAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(showTestResultsAction);
 
 		toolBarManager.add(refreshAction);
 		toolBarManager.add(openInBrowserAction);
 		toolBarManager.add(showBuildLogAction);
+		toolBarManager.add(showTestResultsAction);
 	}
 
 	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {

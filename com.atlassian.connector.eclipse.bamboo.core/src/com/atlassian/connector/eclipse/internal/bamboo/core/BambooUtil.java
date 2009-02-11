@@ -89,5 +89,4 @@ public final class BambooUtil {
 		// ignore
 		return builder.toString();
 	}
-
 }

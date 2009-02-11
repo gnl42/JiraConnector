@@ -35,6 +35,8 @@ public class BambooImages {
 
 	public static final ImageDescriptor CONSOLE = create(T_OBJ, "console_view.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor JUNIT = create(T_OBJ, "junit.gif"); //$NON-NLS-1$
+
 	private static ImageDescriptor create(String prefix, String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));

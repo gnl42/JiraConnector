@@ -167,7 +167,9 @@ public class BambooClient {
 			public BuildDetails run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving build details");
-				return server.getBuildDetails(serverCfg, build.getBuildKey(), build.getBuildNumber());
+				BuildDetails buildDetails = server.getBuildDetails(serverCfg, build.getBuildKey(),
+						build.getBuildNumber());
+				return buildDetails;
 			}
 
 		}, taskRepository);
