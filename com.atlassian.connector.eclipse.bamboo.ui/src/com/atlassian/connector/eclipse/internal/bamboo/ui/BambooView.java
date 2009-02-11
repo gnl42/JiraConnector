@@ -15,19 +15,17 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
-import com.atlassian.connector.eclipse.internal.bamboo.core.TestResultExternalizer;
-import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.AddCommentToBuildJob;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.AddLabelToBuildJob;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.DateUtil;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jdt.internal.junit.model.JUnitModel;
 import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
@@ -35,6 +33,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -42,6 +42,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -156,6 +157,74 @@ public class BambooView extends ViewPart {
 		}
 	}
 
+	private class AddLabelToBuildAction extends BaseSelectionListenerAction {
+		public AddLabelToBuildAction() {
+			super(null);
+		}
+
+		@Override
+		public void run() {
+			ISelection s = buildViewer.getSelection();
+			if (s instanceof IStructuredSelection) {
+				IStructuredSelection selection = (IStructuredSelection) s;
+				BambooBuild build = (BambooBuild) selection.iterator().next();
+				if (build != null) {
+					InputDialog inputdialog = new InputDialog(getSite().getShell(), "Add Label to Build", NLS.bind(
+							"Please type the lable to add to build {0}-{1}", build.getBuildKey(),
+							build.getBuildNumber()), "", new IInputValidator() {
+						public String isValid(String newText) {
+							if (newText == null || newText.length() < 1) {
+								return "Please enter a label.";
+							}
+							return null;
+						}
+					});
+					if (inputdialog.open() == Window.OK) {
+						String label = inputdialog.getValue();
+						AddLabelToBuildJob job = new AddLabelToBuildJob(build, TasksUi.getRepositoryManager()
+								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()), label);
+						job.schedule();
+
+					}
+				}
+			}
+		}
+	}
+
+	private class AddCommentToBuildAction extends BaseSelectionListenerAction {
+		public AddCommentToBuildAction() {
+			super(null);
+		}
+
+		@Override
+		public void run() {
+			ISelection s = buildViewer.getSelection();
+			if (s instanceof IStructuredSelection) {
+				IStructuredSelection selection = (IStructuredSelection) s;
+				BambooBuild build = (BambooBuild) selection.iterator().next();
+				if (build != null) {
+					InputDialog inputdialog = new InputDialog(getSite().getShell(), "Add Comment to Build", NLS.bind(
+							"Please type the comment to add to build {0}-{1}", build.getBuildKey(),
+							build.getBuildNumber()), "", new IInputValidator() {
+						public String isValid(String newText) {
+							if (newText == null || newText.length() < 1) {
+								return "Please enter a comment.";
+							}
+							return null;
+						}
+					});
+					if (inputdialog.open() == Window.OK) {
+						String comment = inputdialog.getValue();
+						AddCommentToBuildJob job = new AddCommentToBuildJob(build, TasksUi.getRepositoryManager()
+								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()), comment);
+						job.schedule();
+
+					}
+				}
+			}
+		}
+	}
+
 	private class ShowTestResultsAction extends BaseSelectionListenerAction {
 
 		public ShowTestResultsAction() {
@@ -208,75 +277,6 @@ public class BambooView extends ViewPart {
 					}
 				}
 			});
-		}
-	}
-
-	private class RetrieveBuildLogsJob extends Job {
-
-		private final BambooBuild build;
-
-		private final TaskRepository repository;
-
-		private byte[] buildLog;
-
-		public RetrieveBuildLogsJob(BambooBuild build, TaskRepository repository) {
-			super("Retrieve build log");
-			this.build = build;
-			this.repository = repository;
-		}
-
-		public byte[] getBuildLog() {
-			return buildLog;
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			// ignore
-			BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
-			try {
-				buildLog = client.getBuildLogs(monitor, repository, build);
-				client.getBuildDetails(monitor, repository, build);
-			} catch (CoreException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-						"Failed to retrieve build logs for build " + build.getBuildKey()));
-			}
-			return Status.OK_STATUS;
-		}
-	}
-
-	private class RetrieveTestResultsJob extends Job {
-		private final BambooBuild build;
-
-		private final TaskRepository repository;
-
-		private File testResults;
-
-		public RetrieveTestResultsJob(BambooBuild build, TaskRepository repository) {
-			super("Retrieve build log");
-			this.build = build;
-			this.repository = repository;
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			// ignore
-			BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
-			try {
-				BuildDetails details = client.getBuildDetails(monitor, repository, build);
-				TestResultExternalizer tre = new TestResultExternalizer();
-				testResults = tre.writeApplicationsToXML(build, details, File.createTempFile("bamboo_result", ".xml"));
-			} catch (CoreException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-						"Failed to retrieve build logs for build " + build.getBuildKey()));
-			} catch (IOException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-						"Failed to process test results for build " + build.getBuildKey()));
-			}
-			return Status.OK_STATUS;
-		}
-
-		public File getTestResultsFile() {
-			return testResults;
 		}
 	}
 
@@ -467,10 +467,24 @@ public class BambooView extends ViewPart {
 		showTestResultsAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(showTestResultsAction);
 
+		BaseSelectionListenerAction addLabelToBuildAction = new AddLabelToBuildAction();
+		addLabelToBuildAction.setText("Add label to build");
+		addLabelToBuildAction.setImageDescriptor(BambooImages.LABEL);
+		addLabelToBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
+
+		BaseSelectionListenerAction addCommentToBuildAction = new AddCommentToBuildAction();
+		addCommentToBuildAction.setText("Add comment to build");
+		addCommentToBuildAction.setImageDescriptor(BambooImages.COMMENT);
+		addCommentToBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
+
 		contextMenuManager.add(refreshAction);
 		contextMenuManager.add(openInBrowserAction);
 		contextMenuManager.add(showBuildLogAction);
 		contextMenuManager.add(showTestResultsAction);
+		contextMenuManager.add(addLabelToBuildAction);
+		contextMenuManager.add(addCommentToBuildAction);
 		Menu contextMenu = contextMenuManager.createContextMenu(buildViewer.getControl());
 		buildViewer.getControl().setMenu(contextMenu);
 		getSite().registerContextMenu(contextMenuManager, buildViewer);
@@ -514,10 +528,24 @@ public class BambooView extends ViewPart {
 		showTestResultsAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(showTestResultsAction);
 
+		BaseSelectionListenerAction addLabelToBuildAction = new AddLabelToBuildAction();
+		addLabelToBuildAction.setText("Add label to build");
+		addLabelToBuildAction.setImageDescriptor(BambooImages.LABEL);
+		addLabelToBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
+
+		BaseSelectionListenerAction addCommentToBuildAction = new AddCommentToBuildAction();
+		addCommentToBuildAction.setText("Add comment to build");
+		addCommentToBuildAction.setImageDescriptor(BambooImages.COMMENT);
+		addCommentToBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
+
 		toolBarManager.add(refreshAction);
 		toolBarManager.add(openInBrowserAction);
 		toolBarManager.add(showBuildLogAction);
 		toolBarManager.add(showTestResultsAction);
+		toolBarManager.add(addLabelToBuildAction);
+		toolBarManager.add(addCommentToBuildAction);
 	}
 
 	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {

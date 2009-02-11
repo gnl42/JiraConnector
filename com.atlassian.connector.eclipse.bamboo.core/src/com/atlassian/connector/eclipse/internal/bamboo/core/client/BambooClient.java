@@ -188,4 +188,34 @@ public class BambooClient {
 		}, taskRepository);
 	}
 
+	public void addLabelToBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build,
+			final String label) throws CoreException {
+		execute(new RemoteOperation<Object>(monitor) {
+
+			@Override
+			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				monitor.subTask("Adding label to build");
+				server.addLabelToBuild(serverCfg, build.getBuildKey(), build.getBuildNumber(), label);
+				return null;
+			}
+
+		}, repository);
+	}
+
+	public void addCommentToBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build,
+			final String comment) throws CoreException {
+		execute(new RemoteOperation<Object>(monitor) {
+
+			@Override
+			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				monitor.subTask("Adding comment to build");
+				server.addCommentToBuild(serverCfg, build.getBuildKey(), build.getBuildNumber(), comment);
+				return null;
+			}
+
+		}, repository);
+	}
+
 }
