@@ -15,8 +15,8 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.AddCommentToBuildJob;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.AddLabelToBuildJob;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RunBuildJob;
@@ -34,8 +34,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -43,7 +41,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -203,23 +200,10 @@ public class BambooView extends ViewPart {
 				IStructuredSelection selection = (IStructuredSelection) s;
 				BambooBuild build = (BambooBuild) selection.iterator().next();
 				if (build != null) {
-					InputDialog inputdialog = new InputDialog(getSite().getShell(), "Add Label to Build", NLS.bind(
-							"Please type the lable to add to build {0}-{1}", build.getBuildKey(),
-							build.getBuildNumber()), "", new IInputValidator() {
-						public String isValid(String newText) {
-							if (newText == null || newText.length() < 1) {
-								return "Please enter a label.";
-							}
-							return null;
-						}
-					});
-					if (inputdialog.open() == Window.OK) {
-						String label = inputdialog.getValue();
-						AddLabelToBuildJob job = new AddLabelToBuildJob(build, TasksUi.getRepositoryManager()
-								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()), label);
-						job.schedule();
-
-					}
+					AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(getSite().getShell(), build,
+							TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
+									build.getServerUrl()), Type.LABEL);
+					dialog.open();
 				}
 			}
 		}
@@ -242,23 +226,10 @@ public class BambooView extends ViewPart {
 				IStructuredSelection selection = (IStructuredSelection) s;
 				BambooBuild build = (BambooBuild) selection.iterator().next();
 				if (build != null) {
-					InputDialog inputdialog = new InputDialog(getSite().getShell(), "Add Comment to Build", NLS.bind(
-							"Please type the comment to add to build {0}-{1}", build.getBuildKey(),
-							build.getBuildNumber()), "", new IInputValidator() {
-						public String isValid(String newText) {
-							if (newText == null || newText.length() < 1) {
-								return "Please enter a comment.";
-							}
-							return null;
-						}
-					});
-					if (inputdialog.open() == Window.OK) {
-						String comment = inputdialog.getValue();
-						AddCommentToBuildJob job = new AddCommentToBuildJob(build, TasksUi.getRepositoryManager()
-								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()), comment);
-						job.schedule();
-
-					}
+					AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(getSite().getShell(), build,
+							TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
+									build.getServerUrl()), Type.COMMENT);
+					dialog.open();
 				}
 			}
 		}

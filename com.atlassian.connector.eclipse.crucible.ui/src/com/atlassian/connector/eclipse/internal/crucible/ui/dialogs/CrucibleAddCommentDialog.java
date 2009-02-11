@@ -18,6 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Comment
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.GeneralCommentPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.VersionedCommentPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddCommentRemoteOperation;
+import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;

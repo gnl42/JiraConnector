@@ -22,5 +22,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.ui,
  com.atlassian.connector.eclipse.ui.commons,
+ com.atlassian.connector.eclipse.ui.dialogs,
  com.atlassian.connector.eclipse.ui.editor,
  com.atlassian.connector.eclipse.ui.team
