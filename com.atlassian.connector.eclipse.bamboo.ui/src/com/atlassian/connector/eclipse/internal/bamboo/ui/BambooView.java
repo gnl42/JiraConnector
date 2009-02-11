@@ -303,7 +303,14 @@ public class BambooView extends ViewPart {
 
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
-			return selection.size() == 1;
+			if (selection.size() != 1) {
+				return false;
+			}
+			BambooBuild build = (BambooBuild) selection.iterator().next();
+			if (build != null) {
+				return (build.getTestsFailed() + build.getTestsPassed()) > 0;
+			}
+			return false;
 		}
 
 		private void showJUnitView(final File testResults) {
