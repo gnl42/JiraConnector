@@ -101,12 +101,17 @@ public class BambooNotification extends AbstractNotification {
 	}
 
 	public int compareTo(AbstractNotification anotherNotification) {
-		if (anotherNotification == null || !(anotherNotification instanceof BambooNotification)) {
+		if (anotherNotification == null) {
 			throw new ClassCastException("A BambooNotification object expected."); //$NON-NLS-1$
 		}
-		BambooBuild anotherBuild = ((BambooNotification) anotherNotification).getBuild();
-		if (build.getBuildCompletedDate() != null && anotherBuild.getBuildCompletedDate() != null) {
-			return build.getBuildCompletedDate().compareTo(anotherBuild.getBuildCompletedDate());
+		Date date;
+		if (anotherNotification instanceof BambooNotification) {
+			date = ((BambooNotification) anotherNotification).getBuild().getBuildCompletedDate();
+		} else {
+			date = anotherNotification.getDate();
+		}
+		if (build.getBuildCompletedDate() != null && date != null) {
+			return build.getBuildCompletedDate().compareTo(date);
 		} else if (build.getBuildCompletedDate() == null) {
 			return -1;
 		} else {
