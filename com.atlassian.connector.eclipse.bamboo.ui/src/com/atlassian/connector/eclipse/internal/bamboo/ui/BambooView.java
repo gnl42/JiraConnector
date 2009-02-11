@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.AddCommentT
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.AddLabelToBuildJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RunBuildJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.DateUtil;
@@ -93,6 +94,39 @@ public class BambooView extends ViewPart {
 					TasksUiUtil.openUrl(url);
 				}
 			}
+		}
+	}
+
+	private class RunBuildAction extends BaseSelectionListenerAction {
+		public RunBuildAction() {
+			super(null);
+		}
+
+		@Override
+		public void run() {
+			ISelection s = buildViewer.getSelection();
+			if (s instanceof IStructuredSelection) {
+				IStructuredSelection selection = (IStructuredSelection) s;
+				BambooBuild build = (BambooBuild) selection.iterator().next();
+				if (build != null) {
+					RunBuildJob job = new RunBuildJob(build, TasksUi.getRepositoryManager().getRepository(
+							BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+					job.schedule();
+
+				}
+			}
+		}
+
+		@Override
+		protected boolean updateSelection(IStructuredSelection selection) {
+			if (selection.size() != 1) {
+				return false;
+			}
+			BambooBuild build = (BambooBuild) selection.iterator().next();
+			if (build != null) {
+				return build.getEnabled();
+			}
+			return false;
 		}
 	}
 
@@ -189,6 +223,11 @@ public class BambooView extends ViewPart {
 				}
 			}
 		}
+
+		@Override
+		protected boolean updateSelection(IStructuredSelection selection) {
+			return selection.size() == 1;
+		}
 	}
 
 	private class AddCommentToBuildAction extends BaseSelectionListenerAction {
@@ -222,6 +261,11 @@ public class BambooView extends ViewPart {
 					}
 				}
 			}
+		}
+
+		@Override
+		protected boolean updateSelection(IStructuredSelection selection) {
+			return selection.size() == 1;
 		}
 	}
 
@@ -362,16 +406,16 @@ public class BambooView extends ViewPart {
 			@Override
 			public Image getImage(Object element) {
 				if (element instanceof BambooBuild) {
-					switch (((BambooBuild) element).getStatus()) {
-					case FAILURE:
-						return buildFailedImage;
-					case SUCCESS:
-						return buildPassedImage;
-					default:
-						return buildDisabledImage;
+					if (((BambooBuild) element).getEnabled()) {
+						switch (((BambooBuild) element).getStatus()) {
+						case FAILURE:
+							return buildFailedImage;
+						case SUCCESS:
+							return buildPassedImage;
+						}
 					}
 				}
-				return super.getImage(element);
+				return buildDisabledImage;
 			}
 		});
 
@@ -479,12 +523,19 @@ public class BambooView extends ViewPart {
 		addCommentToBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
 
+		BaseSelectionListenerAction runBuildAction = new RunBuildAction();
+		runBuildAction.setText("Run build");
+		runBuildAction.setImageDescriptor(BambooImages.RUN_BUILD);
+		runBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(runBuildAction);
+
 		contextMenuManager.add(refreshAction);
 		contextMenuManager.add(openInBrowserAction);
 		contextMenuManager.add(showBuildLogAction);
 		contextMenuManager.add(showTestResultsAction);
 		contextMenuManager.add(addLabelToBuildAction);
 		contextMenuManager.add(addCommentToBuildAction);
+		contextMenuManager.add(runBuildAction);
 		Menu contextMenu = contextMenuManager.createContextMenu(buildViewer.getControl());
 		buildViewer.getControl().setMenu(contextMenu);
 		getSite().registerContextMenu(contextMenuManager, buildViewer);
@@ -540,12 +591,19 @@ public class BambooView extends ViewPart {
 		addCommentToBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
 
+		BaseSelectionListenerAction runBuildAction = new RunBuildAction();
+		runBuildAction.setText("Run build");
+		runBuildAction.setImageDescriptor(BambooImages.RUN_BUILD);
+		runBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(runBuildAction);
+
 		toolBarManager.add(refreshAction);
 		toolBarManager.add(openInBrowserAction);
 		toolBarManager.add(showBuildLogAction);
 		toolBarManager.add(showTestResultsAction);
 		toolBarManager.add(addLabelToBuildAction);
 		toolBarManager.add(addCommentToBuildAction);
+		toolBarManager.add(runBuildAction);
 	}
 
 	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {

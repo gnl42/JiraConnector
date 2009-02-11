@@ -41,6 +41,8 @@ public class BambooImages {
 
 	public static final ImageDescriptor COMMENT = create(T_OBJ, "comment-small.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor RUN_BUILD = create(T_OBJ, "run_exc.gif"); //$NON-NLS-1$
+
 	private static ImageDescriptor create(String prefix, String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));

@@ -218,4 +218,17 @@ public class BambooClient {
 		}, repository);
 	}
 
+	public void runBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build)
+			throws CoreException {
+		execute(new RemoteOperation<Object>(monitor) {
+			@Override
+			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+					ServerPasswordNotProvidedException {
+				monitor.subTask("Run Build");
+				server.executeBuild(serverCfg, build.getBuildKey());
+				return null;
+			}
+		}, repository);
+	}
+
 }
