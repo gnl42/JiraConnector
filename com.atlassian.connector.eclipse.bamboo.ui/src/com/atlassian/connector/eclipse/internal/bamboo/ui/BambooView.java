@@ -34,6 +34,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -55,6 +56,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -517,13 +519,18 @@ public class BambooView extends ViewPart {
 		runBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(runBuildAction);
 
-		contextMenuManager.add(refreshAction);
 		contextMenuManager.add(openInBrowserAction);
+		contextMenuManager.add(new Separator());
 		contextMenuManager.add(showBuildLogAction);
 		contextMenuManager.add(showTestResultsAction);
+		contextMenuManager.add(new Separator());
+		contextMenuManager.add(runBuildAction);
 		contextMenuManager.add(addLabelToBuildAction);
 		contextMenuManager.add(addCommentToBuildAction);
-		contextMenuManager.add(runBuildAction);
+		contextMenuManager.add(new Separator());
+		contextMenuManager.add(refreshAction);
+		contextMenuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		contextMenuManager.add(new Separator());
 		Menu contextMenu = contextMenuManager.createContextMenu(buildViewer.getControl());
 		buildViewer.getControl().setMenu(contextMenu);
 		getSite().registerContextMenu(contextMenuManager, buildViewer);
@@ -587,12 +594,13 @@ public class BambooView extends ViewPart {
 		runBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(runBuildAction);
 
+		toolBarManager.add(new Separator());
 		toolBarManager.add(refreshAction);
+		toolBarManager.add(new Separator());
 		toolBarManager.add(openInBrowserAction);
 		toolBarManager.add(showBuildLogAction);
 		toolBarManager.add(showTestResultsAction);
-		toolBarManager.add(addLabelToBuildAction);
-		toolBarManager.add(addCommentToBuildAction);
+		toolBarManager.add(new Separator());
 		toolBarManager.add(runBuildAction);
 	}
 
