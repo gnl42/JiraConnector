@@ -32,6 +32,8 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jdt.internal.junit.model.JUnitModel;
 import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -46,6 +48,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.internal.tasks.ui.views.TaskRepositoriesView;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.NewRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -59,6 +62,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Link;
@@ -67,6 +71,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -121,7 +126,9 @@ public class BambooView extends ViewPart {
 		}
 	}
 
-	private class AddRepositoryConfigurationAction extends Action {
+	private class RepositoryConfigurationAction extends Action implements IMenuCreator {
+		private Menu menu;
+
 		@Override
 		public void run() {
 			Display.getDefault().asyncExec(new Runnable() {
@@ -137,6 +144,102 @@ public class BambooView extends ViewPart {
 					repositoryDialog.open();
 				}
 			});
+		}
+
+		public void dispose() {
+			if (menu != null) {
+				menu.dispose();
+				menu = null;
+			}
+		}
+
+		public Menu getMenu(Control parent) {
+			if (menu != null) {
+				menu.dispose();
+			}
+			menu = new Menu(parent);
+			addActions();
+			return menu;
+		}
+
+		private void addActions() {
+			// add repository action
+			Action addRepositoryAction = new Action() {
+				@SuppressWarnings("restriction")
+				@Override
+				public void run() {
+					NewRepositoryWizard repositoryWizard = new NewRepositoryWizard(BambooCorePlugin.CONNECTOR_KIND);
+
+					WizardDialog repositoryDialog = new TaskRepositoryWizardDialog(getSite().getShell(),
+							repositoryWizard);
+					repositoryDialog.create();
+					repositoryDialog.getShell().setText("Add New Bamboo Repository...");
+					repositoryDialog.setBlockOnOpen(true);
+					repositoryDialog.open();
+				}
+			};
+			ActionContributionItem addRepoACI = new ActionContributionItem(addRepositoryAction);
+			addRepositoryAction.setText("Add New Repository...");
+			addRepositoryAction.setImageDescriptor(BambooImages.ADD_REPOSITORY);
+			addRepoACI.fill(menu, -1);
+
+			boolean separatorAdded = false;
+
+			//open repository configuration action
+			for (final TaskRepository repository : TasksUi.getRepositoryManager().getRepositories(
+					BambooCorePlugin.CONNECTOR_KIND)) {
+				if (!separatorAdded) {
+					new Separator().fill(menu, -1);
+					separatorAdded = true;
+				}
+				Action openRepositoryConfigurationAction = new Action() {
+					@Override
+					public void run() {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								TasksUiUtil.openEditRepositoryWizard(repository);
+							}
+						});
+					}
+				};
+				ActionContributionItem openRepoConfigACI = new ActionContributionItem(openRepositoryConfigurationAction);
+				openRepositoryConfigurationAction.setText(NLS.bind("Open {0} [{1}]...",
+						repository.getRepositoryLabel(), repository.getRepositoryUrl()));
+				openRepoConfigACI.fill(menu, -1);
+			}
+
+			new Separator().fill(menu, -1);
+
+			//goto repository action
+			Action gotoTaskRepositoryView = new Action() {
+				@Override
+				public void run() {
+					Display.getDefault().asyncExec(new Runnable() {
+						@SuppressWarnings("restriction")
+						public void run() {
+							try {
+								getSite().getPage().showView(TaskRepositoriesView.ID);
+							} catch (PartInitException e) {
+								StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+										"Failed to show Task Repositories View"));
+							}
+						}
+					});
+				}
+			};
+			ActionContributionItem gotoRepoViewACI = new ActionContributionItem(gotoTaskRepositoryView);
+			gotoTaskRepositoryView.setText("Show Task Repositories View");
+			gotoTaskRepositoryView.setImageDescriptor(BambooImages.REPOSITORIES);
+			gotoRepoViewACI.fill(menu, -1);
+		}
+
+		public Menu getMenu(Menu parent) {
+			if (menu != null) {
+				menu.dispose();
+			}
+			menu = new Menu(parent);
+			addActions();
+			return menu;
 		}
 	}
 
@@ -493,7 +596,7 @@ public class BambooView extends ViewPart {
 
 	private BaseSelectionListenerAction runBuildAction;
 
-	private Action addRepoConfigAction;
+	private Action repoConfigAction;
 
 	private BaseSelectionListenerAction openRepoConfigAction;
 
@@ -626,7 +729,7 @@ public class BambooView extends ViewPart {
 			public void handleEvent(Event event) {
 				String link = event.text;
 				if (link.equals(CREATE_A_NEW_REPOSITORY_LINK)) {
-					new AddRepositoryConfigurationAction().run();
+					new RepositoryConfigurationAction().run();
 				} else if (linkedRepositories != null) {
 					TaskRepository repository = linkedRepositories.get(link);
 					if (repository != null) {
@@ -696,7 +799,7 @@ public class BambooView extends ViewPart {
 	}
 
 	private void fillToolBar(IToolBarManager toolBarManager) {
-		toolBarManager.add(addRepoConfigAction);
+		toolBarManager.add(repoConfigAction);
 		toolBarManager.add(new Separator());
 		toolBarManager.add(refreshAction);
 		toolBarManager.add(new Separator());
@@ -753,9 +856,10 @@ public class BambooView extends ViewPart {
 		runBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(runBuildAction);
 
-		addRepoConfigAction = new AddRepositoryConfigurationAction();
-		addRepoConfigAction.setText("Add Bamboo Repository...");
-		addRepoConfigAction.setImageDescriptor(BambooImages.ADD_REPOSITORY);
+		repoConfigAction = new RepositoryConfigurationAction();
+		repoConfigAction.setText("Add Bamboo Repository...");
+		repoConfigAction.setImageDescriptor(BambooImages.ADD_REPOSITORY);
+		repoConfigAction.setMenuCreator((IMenuCreator) repoConfigAction);
 
 		openRepoConfigAction = new OpenRepositoryConfigurationAction();
 		openRepoConfigAction.setText("Properties...");

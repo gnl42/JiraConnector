@@ -47,6 +47,8 @@ public class BambooImages {
 
 	public static final ImageDescriptor REPOSITORY = create(T_OBJ, "bamboo_repository.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor REPOSITORIES = create(T_OBJ, "repositories.gif"); //$NON-NLS-1$
+
 	private static ImageDescriptor create(String prefix, String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
