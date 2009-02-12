@@ -1049,7 +1049,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	@Override
 	public boolean canInitializeSubTaskData(TaskRepository taskRepository, ITask task) {
-		return true;
+		// for backwards compatibility with earlier versions that did not set the subtask flag in 
+		// JiraRepositoryConnector.updateTaskFromTaskData() return true as a fall-back
+		String value = task.getAttribute(IJiraConstants.META_SUB_TASK_TYPE);
+		return (value == null) ? true : !Boolean.parseBoolean(value);
 	}
 
 	private JiraIssue buildJiraIssue(TaskData taskData, JiraClient client) {

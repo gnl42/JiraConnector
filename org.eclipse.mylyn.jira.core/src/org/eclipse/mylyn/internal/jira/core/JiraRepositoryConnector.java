@@ -86,9 +86,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	public static final String UNASSIGNED_USER = "-1"; //$NON-NLS-1$
 
-	/** Name initially given to new tasks. Public for testing */
-	public static final String NEW_TASK_DESC = Messages.JiraRepositoryConnector_New_Task;
-
 	public static final int RETURN_ALL_HITS = -1;
 
 	public JiraRepositoryConnector() {
@@ -477,6 +474,16 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		TaskMapper scheme = getTaskMapping(taskData);
 		scheme.applyTo(task);
 		task.setCompletionDate(scheme.getCompletionDate());
+
+		// flag subtasks to disable creation of sub-subtasks
+		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.TYPE.id());
+		if (attribute != null) {
+			boolean isSubTask = Boolean.parseBoolean(attribute.getMetaData()
+					.getValue(IJiraConstants.META_SUB_TASK_TYPE));
+			task.setAttribute(IJiraConstants.META_SUB_TASK_TYPE, Boolean.toString(isSubTask));
+		} else {
+			task.setAttribute(IJiraConstants.META_SUB_TASK_TYPE, Boolean.toString(false));
+		}
 	}
 
 	@Override

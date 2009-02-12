@@ -89,8 +89,6 @@ public class Messages extends NLS {
 
 	public static String JiraRepositoryConnector_The_JIRA_query_is_invalid;
 
-	public static String JiraRepositoryConnector_New_Task;
-
 	public static String JiraRepositoryConnector_Query_Repository;
 
 	public static String JiraRepositoryConnector_The_repository_returned_an_unknown_project;
