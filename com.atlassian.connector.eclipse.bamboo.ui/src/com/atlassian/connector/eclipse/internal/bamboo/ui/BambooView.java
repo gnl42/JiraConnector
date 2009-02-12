@@ -52,11 +52,16 @@ import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.wizards.TaskRepositoryWizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -73,15 +78,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
  */
 public class BambooView extends ViewPart {
+
+	private static final String CREATE_A_NEW_REPOSITORY_LINK = "Create a new Repository";
 
 	private class OpenInBrowserAction extends BaseSelectionListenerAction {
 		public OpenInBrowserAction() {
@@ -127,23 +136,39 @@ public class BambooView extends ViewPart {
 	}
 
 	private class OpenRepositoryConfigurationAction extends BaseSelectionListenerAction {
+		private TaskRepository repository;
+
 		public OpenRepositoryConfigurationAction() {
 			super(null);
 		}
 
+		public OpenRepositoryConfigurationAction(TaskRepository repository) {
+			super(null);
+			this.repository = repository;
+		}
+
 		@Override
 		public void run() {
-			ISelection s = buildViewer.getSelection();
-			if (s instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) s;
-				final BambooBuild build = (BambooBuild) selection.iterator().next();
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						TasksUiUtil.openEditRepositoryWizard(TasksUi.getRepositoryManager().getRepository(
-								BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
-					}
-				});
+			if (repository != null) {
+				openConfiguration();
+			} else {
+				ISelection s = buildViewer.getSelection();
+				if (s instanceof IStructuredSelection) {
+					IStructuredSelection selection = (IStructuredSelection) s;
+					final BambooBuild build = (BambooBuild) selection.iterator().next();
+					repository = TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
+							build.getServerUrl());
+					openConfiguration();
+				}
 			}
+		}
+
+		private void openConfiguration() {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					TasksUiUtil.openEditRepositoryWizard(repository);
+				}
+			});
 		}
 
 		@Override
@@ -421,8 +446,40 @@ public class BambooView extends ViewPart {
 
 	private MessageConsole buildLogConsole;
 
+	private Link link;
+
+	private StackLayout stackLayout;
+
+	private Composite treeComp;
+
+	private Composite linkComp;
+
+	private HashMap<String, TaskRepository> linkedRepositories;
+
 	@Override
 	public void createPartControl(Composite parent) {
+		Composite stackComp = new Composite(parent, SWT.NONE);
+		stackLayout = new StackLayout();
+		stackComp.setLayout(stackLayout);
+		treeComp = new Composite(stackComp, SWT.NONE);
+		treeComp.setLayout(new FillLayout());
+		linkComp = new Composite(stackComp, SWT.NONE);
+		linkComp.setLayout(new FillLayout());
+
+		createLink(linkComp);
+
+		createTreeViewer(treeComp);
+
+		stackLayout.topControl = linkComp;
+		stackComp.layout();
+
+		contributeToActionBars();
+
+		bambooDataprovider = BambooViewDataProvider.getInstance();
+		bambooDataprovider.setView(this);
+	}
+
+	private void createTreeViewer(Composite parent) {
 		buildViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		buildViewer.setContentProvider(new BuildContentProvider());
 		buildViewer.setUseHashlookup(true);
@@ -513,11 +570,50 @@ public class BambooView extends ViewPart {
 		fillTreeContextMenu();
 
 		//GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(planViewer.getControl());
+	}
 
-		contributeToActionBars();
+	private void createLink(Composite parent) {
+		link = new Link(parent, SWT.NONE);
+		fillLink(TasksUi.getRepositoryManager().getRepositories(BambooCorePlugin.CONNECTOR_KIND));
+		link.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				String link = event.text;
+				if (link.equals(CREATE_A_NEW_REPOSITORY_LINK)) {
+					new AddRepositoryConfigurationAction().run();
+				} else if (linkedRepositories != null) {
+					TaskRepository repository = linkedRepositories.get(link);
+					if (repository != null) {
+						new OpenRepositoryConfigurationAction(repository).run();
+					}
+				}
+			}
+		});
+	}
 
-		bambooDataprovider = BambooViewDataProvider.getInstance();
-		bambooDataprovider.setView(this);
+	private void fillLink(Set<TaskRepository> repositories) {
+		if (repositories == null || repositories.size() < 1) {
+			link.setText(NLS.bind("There are no Bamboo repositories defined. <a>{0}</a> by following this link.",
+					CREATE_A_NEW_REPOSITORY_LINK));
+		} else {
+			StringBuilder builder = new StringBuilder();
+			builder.append("No subscriptions to Bamboo build plans are set. Use the following links to set up your subscriptions:");
+			builder.append(System.getProperty("line.separator"));
+			linkedRepositories = new HashMap<String, TaskRepository>();
+			for (TaskRepository repository : repositories) {
+				builder.append(System.getProperty("line.separator"));
+				builder.append("Subscribe to plans at ");
+				builder.append(repository.getRepositoryLabel());
+				builder.append(" <a>");
+				String linkKey = NLS.bind("[{0}]", repository.getRepositoryUrl());
+				builder.append(linkKey);
+				builder.append("</a>");
+				linkedRepositories.put(linkKey, repository);
+			}
+			builder.append(System.getProperty("line.separator"));
+			builder.append(System.getProperty("line.separator"));
+			builder.append(NLS.bind("You can also <a>{0}</a> by following this link.", CREATE_A_NEW_REPOSITORY_LINK));
+			link.setText(builder.toString());
+		}
 	}
 
 	private void fillTreeContextMenu() {
@@ -664,6 +760,22 @@ public class BambooView extends ViewPart {
 	}
 
 	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {
+		boolean hasSubscriptions = false;
+		for (Collection<BambooBuild> builds : map.values()) {
+			if (builds.size() > 0) {
+				hasSubscriptions = true;
+				break;
+			}
+		}
+		boolean isTreeShown = stackLayout.topControl == treeComp;
+		if (hasSubscriptions && !isTreeShown) {
+			stackLayout.topControl = treeComp;
+			treeComp.getParent().layout();
+		} else if (!hasSubscriptions) { //refresh link widget even if it is already shown to display updated repositories
+			fillLink(map.keySet());
+			stackLayout.topControl = linkComp;
+			linkComp.getParent().layout();
+		}
 		buildViewer.setInput(map);
 	}
 
