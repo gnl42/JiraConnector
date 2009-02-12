@@ -262,7 +262,8 @@ public final class BuildPlanManager {
 	}
 
 	public void initializeScheduler(IRepositoryManager repositoryManager) {
-		refreshBuildsForAllRepositoriesJob = new RefreshBuildsForAllRepositoriesJob("Refresh Builds", repositoryManager);
+		refreshBuildsForAllRepositoriesJob = new RefreshBuildsForAllRepositoriesJob("Refresh Builds",
+				repositoryManager, false);
 		refreshBuildsForAllRepositoriesJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {

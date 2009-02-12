@@ -20,6 +20,8 @@ public final class BambooConstants {
 
 	public static final String BAMBOO_EDITOR_PAGE_ID = "com.atlassian.connector.eclipse.bamboo.build.editorpage";
 
+	public static final Object FAMILY_REFRESH_OPERATION = new Object();
+
 	private BambooConstants() {
 	}
 }

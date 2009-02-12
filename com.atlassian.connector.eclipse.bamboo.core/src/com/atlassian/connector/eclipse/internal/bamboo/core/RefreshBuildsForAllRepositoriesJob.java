@@ -38,10 +38,13 @@ public class RefreshBuildsForAllRepositoriesJob extends Job {
 
 	private MultiStatus result;
 
-	public RefreshBuildsForAllRepositoriesJob(String name, IRepositoryManager repositoryManager) {
+	private final boolean manualRefresh;
+
+	public RefreshBuildsForAllRepositoriesJob(String name, IRepositoryManager repositoryManager, boolean manualRefresh) {
 		super(name);
 		this.builds2 = new HashMap<TaskRepository, Collection<BambooBuild>>();
 		this.repositoryManager = repositoryManager;
+		this.manualRefresh = manualRefresh;
 	}
 
 	@Override
@@ -70,4 +73,9 @@ public class RefreshBuildsForAllRepositoriesJob extends Job {
 	public IStatus getStatus() {
 		return result;
 	};
+
+	@Override
+	public boolean belongsTo(Object family) {
+		return manualRefresh && family == BambooConstants.FAMILY_REFRESH_OPERATION;
+	}
 }

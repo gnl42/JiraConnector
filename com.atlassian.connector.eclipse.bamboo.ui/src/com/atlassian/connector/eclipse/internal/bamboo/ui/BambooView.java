@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
@@ -74,6 +75,7 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 import java.io.File;
 import java.io.IOException;
@@ -509,12 +511,18 @@ public class BambooView extends ViewPart {
 
 		createTreeViewer(treeComp);
 
-		stackLayout.topControl = treeComp;
+		stackLayout.topControl = linkComp;
 		stackComp.layout();
 
 		createActions();
 		fillTreeContextMenu();
 		contributeToActionBars();
+
+		IWorkbenchSiteProgressService progress = (IWorkbenchSiteProgressService) getSite().getAdapter(
+				IWorkbenchSiteProgressService.class);
+		if (progress != null) {
+			progress.showBusyForFamily(BambooConstants.FAMILY_REFRESH_OPERATION);
+		}
 
 		bambooDataprovider = BambooViewDataProvider.getInstance();
 		bambooDataprovider.setView(this);
@@ -612,7 +620,8 @@ public class BambooView extends ViewPart {
 
 	private void createLink(Composite parent) {
 		link = new Link(parent, SWT.NONE);
-		fillLink(TasksUi.getRepositoryManager().getRepositories(BambooCorePlugin.CONNECTOR_KIND));
+//		fillLink(TasksUi.getRepositoryManager().getRepositories(BambooCorePlugin.CONNECTOR_KIND));
+		link.setText("Initializing view...");
 		link.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				String link = event.text;
@@ -813,7 +822,7 @@ public class BambooView extends ViewPart {
 
 	private void refreshBuilds() {
 		RefreshBuildsForAllRepositoriesJob job = new RefreshBuildsForAllRepositoriesJob("Refreshing builds",
-				TasksUi.getRepositoryManager());
+				TasksUi.getRepositoryManager(), true);
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {
