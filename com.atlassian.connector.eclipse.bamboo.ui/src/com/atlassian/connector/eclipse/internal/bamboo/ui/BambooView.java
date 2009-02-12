@@ -97,15 +97,17 @@ public class BambooView extends ViewPart {
 			super(null);
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
 			ISelection s = buildViewer.getSelection();
 			if (s instanceof IStructuredSelection) {
 				IStructuredSelection selection = (IStructuredSelection) s;
-				for (Iterator<BambooBuild> it = selection.iterator(); it.hasNext();) {
-					String url = BambooUtil.getUrlFromBuild(it.next());
-					TasksUiUtil.openUrl(url);
+				for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+					Object selected = it.next();
+					if (selected instanceof BambooBuild) {
+						String url = BambooUtil.getUrlFromBuild((BambooBuild) selected);
+						TasksUiUtil.openUrl(url);
+					}
 				}
 			}
 		}
@@ -155,10 +157,13 @@ public class BambooView extends ViewPart {
 				ISelection s = buildViewer.getSelection();
 				if (s instanceof IStructuredSelection) {
 					IStructuredSelection selection = (IStructuredSelection) s;
-					final BambooBuild build = (BambooBuild) selection.iterator().next();
-					repository = TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
-							build.getServerUrl());
-					openConfiguration();
+					Object selected = selection.iterator().next();
+					if (selected instanceof BambooBuild) {
+						final BambooBuild build = (BambooBuild) selected;
+						repository = TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
+								build.getServerUrl());
+						openConfiguration();
+					}
 				}
 			}
 		}
@@ -187,12 +192,15 @@ public class BambooView extends ViewPart {
 			ISelection s = buildViewer.getSelection();
 			if (s instanceof IStructuredSelection) {
 				IStructuredSelection selection = (IStructuredSelection) s;
-				BambooBuild build = (BambooBuild) selection.iterator().next();
-				if (build != null) {
-					RunBuildJob job = new RunBuildJob(build, TasksUi.getRepositoryManager().getRepository(
-							BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
-					job.schedule();
+				Object selected = selection.iterator().next();
+				if (selected instanceof BambooBuild) {
+					final BambooBuild build = (BambooBuild) selected;
+					if (build != null) {
+						RunBuildJob job = new RunBuildJob(build, TasksUi.getRepositoryManager().getRepository(
+								BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+						job.schedule();
 
+					}
 				}
 			}
 		}
@@ -221,29 +229,32 @@ public class BambooView extends ViewPart {
 			ISelection s = buildViewer.getSelection();
 			if (s instanceof IStructuredSelection) {
 				IStructuredSelection selection = (IStructuredSelection) s;
-				BambooBuild build = (BambooBuild) selection.iterator().next();
-				if (build != null) {
-					RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager()
-							.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
-					job.addJobChangeListener(new JobChangeAdapter() {
-						@Override
-						public void done(IJobChangeEvent event) {
-							if (event.getResult() == Status.OK_STATUS) {
-								byte[] buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
-								prepareConsole();
-								MessageConsoleStream messageStream = buildLogConsole.newMessageStream();
-								messageStream.print(new String(buildLog));
-								try {
-									messageStream.close();
-								} catch (IOException e) {
-									StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-											"Failed to close console message stream"));
+				Object selected = selection.iterator().next();
+				if (selected instanceof BambooBuild) {
+					final BambooBuild build = (BambooBuild) selected;
+					if (build != null) {
+						RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager()
+								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+						job.addJobChangeListener(new JobChangeAdapter() {
+							@Override
+							public void done(IJobChangeEvent event) {
+								if (event.getResult() == Status.OK_STATUS) {
+									byte[] buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
+									prepareConsole();
+									MessageConsoleStream messageStream = buildLogConsole.newMessageStream();
+									messageStream.print(new String(buildLog));
+									try {
+										messageStream.close();
+									} catch (IOException e) {
+										StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+												"Failed to close console message stream"));
+									}
 								}
 							}
-						}
-					});
-					job.schedule();
+						});
+						job.schedule();
 
+					}
 				}
 			}
 		}
@@ -281,12 +292,15 @@ public class BambooView extends ViewPart {
 			ISelection s = buildViewer.getSelection();
 			if (s instanceof IStructuredSelection) {
 				IStructuredSelection selection = (IStructuredSelection) s;
-				BambooBuild build = (BambooBuild) selection.iterator().next();
-				if (build != null) {
-					AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(getSite().getShell(), build,
-							TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
-									build.getServerUrl()), Type.LABEL);
-					dialog.open();
+				Object selected = selection.iterator().next();
+				if (selected instanceof BambooBuild) {
+					final BambooBuild build = (BambooBuild) selected;
+					if (build != null) {
+						AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(getSite().getShell(), build,
+								TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
+										build.getServerUrl()), Type.LABEL);
+						dialog.open();
+					}
 				}
 			}
 		}
@@ -307,12 +321,15 @@ public class BambooView extends ViewPart {
 			ISelection s = buildViewer.getSelection();
 			if (s instanceof IStructuredSelection) {
 				IStructuredSelection selection = (IStructuredSelection) s;
-				BambooBuild build = (BambooBuild) selection.iterator().next();
-				if (build != null) {
-					AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(getSite().getShell(), build,
-							TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
-									build.getServerUrl()), Type.COMMENT);
-					dialog.open();
+				Object selected = selection.iterator().next();
+				if (selected instanceof BambooBuild) {
+					final BambooBuild build = (BambooBuild) selected;
+					if (build != null) {
+						AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(getSite().getShell(), build,
+								TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
+										build.getServerUrl()), Type.COMMENT);
+						dialog.open();
+					}
 				}
 			}
 		}
@@ -334,23 +351,26 @@ public class BambooView extends ViewPart {
 			ISelection s = buildViewer.getSelection();
 			if (s instanceof IStructuredSelection) {
 				IStructuredSelection selection = (IStructuredSelection) s;
-				BambooBuild build = (BambooBuild) selection.iterator().next();
-				if (build != null) {
-					RetrieveTestResultsJob job = new RetrieveTestResultsJob(build, TasksUi.getRepositoryManager()
-							.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
-					job.addJobChangeListener(new JobChangeAdapter() {
-						@Override
-						public void done(IJobChangeEvent event) {
-							if (event.getResult() == Status.OK_STATUS) {
-								File testResults = ((RetrieveTestResultsJob) event.getJob()).getTestResultsFile();
-								if (testResults != null) {
-									showJUnitView(testResults);
+				Object selected = selection.iterator().next();
+				if (selected instanceof BambooBuild) {
+					final BambooBuild build = (BambooBuild) selected;
+					if (build != null) {
+						RetrieveTestResultsJob job = new RetrieveTestResultsJob(build, TasksUi.getRepositoryManager()
+								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+						job.addJobChangeListener(new JobChangeAdapter() {
+							@Override
+							public void done(IJobChangeEvent event) {
+								if (event.getResult() == Status.OK_STATUS) {
+									File testResults = ((RetrieveTestResultsJob) event.getJob()).getTestResultsFile();
+									if (testResults != null) {
+										showJUnitView(testResults);
+									}
 								}
 							}
-						}
-					});
-					job.schedule();
+						});
+						job.schedule();
 
+					}
 				}
 			}
 		}
