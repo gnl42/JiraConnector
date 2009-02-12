@@ -78,7 +78,10 @@ import java.util.Map;
  */
 public class BambooView extends ViewPart {
 
-	private class OpenInBrowserAction extends Action {
+	private class OpenInBrowserAction extends BaseSelectionListenerAction {
+		public OpenInBrowserAction() {
+			super(null);
+		}
 
 		@SuppressWarnings("unchecked")
 		@Override
@@ -91,6 +94,11 @@ public class BambooView extends ViewPart {
 					TasksUiUtil.openUrl(url);
 				}
 			}
+		}
+
+		@Override
+		protected boolean updateSelection(IStructuredSelection selection) {
+			return selection.size() > 0;
 		}
 	}
 
@@ -473,9 +481,11 @@ public class BambooView extends ViewPart {
 		refreshAction.setText("Refresh");
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
 
-		Action openInBrowserAction = new OpenInBrowserAction();
+		BaseSelectionListenerAction openInBrowserAction = new OpenInBrowserAction();
+		openInBrowserAction.setEnabled(false);
 		openInBrowserAction.setText("Open in Browser");
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
+		buildViewer.addSelectionChangedListener(openInBrowserAction);
 
 		BaseSelectionListenerAction showBuildLogAction = new ShowBuildLogsAction();
 		showBuildLogAction.setText("Show build log");
@@ -541,9 +551,11 @@ public class BambooView extends ViewPart {
 		refreshAction.setText("Refresh");
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
 
-		Action openInBrowserAction = new OpenInBrowserAction();
+		BaseSelectionListenerAction openInBrowserAction = new OpenInBrowserAction();
+		openInBrowserAction.setEnabled(false);
 		openInBrowserAction.setText("Open in Browser");
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
+		buildViewer.addSelectionChangedListener(openInBrowserAction);
 
 		BaseSelectionListenerAction showBuildLogAction = new ShowBuildLogsAction();
 		showBuildLogAction.setText("Show build log");
