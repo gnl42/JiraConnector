@@ -66,6 +66,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -476,6 +477,24 @@ public class BambooView extends ViewPart {
 
 	private HashMap<String, TaskRepository> linkedRepositories;
 
+	private BaseSelectionListenerAction openInBrowserAction;
+
+	private Action refreshAction;
+
+	private BaseSelectionListenerAction showBuildLogAction;
+
+	private BaseSelectionListenerAction showTestResultsAction;
+
+	private BaseSelectionListenerAction addLabelToBuildAction;
+
+	private BaseSelectionListenerAction addCommentToBuildAction;
+
+	private BaseSelectionListenerAction runBuildAction;
+
+	private Action addRepoConfigAction;
+
+	private BaseSelectionListenerAction openRepoConfigAction;
+
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite stackComp = new Composite(parent, SWT.NONE);
@@ -490,9 +509,11 @@ public class BambooView extends ViewPart {
 
 		createTreeViewer(treeComp);
 
-		stackLayout.topControl = linkComp;
+		stackLayout.topControl = treeComp;
 		stackComp.layout();
 
+		createActions();
+		fillTreeContextMenu();
 		contributeToActionBars();
 
 		bambooDataprovider = BambooViewDataProvider.getInstance();
@@ -586,9 +607,6 @@ public class BambooView extends ViewPart {
 				new OpenInBrowserAction().run();
 			}
 		});
-
-		fillTreeContextMenu();
-
 		//GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(planViewer.getControl());
 	}
 
@@ -638,56 +656,6 @@ public class BambooView extends ViewPart {
 
 	private void fillTreeContextMenu() {
 		MenuManager contextMenuManager = new MenuManager("BAMBOO");
-		Action refreshAction = new Action() {
-			@Override
-			public void run() {
-				refreshBuilds();
-			}
-		};
-		refreshAction.setText("Refresh");
-		refreshAction.setImageDescriptor(CommonImages.REFRESH);
-
-		BaseSelectionListenerAction openInBrowserAction = new OpenInBrowserAction();
-		openInBrowserAction.setEnabled(false);
-		openInBrowserAction.setText("Open in Browser");
-		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
-		buildViewer.addSelectionChangedListener(openInBrowserAction);
-
-		BaseSelectionListenerAction showBuildLogAction = new ShowBuildLogsAction();
-		showBuildLogAction.setText("Show Build Log");
-		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
-		showBuildLogAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(showBuildLogAction);
-
-		BaseSelectionListenerAction showTestResultsAction = new ShowTestResultsAction();
-		showTestResultsAction.setText("Show Test Results");
-		showTestResultsAction.setImageDescriptor(BambooImages.JUNIT);
-		showTestResultsAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(showTestResultsAction);
-
-		BaseSelectionListenerAction addLabelToBuildAction = new AddLabelToBuildAction();
-		addLabelToBuildAction.setText("Add Label to Build...");
-		addLabelToBuildAction.setImageDescriptor(BambooImages.LABEL);
-		addLabelToBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
-
-		BaseSelectionListenerAction addCommentToBuildAction = new AddCommentToBuildAction();
-		addCommentToBuildAction.setText("Add Comment to Build...");
-		addCommentToBuildAction.setImageDescriptor(BambooImages.COMMENT);
-		addCommentToBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
-
-		BaseSelectionListenerAction runBuildAction = new RunBuildAction();
-		runBuildAction.setText("Run Build");
-		runBuildAction.setImageDescriptor(BambooImages.RUN_BUILD);
-		runBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(runBuildAction);
-
-		BaseSelectionListenerAction openRepoConfig = new OpenRepositoryConfigurationAction();
-		openRepoConfig.setText("Properties...");
-		openRepoConfig.setEnabled(false);
-		buildViewer.addSelectionChangedListener(openRepoConfig);
-
 		contextMenuManager.add(openInBrowserAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(showBuildLogAction);
@@ -700,7 +668,7 @@ public class BambooView extends ViewPart {
 		contextMenuManager.add(refreshAction);
 		contextMenuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		contextMenuManager.add(new Separator());
-		contextMenuManager.add(openRepoConfig);
+		contextMenuManager.add(openRepoConfigAction);
 		Menu contextMenu = contextMenuManager.createContextMenu(buildViewer.getControl());
 		buildViewer.getControl().setMenu(contextMenu);
 		getSite().registerContextMenu(contextMenuManager, buildViewer);
@@ -719,56 +687,7 @@ public class BambooView extends ViewPart {
 	}
 
 	private void fillToolBar(IToolBarManager toolBarManager) {
-		Action refreshAction = new Action() {
-			@Override
-			public void run() {
-				refreshBuilds();
-			}
-		};
-		refreshAction.setText("Refresh");
-		refreshAction.setImageDescriptor(CommonImages.REFRESH);
-
-		BaseSelectionListenerAction openInBrowserAction = new OpenInBrowserAction();
-		openInBrowserAction.setEnabled(false);
-		openInBrowserAction.setText("Open in Browser");
-		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
-		buildViewer.addSelectionChangedListener(openInBrowserAction);
-
-		BaseSelectionListenerAction showBuildLogAction = new ShowBuildLogsAction();
-		showBuildLogAction.setText("Show Build Log");
-		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
-		showBuildLogAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(showBuildLogAction);
-
-		BaseSelectionListenerAction showTestResultsAction = new ShowTestResultsAction();
-		showTestResultsAction.setText("Show Test Results");
-		showTestResultsAction.setImageDescriptor(BambooImages.JUNIT);
-		showTestResultsAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(showTestResultsAction);
-
-		BaseSelectionListenerAction addLabelToBuildAction = new AddLabelToBuildAction();
-		addLabelToBuildAction.setText("Add Label to Build...");
-		addLabelToBuildAction.setImageDescriptor(BambooImages.LABEL);
-		addLabelToBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
-
-		BaseSelectionListenerAction addCommentToBuildAction = new AddCommentToBuildAction();
-		addCommentToBuildAction.setText("Add Comment to Build...");
-		addCommentToBuildAction.setImageDescriptor(BambooImages.COMMENT);
-		addCommentToBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
-
-		BaseSelectionListenerAction runBuildAction = new RunBuildAction();
-		runBuildAction.setText("Run Build");
-		runBuildAction.setImageDescriptor(BambooImages.RUN_BUILD);
-		runBuildAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(runBuildAction);
-
-		Action addRepoConfig = new AddRepositoryConfigurationAction();
-		addRepoConfig.setText("Add Bamboo Repository...");
-		addRepoConfig.setImageDescriptor(BambooImages.ADD_REPOSITORY);
-
-		toolBarManager.add(addRepoConfig);
+		toolBarManager.add(addRepoConfigAction);
 		toolBarManager.add(new Separator());
 		toolBarManager.add(refreshAction);
 		toolBarManager.add(new Separator());
@@ -777,6 +696,66 @@ public class BambooView extends ViewPart {
 		toolBarManager.add(showTestResultsAction);
 		toolBarManager.add(new Separator());
 		toolBarManager.add(runBuildAction);
+	}
+
+	private void createActions() {
+		refreshAction = new Action() {
+			@Override
+			public void run() {
+				refreshBuilds();
+			}
+		};
+		refreshAction.setText("Refresh");
+		refreshAction.setImageDescriptor(CommonImages.REFRESH);
+
+		openInBrowserAction = new OpenInBrowserAction();
+		openInBrowserAction.setEnabled(false);
+		openInBrowserAction.setText("Open in Browser");
+		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
+		buildViewer.addSelectionChangedListener(openInBrowserAction);
+
+		showBuildLogAction = new ShowBuildLogsAction();
+		showBuildLogAction.setText("Show Build Log");
+		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
+		showBuildLogAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(showBuildLogAction);
+
+		showTestResultsAction = new ShowTestResultsAction();
+		showTestResultsAction.setText("Show Test Results");
+		showTestResultsAction.setImageDescriptor(BambooImages.JUNIT);
+		showTestResultsAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(showTestResultsAction);
+
+		addLabelToBuildAction = new AddLabelToBuildAction();
+		addLabelToBuildAction.setText("Add Label to Build...");
+		addLabelToBuildAction.setImageDescriptor(BambooImages.LABEL);
+		addLabelToBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
+
+		addCommentToBuildAction = new AddCommentToBuildAction();
+		addCommentToBuildAction.setText("Add Comment to Build...");
+		addCommentToBuildAction.setImageDescriptor(BambooImages.COMMENT);
+		addCommentToBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
+
+		runBuildAction = new RunBuildAction();
+		runBuildAction.setText("Run Build");
+		runBuildAction.setImageDescriptor(BambooImages.RUN_BUILD);
+		runBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(runBuildAction);
+
+		addRepoConfigAction = new AddRepositoryConfigurationAction();
+		addRepoConfigAction.setText("Add Bamboo Repository...");
+		addRepoConfigAction.setImageDescriptor(BambooImages.ADD_REPOSITORY);
+
+		openRepoConfigAction = new OpenRepositoryConfigurationAction();
+		openRepoConfigAction.setText("Properties...");
+		openRepoConfigAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(openRepoConfigAction);
+
+		IActionBars actionBars = getViewSite().getActionBars();
+		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigAction);
+		actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
 	}
 
 	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {
