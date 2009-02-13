@@ -742,12 +742,10 @@ public class BambooView extends ViewPart {
 				new OpenInBrowserAction().run();
 			}
 		});
-		//GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(planViewer.getControl());
 	}
 
 	private void createLink(Composite parent) {
 		link = new Link(parent, SWT.NONE);
-//		fillLink(TasksUi.getRepositoryManager().getRepositories(BambooCorePlugin.CONNECTOR_KIND));
 		link.setText("Initializing view...");
 		link.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
