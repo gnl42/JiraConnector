@@ -14,7 +14,8 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
-import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
+import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
+import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
 import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
@@ -558,7 +559,7 @@ public class BambooView extends ViewPart {
 
 	private TreeViewer buildViewer;
 
-	private BambooViewDataProvider bambooDataprovider;
+	private Map<TaskRepository, Collection<BambooBuild>> builds;
 
 	private final Image buildFailedImage = CommonImages.getImage(BambooImages.STATUS_FAILED);
 
@@ -600,6 +601,12 @@ public class BambooView extends ViewPart {
 
 	private BaseSelectionListenerAction openRepoConfigAction;
 
+	private BuildsChangedListener buildsChangedListener;
+
+	public BambooView() {
+		builds = new HashMap<TaskRepository, Collection<BambooBuild>>();
+	}
+
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite stackComp = new Composite(parent, SWT.NONE);
@@ -627,8 +634,25 @@ public class BambooView extends ViewPart {
 			progress.showBusyForFamily(BambooConstants.FAMILY_REFRESH_OPERATION);
 		}
 
-		bambooDataprovider = BambooViewDataProvider.getInstance();
-		bambooDataprovider.setView(this);
+		buildsChangedListener = new BuildsChangedListener() {
+			public void buildsUpdated(BuildsChangedEvent event) {
+				builds = event.getAllBuilds();
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						refresh();
+					}
+				});
+			}
+		};
+		BambooCorePlugin.getBuildPlanManager().addBuildsChangedListener(buildsChangedListener);
+	}
+
+	@Override
+	public void dispose() {
+		if (buildsChangedListener != null) {
+			BambooCorePlugin.getBuildPlanManager().removeBuildsChangedListener(buildsChangedListener);
+			buildsChangedListener = null;
+		}
 	}
 
 	private void createTreeViewer(Composite parent) {
@@ -871,10 +895,10 @@ public class BambooView extends ViewPart {
 		actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
 	}
 
-	private void refresh(Map<TaskRepository, Collection<BambooBuild>> map) {
+	private void refresh() {
 		boolean hasSubscriptions = false;
-		for (Collection<BambooBuild> builds : map.values()) {
-			if (builds.size() > 0) {
+		for (Collection<BambooBuild> repoBuilds : builds.values()) {
+			if (repoBuilds.size() > 0) {
 				hasSubscriptions = true;
 				break;
 			}
@@ -884,24 +908,14 @@ public class BambooView extends ViewPart {
 			stackLayout.topControl = treeComp;
 			treeComp.getParent().layout();
 		} else if (!hasSubscriptions) { //refresh link widget even if it is already shown to display updated repositories
-			fillLink(map.keySet());
+			fillLink(builds.keySet());
 			stackLayout.topControl = linkComp;
 			linkComp.getParent().layout();
 		}
-		buildViewer.setInput(map);
+		buildViewer.setInput(builds);
 	}
 
 	private void fillPopupMenu(IMenuManager menuManager) {
-	}
-
-	public void buildsChanged() {
-		if (bambooDataprovider.getBuilds() != null) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					refresh(bambooDataprovider.getBuilds());
-				}
-			});
-		}
 	}
 
 	private void updateViewIcon(boolean buildsFailed) {
@@ -925,16 +939,6 @@ public class BambooView extends ViewPart {
 	}
 
 	private void refreshBuilds() {
-		RefreshBuildsForAllRepositoriesJob job = new RefreshBuildsForAllRepositoriesJob("Refreshing builds",
-				TasksUi.getRepositoryManager(), true);
-		job.addJobChangeListener(new JobChangeAdapter() {
-			@Override
-			public void done(final IJobChangeEvent event) {
-				if (((RefreshBuildsForAllRepositoriesJob) event.getJob()).getStatus().isOK()) {
-					BuildPlanManager.getInstance().handleFinishedRefreshAllBuildsJob(event);
-				}
-			}
-		});
-		job.schedule();
+		new RefreshBuildsForAllRepositoriesJob("Refreshing builds", TasksUi.getRepositoryManager(), true).schedule();
 	}
 }

@@ -63,6 +63,7 @@ public class RefreshBuildsForAllRepositoriesJob extends Job {
 				StatusHandler.log(status);
 			}
 		}
+		BambooCorePlugin.getBuildPlanManager().handleFinishedRefreshAllBuildsJob(builds2);
 		return Status.OK_STATUS;
 	}
 

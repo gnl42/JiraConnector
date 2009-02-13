@@ -108,7 +108,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 		BambooServerCfg serverCfg = getServerCfg(location, repository, false);
 		clientCallback.removeClient(serverCfg);
 
-		BuildPlanManager.getInstance().repositoryRemoved(repository);
+		BambooCorePlugin.getBuildPlanManager().repositoryRemoved(repository);
 	}
 
 	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, BambooServerCfg serverCfg) {

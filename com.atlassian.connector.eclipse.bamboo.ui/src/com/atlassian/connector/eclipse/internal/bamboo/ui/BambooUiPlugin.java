@@ -58,7 +58,6 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 		UIJob job = new UIJob("Initialize Bamboo View") {
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-				BambooViewDataProvider.getInstance().init();
 				bambooNotificationProvider = new BambooNotificationProvider();
 				try {
 					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(BambooView.ID, null,
@@ -66,6 +65,7 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 				} catch (PartInitException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID, "Could not initialize Bamboo view."));
 				}
+				BambooCorePlugin.getBuildPlanManager().initializeScheduler(TasksUi.getRepositoryManager());
 				return Status.OK_STATUS;
 			}
 		};
@@ -79,8 +79,8 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		BambooViewDataProvider.getInstance().dispose();
 		plugin = null;
+		bambooNotificationProvider.dispose();
 		super.stop(context);
 	}
 

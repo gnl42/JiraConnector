@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.notifications;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
-import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -35,9 +35,13 @@ public class BambooNotificationProvider implements ITaskListNotificationProvider
 	private final Set<BambooNotification> notifications;
 
 	public BambooNotificationProvider() {
-		BuildPlanManager.getInstance().addBuildsChangedListener(this);
+		BambooCorePlugin.getBuildPlanManager().addBuildsChangedListener(this);
 		notifications = new HashSet<BambooNotification>();
 		TasksUiPlugin.getTaskListNotificationManager().addNotificationProvider(this);
+	}
+
+	public void dispose() {
+		BambooCorePlugin.getBuildPlanManager().removeBuildsChangedListener(this);
 	}
 
 	public Set<AbstractNotification> getNotifications() {
@@ -46,28 +50,22 @@ public class BambooNotificationProvider implements ITaskListNotificationProvider
 		return toReturn;
 	}
 
-	public void buildsAdded(BuildsChangedEvent event) {
-		//ignore added builds
-	}
-
-	public void buildsChanged(BuildsChangedEvent event) {
-		for (TaskRepository key : event.getChangedBuilds().keySet()) {
-			for (BambooBuild build : event.getChangedBuilds().get(key)) {
-				//for each build get equivalent old build
-				for (BambooBuild oldBuild : event.getOldBuilds().get(key)) {
-					if (BambooUtil.isSameBuildPlan(build, oldBuild)) {
-						if (build.getStatus() != oldBuild.getStatus()) {
-							//build status changed
-							notifications.add(new BambooNotification(build, BambooNotification.CHANGE.CHANGED));
+	public void buildsUpdated(BuildsChangedEvent event) {
+		if (event.getChangedBuilds().size() > 0) {
+			for (TaskRepository key : event.getChangedBuilds().keySet()) {
+				for (BambooBuild build : event.getChangedBuilds().get(key)) {
+					//for each build get equivalent old build
+					for (BambooBuild oldBuild : event.getOldBuilds().get(key)) {
+						if (BambooUtil.isSameBuildPlan(build, oldBuild)) {
+							if (build.getStatus() != oldBuild.getStatus()) {
+								//build status changed
+								notifications.add(new BambooNotification(build, BambooNotification.CHANGE.CHANGED));
+							}
 						}
 					}
 				}
 			}
 		}
-	}
-
-	public void buildsRemoved(BuildsChangedEvent event) {
-		//ignore removed builds
 	}
 
 }

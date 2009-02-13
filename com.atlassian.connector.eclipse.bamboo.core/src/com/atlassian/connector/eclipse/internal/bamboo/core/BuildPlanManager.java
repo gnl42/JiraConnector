@@ -76,24 +76,15 @@ public final class BuildPlanManager {
 
 	}
 
-	private static BuildPlanManager uniqueInstance;
-
 	private final Map<TaskRepository, Collection<BambooBuild>> subscribedBuilds;
 
 	private final List<BuildsChangedListener> buildChangedListeners;
 
 	private RefreshBuildsForAllRepositoriesJob refreshBuildsForAllRepositoriesJob;
 
-	private BuildPlanManager() {
+	public BuildPlanManager() {
 		subscribedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 		buildChangedListeners = new CopyOnWriteArrayList<BuildsChangedListener>();
-	}
-
-	public static BuildPlanManager getInstance() {
-		if (uniqueInstance == null) {
-			uniqueInstance = new BuildPlanManager();
-		}
-		return uniqueInstance;
 	}
 
 	public void addBuildsChangedListener(BuildsChangedListener listener) {
@@ -133,17 +124,13 @@ public final class BuildPlanManager {
 	}
 
 	private void getRefreshedBuildsDiff(Collection<BambooBuild> newBuilds, TaskRepository taskRepository,
-			Map<TaskRepository, Collection<BambooBuild>> addedBuilds2,
-			Map<TaskRepository, Collection<BambooBuild>> removedBuilds2,
 			Map<TaskRepository, Collection<BambooBuild>> changedBuilds2) {
 		Collection<BambooBuild> currentBuilds = subscribedBuilds.get(taskRepository);
 		//if it is a new repository, add it
 		if (currentBuilds == null) {
 			currentBuilds = new ArrayList<BambooBuild>();
 		}
-		List<BambooBuild> addedBuilds = new ArrayList<BambooBuild>();
 		List<BambooBuild> changedBuilds = new ArrayList<BambooBuild>();
-		List<BambooBuild> removedBuilds = new ArrayList<BambooBuild>();
 		//find changed and removed builds
 		for (BambooBuild oldBuild : currentBuilds) {
 			boolean found = false;
@@ -157,10 +144,6 @@ public final class BuildPlanManager {
 					break;
 				}
 			}
-			//if current build is not found in newBuilds, its subscription has been removed
-			if (!found) {
-				removedBuilds.add(oldBuild);
-			}
 		}
 		//find newly added builds
 		for (BambooBuild newBuild : newBuilds) {
@@ -171,93 +154,61 @@ public final class BuildPlanManager {
 					break;
 				}
 			}
-			if (!found) {
-				addedBuilds.add(newBuild);
-			}
 		}
 		//set newbuilds as current builds and add the added/removed/changed to the maps
 		subscribedBuilds.put(taskRepository, newBuilds);
-		addedBuilds2.put(taskRepository, addedBuilds);
-		removedBuilds2.put(taskRepository, removedBuilds);
 		changedBuilds2.put(taskRepository, changedBuilds);
 	}
 
 	private void processRefreshedBuildsOneRepository(Collection<BambooBuild> newBuilds, TaskRepository taskRepository) {
 		Map<TaskRepository, Collection<BambooBuild>> oldBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>(
 				subscribedBuilds);
-		Map<TaskRepository, Collection<BambooBuild>> addedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
-		Map<TaskRepository, Collection<BambooBuild>> removedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 		Map<TaskRepository, Collection<BambooBuild>> changedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 		synchronized (subscribedBuilds) {
-			getRefreshedBuildsDiff(newBuilds, taskRepository, addedBuilds, removedBuilds, changedBuilds);
+			getRefreshedBuildsDiff(newBuilds, taskRepository, changedBuilds);
 		}
 
-		BuildsChangedEvent event = new BuildsChangedEvent(addedBuilds, removedBuilds, changedBuilds, subscribedBuilds,
-				oldBuilds);
+		BuildsChangedEvent event = new BuildsChangedEvent(changedBuilds, subscribedBuilds, oldBuilds);
 
 		//notify listeners
 		for (BuildsChangedListener listener : buildChangedListeners) {
-			if (addedBuilds.size() > 0) {
-				listener.buildsAdded(event);
-			}
-			if (changedBuilds.size() > 0) {
-				listener.buildsChanged(event);
-			}
-			if (removedBuilds.size() > 0) {
-				listener.buildsRemoved(event);
-			}
+			listener.buildsUpdated(event);
 		}
 	}
 
 	public void repositoryRemoved(TaskRepository repository) {
 		Map<TaskRepository, Collection<BambooBuild>> oldBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>(
 				subscribedBuilds);
-		Map<TaskRepository, Collection<BambooBuild>> removedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 		synchronized (subscribedBuilds) {
 			Collection<BambooBuild> buildsToRemove = subscribedBuilds.get(repository);
 			if (buildsToRemove != null) {
-				removedBuilds.put(repository, buildsToRemove);
 				subscribedBuilds.remove(repository);
 			}
 		}
-		Map<TaskRepository, Collection<BambooBuild>> blank = new HashMap<TaskRepository, Collection<BambooBuild>>();
-		BuildsChangedEvent event = new BuildsChangedEvent(blank, removedBuilds, blank, subscribedBuilds, oldBuilds);
+		BuildsChangedEvent event = new BuildsChangedEvent(null, subscribedBuilds, oldBuilds);
 
 		//notify listeners
 		for (BuildsChangedListener listener : buildChangedListeners) {
-			if (removedBuilds.size() > 0) {
-				listener.buildsRemoved(event);
-			}
+			listener.buildsUpdated(event);
 		}
 	}
 
 	private void processRefreshedBuildsAllRepositories(Map<TaskRepository, Collection<BambooBuild>> newBuilds) {
 		Map<TaskRepository, Collection<BambooBuild>> oldBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>(
 				subscribedBuilds);
-		Map<TaskRepository, Collection<BambooBuild>> addedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
-		Map<TaskRepository, Collection<BambooBuild>> removedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 		Map<TaskRepository, Collection<BambooBuild>> changedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 
 		synchronized (subscribedBuilds) {
 			for (TaskRepository repository : newBuilds.keySet()) {
-				getRefreshedBuildsDiff(newBuilds.get(repository), repository, addedBuilds, removedBuilds, changedBuilds);
+				getRefreshedBuildsDiff(newBuilds.get(repository), repository, changedBuilds);
 			}
 		}
 
-		BuildsChangedEvent event = new BuildsChangedEvent(addedBuilds, removedBuilds, changedBuilds, subscribedBuilds,
-				oldBuilds);
+		BuildsChangedEvent event = new BuildsChangedEvent(changedBuilds, subscribedBuilds, oldBuilds);
 
 		//notify listeners
 		for (BuildsChangedListener listener : buildChangedListeners) {
-			if (addedBuilds.size() > 0) {
-				listener.buildsAdded(event);
-			}
-			if (changedBuilds.size() > 0) {
-				listener.buildsChanged(event);
-			}
-			if (removedBuilds.size() > 0) {
-				listener.buildsRemoved(event);
-			}
+			listener.buildsUpdated(event);
 		}
 	}
 
@@ -267,18 +218,13 @@ public final class BuildPlanManager {
 		refreshBuildsForAllRepositoriesJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
-				if (((RefreshBuildsForAllRepositoriesJob) event.getJob()).getStatus().isOK()) {
-					handleFinishedRefreshAllBuildsJob(event);
-				}
 				refreshBuildsForAllRepositoriesJob.schedule(REVIEW_SYNCHRONISATION_DELAY_MS);
 			}
 		});
 		refreshBuildsForAllRepositoriesJob.schedule(); //first iteration without delay
 	}
 
-	public void handleFinishedRefreshAllBuildsJob(IJobChangeEvent event) {
-		RefreshBuildsForAllRepositoriesJob job = (RefreshBuildsForAllRepositoriesJob) event.getJob();
-		Map<TaskRepository, Collection<BambooBuild>> builds = job.getBuilds();
+	public void handleFinishedRefreshAllBuildsJob(Map<TaskRepository, Collection<BambooBuild>> builds) {
 		//compare new builds with current builds
 		processRefreshedBuildsAllRepositories(builds);
 	}

@@ -38,6 +38,8 @@ public class BambooCorePlugin extends Plugin {
 
 	private static BambooCorePlugin plugin;
 
+	private static BuildPlanManager buildPlanManager;
+
 	public BambooCorePlugin() {
 		// make sure that we have the logging going to the eclipse log
 		LoggerImpl.setInstance(new AtlassianLogger());
@@ -47,6 +49,7 @@ public class BambooCorePlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		buildPlanManager = new BuildPlanManager();
 	}
 
 	@Override
@@ -76,6 +79,10 @@ public class BambooCorePlugin extends Plugin {
 		IPath stateLocation = Platform.getStateLocation(getBundle());
 		IPath cacheFile = stateLocation.append(REPOSITORY_CONFIGURATIONS_FOLDER_PATH);
 		return cacheFile.toFile();
+	}
+
+	public static BuildPlanManager getBuildPlanManager() {
+		return buildPlanManager;
 	}
 
 }

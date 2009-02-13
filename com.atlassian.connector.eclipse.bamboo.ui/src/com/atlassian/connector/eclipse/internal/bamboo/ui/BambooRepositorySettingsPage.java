@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
-import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.model.BambooCachedPlan;
@@ -134,7 +133,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		BambooUtil.setSubcribedPlans(this.repository, plans);
 		//update cache
 		updateAndWriteCache();
-		BuildPlanManager.getInstance().buildSubscriptionsChanged(this.repository);
+		BambooCorePlugin.getBuildPlanManager().buildSubscriptionsChanged(this.repository);
 	}
 
 	/**
