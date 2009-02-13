@@ -46,6 +46,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
@@ -69,6 +70,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
@@ -100,6 +102,30 @@ import java.util.Set;
 public class BambooView extends ViewPart {
 
 	private static final String CREATE_A_NEW_REPOSITORY_LINK = "Create a new Repository";
+
+	public enum SortOrder {
+		UNSORTED(SWT.NONE), STATE_PASSED_FAILED(SWT.UP), STATE_FAILED_PASSED(SWT.DOWN);
+		private final int direction;
+
+		private SortOrder(int direction) {
+			this.direction = direction;
+		}
+
+		public int getDirection() {
+			return direction;
+		}
+
+		public static SortOrder next(SortOrder current) {
+			switch (current) {
+			case UNSORTED:
+				return STATE_PASSED_FAILED;
+			case STATE_PASSED_FAILED:
+				return STATE_FAILED_PASSED;
+			default:
+				return UNSORTED;
+			}
+		}
+	}
 
 	private class OpenInBrowserAction extends BaseSelectionListenerAction {
 		public OpenInBrowserAction() {
@@ -603,6 +629,8 @@ public class BambooView extends ViewPart {
 
 	private BuildsChangedListener buildsChangedListener;
 
+	private SortOrder sortOrder = SortOrder.UNSORTED;
+
 	public BambooView() {
 		builds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 	}
@@ -673,7 +701,13 @@ public class BambooView extends ViewPart {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof BambooBuild) {
-					return ((BambooBuild) element).getBuildName() + " - " + ((BambooBuild) element).getBuildKey();
+					String buildName;
+					if (((BambooBuild) element).getBuildName() == null) {
+						buildName = "N/A";
+					} else {
+						buildName = ((BambooBuild) element).getBuildName();
+					}
+					return buildName + " - " + ((BambooBuild) element).getBuildKey();
 				}
 				return super.getText(element);
 			}
@@ -742,9 +776,78 @@ public class BambooView extends ViewPart {
 			}
 		});
 
-		buildViewer.getTree().setHeaderVisible(true);
+		final ViewerComparator comparator = new ViewerComparator() {
+			@Override
+			public boolean isSorterProperty(Object element, String property) {
+				// ignore
+				return true;
+			}
 
-		buildViewer.getTree().addSelectionListener(new SelectionAdapter() {
+			@Override
+			public int compare(Viewer viewer, Object e1, Object e2) {
+				if (e1 instanceof BambooBuild && e2 instanceof BambooBuild) {
+					BuildStatus state1 = ((BambooBuild) e1).getStatus();
+					BuildStatus state2 = ((BambooBuild) e2).getStatus();
+					switch (sortOrder) {
+					case UNSORTED:
+						return super.compare(viewer, e1, e2);
+					case STATE_PASSED_FAILED:
+						if (state1 == state2) {
+							return super.compare(viewer, e1, e2);
+						}
+						if (state1 == BuildStatus.SUCCESS) {
+							return -1;
+						}
+						if (state2 == BuildStatus.SUCCESS) {
+							return 1;
+						}
+						if (state1 == BuildStatus.FAILURE) {
+							return -1;
+						}
+						if (state2 == BuildStatus.FAILURE) {
+							return 1;
+						}
+						return super.compare(viewer, state1, state2);
+					case STATE_FAILED_PASSED:
+						if (state1 == state2) {
+							return super.compare(viewer, e1, e2);
+						}
+						if (state1 == BuildStatus.FAILURE) {
+							return -1;
+						}
+						if (state2 == BuildStatus.FAILURE) {
+							return 1;
+						}
+						if (state1 == BuildStatus.SUCCESS) {
+							return -1;
+						}
+						if (state2 == BuildStatus.SUCCESS) {
+							return 1;
+						}
+						return super.compare(viewer, state1, state2);
+					}
+				}
+				return super.compare(viewer, e1, e2);
+			}
+		};
+
+		final Tree tree = buildViewer.getTree();
+		tree.getColumns()[0].addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				sortOrder = SortOrder.next(sortOrder);
+				buildViewer.setComparator(null);
+				buildViewer.setComparator(comparator);
+				tree.setSortDirection(sortOrder.getDirection());
+			}
+		});
+		tree.setSortColumn(tree.getColumns()[0]);
+
+		buildViewer.setComparator(comparator);
+
+		tree.setHeaderVisible(true);
+
+		tree.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				new OpenInBrowserAction().run();
