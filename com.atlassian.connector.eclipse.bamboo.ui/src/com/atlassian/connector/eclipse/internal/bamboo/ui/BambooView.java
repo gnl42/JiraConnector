@@ -646,8 +646,11 @@ public class BambooView extends ViewPart {
 		};
 		BuildPlanManager buildPlanManager = BambooCorePlugin.getBuildPlanManager();
 		buildPlanManager.addBuildsChangedListener(buildsChangedListener);
-		builds = buildPlanManager.getSubscribedBuilds();
-		refresh();
+		//if the initial synchronization is already finished, get the cache data
+		if (buildPlanManager.isFirstScheduledSynchronizationDone()) {
+			builds = buildPlanManager.getSubscribedBuilds();
+			refresh();
+		}
 	}
 
 	@Override
@@ -738,6 +741,8 @@ public class BambooView extends ViewPart {
 				return super.getText(element);
 			}
 		});
+
+		buildViewer.getTree().setHeaderVisible(true);
 
 		buildViewer.getTree().addSelectionListener(new SelectionAdapter() {
 			@Override

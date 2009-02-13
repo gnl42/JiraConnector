@@ -114,6 +114,7 @@ public final class BuildPlanManager {
 					StatusHandler.log(status);
 				}
 			}
+			firstScheduledSynchronizationDone = true;
 			handleFinishedRefreshAllBuildsJob(builds);
 			return Status.OK_STATUS;
 		}
@@ -141,6 +142,8 @@ public final class BuildPlanManager {
 	private IRepositoryManager repositoryManager;
 
 	private RefreshBuildsForAllRepositoriesJob forcedRefreshBuildsForAllRepositoriesJob;
+
+	private boolean firstScheduledSynchronizationDone = false;
 
 	public BuildPlanManager() {
 		subscribedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
@@ -193,10 +196,8 @@ public final class BuildPlanManager {
 		List<BambooBuild> changedBuilds = new ArrayList<BambooBuild>();
 		//find changed and removed builds
 		for (BambooBuild oldBuild : currentBuilds) {
-			boolean found = false;
 			for (BambooBuild newBuild : newBuilds) {
 				if (BambooUtil.isSameBuildPlan(newBuild, oldBuild)) {
-					found = true;
 					//if build keys do not match, but builds are of the same build plan, it is a changed build
 					if (newBuild.getBuildKey().equals(oldBuild.getBuildKey())) {
 						changedBuilds.add(newBuild);
@@ -207,10 +208,8 @@ public final class BuildPlanManager {
 		}
 		//find newly added builds
 		for (BambooBuild newBuild : newBuilds) {
-			boolean found = false;
 			for (BambooBuild oldBuild : currentBuilds) {
 				if (newBuild.getBuildKey().equals(oldBuild.getBuildKey())) {
-					found = true;
 					break;
 				}
 			}
@@ -298,7 +297,7 @@ public final class BuildPlanManager {
 		}
 	}
 
-	public Map<TaskRepository, Collection<BambooBuild>> getCurrentSubscribedBuilds() {
-		return subscribedBuilds == null ? new HashMap<TaskRepository, Collection<BambooBuild>>() : subscribedBuilds;
+	public boolean isFirstScheduledSynchronizationDone() {
+		return firstScheduledSynchronizationDone;
 	}
 }
