@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -55,7 +56,10 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		UIJob job = new UIJob("Initialize Bamboo View") {
+		// trigger tasks ui initialization first
+		IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+		repositoryManager.addListener(BambooCorePlugin.getRepositoryConnector().getClientManager());
+		UIJob job = new UIJob("Initializing Bamboo") {
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				bambooNotificationProvider = new BambooNotificationProvider();
@@ -70,7 +74,6 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 			}
 		};
 		job.schedule();
-		TasksUi.getRepositoryManager().addListener(BambooCorePlugin.getRepositoryConnector().getClientManager());
 	}
 
 	/*
@@ -80,7 +83,9 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		bambooNotificationProvider.dispose();
+		if (bambooNotificationProvider != null) {
+			bambooNotificationProvider.dispose();
+		}
 		super.stop(context);
 	}
 
