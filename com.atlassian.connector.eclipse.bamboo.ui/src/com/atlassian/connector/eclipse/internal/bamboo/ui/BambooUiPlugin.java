@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -64,8 +65,12 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				bambooNotificationProvider = new BambooNotificationProvider();
 				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(BambooView.ID, null,
-							IWorkbenchPage.VIEW_CREATE);
+					IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					for (IViewReference view : activePage.getViewReferences()) {
+						if (view.getId().equals(BambooView.ID)) {
+							activePage.showView(BambooView.ID, null, IWorkbenchPage.VIEW_CREATE);
+						}
+					}
 				} catch (PartInitException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID, "Could not initialize Bamboo view."));
 				}

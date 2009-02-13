@@ -14,9 +14,9 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
+import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
-import com.atlassian.connector.eclipse.internal.bamboo.core.RefreshBuildsForAllRepositoriesJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
@@ -644,7 +644,10 @@ public class BambooView extends ViewPart {
 				});
 			}
 		};
-		BambooCorePlugin.getBuildPlanManager().addBuildsChangedListener(buildsChangedListener);
+		BuildPlanManager buildPlanManager = BambooCorePlugin.getBuildPlanManager();
+		buildPlanManager.addBuildsChangedListener(buildsChangedListener);
+		builds = buildPlanManager.getSubscribedBuilds();
+		refresh();
 	}
 
 	@Override
@@ -937,6 +940,6 @@ public class BambooView extends ViewPart {
 	}
 
 	private void refreshBuilds() {
-		new RefreshBuildsForAllRepositoriesJob("Refreshing builds", TasksUi.getRepositoryManager(), true).schedule();
+		BambooCorePlugin.getBuildPlanManager().refreshAllBuilds();
 	}
 }
