@@ -13,6 +13,8 @@ package com.atlassian.connector.eclipse.internal.bamboo.core;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.theplugin.commons.bamboo.BambooBuildInfo;
+import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,6 +32,7 @@ import org.eclipse.osgi.util.NLS;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -194,10 +197,18 @@ public final class BuildPlanManager {
 			currentBuilds = new ArrayList<BambooBuild>();
 		}
 		List<BambooBuild> changedBuilds = new ArrayList<BambooBuild>();
+		HashSet<BambooBuild> failedToRemove = new HashSet<BambooBuild>();
+		HashMap<String, BambooBuild> cachedToAdd = new HashMap<String, BambooBuild>();
 		//find changed and removed builds
 		for (BambooBuild oldBuild : currentBuilds) {
 			for (BambooBuild newBuild : newBuilds) {
-				if (BambooUtil.isSameBuildPlan(newBuild, oldBuild)) {
+				if (newBuild.getErrorMessage() != null && newBuild.getStatus() == BuildStatus.UNKNOWN) {
+					//if retrieval failed, use old (cached) build
+					failedToRemove.add(newBuild);
+					if (!cachedToAdd.containsKey(oldBuild.getBuildKey())) {
+						cachedToAdd.put(oldBuild.getBuildKey(), createCachedBuild(oldBuild, newBuild));
+					}
+				} else if (BambooUtil.isSameBuildPlan(newBuild, oldBuild)) {
 					//if build keys do not match, but builds are of the same build plan, it is a changed build
 					if (newBuild.getBuildKey().equals(oldBuild.getBuildKey())) {
 						changedBuilds.add(newBuild);
@@ -206,17 +217,20 @@ public final class BuildPlanManager {
 				}
 			}
 		}
-		//find newly added builds
-		for (BambooBuild newBuild : newBuilds) {
-			for (BambooBuild oldBuild : currentBuilds) {
-				if (newBuild.getBuildKey().equals(oldBuild.getBuildKey())) {
-					break;
-				}
-			}
-		}
+		newBuilds.removeAll(failedToRemove);
+		newBuilds.addAll(cachedToAdd.values());
 		//set newbuilds as current builds and add the added/removed/changed to the maps
 		subscribedBuilds.put(taskRepository, newBuilds);
 		changedBuilds2.put(taskRepository, changedBuilds);
+	}
+
+	private BambooBuild createCachedBuild(BambooBuild oldBuild, BambooBuild newBuild) {
+		return new BambooBuildInfo(oldBuild.getBuildKey(), oldBuild.getBuildName(), oldBuild.getServer(),
+				oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(), oldBuild.getBuildNumber(),
+				oldBuild.getStatus(), oldBuild.getBuildReason(), oldBuild.getBuildStartedDate(), null, null,
+				oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getBuildCompletedDate(),
+				newBuild.getErrorMessage(), oldBuild.getBuildRelativeBuildDate(),
+				oldBuild.getBuildDurationDescription(), oldBuild.getCommiters());
 	}
 
 	private void processRefreshedBuildsOneRepository(Collection<BambooBuild> newBuilds, TaskRepository taskRepository) {

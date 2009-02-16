@@ -40,9 +40,11 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -63,6 +65,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -75,6 +79,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -101,7 +106,9 @@ import java.util.Set;
  */
 public class BambooView extends ViewPart {
 
-	private static final String CREATE_A_NEW_REPOSITORY_LINK = "Create a new Repository";
+	private static final String CREATE_A_NEW_REPOSITORY_LINK = "Create a New Repository";
+
+	private static final String OPEN_REPOSITORY_VIEW_LINK = "Open the Task Repository View";
 
 	public enum SortOrder {
 		UNSORTED(SWT.NONE), STATE_PASSED_FAILED(SWT.UP), STATE_FAILED_PASSED(SWT.DOWN);
@@ -230,15 +237,15 @@ public class BambooView extends ViewPart {
 					}
 				};
 				ActionContributionItem openRepoConfigACI = new ActionContributionItem(openRepositoryConfigurationAction);
-				openRepositoryConfigurationAction.setText(NLS.bind("Open {0} [{1}]...",
-						repository.getRepositoryLabel(), repository.getRepositoryUrl()));
+				openRepositoryConfigurationAction.setText(NLS.bind("Properties for {0}...",
+						repository.getRepositoryLabel()));
 				openRepoConfigACI.fill(menu, -1);
 			}
 
 			new Separator().fill(menu, -1);
 
 			//goto repository action
-			Action gotoTaskRepositoryView = new Action() {
+			Action gotoTaskRepositoryViewAction = new Action() {
 				@Override
 				public void run() {
 					Display.getDefault().asyncExec(new Runnable() {
@@ -254,9 +261,9 @@ public class BambooView extends ViewPart {
 					});
 				}
 			};
-			ActionContributionItem gotoRepoViewACI = new ActionContributionItem(gotoTaskRepositoryView);
-			gotoTaskRepositoryView.setText("Show Task Repositories View");
-			gotoTaskRepositoryView.setImageDescriptor(BambooImages.REPOSITORIES);
+			ActionContributionItem gotoRepoViewACI = new ActionContributionItem(gotoTaskRepositoryViewAction);
+			gotoTaskRepositoryViewAction.setText("Show Task Repositories View");
+			gotoTaskRepositoryViewAction.setImageDescriptor(BambooImages.REPOSITORIES);
 			gotoRepoViewACI.fill(menu, -1);
 		}
 
@@ -273,6 +280,8 @@ public class BambooView extends ViewPart {
 	private class OpenRepositoryConfigurationAction extends BaseSelectionListenerAction {
 		private TaskRepository repository;
 
+		private boolean linkedAction = false;
+
 		public OpenRepositoryConfigurationAction() {
 			super(null);
 		}
@@ -280,11 +289,12 @@ public class BambooView extends ViewPart {
 		public OpenRepositoryConfigurationAction(TaskRepository repository) {
 			super(null);
 			this.repository = repository;
+			linkedAction = true;
 		}
 
 		@Override
 		public void run() {
-			if (repository != null) {
+			if (repository != null && linkedAction) {
 				openConfiguration();
 			} else {
 				ISelection s = buildViewer.getSelection();
@@ -550,6 +560,17 @@ public class BambooView extends ViewPart {
 		}
 
 		public Object[] getElements(Object inputElement) {
+			allBuilds = new ArrayList<BambooBuild>();
+			boolean hasFailed = false;
+			for (Collection<BambooBuild> collection : builds.values()) {
+				allBuilds.addAll(collection);
+				for (BambooBuild build : collection) {
+					if (build.getStatus() == BuildStatus.FAILURE) {
+						hasFailed = true;
+					}
+				}
+			}
+			updateViewIcon(hasFailed);
 			return allBuilds.toArray();
 		}
 
@@ -563,19 +584,19 @@ public class BambooView extends ViewPart {
 
 		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			allBuilds = new ArrayList<BambooBuild>();
-			if (newInput != null) {
-				boolean hasFailed = false;
-				for (Collection<BambooBuild> collection : ((Map<TaskRepository, Collection<BambooBuild>>) newInput).values()) {
-					allBuilds.addAll(collection);
-					for (BambooBuild build : collection) {
-						if (build.getStatus() == BuildStatus.FAILURE) {
-							hasFailed = true;
-						}
-					}
-				}
-				updateViewIcon(hasFailed);
-			}
+//			allBuilds = new ArrayList<BambooBuild>();
+//			if (newInput != null) {
+//				boolean hasFailed = false;
+//				for (Collection<BambooBuild> collection : ((Map<TaskRepository, Collection<BambooBuild>>) newInput).values()) {
+//					allBuilds.addAll(collection);
+//					for (BambooBuild build : collection) {
+//						if (build.getStatus() == BuildStatus.FAILURE) {
+//							hasFailed = true;
+//						}
+//					}
+//				}
+//				updateViewIcon(hasFailed);
+//			}
 		}
 	}
 
@@ -587,11 +608,11 @@ public class BambooView extends ViewPart {
 
 	private Map<TaskRepository, Collection<BambooBuild>> builds;
 
-	private final Image buildFailedImage = CommonImages.getImage(BambooImages.STATUS_FAILED);
+	final Image buildFailedImage = CommonImages.getImage(BambooImages.STATUS_FAILED);
 
-	private final Image buildPassedImage = CommonImages.getImage(BambooImages.STATUS_PASSED);
+	final Image buildPassedImage = CommonImages.getImage(BambooImages.STATUS_PASSED);
 
-	private final Image buildDisabledImage = CommonImages.getImage(BambooImages.STATUS_DISABLED);
+	final Image buildDisabledImage = CommonImages.getImage(BambooImages.STATUS_DISABLED);
 
 	private final Image bambooImage = CommonImages.getImage(BambooImages.BAMBOO);
 
@@ -643,7 +664,7 @@ public class BambooView extends ViewPart {
 		treeComp = new Composite(stackComp, SWT.NONE);
 		treeComp.setLayout(new FillLayout());
 		linkComp = new Composite(stackComp, SWT.NONE);
-		linkComp.setLayout(new FillLayout());
+		linkComp.setLayout(new GridLayout());
 
 		createLink(linkComp);
 
@@ -689,6 +710,8 @@ public class BambooView extends ViewPart {
 		}
 	}
 
+//	private class BuildDecorationLabelProvider extends DecoratingLabelProvider implements 
+
 	private void createTreeViewer(Composite parent) {
 		buildViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		buildViewer.setContentProvider(new BuildContentProvider());
@@ -697,36 +720,8 @@ public class BambooView extends ViewPart {
 		TreeViewerColumn column = new TreeViewerColumn(buildViewer, SWT.NONE);
 		column.getColumn().setText("Build");
 		column.getColumn().setWidth(300);
-		column.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				if (element instanceof BambooBuild) {
-					String buildName;
-					if (((BambooBuild) element).getBuildName() == null) {
-						buildName = "N/A";
-					} else {
-						buildName = ((BambooBuild) element).getBuildName();
-					}
-					return buildName + " - " + ((BambooBuild) element).getBuildKey();
-				}
-				return super.getText(element);
-			}
-
-			@Override
-			public Image getImage(Object element) {
-				if (element instanceof BambooBuild) {
-					if (((BambooBuild) element).getEnabled()) {
-						switch (((BambooBuild) element).getStatus()) {
-						case FAILURE:
-							return buildFailedImage;
-						case SUCCESS:
-							return buildPassedImage;
-						}
-					}
-				}
-				return buildDisabledImage;
-			}
-		});
+		column.setLabelProvider(new TreeColumnViewerLabelProvider(new DecoratingLabelProvider(new BuildLabelProvider(),
+				PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator())));
 
 		column = new TreeViewerColumn(buildViewer, SWT.NONE);
 		column.getColumn().setText("Status");
@@ -845,6 +840,8 @@ public class BambooView extends ViewPart {
 
 		buildViewer.setComparator(comparator);
 
+		buildViewer.setInput(builds);
+
 		tree.setHeaderVisible(true);
 
 		tree.addSelectionListener(new SelectionAdapter() {
@@ -856,7 +853,13 @@ public class BambooView extends ViewPart {
 	}
 
 	private void createLink(Composite parent) {
+		parent.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		link = new Link(parent, SWT.NONE);
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		gridData.horizontalIndent = 5;
+		gridData.verticalIndent = 5;
+		link.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+		link.setLayoutData(gridData);
 		link.setText("Initializing view...");
 		link.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
@@ -868,6 +871,18 @@ public class BambooView extends ViewPart {
 					if (repository != null) {
 						new OpenRepositoryConfigurationAction(repository).run();
 					}
+				} else if (link.equals(OPEN_REPOSITORY_VIEW_LINK)) {
+					Display.getDefault().asyncExec(new Runnable() {
+						@SuppressWarnings("restriction")
+						public void run() {
+							try {
+								getSite().getPage().showView(TaskRepositoriesView.ID);
+							} catch (PartInitException e) {
+								StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+										"Failed to show Task Repositories View"));
+							}
+						}
+					});
 				}
 			}
 		});
@@ -879,24 +894,16 @@ public class BambooView extends ViewPart {
 					CREATE_A_NEW_REPOSITORY_LINK));
 		} else {
 			StringBuilder builder = new StringBuilder();
-			builder.append("No subscriptions to Bamboo build plans are set. Use the following links to set up your subscriptions:");
+			builder.append("No subscriptions to Bamboo build plans are set.");
 			builder.append(System.getProperty("line.separator"));
-			linkedRepositories = new HashMap<String, TaskRepository>();
-			for (TaskRepository repository : repositories) {
-				builder.append(System.getProperty("line.separator"));
-				builder.append("Subscribe to plans at ");
-				builder.append(repository.getRepositoryLabel());
-				builder.append(" <a>");
-				String linkKey = NLS.bind("[{0}]", repository.getRepositoryUrl());
-				builder.append(linkKey);
-				builder.append("</a>");
-				linkedRepositories.put(linkKey, repository);
-			}
-			builder.append(System.getProperty("line.separator"));
-			builder.append(System.getProperty("line.separator"));
-			builder.append(NLS.bind("You can also <a>{0}</a> by following this link.", CREATE_A_NEW_REPOSITORY_LINK));
+			builder.append("<a>");
+			builder.append(OPEN_REPOSITORY_VIEW_LINK);
+			builder.append("</a> to configure your subscriptions or <a>");
+			builder.append(CREATE_A_NEW_REPOSITORY_LINK);
+			builder.append("</a>.");
 			link.setText(builder.toString());
 		}
+		link.getParent().layout();
 	}
 
 	private void fillTreeContextMenu() {
@@ -1022,6 +1029,7 @@ public class BambooView extends ViewPart {
 			linkComp.getParent().layout();
 		}
 		buildViewer.setInput(builds);
+		buildViewer.refresh(true);
 	}
 
 	private void fillPopupMenu(IMenuManager menuManager) {

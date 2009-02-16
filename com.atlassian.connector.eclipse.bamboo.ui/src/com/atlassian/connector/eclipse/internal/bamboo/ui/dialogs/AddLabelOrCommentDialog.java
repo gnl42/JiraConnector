@@ -40,6 +40,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -105,7 +106,7 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 
 	public AddLabelOrCommentDialog(Shell parentShell, BambooBuild build, TaskRepository taskRepository, Type type) {
 		super(parentShell);
-		this.shellTitle = "Add label to build";
+		this.shellTitle = "Bamboo View";
 		this.build = build;
 		this.taskRepository = taskRepository;
 		this.type = type;
@@ -117,7 +118,7 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 		getShell().setText(shellTitle);
 		setTitle(shellTitle);
 
-		setMessage(NLS.bind("Add a {0} to build {1}", type == Type.LABEL ? "label" : "comment", build.getBuildKey()));
+		setMessage(NLS.bind("Add a {0} to Build {1}", type == Type.LABEL ? "Label" : "Comment", build.getBuildKey()));
 
 		//CHECKSTYLE:MAGIC:OFF
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -135,8 +136,19 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 			}
 		});
 
-		text = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
+		GridData textGridData;
+		switch (type) {
+		case COMMENT:
+			new Label(composite, SWT.NULL).setText("Comment:");
+			text = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.BORDER);
+			textGridData = new GridData(GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL
+					| GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
+			break;
+		default:
+			new Label(composite, SWT.NULL).setText("Label:");
+			text = new Text(composite, SWT.SINGLE | SWT.BORDER);
+			textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
+		}
 		text.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				boolean enabled = false;

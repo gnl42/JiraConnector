@@ -43,7 +43,7 @@ public class BambooImages {
 
 	public static final ImageDescriptor RUN_BUILD = create(T_OBJ, "run_exc.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor ADD_REPOSITORY = create(T_OBJ, "bamboo_add_repository.gif"); //$NON-NLS-1$
+	public static final ImageDescriptor ADD_REPOSITORY = create(T_OBJ, "repository-new.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor REPOSITORY = create(T_OBJ, "bamboo_repository.gif"); //$NON-NLS-1$
 
