@@ -1033,7 +1033,7 @@ public class BambooView extends ViewPart {
 			stackLayout.topControl = treeComp;
 			treeComp.getParent().layout();
 		} else if (!hasSubscriptions) { //refresh link widget even if it is already shown to display updated repositories
-			fillLink(builds.keySet());
+			fillLink(TasksUi.getRepositoryManager().getRepositories(BambooCorePlugin.CONNECTOR_KIND));
 			stackLayout.topControl = linkComp;
 			linkComp.getParent().layout();
 		}
