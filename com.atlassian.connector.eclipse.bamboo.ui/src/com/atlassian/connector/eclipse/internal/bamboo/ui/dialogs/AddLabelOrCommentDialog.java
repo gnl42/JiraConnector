@@ -140,7 +140,7 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 		switch (type) {
 		case COMMENT:
 			new Label(composite, SWT.NULL).setText("Comment:");
-			text = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.BORDER);
+			text = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
 			textGridData = new GridData(GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL
 					| GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
 			break;
@@ -242,4 +242,9 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 	public TaskRepository getTaskRepository() {
 		return taskRepository;
 	}
+
+	protected boolean isResizable() {
+		return true;
+	}
+
 }

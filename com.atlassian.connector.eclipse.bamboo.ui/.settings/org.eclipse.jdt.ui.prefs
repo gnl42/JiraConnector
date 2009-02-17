@@ -1,4 +1,4 @@
-#Fri Dec 19 13:46:21 PST 2008
+#Mon Feb 16 19:30:50 PST 2009
 cleanup_settings_version=2
 eclipse.preferences.version=1
 editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup=true
@@ -21,7 +21,7 @@ sp_cleanup.add_missing_annotations=true
 sp_cleanup.add_missing_deprecated_annotations=true
 sp_cleanup.add_missing_methods=false
 sp_cleanup.add_missing_nls_tags=false
-sp_cleanup.add_missing_override_annotations=true
+sp_cleanup.add_missing_override_annotations=false
 sp_cleanup.add_serial_version_id=false
 sp_cleanup.always_use_blocks=true
 sp_cleanup.always_use_parentheses_in_expressions=false
@@ -34,6 +34,7 @@ sp_cleanup.format_source_code_changes_only=false
 sp_cleanup.make_local_variable_final=false
 sp_cleanup.make_parameters_final=false
 sp_cleanup.make_private_fields_final=true
+sp_cleanup.make_type_abstract_if_missing_method=false
 sp_cleanup.make_variable_declarations_final=true
 sp_cleanup.never_use_blocks=false
 sp_cleanup.never_use_parentheses_in_expressions=true
