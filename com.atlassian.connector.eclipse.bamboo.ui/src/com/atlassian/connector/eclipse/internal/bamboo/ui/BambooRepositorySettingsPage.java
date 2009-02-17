@@ -35,9 +35,12 @@ import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -158,19 +161,58 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	@Override
 	protected void createContributionControls(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).minSize(SWT.DEFAULT,
-				BUILD_PLAN_VIEWER_HEIGHT).applyTo(composite);
-		composite.setLayout(new GridLayout(2, false));
+		// don't call the super method since the Bamboo connector does not take advantage of the tasks UI extensions
+
+		ExpandableComposite section = createSection(parent, "Build Plans");
+		section.setExpanded(true);
+		if (section.getLayoutData() instanceof GridData) {
+			GridData gd = ((GridData) section.getLayoutData());
+			gd.grabExcessVerticalSpace = true;
+			gd.verticalAlignment = SWT.FILL;
+		}
+
+		Composite composite = new Composite(section, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginWidth = 0;
+		composite.setLayout(layout);
+		section.setClient(composite);
 
 		planViewer = new CheckboxTreeViewer(composite, SWT.V_SCROLL | SWT.BORDER);
 		planViewer.setContentProvider(new BuildPlanContentProvider());
 		planViewer.setLabelProvider(new BambooLabelProvider());
 		setCachedPlanInput();
-		GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(planViewer.getControl());
+		int height = convertVerticalDLUsToPixels(100);
+		GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).hint(SWT.DEFAULT, height).applyTo(
+				planViewer.getControl());
 
-		Button refreshButton = new Button(composite, SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(refreshButton);
+		Composite buttonComposite = new Composite(composite, SWT.NONE);
+		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonComposite);
+		RowLayout buttonLayout = new RowLayout(SWT.VERTICAL);
+		buttonLayout.fill = true;
+		buttonComposite.setLayout(buttonLayout);
+
+		Button selectAllButton = new Button(buttonComposite, SWT.PUSH);
+		selectAllButton.setText("&Select All");
+		selectAllButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				Object input = planViewer.getInput();
+				if (input instanceof Collection<?>) {
+					planViewer.setCheckedElements(((Collection<?>) input).toArray());
+				}
+			}
+		});
+
+		Button deselectAllButton = new Button(buttonComposite, SWT.PUSH);
+		deselectAllButton.setText("&Deselect All");
+		deselectAllButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				planViewer.setCheckedElements(new Object[0]);
+			}
+		});
+
+		Button refreshButton = new Button(buttonComposite, SWT.PUSH);
 		refreshButton.setText("Refresh");
 		refreshButton.addSelectionListener(new SelectionAdapter() {
 			@Override
