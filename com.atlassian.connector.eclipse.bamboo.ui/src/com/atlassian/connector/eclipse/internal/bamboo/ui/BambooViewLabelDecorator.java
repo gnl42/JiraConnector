@@ -11,12 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 
 /**
  * Decorating the build viewer labels
@@ -26,14 +23,13 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 public class BambooViewLabelDecorator implements ILightweightLabelDecorator {
 
 	public void decorate(Object element, IDecoration decoration) {
-		// ignore
-		if (element instanceof BambooBuild) {
-			BambooBuild build = (BambooBuild) element;
-			if (build.getErrorMessage() != null) {
-//				decoration.addOverlay(BambooImages.STATUS_DISABLED, IDecoration.REPLACE);
-				decoration.addOverlay(CommonImages.OVERLAY_SYNC_WARNING, IDecoration.BOTTOM_RIGHT);
-			}
-		}
+		// ignore for now
+//		if (element instanceof BambooBuild) {
+//			BambooBuild build = (BambooBuild) element;
+//			if (build.getErrorMessage() != null) {
+//				decoration.addOverlay(CommonImages.OVERLAY_SYNC_WARNING, IDecoration.BOTTOM_RIGHT);
+//			}
+//		}
 	}
 
 	public void addListener(ILabelProviderListener listener) {

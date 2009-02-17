@@ -23,6 +23,9 @@ public class BuildLabelProvider implements ILabelProvider {
 	public Image getImage(Object element) {
 		if (element instanceof BambooBuild) {
 			if (((BambooBuild) element).getEnabled()) {
+				if (((BambooBuild) element).getErrorMessage() != null) {
+					return CommonImages.getImage(BambooImages.STATUS_DISABLED);
+				}
 				switch (((BambooBuild) element).getStatus()) {
 				case FAILURE:
 					return CommonImages.getImage(BambooImages.STATUS_FAILED);

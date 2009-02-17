@@ -15,8 +15,10 @@ import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BuildsChangedEvent {
@@ -26,13 +28,16 @@ public class BuildsChangedEvent {
 
 	private final Map<TaskRepository, Collection<BambooBuild>> oldBuilds;
 
+	private final List<String> errorLog;
+
 	public BuildsChangedEvent(Map<TaskRepository, Collection<BambooBuild>> changedBuilds,
 			Map<TaskRepository, Collection<BambooBuild>> allBuilds,
-			Map<TaskRepository, Collection<BambooBuild>> oldBuilds) {
+			Map<TaskRepository, Collection<BambooBuild>> oldBuilds, List<String> errorLog) {
 		super();
 		this.changedBuilds = changedBuilds;
 		this.allBuilds = allBuilds;
 		this.oldBuilds = oldBuilds;
+		this.errorLog = errorLog;
 	}
 
 	public Map<TaskRepository, Collection<BambooBuild>> getChangedBuilds() {
@@ -47,4 +52,7 @@ public class BuildsChangedEvent {
 		return oldBuilds == null ? new HashMap<TaskRepository, Collection<BambooBuild>>() : oldBuilds;
 	}
 
+	public List<String> getErrorLog() {
+		return errorLog == null ? new ArrayList<String>() : errorLog;
+	}
 }

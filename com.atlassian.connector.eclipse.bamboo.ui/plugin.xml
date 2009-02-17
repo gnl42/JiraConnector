@@ -28,7 +28,7 @@
             name="Atlassian">
       </category>
    </extension>
-      <extension point="org.eclipse.ui.decorators">
+      <!--<extension point="org.eclipse.ui.decorators">
       <decorator
             class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooViewLabelDecorator"
             id="com.atlassian.connector.eclipse.internal.bamboo.ui.decorators.builds"
@@ -44,7 +44,7 @@
                </objectClass>
          </enablement>
       </decorator>
-   </extension>
+   </extension>-->
    <!--<extension
          point="org.eclipse.ui.editors">
       <editor

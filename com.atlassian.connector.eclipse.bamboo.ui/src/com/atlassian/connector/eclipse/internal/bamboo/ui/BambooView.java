@@ -36,6 +36,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -652,6 +653,8 @@ public class BambooView extends ViewPart {
 
 	private SortOrder sortOrder = SortOrder.UNSORTED;
 
+	private IStatusLineManager statusLineManager;
+
 	public BambooView() {
 		builds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 	}
@@ -1013,9 +1016,17 @@ public class BambooView extends ViewPart {
 
 	private void refresh() {
 		boolean hasSubscriptions = false;
+		boolean hasError = false;
 		for (Collection<BambooBuild> repoBuilds : builds.values()) {
 			if (repoBuilds.size() > 0) {
 				hasSubscriptions = true;
+			}
+			for (BambooBuild build : repoBuilds) {
+				if (build.getErrorMessage() != null) {
+					hasError = true;
+				}
+			}
+			if (hasError && hasSubscriptions) {
 				break;
 			}
 		}
@@ -1028,6 +1039,14 @@ public class BambooView extends ViewPart {
 			stackLayout.topControl = linkComp;
 			linkComp.getParent().layout();
 		}
+		statusLineManager = getViewSite().getActionBars().getStatusLineManager();
+		if (hasError) {
+			statusLineManager.setErrorMessage(CommonImages.getImage(CommonImages.WARNING),
+					"Error while refreshing build plans. See Error log for details.");
+		} else {
+			statusLineManager.setErrorMessage(null);
+		}
+
 		buildViewer.setInput(builds);
 		buildViewer.refresh(true);
 	}
