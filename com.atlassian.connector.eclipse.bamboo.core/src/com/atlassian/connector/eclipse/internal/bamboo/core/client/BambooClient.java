@@ -117,10 +117,10 @@ public class BambooClient {
 	}
 
 	private void updateServer(TaskRepository taskrepository) {
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+		AuthenticationCredentials credentials = taskrepository.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
-			String newUserName = credentials.getUserName();
-			String newPassword = credentials.getPassword();
+			String newUserName = taskrepository.getCredentials(AuthenticationType.REPOSITORY).getUserName();
+			String newPassword = taskrepository.getCredentials(AuthenticationType.REPOSITORY).getPassword();
 			serverCfg.setUsername(newUserName);
 			serverCfg.setPassword(newPassword);
 		}

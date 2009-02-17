@@ -59,7 +59,7 @@ public class BambooNotificationProvider implements ITaskListNotificationProvider
 						if (BambooUtil.isSameBuildPlan(build, oldBuild)) {
 							if (build.getStatus() != oldBuild.getStatus()) {
 								//build status changed
-								notifications.add(new BambooNotification(build, BambooNotification.CHANGE.CHANGED));
+								notifications.add(new BambooNotification(build, key, BambooNotification.CHANGE.CHANGED));
 							}
 						}
 					}

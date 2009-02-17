@@ -81,6 +81,11 @@ public final class BuildPlanManager {
 			return builds;
 		}
 
+		@Override
+		public boolean belongsTo(Object family) {
+			return family == BambooConstants.FAMILY_REFRESH_OPERATION;
+		}
+
 	}
 
 	private class RefreshBuildsForAllRepositoriesJob extends Job {
@@ -243,7 +248,7 @@ public final class BuildPlanManager {
 			getRefreshedBuildsDiff(newBuilds, taskRepository, changedBuilds, errorLog);
 		}
 
-		notifyListeners(oldBuilds, changedBuilds, errorLog, false);
+		notifyListeners(oldBuilds, changedBuilds, errorLog, true);
 	}
 
 	private void notifyListeners(Map<TaskRepository, Collection<BambooBuild>> oldBuilds,

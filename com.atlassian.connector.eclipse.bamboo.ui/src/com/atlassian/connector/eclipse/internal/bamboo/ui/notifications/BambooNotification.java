@@ -17,6 +17,7 @@ import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.mylyn.internal.provisional.commons.ui.AbstractNotification;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -35,6 +36,8 @@ public class BambooNotification extends AbstractNotification {
 
 	private final CHANGE change;
 
+	private final TaskRepository repository;
+
 	public enum CHANGE {
 		ADDED("Build added"), REMOVED("Build removed"), CHANGED("Build changed");
 		private final String txt;
@@ -48,10 +51,11 @@ public class BambooNotification extends AbstractNotification {
 		}
 	}
 
-	public BambooNotification(BambooBuild build, CHANGE change) {
+	public BambooNotification(BambooBuild build, TaskRepository repository, CHANGE change) {
 		super();
 		this.build = build;
 		this.change = change;
+		this.repository = repository;
 	}
 
 	@Override
@@ -66,7 +70,7 @@ public class BambooNotification extends AbstractNotification {
 
 	@Override
 	public String getLabel() {
-		return build.getBuildKey() + NLS.bind(" [{0}]", build.getServerUrl());
+		return build.getBuildKey() + NLS.bind(" [{0}]", repository.getRepositoryLabel());
 	}
 
 	@Override
