@@ -45,7 +45,7 @@ public class BuildLabelProvider implements ILabelProvider {
 		} else {
 			buildName = bambooBuild.getBuildName();
 		}
-		return buildName + " - " + bambooBuild.getBuildKey();
+		return buildName + " - " + bambooBuild.getBuildKey() + "-" + bambooBuild.getBuildNumber();
 	}
 
 	public void addListener(ILabelProviderListener listener) {

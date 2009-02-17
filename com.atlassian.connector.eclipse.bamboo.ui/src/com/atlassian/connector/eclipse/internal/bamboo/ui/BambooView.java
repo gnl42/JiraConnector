@@ -384,7 +384,7 @@ public class BambooView extends ViewPart {
 							public void done(IJobChangeEvent event) {
 								if (event.getResult() == Status.OK_STATUS) {
 									byte[] buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
-									MessageConsole console = prepareConsole();
+									MessageConsole console = prepareConsole(build);
 									MessageConsoleStream messageStream = console.newMessageStream();
 									try {
 										messageStream.print(new String(buildLog));
@@ -407,7 +407,7 @@ public class BambooView extends ViewPart {
 			}
 		}
 
-		private MessageConsole prepareConsole() {
+		private MessageConsole prepareConsole(BambooBuild build) {
 			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 			IConsole[] existing = consoleManager.getConsoles();
 			for (IConsole element : existing) {
@@ -416,7 +416,8 @@ public class BambooView extends ViewPart {
 				}
 			}
 			if (buildLogConsole == null) {
-				buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE, BambooImages.CONSOLE);
+				buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE + build.getBuildKey() + " - "
+						+ build.getBuildNumber(), BambooImages.CONSOLE);
 				consoleManager.addConsoles(new IConsole[] { buildLogConsole });
 			}
 			buildLogConsole.clearConsole();
@@ -605,7 +606,9 @@ public class BambooView extends ViewPart {
 		}
 	}
 
-	private static final String BAMBOO_BUILD_LOG_CONSOLE = "Bamboo Build Log";
+	private static final String CODE_HAS_CHANGED = "Code has changed";
+
+	private static final String BAMBOO_BUILD_LOG_CONSOLE = "Bamboo Build Log for ";
 
 	public static final String ID = "com.atlassian.connector.eclipse.bamboo.ui.plans";
 
@@ -732,33 +735,35 @@ public class BambooView extends ViewPart {
 
 		column = new TreeViewerColumn(buildViewer, SWT.NONE);
 		column.getColumn().setText("Status");
-		column.getColumn().setWidth(200);
+		column.getColumn().setWidth(350);
 		column.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof BambooBuild) {
 					BambooBuild build = ((BambooBuild) element);
+					StringBuilder builder = new StringBuilder();
 					int totalTests = build.getTestsFailed() + build.getTestsPassed();
 					if (totalTests == 0) {
-						return "Tests: Testless build";
+						builder.append("Tests: Testless build");
 					} else {
-						return NLS.bind("Tests: {0} out of {1} failed", new Object[] { build.getTestsFailed(),
-								totalTests });
+						builder.append(NLS.bind("Tests: {0} out of {1} failed", new Object[] { build.getTestsFailed(),
+								totalTests }));
 					}
-				}
-				return super.getText(element);
-			}
-		});
+					builder.append("  [");
+					builder.append(build.getBuildReason());
 
-		column = new TreeViewerColumn(buildViewer, SWT.NONE);
-		column.getColumn().setText("Build Reason");
-		column.getColumn().setWidth(200);
-		column.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				if (element instanceof BambooBuild) {
-					BambooBuild build = ((BambooBuild) element);
-					return build.getBuildReason();
+					if (build.getBuildReason().equals(CODE_HAS_CHANGED)) {
+						builder.append(" by ");
+						boolean first = true;
+						for (String committer : build.getCommiters()) {
+							if (!first) {
+								builder.append(", ");
+							}
+							builder.append(committer);
+						}
+					}
+					builder.append("]");
+					return builder.toString();
 				}
 				return super.getText(element);
 			}
