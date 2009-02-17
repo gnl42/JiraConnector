@@ -107,9 +107,9 @@ import java.util.Set;
  */
 public class BambooView extends ViewPart {
 
-	private static final String CREATE_A_NEW_REPOSITORY_LINK = "Create a New Repository";
+	private static final String CREATE_A_NEW_REPOSITORY_LINK = "create a new repository";
 
-	private static final String OPEN_REPOSITORY_VIEW_LINK = "Open the Task Repository View";
+	private static final String OPEN_REPOSITORY_VIEW_LINK = "Open the Task Repositories view";
 
 	public enum SortOrder {
 		UNSORTED(SWT.NONE), STATE_PASSED_FAILED(SWT.UP), STATE_FAILED_PASSED(SWT.DOWN);
@@ -892,18 +892,16 @@ public class BambooView extends ViewPart {
 	}
 
 	private void fillLink(Set<TaskRepository> repositories) {
-		if (repositories == null || repositories.size() < 1) {
-			link.setText(NLS.bind("There are no Bamboo repositories defined. <a>{0}</a> by following this link.",
-					CREATE_A_NEW_REPOSITORY_LINK));
+		if (repositories == null || repositories.isEmpty()) {
+			link.setText(NLS.bind("No Bamboo repositories defined, <a>{0}</a>...", CREATE_A_NEW_REPOSITORY_LINK));
 		} else {
 			StringBuilder builder = new StringBuilder();
-			builder.append("No subscriptions to Bamboo build plans are set.");
-			builder.append(System.getProperty("line.separator"));
+			builder.append("No subscriptions to Bamboo build plans. ");
 			builder.append("<a>");
 			builder.append(OPEN_REPOSITORY_VIEW_LINK);
-			builder.append("</a> to configure your subscriptions or <a>");
+			builder.append("</a>... to configure subscriptions or <a>");
 			builder.append(CREATE_A_NEW_REPOSITORY_LINK);
-			builder.append("</a>.");
+			builder.append("</a>...");
 			link.setText(builder.toString());
 		}
 		link.getParent().layout();
