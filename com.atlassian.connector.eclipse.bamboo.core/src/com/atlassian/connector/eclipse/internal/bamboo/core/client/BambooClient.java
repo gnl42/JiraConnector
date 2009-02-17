@@ -25,6 +25,7 @@ import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
@@ -107,6 +108,9 @@ public class BambooClient {
 		} catch (ServerPasswordNotProvidedException e) {
 			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID,
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
+		} catch (OperationCanceledException e) {
+			throw new CoreException(new Status(IStatus.CANCEL, BambooCorePlugin.PLUGIN_ID,
+					RepositoryStatus.OPERATION_CANCELLED, "Operation Canceled", e));
 		} finally {
 			monitor.done();
 		}
