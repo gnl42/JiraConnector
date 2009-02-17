@@ -384,15 +384,19 @@ public class BambooView extends ViewPart {
 							public void done(IJobChangeEvent event) {
 								if (event.getResult() == Status.OK_STATUS) {
 									byte[] buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
-									prepareConsole();
-									MessageConsoleStream messageStream = buildLogConsole.newMessageStream();
-									messageStream.print(new String(buildLog));
+									MessageConsole console = prepareConsole();
+									MessageConsoleStream messageStream = console.newMessageStream();
 									try {
-										messageStream.close();
-									} catch (IOException e) {
-										StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-												"Failed to close console message stream"));
+										messageStream.print(new String(buildLog));
+									} finally {
+										try {
+											messageStream.close();
+										} catch (IOException e) {
+											StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+													"Failed to close console message stream"));
+										}
 									}
+									console.activate();
 								}
 							}
 						});
@@ -403,7 +407,7 @@ public class BambooView extends ViewPart {
 			}
 		}
 
-		private void prepareConsole() {
+		private MessageConsole prepareConsole() {
 			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 			IConsole[] existing = consoleManager.getConsoles();
 			for (IConsole element : existing) {
@@ -417,7 +421,7 @@ public class BambooView extends ViewPart {
 			}
 			buildLogConsole.clearConsole();
 			consoleManager.showConsoleView(buildLogConsole);
-
+			return buildLogConsole;
 		}
 
 		@Override
