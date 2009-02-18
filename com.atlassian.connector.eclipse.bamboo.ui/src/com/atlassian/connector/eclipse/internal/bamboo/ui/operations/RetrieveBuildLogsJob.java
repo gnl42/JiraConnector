@@ -30,7 +30,7 @@ public class RetrieveBuildLogsJob extends Job {
 
 	private final TaskRepository repository;
 
-	private byte[] buildLog;
+	private String buildLog;
 
 	public RetrieveBuildLogsJob(BambooBuild build, TaskRepository repository) {
 		super("Retrieve build log");
@@ -38,7 +38,7 @@ public class RetrieveBuildLogsJob extends Job {
 		this.repository = repository;
 	}
 
-	public byte[] getBuildLog() {
+	public String getBuildLog() {
 		return buildLog;
 	}
 

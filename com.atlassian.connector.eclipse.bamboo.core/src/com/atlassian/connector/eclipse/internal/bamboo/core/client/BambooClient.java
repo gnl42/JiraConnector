@@ -179,11 +179,11 @@ public class BambooClient {
 		}, taskRepository);
 	}
 
-	public byte[] getBuildLogs(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
+	public String getBuildLogs(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
 			throws CoreException {
-		return execute(new RemoteOperation<byte[]>(monitor) {
+		return execute(new RemoteOperation<String>(monitor) {
 			@Override
-			public byte[] run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+			public String run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving build details");
 				return server.getBuildLogs(serverCfg, build.getBuildKey(), build.getBuildNumber());

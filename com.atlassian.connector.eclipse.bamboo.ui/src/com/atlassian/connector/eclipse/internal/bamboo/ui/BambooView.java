@@ -383,11 +383,11 @@ public class BambooView extends ViewPart {
 							@Override
 							public void done(IJobChangeEvent event) {
 								if (event.getResult() == Status.OK_STATUS) {
-									byte[] buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
+									String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
 									MessageConsole console = prepareConsole(build);
 									MessageConsoleStream messageStream = console.newMessageStream();
 									try {
-										messageStream.print(new String(buildLog));
+										messageStream.print(buildLog);
 									} finally {
 										try {
 											messageStream.close();
