@@ -35,6 +35,12 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor CRUCIBLE = create(T_OBJ, "crucible.png"); //$NON-NLS-1$
 
+	public static final ImageDescriptor ADD_COMMENT = create(T_OBJ, "pin_addcomment.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor ABANDON = create(T_OBJ, "pin_abandon.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor SUMMARIZE = create(T_OBJ, "pin_summarise.png"); //$NON-NLS-1$
+
 	private CrucibleImages() {
 		// ignore
 	}

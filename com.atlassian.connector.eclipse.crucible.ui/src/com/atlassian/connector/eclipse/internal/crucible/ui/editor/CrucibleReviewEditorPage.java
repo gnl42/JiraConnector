@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
@@ -409,6 +410,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 							+ getTask().getTaskKey());
 					summarizeAction.setText("Summarize");
 					summarizeAction.setToolTipText("Summarize review");
+					summarizeAction.setImageDescriptor(CrucibleImages.SUMMARIZE);
 					manager.add(summarizeAction);
 				}
 				if (transitions.contains(CrucibleAction.REOPEN)) {
@@ -469,6 +471,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 					abandonAction.setText("Abandon");
 					//abandonAction.setImageDescriptor(CrucibleImages.ABANDON);
 					abandonAction.setToolTipText("Abandon review");
+					abandonAction.setImageDescriptor(CrucibleImages.ABANDON);
 					manager.add(abandonAction);
 				}
 			} catch (ValueNotYetInitialized e) {

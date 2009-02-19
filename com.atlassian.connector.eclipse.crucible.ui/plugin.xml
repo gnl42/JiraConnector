@@ -60,6 +60,7 @@
          <action
                class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction"
                enablesFor="1"
+               icon="icons/obj16/pin_addcomment.png"
                id="com.atlassian.connector.eclipse.crucible.ui.action.add.line.comment"
                label="Comment on Selected Lines..."
                menubarPath="group.undo"
