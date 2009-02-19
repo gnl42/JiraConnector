@@ -71,7 +71,7 @@ public class CrucibleCachedReview {
 					null), new ReviewAdapter(review, null));
 			List<CrucibleNotification> serverDiffs = serverDifferencer.getDiff();
 			if ((serverDiffs == null || serverDiffs.size() == 0) && serverDifferencer.isShortEqual()
-					&& serverDifferencer.isFilesEqual() && serverDifferencer.getChangesCount() == 0) {
+					&& serverDifferencer.isFilesEqual() && serverDifferencer.getCommentChangesCount() == 0) {
 				return false;
 			}
 		}
