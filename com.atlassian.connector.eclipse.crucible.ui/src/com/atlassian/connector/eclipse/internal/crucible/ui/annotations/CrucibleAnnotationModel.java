@@ -42,7 +42,7 @@ import java.util.Set;
  * 
  * @author Shawn Minto
  */
-public class CrucibleAnnotationModel implements IAnnotationModel {
+public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnotationModel {
 
 	private final Set<CrucibleCommentAnnotation> annotations = new HashSet<CrucibleCommentAnnotation>(32);
 
@@ -52,7 +52,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 
 	private final IEditorInput editorInput;
 
-	private final IDocument editorDocument;
+	private IDocument editorDocument;
 
 	private CrucibleFile crucibleFile;
 
@@ -85,10 +85,16 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 
 		// TODO make sure that the local files is in sync otherwise remove the annotations
 
-		if (!textEditor.isDirty() && editorInput != null && crucibleFile != null) {
+		if (textEditor == null && editorInput == null && editorDocument != null) {
 			annotate = true;
 		} else {
-			annotate = false;
+			if (editorDocument == null) {
+				annotate = false;
+			} else if (!textEditor.isDirty() && editorInput != null && crucibleFile != null) {
+				annotate = true;
+			} else {
+				annotate = false;
+			}
 		}
 
 		if (annotate) {
@@ -237,5 +243,10 @@ public class CrucibleAnnotationModel implements IAnnotationModel {
 
 	public CrucibleFile getCrucibleFile() {
 		return crucibleFile;
+	}
+
+	public void setEditorDocument(IDocument editorDocument) {
+		this.editorDocument = editorDocument;
+		updateAnnotations(true);
 	}
 }

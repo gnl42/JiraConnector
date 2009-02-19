@@ -11,8 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
+import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSubclipseCompareEditorInput;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.TeamMessageUtils;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -53,7 +55,6 @@ import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.subclipse.core.SVNTeamProvider;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
 import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
-import org.tigris.subversion.subclipse.ui.compare.SVNCompareEditorInput;
 import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
@@ -112,14 +113,15 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
-			String newRevisionString, final IProgressMonitor monitor) {
+			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor) {
 		ISVNRemoteResource oldRemoteFile = getSvnRemoteFile(repoUrl, filePath, oldRevisionString, monitor);
 		ISVNRemoteResource newRemoteFile = getSvnRemoteFile(repoUrl, filePath, newRevisionString, monitor);
 
 		if (oldRemoteFile != null && newRemoteFile != null) {
 			ResourceEditionNode left = new ResourceEditionNode(newRemoteFile);
 			ResourceEditionNode right = new ResourceEditionNode(oldRemoteFile);
-			CompareEditorInput compareEditorInput = new SVNCompareEditorInput(left, right);
+			CompareEditorInput compareEditorInput = new CrucibleSubclipseCompareEditorInput(left, right,
+					annotationModel);
 			TeamUiUtils.openCompareEditorForInput(compareEditorInput);
 
 			return true;

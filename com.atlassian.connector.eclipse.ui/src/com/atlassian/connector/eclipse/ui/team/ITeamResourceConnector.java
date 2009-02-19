@@ -35,6 +35,6 @@ public interface ITeamResourceConnector {
 	CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview);
 
 	boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString, String newRevisionString,
-			IProgressMonitor monitor);
+			ICompareAnnotationModel annotationModel, IProgressMonitor monitor);
 
 }

@@ -14,9 +14,12 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCompareAnnotationModel;
+import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -40,8 +43,11 @@ public class CompareVersionedVirtualFileAction extends Action implements IReview
 
 	private IReviewActionListener actionListener;
 
-	public CompareVersionedVirtualFileAction(CrucibleFileInfo crucibleFile) {
+	private final Review review;
+
+	public CompareVersionedVirtualFileAction(CrucibleFileInfo crucibleFile, Review review) {
 		this.crucibleFile = crucibleFile;
+		this.review = review;
 	}
 
 	@Override
@@ -54,8 +60,10 @@ public class CompareVersionedVirtualFileAction extends Action implements IReview
 
 					VersionedVirtualFile oldVirtualFile = crucibleFile.getOldFileDescriptor();
 
+					ICompareAnnotationModel annotationModel = new CrucibleCompareAnnotationModel(crucibleFile, review);
+
 					TeamUiUtils.openCompareEditor(newVirtualFile.getRepoUrl(), newVirtualFile.getUrl(),
-							oldVirtualFile.getRevision(), newVirtualFile.getRevision(), monitor);
+							oldVirtualFile.getRevision(), newVirtualFile.getRevision(), annotationModel, monitor);
 				}
 			});
 		} catch (InvocationTargetException e) {

@@ -70,7 +70,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
-			String newRevisionString, IProgressMonitor monitor) {
+			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor) {
 
 		IResource resource = findResourceForPath(filePath);
 		if (resource != null) {

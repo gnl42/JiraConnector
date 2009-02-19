@@ -150,7 +150,7 @@ public class CrucibleFilePart extends ExpandablePart {
 					textHyperlink.setUnderlined(false);
 
 					CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
-							crucibleFile);
+							crucibleFile, review);
 					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
 							+ oldFileDescriptor.getRevision());
 					compareAction.setText("Compare");

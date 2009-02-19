@@ -79,7 +79,7 @@ public final class TeamUiUtils {
 	}
 
 	public static void openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
-			String newRevisionString, IProgressMonitor monitor) {
+			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor) {
 		assert (filePath != null);
 		assert (oldRevisionString != null);
 		assert (newRevisionString != null);
@@ -92,12 +92,14 @@ public final class TeamUiUtils {
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
-				if (connector.openCompareEditor(repoUrl, filePath, oldRevisionString, newRevisionString, monitor)) {
+				if (connector.openCompareEditor(repoUrl, filePath, oldRevisionString, newRevisionString,
+						annotationModel, monitor)) {
 					return;
 				}
 			}
 		}
-		if (!defaultConnector.openCompareEditor(repoUrl, filePath, oldRevisionString, newRevisionString, monitor)) {
+		if (!defaultConnector.openCompareEditor(repoUrl, filePath, oldRevisionString, newRevisionString,
+				annotationModel, monitor)) {
 			TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString, newRevisionString);
 		}
 	}
