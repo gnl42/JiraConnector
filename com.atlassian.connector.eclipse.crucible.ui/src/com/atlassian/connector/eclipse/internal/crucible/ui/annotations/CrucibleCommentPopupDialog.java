@@ -53,6 +53,10 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 
 	private ScrolledComposite scrolledComposite;
 
+	private CrucibleInformationControl informationControl;
+
+	private static CrucibleCommentPopupDialog currentPopupDialog;
+
 	public CrucibleCommentPopupDialog(Shell parent, int shellStyle) {
 		super(parent, shellStyle, false, false, false, false, null, null);
 	}
@@ -80,6 +84,7 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 	}
 
 	public void dispose() {
+		currentPopupDialog = null;
 		close();
 		toolkit.dispose();
 	}
@@ -168,6 +173,7 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 				control.dispose();
 			}
 
+			currentPopupDialog = this;
 			for (CrucibleCommentAnnotation annotation : annotationInput.getCrucibleAnnotations()) {
 				VersionedCommentPart part = new VersionedCommentPart(annotation.getVersionedComment(),
 						annotation.getReview(), annotation.getCrucibleFileInfo(), null);
@@ -195,5 +201,17 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 
 	public void actionRan(Action action) {
 		close();
+	}
+
+	public static CrucibleCommentPopupDialog getCurrentPopupDialog() {
+		return currentPopupDialog;
+	}
+
+	public void setInformationControl(CrucibleInformationControl crucibleInformationControl) {
+		this.informationControl = crucibleInformationControl;
+	}
+
+	public CrucibleInformationControl getInformationControl() {
+		return informationControl;
 	}
 }

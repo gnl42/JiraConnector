@@ -23,6 +23,6 @@ import org.eclipse.swt.widgets.Shell;
 public class CrucibleInformationControlCreator implements IInformationControlCreator {
 
 	public IInformationControl createInformationControl(Shell parent) {
-		return new CrucibleInformationControl(parent);
+		return new CrucibleInformationControl(parent, this);
 	}
 }

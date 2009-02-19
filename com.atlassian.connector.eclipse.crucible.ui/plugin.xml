@@ -81,5 +81,23 @@
          </visibility>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.compare.ui.category.compare"
+            defaultHandler="com.atlassian.connector.eclipse.internal.crucible.ui.FocusTooltipHandler"
+            id="com.atlassian.connector.eclipse.crucible.ui.command.focus"
+            name="Focus on Tooltip">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.atlassian.connector.eclipse.crucible.ui.command.focus"
+            contextId="org.eclipse.compare.compareEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F2">
+      </key>
+   </extension>
 
 </plugin>

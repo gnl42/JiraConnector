@@ -11,10 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension2;
+import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusListener;
@@ -35,13 +35,21 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	private CrucibleCommentPopupDialog commentPopupDialog;
 
-	@SuppressWarnings("restriction")
-	public CrucibleInformationControl(Shell parent) {
-		super(parent, SWT.NONE, new HTMLTextPresenter(true));
+	private final CrucibleInformationControlCreator informationControlCreator;
 
+	@SuppressWarnings("restriction")
+	public CrucibleInformationControl(Shell parent, CrucibleInformationControlCreator crucibleInformationControlCreator) {
+//		super(parent, SWT.NONE, new HTMLTextPresenter(true));
+		super(parent, true);
+		this.informationControlCreator = crucibleInformationControlCreator;
 		commentPopupDialog = new CrucibleCommentPopupDialog(parent, SWT.NO_FOCUS | SWT.ON_TOP);
 		// Force create early so that listeners can be added at all times with API.
 		commentPopupDialog.create();
+		commentPopupDialog.setInformationControl(this);
+	}
+
+	public InformationPresenter getInformationPresenter() {
+		return new InformationPresenter(informationControlCreator);
 	}
 
 	@Override
@@ -79,6 +87,7 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	@Override
 	public void dispose() {
+		System.err.println("dispose");
 		commentPopupDialog.dispose();
 		commentPopupDialog = null;
 	}
