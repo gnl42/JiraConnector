@@ -116,7 +116,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
 		private void createHighlighting(Class<SourceViewer> sourceViewerClazz) throws IllegalArgumentException,
 				IllegalAccessException, SecurityException, NoSuchFieldException {
-
+			//TODO this could use some performance tweaks
 			final StyledText styledText = sourceViewer.getTextWidget();
 			styledText.addLineBackgroundListener(new LineBackgroundListener() {
 				public void lineGetBackground(LineBackgroundEvent event) {
