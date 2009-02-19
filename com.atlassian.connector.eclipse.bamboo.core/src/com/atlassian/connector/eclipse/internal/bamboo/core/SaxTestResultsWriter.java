@@ -170,9 +170,11 @@ public class SaxTestResultsWriter {
 
 			AttributesImpl rootAttributes = new AttributesImpl();
 			rootAttributes.addAttribute("", TestResultExternalizer.ATTRIBUTE_NAME,
-					TestResultExternalizer.ATTRIBUTE_NAME, "", "{bamboo imported} " + build.getBuildKey());
+					TestResultExternalizer.ATTRIBUTE_NAME, "", "{bamboo imported} " + build.getBuildKey() + "-"
+							+ build.getBuildNumber());
 			rootAttributes.addAttribute("", TestResultExternalizer.ATTRIBUTE_PROJECT,
-					TestResultExternalizer.ATTRIBUTE_PROJECT, "", "{bamboo imported} " + build.getBuildKey());
+					TestResultExternalizer.ATTRIBUTE_PROJECT, "", "{bamboo imported} " + build.getBuildKey() + "-"
+							+ build.getBuildNumber());
 			rootAttributes.addAttribute("", TestResultExternalizer.ATTRIBUTE_TESTS,
 					TestResultExternalizer.ATTRIBUTE_TESTS, "", String.valueOf(failed + success));
 			rootAttributes.addAttribute("", TestResultExternalizer.ATTRIBUTE_STARTED,

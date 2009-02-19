@@ -542,8 +542,8 @@ public class BambooView extends ViewPart {
 				public void run() {
 					if (!getSite().getShell().isDisposed()) {
 						try {
-							JUnitModel.importTestRunSession(testResults);
 							getViewSite().getPage().showView(TestRunnerViewPart.NAME);
+							JUnitModel.importTestRunSession(testResults);
 						} catch (Exception e) {
 							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 									"Error opening JUnit View"));
