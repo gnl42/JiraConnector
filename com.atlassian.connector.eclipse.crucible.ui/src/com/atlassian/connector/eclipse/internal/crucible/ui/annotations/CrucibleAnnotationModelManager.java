@@ -12,12 +12,14 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
@@ -226,9 +228,22 @@ public final class CrucibleAnnotationModelManager {
 					IWorkbenchPart editorPart = editorReference.getPart(false);
 					if (editorPart instanceof ITextEditor) {
 						update((ITextEditor) editorPart, activeReview);
+					} else if (editorPart instanceof CompareEditor) {
+						update((CompareEditor) editorPart, activeReview);
 					}
 				}
 			}
+		}
+	}
+
+	public static void update(CompareEditor editor, Review activeReview) {
+		IEditorInput editorInput = editor.getEditorInput();
+		if (editorInput instanceof IAnnotationCompareInput) {
+			if (!CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive() || activeReview == null
+					|| CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview() != activeReview) {
+				return;
+			}
+			((IAnnotationCompareInput) editorInput).getAnnotationModelToAttach().updateCrucibleFile(activeReview);
 		}
 	}
 

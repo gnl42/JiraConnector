@@ -9,17 +9,10 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.ui.team;
+package com.atlassian.connector.eclipse.ui;
 
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 
-import org.eclipse.jface.text.source.SourceViewer;
-
-public interface ICompareAnnotationModel {
-	void attachToViewer(SourceViewer left, SourceViewer fRight);
-
-	void detach();
-
-	void updateCrucibleFile(Review newReview);
-
+public interface IAnnotationCompareInput {
+	ICompareAnnotationModel getAnnotationModelToAttach();
 }

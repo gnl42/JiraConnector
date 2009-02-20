@@ -11,12 +11,16 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.source.AnnotationBarHoverManager;
@@ -27,6 +31,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.OverviewRuler;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.custom.LineBackgroundEvent;
 import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.StyledText;
@@ -263,6 +268,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	}
 
 	public void attachToViewer(final SourceViewer fLeft, final SourceViewer fRight) {
+
 		addTextInputListener(fLeft, leftAnnotationModel, false);
 		addTextInputListener(fRight, rightAnnotationModel, true);
 	}
@@ -277,10 +283,21 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		//TODO disconnect - do I need to disconnect something, or is the annotationModel.disconnect called anyway?
 	}
 
-	public void updateCrucibleFile(CrucibleFile newCrucibleFile, Review newReview) {
-		leftAnnotationModel.updateCrucibleFile(new CrucibleFile(newCrucibleFile.getCrucibleFileInfo(), false),
-				newReview);
-		rightAnnotationModel.updateCrucibleFile(new CrucibleFile(newCrucibleFile.getCrucibleFileInfo(), true),
-				newReview);
+	public void updateCrucibleFile(Review newReview) {
+		CrucibleFile leftOldFile = leftAnnotationModel.getCrucibleFile();
+		CrucibleFile rightOldFile = rightAnnotationModel.getCrucibleFile();
+		try {
+			CrucibleFileInfo newLeftFileInfo = newReview.getFileByPermId(leftOldFile.getCrucibleFileInfo().getPermId());
+			CrucibleFileInfo newRightFileInfo = newReview.getFileByPermId(rightOldFile.getCrucibleFileInfo()
+					.getPermId());
+			if (newLeftFileInfo != null && newRightFileInfo != null) {
+				leftAnnotationModel.updateCrucibleFile(new CrucibleFile(newLeftFileInfo, leftOldFile.isOldFile()),
+						newReview);
+				rightAnnotationModel.updateCrucibleFile(new CrucibleFile(newRightFileInfo, rightOldFile.isOldFile()),
+						newReview);
+			}
+		} catch (ValueNotYetInitialized e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		}
 	}
 }

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.subclipse.ui.compare;
 
+import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
@@ -23,7 +24,7 @@ import org.tigris.subversion.subclipse.ui.compare.SVNCompareEditorInput;
 
 import java.lang.reflect.Field;
 
-public class CrucibleSubclipseCompareEditorInput extends SVNCompareEditorInput {
+public class CrucibleSubclipseCompareEditorInput extends SVNCompareEditorInput implements IAnnotationCompareInput {
 
 	private final ICompareAnnotationModel annotationModelToAttach;
 
@@ -38,7 +39,6 @@ public class CrucibleSubclipseCompareEditorInput extends SVNCompareEditorInput {
 		Viewer contentViewer = super.findContentViewer(oldViewer, input, parent);
 		if (contentViewer instanceof TextMergeViewer) {
 			TextMergeViewer textMergeViewer = (TextMergeViewer) contentViewer;
-
 			try {
 				Class clazz = TextMergeViewer.class;
 				Field declaredField = clazz.getDeclaredField("fLeft");
@@ -50,16 +50,16 @@ public class CrucibleSubclipseCompareEditorInput extends SVNCompareEditorInput {
 				final MergeSourceViewer fRight = (MergeSourceViewer) declaredField.get(textMergeViewer);
 
 				annotationModelToAttach.attachToViewer(fLeft, fRight);
-//				annotationModelToAttach.attachToViewer(fRight);
-
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
-//			private MergeSourceViewer fLeft;
-//			private MergeSourceViewer fRight
 
 		}
 		return contentViewer;
+	}
+
+	public ICompareAnnotationModel getAnnotationModelToAttach() {
+		return annotationModelToAttach;
 	}
 
 }

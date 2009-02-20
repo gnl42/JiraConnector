@@ -88,7 +88,6 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	@Override
 	public void dispose() {
-		System.err.println("dispose");
 		commentPopupDialog.dispose();
 		commentPopupDialog = null;
 	}
