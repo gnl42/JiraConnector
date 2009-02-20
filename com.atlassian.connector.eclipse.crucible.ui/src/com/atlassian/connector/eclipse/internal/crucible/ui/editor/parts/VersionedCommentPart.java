@@ -106,23 +106,40 @@ public class VersionedCommentPart extends CommentPart {
 	}
 
 	private String getLineNumberText() {
-		String text = "";
+		StringBuilder builder = new StringBuilder();
 		if (versionedComment.getToEndLine() != 0) {
-			text += "[Lines: " + versionedComment.getToStartLine() + " - " + versionedComment.getToEndLine() + "]";
+			builder.append("[Lines: ");
+			builder.append(versionedComment.getToEndLine());
+			builder.append(" - ");
+			builder.append(versionedComment.getToStartLine());
+			builder.append("]");
+		} else if (versionedComment.getFromEndLine() != 0) {
+			builder.append("[Lines: ");
+			builder.append(versionedComment.getFromEndLine());
+			builder.append(" - ");
+			builder.append(versionedComment.getFromStartLine());
+			builder.append("]");
 		} else if (versionedComment.getToStartLine() != 0) {
-			text += "[Line: " + versionedComment.getToStartLine() + "]";
+			builder.append("[Lines: ");
+			builder.append(versionedComment.getToStartLine());
+			builder.append("]");
+		} else if (versionedComment.getFromStartLine() != 0) {
+			builder.append("[Lines: ");
+			builder.append(versionedComment.getFromStartLine());
+			builder.append("]");
 		} else {
-			text += "[General File]";
+			builder.append("[General File]");
 		}
-		return text;
+		return builder.toString();
 	}
 
 	@Override
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
 		if (getCrucibleEditor() != null && !comment.isReply()) {
+			// if fromLineComment --> oldFile
+			CrucibleFile crucibleFile = new CrucibleFile(crucibleFileInfo, versionedComment.isFromLineInfo());
 			OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
-					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFileInfo, false), versionedComment,
-					crucibleReview);
+					getCrucibleEditor().getTask(), crucibleFile, versionedComment, crucibleReview);
 			openVersionedVirtualFileAction.setText(getLineNumberText());
 			openVersionedVirtualFileAction.setToolTipText("Open the file to the comment");
 			createActionHyperlink(toolbarComposite, toolkit, openVersionedVirtualFileAction);
