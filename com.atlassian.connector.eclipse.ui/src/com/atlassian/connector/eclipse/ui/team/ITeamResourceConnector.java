@@ -36,5 +36,4 @@ public interface ITeamResourceConnector {
 
 	boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString, String newRevisionString,
 			ICompareAnnotationModel annotationModel, IProgressMonitor monitor);
-
 }

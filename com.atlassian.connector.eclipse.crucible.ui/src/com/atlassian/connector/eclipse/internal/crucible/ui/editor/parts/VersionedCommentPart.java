@@ -126,6 +126,17 @@ public class VersionedCommentPart extends CommentPart {
 			openVersionedVirtualFileAction.setText(getLineNumberText());
 			openVersionedVirtualFileAction.setToolTipText("Open the file to the comment");
 			createActionHyperlink(toolbarComposite, toolkit, openVersionedVirtualFileAction);
+
+//			ImageHyperlink textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+//			textHyperlink.setText(" ");
+//			textHyperlink.setEnabled(false);
+//			textHyperlink.setUnderlined(false);
+//			CompareVersionedVirtualFileAction openCompareAction = new CompareVersionedVirtualFileAction(
+//					crucibleFileInfo, versionedComment, crucibleReview);
+//			openCompareAction.setText("Compare");
+//			openCompareAction.setToolTipText("Open the file to the comment in the compare editor");
+//			createActionHyperlink(toolbarComposite, toolkit, openCompareAction);
+//			
 		}
 
 		for (IReviewAction customAction : customActions) {

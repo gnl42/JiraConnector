@@ -21,6 +21,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.source.AnnotationBarHoverManager;
@@ -250,6 +251,31 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 				ruler.addDecorator(0, annotationColumn);
 			}
 		}
+
+		public void focusOnLines(int startLine, int endLine) {
+			// ignore
+			if (sourceViewer != null) {
+
+				IDocument document = sourceViewer.getDocument();
+				if (document != null) {
+					try {
+						int offset = document.getLineOffset(startLine);
+						int length = document.getLineOffset(endLine) - offset;
+						StyledText widget = sourceViewer.getTextWidget();
+						widget.setRedraw(false);
+//					adjustHighlightRange(startLine, length);
+						sourceViewer.revealRange(offset, length);
+
+//						sourceViewer.setSelectedRange(offset, length);
+
+//					markInNavigationHistory();
+						widget.setRedraw(true);
+					} catch (BadLocationException e) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+					}
+				}
+			}
+		}
 	}
 
 	private final CrucibleAnnotationModel leftAnnotationModel;
@@ -257,6 +283,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	private final CrucibleAnnotationModel rightAnnotationModel;
 
 	private final Review review;
+
+	private CrucibleViewerTextInputListener leftViewerListener;
+
+	private CrucibleViewerTextInputListener rightViewerListener;
 
 	public CrucibleCompareAnnotationModel(CrucibleFileInfo crucibleFile, Review review) {
 		super();
@@ -269,14 +299,16 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
 	public void attachToViewer(final SourceViewer fLeft, final SourceViewer fRight) {
 
-		addTextInputListener(fLeft, leftAnnotationModel, false);
-		addTextInputListener(fRight, rightAnnotationModel, true);
+		leftViewerListener = addTextInputListener(fLeft, leftAnnotationModel, false);
+		rightViewerListener = addTextInputListener(fRight, rightAnnotationModel, true);
 	}
 
-	private void addTextInputListener(final SourceViewer sourceViewer,
+	private CrucibleViewerTextInputListener addTextInputListener(final SourceViewer sourceViewer,
 			final CrucibleAnnotationModel crucibleAnnotationModel, boolean oldFile) {
-		sourceViewer.addTextInputListener(new CrucibleViewerTextInputListener(sourceViewer, crucibleAnnotationModel,
-				oldFile));
+		CrucibleViewerTextInputListener listener = new CrucibleViewerTextInputListener(sourceViewer,
+				crucibleAnnotationModel, oldFile);
+		sourceViewer.addTextInputListener(listener);
+		return listener;
 	}
 
 	public void detach() {
@@ -299,5 +331,24 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
+	}
+
+	public void focusOnComment(VersionedComment comment) {
+		// ignore
+		boolean isOldFile = comment.isFromLineInfo();
+
+		int startLine = isOldFile ? comment.getFromStartLine() : comment.getToStartLine();
+
+		int endLine = isOldFile ? comment.getFromEndLine() : comment.getToEndLine();
+
+		if (endLine == 0 || endLine > startLine) {
+			endLine = startLine;
+		}
+		if (startLine != 0) {
+			startLine--;
+		}
+		//get the correct listener (new file is left)
+		CrucibleViewerTextInputListener listener = isOldFile ? rightViewerListener : leftViewerListener;
+		listener.focusOnLines(startLine, endLine);
 	}
 }
