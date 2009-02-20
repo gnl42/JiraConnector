@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension2;
@@ -39,8 +40,8 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	@SuppressWarnings("restriction")
 	public CrucibleInformationControl(Shell parent, CrucibleInformationControlCreator crucibleInformationControlCreator) {
-//		super(parent, SWT.NONE, new HTMLTextPresenter(true));
-		super(parent, true);
+		super(parent, SWT.NONE, new HTMLTextPresenter(true));
+//		super(parent, true);
 		this.informationControlCreator = crucibleInformationControlCreator;
 		commentPopupDialog = new CrucibleCommentPopupDialog(parent, SWT.NO_FOCUS | SWT.ON_TOP);
 		// Force create early so that listeners can be added at all times with API.
