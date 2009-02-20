@@ -11,21 +11,40 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
+import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.TextUtilities;
+import org.eclipse.jface.text.information.IInformationProvider;
+import org.eclipse.jface.text.information.IInformationProviderExtension;
+import org.eclipse.jface.text.information.IInformationProviderExtension2;
+import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHoverExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ILineRange;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
+import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.projection.AnnotationBag;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +59,10 @@ public class CrucibleAnnotationHover implements IAnnotationHover, IAnnotationHov
 	private final IAnnotationHover parentHover;
 
 	private final IInformationControlCreator informationControlCreator;
+
+	private static ISourceViewer currentSourceViewer;
+
+	private static CrucibleAnnotationHover currentAnnotationHover;
 
 	public CrucibleAnnotationHover(IAnnotationHover hover) {
 		this.parentHover = hover;
@@ -107,6 +130,8 @@ public class CrucibleAnnotationHover implements IAnnotationHover, IAnnotationHov
 	}
 
 	public ILineRange getHoverLineRange(ISourceViewer viewer, int lineNumber) {
+		currentAnnotationHover = this;
+		currentSourceViewer = viewer;
 		List<CrucibleCommentAnnotation> commentAnnotations = getCrucibleAnnotationsForLine(viewer, lineNumber);
 		if (commentAnnotations != null && commentAnnotations.size() > 0) {
 			IDocument document = viewer.getDocument();
@@ -239,6 +264,130 @@ public class CrucibleAnnotationHover implements IAnnotationHover, IAnnotationHov
 		}
 
 		return commentAnnotations;
+	}
+
+	/**
+	 * Tries to make an annotation hover focusable (or "sticky").
+	 * 
+	 * @return <code>true</code> if successful, <code>false</code> otherwise
+	 */
+	public static boolean makeAnnotationHoverFocusable() {
+		//check sourceviewer and hover
+		if (currentSourceViewer == null || currentSourceViewer.getTextWidget().isDisposed()
+				|| currentAnnotationHover == null) {
+			return false;
+		}
+
+		IVerticalRulerInfo info = null;
+		try {
+			Method declaredMethod2 = SourceViewer.class.getDeclaredMethod("getVerticalRuler");
+			declaredMethod2.setAccessible(true);
+			info = (CompositeRuler) declaredMethod2.invoke(currentSourceViewer);
+		} catch (Exception e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Error getting CompareEditor's vertical ruler. ", e));
+		}
+
+		if (info == null) {
+			return false;
+		}
+
+		int line = info.getLineOfLastMouseButtonActivity();
+		if (line == -1) {
+			return false;
+		}
+
+		try {
+
+			// compute the hover information
+			Object hoverInfo;
+			if (currentAnnotationHover instanceof IAnnotationHoverExtension) {
+				IAnnotationHoverExtension extension = currentAnnotationHover;
+				ILineRange hoverLineRange = extension.getHoverLineRange(currentSourceViewer, line);
+				if (hoverLineRange == null) {
+					return false;
+				}
+				final int maxVisibleLines = Integer.MAX_VALUE;
+				hoverInfo = extension.getHoverInfo(currentSourceViewer, hoverLineRange, maxVisibleLines);
+			} else {
+				hoverInfo = currentAnnotationHover.getHoverInfo(currentSourceViewer, line);
+			}
+
+			// hover region: the beginning of the concerned line to place the control right over the line
+			IDocument document = currentSourceViewer.getDocument();
+			int offset = document.getLineOffset(line);
+			String partitioning = new TextSourceViewerConfiguration().getConfiguredDocumentPartitioning(currentSourceViewer);
+			String contentType = TextUtilities.getContentType(document, partitioning, offset, true);
+
+			IInformationControlCreator controlCreator = null;
+			if (currentAnnotationHover instanceof IInformationProviderExtension2) {
+				IInformationProviderExtension2 provider = (IInformationProviderExtension2) currentAnnotationHover;
+				controlCreator = provider.getInformationPresenterControlCreator();
+			} else if (currentAnnotationHover instanceof IAnnotationHoverExtension) {
+				controlCreator = ((IAnnotationHoverExtension) currentAnnotationHover).getHoverControlCreator();
+			}
+
+			IInformationProvider informationProvider = new InformationProvider(new Region(offset, 0), hoverInfo,
+					controlCreator);
+
+			CrucibleCommentPopupDialog dialog = CrucibleCommentPopupDialog.getCurrentPopupDialog();
+			if (dialog != null) {
+
+				InformationPresenter fInformationPresenter = dialog.getInformationControl().getInformationPresenter();
+				fInformationPresenter.setSizeConstraints(100, 12, true, true);
+				fInformationPresenter.install(currentSourceViewer);
+				fInformationPresenter.setDocumentPartitioning(partitioning);
+				fInformationPresenter.setOffset(offset);
+				fInformationPresenter.setAnchor(AbstractInformationControlManager.ANCHOR_RIGHT);
+				fInformationPresenter.setMargins(4, 0); // AnnotationBarHoverManager sets (5,0), minus SourceViewer.GAP_SIZE_1
+				fInformationPresenter.setInformationProvider(informationProvider, contentType);
+				fInformationPresenter.showInformation();
+
+				return true;
+			}
+
+		} catch (BadLocationException e) {
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * Information provider used to present focusable information shells.
+	 * 
+	 * @since 3.3
+	 */
+	private static final class InformationProvider implements IInformationProvider, IInformationProviderExtension,
+			IInformationProviderExtension2 {
+
+		private final IRegion fHoverRegion;
+
+		private final Object fHoverInfo;
+
+		private final IInformationControlCreator fControlCreator;
+
+		InformationProvider(IRegion hoverRegion, Object hoverInfo, IInformationControlCreator controlCreator) {
+			fHoverRegion = hoverRegion;
+			fHoverInfo = hoverInfo;
+			fControlCreator = controlCreator;
+		}
+
+		public IRegion getSubject(ITextViewer textViewer, int invocationOffset) {
+			return fHoverRegion;
+		}
+
+		@Deprecated
+		public String getInformation(ITextViewer textViewer, IRegion subject) {
+			return fHoverInfo.toString();
+		}
+
+		public Object getInformation2(ITextViewer textViewer, IRegion subject) {
+			return fHoverInfo;
+		}
+
+		public IInformationControlCreator getInformationPresenterControlCreator() {
+			return fControlCreator;
+		}
 	}
 
 }
