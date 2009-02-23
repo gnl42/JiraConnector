@@ -67,7 +67,7 @@ public class CrucibleClientManagerUiTest extends TestCase {
 			assertion = true;
 		}
 
-		assertTrue(assertion || httpClient1 == null);
+		assertTrue(assertion);
 
 		assertNull(httpClient1);
 
@@ -88,7 +88,9 @@ public class CrucibleClientManagerUiTest extends TestCase {
 			// ignore since this is what we want
 			return;
 		}
-		assertNull(httpClient1);
+
+		// we should never get here as the assertion should have happened
+		assertFalse(true);
 	}
 
 	// TODO test added and changed as well

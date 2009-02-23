@@ -51,10 +51,18 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 
 	private IReviewActionListener actionListener;
 
+	private final boolean openAndActivate;
+
 	public OpenReviewEditorToCommentAction(Review review, VersionedComment comment, CrucibleFileInfo crucibleFile) {
+		this(review, comment, crucibleFile, true);
+	}
+
+	public OpenReviewEditorToCommentAction(Review review, VersionedComment comment, CrucibleFileInfo crucibleFile,
+			boolean openAndActivate) {
 		this.review = review;
 		this.comment = comment;
 		this.crucibleFile = crucibleFile;
+		this.openAndActivate = openAndActivate;
 	}
 
 	@Override
@@ -69,6 +77,9 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 
 	@Override
 	public void run() {
+		if (actionListener != null) {
+			actionListener.actionAboutToRun(this);
+		}
 		if (review != null) {
 			TaskRepository taskRepository = CrucibleUiUtil.getCrucibleTaskRepository(review);
 			if (taskRepository != null) {
@@ -84,16 +95,18 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 							}
 						}
 					}
-					try {
-						IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-						IEditorPart part = page.openEditor(editorInput, TaskEditor.ID_EDITOR);
-						if (part != null) {
-							selectAndRevealCommentInEditorPage(page, part);
-							return;
+					if (openAndActivate) {
+						try {
+							IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+							IEditorPart part = page.openEditor(editorInput, TaskEditor.ID_EDITOR);
+							if (part != null) {
+								selectAndRevealCommentInEditorPage(page, part);
+								return;
+							}
+						} catch (PartInitException e) {
+							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+									"Unable to open crucible editor", e));
 						}
-					} catch (PartInitException e) {
-						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-								"Unable to open crucible editor", e));
 					}
 				}
 			}
@@ -108,8 +121,10 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 		taskEditor.setActivePage(CrucibleConstants.CRUCIBLE_EDITOR_PAGE_ID);
 		IFormPage activePage = taskEditor.getActivePageInstance();
 		if (activePage instanceof CrucibleReviewEditorPage) {
-			page.activate(part);
-			activePage.setFocus();
+			if (openAndActivate) {
+				page.bringToTop(part);
+			}
+
 			((CrucibleReviewEditorPage) activePage).selectAndReveal(crucibleFile, comment);
 		}
 		if (actionListener != null) {

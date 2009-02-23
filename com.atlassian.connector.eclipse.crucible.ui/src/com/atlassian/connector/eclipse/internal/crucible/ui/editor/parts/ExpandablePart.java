@@ -190,6 +190,10 @@ public abstract class ExpandablePart {
 	}
 
 	protected ImageHyperlink createActionHyperlink(Composite actionsComposite, FormToolkit toolkit, final IAction action) {
+
+		if (action instanceof IReviewAction) {
+			((IReviewAction) action).setActionListener(actionListener);
+		}
 		ImageHyperlink link = toolkit.createImageHyperlink(actionsComposite, SWT.NONE);
 		if (action.getImageDescriptor() != null) {
 			link.setImage(AtlassianImages.getImage(action.getImageDescriptor()));

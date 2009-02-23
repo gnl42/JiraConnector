@@ -199,6 +199,10 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 
 	}
 
+	public void actionAboutToRun(Action action) {
+		close();
+	}
+
 	public void actionRan(Action action) {
 		close();
 	}

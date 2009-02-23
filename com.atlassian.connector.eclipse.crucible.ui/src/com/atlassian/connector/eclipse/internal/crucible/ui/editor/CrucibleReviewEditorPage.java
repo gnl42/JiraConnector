@@ -533,9 +533,15 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment) {
 		this.selectedCrucibleFile = crucibleFile;
 		this.selectedComment = comment;
-		for (AbstractCrucibleEditorFormPart part : parts) {
-			if (part instanceof CrucibleReviewFilesPart) {
-				((CrucibleReviewFilesPart) part).selectAndReveal(crucibleFile, comment);
+		if (selectedCrucibleFile == null || selectedComment == null) {
+			this.selectedCrucibleFile = null;
+			this.selectedComment = null;
+			setHighlightedPart(null);
+		} else {
+			for (AbstractCrucibleEditorFormPart part : parts) {
+				if (part instanceof CrucibleReviewFilesPart) {
+					((CrucibleReviewFilesPart) part).selectAndReveal(crucibleFile, comment);
+				}
 			}
 		}
 	}

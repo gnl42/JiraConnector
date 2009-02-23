@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleEditorTracker;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.EditorLinkWithReviewSelectionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
 
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
@@ -38,6 +39,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	private ActiveReviewManager activeReviewManager;
 
 	private CrucibleNotificationProvider crucibleNotificationManager;
+
+	private EditorLinkWithReviewSelectionListener editorLinkWithReviewSelectionListener;
 
 	/**
 	 * The constructor
@@ -67,6 +70,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		// TODO determine if we should be doing this differently and not through mylyn
 		MonitorUi.addWindowPartListener(crucibleEditorTracker);
+		editorLinkWithReviewSelectionListener = new EditorLinkWithReviewSelectionListener();
+		MonitorUi.addWindowPostSelectionListener(editorLinkWithReviewSelectionListener);
 	}
 
 	/*
@@ -80,9 +85,11 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		disableActiveReviewManager();
 
+		MonitorUi.removeWindowPostSelectionListener(editorLinkWithReviewSelectionListener);
 		MonitorUi.removeWindowPartListener(crucibleEditorTracker);
 		crucibleEditorTracker.dispose();
 		crucibleEditorTracker = null;
+		editorLinkWithReviewSelectionListener = null;
 
 		activeReviewManager.dispose();
 		activeReviewManager = null;

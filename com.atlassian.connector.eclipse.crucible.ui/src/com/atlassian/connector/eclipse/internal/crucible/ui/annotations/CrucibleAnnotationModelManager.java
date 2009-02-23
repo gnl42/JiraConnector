@@ -72,6 +72,7 @@ public final class CrucibleAnnotationModelManager {
 				|| review == null || CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview() != review) {
 			return;
 		}
+
 		IDocumentProvider documentProvider = editor.getDocumentProvider();
 		IEditorInput editorInput = editor.getEditorInput();
 		if (documentProvider == null) {
@@ -187,18 +188,8 @@ public final class CrucibleAnnotationModelManager {
 	}
 
 	public static void detach(ITextEditor editor) {
-		IDocumentProvider documentProvider = editor.getDocumentProvider();
-		IEditorInput editorInput = editor.getEditorInput();
-		if (documentProvider == null) {
-			return;
-		}
-		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editorInput);
-		if (!(annotationModel instanceof IAnnotationModelExtension)) {
-			// we need to piggyback on another annotation mode
-			return;
-		}
 
-		IAnnotationModelExtension annotationModelExtension = (IAnnotationModelExtension) annotationModel;
+		IAnnotationModelExtension annotationModelExtension = getAnnotationModelExtension(editor);
 		IAnnotationModel crucibleAnnotationModel = annotationModelExtension.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
 		if (crucibleAnnotationModel instanceof CrucibleAnnotationModel) {
 			((CrucibleAnnotationModel) crucibleAnnotationModel).clear();
@@ -252,22 +243,9 @@ public final class CrucibleAnnotationModelManager {
 				|| CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview() != activeReview) {
 			return;
 		}
-		IDocumentProvider documentProvider = editor.getDocumentProvider();
-		IEditorInput editorInput = editor.getEditorInput();
-		if (documentProvider == null) {
-			return;
-		}
-		IAnnotationModel iAnnotationModel = documentProvider.getAnnotationModel(editorInput);
-		if (!(iAnnotationModel instanceof IAnnotationModelExtension)) {
-			// we need to piggyback on another annotation mode
-			return;
-		}
-		IAnnotationModelExtension annotationModelExtension = (IAnnotationModelExtension) iAnnotationModel;
 
-		IAnnotationModel annotationModel = annotationModelExtension.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
-		if (annotationModel instanceof CrucibleAnnotationModel) {
-			CrucibleAnnotationModel crucibleAnnotationModel = (CrucibleAnnotationModel) annotationModel;
-
+		CrucibleAnnotationModel crucibleAnnotationModel = getModelForEditor(editor);
+		if (crucibleAnnotationModel != null) {
 			CrucibleFile crucibleFile = crucibleAnnotationModel.getCrucibleFile();
 			if (crucibleFile != null) {
 
@@ -287,6 +265,35 @@ public final class CrucibleAnnotationModelManager {
 			attach(editor);
 		}
 
+	}
+
+	public static CrucibleAnnotationModel getModelForEditor(ITextEditor editor) {
+
+		IAnnotationModelExtension annotationModelExtension = getAnnotationModelExtension(editor);
+
+		if (annotationModelExtension != null) {
+			IAnnotationModel annotationModel = annotationModelExtension.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
+			if (annotationModel instanceof CrucibleAnnotationModel) {
+				return (CrucibleAnnotationModel) annotationModel;
+			}
+		}
+		return null;
+
+	}
+
+	private static IAnnotationModelExtension getAnnotationModelExtension(ITextEditor editor) {
+		IDocumentProvider documentProvider = editor.getDocumentProvider();
+		IEditorInput editorInput = editor.getEditorInput();
+		if (documentProvider == null) {
+			return null;
+		}
+		IAnnotationModel iAnnotationModel = documentProvider.getAnnotationModel(editorInput);
+		if (!(iAnnotationModel instanceof IAnnotationModelExtension)) {
+			// we need to piggyback on another annotation mode
+			return null;
+		}
+		IAnnotationModelExtension annotationModelExtension = (IAnnotationModelExtension) iAnnotationModel;
+		return annotationModelExtension;
 	}
 
 }

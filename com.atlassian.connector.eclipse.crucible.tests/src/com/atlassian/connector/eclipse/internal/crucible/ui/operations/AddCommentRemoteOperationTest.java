@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
@@ -52,6 +53,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -70,6 +72,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 	private CrucibleServerFacade facade;
 
 	private CrucibleSession crucibleSessionMock;
+
+	private TaskRepository repository;
 
 	public static final String INVALID_PROJECT_KEY = "INVALID project key";
 
@@ -122,8 +126,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, null, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client, null,
+				"message", new NullProgressMonitor());
 
 		try {
 			Comment comment = client.execute(remoteOperation);
@@ -162,8 +166,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, null, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client, null,
+				"message", new NullProgressMonitor());
 		remoteOperation.setParentComment(parentComment);
 
 		try {
@@ -207,8 +211,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, reviewFile, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client,
+				reviewFile, "message", new NullProgressMonitor());
 
 		try {
 			Comment comment = client.execute(remoteOperation);
@@ -247,8 +251,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, reviewFile, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client,
+				reviewFile, "message", new NullProgressMonitor());
 
 		try {
 			Comment comment = client.execute(remoteOperation);
@@ -290,8 +294,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, reviewFile, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client,
+				reviewFile, "message", new NullProgressMonitor());
 		remoteOperation.setCommentLines(lineRange);
 
 		try {
@@ -343,8 +347,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, reviewFile, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client,
+				reviewFile, "message", new NullProgressMonitor());
 		remoteOperation.setCommentLines(lineRange);
 
 		try {
@@ -387,8 +391,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, null, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client, null,
+				"message", new NullProgressMonitor());
 		remoteOperation.setDefect(true);
 
 		try {
@@ -425,8 +429,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, null, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client, null,
+				"message", new NullProgressMonitor());
 		remoteOperation.setDraft(true);
 
 		try {
@@ -467,8 +471,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, null, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client, null,
+				"message", new NullProgressMonitor());
 		remoteOperation.setDefect(true);
 
 		try {
@@ -509,8 +513,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, null, "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client, null,
+				"message", new NullProgressMonitor());
 		remoteOperation.setDraft(true);
 
 		try {
@@ -553,8 +557,8 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		EasyMock.expectLastCall().andReturn(result);
 		replay(crucibleSessionMock);
 
-		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(new NullProgressMonitor(), review,
-				client, getMockReviewItem(false), "message");
+		AddCommentRemoteOperation remoteOperation = new AddCommentRemoteOperation(repository, review, client,
+				getMockReviewItem(false), "message", new NullProgressMonitor());
 		remoteOperation.setDraft(true);
 
 		try {
@@ -626,6 +630,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		server.setUsername(VALID_LOGIN.getUserName());
 		server.setPassword(VALID_PASSWORD);
 		server.setPasswordStored(false);
+		repository = new TaskRepository(CrucibleCorePlugin.CONNECTOR_KIND, server.getUrl());
 		return server;
 	}
 

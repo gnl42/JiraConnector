@@ -92,7 +92,8 @@ public class CrucibleClientManagerTest extends TestCase {
 			// ignore since this is what we want
 			return;
 		}
-		assertNull(httpClient1);
+		// we should never get here as the assertion should have happened
+		assertFalse(true);
 	}
 
 	public void testCreateDeleteTempClient() {

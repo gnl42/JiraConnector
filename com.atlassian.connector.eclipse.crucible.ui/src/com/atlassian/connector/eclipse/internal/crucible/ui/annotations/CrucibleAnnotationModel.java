@@ -245,8 +245,22 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 		return crucibleFile;
 	}
 
+	/**
+	 * Returns the first annotation that this knows about for the given offset in the document
+	 */
+	public CrucibleCommentAnnotation getFirstAnnotationForOffset(int offset) {
+		for (CrucibleCommentAnnotation annotation : annotations) {
+			if (annotation.getPosition().offset <= offset
+					&& (annotation.getPosition().length + annotation.getPosition().offset) >= offset) {
+				return annotation;
+			}
+		}
+		return null;
+	}
+
 	public void setEditorDocument(IDocument editorDocument) {
 		this.editorDocument = editorDocument;
 		updateAnnotations(true);
 	}
+
 }

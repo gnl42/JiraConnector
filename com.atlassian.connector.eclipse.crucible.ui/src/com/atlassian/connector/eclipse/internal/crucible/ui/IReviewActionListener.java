@@ -22,4 +22,6 @@ public interface IReviewActionListener {
 
 	void actionRan(Action action);
 
+	void actionAboutToRun(Action action);
+
 }

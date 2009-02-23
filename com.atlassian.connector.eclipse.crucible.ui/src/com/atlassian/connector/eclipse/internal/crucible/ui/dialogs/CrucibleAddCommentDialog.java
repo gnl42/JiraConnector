@@ -84,8 +84,8 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 				monitor.beginTask("Adding comment", IProgressMonitor.UNKNOWN);
 				if (newComment.length() > 0) {
 
-					AddCommentRemoteOperation operation = new AddCommentRemoteOperation(monitor, review, client,
-							crucibleFile, newComment);
+					AddCommentRemoteOperation operation = new AddCommentRemoteOperation(taskRepository, review, client,
+							crucibleFile, newComment, monitor);
 					operation.setDefect(defect);
 					operation.setDraft(draft);
 					operation.setCustomFields(customFieldSelections);

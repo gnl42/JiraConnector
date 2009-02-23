@@ -32,6 +32,7 @@ import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.util.HashMap;
 
@@ -60,8 +61,8 @@ public final class AddCommentRemoteOperation extends CrucibleClient.RemoteOperat
 
 	private final Review review;
 
-	public AddCommentRemoteOperation(IProgressMonitor monitor, Review review, CrucibleClient client,
-			CrucibleFile reviewItem, String newComment) {
+	public AddCommentRemoteOperation(TaskRepository repository, Review review, CrucibleClient client,
+			CrucibleFile reviewItem, String newComment, IProgressMonitor monitor) {
 		super(monitor);
 		this.review = review;
 		this.client = client;
