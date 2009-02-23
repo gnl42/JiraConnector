@@ -13,8 +13,13 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenReviewEditorToCommentAction;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -65,6 +70,22 @@ public final class CrucibleUiUtil {
 		}
 
 		return null;
+	}
+
+	public static void highlightAnnotationInRichEditor(int offset, CrucibleAnnotationModel annotationModel) {
+		if (annotationModel != null) {
+			CrucibleCommentAnnotation annotation = annotationModel.getFirstAnnotationForOffset(offset);
+			if (annotation != null) {
+				Review review = annotation.getReview();
+				VersionedComment comment = annotation.getVersionedComment();
+				CrucibleFileInfo crucibleFile = annotation.getCrucibleFileInfo();
+				new OpenReviewEditorToCommentAction(review, comment, crucibleFile, false).run();
+			} else {
+				new OpenReviewEditorToCommentAction(CrucibleUiPlugin.getDefault()
+						.getActiveReviewManager()
+						.getActiveReview(), null, null, false).run();
+			}
+		}
 	}
 
 }

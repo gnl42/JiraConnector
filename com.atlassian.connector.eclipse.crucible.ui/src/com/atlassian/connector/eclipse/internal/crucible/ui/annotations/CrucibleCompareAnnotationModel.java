@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddLineCommentToFileAction;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
@@ -43,6 +44,8 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.custom.LineBackgroundEvent;
 import org.eclipse.swt.custom.LineBackgroundListener;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -110,6 +113,16 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 						createVerticalRuler(newInput, sourceViewerClazz);
 //						createOverviewRuler(newInput, sourceViewerClazz);
 						createHighlighting(sourceViewerClazz);
+
+						sourceViewer.getTextWidget().addMouseListener(new MouseAdapter() {
+							@Override
+							public void mouseDown(MouseEvent e) {
+								// ignore
+								int offset = ((TextSelection) sourceViewer.getSelection()).getOffset();
+								CrucibleUiUtil.highlightAnnotationInRichEditor(offset, crucibleAnnotationModel);
+							}
+						});
+
 					} catch (Throwable t) {
 						t.printStackTrace();
 					}

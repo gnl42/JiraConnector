@@ -12,10 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenReviewEditorToCommentAction;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -35,22 +32,7 @@ public final class EditorLinkWithReviewSelectionListener implements ISelectionLi
 				int offset = textSelection.getOffset();
 
 				CrucibleAnnotationModel annotationModel = CrucibleAnnotationModelManager.getModelForEditor((ITextEditor) part);
-
-				if (annotationModel != null) {
-					CrucibleCommentAnnotation annotation = annotationModel.getFirstAnnotationForOffset(offset);
-					if (annotation != null) {
-						Review review = annotation.getReview();
-						VersionedComment comment = annotation.getVersionedComment();
-						CrucibleFileInfo crucibleFile = annotation.getCrucibleFileInfo();
-						new OpenReviewEditorToCommentAction(review, comment, crucibleFile, false).run();
-					} else {
-						new OpenReviewEditorToCommentAction(CrucibleUiPlugin.getDefault()
-								.getActiveReviewManager()
-								.getActiveReview(), null, null, false).run();
-					}
-
-				}
-
+				CrucibleUiUtil.highlightAnnotationInRichEditor(offset, annotationModel);
 			}
 		}
 	}
