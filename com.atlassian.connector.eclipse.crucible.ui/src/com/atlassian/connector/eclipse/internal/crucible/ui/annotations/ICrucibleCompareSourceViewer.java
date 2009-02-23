@@ -9,21 +9,15 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.ui.team;
-
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.internal.MergeSourceViewer;
+import org.eclipse.jface.text.source.LineRange;
 
-public interface ICompareAnnotationModel {
-	void attachToViewer(MergeSourceViewer left, MergeSourceViewer fRight);
+public interface ICrucibleCompareSourceViewer {
+	LineRange getSelection();
 
-	void updateCrucibleFile(Review newReview);
-
-	void focusOnComment(VersionedComment comment);
+	void focusOnLines(int startLine, int endLine);
 
 	void registerContextMenu(CompareEditorInput input);
-
 }

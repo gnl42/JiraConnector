@@ -23,6 +23,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -105,6 +106,16 @@ public class CompareVersionedVirtualFileAction extends Action implements IReview
 			IAnnotationCompareInput input = ((IAnnotationCompareInput) editor.getEditorInput());
 			ICompareAnnotationModel model = input.getAnnotationModelToAttach();
 			model.focusOnComment(comment);
+			model.registerContextMenu((CompareEditorInput) input);
+		}
+	}
+
+	private void registerContextMenu(CompareEditor editor) {
+		if (editor.getEditorInput() instanceof CompareEditorInput
+				&& editor.getEditorInput() instanceof IAnnotationCompareInput) {
+			ICompareAnnotationModel model = ((IAnnotationCompareInput) editor.getEditorInput()).getAnnotationModelToAttach();
+			CompareEditorInput input = ((CompareEditorInput) editor.getEditorInput());
+			model.registerContextMenu(input);
 		}
 	}
 
@@ -129,10 +140,10 @@ public class CompareVersionedVirtualFileAction extends Action implements IReview
 					if (part.getTitle().contains(crucibleFile.getFileDescriptor().getName())
 							&& part.getTitle().contains(newVirtualFile.getRevision())
 							&& part.getTitle().contains(oldVirtualFile.getRevision())) {
-						//TODO switch to specific line
 						if (versionedComment != null) {
 							selectAndRevealComment((CompareEditor) part, versionedComment);
 						}
+						registerContextMenu((CompareEditor) part);
 						MonitorUi.removeWindowPartListener(this);
 					}
 				}
