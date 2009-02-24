@@ -49,6 +49,8 @@ public class BambooCorePlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		plugin.getPluginPreferences().setDefault(BambooConstants.PREFERENCE_SYNC_INTERVAL,
+				BambooConstants.DEFAULT_SYNC_INTERVAL);
 		buildPlanManager = new BuildPlanManager();
 	}
 
@@ -85,4 +87,16 @@ public class BambooCorePlugin extends Plugin {
 		return buildPlanManager;
 	}
 
+	public static int getSyncIntervalMinutes() {
+		int minutes = plugin.getPluginPreferences().getInt(BambooConstants.PREFERENCE_SYNC_INTERVAL);
+		if (minutes <= 0) {
+			return BambooConstants.DEFAULT_SYNC_INTERVAL;
+		}
+		return minutes;
+	}
+
+	public static void setSyncIntervalMinutes(int minutes) {
+		plugin.getPluginPreferences().setValue(BambooConstants.PREFERENCE_SYNC_INTERVAL, minutes);
+		getBuildPlanManager().reInitializeScheduler();
+	}
 }

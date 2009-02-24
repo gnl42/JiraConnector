@@ -40,6 +40,8 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -50,6 +52,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
@@ -242,6 +245,35 @@ public class BambooView extends ViewPart {
 						repository.getRepositoryLabel()));
 				openRepoConfigACI.fill(menu, -1);
 			}
+
+			new Separator().fill(menu, -1);
+
+			Action setSyncIntervalAction = new Action() {
+				@Override
+				public void run() {
+					InputDialog syncIntervalDialog = new InputDialog(getSite().getShell(), "Set Preference",
+							"Set the interval (in minutes) in between automatic synchronizations",
+							String.valueOf(BambooCorePlugin.getSyncIntervalMinutes()), new IInputValidator() {
+								public String isValid(String newText) {
+									try {
+										int number = Integer.parseInt(newText);
+										if (number < 1) {
+											return "Please enter the synchronization interval (in minutes). [Value needs to be > 0]";
+										}
+									} catch (Exception e) {
+										return "Please enter the synchronization interval (in minutes). [Value needs to be a number]";
+									}
+									return null;
+								}
+							});
+					if (syncIntervalDialog.open() == Window.OK) {
+						BambooCorePlugin.setSyncIntervalMinutes(Integer.parseInt(syncIntervalDialog.getValue()));
+					}
+				}
+			};
+			ActionContributionItem setSyncIntervalACI = new ActionContributionItem(setSyncIntervalAction);
+			setSyncIntervalAction.setText("Set Synchronization Interval...");
+			setSyncIntervalACI.fill(menu, -1);
 
 			new Separator().fill(menu, -1);
 

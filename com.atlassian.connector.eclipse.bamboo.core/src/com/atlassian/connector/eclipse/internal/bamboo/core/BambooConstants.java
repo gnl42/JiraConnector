@@ -22,6 +22,10 @@ public final class BambooConstants {
 
 	public static final Object FAMILY_REFRESH_OPERATION = new Object();
 
+	public static final String PREFERENCE_SYNC_INTERVAL = "prefs_sync_interval";
+
+	public static final int DEFAULT_SYNC_INTERVAL = 15;
+
 	private BambooConstants() {
 	}
 }

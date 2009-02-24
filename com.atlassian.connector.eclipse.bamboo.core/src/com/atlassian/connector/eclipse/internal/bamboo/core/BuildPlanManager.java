@@ -46,8 +46,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public final class BuildPlanManager {
 
-	private static final int REVIEW_SYNCHRONISATION_DELAY_MS = 1200000;
-
 	private class RefreshBuildsJob extends Job {
 
 		private final ArrayList<BambooBuild> builds;
@@ -96,6 +94,8 @@ public final class BuildPlanManager {
 
 		private final boolean manualRefresh;
 
+		private boolean isRunning = false;
+
 		public RefreshBuildsForAllRepositoriesJob(boolean manualRefresh) {
 			super("Refresh Builds");
 			this.builds = new HashMap<TaskRepository, Collection<BambooBuild>>();
@@ -104,6 +104,7 @@ public final class BuildPlanManager {
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
+			isRunning = true;
 			if (repositoryManager == null) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, "No repository manager found."));
 				return Status.OK_STATUS;
@@ -127,6 +128,7 @@ public final class BuildPlanManager {
 			}
 			firstScheduledSynchronizationDone = true;
 			handleFinishedRefreshAllBuildsJob(builds, manualRefresh);
+			isRunning = false;
 			return Status.OK_STATUS;
 		}
 
@@ -141,6 +143,10 @@ public final class BuildPlanManager {
 		@Override
 		public boolean belongsTo(Object family) {
 			return manualRefresh && family == BambooConstants.FAMILY_REFRESH_OPERATION;
+		}
+
+		public boolean isRunning() {
+			return isRunning;
 		}
 	}
 
@@ -306,10 +312,18 @@ public final class BuildPlanManager {
 		scheduledRefreshBuildsForAllRepositoriesJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
-				scheduledRefreshBuildsForAllRepositoriesJob.schedule(REVIEW_SYNCHRONISATION_DELAY_MS);
+				scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getSyncIntervalMinutes() * 60000);
 			}
 		});
 		scheduledRefreshBuildsForAllRepositoriesJob.schedule(); //first iteration without delay
+	}
+
+	public void reInitializeScheduler() {
+		if (this.repositoryManager != null && !scheduledRefreshBuildsForAllRepositoriesJob.isRunning()) {
+			if (scheduledRefreshBuildsForAllRepositoriesJob.cancel()) {
+				scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getSyncIntervalMinutes() * 60000);
+			}
+		}
 	}
 
 	public void handleFinishedRefreshAllBuildsJob(Map<TaskRepository, Collection<BambooBuild>> builds,
