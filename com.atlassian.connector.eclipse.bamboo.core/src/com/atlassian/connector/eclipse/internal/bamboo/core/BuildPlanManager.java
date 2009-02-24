@@ -112,14 +112,17 @@ public final class BuildPlanManager {
 			Set<TaskRepository> repositories = repositoryManager.getRepositories(BambooCorePlugin.CONNECTOR_KIND);
 			result = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0, "Retrieval of Bamboo builds failed", null);
 			for (TaskRepository repository : repositories) {
-				BambooClient client = clientManager.getClient(repository);
-				try {
-					this.builds.put(repository, client.getBuilds(monitor, repository));
-				} catch (CoreException e) {
-					Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
-							"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
-					result.add(status);
-					StatusHandler.log(status);
+				//ignore disconnected repositories
+				if (!repository.isOffline()) {
+					BambooClient client = clientManager.getClient(repository);
+					try {
+						this.builds.put(repository, client.getBuilds(monitor, repository));
+					} catch (CoreException e) {
+						Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
+								"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
+						result.add(status);
+						StatusHandler.log(status);
+					}
 				}
 			}
 			firstScheduledSynchronizationDone = true;
