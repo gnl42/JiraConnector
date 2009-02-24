@@ -26,6 +26,7 @@ import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
 import java.util.HashMap;
@@ -136,7 +137,35 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	}
 
 	@Override
+	public TaskRepositoryLocationFactory getTaskRepositoryLocationFactory() {
+		TaskRepositoryLocationFactory parentFactory = super.getTaskRepositoryLocationFactory();
+		if (parentFactory == null) {
+			return new TaskRepositoryLocationFactory();
+		} else {
+			return parentFactory;
+		}
+	}
+
+	@Override
 	protected BambooClientData createRepositoryConfiguration() {
 		return new BambooClientData();
+	}
+
+	/**
+	 * For testing purposes only
+	 * 
+	 * @return
+	 */
+	public BambooHttpSessionCallback getClientCallback() {
+		return clientCallback;
+	}
+
+	/**
+	 * For testing purposes only
+	 * 
+	 * @return
+	 */
+	public Map<BambooClient, ServerCfg> getTempClients() {
+		return tempClients;
 	}
 }

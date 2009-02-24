@@ -86,14 +86,13 @@ public class CrucibleClientManagerTest extends TestCase {
 		assertNotNull(httpClient1);
 		clientManager.repositoryRemoved(repo);
 		httpClient1 = null;
+		boolean assertion = false;
 		try {
 			httpClient1 = clientManager.getClientCallback().getHttpClient(serverCfg);
 		} catch (AssertionError e) {
-			// ignore since this is what we want
-			return;
+			assertion = true;
 		}
-		// we should never get here as the assertion should have happened
-		assertFalse(true);
+		assertTrue(assertion);
 	}
 
 	public void testCreateDeleteTempClient() {

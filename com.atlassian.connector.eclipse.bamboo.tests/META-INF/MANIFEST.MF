@@ -8,7 +8,9 @@ Require-Bundle: org.junit,
  com.atlassian.connector.eclipse.bamboo.core,
  com.atlassian.connector.eclipse.bamboo.ui,
  org.eclipse.mylyn.tasks.core,
- com.atlassian.connector.commons
+ com.atlassian.connector.commons,
+ org.eclipse.core.runtime,
+ org.eclipse.mylyn.commons.net
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.tests;x-internal:=true

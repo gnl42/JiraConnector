@@ -3,6 +3,9 @@
  */
 package com.atlassian.connector.eclipse.internal.bamboo.tests;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManagerTest;
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooRepositoryConnectorTest;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -19,8 +22,8 @@ public class AllBambooCoreTests {
 
 		TestSuite suite = new TestSuite("Tests for Bamboo");
 		// $JUnit-BEGIN$
-
-
+		suite.addTestSuite(BambooClientManagerTest.class);
+		suite.addTestSuite(BambooRepositoryConnectorTest.class);
 		// $JUnit-END$
 		return suite;
 	}
