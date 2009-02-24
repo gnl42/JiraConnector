@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -447,25 +448,34 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 					Action abandonAction = new Action() {
 						@Override
 						public void run() {
-							CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Abandon Crucible Review "
-									+ getTask().getTaskKey(), getTaskRepository()) {
-								@Override
-								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
-										throws CoreException {
-									client.execute(new RemoteOperation<Review>(monitor) {
-										@Override
-										public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
-												IProgressMonitor monitor) throws CrucibleLoginException,
-												RemoteApiException, ServerPasswordNotProvidedException {
-											String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-											return server.abandonReview(serverCfg, new PermIdBean(permId));
-										}
-									});
-									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
-									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was abandoned.");
-								}
-							};
-							schedule(job, 0L);
+							String message = "Warning - About to delete a Review"
+									+ System.getProperty("line.separator")
+									+ "You can recover an abandoned review using the Abandoned filter."
+									+ System.getProperty("line.separator") + System.getProperty("line.separator")
+									+ "Are you sure you want to abandon this review? ";
+							if (MessageDialog.openConfirm(getSite().getShell(), "Abandon", message)) {
+								CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Abandon Crucible Review "
+										+ getTask().getTaskKey(), getTaskRepository()) {
+									@Override
+									protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
+											throws CoreException {
+										client.execute(new RemoteOperation<Review>(monitor) {
+											@Override
+											public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+													IProgressMonitor monitor) throws CrucibleLoginException,
+													RemoteApiException, ServerPasswordNotProvidedException {
+												String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+												return server.abandonReview(serverCfg, new PermIdBean(permId));
+											}
+										});
+										review = client.getReview(getTaskRepository(), getTask().getTaskId(), true,
+												monitor);
+										return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID,
+												"Review was abandoned.");
+									}
+								};
+								schedule(job, 0L);
+							}
 						}
 					};
 					abandonAction.setText("Abandon");
