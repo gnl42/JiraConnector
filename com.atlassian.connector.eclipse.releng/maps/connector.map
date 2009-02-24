@@ -4,6 +4,8 @@
 !*******************************************************************************************
 
 feature@com.atlassian.connector.eclipse=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse-feature
+feature@com.atlassian.connector.eclipse.bamboo=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.bamboo-feature
+feature@com.atlassian.connector.eclipse.crucible=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.crucible-feature
 feature@com.atlassian.connector.eclipse.subclipse=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.subclipse-feature
 feature@com.atlassian.connector.eclipse.dependencies=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.dependencies-feature
 feature@com.atlassian.connector.eclipse.test=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.test-feature
