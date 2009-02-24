@@ -88,4 +88,10 @@ public final class CrucibleUiUtil {
 		}
 	}
 
+	public static boolean hasCurrentUserCompletedReview(Review review) {
+		String currentUser = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
+				CrucibleUiUtil.getCrucibleTaskRepository(review)).getUserName();
+		return CrucibleUtil.isUserCompleted(currentUser, review);
+	}
+
 }

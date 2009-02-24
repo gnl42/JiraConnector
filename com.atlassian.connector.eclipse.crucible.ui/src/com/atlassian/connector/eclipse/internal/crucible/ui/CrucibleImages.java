@@ -41,6 +41,18 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor SUMMARIZE = create(T_OBJ, "pin_summarise.png"); //$NON-NLS-1$
 
+	public static final ImageDescriptor CLOSE = create(T_OBJ, "pin_close.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor RECOVER = create(T_OBJ, "pin_recover.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor REOPEN = create(T_OBJ, "pin_reopen.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor UNCOMPLETE = create(T_OBJ, "pin_uncomplete.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor COMPLETE = create(T_OBJ, "pin_complete.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor SUBMIT = create(T_OBJ, "pin_submit.png"); //$NON-NLS-1$
+
 	private CrucibleImages() {
 		// ignore
 	}

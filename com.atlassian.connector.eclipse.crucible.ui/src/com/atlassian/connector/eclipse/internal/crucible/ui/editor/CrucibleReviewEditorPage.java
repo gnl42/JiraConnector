@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.IReviewCacheListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.SummarizeReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
@@ -42,6 +43,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -406,83 +408,43 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		if (review != null) {
 			try {
 				EnumSet<CrucibleAction> transitions = review.getTransitions();
+				EnumSet<CrucibleAction> actions = review.getActions();
+				boolean needsSeparator = false;
+				if (actions.contains(CrucibleAction.COMPLETE) && !CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
+					createCompleteReviewAction(manager);
+					needsSeparator = true;
+				}
+				if (actions.contains(CrucibleAction.UNCOMPLETE) && CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
+					createUncompleteReviewAction(manager);
+					needsSeparator = true;
+				}
+				if (needsSeparator) {
+					manager.add(new Separator());
+					needsSeparator = false;
+				}
 				if (transitions.contains(CrucibleAction.SUMMARIZE)) {
-					Action summarizeAction = new SummarizeReviewAction(review, "Summarizing Crucible Review "
-							+ getTask().getTaskKey());
-					summarizeAction.setText("Summarize");
-					summarizeAction.setToolTipText("Summarize review");
-					summarizeAction.setImageDescriptor(CrucibleImages.SUMMARIZE);
-					manager.add(summarizeAction);
+					createSummarizeReviewAction(manager);
+					needsSeparator = true;
 				}
 				if (transitions.contains(CrucibleAction.REOPEN)) {
-					Action abandonAction = new Action() {
-						@Override
-						public void run() {
-							CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Reopen Crucible Review "
-									+ getTask().getTaskKey(), getTaskRepository()) {
-								@Override
-								protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
-										throws CoreException {
-									client.execute(new RemoteOperation<Review>(monitor) {
-										@Override
-										public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
-												IProgressMonitor monitor) throws CrucibleLoginException,
-												RemoteApiException, ServerPasswordNotProvidedException {
-											String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-											return server.reopenReview(serverCfg, new PermIdBean(permId));
-										}
-									});
-									review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
-									return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was reopened.");
-								}
-							};
-							schedule(job, 0L);
-						}
-					};
-					abandonAction.setText("Reopen");
-					//abandonAction.setImageDescriptor(CrucibleImages.REOPEN);
-					abandonAction.setToolTipText("Reopen review");
-					manager.add(abandonAction);
+					createReopenReviewAction(manager);
+					needsSeparator = true;
 				}
 				if (transitions.contains(CrucibleAction.ABANDON)) {
-					Action abandonAction = new Action() {
-						@Override
-						public void run() {
-							String message = "Warning - About to delete a Review"
-									+ System.getProperty("line.separator")
-									+ "You can recover an abandoned review using the Abandoned filter."
-									+ System.getProperty("line.separator") + System.getProperty("line.separator")
-									+ "Are you sure you want to abandon this review? ";
-							if (MessageDialog.openConfirm(getSite().getShell(), "Abandon", message)) {
-								CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Abandon Crucible Review "
-										+ getTask().getTaskKey(), getTaskRepository()) {
-									@Override
-									protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
-											throws CoreException {
-										client.execute(new RemoteOperation<Review>(monitor) {
-											@Override
-											public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
-													IProgressMonitor monitor) throws CrucibleLoginException,
-													RemoteApiException, ServerPasswordNotProvidedException {
-												String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-												return server.abandonReview(serverCfg, new PermIdBean(permId));
-											}
-										});
-										review = client.getReview(getTaskRepository(), getTask().getTaskId(), true,
-												monitor);
-										return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID,
-												"Review was abandoned.");
-									}
-								};
-								schedule(job, 0L);
-							}
-						}
-					};
-					abandonAction.setText("Abandon");
-					//abandonAction.setImageDescriptor(CrucibleImages.ABANDON);
-					abandonAction.setToolTipText("Abandon review");
-					abandonAction.setImageDescriptor(CrucibleImages.ABANDON);
-					manager.add(abandonAction);
+					createAbandonReviewAction(manager);
+					needsSeparator = true;
+				}
+				if (transitions.contains(CrucibleAction.RECOVER)) {
+					createRecoverReviewAction(manager);
+					needsSeparator = true;
+				}
+				if (transitions.contains(CrucibleAction.SUBMIT)) {
+					createSubmitReviewAction(manager);
+					needsSeparator = true;
+				}
+				if (needsSeparator) {
+					manager.add(new Separator());
+					needsSeparator = false;
 				}
 			} catch (ValueNotYetInitialized e) {
 				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Unexpected error", e));
@@ -498,6 +460,203 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
 		refreshAction.setToolTipText("Refresh");
 		manager.add(refreshAction);
+	}
+
+	private void createSubmitReviewAction(IToolBarManager manager) {
+		Action submitAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Submit Crucible Review "
+						+ getTask().getTaskKey(), getTaskRepository()) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						client.execute(new RemoteOperation<Review>(monitor) {
+							@Override
+							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+								return server.submitReview(serverCfg, new PermIdBean(permId));
+							}
+						});
+						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was submitted.");
+					}
+				};
+				schedule(job, 0L);
+			}
+		};
+		submitAction.setText("Submit");
+		submitAction.setToolTipText("Submit review");
+		submitAction.setImageDescriptor(CrucibleImages.SUBMIT);
+		manager.add(submitAction);
+	}
+
+	private void createUncompleteReviewAction(IToolBarManager manager) {
+		Action uncompleteAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Uncomplete Crucible Review "
+						+ getTask().getTaskKey(), getTaskRepository()) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						client.execute(new RemoteOperation<Object>(monitor) {
+							@Override
+							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+								server.completeReview(serverCfg, new PermIdBean(permId), false);
+								return null;
+							}
+						});
+						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was uncompleted.");
+					}
+				};
+				schedule(job, 0L);
+			}
+		};
+		uncompleteAction.setText("Uncomplete");
+		uncompleteAction.setToolTipText("Uncomplete review");
+		uncompleteAction.setImageDescriptor(CrucibleImages.UNCOMPLETE);
+		manager.add(uncompleteAction);
+	}
+
+	private void createCompleteReviewAction(IToolBarManager manager) {
+		Action completeAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Complete Crucible Review "
+						+ getTask().getTaskKey(), getTaskRepository()) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						client.execute(new RemoteOperation<Object>(monitor) {
+							@Override
+							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+								server.completeReview(serverCfg, new PermIdBean(permId), true);
+								return null;
+							}
+						});
+						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was completed.");
+					}
+				};
+				schedule(job, 0L);
+			}
+		};
+		completeAction.setText("Complete");
+		completeAction.setToolTipText("Complete review");
+		completeAction.setImageDescriptor(CrucibleImages.COMPLETE);
+		manager.add(completeAction);
+	}
+
+	private void createRecoverReviewAction(IToolBarManager manager) {
+		Action recoverAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Recover Crucible Review "
+						+ getTask().getTaskKey(), getTaskRepository()) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						client.execute(new RemoteOperation<Review>(monitor) {
+							@Override
+							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+								return server.recoverReview(serverCfg, new PermIdBean(permId));
+							}
+						});
+						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was recovered.");
+					}
+				};
+				schedule(job, 0L);
+			}
+		};
+		recoverAction.setText("Recover");
+		recoverAction.setToolTipText("Recover Review");
+		recoverAction.setImageDescriptor(CrucibleImages.RECOVER);
+		manager.add(recoverAction);
+	}
+
+	private void createAbandonReviewAction(IToolBarManager manager) {
+		Action abandonAction = new Action() {
+			@Override
+			public void run() {
+				String message = "Warning - About to delete a Review" + System.getProperty("line.separator")
+						+ "You can recover an abandoned review using the Abandoned filter."
+						+ System.getProperty("line.separator") + System.getProperty("line.separator")
+						+ "Are you sure you want to abandon this review? ";
+				if (MessageDialog.openConfirm(getSite().getShell(), "Abandon", message)) {
+					CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Abandon Crucible Review "
+							+ getTask().getTaskKey(), getTaskRepository()) {
+						@Override
+						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+							client.execute(new RemoteOperation<Review>(monitor) {
+								@Override
+								public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+										IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+										ServerPasswordNotProvidedException {
+									String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+									return server.abandonReview(serverCfg, new PermIdBean(permId));
+								}
+							});
+							review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+							return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was abandoned.");
+						}
+					};
+					schedule(job, 0L);
+				}
+			}
+		};
+		abandonAction.setText("Abandon");
+		abandonAction.setToolTipText("Abandon review");
+		abandonAction.setImageDescriptor(CrucibleImages.ABANDON);
+		manager.add(abandonAction);
+	}
+
+	private void createReopenReviewAction(IToolBarManager manager) {
+		Action abandonAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Reopen Crucible Review "
+						+ getTask().getTaskKey(), getTaskRepository()) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						client.execute(new RemoteOperation<Review>(monitor) {
+							@Override
+							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
+								return server.reopenReview(serverCfg, new PermIdBean(permId));
+							}
+						});
+						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review was reopened.");
+					}
+				};
+				schedule(job, 0L);
+			}
+		};
+		abandonAction.setText("Reopen");
+		abandonAction.setImageDescriptor(CrucibleImages.REOPEN);
+		abandonAction.setToolTipText("Reopen review");
+		manager.add(abandonAction);
+	}
+
+	private void createSummarizeReviewAction(IToolBarManager manager) {
+		Action summarizeAction = new SummarizeReviewAction(review, "Summarize and Close Crucible Review "
+				+ getTask().getTaskKey());
+		summarizeAction.setText("Summarize and Close");
+		summarizeAction.setToolTipText("Summarize and Close Review");
+		summarizeAction.setImageDescriptor(CrucibleImages.SUMMARIZE);
+		manager.add(summarizeAction);
 	}
 
 	private void schedule(final CrucibleReviewChangeJob job, long delay) {

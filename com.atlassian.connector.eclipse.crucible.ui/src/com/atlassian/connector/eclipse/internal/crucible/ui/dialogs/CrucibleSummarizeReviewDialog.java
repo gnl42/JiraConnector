@@ -67,7 +67,7 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 	private final class SummarizeReviewRunnable implements IRunnableWithProgress {
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-			monitor.beginTask("Summarizing Review", IProgressMonitor.UNKNOWN);
+			monitor.beginTask("Summarize and Close Review", IProgressMonitor.UNKNOWN);
 
 			try {
 				if (!discardDrafts) {
@@ -143,9 +143,9 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 
 	@Override
 	protected Control createPageControls(Composite parent) {
-		getShell().setText("Summarize Review");
-		setTitle("Summarize Review");
-		setMessage("Summarize the outcome of the review");
+		getShell().setText("Summarize");
+		setTitle("Summarize and Close Review");
+		setMessage("Summarize and close the outcome of the review");
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
