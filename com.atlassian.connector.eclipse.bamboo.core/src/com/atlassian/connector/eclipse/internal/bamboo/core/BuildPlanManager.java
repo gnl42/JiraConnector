@@ -213,22 +213,37 @@ public final class BuildPlanManager {
 		List<BambooBuild> changedBuilds = new ArrayList<BambooBuild>();
 		HashSet<BambooBuild> failedToRemove = new HashSet<BambooBuild>();
 		HashMap<String, BambooBuild> cachedToAdd = new HashMap<String, BambooBuild>();
-		//find changed and removed builds
-		for (BambooBuild oldBuild : currentBuilds) {
-			for (BambooBuild newBuild : newBuilds) {
-				if (newBuild.getErrorMessage() != null && newBuild.getStatus() == BuildStatus.UNKNOWN) {
-					//if retrieval failed, use old (cached) build
-					failedToRemove.add(newBuild);
-					if (!cachedToAdd.containsKey(oldBuild.getBuildKey())) {
-						cachedToAdd.put(oldBuild.getBuildKey(), createCachedBuild(oldBuild, newBuild));
-						errorLog.add(oldBuild.getBuildKey() + " - " + newBuild.getErrorMessage());
+
+		for (BambooBuild newBuild : newBuilds) {
+			//find same old build
+			BambooBuild correspondingOldBuild = null;
+			for (BambooBuild oldBuild : currentBuilds) {
+				if (BambooUtil.isSameBuildPlan(newBuild, oldBuild)) {
+					correspondingOldBuild = oldBuild;
+					break;
+				}
+			}
+			//process failed build retrieval
+			if (newBuild.getErrorMessage() != null && newBuild.getStatus() == BuildStatus.UNKNOWN) {
+				//log error
+				errorLog.add(newBuild.getBuildKey() + " - " + newBuild.getErrorMessage() + "["
+						+ newBuild.getServer().getName() + "]");
+				//of there is an old build, used cached information for the failed new build retrieval
+				if (correspondingOldBuild != null) {
+					if (!cachedToAdd.containsKey(correspondingOldBuild.getBuildKey())) {
+						BambooBuild buildToCache = createCachedBuild(correspondingOldBuild, newBuild);
+						if (buildToCache != null) {
+							cachedToAdd.put(correspondingOldBuild.getBuildKey(), buildToCache);
+						}
 					}
-				} else if (BambooUtil.isSameBuildPlan(newBuild, oldBuild)) {
+				}
+				//process successful build retrieval (only if there was a corresponding old build)
+			} else if (correspondingOldBuild != null) {
+				if (BambooUtil.isSameBuildPlan(newBuild, correspondingOldBuild)) {
 					//if build keys do not match, but builds are of the same build plan, it is a changed build
-					if (newBuild.getBuildKey().equals(oldBuild.getBuildKey())) {
+					if (newBuild.getBuildKey().equals(correspondingOldBuild.getBuildKey())) {
 						changedBuilds.add(newBuild);
 					}
-					break;
 				}
 			}
 		}
@@ -240,12 +255,16 @@ public final class BuildPlanManager {
 	}
 
 	private BambooBuild createCachedBuild(BambooBuild oldBuild, BambooBuild newBuild) {
-		return new BambooBuildInfo(oldBuild.getBuildKey(), oldBuild.getBuildName(), oldBuild.getServer(),
-				oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(), oldBuild.getBuildNumber(),
-				oldBuild.getStatus(), oldBuild.getBuildReason(), oldBuild.getBuildStartedDate(), null, null,
-				oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getBuildCompletedDate(),
-				newBuild.getErrorMessage(), oldBuild.getBuildRelativeBuildDate(),
-				oldBuild.getBuildDurationDescription(), oldBuild.getCommiters());
+		try {
+			return new BambooBuildInfo(oldBuild.getBuildKey(), oldBuild.getBuildName(), oldBuild.getServer(),
+					oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(),
+					oldBuild.getBuildNumber(), oldBuild.getStatus(), oldBuild.getBuildReason(),
+					oldBuild.getBuildStartedDate(), null, null, oldBuild.getTestsPassed(), oldBuild.getTestsFailed(),
+					oldBuild.getBuildCompletedDate(), newBuild.getErrorMessage(), oldBuild.getBuildRelativeBuildDate(),
+					oldBuild.getBuildDurationDescription(), oldBuild.getCommiters());
+		} catch (UnsupportedOperationException e) {
+			return null;
+		}
 	}
 
 	private void processRefreshedBuildsOneRepository(Collection<BambooBuild> newBuilds, TaskRepository taskRepository) {
@@ -262,21 +281,26 @@ public final class BuildPlanManager {
 
 	private void notifyListeners(Map<TaskRepository, Collection<BambooBuild>> oldBuilds,
 			Map<TaskRepository, Collection<BambooBuild>> changedBuilds, List<String> errorLog, boolean forcedRefresh) {
-		BuildsChangedEvent event = new BuildsChangedEvent(changedBuilds, subscribedBuilds, oldBuilds, errorLog);
+		BuildsChangedEvent event = new BuildsChangedEvent(changedBuilds, subscribedBuilds, oldBuilds, errorLog,
+				forcedRefresh, errorLog.size() > 0);
 
 		//notify listeners
 		for (BuildsChangedListener listener : buildChangedListeners) {
 			listener.buildsUpdated(event);
 		}
 		//send failed refreshes to error log
-		if (forcedRefresh && errorLog.size() > 0) {
-			MultiStatus refreshStatus = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0, "Error while refreshing builds",
-					null);
-			for (String error : errorLog) {
-				refreshStatus.add(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID, error));
+		if (errorLog.size() > 0) {
+
+			if (forcedRefresh) {
+				MultiStatus refreshStatus = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0,
+						"Error while refreshing builds", null);
+				for (String error : errorLog) {
+					refreshStatus.add(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID, error));
+				}
+				StatusHandler.log(refreshStatus);
 			}
-			StatusHandler.log(refreshStatus);
 		}
+
 	}
 
 	public void repositoryRemoved(TaskRepository repository) {

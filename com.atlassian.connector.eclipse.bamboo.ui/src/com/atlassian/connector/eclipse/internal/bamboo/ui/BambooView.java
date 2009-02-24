@@ -96,8 +96,10 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -252,16 +254,16 @@ public class BambooView extends ViewPart {
 				@Override
 				public void run() {
 					InputDialog syncIntervalDialog = new InputDialog(getSite().getShell(), "Set Preference",
-							"Set the interval (in minutes) in between automatic synchronizations",
+							"Set the interval (in minutes) in between automatic refreshing",
 							String.valueOf(BambooCorePlugin.getSyncIntervalMinutes()), new IInputValidator() {
 								public String isValid(String newText) {
 									try {
 										int number = Integer.parseInt(newText);
 										if (number < 1) {
-											return "Please enter the synchronization interval (in minutes). [Value needs to be > 0]";
+											return "Please enter the refreshing interval (in minutes). [Value needs to be > 0]";
 										}
 									} catch (Exception e) {
-										return "Please enter the synchronization interval (in minutes). [Value needs to be a number]";
+										return "Please enter the refreshing interval (in minutes). [Value needs to be a number]";
 									}
 									return null;
 								}
@@ -272,7 +274,7 @@ public class BambooView extends ViewPart {
 				}
 			};
 			ActionContributionItem setSyncIntervalACI = new ActionContributionItem(setSyncIntervalAction);
-			setSyncIntervalAction.setText("Set Synchronization Interval...");
+			setSyncIntervalAction.setText("Set Refresh Interval...");
 			setSyncIntervalACI.fill(menu, -1);
 
 			new Separator().fill(menu, -1);
@@ -726,11 +728,11 @@ public class BambooView extends ViewPart {
 		}
 
 		buildsChangedListener = new BuildsChangedListener() {
-			public void buildsUpdated(BuildsChangedEvent event) {
+			public void buildsUpdated(final BuildsChangedEvent event) {
 				builds = event.getAllBuilds();
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						refresh();
+						refresh(event.isForcedRefresh(), event.isFailed());
 					}
 				});
 			}
@@ -740,7 +742,7 @@ public class BambooView extends ViewPart {
 		//if the initial synchronization is already finished, get the cache data
 		if (buildPlanManager.isFirstScheduledSynchronizationDone()) {
 			builds = buildPlanManager.getSubscribedBuilds();
-			refresh();
+			refresh(false, false);
 		}
 	}
 
@@ -781,20 +783,22 @@ public class BambooView extends ViewPart {
 						builder.append(NLS.bind("Tests: {0} out of {1} failed", new Object[] { build.getTestsFailed(),
 								totalTests }));
 					}
-					builder.append("  [");
-					builder.append(build.getBuildReason());
+					if (build.getBuildReason() != null) {
+						builder.append("  [");
+						builder.append(build.getBuildReason());
 
-					if (build.getBuildReason().equals(CODE_HAS_CHANGED)) {
-						builder.append(" by ");
-						boolean first = true;
-						for (String committer : build.getCommiters()) {
-							if (!first) {
-								builder.append(", ");
+						if (build.getBuildReason().equals(CODE_HAS_CHANGED) && build.getCommiters() != null) {
+							builder.append(" by ");
+							boolean first = true;
+							for (String committer : build.getCommiters()) {
+								if (!first) {
+									builder.append(", ");
+								}
+								builder.append(committer);
 							}
-							builder.append(committer);
 						}
+						builder.append("]");
 					}
-					builder.append("]");
 					return builder.toString();
 				}
 				return super.getText(element);
@@ -1053,19 +1057,11 @@ public class BambooView extends ViewPart {
 		actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
 	}
 
-	private void refresh() {
+	private void refresh(boolean forcedRefresh, boolean failed) {
 		boolean hasSubscriptions = false;
-		boolean hasError = false;
 		for (Collection<BambooBuild> repoBuilds : builds.values()) {
 			if (repoBuilds.size() > 0) {
 				hasSubscriptions = true;
-			}
-			for (BambooBuild build : repoBuilds) {
-				if (build.getErrorMessage() != null) {
-					hasError = true;
-				}
-			}
-			if (hasError && hasSubscriptions) {
 				break;
 			}
 		}
@@ -1079,11 +1075,17 @@ public class BambooView extends ViewPart {
 			linkComp.getParent().layout();
 		}
 		statusLineManager = getViewSite().getActionBars().getStatusLineManager();
-		if (hasError) {
-			statusLineManager.setErrorMessage(CommonImages.getImage(CommonImages.WARNING),
-					"Error while refreshing build plans. See Error log for details.");
+		if (failed) {
+			if (forcedRefresh) {
+				statusLineManager.setErrorMessage(CommonImages.getImage(CommonImages.WARNING),
+						"Error while refreshing build plans. See Error log for details.");
+			} else {
+				statusLineManager.setErrorMessage(CommonImages.getImage(CommonImages.WARNING),
+						"Error while refreshing build plans. Retry by manually invoking a refresh in the view's toolbar.");
+			}
 		} else {
 			statusLineManager.setErrorMessage(null);
+			statusLineManager.setMessage("Last Refresh: " + new SimpleDateFormat("MMM d, H:mm:ss").format(new Date()));
 		}
 
 		buildViewer.setInput(builds);

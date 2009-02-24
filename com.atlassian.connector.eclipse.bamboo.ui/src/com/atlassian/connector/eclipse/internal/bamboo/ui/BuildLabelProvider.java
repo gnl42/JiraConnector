@@ -38,14 +38,22 @@ public class BuildLabelProvider implements ILabelProvider {
 	}
 
 	public String getText(Object element) {
-		String buildName;
+		StringBuilder builder = new StringBuilder();
 		BambooBuild bambooBuild = (BambooBuild) element;
 		if (bambooBuild.getBuildName() == null) {
-			buildName = "N/A";
+			builder.append("N/A");
 		} else {
-			buildName = bambooBuild.getBuildName();
+			builder.append(bambooBuild.getBuildName());
+			builder.append(" - ");
+			builder.append(bambooBuild.getBuildKey());
+			builder.append(" - ");
+			try {
+				builder.append(bambooBuild.getBuildNumber());
+			} catch (UnsupportedOperationException e) {
+				builder.append("N/A");
+			}
 		}
-		return buildName + " - " + bambooBuild.getBuildKey() + "-" + bambooBuild.getBuildNumber();
+		return builder.toString();
 	}
 
 	public void addListener(ILabelProviderListener listener) {

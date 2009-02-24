@@ -30,14 +30,21 @@ public class BuildsChangedEvent {
 
 	private final List<String> errorLog;
 
+	private final boolean forcedRefresh;
+
+	private final boolean failed;
+
 	public BuildsChangedEvent(Map<TaskRepository, Collection<BambooBuild>> changedBuilds,
 			Map<TaskRepository, Collection<BambooBuild>> allBuilds,
-			Map<TaskRepository, Collection<BambooBuild>> oldBuilds, List<String> errorLog) {
+			Map<TaskRepository, Collection<BambooBuild>> oldBuilds, List<String> errorLog, boolean forcedRefresh,
+			boolean failed) {
 		super();
 		this.changedBuilds = changedBuilds;
 		this.allBuilds = allBuilds;
 		this.oldBuilds = oldBuilds;
 		this.errorLog = errorLog;
+		this.forcedRefresh = forcedRefresh;
+		this.failed = failed;
 	}
 
 	public Map<TaskRepository, Collection<BambooBuild>> getChangedBuilds() {
@@ -54,5 +61,13 @@ public class BuildsChangedEvent {
 
 	public List<String> getErrorLog() {
 		return errorLog == null ? new ArrayList<String>() : errorLog;
+	}
+
+	public boolean isForcedRefresh() {
+		return forcedRefresh;
+	}
+
+	public boolean isFailed() {
+		return failed;
 	}
 }
