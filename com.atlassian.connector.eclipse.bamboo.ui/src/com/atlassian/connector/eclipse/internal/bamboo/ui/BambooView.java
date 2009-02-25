@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
@@ -33,15 +34,12 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jdt.internal.junit.model.JUnitModel;
 import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -52,16 +50,12 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.views.TaskRepositoriesView;
-import org.eclipse.mylyn.internal.tasks.ui.wizards.NewRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
-import org.eclipse.mylyn.tasks.ui.wizards.TaskRepositoryWizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -72,7 +66,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Link;
@@ -163,152 +156,6 @@ public class BambooView extends ViewPart {
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
 			return selection.size() > 0;
-		}
-	}
-
-	private class RepositoryConfigurationAction extends Action implements IMenuCreator {
-		private Menu menu;
-
-		@Override
-		public void run() {
-			Display.getDefault().asyncExec(new Runnable() {
-				@SuppressWarnings("restriction")
-				public void run() {
-					NewRepositoryWizard repositoryWizard = new NewRepositoryWizard(BambooCorePlugin.CONNECTOR_KIND);
-
-					WizardDialog repositoryDialog = new TaskRepositoryWizardDialog(getSite().getShell(),
-							repositoryWizard);
-					repositoryDialog.create();
-					repositoryDialog.getShell().setText("Add New Bamboo Repository...");
-					repositoryDialog.setBlockOnOpen(true);
-					repositoryDialog.open();
-				}
-			});
-		}
-
-		public void dispose() {
-			if (menu != null) {
-				menu.dispose();
-				menu = null;
-			}
-		}
-
-		public Menu getMenu(Control parent) {
-			if (menu != null) {
-				menu.dispose();
-			}
-			menu = new Menu(parent);
-			addActions();
-			return menu;
-		}
-
-		private void addActions() {
-			// add repository action
-			Action addRepositoryAction = new Action() {
-				@SuppressWarnings("restriction")
-				@Override
-				public void run() {
-					NewRepositoryWizard repositoryWizard = new NewRepositoryWizard(BambooCorePlugin.CONNECTOR_KIND);
-
-					WizardDialog repositoryDialog = new TaskRepositoryWizardDialog(getSite().getShell(),
-							repositoryWizard);
-					repositoryDialog.create();
-					repositoryDialog.getShell().setText("Add New Bamboo Repository...");
-					repositoryDialog.setBlockOnOpen(true);
-					repositoryDialog.open();
-				}
-			};
-			ActionContributionItem addRepoACI = new ActionContributionItem(addRepositoryAction);
-			addRepositoryAction.setText("Add New Repository...");
-			addRepositoryAction.setImageDescriptor(BambooImages.ADD_REPOSITORY);
-			addRepoACI.fill(menu, -1);
-
-			boolean separatorAdded = false;
-
-			//open repository configuration action
-			for (final TaskRepository repository : TasksUi.getRepositoryManager().getRepositories(
-					BambooCorePlugin.CONNECTOR_KIND)) {
-				if (!separatorAdded) {
-					new Separator().fill(menu, -1);
-					separatorAdded = true;
-				}
-				Action openRepositoryConfigurationAction = new Action() {
-					@Override
-					public void run() {
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								TasksUiUtil.openEditRepositoryWizard(repository);
-							}
-						});
-					}
-				};
-				ActionContributionItem openRepoConfigACI = new ActionContributionItem(openRepositoryConfigurationAction);
-				openRepositoryConfigurationAction.setText(NLS.bind("Properties for {0}...",
-						repository.getRepositoryLabel()));
-				openRepoConfigACI.fill(menu, -1);
-			}
-
-			new Separator().fill(menu, -1);
-
-			Action setSyncIntervalAction = new Action() {
-				@Override
-				public void run() {
-					InputDialog syncIntervalDialog = new InputDialog(getSite().getShell(), "Set Preference",
-							"Set the interval (in minutes) in between automatic refreshing",
-							String.valueOf(BambooCorePlugin.getSyncIntervalMinutes()), new IInputValidator() {
-								public String isValid(String newText) {
-									try {
-										int number = Integer.parseInt(newText);
-										if (number < 1) {
-											return "Please enter the refreshing interval (in minutes). [Value needs to be > 0]";
-										}
-									} catch (Exception e) {
-										return "Please enter the refreshing interval (in minutes). [Value needs to be a number]";
-									}
-									return null;
-								}
-							});
-					if (syncIntervalDialog.open() == Window.OK) {
-						BambooCorePlugin.setSyncIntervalMinutes(Integer.parseInt(syncIntervalDialog.getValue()));
-					}
-				}
-			};
-			ActionContributionItem setSyncIntervalACI = new ActionContributionItem(setSyncIntervalAction);
-			setSyncIntervalAction.setText("Set Refresh Interval...");
-			setSyncIntervalACI.fill(menu, -1);
-
-			new Separator().fill(menu, -1);
-
-			//goto repository action
-			Action gotoTaskRepositoryViewAction = new Action() {
-				@Override
-				public void run() {
-					Display.getDefault().asyncExec(new Runnable() {
-						@SuppressWarnings("restriction")
-						public void run() {
-							try {
-								getSite().getPage().showView(TaskRepositoriesView.ID);
-							} catch (PartInitException e) {
-								StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-										"Failed to show Task Repositories View"));
-							}
-						}
-					});
-				}
-			};
-			ActionContributionItem gotoRepoViewACI = new ActionContributionItem(gotoTaskRepositoryViewAction);
-			gotoTaskRepositoryViewAction.setText("Show Task Repositories View");
-			gotoTaskRepositoryViewAction.setImageDescriptor(BambooImages.REPOSITORIES);
-			gotoRepoViewACI.fill(menu, -1);
-		}
-
-		public Menu getMenu(Menu parent) {
-			if (menu != null) {
-				menu.dispose();
-			}
-			menu = new Menu(parent);
-			addActions();
-			return menu;
 		}
 	}
 
@@ -994,6 +841,7 @@ public class BambooView extends ViewPart {
 		toolBarManager.add(showTestResultsAction);
 		toolBarManager.add(new Separator());
 		toolBarManager.add(runBuildAction);
+		toolBarManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	private void createActions() {

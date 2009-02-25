@@ -28,6 +28,20 @@
             name="Atlassian">
       </category>
    </extension>
+      <extension point="org.eclipse.ui.viewActions"> 
+		<viewContribution 
+			id="com.atlassian.connector.eclipse.bamboo.ui.actions.view" 
+	   		targetID="com.atlassian.connector.eclipse.bamboo.ui.plans">
+         <action
+               class="com.atlassian.connector.eclipse.internal.bamboo.ui.actions.SetRefreshIntervalAction"
+               id="com.atlassian.connector.eclipse.bamboo.ui.action.refreshpref"
+               label="Set Refresh Interval..."
+               menubarPath="additions"
+               style="push"
+               tooltip="Change the interval between scheduled refreshes.">
+         </action>
+	    </viewContribution> 
+	</extension>
       <!--<extension point="org.eclipse.ui.decorators">
       <decorator
             class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooViewLabelDecorator"
