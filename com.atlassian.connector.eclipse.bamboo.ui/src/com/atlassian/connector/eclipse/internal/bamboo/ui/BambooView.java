@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jdt.internal.junit.model.JUnitModel;
+import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
 import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
@@ -407,6 +408,14 @@ public class BambooView extends ViewPart {
 
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
+			//check if JDT is available
+			try {
+				if (JUnitPlugin.getDefault() == null) {
+					return false;
+				}
+			} catch (Throwable e) {
+				return false;
+			}
 			if (selection.size() != 1) {
 				return false;
 			}

@@ -34,17 +34,14 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.jdt.junit"/>
-      <import plugin="org.jdom_jaxen"/>
+      <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.compare"/>
-      <import plugin="org.apache.commons.codec"/>
       <import plugin="org.apache.commons.logging"/>
       <import feature="org.eclipse.mylyn_feature" version="3.1.0.I20090217" match="compatible"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.eclipse.team.ui"/>
    </requires>
 
    <plugin
