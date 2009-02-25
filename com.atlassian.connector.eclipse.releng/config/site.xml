@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<site pack200="true" associateSitesURL="https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.releng/config/associates.xml">
+<site>
    <description url="http://update.atlassian.com/atlassian-eclipse-plugin">
       Atlassian Eclipse Connector
    </description>
    <feature url="features/com.atlassian.connector.eclipse_@core@.jar" id="com.atlassian.connector.eclipse" version="@core@">
       <category name="Connector"/>
    </feature>
-   <feature url="features/com.atlassian.connector.eclipse.subclipse_@core@.jar" id="com.atlassian.connector.eclipse.subclipse" version="@core@">
-      <category name="Connector"/>
+   <feature url="features/com.atlassian.connector.eclipse.bamboo_@core@.jar" id="com.atlassian.connector.eclipse.bamboo" version="@core@">
+      <category name="Integrations"/>
    </feature>
-   <category-def name="Connector" label="Connector"/>
+   <feature url="features/com.atlassian.connector.eclipse.crucible_@core@.jar" id="com.atlassian.connector.eclipse.crucible" version="@core@">
+      <category name="Integrations"/>
+   </feature>
+   <feature url="features/com.atlassian.connector.eclipse.subclipse_@core@.jar" id="com.atlassian.connector.eclipse.subclipse" version="@core@">
+      <category name="Integrations"/>
+   </feature>
+   <category-def name="Connector" label="Atlassian Connector"/>
+   <category-def name="Integrations" label="Atlassian Integrations (optional)"/>
 </site>
