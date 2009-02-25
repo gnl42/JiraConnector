@@ -281,15 +281,16 @@ public final class BuildPlanManager {
 
 	private void notifyListeners(Map<TaskRepository, Collection<BambooBuild>> oldBuilds,
 			Map<TaskRepository, Collection<BambooBuild>> changedBuilds, List<String> errorLog, boolean forcedRefresh) {
+		boolean failed = errorLog == null ? false : errorLog.size() > 0;
 		BuildsChangedEvent event = new BuildsChangedEvent(changedBuilds, subscribedBuilds, oldBuilds, errorLog,
-				forcedRefresh, errorLog.size() > 0);
+				forcedRefresh, failed);
 
 		//notify listeners
 		for (BuildsChangedListener listener : buildChangedListeners) {
 			listener.buildsUpdated(event);
 		}
 		//send failed refreshes to error log
-		if (errorLog.size() > 0) {
+		if (failed) {
 
 			if (forcedRefresh) {
 				MultiStatus refreshStatus = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0,
