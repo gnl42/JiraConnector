@@ -262,17 +262,14 @@ public class BambooView extends ViewPart {
 
 		private MessageConsole prepareConsole(BambooBuild build) {
 			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-			IConsole[] existing = consoleManager.getConsoles();
-			for (IConsole element : existing) {
-				if (BAMBOO_BUILD_LOG_CONSOLE.equals(element.getName())) {
-					buildLogConsole = (MessageConsole) element;
-				}
-			}
+			MessageConsole buildLogConsole = buildLogConsoles.get(build);
 			if (buildLogConsole == null) {
 				buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE + build.getBuildKey() + " - "
 						+ build.getBuildNumber(), BambooImages.CONSOLE);
-				consoleManager.addConsoles(new IConsole[] { buildLogConsole });
 			}
+			BambooView.this.buildLogConsoles.put(build, buildLogConsole);
+			consoleManager.addConsoles(new IConsole[] { buildLogConsole });
+
 			buildLogConsole.clearConsole();
 			consoleManager.showConsoleView(buildLogConsole);
 			return buildLogConsole;
@@ -516,7 +513,7 @@ public class BambooView extends ViewPart {
 
 	private Image currentTitleImage = bambooImage;
 
-	private MessageConsole buildLogConsole;
+	private final Map<BambooBuild, MessageConsole> buildLogConsoles;
 
 	private Link link;
 
@@ -556,6 +553,7 @@ public class BambooView extends ViewPart {
 
 	public BambooView() {
 		builds = new HashMap<TaskRepository, Collection<BambooBuild>>();
+		buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
 	}
 
 	@Override
