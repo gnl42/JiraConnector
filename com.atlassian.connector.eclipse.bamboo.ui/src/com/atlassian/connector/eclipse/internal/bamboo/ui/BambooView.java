@@ -159,7 +159,18 @@ public class BambooView extends ViewPart {
 
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
-			return selection.size() > 0;
+			if (selection.size() > 1) {
+				try {
+					Iterator it = selection.iterator();
+					while (it.hasNext()) {
+						((BambooBuild) it.next()).getBuildNumber();
+					}
+					return true;
+				} catch (UnsupportedOperationException e) {
+					// igonre
+				}
+			}
+			return false;
 		}
 	}
 
@@ -193,7 +204,12 @@ public class BambooView extends ViewPart {
 			}
 			BambooBuild build = (BambooBuild) selection.iterator().next();
 			if (build != null) {
-				return build.getEnabled();
+				try {
+					build.getBuildNumber();
+					return build.getEnabled();
+				} catch (UnsupportedOperationException e) {
+					return false;
+				}
 			}
 			return false;
 		}
@@ -264,7 +280,15 @@ public class BambooView extends ViewPart {
 
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
-			return selection.size() == 1;
+			if (selection.size() == 1) {
+				try {
+					((BambooBuild) selection.getFirstElement()).getBuildNumber();
+					return true;
+				} catch (UnsupportedOperationException e) {
+					// ignore
+				}
+			}
+			return false;
 		}
 	}
 
@@ -293,7 +317,15 @@ public class BambooView extends ViewPart {
 
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
-			return selection.size() == 1;
+			if (selection.size() == 1) {
+				try {
+					((BambooBuild) selection.getFirstElement()).getBuildNumber();
+					return true;
+				} catch (UnsupportedOperationException e) {
+					// ignore
+				}
+			}
+			return false;
 		}
 	}
 
@@ -322,7 +354,15 @@ public class BambooView extends ViewPart {
 
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
-			return selection.size() == 1;
+			if (selection.size() == 1) {
+				try {
+					((BambooBuild) selection.getFirstElement()).getBuildNumber();
+					return true;
+				} catch (UnsupportedOperationException e) {
+					// ignore
+				}
+			}
+			return false;
 		}
 	}
 
@@ -376,7 +416,12 @@ public class BambooView extends ViewPart {
 			}
 			BambooBuild build = (BambooBuild) selection.iterator().next();
 			if (build != null) {
-				return (build.getTestsFailed() + build.getTestsPassed()) > 0;
+				try {
+					build.getBuildNumber();
+					return (build.getTestsFailed() + build.getTestsPassed()) > 0;
+				} catch (UnsupportedOperationException e) {
+					return false;
+				}
 			}
 			return false;
 		}
@@ -590,6 +635,11 @@ public class BambooView extends ViewPart {
 					BambooBuild build = ((BambooBuild) element);
 					StringBuilder builder = new StringBuilder();
 					int totalTests = build.getTestsFailed() + build.getTestsPassed();
+					try {
+						build.getBuildNumber();
+					} catch (UnsupportedOperationException e) {
+						return ("N/A");
+					}
 					if (totalTests == 0) {
 						builder.append("Tests: Testless build");
 					} else {
@@ -626,6 +676,11 @@ public class BambooView extends ViewPart {
 			public String getText(Object element) {
 				if (element instanceof BambooBuild) {
 					BambooBuild build = ((BambooBuild) element);
+					try {
+						build.getBuildNumber();
+					} catch (UnsupportedOperationException e) {
+						return ("N/A");
+					}
 					return DateUtil.getRelativeBuildTime(build.getBuildCompletedDate());
 				}
 				return super.getText(element);

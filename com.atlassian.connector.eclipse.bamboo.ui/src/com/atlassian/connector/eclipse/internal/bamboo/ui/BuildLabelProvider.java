@@ -44,14 +44,21 @@ public class BuildLabelProvider implements ILabelProvider {
 			builder.append("N/A");
 		} else {
 			builder.append(bambooBuild.getBuildName());
-			builder.append(" - ");
+		}
+		if (bambooBuild.getBuildKey() != null) {
+			builder.append("  [");
 			builder.append(bambooBuild.getBuildKey());
-			builder.append(" - ");
 			try {
-				builder.append(bambooBuild.getBuildNumber());
+				String number = String.valueOf(bambooBuild.getBuildNumber());
+				builder.append("-");
+				builder.append(number);
 			} catch (UnsupportedOperationException e) {
-				builder.append("N/A");
+				if (bambooBuild.getBuildName() != null) {
+					builder.append("-");
+					builder.append("N/A");
+				}
 			}
+			builder.append("]");
 		}
 		return builder.toString();
 	}

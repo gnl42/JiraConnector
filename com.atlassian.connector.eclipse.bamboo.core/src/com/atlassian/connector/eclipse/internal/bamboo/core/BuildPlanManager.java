@@ -234,6 +234,7 @@ public final class BuildPlanManager {
 						BambooBuild buildToCache = createCachedBuild(correspondingOldBuild, newBuild);
 						if (buildToCache != null) {
 							cachedToAdd.put(correspondingOldBuild.getBuildKey(), buildToCache);
+							failedToRemove.add(newBuild);
 						}
 					}
 				}
