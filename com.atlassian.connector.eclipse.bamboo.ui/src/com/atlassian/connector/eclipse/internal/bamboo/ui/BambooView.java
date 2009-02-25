@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
@@ -80,6 +81,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -157,54 +159,6 @@ public class BambooView extends ViewPart {
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
 			return selection.size() > 0;
-		}
-	}
-
-	private class OpenRepositoryConfigurationAction extends BaseSelectionListenerAction {
-		private TaskRepository repository;
-
-		private boolean linkedAction = false;
-
-		public OpenRepositoryConfigurationAction() {
-			super(null);
-		}
-
-		public OpenRepositoryConfigurationAction(TaskRepository repository) {
-			super(null);
-			this.repository = repository;
-			linkedAction = true;
-		}
-
-		@Override
-		public void run() {
-			if (repository != null && linkedAction) {
-				openConfiguration();
-			} else {
-				ISelection s = buildViewer.getSelection();
-				if (s instanceof IStructuredSelection) {
-					IStructuredSelection selection = (IStructuredSelection) s;
-					Object selected = selection.iterator().next();
-					if (selected instanceof BambooBuild) {
-						final BambooBuild build = (BambooBuild) selected;
-						repository = TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
-								build.getServerUrl());
-						openConfiguration();
-					}
-				}
-			}
-		}
-
-		private void openConfiguration() {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					TasksUiUtil.openEditRepositoryWizard(repository);
-				}
-			});
-		}
-
-		@Override
-		protected boolean updateSelection(IStructuredSelection selection) {
-			return selection.size() == 1;
 		}
 	}
 
@@ -530,7 +484,7 @@ public class BambooView extends ViewPart {
 
 	private BaseSelectionListenerAction openInBrowserAction;
 
-	private Action refreshAction;
+	private IWorkbenchAction refreshAction;
 
 	private BaseSelectionListenerAction showBuildLogAction;
 
@@ -544,7 +498,7 @@ public class BambooView extends ViewPart {
 
 	private Action repoConfigAction;
 
-	private BaseSelectionListenerAction openRepoConfigAction;
+	private IWorkbenchAction openRepoConfigAction;
 
 	private BuildsChangedListener buildsChangedListener;
 
@@ -773,7 +727,7 @@ public class BambooView extends ViewPart {
 				} else if (linkedRepositories != null) {
 					TaskRepository repository = linkedRepositories.get(link);
 					if (repository != null) {
-						new OpenRepositoryConfigurationAction(repository).run();
+						new OpenRepositoryConfigurationAction(repository, buildViewer).run();
 					}
 				} else if (link.equals(OPEN_REPOSITORY_VIEW_LINK)) {
 					Display.getDefault().asyncExec(new Runnable() {
@@ -854,13 +808,13 @@ public class BambooView extends ViewPart {
 	}
 
 	private void createActions() {
-		refreshAction = new Action() {
+		Action refreshLocalAction = new Action() {
 			@Override
 			public void run() {
 				refreshBuilds();
 			}
 		};
-		refreshAction.setText("Refresh");
+		refreshAction = ActionFactory.REFRESH.create(getSite().getWorkbenchWindow());
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
 
 		openInBrowserAction = new OpenInBrowserAction();
@@ -904,14 +858,14 @@ public class BambooView extends ViewPart {
 		repoConfigAction.setImageDescriptor(BambooImages.ADD_REPOSITORY);
 		repoConfigAction.setMenuCreator((IMenuCreator) repoConfigAction);
 
-		openRepoConfigAction = new OpenRepositoryConfigurationAction();
-		openRepoConfigAction.setText("Properties...");
+		OpenRepositoryConfigurationAction openRepoConfigLocalAction = new OpenRepositoryConfigurationAction(buildViewer);
+		openRepoConfigAction = ActionFactory.PROPERTIES.create(getSite().getWorkbenchWindow());
 		openRepoConfigAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(openRepoConfigAction);
+		buildViewer.addSelectionChangedListener(openRepoConfigLocalAction);
 
 		IActionBars actionBars = getViewSite().getActionBars();
-		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigAction);
-		actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigLocalAction);
+		actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshLocalAction);
 	}
 
 	private void refresh(boolean forcedRefresh, boolean failed) {
