@@ -337,16 +337,20 @@ public final class BuildPlanManager {
 		scheduledRefreshBuildsForAllRepositoriesJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
-				scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getSyncIntervalMinutes() * 60000);
+				if (BambooCorePlugin.isAutoRefresh()) {
+					scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getRefreshIntervalMinutes() * 60000);
+				}
 			}
 		});
-		scheduledRefreshBuildsForAllRepositoriesJob.schedule(); //first iteration without delay
+		if (BambooCorePlugin.isAutoRefresh()) {
+			scheduledRefreshBuildsForAllRepositoriesJob.schedule(); //first iteration without delay
+		}
 	}
 
 	public void reInitializeScheduler() {
 		if (this.repositoryManager != null && !scheduledRefreshBuildsForAllRepositoriesJob.isRunning()) {
-			if (scheduledRefreshBuildsForAllRepositoriesJob.cancel()) {
-				scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getSyncIntervalMinutes() * 60000);
+			if (scheduledRefreshBuildsForAllRepositoriesJob.cancel() && BambooCorePlugin.isAutoRefresh()) {
+				scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getRefreshIntervalMinutes() * 60000);
 			}
 		}
 	}

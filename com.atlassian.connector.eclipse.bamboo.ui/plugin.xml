@@ -35,7 +35,7 @@
          <action
                class="com.atlassian.connector.eclipse.internal.bamboo.ui.actions.SetRefreshIntervalAction"
                id="com.atlassian.connector.eclipse.bamboo.ui.action.refreshpref"
-               label="Set Refresh Interval..."
+               label="Change Refresh Interval..."
                menubarPath="additions"
                style="push"
                tooltip="Change the interval between scheduled refreshes.">

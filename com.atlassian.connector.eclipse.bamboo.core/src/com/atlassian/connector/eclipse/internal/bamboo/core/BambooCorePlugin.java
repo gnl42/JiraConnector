@@ -49,8 +49,10 @@ public class BambooCorePlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		plugin.getPluginPreferences().setDefault(BambooConstants.PREFERENCE_SYNC_INTERVAL,
-				BambooConstants.DEFAULT_SYNC_INTERVAL);
+		plugin.getPluginPreferences().setDefault(BambooConstants.PREFERENCE_REFRESH_INTERVAL,
+				BambooConstants.DEFAULT_REFRESH_INTERVAL);
+		plugin.getPluginPreferences().setDefault(BambooConstants.PREFERENCE_AUTO_REFRESH,
+				BambooConstants.DEFAULT_AUTO_REFRESH);
 		buildPlanManager = new BuildPlanManager();
 	}
 
@@ -87,16 +89,27 @@ public class BambooCorePlugin extends Plugin {
 		return buildPlanManager;
 	}
 
-	public static int getSyncIntervalMinutes() {
-		int minutes = plugin.getPluginPreferences().getInt(BambooConstants.PREFERENCE_SYNC_INTERVAL);
+	public static int getRefreshIntervalMinutes() {
+		int minutes = plugin.getPluginPreferences().getInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL);
 		if (minutes <= 0) {
-			return BambooConstants.DEFAULT_SYNC_INTERVAL;
+			return BambooConstants.DEFAULT_REFRESH_INTERVAL;
 		}
 		return minutes;
 	}
 
-	public static void setSyncIntervalMinutes(int minutes) {
-		plugin.getPluginPreferences().setValue(BambooConstants.PREFERENCE_SYNC_INTERVAL, minutes);
+	public static void setRefreshIntervalMinutes(int minutes) {
+		plugin.getPluginPreferences().setValue(BambooConstants.PREFERENCE_REFRESH_INTERVAL, minutes);
+		plugin.savePluginPreferences();
 		getBuildPlanManager().reInitializeScheduler();
+	}
+
+	public static void toggleAutoRefresh() {
+		plugin.getPluginPreferences().setValue(BambooConstants.PREFERENCE_AUTO_REFRESH, !isAutoRefresh());
+		plugin.savePluginPreferences();
+		getBuildPlanManager().reInitializeScheduler();
+	}
+
+	public static boolean isAutoRefresh() {
+		return plugin.getPluginPreferences().getBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH);
 	}
 }

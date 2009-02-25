@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ToggleAutoRefreshAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
@@ -506,6 +507,8 @@ public class BambooView extends ViewPart {
 
 	private IStatusLineManager statusLineManager;
 
+	private ToggleAutoRefreshAction toggleAutoRefreshAction;
+
 	public BambooView() {
 		builds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 	}
@@ -792,6 +795,7 @@ public class BambooView extends ViewPart {
 		IActionBars bars = getViewSite().getActionBars();
 		fillPopupMenu(bars.getMenuManager());
 		fillToolBar(bars.getToolBarManager());
+		bars.getMenuManager().add(toggleAutoRefreshAction);
 	}
 
 	private void fillToolBar(IToolBarManager toolBarManager) {
@@ -857,6 +861,8 @@ public class BambooView extends ViewPart {
 		repoConfigAction.setText("Add Bamboo Repository...");
 		repoConfigAction.setImageDescriptor(BambooImages.ADD_REPOSITORY);
 		repoConfigAction.setMenuCreator((IMenuCreator) repoConfigAction);
+
+		toggleAutoRefreshAction = new ToggleAutoRefreshAction();
 
 		OpenRepositoryConfigurationAction openRepoConfigLocalAction = new OpenRepositoryConfigurationAction(buildViewer);
 		openRepoConfigAction = ActionFactory.PROPERTIES.create(getSite().getWorkbenchWindow());

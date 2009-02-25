@@ -29,7 +29,7 @@ public class SetRefreshIntervalAction implements IViewActionDelegate {
 	public void run(IAction action) {
 		InputDialog syncIntervalDialog = new InputDialog(null, "Set Preference",
 				"Set the interval (in minutes) in between automatic refreshing",
-				String.valueOf(BambooCorePlugin.getSyncIntervalMinutes()), new IInputValidator() {
+				String.valueOf(BambooCorePlugin.getRefreshIntervalMinutes()), new IInputValidator() {
 					public String isValid(String newText) {
 						try {
 							int number = Integer.parseInt(newText);
@@ -43,12 +43,11 @@ public class SetRefreshIntervalAction implements IViewActionDelegate {
 					}
 				});
 		if (syncIntervalDialog.open() == Window.OK) {
-			BambooCorePlugin.setSyncIntervalMinutes(Integer.parseInt(syncIntervalDialog.getValue()));
+			BambooCorePlugin.setRefreshIntervalMinutes(Integer.parseInt(syncIntervalDialog.getValue()));
 		}
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-
 	}
 
 }
