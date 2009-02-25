@@ -40,8 +40,8 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.compare"/>
-      <import plugin="com.springsource.org.apache.commons.codec"/>
-      <import plugin="com.springsource.org.apache.commons.logging"/>
+      <import plugin="org.apache.commons.codec"/>
+      <import plugin="org.apache.commons.logging"/>
       <import feature="org.eclipse.mylyn_feature" version="3.1.0.I20090217" match="compatible"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.team.ui"/>
