@@ -159,7 +159,7 @@ public class BambooView extends ViewPart {
 
 		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
-			if (selection.size() > 1) {
+			if (selection.size() >= 1) {
 				try {
 					Iterator it = selection.iterator();
 					while (it.hasNext()) {
