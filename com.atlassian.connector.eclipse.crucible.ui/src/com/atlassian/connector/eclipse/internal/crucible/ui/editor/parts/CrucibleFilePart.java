@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparator;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
@@ -170,7 +171,10 @@ public class CrucibleFilePart extends ExpandablePart {
 	@Override
 	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
 		List<IReviewAction> actions = new ArrayList<IReviewAction>();
-		actions.add(new AddGeneralCommentToFileAction(new CrucibleFile(crucibleFile, false), review));
+		AddGeneralCommentToFileAction addFileCommentAction = new AddGeneralCommentToFileAction(new CrucibleFile(
+				crucibleFile, false), review);
+		addFileCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
+		actions.add(addFileCommentAction);
 		return actions;
 	}
 

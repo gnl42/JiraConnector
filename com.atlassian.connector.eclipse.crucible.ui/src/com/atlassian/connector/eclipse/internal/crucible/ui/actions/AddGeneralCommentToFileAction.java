@@ -20,10 +20,8 @@ import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
@@ -106,10 +104,10 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 		return getText();
 	}
 
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		return TasksUiImages.COMMENT;
-	}
+//	@Override
+//	public ImageDescriptor getImageDescriptor() {
+//		return TasksUiImages.COMMENT;
+//	}
 
 	@Override
 	public final void run() {

@@ -361,7 +361,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	}
 
 	public void registerContextMenu(CompareEditorInput input) {
-		rightViewerListener.registerContextMenu(input);
+//		rightViewerListener.registerContextMenu(input); //context menu in old revision disabled - not supported by API
 		leftViewerListener.registerContextMenu(input);
 	}
 }

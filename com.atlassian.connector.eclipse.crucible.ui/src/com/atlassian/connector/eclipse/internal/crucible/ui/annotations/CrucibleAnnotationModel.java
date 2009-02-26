@@ -139,6 +139,15 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 
 	private void createCommentAnnotation(AnnotationModelEvent event, VersionedComment comment) {
 		try {
+			//ignore old file comments with To Line info
+			if (crucibleFile.isOldFile() && (comment.getToStartLine() > 0 || comment.getToEndLine() > 0)) {
+				return;
+			}
+			//ignore new file comments with From Line info
+			if (!crucibleFile.isOldFile() && (comment.getFromStartLine() > 0 || comment.getFromEndLine() > 0)) {
+				return;
+			}
+
 			int startLine = comment.getToStartLine();
 			if (crucibleFile.isOldFile()) {
 				startLine = comment.getFromStartLine();

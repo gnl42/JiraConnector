@@ -50,7 +50,7 @@
             verticalRulerPreferenceKey="comment_verticalRuler"
             verticalRulerPreferenceValue="true"/>
             </extension>
-   <extension
+	<extension
          id="com.atlassian.connector.eclipse.crucible.ui.popup"
          name="Crucible Review Actions"
          point="org.eclipse.ui.popupMenus">
