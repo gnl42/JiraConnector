@@ -1214,6 +1214,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						}
 						attribute.putOption(key, value);
 					}
+				} else if (TaskAttribute.USER_ASSIGNED.equals(attribute.getId())) {
+					attribute.getMetaData().setReadOnly(false);
 				} else {
 					JiraFieldType type = JiraFieldType.fromKey(attribute.getMetaData().getValue(
 							IJiraConstants.META_TYPE));
