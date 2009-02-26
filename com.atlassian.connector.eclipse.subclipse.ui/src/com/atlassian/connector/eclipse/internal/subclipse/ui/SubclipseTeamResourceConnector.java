@@ -178,7 +178,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
 				ISVNLocalFile localFile = getLocalFile(localResource);
 
-				if (localFile.getRevision().equals(svnRevision) && !localFile.isDirty()) {
+				if (localFile.getStatus().getLastChangedRevision().equals(svnRevision) && !localFile.isDirty()) {
 					// the file is not dirty and we have the right local copy
 					return getOpenedPart(TeamUiUtils.openLocalResource(localResource));
 
