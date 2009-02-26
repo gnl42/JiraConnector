@@ -276,6 +276,11 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			AddGeneralCommentToFileAction addGeneralCommentAction = new AddGeneralCommentToFileAction(
 					crucibleAnnotationModel.getCrucibleFile(), review);
 
+			if (crucibleAnnotationModel.getCrucibleFile().isOldFile()) {
+				addLineCommentAction.setEnabled(false);
+				addGeneralCommentAction.setEnabled(false);
+			}
+
 			sourceViewer.addSelectionChangedListener(addLineCommentAction);
 			sourceViewer.addSelectionChangedListener(addGeneralCommentAction);
 			sourceViewer.addTextAction(addLineCommentAction);
@@ -361,7 +366,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	}
 
 	public void registerContextMenu(CompareEditorInput input) {
-//		rightViewerListener.registerContextMenu(input); //context menu in old revision disabled - not supported by API
+		rightViewerListener.registerContextMenu(input); //context menu in old revision disabled - not supported by API
 		leftViewerListener.registerContextMenu(input);
 	}
 }

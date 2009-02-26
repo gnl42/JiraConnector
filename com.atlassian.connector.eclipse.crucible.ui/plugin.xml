@@ -67,12 +67,12 @@
                tooltip="Add Line Comment to Active Review">
          </action>
           <action
-               class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction"
-               enablesFor="1"
-               id="com.atlassian.connector.eclipse.crucible.ui.action.add.file.comment"
-               label="Add General File Comment..."
-               menubarPath="group.undo"
-               tooltip="Add Comment to Active Review">
+                class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction"
+                enablesFor="1"
+                id="com.atlassian.connector.eclipse.crucible.ui.action.add.file.comment"
+                label="Add General File Comment..."
+                menubarPath="group.undo"
+                tooltip="Add Comment to Active Review">
          </action>
          <visibility>
             <systemProperty

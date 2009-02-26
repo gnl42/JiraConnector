@@ -38,8 +38,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 	private IReviewActionListener actionListener;
 
 	public AddGeneralCommentToFileAction() {
-		super("Create General File Comment...");
-		crucibleFile = null;
+		this(null, null);
 	}
 
 	public AddGeneralCommentToFileAction(CrucibleFile file, Review review) {
@@ -57,7 +56,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 			if (editorInput != null && editorPart != null) {
 				crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
 						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
-				if (crucibleFile != null) {
+				if (crucibleFile != null && !crucibleFile.isOldFile()) {
 					action.setEnabled(true);
 					setEnabled(true);
 					return;

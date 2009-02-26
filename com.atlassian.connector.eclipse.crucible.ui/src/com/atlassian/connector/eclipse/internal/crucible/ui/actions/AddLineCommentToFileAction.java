@@ -61,7 +61,7 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 			} else {
 				selectedRange = crucibleCompareSourceViewer.getSelection();
 			}
-			if (selectedRange != null && crucibleFile != null) {
+			if (selectedRange != null && crucibleFile != null && !crucibleFile.isOldFile()) {
 				action.setEnabled(true);
 				setEnabled(true);
 				return;
