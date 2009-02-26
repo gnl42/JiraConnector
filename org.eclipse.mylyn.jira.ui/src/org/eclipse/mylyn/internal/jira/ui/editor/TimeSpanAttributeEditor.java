@@ -12,7 +12,7 @@
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
+import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;

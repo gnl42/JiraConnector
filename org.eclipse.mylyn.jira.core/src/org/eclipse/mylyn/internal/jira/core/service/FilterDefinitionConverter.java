@@ -11,7 +11,7 @@
  *     Eugene Kuleshov - improvements
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.core.util;
+package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -57,7 +57,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.UserFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.UserInGroupFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter.RangeType;
-import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 
 /**
  * A JiraCustomQuery represents a custom query for issues from a Jira repository.

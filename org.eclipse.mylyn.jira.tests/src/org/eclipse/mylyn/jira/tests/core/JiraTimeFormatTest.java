@@ -13,7 +13,7 @@ package org.eclipse.mylyn.jira.tests.core;
 
 import junit.framework.TestCase;
 
-import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
+import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 
 /**
  * @author Eugene Kuleshov

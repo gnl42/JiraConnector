@@ -29,6 +29,7 @@ import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
+import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComment;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComponent;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter;
@@ -92,8 +93,32 @@ class JiraSoapConverter {
 		return worklog;
 	}
 
+	protected static RemoteWorklog convert(JiraWorkLog worklog, JiraTimeFormat formatter) {
+		RemoteWorklog remoteWorklog = new RemoteWorklog();
+		remoteWorklog.setAuthor(worklog.getAuthor());
+		remoteWorklog.setComment(worklog.getComment());
+		remoteWorklog.setCreated(convert(worklog.getCreated()));
+		remoteWorklog.setId(worklog.getId());
+		remoteWorklog.setRoleLevelId(worklog.getRoleLevelId());
+		remoteWorklog.setStartDate(convert(worklog.getStartDate()));
+		remoteWorklog.setTimeSpentInSeconds(worklog.getTimeSpent());
+		remoteWorklog.setTimeSpent(formatter.format(worklog.getTimeSpent()));
+		remoteWorklog.setUpdateAuthor(worklog.getUpdateAuthor());
+		remoteWorklog.setAuthor(worklog.getAuthor());
+		return remoteWorklog;
+	}
+
 	protected static Date convert(Calendar calendar) {
 		return (calendar != null) ? calendar.getTime() : null;
+	}
+
+	protected static Calendar convert(Date date) {
+		if (date != null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			return calendar;
+		}
+		return null;
 	}
 
 	protected static JiraStatus[] convert(RemoteStatus[] remoteStatuses) {

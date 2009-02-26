@@ -27,7 +27,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.mylyn.commons.net.Policy;
@@ -55,6 +54,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteCustomFieldValue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
@@ -450,7 +450,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	/**
 	 * Stores user in cache if <code>fullName</code> is provided. Otherwise user is retrieved from cache.
 	 */
-	private IRepositoryPerson getPerson(TaskData data, JiraClient client, String userId, String fullName) {
+	public static IRepositoryPerson getPerson(TaskData data, JiraClient client, String userId, String fullName) {
 		if (userId == null || JiraRepositoryConnector.UNASSIGNED_USER.equals(userId)) {
 			userId = ""; //$NON-NLS-1$
 		}
@@ -885,7 +885,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 			try {
 				if (!client.getCache().hasDetails()) {
-					client.getCache().refreshDetails(new NullProgressMonitor());
+					client.getCache().refreshDetails(monitor);
 				}
 
 				JiraIssue issue = buildJiraIssue(taskData, client);
@@ -899,20 +899,26 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR,
 								JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create issue.", null)); //$NON-NLS-1$
 					}
+
+					postWorkLog(repository, client, taskData, issue, monitor);
+
 					// this is severely broken: should return id instead
 					//return issue.getKey();
 					return new RepositoryResponse(ResponseKind.TASK_CREATED, issue.getId());
 				} else {
 					String operationId = getOperationId(taskData);
 					String newComment = getNewComment(taskData);
-					//do normal workflow all the time
+					// do normal workflow all the time
 					if (!JiraRepositoryConnector.isClosed(issue)
 							&& taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null) {
 						client.updateIssue(issue, newComment, monitor);
 					} else if (newComment.length() > 0) {
 						client.addCommentToIssue(issue, newComment, monitor);
 					}
-					//and do advanced workflow if necessarry
+
+					postWorkLog(repository, client, taskData, issue, monitor);
+
+					// and do advanced workflow if necessary
 					if (!LEAVE_OPERATION.equals(operationId) && !REASSIGN_OPERATION.equals(operationId)) {
 						client.advanceIssueWorkflow(issue, operationId, null, monitor); //comment gets updated in the normal workflow already, so don"t post it a second time
 					}
@@ -925,6 +931,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 		} finally {
 			monitor.done();
+		}
+	}
+
+	private void postWorkLog(TaskRepository repository, JiraClient client, TaskData taskData, JiraIssue issue,
+			IProgressMonitor monitor) throws JiraException {
+		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+		if (attribute != null) {
+			JiraWorkLog log = new WorkLogConverter().createFrom(attribute);
+			client.addWorkLog(issue.getKey(), log, monitor);
 		}
 	}
 

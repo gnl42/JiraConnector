@@ -662,18 +662,25 @@ public class JiraClientTest extends TestCase {
 		assertTrue("Missing 'fixVersions': " + ids, ids.contains("fixVersions"));
 	}
 
-	public void testGetWorklogs() throws Exception {
-		getWorklogs(JiraTestConstants.JIRA_LATEST_URL);
+	public void testGetWorkLogs() throws Exception {
+		getWorkLogs(JiraTestConstants.JIRA_LATEST_URL);
 	}
 
-	private void getWorklogs(String url) throws Exception {
+	private void getWorkLogs(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
 
 		JiraWorkLog[] logs = client.getWorklogs(issue.getKey(), null);
 		assertEquals(0, logs.length);
-//		JiraWorkLog log = new JiraWorkLog();
+
+		JiraWorkLog log = new JiraWorkLog();
+		log.setTimeSpent(5287);
+		client.addWorkLog(issue.getKey(), log, null);
+
+		logs = client.getWorklogs(issue.getKey(), null);
+		assertEquals(1, logs.length);
+		assertEquals(5287, logs[0].getTimeSpent());
 	}
 
 	/**

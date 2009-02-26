@@ -13,8 +13,8 @@ package org.eclipse.mylyn.internal.jira.ui.editor;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
+import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 
 public class WorkLogTableLabelProvider extends ColumnLabelProvider {
 

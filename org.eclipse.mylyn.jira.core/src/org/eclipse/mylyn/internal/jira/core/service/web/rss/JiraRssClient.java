@@ -20,11 +20,11 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
+import org.eclipse.mylyn.internal.jira.core.service.FilterDefinitionConverter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSession;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
-import org.eclipse.mylyn.internal.jira.core.util.FilterDefinitionConverter;
 
 /**
  * @author Brock Janiczak

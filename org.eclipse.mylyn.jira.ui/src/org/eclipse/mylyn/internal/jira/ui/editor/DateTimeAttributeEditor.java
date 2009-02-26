@@ -15,7 +15,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
+import org.eclipse.mylyn.internal.jira.core.service.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;

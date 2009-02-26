@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.core.model;
+package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -37,6 +37,14 @@ public class JiraConfiguration {
 	private String characterEncoding;
 
 	private boolean followRedirects;
+
+	private int workDaysPerWeek;
+
+	private int workHoursPerDay;
+
+	public static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
+
+	public static final int DEFAULT_WORK_HOURS_PER_DAY = 24;
 
 	public JiraConfiguration() {
 		setDatePattern(DEFAULT_DATE_PATTERN);
@@ -99,6 +107,22 @@ public class JiraConfiguration {
 
 	public void setFollowRedirects(boolean followRedirects) {
 		this.followRedirects = followRedirects;
+	}
+
+	public int getWorkDaysPerWeek() {
+		return workDaysPerWeek;
+	}
+
+	public void setWorkDaysPerWeek(int workDaysPerWeek) {
+		this.workDaysPerWeek = workDaysPerWeek;
+	}
+
+	public int getWorkHoursPerDay() {
+		return workHoursPerDay;
+	}
+
+	public void setWorkHoursPerDay(int workHoursPerDay) {
+		this.workHoursPerDay = workHoursPerDay;
 	}
 
 }

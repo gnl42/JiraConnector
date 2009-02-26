@@ -53,10 +53,12 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraInsufficientPermissionException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteField;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteNamedObject;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
@@ -633,6 +635,20 @@ public class JiraSoapClient extends AbstractSoapClient {
 				}
 				SecurityLevel[] securityLevels = JiraSoapConverter.convert(remoteSecurityLevels);
 				return securityLevels;
+			}
+		});
+	}
+
+	public JiraWorkLog addWorkLog(final String issueKey, final JiraWorkLog log, IProgressMonitor monitor)
+			throws JiraException {
+		return call(monitor, new Callable<JiraWorkLog>() {
+			public JiraWorkLog call() throws java.rmi.RemoteException, JiraException {
+				JiraTimeFormat formatter = new JiraTimeFormat(jiraClient.getConfiguration().getWorkDaysPerWeek(),
+						jiraClient.getConfiguration().getWorkHoursPerDay());
+				RemoteWorklog remoteLog = JiraSoapConverter.convert(log, formatter);
+				remoteLog = getSoapService().addWorklogAndAutoAdjustRemainingEstimate(loginToken.getCurrentValue(),
+						issueKey, remoteLog);
+				return JiraSoapConverter.convert(remoteLog);
 			}
 		});
 	}

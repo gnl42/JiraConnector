@@ -34,10 +34,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
-import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
-import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
@@ -108,7 +107,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 	private Button followRedirectsButton;
 
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
-		super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings, Messages.JiraRepositorySettingsPage_EXAMPLE_HTTP_DEVELOPER_ALTASSIAN_COM_JIRA, taskRepository);
+		super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings,
+				Messages.JiraRepositorySettingsPage_EXAMPLE_HTTP_DEVELOPER_ALTASSIAN_COM_JIRA, taskRepository);
 		setNeedsProxy(true);
 		setNeedsHttpAuth(true);
 	}
@@ -187,7 +187,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		timeTrackingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
 		workDaysPerWeekSpinner = new Spinner(timeTrackingComposite, SWT.BORDER | SWT.RIGHT);
-		workDaysPerWeekSpinner.setValues(JiraTimeFormat.DEFAULT_WORK_DAYS_PER_WEEK, 1, 7, 0, 1, 1);
+		workDaysPerWeekSpinner.setValues(JiraConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, 1, 7, 0, 1, 1);
 		if (repository != null) {
 			workDaysPerWeekSpinner.setSelection(JiraUtil.getWorkDaysPerWeek(repository));
 		}
@@ -196,7 +196,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		label.setText(Messages.JiraRepositorySettingsPage_working_days_per_week);
 
 		workHoursPerDaySpinner = new Spinner(timeTrackingComposite, SWT.BORDER);
-		workHoursPerDaySpinner.setValues(JiraTimeFormat.DEFAULT_WORK_HOURS_PER_DAY, 1, 24, 0, 1, 1);
+		workHoursPerDaySpinner.setValues(JiraConfiguration.DEFAULT_WORK_HOURS_PER_DAY, 1, 24, 0, 1, 1);
 		if (repository != null) {
 			workHoursPerDaySpinner.setSelection(JiraUtil.getWorkHoursPerDay(repository));
 		}
@@ -301,7 +301,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 		}
 		localeCombo.setText(configuration.getLocale().getDisplayName());
 
-		Hyperlink hyperlink = toolkit.createHyperlink(composite, Messages.JiraRepositorySettingsPage_Reset_to_defaults, SWT.NONE);
+		Hyperlink hyperlink = toolkit.createHyperlink(composite, Messages.JiraRepositorySettingsPage_Reset_to_defaults,
+				SWT.NONE);
 		hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -384,10 +385,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			} else {
 				setEncoding(TaskRepository.DEFAULT_CHARACTER_ENCODING);
 
-				jiraValidator.setStatus(new Status(
-						IStatus.WARNING,
-						JiraUiPlugin.ID_PLUGIN,
-						IStatus.OK,
+				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
 						Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_character_encodeing,
 						null));
 			}

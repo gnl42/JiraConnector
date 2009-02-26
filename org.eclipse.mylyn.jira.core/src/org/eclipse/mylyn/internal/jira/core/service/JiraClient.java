@@ -28,7 +28,6 @@ import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
-import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
@@ -525,4 +524,7 @@ public class JiraClient {
 		return soapClient.getAvailableSecurityLevels(projectKey, monitor);
 	}
 
+	public JiraWorkLog addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {
+		return soapClient.addWorkLog(issueKey, log, monitor);
+	}
 }

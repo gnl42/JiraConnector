@@ -10,7 +10,7 @@
  *     Eugene Kuleshov - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.jira.core;
+package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.text.FieldPosition;
 import java.text.Format;
@@ -31,10 +31,6 @@ import org.eclipse.core.runtime.Assert;
  */
 public class JiraTimeFormat extends Format {
 
-	public static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
-
-	public static final int DEFAULT_WORK_HOURS_PER_DAY = 24;
-
 	private static final long serialVersionUID = 1L;
 
 	private final int workDaysPerWeek;
@@ -42,7 +38,7 @@ public class JiraTimeFormat extends Format {
 	private final int workHoursPerDay;
 
 	public JiraTimeFormat() {
-		this(DEFAULT_WORK_DAYS_PER_WEEK, DEFAULT_WORK_HOURS_PER_DAY);
+		this(JiraConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, JiraConfiguration.DEFAULT_WORK_HOURS_PER_DAY);
 	}
 
 	public JiraTimeFormat(int workDaysPerWeek, int workHoursPerDay) {

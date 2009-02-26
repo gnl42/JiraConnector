@@ -26,12 +26,13 @@ import org.eclipse.mylyn.internal.jira.core.IJiraConstants;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraFieldType;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
-import org.eclipse.mylyn.internal.jira.core.JiraTimeFormat;
-import org.eclipse.mylyn.internal.jira.core.model.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
+import org.eclipse.mylyn.internal.jira.core.service.FilterDefinitionConverter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraConfiguration;
+import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -185,7 +186,7 @@ public class JiraUtil {
 	}
 
 	public static int getWorkDaysPerWeek(TaskRepository repository) {
-		int value = getInteger(repository, WORK_DAYS_PER_WEEK, JiraTimeFormat.DEFAULT_WORK_DAYS_PER_WEEK);
+		int value = getInteger(repository, WORK_DAYS_PER_WEEK, JiraConfiguration.DEFAULT_WORK_DAYS_PER_WEEK);
 		if (value < 1) {
 			return 1;
 		}
@@ -196,7 +197,7 @@ public class JiraUtil {
 	}
 
 	public static int getWorkHoursPerDay(TaskRepository repository) {
-		int value = getInteger(repository, WORK_HOURS_PER_DAY, JiraTimeFormat.DEFAULT_WORK_HOURS_PER_DAY);
+		int value = getInteger(repository, WORK_HOURS_PER_DAY, JiraConfiguration.DEFAULT_WORK_HOURS_PER_DAY);
 		if (value < 1) {
 			return 1;
 		}
@@ -311,6 +312,8 @@ public class JiraUtil {
 		} else {
 			configuration.setFollowRedirects(Boolean.parseBoolean(repository.getProperty(FOLLOW_REDIRECTS_KEY)));
 		}
+		configuration.setWorkHoursPerDay(getWorkHoursPerDay(repository));
+		configuration.setWorkDaysPerWeek(getWorkDaysPerWeek(repository));
 		return configuration;
 	}
 

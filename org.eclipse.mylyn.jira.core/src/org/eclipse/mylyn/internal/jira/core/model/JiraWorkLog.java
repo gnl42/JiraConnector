@@ -72,6 +72,9 @@ public class JiraWorkLog implements Serializable {
 		return startDate;
 	}
 
+	/**
+	 * Returns the time spent in seconds.
+	 */
 	public long getTimeSpent() {
 		return timeSpent;
 	}
