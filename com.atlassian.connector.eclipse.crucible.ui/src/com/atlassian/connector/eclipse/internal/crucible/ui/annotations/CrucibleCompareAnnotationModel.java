@@ -369,4 +369,43 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		rightViewerListener.registerContextMenu(input); //context menu in old revision disabled - not supported by API
 		leftViewerListener.registerContextMenu(input);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((leftAnnotationModel == null) ? 0 : leftAnnotationModel.hashCode());
+		result = prime * result + ((rightAnnotationModel == null) ? 0 : rightAnnotationModel.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		CrucibleCompareAnnotationModel other = (CrucibleCompareAnnotationModel) obj;
+		if (leftAnnotationModel == null) {
+			if (other.leftAnnotationModel != null) {
+				return false;
+			}
+		} else if (!leftAnnotationModel.equals(other.leftAnnotationModel)) {
+			return false;
+		}
+		if (rightAnnotationModel == null) {
+			if (other.rightAnnotationModel != null) {
+				return false;
+			}
+		} else if (!rightAnnotationModel.equals(other.rightAnnotationModel)) {
+			return false;
+		}
+		return true;
+	}
+
 }

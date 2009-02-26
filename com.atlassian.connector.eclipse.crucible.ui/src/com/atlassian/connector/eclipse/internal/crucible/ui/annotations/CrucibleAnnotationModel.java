@@ -272,4 +272,50 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 		updateAnnotations(true);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl() == null) ? 0
+						: crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl().hashCode());
+		result = prime
+				* result
+				+ ((crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision() == null) ? 0
+						: crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		CrucibleAnnotationModel other = (CrucibleAnnotationModel) obj;
+		if (crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl() == null) {
+			if (other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl() != null) {
+				return false;
+			}
+		} else if (!crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl().equals(
+				other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getAbsoluteUrl())) {
+			return false;
+		}
+		if (crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision() == null) {
+			if (other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision() != null) {
+				return false;
+			}
+		} else if (!crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision().equals(
+				other.crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
+			return false;
+		}
+		return true;
+	}
+
 }

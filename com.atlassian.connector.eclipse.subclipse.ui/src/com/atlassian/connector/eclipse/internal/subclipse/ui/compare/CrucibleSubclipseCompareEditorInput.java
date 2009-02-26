@@ -62,4 +62,34 @@ public class CrucibleSubclipseCompareEditorInput extends SVNCompareEditorInput i
 		return annotationModelToAttach;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((annotationModelToAttach == null) ? 0 : annotationModelToAttach.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		CrucibleSubclipseCompareEditorInput other = (CrucibleSubclipseCompareEditorInput) obj;
+		if (annotationModelToAttach == null) {
+			if (other.annotationModelToAttach != null) {
+				return false;
+			}
+		} else if (!annotationModelToAttach.equals(other.annotationModelToAttach)) {
+			return false;
+		}
+		return true;
+	}
+
 }

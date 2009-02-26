@@ -312,7 +312,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			IWorkbench workbench = AtlassianSubclipseUiPlugin.getDefault().getWorkbench();
 			IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 
-			RemoteFileEditorInput editorInput = new RemoteFileEditorInput(remoteFile, monitor);
+			RemoteFileEditorInput editorInput = new CustomRemoteFileEditorInput(remoteFile, monitor);
 			String editorId = getEditorId(workbench, remoteFile);
 			return page.openEditor(editorInput, editorId);
 		} catch (PartInitException e) {
@@ -423,5 +423,4 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 //}
 //return file;
 //}
-
 }
