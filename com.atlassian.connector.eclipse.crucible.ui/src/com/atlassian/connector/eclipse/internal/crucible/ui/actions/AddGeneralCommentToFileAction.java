@@ -112,11 +112,6 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 		return getText();
 	}
 
-//	@Override
-//	public ImageDescriptor getImageDescriptor() {
-//		return TasksUiImages.COMMENT;
-//	}
-
 	@Override
 	public final void run() {
 		super.run();

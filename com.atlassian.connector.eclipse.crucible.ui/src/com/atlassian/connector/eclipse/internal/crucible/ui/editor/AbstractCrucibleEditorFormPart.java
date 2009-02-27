@@ -84,7 +84,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 				collapseAll();
 			}
 		};
-		collapseAllAction.setImageDescriptor(CommonImages.COLLAPSE_ALL_SMALL);
+		collapseAllAction.setImageDescriptor(CommonImages.COLLAPSE_ALL);
 		collapseAllAction.setToolTipText("Collapse All");
 		toolBarManager.add(collapseAllAction);
 
@@ -94,7 +94,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 				expandAll();
 			}
 		};
-		expandAllAction.setImageDescriptor(CommonImages.EXPAND_ALL_SMALL);
+		expandAllAction.setImageDescriptor(CommonImages.EXPAND_ALL);
 		expandAllAction.setToolTipText("Expand All");
 		toolBarManager.add(expandAllAction);
 	}

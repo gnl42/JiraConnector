@@ -12,10 +12,9 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AbstractAddCommentAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
-import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 
 /**
  * Action for adding a general review comment
@@ -26,7 +25,7 @@ public class AddGeneralReviewCommentAction extends AbstractAddCommentAction {
 
 	public AddGeneralReviewCommentAction(Review review) {
 		super("Add General Review Comment...");
-		setImageDescriptor(TasksUiImages.COMMENT);
+		setImageDescriptor(CrucibleImages.ADD_COMMENT);
 		setToolTipText("Add General Review Comment");
 		super.review = review;
 	}
