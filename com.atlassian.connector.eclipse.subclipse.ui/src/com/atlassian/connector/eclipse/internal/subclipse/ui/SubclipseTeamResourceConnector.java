@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -58,7 +59,6 @@ import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
 import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
-import org.tigris.subversion.svnclientadapter.utils.SVNUrlUtils;
 
 import java.net.MalformedURLException;
 import java.text.ParseException;
@@ -78,33 +78,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
-		if (repoUrl == null) {
-			return false;
-		}
-		return getKnownRepositoryUrl(repoUrl, filePath) != null;
-	}
-
-	private String getKnownRepositoryUrl(String repoUrl, String filePath) {
-		if (SVNProviderPlugin.getPlugin().getRepositories().isKnownRepository(repoUrl, false)) {
-			return repoUrl;
-		}
-
-		if (repoUrl.endsWith("//")) {
-			repoUrl = repoUrl.substring(0, repoUrl.length() - 1);
-		}
-
-		String[] parts = filePath.split("/");
-
-		int partNum = 0;
-		if (parts.length > 0 && parts[0].length() == 0) {
-			partNum = 1;
-		}
-
-		if (SVNProviderPlugin.getPlugin().getRepositories().isKnownRepository(repoUrl + parts[partNum], false)) {
-			return repoUrl + parts[partNum];
-		}
-		return null;
-
+		return true;
 	}
 
 	private String getFilePath(String repoUrl, String newRepoUrl, String filePath) {
@@ -139,17 +113,15 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 		try {
 
-			ISVNRepositoryLocation location = SVNProviderPlugin.getPlugin().getRepositories().getRepository(repoUrl);
-
 			if (filePath.startsWith("/")) {
 				filePath = filePath.substring(1);
 			}
 
-			IResource localResource = getLocalResourceFromFilePath(location, filePath);
+			IResource localResource = getLocalResourceFromFilePath(filePath);
 
 			if (localResource != null) {
 				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
-				return getRemoteFile(localResource, svnRevision, location);
+				return getRemoteFile(localResource, svnRevision);
 			}
 		} catch (SVNException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
@@ -165,17 +137,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 		try {
 
-			String newRepoUrl = getKnownRepositoryUrl(repoUrl, filePath);
-			String newfilePath = getFilePath(repoUrl, newRepoUrl, filePath);
-
-			ISVNRepositoryLocation location = SVNProviderPlugin.getPlugin().getRepositories().getRepository(
-					(newRepoUrl));
-
-			if (newfilePath.startsWith("/")) {
-				newfilePath = newfilePath.substring(1);
-			}
-
-			IResource localResource = getLocalResourceFromFilePath(location, newfilePath);
+			IResource localResource = getLocalResourceFromFilePath(filePath);
 
 			if (localResource != null) {
 				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
@@ -186,7 +148,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 					return getOpenedPart(TeamUiUtils.openLocalResource(localResource));
 
 				} else {
-					final ISVNRemoteFile remoteFile = getRemoteFile(localResource, svnRevision, location);
+					final ISVNRemoteFile remoteFile = getRemoteFile(localResource, svnRevision);
 					if (remoteFile != null) {
 						// we need to open the remote resource since the file is either dirty or the wrong revision
 
@@ -202,13 +164,13 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 							return getOpenedPart(part[0]);
 						}
 					} else {
-						TeamMessageUtils.openFileDeletedErrorMessage(repoUrl, newfilePath, revisionString);
+						TeamMessageUtils.openFileDeletedErrorMessage(repoUrl, filePath, revisionString);
 
 						return getOpenedPart(null);
 					}
 				}
 			} else {
-				TeamMessageUtils.openFileDoesntExistErrorMessage(repoUrl, newfilePath, revisionString);
+				TeamMessageUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
 				return getOpenedPart(null);
 			}
 		} catch (SVNException e) {
@@ -333,8 +295,8 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	private ISVNRemoteFile getRemoteFile(IResource localResource, SVNRevision svnRevision,
-			ISVNRepositoryLocation location) throws ParseException, SVNException {
+	private ISVNRemoteFile getRemoteFile(IResource localResource, SVNRevision svnRevision) throws ParseException,
+			SVNException {
 
 		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(localResource);
 
@@ -345,28 +307,30 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	private IResource getLocalResourceFromFilePath(ISVNRepositoryLocation location, String filePath) {
-		SVNUrl fileUrl = location.getUrl().appendPath(filePath);
-
+	private IResource getLocalResourceFromFilePath(String filePath) {
 		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 
 			if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
 				try {
+					IPath fileIPath = new Path(filePath);
+					IResource resource = project.findMember(fileIPath);
+					while (!fileIPath.isEmpty() && resource == null) {
+						fileIPath = fileIPath.removeFirstSegments(1);
+						resource = project.findMember(fileIPath);
+					}
+					if (resource == null) {
+						continue;
+					}
+
 					SVNTeamProvider teamProvider = (SVNTeamProvider) RepositoryProvider.getProvider(project,
 							SVNProviderPlugin.getTypeId());
-					if (teamProvider != null && isCompatibleRepository(location, teamProvider)) {
-						ISVNResource projectResource = SVNWorkspaceRoot.getSVNResourceFor(project);
+					ISVNResource projectResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
+					String url = projectResource.getUrl().toString();
 
-						if (SVNUrlUtils.getCommonRootUrl(fileUrl, projectResource.getUrl()).equals(
-								projectResource.getUrl())) {
-							String path = SVNUrlUtils.getRelativePath(projectResource.getUrl(), fileUrl);
-							IFile file = project.getFile(new Path(path));
-							if (file.exists()) {
-								return file;
-							}
-						}
+					if (url.endsWith(filePath)) {
+						return resource;
 					}
-				} catch (SVNException e) {
+				} catch (Exception e) {
 					StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
 			}
