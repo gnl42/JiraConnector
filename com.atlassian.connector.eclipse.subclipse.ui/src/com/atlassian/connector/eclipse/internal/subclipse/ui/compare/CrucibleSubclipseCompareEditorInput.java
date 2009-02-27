@@ -13,16 +13,13 @@ package com.atlassian.connector.eclipse.internal.subclipse.ui.compare;
 
 import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
+import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
-import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
-import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
 import org.tigris.subversion.subclipse.ui.compare.SVNCompareEditorInput;
-
-import java.lang.reflect.Field;
 
 public class CrucibleSubclipseCompareEditorInput extends SVNCompareEditorInput implements IAnnotationCompareInput {
 
@@ -37,25 +34,7 @@ public class CrucibleSubclipseCompareEditorInput extends SVNCompareEditorInput i
 	@Override
 	public Viewer findContentViewer(Viewer oldViewer, ICompareInput input, Composite parent) {
 		Viewer contentViewer = super.findContentViewer(oldViewer, input, parent);
-		if (contentViewer instanceof TextMergeViewer) {
-			TextMergeViewer textMergeViewer = (TextMergeViewer) contentViewer;
-			try {
-				Class clazz = TextMergeViewer.class;
-				Field declaredField = clazz.getDeclaredField("fLeft");
-				declaredField.setAccessible(true);
-				final MergeSourceViewer fLeft = (MergeSourceViewer) declaredField.get(textMergeViewer);
-
-				declaredField = clazz.getDeclaredField("fRight");
-				declaredField.setAccessible(true);
-				final MergeSourceViewer fRight = (MergeSourceViewer) declaredField.get(textMergeViewer);
-
-				annotationModelToAttach.attachToViewer(fLeft, fRight);
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
-
-		}
-		return contentViewer;
+		return TeamUiUtils.findContentViewer(contentViewer, input, parent, annotationModelToAttach);
 	}
 
 	public ICompareAnnotationModel getAnnotationModelToAttach() {

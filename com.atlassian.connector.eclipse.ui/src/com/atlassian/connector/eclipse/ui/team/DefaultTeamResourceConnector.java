@@ -40,7 +40,6 @@ import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.Utils;
-import org.eclipse.team.internal.ui.history.CompareFileRevisionEditorInput;
 import org.eclipse.team.internal.ui.history.FileRevisionEditorInput;
 import org.eclipse.team.internal.ui.history.FileRevisionTypedElement;
 import org.eclipse.ui.IEditorInput;
@@ -70,7 +69,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
-			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor) {
+			String newRevisionString, final ICompareAnnotationModel annotationModel, IProgressMonitor monitor) {
 
 		IResource resource = findResourceForPath(filePath);
 		if (resource != null) {
@@ -83,11 +82,11 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						CompareEditorInput input = new CompareFileRevisionEditorInput(left, right,
+						CompareEditorInput input = new TeamCompareFileRevisionEditorInput(left, right,
 								AtlassianUiPlugin.getDefault()
 										.getWorkbench()
 										.getActiveWorkbenchWindow()
-										.getActivePage());
+										.getActivePage(), annotationModel);
 						TeamUiUtils.openCompareEditorForInput(input);
 					}
 				});

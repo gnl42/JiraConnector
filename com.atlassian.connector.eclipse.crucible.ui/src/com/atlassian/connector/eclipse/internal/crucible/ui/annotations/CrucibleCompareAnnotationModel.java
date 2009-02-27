@@ -23,7 +23,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
-import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -268,7 +267,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		}
 
 		@SuppressWarnings("restriction")
-		public void registerContextMenu(CompareEditorInput input) {
+		public void registerContextMenu() {
 			AddLineCommentToFileAction addLineCommentAction = new AddLineCommentToFileAction(this,
 					crucibleAnnotationModel.getCrucibleFile());
 			addLineCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
@@ -306,13 +305,16 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
 	private CrucibleViewerTextInputListener rightViewerListener;
 
-	public CrucibleCompareAnnotationModel(CrucibleFileInfo crucibleFile, Review review) {
+	private final VersionedComment commentToFocus;
+
+	public CrucibleCompareAnnotationModel(CrucibleFileInfo crucibleFile, Review review, VersionedComment commentToFocus) {
 		super();
 		this.review = review;
 		this.leftAnnotationModel = new CrucibleAnnotationModel(null, null, null, new CrucibleFile(crucibleFile, false),
 				review);
 		this.rightAnnotationModel = new CrucibleAnnotationModel(null, null, null, new CrucibleFile(crucibleFile, true),
 				review);
+		this.commentToFocus = commentToFocus;
 	}
 
 	public void attachToViewer(final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
@@ -347,27 +349,33 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		}
 	}
 
-	public void focusOnComment(VersionedComment comment) {
-		boolean isOldFile = comment.isFromLineInfo();
+	public void focusOnComment() {
+		if (commentToFocus != null) {
+			//ignore general file comment
+			if (!commentToFocus.isFromLineInfo() && !commentToFocus.isToLineInfo()) {
+				return;
+			}
+			boolean isOldFile = commentToFocus.isFromLineInfo();
 
-		int startLine = isOldFile ? comment.getFromStartLine() : comment.getToStartLine();
+			int startLine = isOldFile ? commentToFocus.getFromStartLine() : commentToFocus.getToStartLine();
 
-		int endLine = isOldFile ? comment.getFromEndLine() : comment.getToEndLine();
+			int endLine = isOldFile ? commentToFocus.getFromEndLine() : commentToFocus.getToEndLine();
 
-		if (endLine == 0 || endLine > startLine) {
-			endLine = startLine;
+			if (endLine == 0 || endLine > startLine) {
+				endLine = startLine;
+			}
+			if (startLine != 0) {
+				startLine--;
+			}
+			//get the correct listener (new file is left)
+			CrucibleViewerTextInputListener listener = isOldFile ? rightViewerListener : leftViewerListener;
+			listener.focusOnLines(startLine, endLine);
 		}
-		if (startLine != 0) {
-			startLine--;
-		}
-		//get the correct listener (new file is left)
-		CrucibleViewerTextInputListener listener = isOldFile ? rightViewerListener : leftViewerListener;
-		listener.focusOnLines(startLine, endLine);
 	}
 
-	public void registerContextMenu(CompareEditorInput input) {
-		rightViewerListener.registerContextMenu(input); //context menu in old revision disabled - not supported by API
-		leftViewerListener.registerContextMenu(input);
+	public void registerContextMenu() {
+		rightViewerListener.registerContextMenu(); //context menu in old revision disabled - not supported by API
+		leftViewerListener.registerContextMenu();
 	}
 
 	@Override

@@ -70,6 +70,9 @@ import java.text.ParseException;
  */
 public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
+	public SubclipseTeamResourceConnector() {
+	}
+
 	public boolean isEnabled() {
 		return true;
 	}
@@ -251,7 +254,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				ISVNLocalFile localFile = getLocalFile(file);
 				if (localFile != null && !localFile.isDirty()) {
 					fileUrl = localFile.getUrl();
-					revision = localFile.getRevision().toString();
+					revision = localFile.getStatus().getLastChangedRevision().toString();
 				}
 			} catch (SVNException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,

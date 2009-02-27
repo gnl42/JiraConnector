@@ -16,6 +16,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
+import org.eclipse.compare.internal.MergeSourceViewer;
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +30,9 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -38,6 +43,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import java.lang.reflect.Field;
 
 /**
  * A utility class for doing UI related operations for team items
@@ -225,4 +232,28 @@ public final class TeamUiUtils {
 		textEditor.selectAndReveal(offset, length);
 	}
 
+	public static Viewer findContentViewer(Viewer contentViewer, ICompareInput input, Composite parent,
+			ICompareAnnotationModel annotationModel) {
+		if (contentViewer instanceof TextMergeViewer) {
+			TextMergeViewer textMergeViewer = (TextMergeViewer) contentViewer;
+			try {
+				Class clazz = TextMergeViewer.class;
+				Field declaredField = clazz.getDeclaredField("fLeft");
+				declaredField.setAccessible(true);
+				final MergeSourceViewer fLeft = (MergeSourceViewer) declaredField.get(textMergeViewer);
+
+				declaredField = clazz.getDeclaredField("fRight");
+				declaredField.setAccessible(true);
+				final MergeSourceViewer fRight = (MergeSourceViewer) declaredField.get(textMergeViewer);
+
+				annotationModel.attachToViewer(fLeft, fRight);
+				annotationModel.focusOnComment();
+				annotationModel.registerContextMenu();
+			} catch (Throwable t) {
+				StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
+						"Could not initialize Crucible annotations for " + input.getName()));
+			}
+		}
+		return contentViewer;
+	}
 }

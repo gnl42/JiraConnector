@@ -20,6 +20,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
@@ -57,7 +58,7 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 		super.selectionChanged(action, selection);
 		if (action.isEnabled() && isEnabled()) {
 			if (crucibleCompareSourceViewer == null) {
-				getJavaEditorSelection(action, selection);
+				getJavaEditorSelection(selection);
 			} else {
 				selectedRange = crucibleCompareSourceViewer.getSelection();
 			}
@@ -78,7 +79,18 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 		}
 	}
 
-	private void getJavaEditorSelection(IAction action, ISelection selection) {
+	@Override
+	protected boolean updateSelection(IStructuredSelection selection) {
+		if (crucibleCompareSourceViewer != null) {
+			selectedRange = crucibleCompareSourceViewer.getSelection();
+			if (selectedRange != null && crucibleFile != null && !crucibleFile.isOldFile()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void getJavaEditorSelection(ISelection selection) {
 		IEditorPart editorPart = getActiveEditor();
 		IEditorInput editorInput = getEditorInputFromSelection(selection);
 		if (editorInput != null && editorPart != null) {

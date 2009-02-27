@@ -22,6 +22,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
@@ -70,6 +71,14 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 			setEnabled(false);
 			crucibleFile = null;
 		}
+	}
+
+	@Override
+	protected boolean updateSelection(IStructuredSelection selection) {
+		if (crucibleFile != null && !crucibleFile.isOldFile()) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

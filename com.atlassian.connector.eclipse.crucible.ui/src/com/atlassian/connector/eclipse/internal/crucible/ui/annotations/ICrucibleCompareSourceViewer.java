@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
-import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.jface.text.source.LineRange;
 
 public interface ICrucibleCompareSourceViewer {
@@ -19,5 +18,5 @@ public interface ICrucibleCompareSourceViewer {
 
 	void focusOnLines(int startLine, int endLine);
 
-	void registerContextMenu(CompareEditorInput input);
+	void registerContextMenu();
 }

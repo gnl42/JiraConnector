@@ -12,9 +12,7 @@
 package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
-import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.internal.MergeSourceViewer;
 
 public interface ICompareAnnotationModel {
@@ -22,8 +20,8 @@ public interface ICompareAnnotationModel {
 
 	void updateCrucibleFile(Review newReview);
 
-	void focusOnComment(VersionedComment comment);
+	void focusOnComment();
 
-	void registerContextMenu(CompareEditorInput input);
+	void registerContextMenu();
 
 }
