@@ -35,7 +35,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -49,11 +48,8 @@ import org.tigris.subversion.subclipse.core.ISVNLocalFile;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
 import org.tigris.subversion.subclipse.core.ISVNRemoteResource;
-import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.ISVNResource;
 import org.tigris.subversion.subclipse.core.SVNException;
-import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
-import org.tigris.subversion.subclipse.core.SVNTeamProvider;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
 import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
 import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
@@ -79,14 +75,6 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
 		return true;
-	}
-
-	private String getFilePath(String repoUrl, String newRepoUrl, String filePath) {
-		if (!repoUrl.equals(newRepoUrl)) {
-			return filePath.substring(filePath.indexOf("/"), filePath.length());
-
-		}
-		return filePath;
 	}
 
 	public boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
@@ -258,18 +246,32 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	private String getAbsoluteUrl(VersionedVirtualFile fileDescriptor) {
-		String absoluteUrl = "";
-		if (fileDescriptor.getRepoUrl() != null) {
-			absoluteUrl += fileDescriptor.getRepoUrl();
-		}
+		//TODO might need some performance tweak, but works for now for M2
+		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 
-		if (fileDescriptor.getUrl() != null) {
-			if ((fileDescriptor.getUrl().startsWith("/") && absoluteUrl.endsWith("/")) || absoluteUrl.endsWith("//")) {
-				absoluteUrl = absoluteUrl.substring(0, absoluteUrl.length() - 1);
+			if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
+				try {
+					IPath fileIPath = new Path(fileDescriptor.getUrl());
+					IResource resource = project.findMember(fileIPath);
+					while (!fileIPath.isEmpty() && resource == null) {
+						fileIPath = fileIPath.removeFirstSegments(1);
+						resource = project.findMember(fileIPath);
+					}
+					if (resource == null) {
+						continue;
+					}
+
+					ISVNResource projectResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
+
+					if (projectResource.getUrl().toString().endsWith(fileDescriptor.getUrl())) {
+						return projectResource.getUrl().toString();
+					}
+				} catch (Exception e) {
+					StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+				}
 			}
-			absoluteUrl += fileDescriptor.getUrl();
 		}
-		return absoluteUrl;
+		return null;
 	}
 
 	private IEditorPart openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) {
@@ -322,8 +324,6 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 						continue;
 					}
 
-					SVNTeamProvider teamProvider = (SVNTeamProvider) RepositoryProvider.getProvider(project,
-							SVNProviderPlugin.getTypeId());
 					ISVNResource projectResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
 					String url = projectResource.getUrl().toString();
 
@@ -336,13 +336,6 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			}
 		}
 		return null;
-	}
-
-	private boolean isCompatibleRepository(ISVNRepositoryLocation location, SVNTeamProvider teamProvider)
-			throws SVNException {
-		return teamProvider.getSVNWorkspaceRoot().getRepository().getUrl().equals(location.getUrl())
-				|| teamProvider.getSVNWorkspaceRoot().getRepository().getUrl().getParent().equals(location.getUrl())
-				|| location.getUrl().getParent().equals(teamProvider.getSVNWorkspaceRoot().getRepository().getUrl());
 	}
 
 	private String getEditorId(IWorkbench workbench, ISVNRemoteFile file) {
