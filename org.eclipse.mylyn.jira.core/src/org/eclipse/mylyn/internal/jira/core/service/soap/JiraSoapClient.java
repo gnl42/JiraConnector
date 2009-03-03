@@ -653,7 +653,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 				RemoteWorklog remoteLog = JiraSoapConverter.convert(log, formatter);
 				remoteLog = getSoapService().addWorklogAndAutoAdjustRemainingEstimate(loginToken.getCurrentValue(),
 						issueKey, remoteLog);
-				return JiraSoapConverter.convert(remoteLog);
+				return (remoteLog != null) ? JiraSoapConverter.convert(remoteLog) : null;
 			}
 		});
 	}
