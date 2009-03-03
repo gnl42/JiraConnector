@@ -51,6 +51,8 @@ public class JiraConfiguration {
 		setDateTimePattern(DEFAULT_DATE_TIME_PATTERN);
 		setLocale(DEFAULT_LOCALE);
 		setCompressionEnabled(false);
+		setWorkDaysPerWeek(DEFAULT_WORK_DAYS_PER_WEEK);
+		setWorkHoursPerDay(DEFAULT_WORK_HOURS_PER_DAY);
 	}
 
 	public String getCharacterEncoding() {

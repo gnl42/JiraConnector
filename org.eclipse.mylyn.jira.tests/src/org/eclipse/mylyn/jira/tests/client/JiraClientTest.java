@@ -13,6 +13,7 @@
 package org.eclipse.mylyn.jira.tests.client;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -676,11 +677,12 @@ public class JiraClientTest extends TestCase {
 
 		JiraWorkLog log = new JiraWorkLog();
 		log.setTimeSpent(5287);
+		log.setStartDate(new Date());
 		client.addWorkLog(issue.getKey(), log, null);
 
 		logs = client.getWorklogs(issue.getKey(), null);
 		assertEquals(1, logs.length);
-		assertEquals(5287, logs[0].getTimeSpent());
+		assertEquals(5280, logs[0].getTimeSpent());
 	}
 
 	/**

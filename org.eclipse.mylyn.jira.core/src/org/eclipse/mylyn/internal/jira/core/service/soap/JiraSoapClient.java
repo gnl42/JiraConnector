@@ -64,6 +64,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationExcept
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
 import org.eclipse.mylyn.internal.provisional.commons.soap.AbstractSoapClient;
+import org.eclipse.osgi.util.NLS;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -521,7 +522,11 @@ public class JiraSoapClient extends AbstractSoapClient {
 		} catch (RemoteAuthenticationException e) {
 			throw new JiraAuthenticationException(e.getMessage());
 		} catch (RemoteException e) {
-			throw new JiraServiceUnavailableException(e.getMessage());
+			String message = e.getMessage();
+			if (message == null) {
+				message = NLS.bind("Service unavailabe: {0}", e.getFaultReason()); //$NON-NLS-1$
+			}
+			throw new JiraServiceUnavailableException(message);
 		} catch (java.rmi.RemoteException e) {
 			throw new JiraServiceUnavailableException(unwrapRemoteException(e));
 		} catch (JiraException e) {
