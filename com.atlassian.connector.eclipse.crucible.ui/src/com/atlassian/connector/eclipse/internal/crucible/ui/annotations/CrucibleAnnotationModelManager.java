@@ -189,12 +189,14 @@ public final class CrucibleAnnotationModelManager {
 
 	public static void detach(ITextEditor editor) {
 
-		IAnnotationModelExtension annotationModelExtension = getAnnotationModelExtension(editor);
-		IAnnotationModel crucibleAnnotationModel = annotationModelExtension.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
-		if (crucibleAnnotationModel instanceof CrucibleAnnotationModel) {
-			((CrucibleAnnotationModel) crucibleAnnotationModel).clear();
+		IAnnotationModelExtension annotationModelExt = getAnnotationModelExtension(editor);
+		if (annotationModelExt != null) {
+			IAnnotationModel crucibleAnnotationModel = annotationModelExt.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
+			if (crucibleAnnotationModel != null && crucibleAnnotationModel instanceof CrucibleAnnotationModel) {
+				((CrucibleAnnotationModel) crucibleAnnotationModel).clear();
+			}
+			annotationModelExt.removeAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
 		}
-		annotationModelExtension.removeAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
 
 		removeAnnotationHover(editor);
 	}
