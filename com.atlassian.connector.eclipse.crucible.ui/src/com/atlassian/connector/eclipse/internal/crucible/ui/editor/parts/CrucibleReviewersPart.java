@@ -17,6 +17,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -51,15 +52,15 @@ public class CrucibleReviewersPart {
 		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.TOP).applyTo(label);
 
 		Composite reviewersComposite = createComposite(toolkit, parent);
+		GridLayout reviewersCompLayout = new GridLayout();
 		// use indent to make up for forms border gap
-		GridDataFactory.fillDefaults().indent(0, -2).grab(true, false).span(3, 1).hint(300, SWT.DEFAULT).applyTo(
-				reviewersComposite);
+		GridDataFactory.fillDefaults().grab(true, false).span(3, 1).hint(300, SWT.DEFAULT).applyTo(reviewersComposite);
 		RowLayout layout = new RowLayout();
 		layout.marginBottom = 0;
 		layout.marginTop = 0;
 		layout.marginRight = 0;
 		layout.marginLeft = 0;
-		layout.fill = true;
+		layout.marginWidth = 0;
 		reviewersComposite.setLayout(layout);
 		if (reviewers.isEmpty()) {
 			// avoid blank gap on Linux
@@ -67,6 +68,7 @@ public class CrucibleReviewersPart {
 		} else {
 			for (Reviewer reviewer : reviewers) {
 				Text text = createReadOnlyText(toolkit, reviewersComposite, reviewer.getDisplayName(), null, false);
+				text.setBackground(parent.getBackground());
 
 				if (reviewer.isCompleted()) {
 					Label imageLabel = createLabelControl(toolkit, reviewersComposite, "");

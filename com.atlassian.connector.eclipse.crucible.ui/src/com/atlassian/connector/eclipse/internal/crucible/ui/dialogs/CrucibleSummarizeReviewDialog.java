@@ -143,15 +143,15 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 
 	@Override
 	protected Control createPageControls(Composite parent) {
-		getShell().setText("Summarize");
+		getShell().setText("Summarize and Close");
 		setTitle("Summarize and Close Review");
-		setMessage("Summarize and close the outcome of the review");
+		setMessage("Provide an optional comment.");
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
 
-		new Label(composite, SWT.NONE).setText("Summary Text (optional)");
+		new Label(composite, SWT.NONE).setText("Summary Text (optional):");
 
 		summaryText = new Text(composite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
@@ -172,17 +172,23 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 		Set<Reviewer> completedReviewers = getCompletedReviewers();
 
 		Composite draftComp = new Composite(composite, SWT.NONE);
-		draftComp.setLayout(new GridLayout(1, false));
+		GridLayout draftCompLayout = new GridLayout(1, false);
+		draftCompLayout.horizontalSpacing = 0;
+		draftCompLayout.marginWidth = 0;
+		draftComp.setLayout(draftCompLayout);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(draftComp);
 
+		boolean hasCompletedReviewers = false;
 		if (completedReviewers.size() > 0) {
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(
-					new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
 			new CrucibleReviewersPart(completedReviewers).createControl(null, draftComp, COMPLETED_REVIEWS_INFO);
+			hasCompletedReviewers = true;
 		}
 
 		if (openReviewers.size() > 0) {
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(
-					new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
+			if (hasCompletedReviewers) {
+				GridDataFactory.fillDefaults().grab(true, false).applyTo(
+						new Label(draftComp, SWT.SEPARATOR | SWT.HORIZONTAL));
+			}
 			new CrucibleReviewersPart(openReviewers).createControl(null, draftComp, OPEN_REVIEWS_WARNING);
 			Label labelControl = new Label(draftComp, SWT.WRAP);
 			labelControl.setText(OTHER_DRAFTS_WARNING);
@@ -335,8 +341,7 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 
-		Button summarizeButton = createButton(parent, IDialogConstants.CLIENT_ID + 1, "&Summarize and Close Review",
-				false);
+		Button summarizeButton = createButton(parent, IDialogConstants.CLIENT_ID + 1, "&Summarize and Close", false);
 		summarizeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

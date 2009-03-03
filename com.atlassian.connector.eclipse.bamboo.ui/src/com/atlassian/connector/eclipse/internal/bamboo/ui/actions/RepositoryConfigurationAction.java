@@ -129,14 +129,14 @@ public class RepositoryConfigurationAction extends Action implements IMenuCreato
 									TaskRepositoriesView.ID);
 						} catch (PartInitException e) {
 							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-									"Failed to show Task Repositories View"));
+									"Failed to show Repositories View"));
 						}
 					}
 				});
 			}
 		};
 		ActionContributionItem gotoRepoViewACI = new ActionContributionItem(gotoTaskRepositoryViewAction);
-		gotoTaskRepositoryViewAction.setText("Show Task Repositories View");
+		gotoTaskRepositoryViewAction.setText("Show Repositories View");
 		gotoTaskRepositoryViewAction.setImageDescriptor(BambooImages.REPOSITORIES);
 		gotoRepoViewACI.fill(menu, -1);
 	}
