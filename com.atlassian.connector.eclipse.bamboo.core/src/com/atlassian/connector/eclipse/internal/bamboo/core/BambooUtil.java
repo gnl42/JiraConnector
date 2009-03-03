@@ -54,7 +54,7 @@ public final class BambooUtil {
 	}
 
 	public static boolean isSameBuildPlan(BambooBuild buildOne, BambooBuild buildTwo) {
-		if (buildOne.getBuildUrl().equals(buildTwo.getServerUrl())) {
+		if (!buildOne.getServerUrl().equals(buildTwo.getServerUrl())) {
 			return false;
 		}
 		//check if same planKey

@@ -71,7 +71,7 @@ public class BambooCorePlugin extends Plugin {
 		return plugin;
 	}
 
-	static void setRepositoryConnector(BambooRepositoryConnector repositoryConnector) {
+	public static void setRepositoryConnector(BambooRepositoryConnector repositoryConnector) {
 		BambooCorePlugin.repositoryConnector = repositoryConnector;
 	}
 
@@ -91,9 +91,6 @@ public class BambooCorePlugin extends Plugin {
 
 	public static int getRefreshIntervalMinutes() {
 		int minutes = plugin.getPluginPreferences().getInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL);
-		if (minutes <= 0) {
-			return BambooConstants.DEFAULT_REFRESH_INTERVAL;
-		}
 		return minutes;
 	}
 

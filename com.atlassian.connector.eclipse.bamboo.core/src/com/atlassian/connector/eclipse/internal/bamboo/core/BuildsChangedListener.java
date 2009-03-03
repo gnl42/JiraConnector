@@ -12,13 +12,5 @@
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
 public interface BuildsChangedListener {
-//
-//	void buildsAdded(BuildsChangedEvent event);
-//
-//	void buildsRemoved(BuildsChangedEvent event);
-//
-//	void buildsChanged(BuildsChangedEvent event);
-
 	void buildsUpdated(BuildsChangedEvent event);
-
 }

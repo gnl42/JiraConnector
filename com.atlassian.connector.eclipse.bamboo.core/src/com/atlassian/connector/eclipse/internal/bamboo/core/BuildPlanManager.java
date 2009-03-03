@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.mylyn.commons.core.CoreUtil;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -158,7 +159,7 @@ public final class BuildPlanManager {
 
 	private IRepositoryManager repositoryManager;
 
-	private RefreshBuildsForAllRepositoriesJob forcedRefreshBuildsForAllRepositoriesJob;
+	protected RefreshBuildsForAllRepositoriesJob forcedRefreshBuildsForAllRepositoriesJob;
 
 	private boolean firstScheduledSynchronizationDone = false;
 
@@ -200,6 +201,7 @@ public final class BuildPlanManager {
 			}
 		});
 		job.schedule();
+		joinIfInTestMode(job);
 
 	}
 
@@ -338,13 +340,15 @@ public final class BuildPlanManager {
 		scheduledRefreshBuildsForAllRepositoriesJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
-				if (BambooCorePlugin.isAutoRefresh()) {
+				//prohibit immediate reschedule
+				if (BambooCorePlugin.isAutoRefresh() && BambooCorePlugin.getRefreshIntervalMinutes() > 0) {
 					scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getRefreshIntervalMinutes() * 60000);
 				}
 			}
 		});
 		if (BambooCorePlugin.isAutoRefresh()) {
 			scheduledRefreshBuildsForAllRepositoriesJob.schedule(); //first iteration without delay
+			joinIfInTestMode(scheduledRefreshBuildsForAllRepositoriesJob);
 		}
 	}
 
@@ -352,6 +356,7 @@ public final class BuildPlanManager {
 		if (this.repositoryManager != null && !scheduledRefreshBuildsForAllRepositoriesJob.isRunning()) {
 			if (scheduledRefreshBuildsForAllRepositoriesJob.cancel() && BambooCorePlugin.isAutoRefresh()) {
 				scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getRefreshIntervalMinutes() * 60000);
+				joinIfInTestMode(scheduledRefreshBuildsForAllRepositoriesJob);
 			}
 		}
 	}
@@ -373,10 +378,21 @@ public final class BuildPlanManager {
 				}
 			});
 			forcedRefreshBuildsForAllRepositoriesJob.schedule();
+			joinIfInTestMode(forcedRefreshBuildsForAllRepositoriesJob);
 		}
 	}
 
 	public boolean isFirstScheduledSynchronizationDone() {
 		return firstScheduledSynchronizationDone;
+	}
+
+	private static void joinIfInTestMode(Job job) {
+		if (CoreUtil.TEST_MODE) {
+			try {
+				job.join();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }
