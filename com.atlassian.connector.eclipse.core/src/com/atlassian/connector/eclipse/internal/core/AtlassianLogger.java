@@ -39,13 +39,15 @@ public class AtlassianLogger extends LoggerImpl {
 	}
 
 	public void log(int level, String msg, Throwable t) {
-		int statusCode = IStatus.ERROR;
-		if (level == LOG_INFO) {
-			statusCode = IStatus.INFO;
-		} else if (level == LOG_WARN) {
-			statusCode = IStatus.WARNING;
-		}
+		if (AtlassianCorePlugin.TRACE_COMMONS) {
+			int statusCode = IStatus.ERROR;
+			if (level == LOG_INFO) {
+				statusCode = IStatus.INFO;
+			} else if (level == LOG_WARN) {
+				statusCode = IStatus.WARNING;
+			}
 
-		StatusHandler.log(new Status(statusCode, pluginId, msg, t));
+			StatusHandler.log(new Status(statusCode, pluginId, msg, t));
+		}
 	}
 }

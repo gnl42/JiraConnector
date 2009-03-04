@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.core;
 
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -24,6 +25,10 @@ import org.osgi.framework.BundleContext;
 public class AtlassianCorePlugin extends Plugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.core";
+
+	private static final String TRACE_COMMONS_PROPERTY_NAME = "com.atlassian.connector.eclipse.bamboo.core/trace/commons";
+
+	public static final boolean TRACE_COMMONS = "true".equalsIgnoreCase(Platform.getDebugOption(TRACE_COMMONS_PROPERTY_NAME));
 
 	// The shared instance
 	private static AtlassianCorePlugin plugin;
