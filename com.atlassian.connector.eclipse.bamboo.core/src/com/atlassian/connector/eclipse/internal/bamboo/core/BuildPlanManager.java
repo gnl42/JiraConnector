@@ -387,7 +387,7 @@ public final class BuildPlanManager {
 	}
 
 	private static void joinIfInTestMode(Job job) {
-		if (CoreUtil.TEST_MODE) {
+		if (CoreUtil.TEST_MODE && job != null) {
 			try {
 				job.join();
 			} catch (InterruptedException e) {
