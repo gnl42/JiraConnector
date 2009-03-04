@@ -275,11 +275,6 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			AddGeneralCommentToFileAction addGeneralCommentAction = new AddGeneralCommentToFileAction(
 					crucibleAnnotationModel.getCrucibleFile(), review);
 
-			if (crucibleAnnotationModel.getCrucibleFile().isOldFile()) {
-				addLineCommentAction.setEnabled(false);
-				addGeneralCommentAction.setEnabled(false);
-			}
-
 			sourceViewer.addSelectionChangedListener(addLineCommentAction);
 			sourceViewer.addSelectionChangedListener(addGeneralCommentAction);
 			sourceViewer.addTextAction(addLineCommentAction);
@@ -303,7 +298,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
 	private CrucibleViewerTextInputListener leftViewerListener;
 
-	private CrucibleViewerTextInputListener rightViewerListener;
+//	private CrucibleViewerTextInputListener rightViewerListener;
 
 	private final VersionedComment commentToFocus;
 
@@ -320,7 +315,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	public void attachToViewer(final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
 
 		leftViewerListener = addTextInputListener(fLeft, leftAnnotationModel, false);
-		rightViewerListener = addTextInputListener(fRight, rightAnnotationModel, true);
+//		rightViewerListener = addTextInputListener(fRight, rightAnnotationModel, true);
 	}
 
 	private CrucibleViewerTextInputListener addTextInputListener(final MergeSourceViewer sourceViewer,
@@ -368,13 +363,13 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 				startLine--;
 			}
 			//get the correct listener (new file is left)
-			CrucibleViewerTextInputListener listener = isOldFile ? rightViewerListener : leftViewerListener;
-			listener.focusOnLines(startLine, endLine);
+//			CrucibleViewerTextInputListener listener = isOldFile ? rightViewerListener : leftViewerListener;
+			leftViewerListener.focusOnLines(startLine, endLine);
 		}
 	}
 
 	public void registerContextMenu() {
-		rightViewerListener.registerContextMenu(); //context menu in old revision disabled - not supported by API
+//		rightViewerListener.registerContextMenu(); //context menu in old revision disabled - not supported by API
 		leftViewerListener.registerContextMenu();
 	}
 
