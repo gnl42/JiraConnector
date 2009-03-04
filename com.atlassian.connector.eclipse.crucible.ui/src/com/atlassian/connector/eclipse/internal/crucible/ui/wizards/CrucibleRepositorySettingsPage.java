@@ -101,4 +101,8 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 		return false;
 	}
 
+	@Override
+	protected void createContributionControls(Composite parentControl) {
+		// ignore, so editor settings are not displayed
+	}
 }
