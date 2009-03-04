@@ -93,4 +93,13 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 		return "Review";
 	}
 
+	@Override
+	public String getAccountCreationUrl(TaskRepository taskRepository) {
+		return taskRepository.getRepositoryUrl() + "/login/signup.do"; //$NON-NLS-1$
+	}
+
+	@Override
+	public String getAccountManagementUrl(TaskRepository taskRepository) {
+		return taskRepository.getRepositoryUrl() + "/profile/editDisplaySettings-default.do"; //$NON-NLS-1$
+	}
 }

@@ -64,4 +64,14 @@ public class BambooRepositoryConnectorUi extends AbstractRepositoryConnectorUi {
 		return "Build Plan";
 	}
 
+	@Override
+	public String getAccountCreationUrl(TaskRepository taskRepository) {
+		return taskRepository.getRepositoryUrl() + "/signupUser!default.action"; //$NON-NLS-1$
+	}
+
+	@Override
+	public String getAccountManagementUrl(TaskRepository taskRepository) {
+		return taskRepository.getRepositoryUrl() + "/profile/userProfile.action"; //$NON-NLS-1$
+	}
+
 }
