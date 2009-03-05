@@ -39,6 +39,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -53,6 +54,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -97,6 +99,8 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 				};
 				client.execute(summarizeOp);
 				client.getReview(getTaskRepository(), getTaskId(), true, monitor);
+				TasksUiPlugin.getTaskJobFactory().createSynchronizeRepositoriesJob(
+						Collections.singleton(taskRepository)).schedule();
 			} catch (CoreException e) {
 				throw new InvocationTargetException(e);
 

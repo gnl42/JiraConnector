@@ -21,7 +21,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+
+import java.util.Collections;
 
 /**
  * Job to submit or retrieve changes for a review
@@ -50,6 +53,9 @@ public abstract class CrucibleReviewChangeJob extends Job {
 		try {
 			IStatus result = execute(client, monitor);
 			setStatus(result);
+			TasksUiPlugin.getTaskJobFactory()
+					.createSynchronizeRepositoriesJob(Collections.singleton(taskRepository))
+					.schedule();
 		} catch (CoreException e) {
 			setStatus(e.getStatus());
 		}
