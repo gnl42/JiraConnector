@@ -37,7 +37,7 @@ import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
  */
 public class BambooEditor extends SharedHeaderFormEditor {
 
-	public static final String ID_EDITOR = "com.atlassian.connector.eclipse.bamboo.ui.editors.build"; //$NON-NLS-1$
+	public static final String ID = "com.atlassian.connector.eclipse.bamboo.ui.editors.build"; //$NON-NLS-1$
 
 	private Composite editorParent;
 

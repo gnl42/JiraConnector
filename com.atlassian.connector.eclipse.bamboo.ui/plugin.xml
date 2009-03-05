@@ -42,6 +42,17 @@
          </action>
 	    </viewContribution> 
 	</extension>
+      <extension
+            point="org.eclipse.ui.editors">
+         <editor
+               class="com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditor"
+               contributorClass="com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditorActionContribution"
+               default="false"
+               icon="icons/obj16/bamboo.png"
+               id="com.atlassian.connector.eclipse.bamboo.ui.editors.build"
+               name="BambooBuild">
+         </editor>
+      </extension>
       <!--<extension point="org.eclipse.ui.decorators">
       <decorator
             class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooViewLabelDecorator"

@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEditorAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ToggleAutoRefreshAction;
@@ -538,6 +539,8 @@ public class BambooView extends ViewPart {
 
 	private ToggleAutoRefreshAction toggleAutoRefreshAction;
 
+	private OpenBambooEditorAction openBambooEditorAction;
+
 	public BambooView() {
 		builds = new HashMap<TaskRepository, Collection<BambooBuild>>();
 		buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
@@ -809,6 +812,7 @@ public class BambooView extends ViewPart {
 
 	private void fillTreeContextMenu() {
 		MenuManager contextMenuManager = new MenuManager("BAMBOO");
+		contextMenuManager.add(openBambooEditorAction);
 		contextMenuManager.add(openInBrowserAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(showBuildLogAction);
@@ -865,7 +869,7 @@ public class BambooView extends ViewPart {
 
 		openInBrowserAction = new OpenInBrowserAction();
 		openInBrowserAction.setEnabled(false);
-		openInBrowserAction.setText("Open in Browser");
+		openInBrowserAction.setText("Open with Browser");
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
 		buildViewer.addSelectionChangedListener(openInBrowserAction);
 
@@ -910,6 +914,9 @@ public class BambooView extends ViewPart {
 		openRepoConfigAction = ActionFactory.PROPERTIES.create(getSite().getWorkbenchWindow());
 		openRepoConfigAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(openRepoConfigLocalAction);
+
+		openBambooEditorAction = new OpenBambooEditorAction(this.buildViewer);
+		openBambooEditorAction.setText("Open");
 
 		IActionBars actionBars = getViewSite().getActionBars();
 		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigLocalAction);
