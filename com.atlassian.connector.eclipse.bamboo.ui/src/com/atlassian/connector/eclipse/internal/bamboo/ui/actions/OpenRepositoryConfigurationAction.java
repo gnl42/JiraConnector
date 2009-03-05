@@ -31,7 +31,8 @@ public class OpenRepositoryConfigurationAction extends BaseSelectionListenerActi
 	private final TreeViewer buildViewer;
 
 	public OpenRepositoryConfigurationAction(TreeViewer buildViewer) {
-		this(null, buildViewer);
+		super(null);
+		this.buildViewer = buildViewer;
 	}
 
 	public OpenRepositoryConfigurationAction(TaskRepository repository, TreeViewer buildViewer) {

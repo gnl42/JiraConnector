@@ -477,19 +477,6 @@ public class BambooView extends ViewPart {
 
 		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-//			allBuilds = new ArrayList<BambooBuild>();
-//			if (newInput != null) {
-//				boolean hasFailed = false;
-//				for (Collection<BambooBuild> collection : ((Map<TaskRepository, Collection<BambooBuild>>) newInput).values()) {
-//					allBuilds.addAll(collection);
-//					for (BambooBuild build : collection) {
-//						if (build.getStatus() == BuildStatus.FAILURE) {
-//							hasFailed = true;
-//						}
-//					}
-//				}
-//				updateViewIcon(hasFailed);
-//			}
 		}
 	}
 
@@ -610,8 +597,6 @@ public class BambooView extends ViewPart {
 		}
 	}
 
-//	private class BuildDecorationLabelProvider extends DecoratingLabelProvider implements 
-
 	private void createTreeViewer(Composite parent) {
 		buildViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		buildViewer.setContentProvider(new BuildContentProvider());
@@ -699,10 +684,10 @@ public class BambooView extends ViewPart {
 					BuildStatus state2 = ((BambooBuild) e2).getStatus();
 					switch (sortOrder) {
 					case UNSORTED:
-						return super.compare(viewer, e1, e2);
+						return sortByName((BambooBuild) e1, (BambooBuild) e2);
 					case STATE_PASSED_FAILED:
 						if (state1 == state2) {
-							return super.compare(viewer, e1, e2);
+							return sortByName((BambooBuild) e1, (BambooBuild) e2);
 						}
 						if (state1 == BuildStatus.SUCCESS) {
 							return -1;
@@ -716,10 +701,10 @@ public class BambooView extends ViewPart {
 						if (state2 == BuildStatus.FAILURE) {
 							return 1;
 						}
-						return super.compare(viewer, state1, state2);
+						return sortByName((BambooBuild) e1, (BambooBuild) e2);
 					case STATE_FAILED_PASSED:
 						if (state1 == state2) {
-							return super.compare(viewer, e1, e2);
+							return sortByName((BambooBuild) e1, (BambooBuild) e2);
 						}
 						if (state1 == BuildStatus.FAILURE) {
 							return -1;
@@ -733,10 +718,14 @@ public class BambooView extends ViewPart {
 						if (state2 == BuildStatus.SUCCESS) {
 							return 1;
 						}
-						return super.compare(viewer, state1, state2);
+						return sortByName((BambooBuild) e1, (BambooBuild) e2);
 					}
 				}
-				return super.compare(viewer, e1, e2);
+				return sortByName((BambooBuild) e1, (BambooBuild) e2);
+			}
+
+			private int sortByName(BambooBuild bb1, BambooBuild bb2) {
+				return bb1.getBuildName().compareTo(bb2.getBuildName());
 			}
 		};
 
