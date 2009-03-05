@@ -14,20 +14,24 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
@@ -37,7 +41,7 @@ import java.util.List;
 /**
  * @author thomas
  */
-public class BambooBuildEditorPage extends FormPage {
+public class BambooBuildEditorPage extends BambooFormPage {
 
 	/**
 	 * Causes the form page to reflow on resize.
@@ -101,17 +105,40 @@ public class BambooBuildEditorPage extends FormPage {
 
 		EditorUtil.disableScrollingOnFocus(form);
 
-		// TODO
+		try {
+			setReflow(false);
+
+			editorComposite = form.getBody();
+
+			GridLayout editorLayout = new GridLayout();
+			editorComposite.setLayout(editorLayout);
+			editorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+			editorComposite.setMenu(getEditor().getMenu());
+
+			Composite createComposite = toolkit.createComposite(editorComposite);
+			createComposite.setLayout(new GridLayout());
+			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createComposite);
+
+			Label createLabel = toolkit.createLabel(createComposite, "Initializing review editor...");
+			createLabel.setFont(JFaceResources.getBannerFont());
+
+			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createLabel);
+
+			//for now, just display build
+			build = getEditor().getEditorInput().getBambooBuild();
+			createFormContent();
+			getEditor().updateHeaderToolBar();
+
+		} finally {
+			setReflow(true);
+		}
 	}
 
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.addListener(SWT.Resize, new ParentResizeHandler());
 		super.createPartControl(parent);
-	}
-
-	private void downloadBuildAndRefresh(long delay, final boolean force) {
-		//TODO
 	}
 
 	@Override
@@ -215,7 +242,14 @@ public class BambooBuildEditorPage extends FormPage {
 
 		editorComposite.setMenu(menu);
 
-		// FIXME dispose parts
+		for (AbstractBambooEditorFormPagePart part : parts) {
+			part.dispose();
+		}
 	}
 
+	@Override
+	public BambooEditor getEditor() {
+		// ignore
+		return (BambooEditor) super.getEditor();
+	}
 }

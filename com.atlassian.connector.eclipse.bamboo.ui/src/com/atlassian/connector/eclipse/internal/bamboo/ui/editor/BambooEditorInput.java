@@ -53,8 +53,7 @@ public class BambooEditorInput implements IEditorInput {
 			return null;
 		}
 		if (bambooBuild != null) {
-			String buildDescriptor = bambooBuild.getBuildKey() + "-" + String.valueOf(bambooBuild.getBuildNumber());
-			return truncate(buildDescriptor + ": " + toolTipText);
+			return truncate(bambooBuild.getBuildName() + " [" + toolTipText + "]");
 		}
 		return truncate(toolTipText);
 	}
@@ -64,7 +63,7 @@ public class BambooEditorInput implements IEditorInput {
 	}
 
 	public String getToolTipText() {
-		return bambooBuild.getProjectName() + " - " + bambooBuild.getBuildName();
+		return bambooBuild.getBuildKey() + "-" + bambooBuild.getBuildNumber();
 	}
 
 	public Object getAdapter(Class adapter) {
