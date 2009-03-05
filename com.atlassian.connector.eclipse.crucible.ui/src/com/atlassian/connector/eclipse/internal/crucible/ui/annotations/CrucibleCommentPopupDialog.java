@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.actions.OpenReviewEditorToCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.VersionedCommentPart;
 
 import org.eclipse.jface.action.Action;

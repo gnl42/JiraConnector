@@ -9,9 +9,9 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
+package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.editor.AbstractFormPagePart;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
