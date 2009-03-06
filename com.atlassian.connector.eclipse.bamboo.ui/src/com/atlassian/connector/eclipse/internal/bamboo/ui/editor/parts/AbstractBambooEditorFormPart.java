@@ -12,16 +12,15 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooBuildEditorPage;
+import com.atlassian.connector.eclipse.ui.editor.AbstractFormPagePart;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-
-import org.eclipse.ui.forms.AbstractFormPart;
 
 /**
  * A form part that needs to be aware of the build that it is displaying
  * 
  * @author Thomas Ehrnhoefer
  */
-public abstract class AbstractBambooEditorFormPart extends AbstractFormPart {
+public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart {
 
 	public abstract void initialize(BambooBuildEditorPage editor, BambooBuild bambooBuild);
 

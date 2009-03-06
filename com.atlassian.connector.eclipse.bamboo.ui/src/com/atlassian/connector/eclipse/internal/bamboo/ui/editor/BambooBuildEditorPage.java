@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.AbstractBambooEditorFormPart;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -62,8 +63,6 @@ public class BambooBuildEditorPage extends BambooFormPage {
 						return;
 					}
 
-					// only reflow if this is the latest generation to prevent
-					// unnecessary reflows while the form is being resized
 					if (scheduledGeneration == generation) {
 						getManagedForm().reflow(true);
 					}
@@ -72,7 +71,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 		}
 	}
 
-	private final List<AbstractBambooEditorFormPagePart> parts;
+	private final List<AbstractBambooEditorFormPart> parts;
 
 	private Composite editorComposite;
 
@@ -92,7 +91,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 	public BambooBuildEditorPage(BambooEditor parentEditor, String title) {
 		super(parentEditor, BambooConstants.BAMBOO_EDITOR_PAGE_ID, title);
-		parts = new ArrayList<AbstractBambooEditorFormPagePart>();
+		parts = new ArrayList<AbstractBambooEditorFormPart>();
 	}
 
 	@Override
@@ -169,7 +168,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 			createFormParts();
 
-			for (AbstractBambooEditorFormPagePart part : parts) {
+			for (AbstractBambooEditorFormPart part : parts) {
 				getManagedForm().addPart(part);
 				part.initialize(this, build);
 				part.createControl(editorComposite, toolkit);
@@ -223,7 +222,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 	private void clearFormContent() {
 
-		for (AbstractBambooEditorFormPagePart part : parts) {
+		for (AbstractBambooEditorFormPart part : parts) {
 			getManagedForm().removePart(part);
 		}
 
@@ -242,7 +241,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 		editorComposite.setMenu(menu);
 
-		for (AbstractBambooEditorFormPagePart part : parts) {
+		for (AbstractBambooEditorFormPart part : parts) {
 			part.dispose();
 		}
 	}
