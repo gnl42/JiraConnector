@@ -251,7 +251,7 @@ public final class TeamUiUtils {
 				annotationModel.registerContextMenu();
 			} catch (Throwable t) {
 				StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-						"Could not initialize Crucible annotations for " + input.getName()));
+						"Could not initialize annotation model for " + input.getName(), t));
 			}
 		}
 		return contentViewer;

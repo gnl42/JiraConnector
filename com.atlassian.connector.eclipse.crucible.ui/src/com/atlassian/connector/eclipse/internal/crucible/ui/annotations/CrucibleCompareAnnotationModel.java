@@ -64,18 +64,41 @@ import java.util.Iterator;
  * 
  * @author Thomas Ehrnhoefer
  */
+@SuppressWarnings("restriction")
 public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
+	private static SourceViewer getSourceViewer(MergeSourceViewer sourceViewer) {
+		if (SourceViewer.class.isInstance(sourceViewer)) {
+			return SourceViewer.class.cast(sourceViewer);
+		} else {
+			Object returnValue;
+			try {
+				Method getSourceViewerRefl = MergeSourceViewer.class.getDeclaredMethod("getSourceViewer");
+				getSourceViewerRefl.setAccessible(true);
+				returnValue = getSourceViewerRefl.invoke(sourceViewer);
+				if (returnValue instanceof SourceViewer) {
+					return (SourceViewer) returnValue;
+				}
+			} catch (Exception e) {
+				//ignore
+			}
+		}
+		return null;
+	}
+
 	private final class CrucibleViewerTextInputListener implements ITextInputListener, ICrucibleCompareSourceViewer {
-		private final MergeSourceViewer sourceViewer;
+		private final SourceViewer sourceViewer;
 
 		private final CrucibleAnnotationModel crucibleAnnotationModel;
 
 		private final boolean oldFile;
 
+		private final MergeSourceViewer mergeSourceViewer;
+
 		private CrucibleViewerTextInputListener(MergeSourceViewer sourceViewer,
 				CrucibleAnnotationModel crucibleAnnotationModel, boolean oldFile) {
-			this.sourceViewer = sourceViewer;
+			this.sourceViewer = getSourceViewer(sourceViewer);
+			this.mergeSourceViewer = sourceViewer;
 			this.crucibleAnnotationModel = crucibleAnnotationModel;
 			this.oldFile = oldFile;
 		}
@@ -275,10 +298,12 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			AddGeneralCommentToFileAction addGeneralCommentAction = new AddGeneralCommentToFileAction(
 					crucibleAnnotationModel.getCrucibleFile(), review);
 
-			sourceViewer.addSelectionChangedListener(addLineCommentAction);
-			sourceViewer.addSelectionChangedListener(addGeneralCommentAction);
-			sourceViewer.addTextAction(addLineCommentAction);
-			sourceViewer.addTextAction(addGeneralCommentAction);
+			if (sourceViewer != null) {
+				sourceViewer.addSelectionChangedListener(addLineCommentAction);
+				sourceViewer.addSelectionChangedListener(addGeneralCommentAction);
+			}
+			mergeSourceViewer.addTextAction(addLineCommentAction);
+			mergeSourceViewer.addTextAction(addGeneralCommentAction);
 		}
 
 		public LineRange getSelection() {
@@ -322,7 +347,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			final CrucibleAnnotationModel crucibleAnnotationModel, boolean oldFile) {
 		CrucibleViewerTextInputListener listener = new CrucibleViewerTextInputListener(sourceViewer,
 				crucibleAnnotationModel, oldFile);
-		sourceViewer.addTextInputListener(listener);
+		SourceViewer viewer = getSourceViewer(sourceViewer);
+		if (viewer != null) {
+			viewer.addTextInputListener(listener);
+		}
 		return listener;
 	}
 
