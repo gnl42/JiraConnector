@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.AbstractBambooEditorFormPart;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooSummaryPart;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -150,6 +151,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 	}
 
 	private void createFormParts() {
+		parts.add(new BambooSummaryPart(build, getEditor().getEditorInput().getRepository()));
 //		parts.add(new SomeBambooPart());
 //		parts.add(new SomeBambooPart());
 //		parts.add(new SomeBambooPart());

@@ -15,6 +15,9 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooBuildEdit
 import com.atlassian.connector.eclipse.ui.editor.AbstractFormPagePart;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.swt.widgets.Control;
+
 /**
  * A form part that needs to be aware of the build that it is displaying
  * 
@@ -22,7 +25,19 @@ import com.atlassian.theplugin.commons.bamboo.BambooBuild;
  */
 public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart {
 
+	protected BambooBuild bambooBuild;
+
+	protected TaskRepository repository;
+
+	protected Control control;
+
+	public AbstractBambooEditorFormPart(BambooBuild bambooBuild, TaskRepository repository) {
+		this.bambooBuild = bambooBuild;
+		this.repository = repository;
+	}
+
 	public abstract void initialize(BambooBuildEditorPage editor, BambooBuild bambooBuild);
 
 	public abstract BambooBuildEditorPage getBuildEditor();
+
 }
