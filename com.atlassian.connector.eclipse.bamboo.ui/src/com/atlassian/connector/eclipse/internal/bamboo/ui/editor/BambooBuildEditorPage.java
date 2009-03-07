@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.AbstractBambooEditorFormPart;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooDetailsPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooSummaryPart;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
@@ -151,7 +152,8 @@ public class BambooBuildEditorPage extends BambooFormPage {
 	}
 
 	private void createFormParts() {
-		parts.add(new BambooSummaryPart(build, getEditor().getEditorInput().getRepository()));
+		parts.add(new BambooSummaryPart());
+		parts.add(new BambooDetailsPart("Summary"));
 //		parts.add(new SomeBambooPart());
 //		parts.add(new SomeBambooPart());
 //		parts.add(new SomeBambooPart());
@@ -172,7 +174,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 			for (AbstractBambooEditorFormPart part : parts) {
 				getManagedForm().addPart(part);
-				part.initialize(this, build);
+				part.initialize(this, build, getEditor().getEditorInput().getRepository());
 				part.createControl(editorComposite, toolkit);
 			}
 
