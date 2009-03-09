@@ -108,7 +108,7 @@ public class CompositeJavaProject implements IJavaProject {
 	}
 
 	public IJavaElement findElement(String bindingKey, WorkingCopyOwner owner) throws JavaModelException {
-		return mainProject.findElement(bindingKey, owner);
+		return null;//mainProject.findElement(bindingKey, owner);
 	}
 
 	public IPackageFragment findPackageFragment(IPath path) throws JavaModelException {
@@ -128,9 +128,9 @@ public class CompositeJavaProject implements IJavaProject {
 	}
 
 	/**
-	 * Returns the first IType which matches given class (by its fully qualified name). Only those {@link IType}s, which
-	 * are real IResources(s) (Java files belonging to the project) are returned. Being on the classpath is not enough
-	 * to be considered valid result here.
+	 * Returns the first IType which matches given class (by its fully qualified name). Only those {@link IType}s,
+	 * which are real IResources(s) (Java files belonging to the project) are returned. Being on the classpath is not
+	 * enough to be considered valid result here.
 	 */
 	public IType findType(String fullyQualifiedName, IProgressMonitor progressMonitor) throws JavaModelException {
 		for (IJavaProject project : projects) {
@@ -158,9 +158,9 @@ public class CompositeJavaProject implements IJavaProject {
 	}
 
 	/**
-	 * Returns the first IType which matches given class (by its fully qualified name). Only those {@link IType}s, which
-	 * are real IResources(s) (Java files belonging to the project) are returned. Being on the classpath is not enough
-	 * to be considered valid result here.
+	 * Returns the first IType which matches given class (by its fully qualified name). Only those {@link IType}s,
+	 * which are real IResources(s) (Java files belonging to the project) are returned. Being on the classpath is not
+	 * enough to be considered valid result here.
 	 */
 	public IType findType(String packageName, String typeQualifiedName) throws JavaModelException {
 		for (IJavaProject project : projects) {
