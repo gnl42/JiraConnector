@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildPlanManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedEvent;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListener;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparator.SortOrder;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEditorAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
@@ -73,7 +74,6 @@ import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.views.TaskRepositoriesView;
@@ -134,30 +134,6 @@ public class BambooView extends ViewPart {
 	private static final String CREATE_A_NEW_REPOSITORY_LINK = "create a new repository";
 
 	private static final String OPEN_REPOSITORY_VIEW_LINK = "Open the Task Repositories view";
-
-	public enum SortOrder {
-		UNSORTED(SWT.NONE), STATE_PASSED_FAILED(SWT.UP), STATE_FAILED_PASSED(SWT.DOWN);
-		private final int direction;
-
-		private SortOrder(int direction) {
-			this.direction = direction;
-		}
-
-		public int getDirection() {
-			return direction;
-		}
-
-		public static SortOrder next(SortOrder current) {
-			switch (current) {
-			case UNSORTED:
-				return STATE_PASSED_FAILED;
-			case STATE_PASSED_FAILED:
-				return STATE_FAILED_PASSED;
-			default:
-				return UNSORTED;
-			}
-		}
-	}
 
 	private class OpenInBrowserAction extends BaseSelectionListenerAction {
 		public OpenInBrowserAction() {
@@ -649,8 +625,6 @@ public class BambooView extends ViewPart {
 
 	private BuildsChangedListener buildsChangedListener;
 
-	private SortOrder sortOrder = SortOrder.UNSORTED;
-
 	private IStatusLineManager statusLineManager;
 
 	private ToggleAutoRefreshAction toggleAutoRefreshAction;
@@ -789,73 +763,13 @@ public class BambooView extends ViewPart {
 			}
 		});
 
-		final ViewerComparator comparator = new ViewerComparator() {
-			@Override
-			public boolean isSorterProperty(Object element, String property) {
-				// ignore
-				return true;
-			}
-
-			@Override
-			public int compare(Viewer viewer, Object e1, Object e2) {
-				if (e1 instanceof BambooBuild && e2 instanceof BambooBuild) {
-					BuildStatus state1 = ((BambooBuild) e1).getStatus();
-					BuildStatus state2 = ((BambooBuild) e2).getStatus();
-					switch (sortOrder) {
-					case UNSORTED:
-						return sortByName((BambooBuild) e1, (BambooBuild) e2);
-					case STATE_PASSED_FAILED:
-						if (state1 == state2) {
-							return sortByName((BambooBuild) e1, (BambooBuild) e2);
-						}
-						if (state1 == BuildStatus.SUCCESS) {
-							return -1;
-						}
-						if (state2 == BuildStatus.SUCCESS) {
-							return 1;
-						}
-						if (state1 == BuildStatus.FAILURE) {
-							return -1;
-						}
-						if (state2 == BuildStatus.FAILURE) {
-							return 1;
-						}
-						return sortByName((BambooBuild) e1, (BambooBuild) e2);
-					case STATE_FAILED_PASSED:
-						if (state1 == state2) {
-							return sortByName((BambooBuild) e1, (BambooBuild) e2);
-						}
-						if (state1 == BuildStatus.FAILURE) {
-							return -1;
-						}
-						if (state2 == BuildStatus.FAILURE) {
-							return 1;
-						}
-						if (state1 == BuildStatus.SUCCESS) {
-							return -1;
-						}
-						if (state2 == BuildStatus.SUCCESS) {
-							return 1;
-						}
-						return sortByName((BambooBuild) e1, (BambooBuild) e2);
-					}
-				}
-				return sortByName((BambooBuild) e1, (BambooBuild) e2);
-			}
-
-			private int sortByName(BambooBuild bb1, BambooBuild bb2) {
-				if (bb1 == null || bb2 == null || bb1.getBuildName() == null || bb2.getBuildName() == null) {
-					return 0;
-				}
-				return bb1.getBuildName().compareTo(bb2.getBuildName());
-			}
-		};
+		final BambooBuildViewerComparator comparator = new BambooBuildViewerComparator();
 
 		final Tree tree = buildViewer.getTree();
 		tree.getColumns()[0].addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				sortOrder = SortOrder.next(sortOrder);
+				SortOrder sortOrder = comparator.toggleSortOrder();
 				buildViewer.setComparator(null);
 				buildViewer.setComparator(comparator);
 				tree.setSortDirection(sortOrder.getDirection());
