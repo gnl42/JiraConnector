@@ -844,6 +844,9 @@ public class BambooView extends ViewPart {
 			}
 
 			private int sortByName(BambooBuild bb1, BambooBuild bb2) {
+				if (bb1 == null || bb2 == null || bb1.getBuildName() == null || bb2.getBuildName() == null) {
+					return 0;
+				}
 				return bb1.getBuildName().compareTo(bb2.getBuildName());
 			}
 		};
