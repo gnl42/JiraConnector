@@ -42,6 +42,83 @@
          </action>
 	    </viewContribution> 
 	</extension>
+	<!-- this stuff here will be used one day, when we support remote running of unit test on Bamboo -->
+      <extension
+            point="org.eclipse.debug.core.launchDelegates">
+         <launchDelegate
+               delegate="com.atlassian.connector.eclipse.bamboo.core.BambooLaunchConfigurationDelegate"
+               id="com.atlassian.connector.eclipse.bamboo.core.bambooLaunchDelegate"
+               modes="run"
+               name="Remote Bamboo Launcher">
+         </launchDelegate>
+      </extension>
+      <extension
+            point="org.eclipse.debug.core.launchConfigurationTypes">
+         <launchConfigurationType
+               delegate="com.atlassian.connector.eclipse.bamboo.core.BambooLaunchConfigurationDelegate"
+               delegateDescription="Remote Bamboo Launcher supports running your unit tests remotely on selected Atlassian Bamboo instance"
+               delegateName="Remote Bamboo Launcher"
+               id="com.atlassian.connector.eclipse.bamboo.core.bambooRemoteTestRun"
+               modes="run"
+               name="Bamboo Tests">
+         </launchConfigurationType>
+      </extension>
+      <extension
+            point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+         <launchConfigurationTypeImage
+               configTypeID="com.atlassian.connector.eclipse.bamboo.core.bambooRemoteTestRun"
+               icon="icons/obj16/bamboo.png"
+               id="com.atlassian.connector.eclipse.bamboo.core.bambooRemoteTestRunImage">
+         </launchConfigurationTypeImage>
+      </extension>
+      <extension
+            point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+         <launchConfigurationTabGroup
+               class="com.atlassian.connector.eclipse.bamboo.ui.BambooRemoteTestTabGroup"
+               id="com.atlassian.connector.eclipse.bamboo.core.bambooRemoteTestRunTabGroup"
+               type="com.atlassian.connector.eclipse.bamboo.core.bambooRemoteTestRun">
+         </launchConfigurationTabGroup>
+      </extension>
+      <extension
+            point="org.eclipse.debug.ui.launchShortcuts">
+         <shortcut
+               class="com.atlassian.connector.eclipse.bamboo.ui.BambooRemoteTestLaunchShortcut"
+               icon="icons/obj16/bamboo.png"
+               id="com.atlassian.connector.eclipse.bamboo.ui.bambooRemoteTestShortcut"
+               label="JUnit Test on Bamboo"
+               modes="run">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value="1"/>
+               	  <iterate>
+                     <adapt type="org.eclipse.jdt.core.IJavaElement">
+		                <test property="org.eclipse.jdt.core.isInJavaProject"/>
+		                <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="junit.framework.Test"/>
+		                <test property="org.eclipse.jdt.junit.canLaunchAsJUnit" forcePluginActivation="true"/>
+		             </adapt>
+		          </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+         <configurationType
+               id="com.atlassian.connector.eclipse.bamboo.core.bambooRemoteTestRun">
+         </configurationType>
+               
+         </shortcut>
+      </extension>
+      <extension point="org.eclipse.ui.popupMenus">
+	     <viewerContribution id="org.eclipse.mylyn.bugzilla.ui.contribution"
+              targetID="org.eclipse.jdt.junit.ResultView">
+	       <action class="com.atlassian.connector.eclipse.bamboo.ui.BambooRemoteTestFromJunitResultViewAction"
+	           icon="icons/obj16/bamboo.png"
+	           id="com.atlassian.connector.eclipse.bamboo.ui.actions.bambooRemoteTestFromJunitResultViewAction"
+	           label="Run on Bamboo"
+	           menubarPath="additions"/>
+	     </viewerContribution>
+      </extension>
+      <!-- end of the stuff for remote runs on Bamboo  -->
+      
       <extension
             point="org.eclipse.ui.editors">
          <editor
