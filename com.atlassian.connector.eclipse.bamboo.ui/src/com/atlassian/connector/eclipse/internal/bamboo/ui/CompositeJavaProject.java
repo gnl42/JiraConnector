@@ -107,6 +107,9 @@ public class CompositeJavaProject implements IJavaProject {
 		return mainProject.findElement(path);
 	}
 
+	/**
+	 * This method is not used really and moreover it's not available in Eclipse 3.3 so let us just return null here
+	 */
 	public IJavaElement findElement(String bindingKey, WorkingCopyOwner owner) throws JavaModelException {
 		return null;//mainProject.findElement(bindingKey, owner);
 	}
@@ -128,9 +131,9 @@ public class CompositeJavaProject implements IJavaProject {
 	}
 
 	/**
-	 * Returns the first IType which matches given class (by its fully qualified name). Only those {@link IType}s,
-	 * which are real IResources(s) (Java files belonging to the project) are returned. Being on the classpath is not
-	 * enough to be considered valid result here.
+	 * Returns the first IType which matches given class (by its fully qualified name). Only those {@link IType}s, which
+	 * are real IResources(s) (Java files belonging to the project) are returned. Being on the classpath is not enough
+	 * to be considered valid result here.
 	 */
 	public IType findType(String fullyQualifiedName, IProgressMonitor progressMonitor) throws JavaModelException {
 		for (IJavaProject project : projects) {
@@ -158,9 +161,9 @@ public class CompositeJavaProject implements IJavaProject {
 	}
 
 	/**
-	 * Returns the first IType which matches given class (by its fully qualified name). Only those {@link IType}s,
-	 * which are real IResources(s) (Java files belonging to the project) are returned. Being on the classpath is not
-	 * enough to be considered valid result here.
+	 * Returns the first IType which matches given class (by its fully qualified name). Only those {@link IType}s, which
+	 * are real IResources(s) (Java files belonging to the project) are returned. Being on the classpath is not enough
+	 * to be considered valid result here.
 	 */
 	public IType findType(String packageName, String typeQualifiedName) throws JavaModelException {
 		for (IJavaProject project : projects) {
