@@ -34,51 +34,51 @@ public class MockBambooBuild implements BambooBuild {
 		this.serverUrl = serverUrl;
 	}
 
-	public Date getBuildCompletedDate() {
+	public Date getCompletionDate() {
 		// ignore
 		return null;
 	}
 
-	public String getBuildDurationDescription() {
+	public String getDurationDescription() {
 		// ignore
 		return null;
 	}
 
-	public String getBuildKey() {
+	public String getPlanKey() {
 		return key;
 	}
 
-	public String getBuildName() {
+	public String getPlanName() {
 		// ignore
 		return null;
 	}
 
-	public int getBuildNumber() throws UnsupportedOperationException {
+	public int getNumber() throws UnsupportedOperationException {
 		// ignore
 		return 0;
 	}
 
-	public String getBuildReason() {
+	public String getReason() {
 		// ignore
 		return null;
 	}
 
-	public String getBuildRelativeBuildDate() {
+	public String getRelativeBuildDate() {
 		// ignore
 		return null;
 	}
 
-	public String getBuildResultUrl() {
+	public String getResultUrl() {
 		// ignore
 		return null;
 	}
 
-	public Date getBuildStartedDate() {
+	public Date getStartDate() {
 		// ignore
 		return null;
 	}
 
-	public String getBuildTestSummary() {
+	public String getTestSummary() {
 		// ignore
 		return null;
 	}
