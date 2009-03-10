@@ -734,6 +734,7 @@ public class BambooView extends ViewPart {
 									builder.append(", ");
 								}
 								builder.append(committer);
+								first = false;
 							}
 						}
 						builder.append("]");
