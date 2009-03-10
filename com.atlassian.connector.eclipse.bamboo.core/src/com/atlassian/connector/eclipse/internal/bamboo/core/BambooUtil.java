@@ -58,7 +58,7 @@ public final class BambooUtil {
 			return false;
 		}
 		//check if same planKey
-		return buildOne.getBuildKey().equals(buildTwo.getBuildKey());
+		return buildOne.getPlanKey().equals(buildTwo.getPlanKey());
 
 //		//check if from same server
 //		String[] keyElementsOne = buildOne.getBuildKey().split("-");
@@ -83,9 +83,9 @@ public final class BambooUtil {
 		StringBuilder builder = new StringBuilder();
 		builder.append(build.getServerUrl());
 		builder.append("/build/viewBuildResults.action?buildKey=");
-		builder.append(build.getBuildKey());
+		builder.append(build.getPlanKey());
 		builder.append("&buildNumber=");
-		builder.append(build.getBuildNumber());
+		builder.append(build.getNumber());
 		// ignore
 		return builder.toString();
 	}

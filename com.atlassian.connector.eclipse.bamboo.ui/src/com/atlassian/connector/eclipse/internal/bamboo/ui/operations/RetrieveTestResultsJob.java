@@ -51,10 +51,10 @@ public class RetrieveTestResultsJob extends Job {
 			testResults = tre.writeApplicationsToXML(build, details, File.createTempFile("bamboo_result", ".xml"));
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-					"Failed to retrieve build logs for build " + build.getBuildKey()));
+					"Failed to retrieve build logs for build " + build.getPlanKey()));
 		} catch (IOException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-					"Failed to process test results for build " + build.getBuildKey()));
+					"Failed to process test results for build " + build.getPlanKey()));
 		}
 		return Status.OK_STATUS;
 	}

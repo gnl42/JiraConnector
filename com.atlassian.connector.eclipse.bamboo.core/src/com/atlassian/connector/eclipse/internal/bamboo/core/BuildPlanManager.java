@@ -95,7 +95,7 @@ public final class BuildPlanManager {
 
 		private final boolean manualRefresh;
 
-		private boolean isRunning = false;
+		private boolean isRunning;
 
 		public RefreshBuildsForAllRepositoriesJob(boolean manualRefresh) {
 			super("Refresh Builds");
@@ -139,7 +139,7 @@ public final class BuildPlanManager {
 
 		public IStatus getStatus() {
 			return result;
-		};
+		}
 
 		@Override
 		public boolean belongsTo(Object family) {
@@ -161,7 +161,7 @@ public final class BuildPlanManager {
 
 	protected RefreshBuildsForAllRepositoriesJob forcedRefreshBuildsForAllRepositoriesJob;
 
-	private boolean firstScheduledSynchronizationDone = false;
+	private boolean firstScheduledSynchronizationDone;
 
 	public BuildPlanManager() {
 		subscribedBuilds = new HashMap<TaskRepository, Collection<BambooBuild>>();
@@ -228,14 +228,14 @@ public final class BuildPlanManager {
 			//process failed build retrieval
 			if (newBuild.getErrorMessage() != null && newBuild.getStatus() == BuildStatus.UNKNOWN) {
 				//log error
-				errorLog.add(newBuild.getBuildKey() + " - " + newBuild.getErrorMessage() + "["
+				errorLog.add(newBuild.getPlanKey() + " - " + newBuild.getErrorMessage() + "["
 						+ newBuild.getServer().getName() + "]");
 				//of there is an old build, used cached information for the failed new build retrieval
 				if (correspondingOldBuild != null) {
-					if (!cachedToAdd.containsKey(correspondingOldBuild.getBuildKey())) {
+					if (!cachedToAdd.containsKey(correspondingOldBuild.getPlanKey())) {
 						BambooBuild buildToCache = createCachedBuild(correspondingOldBuild, newBuild);
 						if (buildToCache != null) {
-							cachedToAdd.put(correspondingOldBuild.getBuildKey(), buildToCache);
+							cachedToAdd.put(correspondingOldBuild.getPlanKey(), buildToCache);
 							failedToRemove.add(newBuild);
 						}
 					}
@@ -244,7 +244,7 @@ public final class BuildPlanManager {
 			} else if (correspondingOldBuild != null) {
 				if (BambooUtil.isSameBuildPlan(newBuild, correspondingOldBuild)) {
 					//if build keys do not match, but builds are of the same build plan, it is a changed build
-					if (newBuild.getBuildKey().equals(correspondingOldBuild.getBuildKey())) {
+					if (newBuild.getPlanKey().equals(correspondingOldBuild.getPlanKey())) {
 						changedBuilds.add(newBuild);
 					}
 				}
@@ -259,12 +259,12 @@ public final class BuildPlanManager {
 
 	private BambooBuild createCachedBuild(BambooBuild oldBuild, BambooBuild newBuild) {
 		try {
-			return new BambooBuildInfo(oldBuild.getBuildKey(), oldBuild.getBuildName(), oldBuild.getServer(),
+			return new BambooBuildInfo(oldBuild.getPlanKey(), oldBuild.getPlanName(), oldBuild.getServer(),
 					oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(),
-					oldBuild.getBuildNumber(), oldBuild.getStatus(), oldBuild.getBuildReason(),
-					oldBuild.getBuildStartedDate(), null, null, oldBuild.getTestsPassed(), oldBuild.getTestsFailed(),
-					oldBuild.getBuildCompletedDate(), newBuild.getErrorMessage(), oldBuild.getBuildRelativeBuildDate(),
-					oldBuild.getBuildDurationDescription(), oldBuild.getCommiters());
+					oldBuild.getNumber(), oldBuild.getStatus(), oldBuild.getReason(), oldBuild.getStartDate(),
+					null, null, oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getCompletionDate(),
+					newBuild.getErrorMessage(), oldBuild.getRelativeBuildDate(),
+					oldBuild.getDurationDescription(), oldBuild.getCommiters());
 		} catch (UnsupportedOperationException e) {
 			return null;
 		}

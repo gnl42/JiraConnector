@@ -31,6 +31,7 @@ import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.DateUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -159,7 +160,7 @@ public class BambooView extends ViewPart {
 				try {
 					Iterator it = selection.iterator();
 					while (it.hasNext()) {
-						((BambooBuild) it.next()).getBuildNumber();
+						((BambooBuild) it.next()).getNumber();
 					}
 					return true;
 				} catch (UnsupportedOperationException e) {
@@ -201,7 +202,7 @@ public class BambooView extends ViewPart {
 			BambooBuild build = (BambooBuild) selection.iterator().next();
 			if (build != null) {
 				try {
-					build.getBuildNumber();
+					build.getNumber();
 					return build.getEnabled();
 				} catch (UnsupportedOperationException e) {
 					return false;
@@ -260,8 +261,8 @@ public class BambooView extends ViewPart {
 			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 			MessageConsole buildLogConsole = buildLogConsoles.get(build);
 			if (buildLogConsole == null) {
-				buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE + build.getBuildKey() + " - "
-						+ build.getBuildNumber(), BambooImages.CONSOLE);
+				buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE + build.getPlanKey() + " - "
+						+ build.getNumber(), BambooImages.CONSOLE);
 			}
 			BambooView.this.buildLogConsoles.put(build, buildLogConsole);
 			consoleManager.addConsoles(new IConsole[] { buildLogConsole });
@@ -275,7 +276,7 @@ public class BambooView extends ViewPart {
 		protected boolean updateSelection(IStructuredSelection selection) {
 			if (selection.size() == 1) {
 				try {
-					((BambooBuild) selection.getFirstElement()).getBuildNumber();
+					((BambooBuild) selection.getFirstElement()).getNumber();
 					return true;
 				} catch (UnsupportedOperationException e) {
 					// ignore
@@ -312,7 +313,7 @@ public class BambooView extends ViewPart {
 		protected boolean updateSelection(IStructuredSelection selection) {
 			if (selection.size() == 1) {
 				try {
-					((BambooBuild) selection.getFirstElement()).getBuildNumber();
+					((BambooBuild) selection.getFirstElement()).getNumber();
 					return true;
 				} catch (UnsupportedOperationException e) {
 					// ignore
@@ -349,7 +350,7 @@ public class BambooView extends ViewPart {
 		protected boolean updateSelection(IStructuredSelection selection) {
 			if (selection.size() == 1) {
 				try {
-					((BambooBuild) selection.getFirstElement()).getBuildNumber();
+					((BambooBuild) selection.getFirstElement()).getNumber();
 					return true;
 				} catch (UnsupportedOperationException e) {
 					// ignore
@@ -382,7 +383,7 @@ public class BambooView extends ViewPart {
 								if (event.getResult() == Status.OK_STATUS) {
 									File testResults = ((RetrieveTestResultsJob) event.getJob()).getTestResultsFile();
 									if (testResults != null) {
-										showJUnitView(testResults, build.getBuildKey() + "-" + build.getBuildNumber());
+										showJUnitView(testResults, build.getPlanKey() + "-" + build.getNumber());
 									}
 								}
 							}
@@ -410,7 +411,7 @@ public class BambooView extends ViewPart {
 			BambooBuild build = (BambooBuild) selection.iterator().next();
 			if (build != null) {
 				try {
-					build.getBuildNumber();
+					build.getNumber();
 					return (build.getTestsFailed() + build.getTestsPassed()) > 0;
 				} catch (UnsupportedOperationException e) {
 					return false;
@@ -708,7 +709,7 @@ public class BambooView extends ViewPart {
 					StringBuilder builder = new StringBuilder();
 					int totalTests = build.getTestsFailed() + build.getTestsPassed();
 					try {
-						build.getBuildNumber();
+						build.getNumber();
 					} catch (UnsupportedOperationException e) {
 						return ("N/A");
 					}
@@ -718,20 +719,13 @@ public class BambooView extends ViewPart {
 						builder.append(NLS.bind("Tests: {0} out of {1} failed", new Object[] { build.getTestsFailed(),
 								totalTests }));
 					}
-					if (build.getBuildReason() != null) {
+					if (build.getReason() != null) {
 						builder.append("  [");
-						builder.append(build.getBuildReason());
+						builder.append(build.getReason());
 
-						if (build.getBuildReason().equals(CODE_HAS_CHANGED) && build.getCommiters() != null) {
+						if (build.getReason().equals(CODE_HAS_CHANGED) && build.getCommiters() != null) {
 							builder.append(" by ");
-							boolean first = true;
-							for (String committer : build.getCommiters()) {
-								if (!first) {
-									builder.append(", ");
-								}
-								builder.append(committer);
-								first = false;
-							}
+							builder.append(StringUtils.join(build.getCommiters(), ", "));
 						}
 						builder.append("]");
 					}
@@ -750,11 +744,11 @@ public class BambooView extends ViewPart {
 				if (element instanceof BambooBuild) {
 					BambooBuild build = ((BambooBuild) element);
 					try {
-						build.getBuildNumber();
+						build.getNumber();
 					} catch (UnsupportedOperationException e) {
 						return ("N/A");
 					}
-					return DateUtil.getRelativeBuildTime(build.getBuildCompletedDate());
+					return DateUtil.getRelativeBuildTime(build.getCompletionDate());
 				}
 				return super.getText(element);
 			}

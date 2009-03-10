@@ -49,7 +49,7 @@ public class RetrieveBuildLogsJob extends Job {
 			buildLog = client.getBuildLogs(monitor, repository, build);
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-					"Failed to retrieve build logs for build " + build.getBuildKey()));
+					"Failed to retrieve build logs for build " + build.getPlanKey()));
 		}
 		return Status.OK_STATUS;
 	}

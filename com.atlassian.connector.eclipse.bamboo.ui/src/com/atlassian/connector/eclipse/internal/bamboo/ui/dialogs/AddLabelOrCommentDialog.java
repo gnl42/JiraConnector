@@ -118,7 +118,7 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 		getShell().setText(shellTitle);
 		setTitle(shellTitle);
 
-		setMessage(NLS.bind("Add a {0} to Build {1}", type == Type.LABEL ? "Label" : "Comment", build.getBuildKey()));
+		setMessage(NLS.bind("Add a {0} to Build {1}", type == Type.LABEL ? "Label" : "Comment", build.getPlanKey()));
 
 		//CHECKSTYLE:MAGIC:OFF
 		Composite composite = new Composite(parent, SWT.NONE);

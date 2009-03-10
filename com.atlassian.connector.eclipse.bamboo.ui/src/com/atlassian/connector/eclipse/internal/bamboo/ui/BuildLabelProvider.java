@@ -40,20 +40,20 @@ public class BuildLabelProvider implements ILabelProvider {
 	public String getText(Object element) {
 		StringBuilder builder = new StringBuilder();
 		BambooBuild bambooBuild = (BambooBuild) element;
-		if (bambooBuild.getBuildName() == null) {
+		if (bambooBuild.getPlanName() == null) {
 			builder.append("N/A");
 		} else {
-			builder.append(bambooBuild.getBuildName());
+			builder.append(bambooBuild.getPlanName());
 		}
-		if (bambooBuild.getBuildKey() != null) {
+		if (bambooBuild.getPlanKey() != null) {
 			builder.append("  [");
-			builder.append(bambooBuild.getBuildKey());
+			builder.append(bambooBuild.getPlanKey());
 			try {
-				String number = String.valueOf(bambooBuild.getBuildNumber());
+				String number = String.valueOf(bambooBuild.getNumber());
 				builder.append("-");
 				builder.append(number);
 			} catch (UnsupportedOperationException e) {
-				if (bambooBuild.getBuildName() != null) {
+				if (bambooBuild.getPlanName() != null) {
 					builder.append("-");
 					builder.append("N/A");
 				}

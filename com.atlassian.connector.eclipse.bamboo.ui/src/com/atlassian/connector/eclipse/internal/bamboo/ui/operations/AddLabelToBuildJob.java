@@ -45,7 +45,7 @@ public class AddLabelToBuildJob extends Job {
 			client.addLabelToBuild(monitor, repository, build, label);
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Failed to add label to build "
-					+ build.getBuildKey()));
+					+ build.getPlanKey()));
 		}
 		return Status.OK_STATUS;
 	}

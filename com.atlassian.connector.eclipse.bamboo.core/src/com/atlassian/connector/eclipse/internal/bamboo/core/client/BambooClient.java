@@ -171,8 +171,8 @@ public class BambooClient {
 			public BuildDetails run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving build details");
-				BuildDetails buildDetails = server.getBuildDetails(serverCfg, build.getBuildKey(),
-						build.getBuildNumber());
+				BuildDetails buildDetails = server.getBuildDetails(serverCfg, build.getPlanKey(),
+						build.getNumber());
 				return buildDetails;
 			}
 
@@ -186,7 +186,7 @@ public class BambooClient {
 			public String run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving build details");
-				return server.getBuildLogs(serverCfg, build.getBuildKey(), build.getBuildNumber());
+				return server.getBuildLogs(serverCfg, build.getPlanKey(), build.getNumber());
 			}
 
 		}, taskRepository);
@@ -200,7 +200,7 @@ public class BambooClient {
 			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				monitor.subTask("Adding label to build");
-				server.addLabelToBuild(serverCfg, build.getBuildKey(), build.getBuildNumber(), label);
+				server.addLabelToBuild(serverCfg, build.getPlanKey(), build.getNumber(), label);
 				return null;
 			}
 
@@ -215,7 +215,7 @@ public class BambooClient {
 			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				monitor.subTask("Adding comment to build");
-				server.addCommentToBuild(serverCfg, build.getBuildKey(), build.getBuildNumber(), comment);
+				server.addCommentToBuild(serverCfg, build.getPlanKey(), build.getNumber(), comment);
 				return null;
 			}
 
@@ -229,7 +229,7 @@ public class BambooClient {
 			public Object run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				monitor.subTask("Run Build");
-				server.executeBuild(serverCfg, build.getBuildKey());
+				server.executeBuild(serverCfg, build.getPlanKey());
 				return null;
 			}
 		}, repository);

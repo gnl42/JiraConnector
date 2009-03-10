@@ -36,9 +36,9 @@ public class BambooSummaryPart extends AbstractBambooEditorFormPart {
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 
 		createReadOnlyText(toolkit, composite, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
-				.format(bambooBuild.getBuildCompletedDate()), "     Completed:", false);
-		createReadOnlyText(toolkit, composite, bambooBuild.getBuildDurationDescription(), "     Build took:", false);
-		createReadOnlyText(toolkit, composite, bambooBuild.getBuildReason(), "     Build Reason:", false);
+				.format(bambooBuild.getCompletionDate()), "     Completed:", false);
+		createReadOnlyText(toolkit, composite, bambooBuild.getDurationDescription(), "     Build took:", false);
+		createReadOnlyText(toolkit, composite, bambooBuild.getReason(), "     Build Reason:", false);
 		createReadOnlyText(toolkit, composite, bambooBuild.getProjectName(), "     Project:", false);
 
 		toolkit.paintBordersFor(composite);

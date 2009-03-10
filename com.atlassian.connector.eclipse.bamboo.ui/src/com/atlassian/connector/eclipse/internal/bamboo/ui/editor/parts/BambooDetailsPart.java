@@ -47,7 +47,7 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 		//TODO
 		String buildNr;
 		try {
-			buildNr = String.valueOf(bambooBuild.getBuildNumber());
+			buildNr = String.valueOf(bambooBuild.getNumber());
 		} catch (UnsupportedOperationException e) {
 			buildNr = "N/A";
 		}
@@ -56,7 +56,7 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("Build ");
-		builder.append(bambooBuild.getBuildKey());
+		builder.append(bambooBuild.getPlanKey());
 		builder.append("-");
 		builder.append(buildNr);
 

@@ -60,7 +60,7 @@ public class BambooNotification extends AbstractNotification {
 
 	@Override
 	public Date getDate() {
-		return build.getBuildCompletedDate();
+		return build.getCompletionDate();
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class BambooNotification extends AbstractNotification {
 
 	@Override
 	public String getLabel() {
-		return build.getBuildKey() + NLS.bind(" [{0}]", repository.getRepositoryLabel());
+		return build.getPlanKey() + NLS.bind(" [{0}]", repository.getRepositoryLabel());
 	}
 
 	@Override
@@ -110,13 +110,13 @@ public class BambooNotification extends AbstractNotification {
 		}
 		Date date;
 		if (anotherNotification instanceof BambooNotification) {
-			date = ((BambooNotification) anotherNotification).getBuild().getBuildCompletedDate();
+			date = ((BambooNotification) anotherNotification).getBuild().getCompletionDate();
 		} else {
 			date = anotherNotification.getDate();
 		}
-		if (build.getBuildCompletedDate() != null && date != null) {
-			return build.getBuildCompletedDate().compareTo(date);
-		} else if (build.getBuildCompletedDate() == null) {
+		if (build.getCompletionDate() != null && date != null) {
+			return build.getCompletionDate().compareTo(date);
+		} else if (build.getCompletionDate() == null) {
 			return -1;
 		} else {
 			return 1;

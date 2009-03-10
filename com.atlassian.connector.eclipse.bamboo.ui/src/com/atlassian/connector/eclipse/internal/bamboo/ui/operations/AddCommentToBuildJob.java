@@ -45,7 +45,7 @@ public class AddCommentToBuildJob extends Job {
 			client.addCommentToBuild(monitor, repository, build, comment);
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Failed to add comment to build "
-					+ build.getBuildKey()));
+					+ build.getPlanKey()));
 		}
 		return Status.OK_STATUS;
 	}

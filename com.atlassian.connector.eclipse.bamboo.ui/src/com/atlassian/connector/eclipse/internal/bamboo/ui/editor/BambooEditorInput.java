@@ -53,7 +53,7 @@ public class BambooEditorInput implements IEditorInput {
 			return null;
 		}
 		if (bambooBuild != null) {
-			return truncate(bambooBuild.getBuildName() + " [" + toolTipText + "]");
+			return truncate(bambooBuild.getPlanName() + " [" + toolTipText + "]");
 		}
 		return truncate(toolTipText);
 	}
@@ -63,7 +63,7 @@ public class BambooEditorInput implements IEditorInput {
 	}
 
 	public String getToolTipText() {
-		return bambooBuild.getBuildKey() + "-" + bambooBuild.getBuildNumber();
+		return bambooBuild.getPlanKey() + "-" + bambooBuild.getNumber();
 	}
 
 	public Object getAdapter(Class adapter) {
@@ -86,8 +86,8 @@ public class BambooEditorInput implements IEditorInput {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((repository == null) ? 0 : repository.hashCode());
-		result = prime * result + ((bambooBuild == null) ? 0 : bambooBuild.getBuildKey().hashCode());
-		result = prime * result + ((bambooBuild == null) ? 0 : bambooBuild.getBuildNumber());
+		result = prime * result + ((bambooBuild == null) ? 0 : bambooBuild.getPlanKey().hashCode());
+		result = prime * result + ((bambooBuild == null) ? 0 : bambooBuild.getNumber());
 		return result;
 	}
 
@@ -104,8 +104,8 @@ public class BambooEditorInput implements IEditorInput {
 		}
 		//if same repository, buildplan and build number, input is equals
 		if (this.repository.equals(((BambooEditorInput) obj).getRepository())) {
-			if (this.bambooBuild.getBuildKey().equals(((BambooEditorInput) obj).getBambooBuild().getBuildKey())) {
-				return this.bambooBuild.getBuildNumber() == ((BambooEditorInput) obj).getBambooBuild().getBuildNumber();
+			if (this.bambooBuild.getPlanKey().equals(((BambooEditorInput) obj).getBambooBuild().getPlanKey())) {
+				return this.bambooBuild.getNumber() == ((BambooEditorInput) obj).getBambooBuild().getNumber();
 			}
 		}
 
