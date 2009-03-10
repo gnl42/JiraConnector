@@ -261,9 +261,13 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		if (replyToComment == null) { //"defect button" needed if new comment
 			composite = new Composite(composite, SWT.NONE);
 			composite.setLayout(new GridLayout(1, false));
-			GridDataFactory.fillDefaults().grab(true, true).align(SWT.RIGHT, SWT.CENTER).span(3, 1).applyTo(composite);
 			createDefectButton(composite);
-			addCustomFields(composite);
+			int nrOfCustomFields = addCustomFields(composite);
+			GridDataFactory.fillDefaults()
+					.grab(true, true)
+					.align(SWT.RIGHT, SWT.CENTER)
+					.span(nrOfCustomFields + 1, 1)
+					.applyTo(composite);
 		}
 
 		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SWT.DEFAULT).applyTo(composite);
@@ -303,20 +307,22 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		}
 	}
 
-	private void addCustomFields(Composite parent) {
+	private int addCustomFields(Composite parent) {
 		if (review == null) {
-			return;
+			return 0;
 		}
 		List<CustomFieldDef> customFields = CrucibleCorePlugin.getDefault().getReviewCache().getMetrics(
 				review.getMetricsVersion());
 		if (customFields == null) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 					"Metrics are for review version are not cached: " + review.getMetricsVersion() + " "
-							+ review.getName(), new Exception()));
+							+ review.getName(), null));
+			return 0;
 		} else {
 			for (CustomFieldDef customField : customFields) {
 				createCombo(parent, customField, 0);
 			}
+			return customFields.size();
 		}
 	}
 
