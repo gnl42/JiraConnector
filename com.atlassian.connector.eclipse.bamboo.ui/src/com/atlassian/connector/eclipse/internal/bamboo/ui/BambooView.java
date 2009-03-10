@@ -46,14 +46,12 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.internal.core.JavaModelManager;
-import org.eclipse.jdt.internal.junit.Messages;
 import org.eclipse.jdt.internal.junit.launcher.AssertionVMArg;
 import org.eclipse.jdt.internal.junit.launcher.JUnitLaunchConfigurationConstants;
 import org.eclipse.jdt.internal.junit.launcher.JUnitMigrationDelegate;
 import org.eclipse.jdt.internal.junit.launcher.TestKindRegistry;
 import org.eclipse.jdt.internal.junit.model.JUnitModel;
 import org.eclipse.jdt.internal.junit.model.TestRunSession;
-import org.eclipse.jdt.internal.junit.ui.JUnitMessages;
 import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
 import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
@@ -444,8 +442,6 @@ public class BambooView extends ViewPart {
 									if (testName != null) {
 										name += "." + testName; //$NON-NLS-1$
 									}
-									final String configName = Messages.format(
-											JUnitMessages.TestRunnerViewPart_configName, name);
 									final IType testElement = compositeProject.findType(className);
 									if (testElement == null) {
 										throw new CoreException(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
