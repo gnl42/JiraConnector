@@ -17,6 +17,12 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 
+/**
+ * One day this class will serve as an entry-point for remote run unit tests on Bamboo. Until Bamboo is ready for that,
+ * this is a piece of dead code
+ * 
+ * @author wseliga
+ */
 public class BambooLaunchConfigurationDelegate implements ILaunchConfigurationDelegate {
 
 	public BambooLaunchConfigurationDelegate() {

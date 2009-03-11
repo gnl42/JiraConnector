@@ -43,6 +43,7 @@
 	    </viewContribution> 
 	</extension>
 	<!-- this stuff here will be used one day, when we support remote running of unit test on Bamboo -->
+	<!--
       <extension
             point="org.eclipse.debug.core.launchDelegates">
          <launchDelegate
@@ -117,6 +118,7 @@
 	           menubarPath="additions"/>
 	     </viewerContribution>
       </extension>
+      -->
       <!-- end of the stuff for remote runs on Bamboo  -->
       
       <extension
