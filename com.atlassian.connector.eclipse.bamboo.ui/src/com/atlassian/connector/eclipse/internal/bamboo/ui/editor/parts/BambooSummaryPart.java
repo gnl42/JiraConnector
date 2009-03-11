@@ -11,7 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
+
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -29,12 +33,24 @@ public class BambooSummaryPart extends AbstractBambooEditorFormPart {
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
 		Composite composite = toolkit.createComposite(parent);
-		GridLayout layout = new GridLayout(8, false);
+		GridLayout layout = new GridLayout(9, false);
 		layout.horizontalSpacing = 5;
 		layout.verticalSpacing = 5;
 		composite.setLayout(layout);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 
+		Image stateImage;
+		switch (bambooBuild.getStatus()) {
+		case SUCCESS:
+			stateImage = CommonImages.getImage(BambooImages.STATUS_PASSED);
+			break;
+		case FAILURE:
+			stateImage = CommonImages.getImage(BambooImages.STATUS_FAILED);
+			break;
+		default:
+			stateImage = CommonImages.getImage(BambooImages.STATUS_DISABLED);
+		}
+		createLabelControl(toolkit, composite, stateImage);
 		createReadOnlyText(toolkit, composite, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
 				.format(bambooBuild.getCompletionDate()), "     Completed:", false);
 		createReadOnlyText(toolkit, composite, bambooBuild.getDurationDescription(), "     Build took:", false);

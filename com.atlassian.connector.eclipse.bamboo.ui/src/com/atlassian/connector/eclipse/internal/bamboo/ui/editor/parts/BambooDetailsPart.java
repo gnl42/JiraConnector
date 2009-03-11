@@ -11,15 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
-import com.atlassian.theplugin.commons.bamboo.BuildStatus;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * Part displaying important Build details
@@ -38,58 +32,62 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
-		Section section = createSection(parent, toolkit, ExpandableComposite.NO_TITLE | ExpandableComposite.EXPANDED);
-		Composite composite = toolkit.createComposite(section, SWT.BORDER);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 8;
-		composite.setLayout(layout);
+		//leave it empty for now until ACC-29 is done
 
-		//TODO
-		String buildNr;
-		try {
-			buildNr = String.valueOf(bambooBuild.getNumber());
-		} catch (UnsupportedOperationException e) {
-			buildNr = "N/A";
-		}
-		int passedTests = bambooBuild.getTestsPassed();
-		int failedTests = bambooBuild.getTestsFailed();
+//		Section section = createSection(parent, toolkit, ExpandableComposite.NO_TITLE | ExpandableComposite.EXPANDED);
+//		Composite composite = toolkit.createComposite(section, SWT.BORDER);
+//		GridLayout layout = new GridLayout();
+//		layout.numColumns = 8;
+//		composite.setLayout(layout);
+//
+//		//TODO
+//		String buildNr;
+//		try {
+//			buildNr = String.valueOf(bambooBuild.getNumber());
+//		} catch (UnsupportedOperationException e) {
+//			buildNr = "N/A";
+//		}
+//		int passedTests = bambooBuild.getTestsPassed();
+//		int failedTests = bambooBuild.getTestsFailed();
+//
+//		StringBuilder builder = new StringBuilder();
+//		builder.append("Build ");
+//		builder.append(bambooBuild.getPlanKey());
+//		builder.append("-");
+//		builder.append(buildNr);
+//
+//		if (bambooBuild.getStatus() == BuildStatus.SUCCESS) {
+//			builder.append(" succeeded");
+//			if (passedTests <= 0) {
+//				builder.append(" [testless build].");
+//			} else {
+//				builder.append(" with ");
+//				builder.append(String.valueOf(passedTests));
+//				builder.append(" passing tests.");
+//			}
+//		} else if (bambooBuild.getStatus() == BuildStatus.FAILURE) {
+//			builder.append(" failed");
+//			if (failedTests <= 0) {
+//				builder.append(" [testless build].");
+//			} else {
+//				builder.append(" with ");
+//				builder.append(String.valueOf(failedTests));
+//				builder.append(" failing tests.");
+//			}
+//		} else {
+//			builder.append(" disabled / Build data unavailable.");
+//		}
+//		createReadOnlyText(toolkit, composite, builder.toString(), null, false);
+//
+//		//TODO more Content here
+//
+//		toolkit.paintBordersFor(composite);
+//
+//		section.setClient(composite);
+//		setSection(toolkit, section);
+//
+//		return control;
 
-		StringBuilder builder = new StringBuilder();
-		builder.append("Build ");
-		builder.append(bambooBuild.getPlanKey());
-		builder.append("-");
-		builder.append(buildNr);
-
-		if (bambooBuild.getStatus() == BuildStatus.SUCCESS) {
-			builder.append(" succeeded");
-			if (passedTests <= 0) {
-				builder.append(" [testless build].");
-			} else {
-				builder.append(" with ");
-				builder.append(String.valueOf(passedTests));
-				builder.append(" passing tests.");
-			}
-		} else if (bambooBuild.getStatus() == BuildStatus.FAILURE) {
-			builder.append(" failed");
-			if (failedTests <= 0) {
-				builder.append(" [testless build].");
-			} else {
-				builder.append(" with ");
-				builder.append(String.valueOf(failedTests));
-				builder.append(" failing tests.");
-			}
-		} else {
-			builder.append(" disabled / Build data unavailable.");
-		}
-		createReadOnlyText(toolkit, composite, builder.toString(), null, false);
-
-		//TODO more Content here
-
-		toolkit.paintBordersFor(composite);
-
-		section.setClient(composite);
-		setSection(toolkit, section);
-
-		return control;
+		return parent;
 	}
 }

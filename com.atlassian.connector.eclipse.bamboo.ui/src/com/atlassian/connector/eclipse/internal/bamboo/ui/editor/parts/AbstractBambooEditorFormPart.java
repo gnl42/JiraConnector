@@ -19,6 +19,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -85,6 +86,12 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 	private Label createLabelControl(FormToolkit toolkit, Composite composite, String labelString) {
 		Label labelControl = toolkit.createLabel(composite, labelString);
 		labelControl.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		return labelControl;
+	}
+
+	protected Label createLabelControl(FormToolkit toolkit, Composite composite, Image image) {
+		Label labelControl = toolkit.createLabel(composite, null);
+		labelControl.setImage(image);
 		return labelControl;
 	}
 
