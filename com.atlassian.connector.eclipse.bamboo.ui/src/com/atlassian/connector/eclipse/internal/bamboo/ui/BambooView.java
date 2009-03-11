@@ -64,6 +64,7 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -187,6 +188,19 @@ public class BambooView extends ViewPart {
 					if (build != null) {
 						RunBuildJob job = new RunBuildJob(build, TasksUi.getRepositoryManager().getRepository(
 								BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+						job.addJobChangeListener(new JobChangeAdapter() {
+							@Override
+							public void done(IJobChangeEvent event) {
+								if (event.getResult().getCode() == IStatus.ERROR) {
+									Display.getDefault().syncExec(new Runnable() {
+										public void run() {
+											MessageDialog.openError(getSite().getShell(), getText(), "Running build "
+													+ build.getPlanKey() + " failed. See error log for details.");
+										}
+									});
+								}
+							}
+						});
 						job.schedule();
 
 					}
@@ -227,6 +241,9 @@ public class BambooView extends ViewPart {
 				if (selected instanceof BambooBuild) {
 					final BambooBuild build = (BambooBuild) selected;
 					if (build != null) {
+						final MessageConsole console = prepareConsole(build);
+						final MessageConsoleStream messageStream = console.newMessageStream();
+
 						RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager()
 								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
 						job.addJobChangeListener(new JobChangeAdapter() {
@@ -234,28 +251,26 @@ public class BambooView extends ViewPart {
 							public void done(IJobChangeEvent event) {
 								if (event.getResult() == Status.OK_STATUS) {
 									String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
-									MessageConsole console = prepareConsole(build);
-									MessageConsoleStream messageStream = console.newMessageStream();
-									try {
-
-										// this is a hack to make sure that showing the build log works on 3.3 there seems to be 
-										// some sort of race condition between creating the stream and printing the information but 
-										// there seems to be no way to check if the stream is ready or not 
+									if (buildLog == null) {
+										//retrieval failed, remove console
+										handledFailedLogRetrieval(console, messageStream, build);
+									} else {
 										try {
-											Thread.sleep(1000);
-										} catch (InterruptedException e) {
-											// ignore
+											showConsole(console);
+											messageStream.print(buildLog);
+										} finally {
+											try {
+												messageStream.close();
+											} catch (IOException e) {
+												StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+														"Failed to close console message stream"));
+											}
 										}
-										messageStream.print(buildLog);
-									} finally {
-										try {
-											messageStream.close();
-										} catch (IOException e) {
-											StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-													"Failed to close console message stream"));
-										}
+										console.activate();
 									}
-									console.activate();
+								} else {
+									//retrieval failed, remove console
+									handledFailedLogRetrieval(console, messageStream, build);
 								}
 							}
 						});
@@ -277,8 +292,30 @@ public class BambooView extends ViewPart {
 			consoleManager.addConsoles(new IConsole[] { buildLogConsole });
 
 			buildLogConsole.clearConsole();
-			consoleManager.showConsoleView(buildLogConsole);
 			return buildLogConsole;
+		}
+
+		private void showConsole(MessageConsole console) {
+			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+			consoleManager.showConsoleView(console);
+		}
+
+		private void handledFailedLogRetrieval(MessageConsole console, MessageConsoleStream stream,
+				final BambooBuild build) {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+						"Failed to close console message stream"));
+			}
+			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+			consoleManager.removeConsoles(new IConsole[] { console });
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					MessageDialog.openError(getSite().getShell(), getText(), "Retrieving build logs for "
+							+ build.getPlanKey() + "-" + build.getNumber() + " failed. See error log for details.");
+				}
+			});
 		}
 
 		@Override
@@ -393,6 +430,15 @@ public class BambooView extends ViewPart {
 									File testResults = ((RetrieveTestResultsJob) event.getJob()).getTestResultsFile();
 									if (testResults != null) {
 										showJUnitView(testResults, build.getPlanKey() + "-" + build.getNumber());
+									} else {
+										Display.getDefault().syncExec(new Runnable() {
+											public void run() {
+												MessageDialog.openError(getSite().getShell(), getText(),
+														"Retrieving test result for " + build.getPlanKey() + "-"
+																+ build.getNumber()
+																+ " failed. See error log for details.");
+											}
+										});
 									}
 								}
 							}

@@ -41,8 +41,10 @@ public class RunBuildJob extends Job {
 		try {
 			client.runBuild(monitor, repository, build);
 		} catch (CoreException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Failed to run build "
-					+ build.getPlanKey()));
+			Status status = new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Failed to run build "
+					+ build.getPlanKey(), e);
+			StatusHandler.log(status);
+			return status;
 		}
 		return Status.OK_STATUS;
 	}
