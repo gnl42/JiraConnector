@@ -259,19 +259,18 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 		//CHECKSTYLE:MAGIC:OFF
 		((GridLayout) parent.getLayout()).makeColumnsEqualWidth = false;
 		// create buttons according to (implicit) reply type
+		int nrOfCustomFields = 0;
 		if (replyToComment == null) { //"defect button" needed if new comment
-			composite = new Composite(composite, SWT.NONE);
-			composite.setLayout(new GridLayout(1, false));
-			createDefectButton(composite);
-			int nrOfCustomFields = addCustomFields(composite);
-			GridDataFactory.fillDefaults()
-					.grab(true, true)
-					.align(SWT.RIGHT, SWT.CENTER)
-					.span(nrOfCustomFields + 1, 1)
-					.applyTo(composite);
+			Composite compositeCustomFields = new Composite(composite, SWT.NONE);
+			compositeCustomFields.setLayout(new GridLayout(1, false));
+			createDefectButton(compositeCustomFields);
+			nrOfCustomFields = addCustomFields(compositeCustomFields);
+			GridDataFactory.fillDefaults().grab(true, false).span(nrOfCustomFields + 1, 1).applyTo(
+					compositeCustomFields);
 		}
 
 		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SWT.DEFAULT).applyTo(composite);
+
 		return composite;
 		//CHECKSTYLE:MAGIC:ON
 	}
