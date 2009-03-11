@@ -250,10 +250,25 @@ public class JiraClientCache {
 		}
 	}
 
-	public ServerInfo getServerInfo() throws JiraException {
+	/**
+	 * Returns cached ServerInfo if available.
+	 * 
+	 * @return null, if no server info is available
+	 */
+	public ServerInfo getServerInfo() {
+		return data.serverInfo;
+	}
+
+	/**
+	 * Returns cached ServerInfo if available, updated from the repository otherwise.
+	 * 
+	 * @param monitor
+	 * @throws JiraException
+	 */
+	public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
 		ServerInfo info = data.serverInfo;
 		if (info == null) {
-			info = jiraClient.getServerInfo(null);
+			info = jiraClient.getServerInfo(monitor);
 		}
 		data.serverInfo = info;
 		return info;

@@ -345,10 +345,10 @@ public class JiraSoapClient extends AbstractSoapClient {
 		});
 	}
 
-	public JiraWorkLog[] getWorkLogs(final String issueKey, IProgressMonitor monitor) throws JiraException {
+	public JiraWorkLog[] getWorkLogs(final String issueKey, final IProgressMonitor monitor) throws JiraException {
 		return call(monitor, new Callable<JiraWorkLog[]>() {
 			public JiraWorkLog[] call() throws java.rmi.RemoteException, JiraException {
-				String version = jiraClient.getCache().getServerInfo().getVersion();
+				String version = jiraClient.getCache().getServerInfo(monitor).getVersion();
 				boolean hasApi = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_10) >= 0);
 				if (hasApi) {
 					return JiraSoapConverter.convert(getSoapService().getWorklogs(loginToken.getCurrentValue(),

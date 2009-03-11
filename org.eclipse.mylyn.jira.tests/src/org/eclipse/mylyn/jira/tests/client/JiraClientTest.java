@@ -606,11 +606,11 @@ public class JiraClientTest extends TestCase {
 		WebLocation location = new WebLocation(url, credentials.username, credentials.password);
 		location.setCredentials(AuthenticationType.HTTP, httpCredentials.username, httpCredentials.password);
 		client = new JiraClient(location);
-		assertNotNull(client.getCache().getServerInfo());
+		assertNotNull(client.getCache().getServerInfo(null));
 
 		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password));
 		try {
-			assertNotNull(client.getCache().getServerInfo());
+			assertNotNull(client.getCache().getServerInfo(null));
 			fail("Expected JiraServiceUnavailableException");
 		} catch (JiraServiceUnavailableException expected) {
 		}
@@ -637,7 +637,7 @@ public class JiraClientTest extends TestCase {
 
 	private void getServerInfo(String url, String version, String buildNumber) throws Exception {
 		init(url, PrivilegeLevel.USER);
-		ServerInfo serverInfo = client.getCache().getServerInfo();
+		ServerInfo serverInfo = client.getCache().getServerInfo(null);
 		assertEquals(version, serverInfo.getVersion());
 		assertEquals(buildNumber, serverInfo.getBuildNumber());
 		assertEquals("ISO-8859-1", serverInfo.getCharacterEncoding());

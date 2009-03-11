@@ -46,13 +46,13 @@ public class JiraRssClient {
 		session.doInSession(callback, monitor);
 	}
 
-	public void executeNamedFilter(final NamedFilter filter, final IssueCollector collector, IProgressMonitor monitor)
-			throws JiraException {
+	public void executeNamedFilter(final NamedFilter filter, final IssueCollector collector,
+			final IProgressMonitor monitor) throws JiraException {
 		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				String version = client.getCache().getServerInfo().getVersion();
+				String version = client.getCache().getServerInfo(monitor).getVersion();
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
 					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/").append(filter.getId()).append( //$NON-NLS-1$
 							"/SearchRequest-").append(filter.getId()).append(".xml"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -72,12 +72,12 @@ public class JiraRssClient {
 	}
 
 	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector,
-			IProgressMonitor monitor) throws JiraException {
+			final IProgressMonitor monitor) throws JiraException {
 		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				String version = client.getCache().getServerInfo().getVersion();
+				String version = client.getCache().getServerInfo(monitor).getVersion();
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
 					rssUrlBuffer.append("/sr/jira.issueviews:searchrequest-xml/temp/SearchRequest.xml?decorator=none&reset=true&"); //$NON-NLS-1$
 					if (collector.getMaxHits() != IssueCollector.NO_LIMIT) {
@@ -97,13 +97,13 @@ public class JiraRssClient {
 		});
 	}
 
-	public void getIssueByKey(final String issueKey, final IssueCollector collector, IProgressMonitor monitor)
+	public void getIssueByKey(final String issueKey, final IssueCollector collector, final IProgressMonitor monitor)
 			throws JiraException {
 		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
-				String version = client.getCache().getServerInfo().getVersion();
+				String version = client.getCache().getServerInfo(monitor).getVersion();
 				if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_7) >= 0) {
 					rssUrlBuffer.append("/si/jira.issueviews:issue-xml/"); //$NON-NLS-1$
 					rssUrlBuffer.append(issueKey);

@@ -255,14 +255,15 @@ public class JiraClient {
 		return cache;
 	}
 
+	// FIXME add parameter for IProgressMonitor
 	public String getCharacterEncoding() throws JiraException {
 		if (configuration.getCharacterEncoding() == null) {
-			String serverEncoding = getCache().getServerInfo().getCharacterEncoding();
+			String serverEncoding = getCache().getServerInfo(null).getCharacterEncoding();
 			if (serverEncoding != null) {
 				return serverEncoding;
 			} else if (!attemptedToDetermineCharacterEncoding) {
 				getCache().refreshServerInfo(new NullProgressMonitor());
-				serverEncoding = getCache().getServerInfo().getCharacterEncoding();
+				serverEncoding = getCache().getServerInfo(null).getCharacterEncoding();
 				if (serverEncoding != null) {
 					return serverEncoding;
 				}
@@ -294,7 +295,7 @@ public class JiraClient {
 	 */
 	public IssueField[] getEditableAttributes(final String issueKey, IProgressMonitor monitor) throws JiraException {
 		// work around for bug 205015
-		String version = getCache().getServerInfo().getVersion();
+		String version = getCache().getServerInfo(monitor).getVersion();
 		boolean workAround = (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_12) < 0);
 		return soapClient.getEditableAttributes(issueKey, workAround, monitor);
 	}
