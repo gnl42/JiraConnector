@@ -97,6 +97,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 					} catch (CoreException e) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Unable to post Comment", e));
+						throw e; //rethrow exception so dialog stays open and displays error message
 					}
 					client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 				}
