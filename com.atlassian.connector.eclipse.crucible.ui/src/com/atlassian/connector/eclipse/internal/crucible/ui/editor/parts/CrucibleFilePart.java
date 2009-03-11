@@ -104,37 +104,48 @@ public class CrucibleFilePart extends ExpandablePart {
 
 		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
 		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
-		if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null && oldFileDescriptor.getUrl().length() > 0
-				&& oldFileDescriptor.getRevision() != null && oldFileDescriptor.getRevision().length() > 0) {
 
-			OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
-					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true), review);
-			openOldAction.setText(oldFileDescriptor.getRevision());
-			openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
-			createActionHyperlink(toolbarComposite, toolkit, openOldAction);
-		}
-
-		if (crucibleFile.getOldFileDescriptor() != null && crucibleFile.getOldFileDescriptor().getRevision() != null
-				&& crucibleFile.getOldFileDescriptor().getRevision().length() > 0
-				&& crucibleFile.getCommitType() != CommitType.Deleted) {
-
-			if (crucibleFile.getFileDescriptor() != null && crucibleFile.getFileDescriptor().getRevision() != null
-					&& crucibleFile.getFileDescriptor().getRevision().length() > 0) {
-				textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
-				textHyperlink.setText("-");
-				textHyperlink.setEnabled(false);
-				textHyperlink.setUnderlined(false);
+		//if file is deleted, do not include any revisions 
+		//   (we need a local resource to retrieve the old revision from SVN, which we do not have)
+		if (crucibleFile.getCommitType() == CommitType.Deleted) {
+			textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+			textHyperlink.setText(" N/A ");
+			textHyperlink.setEnabled(false);
+			textHyperlink.setUnderlined(false);
+		} else {
+			if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
+					&& oldFileDescriptor.getUrl().length() > 0 && oldFileDescriptor.getRevision() != null
+					&& oldFileDescriptor.getRevision().length() > 0) {
+				OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
+						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true), review);
+				openOldAction.setText(oldFileDescriptor.getRevision());
+				openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
+				createActionHyperlink(toolbarComposite, toolkit, openOldAction);
 			}
-		}
 
-		if (newFileDescriptor != null && newFileDescriptor.getUrl() != null && newFileDescriptor.getUrl().length() > 0
-				&& newFileDescriptor.getRevision() != null && newFileDescriptor.getRevision().length() > 0
-				&& crucibleFile.getCommitType() != CommitType.Deleted) {
-			OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
-					getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false), review);
-			openNewAction.setText(newFileDescriptor.getRevision());
-			openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
-			createActionHyperlink(toolbarComposite, toolkit, openNewAction);
+			if (crucibleFile.getOldFileDescriptor() != null
+					&& crucibleFile.getOldFileDescriptor().getRevision() != null
+					&& crucibleFile.getOldFileDescriptor().getRevision().length() > 0) {
+
+				if (crucibleFile.getFileDescriptor() != null && crucibleFile.getFileDescriptor().getRevision() != null
+						&& crucibleFile.getFileDescriptor().getRevision().length() > 0) {
+					textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+					textHyperlink.setText("-");
+					textHyperlink.setEnabled(false);
+					textHyperlink.setUnderlined(false);
+				}
+			}
+
+			if (newFileDescriptor != null && newFileDescriptor.getUrl() != null
+					&& newFileDescriptor.getUrl().length() > 0 && newFileDescriptor.getRevision() != null
+					&& newFileDescriptor.getRevision().length() > 0
+					&& crucibleFile.getCommitType() != CommitType.Deleted) {
+				OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
+						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false), review);
+				openNewAction.setText(newFileDescriptor.getRevision());
+				openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
+				createActionHyperlink(toolbarComposite, toolkit, openNewAction);
+			}
 		}
 
 		textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);

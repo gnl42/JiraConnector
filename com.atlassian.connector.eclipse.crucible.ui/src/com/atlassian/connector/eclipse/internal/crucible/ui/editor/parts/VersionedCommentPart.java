@@ -12,9 +12,11 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
@@ -136,24 +138,25 @@ public class VersionedCommentPart extends CommentPart {
 	@Override
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
 		if (getCrucibleEditor() != null && !comment.isReply()) {
-			// if fromLineComment --> oldFile
-			CrucibleFile crucibleFile = new CrucibleFile(crucibleFileInfo, versionedComment.isFromLineInfo());
-			OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
-					getCrucibleEditor().getTask(), crucibleFile, versionedComment, crucibleReview);
-			openVersionedVirtualFileAction.setText(getLineNumberText());
-			openVersionedVirtualFileAction.setToolTipText("Open the file to the comment");
-			createActionHyperlink(toolbarComposite, toolkit, openVersionedVirtualFileAction);
 
-//			ImageHyperlink textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
-//			textHyperlink.setText(" ");
-//			textHyperlink.setEnabled(false);
-//			textHyperlink.setUnderlined(false);
-//			CompareVersionedVirtualFileAction openCompareAction = new CompareVersionedVirtualFileAction(
-//					crucibleFileInfo, versionedComment, crucibleReview);
-//			openCompareAction.setText("Compare");
-//			openCompareAction.setToolTipText("Open the file to the comment in the compare editor");
-//			createActionHyperlink(toolbarComposite, toolkit, openCompareAction);
-//			
+			//if both revisions are availabe (--> commitType neither added nor deleted), use compareAction
+			if (crucibleFileInfo.getCommitType() != CommitType.Deleted
+					&& crucibleFileInfo.getCommitType() != CommitType.Added) {
+				CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
+						crucibleFileInfo, versionedComment, crucibleReview);
+				compareAction.setToolTipText("Open the file to the comment in the compare editor");
+				compareAction.setText(getLineNumberText());
+				// TODO set the image descriptor
+				createActionHyperlink(toolbarComposite, toolkit, compareAction);
+			} else {
+				// if fromLineComment --> oldFile
+				CrucibleFile crucibleFile = new CrucibleFile(crucibleFileInfo, versionedComment.isFromLineInfo());
+				OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
+						getCrucibleEditor().getTask(), crucibleFile, versionedComment, crucibleReview);
+				openVersionedVirtualFileAction.setText(getLineNumberText());
+				openVersionedVirtualFileAction.setToolTipText("Open the file to the comment");
+				createActionHyperlink(toolbarComposite, toolkit, openVersionedVirtualFileAction);
+			}
 		}
 
 		for (IReviewAction customAction : customActions) {
