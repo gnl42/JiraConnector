@@ -483,6 +483,13 @@ public class BambooView extends ViewPart {
 	/**
 	 * this method is practically stolen "as is" from
 	 * {@link org.eclipse.jdt.junit.launcher.JUnitLaunchShortcut#createLaunchConfiguration(IJavaElement)}
+	 * 
+	 * The only meaningful difference is the following line:
+	 * 
+	 * <pre>
+	 * ILaunchConfigurationType configType = getLaunchManager().getLaunchConfigurationType(
+	 * 		JUnitLaunchConfigurationConstants.ID_JUNIT_APPLICATION);
+	 * </pre>
 	 */
 	@SuppressWarnings("restriction")
 	protected static ILaunchConfigurationWorkingCopy createLaunchConfiguration(IJavaElement element)
