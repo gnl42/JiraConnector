@@ -28,12 +28,13 @@ public interface ITeamResourceConnector {
 
 	boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor);
 
-	IEditorPart openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor);
+	IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
+			String otherRevisionString, IProgressMonitor monitor);
 
 	boolean canHandleEditorInput(IEditorInput editorInput);
 
 	CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview);
 
-	boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString, String newRevisionString,
-			ICompareAnnotationModel annotationModel, IProgressMonitor monitor);
+	boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath, String oldRevisionString,
+			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor);
 }

@@ -67,13 +67,17 @@ public class OpenVersionedVirtualFileAction extends Action {
 		try {
 			CommonsUiUtil.run(PlatformUI.getWorkbench().getProgressService(), new ICoreRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					VersionedVirtualFile virtualFile = crucibleFile.getCrucibleFileInfo().getFileDescriptor();
+					VersionedVirtualFile newFile = crucibleFile.getCrucibleFileInfo().getFileDescriptor();
+					VersionedVirtualFile oldFile = crucibleFile.getCrucibleFileInfo().getOldFileDescriptor();
+					IEditorPart editor = null;
 					if (crucibleFile.isOldFile()) {
-						virtualFile = crucibleFile.getCrucibleFileInfo().getOldFileDescriptor();
+						editor = TeamUiUtils.openFile(oldFile.getRepoUrl(), oldFile.getUrl(), newFile.getUrl(),
+								oldFile.getRevision(), newFile.getRevision(), monitor);
+					} else {
+						editor = TeamUiUtils.openFile(newFile.getRepoUrl(), newFile.getUrl(), oldFile.getUrl(),
+								newFile.getRevision(), oldFile.getRevision(), monitor);
 					}
 
-					IEditorPart editor = TeamUiUtils.openFile(virtualFile.getRepoUrl(), virtualFile.getUrl(),
-							virtualFile.getRevision(), monitor);
 					if (editor instanceof ITextEditor) {
 						ITextEditor textEditor = ((ITextEditor) editor);
 						ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();

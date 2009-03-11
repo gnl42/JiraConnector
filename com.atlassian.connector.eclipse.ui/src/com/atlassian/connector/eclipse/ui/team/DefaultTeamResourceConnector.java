@@ -64,13 +64,15 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return true;
 	}
 
-	public IEditorPart openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
-		return openFileWithTeamApi(repoUrl, filePath, revisionString, monitor);
+	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
+			String otherRevisionString, IProgressMonitor monitor) {
+		return openFileWithTeamApi(repoUrl, filePath, otherRevisionFilePath, revisionString, monitor);
 	}
 
-	public boolean openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
-			String newRevisionString, final ICompareAnnotationModel annotationModel, IProgressMonitor monitor) {
-
+	public boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,
+			String oldRevisionString, String newRevisionString, final ICompareAnnotationModel annotationModel,
+			IProgressMonitor monitor) {
+		//TODO support for moved/deleted files
 		IResource resource = findResourceForPath(filePath);
 		if (resource != null) {
 			IFileRevision oldFile = getFileRevision(resource, oldRevisionString, monitor);
@@ -204,13 +206,19 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	private static IEditorPart openFileWithTeamApi(String repoUrl, String filePath, final String revisionString,
-			final IProgressMonitor monitor) {
+	private static IEditorPart openFileWithTeamApi(String repoUrl, String filePath, String otherRevisionFilePath,
+			final String revisionString, final IProgressMonitor monitor) {
 		// this is a good backup (Works for cvs and anyone that uses the history provider
 
 		// TODO add support for finding a project in the path so that we can find the proper resource 
 		// (i.e. file path and project name may be different)
-		final IResource resource = findResourceForPath(filePath);
+
+		//TODO support for moved/deleted files
+		IResource resource = findResourceForPath(filePath);
+
+		if (resource == null) {
+			resource = findResourceForPath(otherRevisionFilePath);
+		}
 
 		if (resource != null) {
 			if (!(resource instanceof IFile)) {
@@ -245,9 +253,10 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 						return openRemoteResource(revisionString, resource, historyProvider, monitor);
 					} else {
 						final IEditorPart[] part = new IEditorPart[1];
+						final IResource res = resource;
 						PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 							public void run() {
-								part[0] = openRemoteResource(revisionString, resource, historyProvider, monitor);
+								part[0] = openRemoteResource(revisionString, res, historyProvider, monitor);
 							}
 						});
 						return part[0];

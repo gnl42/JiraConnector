@@ -76,7 +76,8 @@ public class CompareVersionedVirtualFileAction extends Action implements IReview
 							review, versionedComment);
 
 					TeamUiUtils.openCompareEditor(newVirtualFile.getRepoUrl(), newVirtualFile.getUrl(),
-							oldVirtualFile.getRevision(), newVirtualFile.getRevision(), annotationModel, monitor);
+							oldVirtualFile.getUrl(), oldVirtualFile.getRevision(), newVirtualFile.getRevision(),
+							annotationModel, monitor);
 				}
 
 			});

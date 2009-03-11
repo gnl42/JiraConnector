@@ -60,7 +60,8 @@ public final class TeamUiUtils {
 	private TeamUiUtils() {
 	}
 
-	public static IEditorPart openFile(String repoUrl, String filePath, String revisionString, IProgressMonitor monitor) {
+	public static IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath,
+			String revisionString, String otherRevisionString, IProgressMonitor monitor) {
 		// TODO if the repo url is null, we should probably use the task repo host and look at all repos
 
 		assert (filePath != null);
@@ -74,7 +75,8 @@ public final class TeamUiUtils {
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
-				IEditorPart part = connector.openFile(repoUrl, filePath, revisionString, monitor);
+				IEditorPart part = connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
+						otherRevisionString, monitor);
 				if (part != null) {
 					return getRealEditorPart(part);
 				}
@@ -82,11 +84,13 @@ public final class TeamUiUtils {
 		}
 
 		// try a backup solution
-		return getRealEditorPart(defaultConnector.openFile(repoUrl, filePath, revisionString, monitor));
+		return getRealEditorPart(defaultConnector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
+				otherRevisionString, monitor));
 	}
 
-	public static void openCompareEditor(String repoUrl, String filePath, String oldRevisionString,
-			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor) {
+	public static void openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,
+			String oldRevisionString, String newRevisionString, ICompareAnnotationModel annotationModel,
+			IProgressMonitor monitor) {
 		assert (filePath != null);
 		assert (oldRevisionString != null);
 		assert (newRevisionString != null);
@@ -99,14 +103,14 @@ public final class TeamUiUtils {
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
-				if (connector.openCompareEditor(repoUrl, filePath, oldRevisionString, newRevisionString,
-						annotationModel, monitor)) {
+				if (connector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
+						newRevisionString, annotationModel, monitor)) {
 					return;
 				}
 			}
 		}
-		if (!defaultConnector.openCompareEditor(repoUrl, filePath, oldRevisionString, newRevisionString,
-				annotationModel, monitor)) {
+		if (!defaultConnector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
+				newRevisionString, annotationModel, monitor)) {
 			TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString, newRevisionString);
 		}
 	}
