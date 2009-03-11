@@ -237,6 +237,15 @@ public class BambooView extends ViewPart {
 									MessageConsole console = prepareConsole(build);
 									MessageConsoleStream messageStream = console.newMessageStream();
 									try {
+
+										// this is a hack to make sure that showing the build log works on 3.3 there seems to be 
+										// some sort of race condition between creating the stream and printing the information but 
+										// there seems to be no way to check if the stream is ready or not 
+										try {
+											Thread.sleep(1000);
+										} catch (InterruptedException e) {
+											// ignore
+										}
 										messageStream.print(buildLog);
 									} finally {
 										try {
