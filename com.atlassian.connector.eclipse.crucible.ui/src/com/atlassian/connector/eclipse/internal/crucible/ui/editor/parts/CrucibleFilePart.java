@@ -22,6 +22,7 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
@@ -105,9 +106,11 @@ public class CrucibleFilePart extends ExpandablePart {
 		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
 		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
 
-		//if file is deleted, do not include any revisions 
+		FileType filetype = crucibleFile.getFileType();
+
+		//if file is deleted or not a file, do not include any revisions 
 		//   (we need a local resource to retrieve the old revision from SVN, which we do not have)
-		if (crucibleFile.getCommitType() == CommitType.Deleted) {
+		if (crucibleFile.getCommitType() == CommitType.Deleted || filetype != FileType.File) {
 			textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
 			textHyperlink.setText(" N/A ");
 			textHyperlink.setEnabled(false);
@@ -158,7 +161,7 @@ public class CrucibleFilePart extends ExpandablePart {
 		if (getCrucibleEditor() != null) {
 
 			boolean showCompare = hasNewFile && hasOldFile;
-			if (showCompare && crucibleFile.getCommitType() != CommitType.Deleted) {
+			if (showCompare && crucibleFile.getCommitType() != CommitType.Deleted && filetype == FileType.File) {
 				textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
 				textHyperlink.setText(" ");
 				textHyperlink.setEnabled(false);
@@ -171,6 +174,10 @@ public class CrucibleFilePart extends ExpandablePart {
 				compareAction.setText("Compare");
 				// TODO set the image descriptor
 				createActionHyperlink(toolbarComposite, toolkit, compareAction);
+			} else if (filetype == FileType.Directory) {
+				toolkit.createLabel(toolbarComposite, " Directory");
+			} else if (filetype == FileType.Unknown) {
+				toolkit.createLabel(toolbarComposite, " Unknown Type");
 			} else {
 				toolkit.createLabel(toolbarComposite, " " + crucibleFile.getCommitType().name());
 			}
