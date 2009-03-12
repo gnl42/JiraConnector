@@ -17,6 +17,7 @@ import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
@@ -76,7 +77,10 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 			boolean isMultiline) {
 
 		if (labelString != null) {
-			createLabelControl(toolkit, composite, labelString);
+			Label label = createLabelControl(toolkit, composite, labelString);
+			if (isMultiline) {
+				GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.TOP).applyTo(label);
+			}
 		}
 		int style = SWT.FLAT | SWT.READ_ONLY;
 		if (isMultiline) {

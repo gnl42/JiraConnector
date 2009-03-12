@@ -22,41 +22,20 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEdit
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowBuildLogAction;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowTestResultsAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ToggleAutoRefreshAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RunBuildJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.DateUtil;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.internal.core.JavaModelManager;
-import org.eclipse.jdt.internal.junit.launcher.AssertionVMArg;
-import org.eclipse.jdt.internal.junit.launcher.JUnitLaunchConfigurationConstants;
-import org.eclipse.jdt.internal.junit.launcher.JUnitMigrationDelegate;
-import org.eclipse.jdt.internal.junit.launcher.TestKindRegistry;
-import org.eclipse.jdt.internal.junit.model.JUnitModel;
-import org.eclipse.jdt.internal.junit.model.TestRunSession;
-import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
-import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
-import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuManager;
@@ -107,10 +86,8 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -292,193 +269,6 @@ public class BambooView extends ViewPart {
 			}
 			return false;
 		}
-	}
-
-	private class ShowTestResultsAction extends BaseSelectionListenerAction {
-
-		public ShowTestResultsAction() {
-			super(null);
-		}
-
-		@Override
-		public void run() {
-			ISelection s = buildViewer.getSelection();
-			if (s instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) s;
-				Object selected = selection.getFirstElement();
-				if (selected instanceof BambooBuild) {
-					final BambooBuild build = (BambooBuild) selected;
-					if (build != null) {
-						RetrieveTestResultsJob job = new RetrieveTestResultsJob(build, TasksUi.getRepositoryManager()
-								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
-						job.addJobChangeListener(new JobChangeAdapter() {
-							@Override
-							public void done(IJobChangeEvent event) {
-								if (event.getResult() == Status.OK_STATUS) {
-									File testResults = ((RetrieveTestResultsJob) event.getJob()).getTestResultsFile();
-									if (testResults != null) {
-										showJUnitView(testResults, build.getPlanKey() + "-" + build.getNumber());
-									} else {
-										Display.getDefault().syncExec(new Runnable() {
-											public void run() {
-												MessageDialog.openError(getSite().getShell(), getText(),
-														"Retrieving test result for " + build.getPlanKey() + "-"
-																+ build.getNumber()
-																+ " failed. See error log for details.");
-											}
-										});
-									}
-								}
-							}
-						});
-						job.schedule();
-
-					}
-				}
-			}
-		}
-
-		@Override
-		protected boolean updateSelection(IStructuredSelection selection) {
-			//check if JDT is available
-			try {
-				if (JUnitPlugin.getDefault() == null) {
-					return false;
-				}
-			} catch (Throwable e) {
-				return false;
-			}
-			if (selection.size() != 1) {
-				return false;
-			}
-			BambooBuild build = (BambooBuild) selection.iterator().next();
-			if (build != null) {
-				try {
-					build.getNumber();
-					return (build.getTestsFailed() + build.getTestsPassed()) > 0;
-				} catch (UnsupportedOperationException e) {
-					return false;
-				}
-			}
-			return false;
-		}
-
-		private void showJUnitView(final File testResults, final String buildKey) {
-			getSite().getShell().getDisplay().asyncExec(new Runnable() {
-				@SuppressWarnings("restriction")
-				public void run() {
-					if (!getSite().getShell().isDisposed()) {
-						try {
-							getViewSite().getPage().showView(TestRunnerViewPart.NAME);
-							final IJavaProject[] javaProjectsTmp = JavaModelManager.getJavaModelManager()
-									.getJavaModel()
-									.getJavaProjects();
-							final Collection<IJavaProject> javaProjects = Arrays.asList(javaProjectsTmp);
-							final CompositeJavaProject compositeProject = new CompositeJavaProject(javaProjects);
-//							final IJavaProject[] javaProjectsTmp = JavaCore.create(
-//									ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
-							final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, compositeProject) {
-
-								@Override
-								public boolean rerunTest(String testId, String className, String testName,
-										String launchMode) throws CoreException {
-									String name = className;
-									if (testName != null) {
-										name += "." + testName; //$NON-NLS-1$
-									}
-									final IType testElement = compositeProject.findType(className);
-									if (testElement == null) {
-										throw new CoreException(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-												"Cannot find Java project which contains class " + className + "."));
-									}
-									final ILaunchConfigurationWorkingCopy newCfg = createLaunchConfiguration(testElement);
-									newCfg.launch(launchMode, null);
-									return true;
-								}
-							};
-							JUnitModel.importIntoTestRunSession(testResults, trs);
-							JUnitPlugin.getModel().addTestRunSession(trs);
-						} catch (Exception e) {
-							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-									"Error opening JUnit View"));
-						}
-					}
-				}
-			});
-		}
-	}
-
-	private static final String EMPTY_STRING = "";
-
-	private static ILaunchManager getLaunchManager() {
-		return DebugPlugin.getDefault().getLaunchManager();
-	}
-
-	/**
-	 * this method is practically stolen "as is" from
-	 * {@link org.eclipse.jdt.junit.launcher.JUnitLaunchShortcut#createLaunchConfiguration(IJavaElement)}
-	 * 
-	 * The only meaningful difference is the following line:
-	 * 
-	 * <pre>
-	 * ILaunchConfigurationType configType = getLaunchManager().getLaunchConfigurationType(
-	 * 		JUnitLaunchConfigurationConstants.ID_JUNIT_APPLICATION);
-	 * </pre>
-	 */
-	@SuppressWarnings("restriction")
-	protected static ILaunchConfigurationWorkingCopy createLaunchConfiguration(IJavaElement element)
-			throws CoreException {
-		final String testName;
-		final String mainTypeQualifiedName;
-		final String containerHandleId;
-
-		switch (element.getElementType()) {
-		case IJavaElement.JAVA_PROJECT:
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-		case IJavaElement.PACKAGE_FRAGMENT: {
-			String name = JavaElementLabels.getTextLabel(element, JavaElementLabels.ALL_FULLY_QUALIFIED);
-			containerHandleId = element.getHandleIdentifier();
-			mainTypeQualifiedName = EMPTY_STRING;
-			testName = name.substring(name.lastIndexOf(IPath.SEPARATOR) + 1);
-		}
-			break;
-		case IJavaElement.TYPE: {
-			containerHandleId = EMPTY_STRING;
-			mainTypeQualifiedName = ((IType) element).getFullyQualifiedName('.'); // don't replace, fix for binary inner types
-			testName = element.getElementName();
-		}
-			break;
-		case IJavaElement.METHOD: {
-			IMethod method = (IMethod) element;
-			containerHandleId = EMPTY_STRING;
-			mainTypeQualifiedName = method.getDeclaringType().getFullyQualifiedName('.');
-			testName = method.getDeclaringType().getElementName() + '.' + method.getElementName();
-		}
-			break;
-		default:
-			throw new IllegalArgumentException(
-					"Invalid element type to create a launch configuration: " + element.getClass().getName()); //$NON-NLS-1$
-		}
-
-		String testKindId = TestKindRegistry.getContainerTestKindId(element);
-
-		ILaunchConfigurationType configType = getLaunchManager().getLaunchConfigurationType(
-				JUnitLaunchConfigurationConstants.ID_JUNIT_APPLICATION);
-		ILaunchConfigurationWorkingCopy wc = configType.newInstance(null,
-				getLaunchManager().generateUniqueLaunchConfigurationNameFrom(testName));
-
-		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, mainTypeQualifiedName);
-		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, element.getJavaProject().getElementName());
-		wc.setAttribute(JUnitLaunchConfigurationConstants.ATTR_KEEPRUNNING, false);
-		wc.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_CONTAINER, containerHandleId);
-		wc.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_RUNNER_KIND, testKindId);
-		JUnitMigrationDelegate.mapResources(wc);
-		AssertionVMArg.setArgDefault(wc);
-		if (element instanceof IMethod) {
-			// only set for methods
-			wc.setAttribute(JUnitLaunchConfigurationConstants.ATTR_TEST_METHOD_NAME, element.getElementName());
-		}
-		return wc;
 	}
 
 	private class BuildContentProvider implements ITreeContentProvider {
