@@ -37,7 +37,7 @@ public class BambooSummaryPart extends AbstractBambooEditorFormPart {
 		layout.horizontalSpacing = 5;
 		layout.verticalSpacing = 5;
 		composite.setLayout(layout);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(composite);
 
 		Image stateImage;
 		switch (bambooBuild.getStatus()) {

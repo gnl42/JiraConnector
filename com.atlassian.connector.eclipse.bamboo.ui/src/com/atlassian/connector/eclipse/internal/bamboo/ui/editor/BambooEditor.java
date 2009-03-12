@@ -22,12 +22,14 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ControlContribution;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorBusyIndicator;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.internal.tasks.ui.editors.IBusyEditor;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.SWT;
@@ -36,6 +38,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -46,9 +49,11 @@ import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.part.WorkbenchPart;
 
 import java.util.ArrayList;
 
@@ -62,6 +67,8 @@ public class BambooEditor extends SharedHeaderFormEditor {
 	public static final String ID = "com.atlassian.connector.eclipse.bamboo.ui.editors.build"; //$NON-NLS-1$
 
 	private Composite editorParent;
+
+	private IHyperlinkListener messageHyperLinkListener;
 
 	private EditorBusyIndicator editorBusyIndicator;
 
@@ -257,5 +264,55 @@ public class BambooEditor extends SharedHeaderFormEditor {
 			}
 		}
 		return (IFormPage[]) formPages.toArray(new IFormPage[formPages.size()]);
+	}
+
+	public void setMessage(String message, int type, IHyperlinkListener listener) {
+		if (getHeaderForm() != null && getHeaderForm().getForm() != null) {
+			if (!getHeaderForm().getForm().isDisposed()) {
+				Form form = getHeaderForm().getForm().getForm();
+				form.setMessage(message, type);
+				if (messageHyperLinkListener != null) {
+					form.removeMessageHyperlinkListener(messageHyperLinkListener);
+				}
+				if (listener != null) {
+					form.addMessageHyperlinkListener(listener);
+				}
+				messageHyperLinkListener = listener;
+			}
+		}
+	}
+
+	@Override
+	public void showBusy(boolean busy) {
+		if (editorBusyIndicator != null) {
+			if (busy) {
+				if (TasksUiInternal.isAnimationsEnabled()) {
+					editorBusyIndicator.start();
+				}
+			} else {
+				editorBusyIndicator.stop();
+			}
+		}
+
+		if (getHeaderForm() != null && getHeaderForm().getForm() != null && !getHeaderForm().getForm().isDisposed()) {
+			Form form = getHeaderForm().getForm().getForm();
+			if (form != null && !form.isDisposed()) {
+				IToolBarManager toolBarManager = form.getToolBarManager();
+				if (toolBarManager instanceof ToolBarManager) {
+					ToolBar control = ((ToolBarManager) toolBarManager).getControl();
+					if (control != null) {
+						control.setEnabled(!busy);
+					}
+				}
+
+				EditorUtil.setEnabledState(form.getBody(), !busy);
+				for (IFormPage page : getPages()) {
+					if (page instanceof WorkbenchPart) {
+						WorkbenchPart part = (WorkbenchPart) page;
+						part.showBusy(busy);
+					}
+				}
+			}
+		}
 	}
 }

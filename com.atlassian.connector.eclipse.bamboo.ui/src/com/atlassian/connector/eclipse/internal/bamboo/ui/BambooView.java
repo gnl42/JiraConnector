@@ -21,10 +21,10 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerCompa
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEditorAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowBuildLogAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ToggleAutoRefreshAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RunBuildJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -104,16 +104,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -220,112 +214,6 @@ public class BambooView extends ViewPart {
 					return build.getEnabled();
 				} catch (UnsupportedOperationException e) {
 					return false;
-				}
-			}
-			return false;
-		}
-	}
-
-	private class ShowBuildLogsAction extends BaseSelectionListenerAction {
-
-		public ShowBuildLogsAction() {
-			super(null);
-		}
-
-		@Override
-		public void run() {
-			ISelection s = buildViewer.getSelection();
-			if (s instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) s;
-				Object selected = selection.iterator().next();
-				if (selected instanceof BambooBuild) {
-					final BambooBuild build = (BambooBuild) selected;
-					if (build != null) {
-						final MessageConsole console = prepareConsole(build);
-						final MessageConsoleStream messageStream = console.newMessageStream();
-
-						RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager()
-								.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
-						job.addJobChangeListener(new JobChangeAdapter() {
-							@Override
-							public void done(IJobChangeEvent event) {
-								if (event.getResult() == Status.OK_STATUS) {
-									String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
-									if (buildLog == null) {
-										//retrieval failed, remove console
-										handledFailedLogRetrieval(console, messageStream, build);
-									} else {
-										try {
-											showConsole(console);
-											messageStream.print(buildLog);
-										} finally {
-											try {
-												messageStream.close();
-											} catch (IOException e) {
-												StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-														"Failed to close console message stream"));
-											}
-										}
-										console.activate();
-									}
-								} else {
-									//retrieval failed, remove console
-									handledFailedLogRetrieval(console, messageStream, build);
-								}
-							}
-						});
-						job.schedule();
-
-					}
-				}
-			}
-		}
-
-		private MessageConsole prepareConsole(BambooBuild build) {
-			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-			MessageConsole buildLogConsole = buildLogConsoles.get(build);
-			if (buildLogConsole == null) {
-				buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE + build.getPlanKey() + " - "
-						+ build.getNumber(), BambooImages.CONSOLE);
-			}
-			BambooView.this.buildLogConsoles.put(build, buildLogConsole);
-			consoleManager.addConsoles(new IConsole[] { buildLogConsole });
-
-			buildLogConsole.clearConsole();
-			return buildLogConsole;
-		}
-
-		private void showConsole(MessageConsole console) {
-			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-			consoleManager.showConsoleView(console);
-		}
-
-		private void handledFailedLogRetrieval(MessageConsole console, MessageConsoleStream stream,
-				final BambooBuild build) {
-			try {
-				stream.close();
-			} catch (IOException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-						"Failed to close console message stream"));
-			}
-			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-			consoleManager.removeConsoles(new IConsole[] { console });
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					MessageDialog.openError(getSite().getShell(), getText(), "Retrieving build logs for "
-							+ build.getPlanKey() + "-" + build.getNumber() + " failed. See error log for details.");
-				}
-			});
-		}
-
-		@Override
-		protected boolean updateSelection(IStructuredSelection selection) {
-			if (selection.size() == 1) {
-				try {
-					((BambooBuild) selection.getFirstElement()).getNumber();
-					return true;
-				} catch (UnsupportedOperationException e) {
-					// ignore
 				}
 			}
 			return false;
@@ -634,8 +522,6 @@ public class BambooView extends ViewPart {
 
 	private static final String CODE_HAS_CHANGED = "Code has changed";
 
-	private static final String BAMBOO_BUILD_LOG_CONSOLE = "Bamboo Build Log for ";
-
 	public static final String ID = "com.atlassian.connector.eclipse.bamboo.ui.plans";
 
 	private TreeViewer buildViewer;
@@ -651,8 +537,6 @@ public class BambooView extends ViewPart {
 	private final Image bambooImage = CommonImages.getImage(BambooImages.BAMBOO);
 
 	private Image currentTitleImage = bambooImage;
-
-	private final Map<BambooBuild, MessageConsole> buildLogConsoles;
 
 	private Link link;
 
@@ -692,7 +576,6 @@ public class BambooView extends ViewPart {
 
 	public BambooView() {
 		builds = new HashMap<TaskRepository, Collection<BambooBuild>>();
-		buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
 	}
 
 	@Override
@@ -959,7 +842,7 @@ public class BambooView extends ViewPart {
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
 		buildViewer.addSelectionChangedListener(openInBrowserAction);
 
-		showBuildLogAction = new ShowBuildLogsAction();
+		showBuildLogAction = new ShowBuildLogAction();
 		showBuildLogAction.setText("Show Build Log");
 		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
 		showBuildLogAction.setEnabled(false);

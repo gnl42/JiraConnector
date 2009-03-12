@@ -12,14 +12,29 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.AbstractBambooEditorFormPart;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooBuildLogPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooDetailsPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooSummaryPart;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
@@ -35,6 +50,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
@@ -45,6 +62,36 @@ import java.util.List;
  * @author thomas
  */
 public class BambooBuildEditorPage extends BambooFormPage {
+
+	private class RetrieveFullBuildInfoJob extends Job {
+
+		private IStatus status;
+
+		public RetrieveFullBuildInfoJob(String name) {
+			super(name);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
+
+			status = new MultiStatus(BambooUiPlugin.PLUGIN_ID, 0, "Retrieval of full build information failed", null);
+			try {
+				buildLog = client.getBuildLogs(monitor, repository, build);
+				buildDetails = client.getBuildDetails(monitor, repository, build);
+				status = new Status(IStatus.OK, BambooUiPlugin.PLUGIN_ID, null);
+			} catch (CoreException e) {
+				status = new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Failed to retrieve build logs for build "
+						+ build.getPlanKey(), e);
+			}
+			return Status.OK_STATUS;
+		}
+
+		public IStatus getStatus() {
+			return status;
+		}
+
+	}
 
 	/**
 	 * Causes the form page to reflow on resize.
@@ -83,7 +130,13 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 	private Color selectionColor;
 
-	private BambooBuild build;
+	private final BambooBuild build;
+
+	private final TaskRepository repository;
+
+	private String buildLog;
+
+	private BuildDetails buildDetails;
 
 	private boolean reflow;
 
@@ -94,6 +147,8 @@ public class BambooBuildEditorPage extends BambooFormPage {
 	public BambooBuildEditorPage(BambooEditor parentEditor, String title) {
 		super(parentEditor, BambooConstants.BAMBOO_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractBambooEditorFormPart>();
+		build = getEditor().getEditorInput().getBambooBuild();
+		repository = getEditor().getEditorInput().getRepository();
 	}
 
 	@Override
@@ -112,8 +167,9 @@ public class BambooBuildEditorPage extends BambooFormPage {
 			editorComposite = form.getBody();
 
 			GridLayout editorLayout = new GridLayout();
+			editorLayout.numColumns = 2;
 			editorComposite.setLayout(editorLayout);
-			editorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+			editorComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_BOTH));
 
 			editorComposite.setMenu(getEditor().getMenu());
 
@@ -126,14 +182,46 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createLabel);
 
-			//for now, just display build
-			build = getEditor().getEditorInput().getBambooBuild();
-			createFormContent();
-			getEditor().updateHeaderToolBar();
-
+			downloadAndRefreshBuild(0, false);
 		} finally {
 			setReflow(true);
 		}
+	}
+
+	private void downloadAndRefreshBuild(long delay, final boolean force) {
+		final RetrieveFullBuildInfoJob job = new RetrieveFullBuildInfoJob("Retrieve full build details");
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						setBusy(false);
+
+						IStatus status = job.getStatus();
+						if (editorComposite != null) {
+							if (status == null || buildLog == null || buildDetails == null) {
+								getEditor().setMessage(
+										"Unable to retrieve full bamboo build details.  Click to try again.",
+										IMessageProvider.WARNING, new HyperlinkAdapter() {
+											@Override
+											public void linkActivated(HyperlinkEvent e) {
+												downloadAndRefreshBuild(0, true);
+											}
+										});
+							} else if (status.isOK()) {
+								getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
+								createFormContent();
+								getEditor().updateHeaderToolBar();
+							} else {
+								getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
+							}
+						}
+					}
+				});
+			}
+		});
+		job.schedule(delay);
+		setBusy(true);
 	}
 
 	@Override
@@ -154,9 +242,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 	private void createFormParts() {
 		parts.add(new BambooSummaryPart());
 		parts.add(new BambooDetailsPart("Summary"));
-//		parts.add(new SomeBambooPart());
-//		parts.add(new SomeBambooPart());
-//		parts.add(new SomeBambooPart());
+		parts.add(new BambooBuildLogPart("Build Log"));
 	}
 
 	private void createFormContent() {
@@ -174,7 +260,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 			for (AbstractBambooEditorFormPart part : parts) {
 				getManagedForm().addPart(part);
-				part.initialize(this, build, getEditor().getEditorInput().getRepository());
+				part.initialize(this, build, repository, buildLog, buildDetails);
 				part.createControl(editorComposite, toolkit);
 			}
 
@@ -254,5 +340,9 @@ public class BambooBuildEditorPage extends BambooFormPage {
 	public BambooEditor getEditor() {
 		// ignore
 		return (BambooEditor) super.getEditor();
+	}
+
+	private void setBusy(boolean busy) {
+		getEditor().showBusy(busy);
 	}
 }
