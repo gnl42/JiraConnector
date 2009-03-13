@@ -79,6 +79,8 @@ public class BambooEditor extends SharedHeaderFormEditor {
 
 	private TaskRepository taskRepository;
 
+	private IFormPage bambooBuildEditorPage;
+
 	@Override
 	protected Composite createPageContainer(Composite parent) {
 		this.editorParent = parent;
@@ -135,12 +137,19 @@ public class BambooEditor extends SharedHeaderFormEditor {
 	}
 
 	@Override
+	public void setFocus() {
+		if (bambooBuildEditorPage != null) {
+			bambooBuildEditorPage.setFocus();
+		}
+	}
+
+	@Override
 	protected void addPages() {
 		initialize();
 
 		try {
-			IFormPage page = new BambooBuildEditorPage(this, "Bamboo");
-			int index = addPage(page);
+			bambooBuildEditorPage = new BambooBuildEditorPage(this, "Bamboo");
+			int index = addPage(bambooBuildEditorPage);
 			setPageImage(index, CommonImages.getImage(BambooImages.BAMBOO));
 			setPageText(index, "Bamboo");
 		} catch (PartInitException e) {

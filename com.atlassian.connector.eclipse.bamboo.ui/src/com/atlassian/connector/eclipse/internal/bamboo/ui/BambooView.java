@@ -82,7 +82,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
@@ -340,7 +339,7 @@ public class BambooView extends ViewPart {
 
 	private BaseSelectionListenerAction openInBrowserAction;
 
-	private IWorkbenchAction refreshAction;
+	private Action refreshAction;
 
 	private BaseSelectionListenerAction showBuildLogAction;
 
@@ -354,7 +353,7 @@ public class BambooView extends ViewPart {
 
 	private Action repoConfigAction;
 
-	private IWorkbenchAction openRepoConfigAction;
+	private BaseSelectionListenerAction openRepoConfigAction;
 
 	private BuildsChangedListener buildsChangedListener;
 
@@ -617,13 +616,14 @@ public class BambooView extends ViewPart {
 	}
 
 	private void createActions() {
-		Action refreshLocalAction = new Action() {
+		refreshAction = new Action() {
 			@Override
 			public void run() {
 				refreshBuilds();
 			}
 		};
-		refreshAction = ActionFactory.REFRESH.create(getSite().getWorkbenchWindow());
+		refreshAction.setText("Refresh");
+		refreshAction.setToolTipText("Refresh all builds");
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
 
 		openInBrowserAction = new OpenInBrowserAction();
@@ -669,17 +669,18 @@ public class BambooView extends ViewPart {
 
 		toggleAutoRefreshAction = new ToggleAutoRefreshAction();
 
-		OpenRepositoryConfigurationAction openRepoConfigLocalAction = new OpenRepositoryConfigurationAction(buildViewer);
-		openRepoConfigAction = ActionFactory.PROPERTIES.create(getSite().getWorkbenchWindow());
+		openRepoConfigAction = new OpenRepositoryConfigurationAction(buildViewer);
+		openRepoConfigAction.setText("Properties...");
+		openRepoConfigAction.setToolTipText("Open the repository configuration");
 		openRepoConfigAction.setEnabled(false);
-		buildViewer.addSelectionChangedListener(openRepoConfigLocalAction);
+		buildViewer.addSelectionChangedListener(openRepoConfigAction);
 
 		openBambooEditorAction = new OpenBambooEditorAction(this.buildViewer);
 		openBambooEditorAction.setText("Open");
 
 		IActionBars actionBars = getViewSite().getActionBars();
-		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigLocalAction);
-		actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshLocalAction);
+		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigAction);
+		actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
 	}
 
 	private void refresh(boolean forcedRefresh, boolean failed) {

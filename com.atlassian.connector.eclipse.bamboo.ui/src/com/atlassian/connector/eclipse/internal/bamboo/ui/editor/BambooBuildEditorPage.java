@@ -47,10 +47,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -146,11 +146,24 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 	private static final int VERTICAL_BAR_WIDTH = 15;
 
+	private Text initLabel;
+
+	private AbstractBambooEditorFormPart focusablePart;
+
 	public BambooBuildEditorPage(BambooEditor parentEditor, String title) {
 		super(parentEditor, BambooConstants.BAMBOO_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractBambooEditorFormPart>();
 		build = getEditor().getEditorInput().getBambooBuild();
 		repository = getEditor().getEditorInput().getRepository();
+	}
+
+	@Override
+	public void setFocus() {
+		if (focusablePart == null) {
+			initLabel.forceFocus();
+		} else {
+			focusablePart.setFocus();
+		}
 	}
 
 	@Override
@@ -179,10 +192,10 @@ public class BambooBuildEditorPage extends BambooFormPage {
 			createComposite.setLayout(new GridLayout());
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createComposite);
 
-			Label createLabel = toolkit.createLabel(createComposite, "Initializing review editor...");
-			createLabel.setFont(JFaceResources.getBannerFont());
+			initLabel = toolkit.createText(createComposite, "Initializing review editor...", SWT.FLAT | SWT.READ_ONLY);
+			initLabel.setFont(JFaceResources.getBannerFont());
 
-			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createLabel);
+			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(initLabel);
 
 			downloadAndRefreshBuild(0, false);
 		} finally {
@@ -214,6 +227,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 								getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
 								createFormContent();
 								getEditor().updateHeaderToolBar();
+								setFocus();
 							} else {
 								getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
 							}
@@ -242,7 +256,8 @@ public class BambooBuildEditorPage extends BambooFormPage {
 	}
 
 	private void createFormParts() {
-		parts.add(new BambooSummaryPart());
+		focusablePart = new BambooSummaryPart();
+		parts.add(focusablePart);
 		parts.add(new BambooDetailsPart("Summary"));
 		parts.add(new BambooBuildLogPart("Build Log"));
 		parts.add(new BambooTestPart("Tests"));

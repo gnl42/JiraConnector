@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import java.text.DateFormat;
@@ -29,6 +30,8 @@ import java.text.DateFormat;
  * @author Thomas Ehrnhoefer
  */
 public class BambooSummaryPart extends AbstractBambooEditorFormPart {
+
+	private Text text;
 
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
@@ -51,8 +54,8 @@ public class BambooSummaryPart extends AbstractBambooEditorFormPart {
 			stateImage = CommonImages.getImage(BambooImages.STATUS_DISABLED);
 		}
 		createLabelControl(toolkit, composite, stateImage);
-		createReadOnlyText(toolkit, composite, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
-				.format(bambooBuild.getCompletionDate()), "     Completed:", false);
+		text = createReadOnlyText(toolkit, composite, DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+				DateFormat.SHORT).format(bambooBuild.getCompletionDate()), "     Completed:", false);
 		createReadOnlyText(toolkit, composite, bambooBuild.getDurationDescription(), "     Build took:", false);
 		createReadOnlyText(toolkit, composite, bambooBuild.getReason(), "     Build Reason:", false);
 		createReadOnlyText(toolkit, composite, bambooBuild.getProjectName(), "     Project:", false);
@@ -62,5 +65,10 @@ public class BambooSummaryPart extends AbstractBambooEditorFormPart {
 		control = composite;
 
 		return control;
+	}
+
+	@Override
+	public void setFocus() {
+		text.forceFocus();
 	}
 }

@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
@@ -55,11 +56,16 @@ public class OpenBambooEditorAction extends BaseSelectionListenerAction {
 						BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl());
 				BambooEditorInput input = new BambooEditorInput(repository, build);
 				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(input,
-							BambooEditor.ID, true);
+					IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+					if (window == null) {
+						StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+								"Failed to open Bamboo Rich Editor: no available workbench window. Please try again."));
+					} else {
+						window.getActivePage().openEditor(input, BambooEditor.ID, true);
+					}
 				} catch (PartInitException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-							"Failed to open Bamboo Rich Editor: " + e.getMessage()));
+							"Failed to open Bamboo Rich Editor: " + e.getMessage(), e));
 				}
 			}
 		}
