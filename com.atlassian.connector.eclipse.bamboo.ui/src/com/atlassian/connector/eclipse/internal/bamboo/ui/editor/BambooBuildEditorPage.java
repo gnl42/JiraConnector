@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.AbstractBambooEditorFormPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooBuildLogPart;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooCodeChangesPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooDetailsPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooSummaryPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooTestPart;
@@ -245,6 +246,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 		parts.add(new BambooDetailsPart("Summary"));
 		parts.add(new BambooBuildLogPart("Build Log"));
 		parts.add(new BambooTestPart("Tests"));
+		parts.add(new BambooCodeChangesPart("Code Changes"));
 	}
 
 	private void createFormContent() {

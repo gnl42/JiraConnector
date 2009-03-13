@@ -37,7 +37,7 @@ import java.util.Iterator;
  * @author Thomas Ehrnhoefer
  * @param <E>
  */
-public class BambooTestPart<E> extends AbstractBambooEditorFormPart {
+public class BambooTestPart extends AbstractBambooEditorFormPart {
 	private ShowTestResultsAction showTestResultsAction;
 
 	public BambooTestPart() {
