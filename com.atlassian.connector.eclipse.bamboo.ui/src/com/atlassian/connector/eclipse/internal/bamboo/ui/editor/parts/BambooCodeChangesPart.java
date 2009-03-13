@@ -145,20 +145,6 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 		return control;
 	}
 
-//	private void fillTree(final Tree tree) {
-//		for (BambooChangeSet changeSet : buildDetails.getCommitInfo()) {
-//			TreeItem root = new TreeItem(tree, SWT.NONE);
-//			root.setImage(CommonImages.getImage(BambooImages.CHANGESET));
-//			root.setText("[" + changeSet.getAuthor() + "]   " + getCommentSnippet(changeSet.getComment()));
-//			for (BambooFileInfo file : changeSet.getFiles()) {
-//				TreeItem fileItem = new TreeItem(root, SWT.NONE);
-//				fileItem.setImage(CommonImages.getImage(BambooImages.FILE));
-//				fileItem.setText(file.getFileDescriptor().getAbsoluteUrl());
-//			}
-//			root.setExpanded(true);
-//		}
-//	}
-//
 	private String getCommentSnippet(String comment) {
 		String[] commentLines = comment.split("[\r\n]");
 		return commentLines.length == 0 ? "N/A" : commentLines[0];
