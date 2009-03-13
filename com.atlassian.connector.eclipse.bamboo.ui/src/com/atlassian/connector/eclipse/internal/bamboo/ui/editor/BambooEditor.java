@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
@@ -104,11 +103,11 @@ public class BambooEditor extends SharedHeaderFormEditor {
 
 		setPartName(input.getName());
 
-		// activate context
-		IContextService contextSupport = (IContextService) site.getService(IContextService.class);
-		if (contextSupport != null) {
-			contextSupport.activateContext(ID);
-		}
+//		// activate context - not needed for now
+//		IContextService contextSupport = (IContextService) site.getService(IContextService.class);
+//		if (contextSupport != null) {
+//			contextSupport.activateContext(ID);
+//		}
 	}
 
 	private void initialize() {
