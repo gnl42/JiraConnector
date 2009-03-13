@@ -212,6 +212,12 @@ public class CrucibleClient {
 		if (CrucibleUtil.isPartialReview(review)) {
 			review = crucibleServer.getReview(crucibleServerCfg, review.getPermId());
 		}
+
+		int metricsVersion = review.getMetricsVersion();
+		if (cachedReviewManager != null && !cachedReviewManager.hasMetrics(metricsVersion)) {
+			cachedReviewManager.setMetrics(metricsVersion, crucibleServer.getMetrics(crucibleServerCfg, metricsVersion));
+		}
+
 		boolean hasChanged = cacheReview(taskId, review);
 		TaskData taskData = getTaskDataForReview(taskRepository, review, hasChanged);
 		resultCollector.accept(taskData);
