@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -30,8 +31,11 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.eclipse.ui.internal.console.IOConsolePage;
+import org.eclipse.ui.part.IPageBookViewPage;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -87,7 +91,6 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 											"Failed to close console message stream"));
 								}
 							}
-							console.activate();
 						}
 					} else {
 						//retrieval failed, remove console
@@ -105,7 +108,19 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 		MessageConsole buildLogConsole = buildLogConsoles.get(build);
 		if (buildLogConsole == null) {
 			buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE + build.getPlanKey() + " - "
-					+ build.getNumber(), BambooImages.CONSOLE);
+					+ build.getNumber(), BambooImages.CONSOLE) {
+				@Override
+				public IPageBookViewPage createPage(IConsoleView view) {
+					final IPageBookViewPage page = super.createPage(view);
+					view.getSite().getShell().getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							((IOConsolePage) page).getViewer().setSelection(new TextSelection(0, 0));
+						}
+					});
+					return page;
+				}
+			};
+
 		}
 		buildLogConsoles.put(build, buildLogConsole);
 		consoleManager.addConsoles(new IConsole[] { buildLogConsole });
