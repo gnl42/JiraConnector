@@ -132,4 +132,10 @@ public class BambooRepositoryConnector extends AbstractRepositoryConnector {
 	public void updateTaskFromTaskData(TaskRepository taskRepository, ITask task, TaskData taskData) {
 	}
 
+	public synchronized void flush() {
+		if (clientManager != null) {
+			clientManager.writeCache();
+		}
+	}
+
 }

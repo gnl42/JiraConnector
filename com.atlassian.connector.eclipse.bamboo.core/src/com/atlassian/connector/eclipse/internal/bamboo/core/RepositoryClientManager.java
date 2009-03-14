@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
-import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -29,6 +27,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Steffen Pingel
@@ -78,8 +77,16 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 	}
 
 	private void removeClient(TaskRepository repository) {
-		clientByUrl.remove(repository.getRepositoryUrl());
+		String url = repository.getRepositoryUrl();
+		T client = clientByUrl.remove(url);
+		if (client != null) {
+			if (clientDataByUrl.containsKey(url)) {
+				clientDataByUrl.put(url, getConfiguration(client));
+			}
+		}
 	}
+
+	protected abstract C getConfiguration(T client);
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
 		removeClient(repository);
@@ -154,11 +161,11 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 	 * temporary fix for the broken/not-working serialization mechanism 
 	 */
 	private void updateClientDataMap() {
-		for (String url : clientByUrl.keySet()) {
+		for (Entry<String, T> entry : clientByUrl.entrySet()) {
+			String url = entry.getKey();
 			if (clientDataByUrl.containsKey(url)) {
-				clientDataByUrl.put(url, (C) ((BambooClient) clientByUrl.get(url)).getClientData());
+				clientDataByUrl.put(url, getConfiguration(entry.getValue()));
 			}
-
 		}
 	}
 

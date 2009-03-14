@@ -58,6 +58,9 @@ public class BambooCorePlugin extends Plugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		if (repositoryConnector != null) {
+			repositoryConnector.flush();
+		}
 		plugin = null;
 		super.stop(context);
 	}

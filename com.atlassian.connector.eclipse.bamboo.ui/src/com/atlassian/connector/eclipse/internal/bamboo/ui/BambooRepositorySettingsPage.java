@@ -47,6 +47,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -112,7 +113,9 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	private CheckboxTreeViewer planViewer;
 
-	private boolean validSettings = false;
+	private boolean validSettings;
+
+	private boolean initialized;
 
 	public BambooRepositorySettingsPage(TaskRepository taskRepository) {
 		super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
@@ -135,7 +138,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		}
 		BambooUtil.setSubcribedPlans(this.repository, plans);
 		//update cache
-		updateAndWriteCache();
+		//updateAndWriteCache();
 		BambooCorePlugin.getBuildPlanManager().buildSubscriptionsChanged(this.repository);
 	}
 
@@ -181,7 +184,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		planViewer.setContentProvider(new BuildPlanContentProvider());
 		planViewer.setLabelProvider(new BambooLabelProvider());
 		setCachedPlanInput();
-		int height = convertVerticalDLUsToPixels(100);
+		int height = convertVerticalDLUsToPixels(BUILD_PLAN_VIEWER_HEIGHT);
 		GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).hint(SWT.DEFAULT, height).applyTo(
 				planViewer.getControl());
 
@@ -190,6 +193,25 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		RowLayout buttonLayout = new RowLayout(SWT.VERTICAL);
 		buttonLayout.fill = true;
 		buttonComposite.setLayout(buttonLayout);
+
+		Button selectFavorites = new Button(buttonComposite, SWT.PUSH);
+		selectFavorites.setText("&Favorites");
+		selectFavorites.addSelectionListener(new SelectionAdapter() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				Object input = planViewer.getInput();
+				if (input instanceof Collection<?>) {
+					List<BambooCachedPlan> favorites = new ArrayList<BambooCachedPlan>();
+					for (BambooCachedPlan plan : (Collection<BambooCachedPlan>) input) {
+						if (plan.isFavourite()) {
+							favorites.add(plan);
+						}
+					}
+					planViewer.setCheckedElements(favorites.toArray());
+				}
+			}
+		});
 
 		Button selectAllButton = new Button(buttonComposite, SWT.PUSH);
 		selectAllButton.setText("&Select All");
@@ -226,26 +248,25 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		if (repository != null) {
 			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 			BambooClient client = clientManager.getClient(repository);
-			BambooClientData data = client.getClientData();
-			updateUIRestoreState(new Object[0], data);
+			updateUIRestoreState(new Object[0], client.getClientData());
 		}
 	}
 
-	private void updateAndWriteCache() {
-		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-		BambooClient client = clientManager.getClient(repository);
-		BambooClientData data = client.getClientData();
-		for (BambooCachedPlan cachedPlan : data.getPlans()) {
-			cachedPlan.setSubscribed(false);
-			for (Object obj : planViewer.getCheckedElements()) {
-				BambooCachedPlan checkedPlan = (BambooCachedPlan) obj;
-				if (checkedPlan.equals(cachedPlan)) {
-					cachedPlan.setSubscribed(true);
-				}
-			}
-		}
-		BambooCorePlugin.getRepositoryConnector().getClientManager().writeCache();
-	}
+//	private void updateAndWriteCache() {
+//		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
+//		BambooClient client = clientManager.getClient(repository);
+//		BambooClientData data = client.getClientData();
+//		for (BambooCachedPlan cachedPlan : data.getPlans()) {
+//			cachedPlan.setSubscribed(false);
+//			for (Object obj : planViewer.getCheckedElements()) {
+//				BambooCachedPlan checkedPlan = (BambooCachedPlan) obj;
+//				if (checkedPlan.equals(cachedPlan)) {
+//					cachedPlan.setSubscribed(true);
+//				}
+//			}
+//		}
+//		BambooCorePlugin.getRepositoryConnector().getClientManager().writeCache();
+//	}
 
 	@Override
 	public String getConnectorKind() {
@@ -320,27 +341,41 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	}
 
 	private void updateUIRestoreState(Object[] checkedElements, final BambooClientData data) {
-		boolean initialize = planViewer.getInput() == null;
 		Collection<BambooCachedPlan> plans = data.getPlans();
 		if (plans != null) {
 			planViewer.setInput(plans);
-			if (initialize && getRepository() != null) {
-				Set<SubscribedPlan> subscribedPlans = new HashSet<SubscribedPlan>(
-						BambooUtil.getSubscribedPlans(getRepository()));
-				for (BambooCachedPlan plan : plans) {
-					if (plan.isSubscribed() || subscribedPlans.contains(new SubscribedPlan(plan.getKey()))) {
-						planViewer.setChecked(plan, true);
+			if (!initialized) {
+				// if plans is empty this indicates a loss of configuration, the initialized flag is not set 
+				// in this case do nothing to re-trigger initialization after he next refresh  
+				if (plans.size() > 0) {
+					initialized = true;
+					if (getRepository() != null) {
+						// restore selection from repository
+						Set<SubscribedPlan> subscribedPlans = new HashSet<SubscribedPlan>(
+								BambooUtil.getSubscribedPlans(getRepository()));
+						for (BambooCachedPlan plan : plans) {
+							if (subscribedPlans.contains(new SubscribedPlan(plan.getKey()))) {
+								planViewer.setChecked(plan, true);
+							}
+						}
+					} else {
+						// new repository: select favorite plan by default
+						for (BambooCachedPlan plan : plans) {
+							if (plan.isFavourite()) {
+								planViewer.setChecked(plan, true);
+							}
+						}
 					}
 				}
 			} else {
-				for (BambooCachedPlan plan : plans) {
-					if (plan.isSubscribed()) {
-						planViewer.setChecked(plan, true);
-					}
-				}
-				for (Object plan : checkedElements) {
-					planViewer.setChecked(plan, true);
-				}
+//				for (BambooCachedPlan plan : plans) {
+//					if (plan.isSubscribed()) {
+//						planViewer.setChecked(plan, true);
+//					}
+//				}
+//				for (Object plan : checkedElements) {
+//					planViewer.setChecked(plan, true);
+//				}
 				planViewer.setCheckedElements(checkedElements);
 			}
 		}

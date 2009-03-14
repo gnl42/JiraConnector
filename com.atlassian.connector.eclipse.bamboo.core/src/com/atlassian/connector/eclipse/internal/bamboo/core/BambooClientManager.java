@@ -168,4 +168,10 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	public Map<BambooClient, ServerCfg> getTempClients() {
 		return tempClients;
 	}
+
+	@Override
+	protected BambooClientData getConfiguration(BambooClient client) {
+		return client.getClientData();
+	}
+
 }

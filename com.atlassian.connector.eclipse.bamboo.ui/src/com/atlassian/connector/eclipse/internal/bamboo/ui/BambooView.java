@@ -555,7 +555,7 @@ public class BambooView extends ViewPart {
 			builder.append("No subscriptions to Bamboo build plans. ");
 			builder.append("<a>");
 			builder.append(OPEN_REPOSITORY_VIEW_LINK);
-			builder.append("</a>... to configure subscriptions or <a>");
+			builder.append("</a> to configure subscriptions or <a>");
 			builder.append(CREATE_A_NEW_REPOSITORY_LINK);
 			builder.append("</a>...");
 			link.setText(builder.toString());
