@@ -272,8 +272,6 @@ public class BambooView extends ViewPart {
 
 	private class BuildContentProvider implements ITreeContentProvider {
 
-		private List<BambooBuild> allBuilds;
-
 		public void dispose() {
 		}
 
@@ -282,17 +280,10 @@ public class BambooView extends ViewPart {
 		}
 
 		public Object[] getElements(Object inputElement) {
-			allBuilds = new ArrayList<BambooBuild>();
-			boolean hasFailed = false;
+			List<BambooBuild> allBuilds = new ArrayList<BambooBuild>();
 			for (Collection<BambooBuild> collection : builds.values()) {
 				allBuilds.addAll(collection);
-				for (BambooBuild build : collection) {
-					if (build.getStatus() == BuildStatus.FAILURE) {
-						hasFailed = true;
-					}
-				}
 			}
-			updateViewIcon(hasFailed);
 			return allBuilds.toArray();
 		}
 
@@ -304,24 +295,28 @@ public class BambooView extends ViewPart {
 			return false;
 		}
 
-		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
+
 	}
 
 	private static final String CODE_HAS_CHANGED = "Code has changed";
 
 	public static final String ID = "com.atlassian.connector.eclipse.bamboo.ui.plans";
 
+	private enum ViewStatus {
+		NONE, PASSED, FAILED, ERROR,
+	};
+
 	private TreeViewer buildViewer;
 
 	private Map<TaskRepository, Collection<BambooBuild>> builds;
 
-	final Image buildFailedImage = CommonImages.getImage(BambooImages.STATUS_FAILED);
+	final Image buildFailedImage = CommonImages.getImage(BambooImages.VIEW_STATUS_FAILED);
 
-	final Image buildPassedImage = CommonImages.getImage(BambooImages.STATUS_PASSED);
+	final Image buildPassedImage = CommonImages.getImage(BambooImages.VIEW_STATUS_PASSED);
 
-	final Image buildDisabledImage = CommonImages.getImage(BambooImages.STATUS_DISABLED);
+	final Image buildErrorImage = CommonImages.getImage(BambooImages.VIEW_STATUS_ERROR);
 
 	private final Image bambooImage = CommonImages.getImage(BambooImages.BAMBOO);
 
@@ -396,9 +391,9 @@ public class BambooView extends ViewPart {
 
 		buildsChangedListener = new BuildsChangedListener() {
 			public void buildsUpdated(final BuildsChangedEvent event) {
-				builds = event.getAllBuilds();
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
+						builds = new HashMap<TaskRepository, Collection<BambooBuild>>(event.getAllBuilds());
 						refresh(event.isForcedRefresh(), event.isFailed());
 					}
 				});
@@ -685,10 +680,28 @@ public class BambooView extends ViewPart {
 
 	private void refresh(boolean forcedRefresh, boolean failed) {
 		boolean hasSubscriptions = false;
+		ViewStatus status = ViewStatus.NONE;
 		for (Collection<BambooBuild> repoBuilds : builds.values()) {
 			if (repoBuilds.size() > 0) {
 				hasSubscriptions = true;
-				break;
+			}
+			// determine the most severe status of any build
+			if (status != ViewStatus.ERROR) {
+				for (BambooBuild build : repoBuilds) {
+					if (build.getEnabled()) {
+						ViewStatus buildStatus = ViewStatus.NONE;
+						if (build.getErrorMessage() != null) {
+							buildStatus = ViewStatus.ERROR;
+						} else if (build.getStatus() == BuildStatus.FAILURE) {
+							buildStatus = ViewStatus.FAILED;
+						} else if (build.getStatus() == BuildStatus.SUCCESS) {
+							buildStatus = ViewStatus.PASSED;
+						}
+						if (buildStatus.ordinal() > status.ordinal()) {
+							status = buildStatus;
+						}
+					}
+				}
 			}
 		}
 		boolean isTreeShown = stackLayout.topControl == treeComp;
@@ -714,20 +727,30 @@ public class BambooView extends ViewPart {
 			statusLineManager.setMessage("Last Refresh: " + new SimpleDateFormat("MMM d, H:mm:ss").format(new Date()));
 		}
 
+		updateViewIcon(status);
+
 		buildViewer.setInput(builds);
 		buildViewer.refresh(true);
 	}
 
-	private void fillPopupMenu(IMenuManager menuManager) {
-	}
-
-	private void updateViewIcon(boolean buildsFailed) {
-		if (buildsFailed) {
+	private void updateViewIcon(ViewStatus status) {
+		switch (status) {
+		case PASSED:
+			currentTitleImage = buildPassedImage;
+			break;
+		case FAILED:
 			currentTitleImage = buildFailedImage;
-		} else {
+			break;
+		case ERROR:
+			currentTitleImage = buildErrorImage;
+			break;
+		default:
 			currentTitleImage = bambooImage;
 		}
 		firePropertyChange(IWorkbenchPart.PROP_TITLE);
+	}
+
+	private void fillPopupMenu(IMenuManager menuManager) {
 	}
 
 	/*
