@@ -192,7 +192,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 			createComposite.setLayout(new GridLayout());
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createComposite);
 
-			initLabel = toolkit.createText(createComposite, "Initializing review editor...", SWT.FLAT | SWT.READ_ONLY);
+			initLabel = toolkit.createText(createComposite, "Initializing...", SWT.FLAT | SWT.READ_ONLY);
 			initLabel.setFont(JFaceResources.getBannerFont());
 
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(initLabel);
