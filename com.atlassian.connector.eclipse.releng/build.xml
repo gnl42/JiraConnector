@@ -3,7 +3,8 @@
 	<property file="${build.config}" />
 	<property file="local.properties" />
 	<import file="scripts/osHelper.xml" />
-	<property file="defaults.properties" />
+	<property file="custom.properties" />
+	<property file="scripts/defaults-all.properties" />
 	<import file="scripts/buildHelper.xml" />
 	
 	<target name="all" depends="clean,build,tests">
@@ -16,15 +17,37 @@
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.tigris.subversion.clientadapter.feature"/>
 			<param name="update.site" value="${subclipse.site}"/>
-			<param name="update.version" value="1.5.2"/>
+			<param name="update.version" value="${subclipse.clientadapter.version}"/>
 		</antcall>
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.tigris.subversion.subclipse"/>
 			<param name="update.site" value="${subclipse.site}"/>
-			<param name="update.version" value="1.4.7"/>
+			<param name="update.version" value="${subclipse.version}"/>
 		</antcall>
+		
+		<!-- only keep mylyn map that corresponds to current target -->
+		<delete>
+			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map">
+				<exclude name="*${build.target}.map"/>
+			</fileset>
+		</delete>
+
+		<antcall target="pre-build-release"/>
 	</target>
 
+	<target name="pre-build-release" if="build.release">
+		<!-- build against release version of Mylyn -->
+		<delete>
+			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map"/>
+		</delete>
+  	    <condition property="mylyn.version.postfix" value="-e33" else="-e3x"><equals arg1="${build.target}" arg2="3.3"/></condition>
+		<antcall target="install-bundle">
+			<param name="update.feature" value="org.eclipse.mylyn_feature"/>
+			<param name="update.site" value="${mylyn.site}/e${build.target}"/>
+			<param name="update.version" value="${mylyn.version}${mylyn.version.postfix}"/>
+		</antcall>
+	</target>
+	
 	<target name="pre-tests">
 		<delete failonerror="false" includeemptydirs="true">
 			<fileset dir="${eclipse.home}">
@@ -59,9 +82,19 @@
 	</target>
 	
 	<target name="generate-metadata-sites" depends="init">
+  	    <condition property="build.publish.location" value="-e33" else="-e3x"><equals arg1="${build.target}" arg2="3.3"/></condition>
+
+		<property name="site.dir" value="${build.home}/${build.target}/site"/>
+		<replace file="${site.dir}/site.xml">
+		  <replacetoken><![CDATA[<site pack200="true">]]></replacetoken>
+		  <replacevalue><![CDATA[<site pack200="true" associateSitesURL="${atlassian.site}/${build.publish.postfix}/e${build.target}/associates-${build.publish.postfix}e${build.target}.xml">]]></replacevalue>
+		</replace>
+
+		<copy file="associates-${build.publish.postfix}e${build.target}.xml" todir="${site.dir}"/>
+		
 		<antcall target="generate-metadata-helper">
-			<param name="dir" value="${build.home}/${build.target}/site"/>
-			<param name="name" value="Atlassian Eclipse Connector"/>
+			<param name="dir" value="${site.dir}"/>
+			<param name="name" value="${build.publish.name}"/>
 		</antcall>
 	</target>
 
@@ -69,14 +102,16 @@
 		<fail message="Required property build.publish.user is not set" unless="build.publish.user"/>
 		<fail message="Required property build.publish.password is not set" unless="build.publish.password"/>
 		<fail message="Required property build.publish.location is not set" unless="build.publish.location"/>
-		
-		<property name="build.publish.release" value="/nightly"/>
-		<echo message="Uploading ${version}.${qualifier} to ${build.publish.release}" />
-		<scp todir="${build.publish.user}@${build.publish.location}${build.publish.release}" password="${build.publish.password}" trust="true" verbose="true">
+
+		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
+		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.3" password="${build.publish.password}" trust="true" verbose="true">
 			<fileset dir="${build.home}/3.3/site"/>
 		</scp>
-	</target>	
-
+		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.4" password="${build.publish.password}" trust="true" verbose="true">
+			<fileset dir="${build.home}/3.4/site"/>
+		</scp>
+	</target>
+	
 	<target name="init-3.4">
 		<antcall target="get-build-dependencies-helper">
 			<param name="build.target" value="3.4"/>
