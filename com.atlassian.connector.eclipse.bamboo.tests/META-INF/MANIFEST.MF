@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector Bamboo Tests Plug-in
+Bundle-Name: Atlassian Eclipse Connector Bamboo Tests
 Bundle-SymbolicName: com.atlassian.connector.eclipse.bamboo.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian
@@ -16,4 +16,5 @@ Require-Bundle: org.junit,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.tests;x-internal:=true,
- com.atlassian.connector.eclipse.internal.bamboo.tests.util;x-internal:=true
+ com.atlassian.connector.eclipse.internal.bamboo.tests.util;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.bamboo.ui;x-internal:=true

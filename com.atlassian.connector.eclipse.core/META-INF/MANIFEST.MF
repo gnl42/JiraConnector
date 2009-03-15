@@ -17,3 +17,4 @@ Export-Package: com.atlassian.connector.eclipse.internal.core;
    com.atlassian.connector.eclipse.bamboo.ui"
 Bundle-Activator: com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin
 Bundle-ClassPath: .
+Bundle-Vendor: Atlassian

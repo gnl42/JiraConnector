@@ -30,3 +30,4 @@ Export-Package: com.atlassian.connector.eclipse.internal.crucible.ui;x-internal:
  com.atlassian.connector.eclipse.internal.crucible.ui.notifications,
  com.atlassian.connector.eclipse.internal.crucible.ui.operations,
  com.atlassian.connector.eclipse.internal.crucible.ui.wizards;x-internal:=true
+Bundle-Vendor: Atlassian

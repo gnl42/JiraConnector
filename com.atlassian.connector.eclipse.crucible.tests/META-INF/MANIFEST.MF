@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector Crucible Tests Plug-in
+Bundle-Name: Atlassian Eclipse Connector Crucible Tests
 Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Subclipse Ui Plug-in
+Bundle-Name: Atlassian Eclipse Connector Subclipse UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.subclipse.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.subclipse.ui.AtlassianSubclipseUiPlugin
@@ -21,3 +21,4 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Export-Package: com.atlassian.connector.eclipse.internal.subclipse.ui,
  com.atlassian.connector.eclipse.internal.subclipse.ui.compare
+Bundle-Vendor: Atlassian
