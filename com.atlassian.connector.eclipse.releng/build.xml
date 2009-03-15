@@ -10,7 +10,7 @@
 	<target name="all" depends="clean,build,tests">
 	</target>
 
-	<target name="dev" depends="clean,build,pack,generate-metadata">
+	<target name="release" depends="clean,build,pack,generate-metadata">
 	</target>
 
 	<target name="pre-build">
@@ -85,9 +85,7 @@
   	    <condition property="build.publish.location" value="-e33" else="-e3x"><equals arg1="${build.target}" arg2="3.3"/></condition>
 
 		<property name="site.dir" value="${build.home}/${build.target}/site"/>
-		<replace file="${site.dir}/site.xml">
-		  <replacetoken><![CDATA[<site pack200="true">]]></replacetoken>
-		  <replacevalue><![CDATA[<site pack200="true" associateSitesURL="${atlassian.site}/${build.publish.postfix}/e${build.target}/associates-${build.publish.postfix}e${build.target}.xml">]]></replacevalue>
+		<replace file="${site.dir}/site.xml" token="&lt;site pack200=&quot;true&quot;&gt;" value="&lt;site pack200=&quot;true&quot; associateSitesURL=&quot;${atlassian.site}/${build.publish.postfix}/e${build.target}/associates-${build.publish.postfix}e${build.target}.xml&quot;&gt;">
 		</replace>
 
 		<copy file="associates-${build.publish.postfix}e${build.target}.xml" todir="${site.dir}"/>
