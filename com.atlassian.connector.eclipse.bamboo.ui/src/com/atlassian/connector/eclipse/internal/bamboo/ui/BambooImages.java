@@ -31,9 +31,9 @@ public class BambooImages {
 
 	public static final ImageDescriptor STATUS_PASSED = create(T_OBJ, "icn_plan_passed.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor VIEW_STATUS_ERROR = create(T_OBJ, "bamboo_error.png"); //$NON-NLS-1$
+	public static final ImageDescriptor VIEW_STATUS_WARNING = create(T_OBJ, "bamboo_warning.png"); //$NON-NLS-1$
 
-	public static final ImageDescriptor VIEW_STATUS_FAILED = create(T_OBJ, "bamboo_failed.png"); //$NON-NLS-1$
+	public static final ImageDescriptor VIEW_STATUS_FAILED = create(T_OBJ, "bamboo_error.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor VIEW_STATUS_PASSED = create(T_OBJ, "bamboo_success.png"); //$NON-NLS-1$
 

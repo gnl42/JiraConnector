@@ -316,7 +316,7 @@ public class BambooView extends ViewPart {
 
 	final Image buildPassedImage = CommonImages.getImage(BambooImages.VIEW_STATUS_PASSED);
 
-	final Image buildErrorImage = CommonImages.getImage(BambooImages.VIEW_STATUS_ERROR);
+	final Image buildErrorImage = CommonImages.getImage(BambooImages.VIEW_STATUS_WARNING);
 
 	private final Image bambooImage = CommonImages.getImage(BambooImages.BAMBOO);
 
