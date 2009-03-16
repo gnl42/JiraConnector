@@ -35,6 +35,7 @@ public class BambooSummaryPart extends AbstractBambooEditorFormPart {
 
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
+		super.toolkit = toolkit;
 		Composite composite = toolkit.createComposite(parent);
 		GridLayout layout = new GridLayout(9, false);
 		layout.horizontalSpacing = 5;
