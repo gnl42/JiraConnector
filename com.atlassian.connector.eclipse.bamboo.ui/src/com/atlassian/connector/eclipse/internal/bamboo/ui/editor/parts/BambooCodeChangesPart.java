@@ -25,13 +25,14 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * Part displaying code changes between current and last build
@@ -39,6 +40,10 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Thomas Ehrnhoefer
  */
 public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
+
+	private TreeViewer changesViewer;
+
+	private Hyperlink link;
 
 	public BambooCodeChangesPart() {
 		super("");
@@ -50,18 +55,29 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
-		Section section = createSection(parent, toolkit, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE
-				| ExpandableComposite.EXPANDED);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
-		Composite composite = toolkit.createComposite(section, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		composite.setLayout(layout);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
+		super.toolkit = toolkit;
+		createSectionAndComposite(parent, toolkit, 2, ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED
+				| ExpandableComposite.TWISTIE);
 
-		Tree tree = toolkit.createTree(composite, SWT.SINGLE);
-		TreeViewer changesViewer = new TreeViewer(tree);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
+		createLinks(mainComposite, toolkit, "Retrieving build details from server...", "", "", null);
+
+		toolkit.paintBordersFor(mainComposite);
+
+		section.setClient(mainComposite);
+		setSection(toolkit, section);
+
+		return control;
+	}
+
+	private String getCommentSnippet(String comment) {
+		String[] commentLines = comment.split("[\r\n]");
+		return commentLines.length == 0 ? "N/A" : commentLines[0];
+	}
+
+	private void createTreeViewer() {
+		Tree tree = toolkit.createTree(mainComposite, SWT.SINGLE);
+		GridDataFactory.fillDefaults().grab(true, false).hint(SWT.DEFAULT, 100).applyTo(tree);
+		changesViewer = new TreeViewer(tree);
 		changesViewer.setContentProvider(new ITreeContentProvider() {
 
 			public Object[] getChildren(Object parentElement) {
@@ -73,6 +89,9 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 
 			public Object getParent(Object element) {
 				if (element instanceof BambooFileInfo) {
+					if (buildDetails == null) {
+						return null;
+					}
 					for (BambooChangeSet changeSet : buildDetails.getCommitInfo()) {
 						if (changeSet.getFiles().contains(element)) {
 							return changeSet;
@@ -135,18 +154,28 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 			}
 		});
 		changesViewer.setInput(buildDetails);
-		changesViewer.expandAll();
-
-		toolkit.paintBordersFor(composite);
-
-		section.setClient(composite);
-		setSection(toolkit, section);
-
-		return control;
 	}
 
-	private String getCommentSnippet(String comment) {
-		String[] commentLines = comment.split("[\r\n]");
-		return commentLines.length == 0 ? "N/A" : commentLines[0];
+	@Override
+	public void buildInfoRetrievalDone(boolean success) {
+		reinitMainComposite();
+
+		if (success) {
+			if (buildDetails.getCommitInfo().size() > 0) {
+				createTreeViewer();
+			} else {
+				createLinks(mainComposite, toolkit, "No code changes triggered this build.", null, null, null);
+			}
+		} else {
+			link = createLinks(mainComposite, toolkit, "Retrieving build details from server failed. Click to",
+					"try again", ".", new HyperlinkAdapter() {
+						@Override
+						public void linkActivated(HyperlinkEvent e) {
+							link.removeHyperlinkListener(this);
+							getBuildEditor().retrieveBuildInfo();
+						}
+					});
+		}
+		getBuildEditor().reflow();
 	}
 }

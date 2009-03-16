@@ -32,9 +32,12 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
+		super.toolkit = toolkit;
 		//leave it empty for now until ACC-29 is done
 
-//		Section section = createSection(parent, toolkit, ExpandableComposite.NO_TITLE | ExpandableComposite.EXPANDED);
+//		section = createSection(parent, toolkit, ExpandableComposite.NO_TITLE | ExpandableComposite.EXPANDED
+//				| ExpandableComposite.TWISTIE);
+
 //		Composite composite = toolkit.createComposite(section, SWT.BORDER);
 //		GridLayout layout = new GridLayout();
 //		layout.numColumns = 8;

@@ -17,17 +17,16 @@ import com.atlassian.theplugin.commons.bamboo.TestDetails;
 
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 import java.util.Iterator;
 
@@ -40,6 +39,8 @@ import java.util.Iterator;
 public class BambooTestPart extends AbstractBambooEditorFormPart {
 	private ShowTestResultsAction showTestResultsAction;
 
+	private Hyperlink link;
+
 	public BambooTestPart() {
 		super("");
 	}
@@ -50,56 +51,68 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
-		Section section = createSection(parent, toolkit, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE
-				| ExpandableComposite.EXPANDED);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
-		Composite composite = toolkit.createComposite(section, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 7;
-		composite.setLayout(layout);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
+		this.toolkit = toolkit;
+		createSectionAndComposite(parent, toolkit, 1, ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED
+				| ExpandableComposite.TWISTIE);
 
-		int failed = bambooBuild.getTestsFailed();
-		int passed = bambooBuild.getTestsPassed();
+		createLinks(mainComposite, toolkit, "Retrieving build logs from server...", "", "", null);
 
-		Image stateImage;
-		switch (bambooBuild.getStatus()) {
-		case SUCCESS:
-			stateImage = CommonImages.getImage(BambooImages.STATUS_PASSED);
-			break;
-		case FAILURE:
-			stateImage = CommonImages.getImage(BambooImages.STATUS_FAILED);
-			break;
-		default:
-			stateImage = CommonImages.getImage(BambooImages.STATUS_DISABLED);
-		}
-		Label label = createLabelControl(toolkit, composite, stateImage);
-		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(label);
-		createReadOnlyText(toolkit, composite, String.valueOf(failed + passed), "Tests in total:", false);
-		createReadOnlyText(toolkit, composite, String.valueOf(failed), "     Test failed:", false);
-		createReadOnlyText(toolkit, composite, String.valueOf(passed), "     Test passed:", false);
+		createShowInJunitLink();
 
-		Text text = createReadOnlyText(toolkit, composite, getFailedTests(), "Failed Tests", true);
+		toolkit.paintBordersFor(mainComposite);
 
-		GridDataFactory.fillDefaults().grab(true, true).span(6, 1).applyTo(text);
-
-		toolkit.paintBordersFor(composite);
-
-		section.setClient(composite);
+		section.setClient(mainComposite);
 		setSection(toolkit, section);
 
 		return control;
 	}
 
+	private void createShowInJunitLink() {
+		Hyperlink link = toolkit.createImageHyperlink(mainComposite, SWT.NONE);
+		link.setText("Open tests in JUnit view.");
+		link.setEnabled(true);
+		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
+			public void linkActivated(HyperlinkEvent e) {
+				showTestResultsAction.run();
+			}
+		});
+	}
+
 	private String getFailedTests() {
+		if (buildDetails == null) {
+			return "";
+		}
 		StringBuilder b = new StringBuilder();
 		Iterator<TestDetails> it = buildDetails.getFailedTestDetails().iterator();
 		while (it.hasNext()) {
 			TestDetails details = it.next();
-			b.append(details.getTestClassName() + "." + details.getTestMethodName());
+			String testClassName = details.getTestClassName();
+			int index = testClassName.lastIndexOf('.');
+			if (index == -1) {
+				testClassName = "N/A";
+			} else {
+				testClassName = testClassName.substring(index + 1);
+			}
+			b.append(testClassName + "   :  " + formatTestMethodName(details.getTestMethodName()));
 			if (it.hasNext()) {
 				b.append(System.getProperty("line.separator"));
 			}
+		}
+		return b.toString();
+	}
+
+	private String formatTestMethodName(String methodName) {
+		int i = methodName.indexOf("test");
+		if (i != -1) {
+			methodName = methodName.substring(i + 4);
+		}
+		StringBuilder b = new StringBuilder();
+		for (char c : methodName.toCharArray()) {
+			if (Character.isUpperCase(c)) {
+				b.append(" ");
+			}
+			b.append(c);
 		}
 		return b.toString();
 	}
@@ -119,4 +132,38 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 		}
 	}
 
+	@Override
+	public void buildInfoRetrievalDone(boolean success) {
+		reinitMainComposite();
+
+		if (success) {
+			Composite labelComposite = toolkit.createComposite(mainComposite, SWT.NONE);
+			labelComposite.setLayout(new GridLayout(6, false));
+			int failed = bambooBuild.getTestsFailed();
+			int passed = bambooBuild.getTestsPassed();
+			createReadOnlyText(toolkit, labelComposite, String.valueOf(failed + passed), "Tests in total:", false);
+			createReadOnlyText(toolkit, labelComposite, String.valueOf(failed), "        Failed:", false);
+			createReadOnlyText(toolkit, labelComposite, String.valueOf(passed), "        Passed:", false);
+			GridDataFactory.fillDefaults().grab(true, false).align(SWT.CENTER, SWT.CENTER).applyTo(labelComposite);
+
+			String failedTests = getFailedTests();
+			if (failedTests.length() > 0) {
+				Text text = createReadOnlyText(toolkit, mainComposite, failedTests, "Failed Tests:", true, true);
+				text.setForeground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
+				GridDataFactory.fillDefaults().grab(true, false).hint(SWT.DEFAULT, DEFAULT_HEIGHT).applyTo(text);
+			}
+		} else {
+			link = createLinks(mainComposite, toolkit, "Retrieving tests from server failed. Click to", "try again",
+					".", new HyperlinkAdapter() {
+						@Override
+						public void linkActivated(HyperlinkEvent e) {
+							link.removeHyperlinkListener(this);
+							getBuildEditor().retrieveBuildInfo();
+						}
+					});
+		}
+		createShowInJunitLink();
+		getBuildEditor().reflow();
+
+	}
 }

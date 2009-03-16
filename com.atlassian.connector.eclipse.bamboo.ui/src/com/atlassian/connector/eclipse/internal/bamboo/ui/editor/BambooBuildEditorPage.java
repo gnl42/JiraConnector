@@ -183,10 +183,13 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 			GridLayout editorLayout = new GridLayout();
 			editorLayout.numColumns = 2;
+			editorLayout.makeColumnsEqualWidth = true;
 			editorComposite.setLayout(editorLayout);
-			editorComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_BOTH));
+			editorComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL));
 
 			editorComposite.setMenu(getEditor().getMenu());
+
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(editorComposite);
 
 			Composite createComposite = toolkit.createComposite(editorComposite);
 			createComposite.setLayout(new GridLayout());
@@ -196,6 +199,10 @@ public class BambooBuildEditorPage extends BambooFormPage {
 			initLabel.setFont(JFaceResources.getBannerFont());
 
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(initLabel);
+
+			createFormContent();
+			getEditor().updateHeaderToolBar();
+			setFocus();
 
 			downloadAndRefreshBuild(0, false);
 		} finally {
@@ -211,10 +218,9 @@ public class BambooBuildEditorPage extends BambooFormPage {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						setBusy(false);
-
 						IStatus status = job.getStatus();
 						if (editorComposite != null) {
-							if (status == null || buildLog == null || buildDetails == null) {
+							if (!status.isOK() || buildDetails == null || buildLog == null) {
 								getEditor().setMessage(
 										"Unable to retrieve full bamboo build details.  Click to try again.",
 										IMessageProvider.WARNING, new HyperlinkAdapter() {
@@ -223,13 +229,13 @@ public class BambooBuildEditorPage extends BambooFormPage {
 												downloadAndRefreshBuild(0, true);
 											}
 										});
-							} else if (status.isOK()) {
-								getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
-								createFormContent();
-								getEditor().updateHeaderToolBar();
-								setFocus();
 							} else {
-								getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
+								getEditor().setMessage(null, IMessageProvider.NONE, null);
+							}
+							for (AbstractBambooEditorFormPart part : parts) {
+								part.setBuildDetails(buildDetails);
+								part.setBuildLog(buildLog);
+								part.buildInfoRetrievalDone(status.isOK());
 							}
 						}
 					}
@@ -259,9 +265,9 @@ public class BambooBuildEditorPage extends BambooFormPage {
 		focusablePart = new BambooSummaryPart();
 		parts.add(focusablePart);
 		parts.add(new BambooDetailsPart("Summary"));
-		parts.add(new BambooBuildLogPart("Build Log"));
 		parts.add(new BambooTestPart("Tests"));
 		parts.add(new BambooCodeChangesPart("Code Changes"));
+		parts.add(new BambooBuildLogPart("Build Log"));
 	}
 
 	private void createFormContent() {
@@ -307,7 +313,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 				form.setSize(parentClientArea.width - verticalBarWidth, formSize.y);
 			}
 
-			form.layout(true, false);
+			form.layout(true, true);
 			form.reflow(true);
 		}
 	}
@@ -363,5 +369,9 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 	private void setBusy(boolean busy) {
 		getEditor().showBusy(busy);
+	}
+
+	public void retrieveBuildInfo() {
+		downloadAndRefreshBuild(0, true);
 	}
 }

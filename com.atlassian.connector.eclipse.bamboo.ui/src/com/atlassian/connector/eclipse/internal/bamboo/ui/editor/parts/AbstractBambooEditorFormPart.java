@@ -22,13 +22,18 @@ import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
+import org.eclipse.ui.forms.events.ExpansionAdapter;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -37,6 +42,12 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Thomas Ehrnhoefer
  */
 public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart {
+
+	protected static final int DEFAULT_HEIGHT = 125;
+
+	protected static final int SECTION_FULL_WIDTH = 600;
+
+	protected static final int SECTION_HALF_WIDTH = 300;
 
 	protected BambooBuild bambooBuild;
 
@@ -51,6 +62,12 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 	protected String buildLog;
 
 	protected BuildDetails buildDetails;
+
+	protected FormToolkit toolkit;
+
+	protected Section section;
+
+	protected Composite mainComposite;
 
 	public AbstractBambooEditorFormPart() {
 		this("");
@@ -74,17 +91,20 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 	}
 
 	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
-			boolean isMultiline) {
+			boolean isMultiline, boolean border) {
 
 		if (labelString != null) {
 			Label label = createLabelControl(toolkit, composite, labelString);
 			if (isMultiline) {
-				GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.TOP).applyTo(label);
+				GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
 			}
 		}
 		int style = SWT.FLAT | SWT.READ_ONLY;
 		if (isMultiline) {
-			style |= SWT.MULTI | SWT.BORDER;
+			style |= SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL;
+		}
+		if (border) {
+			style |= SWT.BORDER;
 		}
 		Text text = new Text(composite, style);
 		text.setFont(EditorUtil.TEXT_FONT);
@@ -95,7 +115,12 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		return text;
 	}
 
-	private Label createLabelControl(FormToolkit toolkit, Composite composite, String labelString) {
+	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
+			boolean isMultiline) {
+		return createReadOnlyText(toolkit, composite, value, labelString, isMultiline, false);
+	}
+
+	protected Label createLabelControl(FormToolkit toolkit, Composite composite, String labelString) {
 		Label labelControl = toolkit.createLabel(composite, labelString);
 		labelControl.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		return labelControl;
@@ -105,12 +130,6 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		Label labelControl = toolkit.createLabel(composite, null);
 		labelControl.setImage(image);
 		return labelControl;
-	}
-
-	protected Section createSection(Composite parent, FormToolkit toolkit, int style) {
-		Section section = toolkit.createSection(parent, style);
-		section.setText(partName);
-		return section;
 	}
 
 	public void setPartName(String partName) {
@@ -140,4 +159,105 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 	protected void fillToolBar(ToolBarManager toolBarManager) {
 	}
 
+	public void buildInfoRetrievalDone(boolean success) {
+
+	}
+
+	public void setBuildDetails(BuildDetails buildDetails) {
+		this.buildDetails = buildDetails;
+	}
+
+	public void setBuildLog(String buildLog) {
+		this.buildLog = buildLog;
+	}
+
+	/**
+	 * Creates a composite with three hyperlinks, the middleone being the actual link.
+	 * 
+	 * @param parent
+	 * @param toolkit
+	 * @param pre
+	 * @param linkTxt
+	 * @param post
+	 * @param hyperlinkAdapter
+	 * @return The actual hyperlink the adapter gets registered at
+	 */
+	protected Hyperlink createLinks(Composite parent, FormToolkit toolkit, String pre, String linkTxt, String post,
+			HyperlinkAdapter hyperlinkAdapter) {
+		Composite linksComposite = toolkit.createComposite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		layout.verticalSpacing = 0;
+		layout.horizontalSpacing = 0;
+		layout.makeColumnsEqualWidth = false;
+		linksComposite.setLayout(layout);
+
+		Hyperlink link = toolkit.createImageHyperlink(linksComposite, SWT.NONE);
+		link.setUnderlined(false);
+		link.setEnabled(false);
+		if (pre == null) {
+			link.setVisible(false);
+		} else {
+			link.setText(pre);
+			link.setVisible(true);
+		}
+
+		link = toolkit.createImageHyperlink(linksComposite, SWT.NONE);
+		if (linkTxt == null) {
+			link.setVisible(false);
+		} else {
+			link.setText(linkTxt);
+			if (hyperlinkAdapter != null) {
+				link.addHyperlinkListener(hyperlinkAdapter);
+			}
+			link.setVisible(true);
+		}
+
+		link = toolkit.createImageHyperlink(linksComposite, SWT.NONE);
+		link.setUnderlined(false);
+		link.setEnabled(false);
+		Hyperlink postLink = toolkit.createImageHyperlink(linksComposite, SWT.NONE);
+		postLink.setUnderlined(false);
+		postLink.setEnabled(false);
+
+		GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL, SWT.CENTER).applyTo(linksComposite);
+
+		return link;
+	}
+
+	protected void reinitMainComposite() {
+		for (Control child : mainComposite.getChildren()) {
+			child.dispose();
+		}
+		mainComposite.setMenu(null);
+	}
+
+	/**
+	 * Creates a section and main composite with 1 column
+	 * 
+	 * @param parent
+	 * @param toolkit
+	 * @param hColSpan
+	 * @param style
+	 */
+	protected void createSectionAndComposite(Composite parent, FormToolkit toolkit, int hColSpan, int style) {
+		section = toolkit.createSection(parent, style);
+		section.setText(partName);
+		section.addExpansionListener(new ExpansionAdapter() {
+			@Override
+			public void expansionStateChanged(ExpansionEvent e) {
+				getBuildEditor().reflow();
+			}
+		});
+		GridDataFactory.fillDefaults()
+				.grab(true, false)
+				.span(hColSpan, 1)
+				.hint(SECTION_FULL_WIDTH, -1)
+				.applyTo(section);
+		mainComposite = toolkit.createComposite(section, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		mainComposite.setLayout(layout);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(mainComposite);
+	}
 }
