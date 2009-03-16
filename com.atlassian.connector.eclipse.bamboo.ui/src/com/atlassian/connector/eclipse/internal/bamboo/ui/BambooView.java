@@ -84,6 +84,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
+import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -619,6 +620,7 @@ public class BambooView extends ViewPart {
 		};
 		refreshAction.setText("Refresh");
 		refreshAction.setToolTipText("Refresh all builds");
+		refreshAction.setActionDefinitionId("org.eclipse.ui.file.refresh");
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
 
 		openInBrowserAction = new OpenInBrowserAction();
@@ -665,6 +667,7 @@ public class BambooView extends ViewPart {
 		toggleAutoRefreshAction = new ToggleAutoRefreshAction();
 
 		openRepoConfigAction = new OpenRepositoryConfigurationAction(buildViewer);
+		openRepoConfigAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.PROPERTIES);
 		openRepoConfigAction.setText("Properties...");
 		openRepoConfigAction.setToolTipText("Open the repository configuration");
 		openRepoConfigAction.setEnabled(false);
