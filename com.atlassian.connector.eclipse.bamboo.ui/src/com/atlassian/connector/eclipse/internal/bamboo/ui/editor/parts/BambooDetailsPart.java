@@ -11,8 +11,15 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -33,64 +40,74 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
 		super.toolkit = toolkit;
-		//leave it empty for now until ACC-29 is done
+		createSectionAndComposite(parent, toolkit, 1, ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED
+				| ExpandableComposite.TITLE_BAR);
 
-//		section = createSection(parent, toolkit, ExpandableComposite.NO_TITLE | ExpandableComposite.EXPANDED
-//				| ExpandableComposite.TWISTIE);
+		Display display = parent.getDisplay();
+		Color foreground;
+		Color titleBackground;
+		Color mainBackground;
+		Color sepBackground;
 
-//		Composite composite = toolkit.createComposite(section, SWT.BORDER);
-//		GridLayout layout = new GridLayout();
-//		layout.numColumns = 8;
-//		composite.setLayout(layout);
-//
-//		//TODO
-//		String buildNr;
-//		try {
-//			buildNr = String.valueOf(bambooBuild.getNumber());
-//		} catch (UnsupportedOperationException e) {
-//			buildNr = "N/A";
-//		}
-//		int passedTests = bambooBuild.getTestsPassed();
-//		int failedTests = bambooBuild.getTestsFailed();
-//
-//		StringBuilder builder = new StringBuilder();
-//		builder.append("Build ");
-//		builder.append(bambooBuild.getPlanKey());
-//		builder.append("-");
-//		builder.append(buildNr);
-//
-//		if (bambooBuild.getStatus() == BuildStatus.SUCCESS) {
-//			builder.append(" succeeded");
-//			if (passedTests <= 0) {
-//				builder.append(" [testless build].");
-//			} else {
-//				builder.append(" with ");
-//				builder.append(String.valueOf(passedTests));
-//				builder.append(" passing tests.");
-//			}
-//		} else if (bambooBuild.getStatus() == BuildStatus.FAILURE) {
-//			builder.append(" failed");
-//			if (failedTests <= 0) {
-//				builder.append(" [testless build].");
-//			} else {
-//				builder.append(" with ");
-//				builder.append(String.valueOf(failedTests));
-//				builder.append(" failing tests.");
-//			}
-//		} else {
-//			builder.append(" disabled / Build data unavailable.");
-//		}
-//		createReadOnlyText(toolkit, composite, builder.toString(), null, false);
-//
-//		//TODO more Content here
-//
-//		toolkit.paintBordersFor(composite);
-//
-//		section.setClient(composite);
-//		setSection(toolkit, section);
-//
-//		return control;
+		String summary = "Build " + bambooBuild.getPlanKey() + "-" + String.valueOf(bambooBuild.getNumber());
 
-		return parent;
+		switch (bambooBuild.getStatus()) {
+		case FAILURE:
+			foreground = display.getSystemColor(SWT.COLOR_WHITE);
+			titleBackground = new Color(display, FAILED_BACKGROUND_TITLE);
+			mainBackground = new Color(display, FAILED_BACKGROUND_MAIN);
+			sepBackground = new Color(display, FAILED_BACKGROUND_SEPARATOR);
+			summary += " failed.";
+			break;
+		case SUCCESS:
+			foreground = display.getSystemColor(SWT.COLOR_WHITE);
+			titleBackground = new Color(display, SUCCESS_BACKGROUND_TITLE);
+			mainBackground = new Color(display, SUCCESS_BACKGROUND_MAIN);
+			sepBackground = new Color(display, SUCCESS_BACKGROUND_SEPARATOR);
+			summary += " was successful.";
+			break;
+		default:
+			foreground = toolkit.getColors().getForeground();
+			titleBackground = mainBackground = sepBackground = toolkit.getColors().getBackground();
+			summary += " is in an unknown state.";
+		}
+
+		mainComposite.setBackground(mainBackground);
+
+		Composite sepComp = toolkit.createComposite(mainComposite);
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = 0;
+		layout.marginHeight = 2;
+		sepComp.setLayout(layout);
+		sepComp.setBackground(sepBackground);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(sepComp);
+
+		Label label = createLabelControl(toolkit, sepComp, summary);
+		label.setAlignment(SWT.CENTER);
+		label.setForeground(foreground);
+		label.setBackground(titleBackground);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
+
+		label = createLabelControl(toolkit, mainComposite, "Build completed on " + bambooBuild.getCompletionDate());
+		label.setForeground(foreground);
+		label.setBackground(mainBackground);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
+
+		label = createLabelControl(toolkit, mainComposite, "Build took " + bambooBuild.getDurationDescription());
+		label.setForeground(foreground);
+		label.setBackground(mainBackground);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
+
+		label = createLabelControl(toolkit, mainComposite, "Build reason: " + bambooBuild.getReason());
+		label.setForeground(foreground);
+		label.setBackground(mainBackground);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
+
+		toolkit.paintBordersFor(mainComposite);
+
+		section.setClient(mainComposite);
+		setSection(toolkit, section);
+
+		return control;
 	}
 }

@@ -22,6 +22,7 @@ import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -48,6 +49,18 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 	protected static final int SECTION_FULL_WIDTH = 600;
 
 	protected static final int SECTION_HALF_WIDTH = 300;
+
+	protected static final RGB SUCCESS_BACKGROUND_MAIN = new RGB(51, 153, 51);
+
+	protected static final RGB SUCCESS_BACKGROUND_SEPARATOR = new RGB(46, 137, 46);
+
+	protected static final RGB SUCCESS_BACKGROUND_TITLE = new RGB(81, 168, 81);
+
+	protected static final RGB FAILED_BACKGROUND_MAIN = new RGB(204, 51, 51);
+
+	protected static final RGB FAILED_BACKGROUND_SEPARATOR = new RGB(183, 46, 46);
+
+	protected static final RGB FAILED_BACKGROUND_TITLE = new RGB(212, 81, 81);
 
 	protected BambooBuild bambooBuild;
 
