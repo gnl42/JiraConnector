@@ -68,7 +68,7 @@ public final class BuildPlanManager {
 		protected IStatus run(IProgressMonitor monitor) {
 			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 			try {
-				this.builds.addAll(clientManager.getClient(taskRepository).getBuilds(monitor, taskRepository));
+				this.builds.addAll(clientManager.getClient(taskRepository).getBuilds(monitor, taskRepository, true));
 			} catch (CoreException e) {
 				return new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
 						"Update of builds from {0} failed", taskRepository.getRepositoryLabel()), e);
@@ -118,7 +118,8 @@ public final class BuildPlanManager {
 				if (!repository.isOffline()) {
 					BambooClient client = clientManager.getClient(repository);
 					try {
-						this.builds.put(repository, client.getBuilds(monitor, repository));
+						this.builds.put(repository, client.getBuilds(monitor, repository, manualRefresh
+								|| !firstScheduledSynchronizationDone));
 					} catch (CoreException e) {
 						Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
 								"Update of builds from {0} failed", repository.getRepositoryLabel()), e);
@@ -260,11 +261,11 @@ public final class BuildPlanManager {
 	private BambooBuild createCachedBuild(BambooBuild oldBuild, BambooBuild newBuild) {
 		try {
 			return new BambooBuildInfo(oldBuild.getPlanKey(), oldBuild.getPlanName(), oldBuild.getServer(),
-					oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(),
-					oldBuild.getNumber(), oldBuild.getStatus(), oldBuild.getReason(), oldBuild.getStartDate(),
-					null, null, oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getCompletionDate(),
-					newBuild.getErrorMessage(), oldBuild.getRelativeBuildDate(),
-					oldBuild.getDurationDescription(), oldBuild.getCommiters());
+					oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(), oldBuild.getNumber(),
+					oldBuild.getStatus(), oldBuild.getReason(), oldBuild.getStartDate(), null, null,
+					oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getCompletionDate(),
+					newBuild.getErrorMessage(), oldBuild.getRelativeBuildDate(), oldBuild.getDurationDescription(),
+					oldBuild.getCommiters());
 		} catch (UnsupportedOperationException e) {
 			return null;
 		}

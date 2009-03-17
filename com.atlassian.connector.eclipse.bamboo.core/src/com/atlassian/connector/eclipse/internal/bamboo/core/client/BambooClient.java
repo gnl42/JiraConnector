@@ -84,14 +84,16 @@ public class BambooClient {
 				server.testServerConnection(serverCfg);
 				return null;
 			}
-		}, taskRepository);
+		}, taskRepository, true);
 	}
 
-	private <T> T execute(RemoteOperation<T> op, TaskRepository taskRepository) throws CoreException {
+	private <T> T execute(RemoteOperation<T> op, TaskRepository taskRepository, boolean promptForCredentials)
+			throws CoreException {
 		IProgressMonitor monitor = op.getMonitor();
 		try {
 			monitor.beginTask("Connecting to Bamboo", IProgressMonitor.UNKNOWN);
-			if (taskRepository.getCredentials(AuthenticationType.REPOSITORY).getPassword().length() < 1) {
+			if (taskRepository.getCredentials(AuthenticationType.REPOSITORY).getPassword().length() < 1
+					&& promptForCredentials) {
 				try {
 					location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
 				} catch (UnsupportedRequestException e) {
@@ -148,12 +150,12 @@ public class BambooClient {
 				newClientData.setPlans(projects);
 				return newClientData;
 			}
-		}, taskRepository);
+		}, taskRepository, true);
 		return clientData;
 	}
 
-	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, TaskRepository taskRepository)
-			throws CoreException {
+	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, TaskRepository taskRepository,
+			boolean promptForCredentials) throws CoreException {
 		return execute(new RemoteOperation<Collection<BambooBuild>>(monitor) {
 			@Override
 			public Collection<BambooBuild> run(IProgressMonitor monitor) throws CrucibleLoginException,
@@ -161,7 +163,7 @@ public class BambooClient {
 				monitor.subTask("Retrieving builds");
 				return server.getSubscribedPlansResults(serverCfg);
 			}
-		}, taskRepository);
+		}, taskRepository, promptForCredentials);
 	}
 
 	public BuildDetails getBuildDetails(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
@@ -171,12 +173,11 @@ public class BambooClient {
 			public BuildDetails run(IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 					ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving build details");
-				BuildDetails buildDetails = server.getBuildDetails(serverCfg, build.getPlanKey(),
-						build.getNumber());
+				BuildDetails buildDetails = server.getBuildDetails(serverCfg, build.getPlanKey(), build.getNumber());
 				return buildDetails;
 			}
 
-		}, taskRepository);
+		}, taskRepository, true);
 	}
 
 	public String getBuildLogs(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
@@ -189,7 +190,7 @@ public class BambooClient {
 				return server.getBuildLogs(serverCfg, build.getPlanKey(), build.getNumber());
 			}
 
-		}, taskRepository);
+		}, taskRepository, true);
 	}
 
 	public void addLabelToBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build,
@@ -204,7 +205,7 @@ public class BambooClient {
 				return null;
 			}
 
-		}, repository);
+		}, repository, true);
 	}
 
 	public void addCommentToBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build,
@@ -219,7 +220,7 @@ public class BambooClient {
 				return null;
 			}
 
-		}, repository);
+		}, repository, true);
 	}
 
 	public void runBuild(IProgressMonitor monitor, TaskRepository repository, final BambooBuild build)
@@ -232,7 +233,7 @@ public class BambooClient {
 				server.executeBuild(serverCfg, build.getPlanKey());
 				return null;
 			}
-		}, repository);
+		}, repository, true);
 	}
 
 }

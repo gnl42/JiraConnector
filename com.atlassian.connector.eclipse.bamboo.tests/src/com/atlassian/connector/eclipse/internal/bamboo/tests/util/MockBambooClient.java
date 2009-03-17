@@ -66,8 +66,8 @@ public class MockBambooClient extends BambooClient {
 	}
 
 	@Override
-	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, TaskRepository taskRepository)
-			throws CoreException {
+	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, TaskRepository taskRepository,
+			boolean promptForCredentials) throws CoreException {
 		Assert.assertNotNull(responses.get(taskRepository));
 		Assert.assertTrue(responses.get(taskRepository) instanceof Collection);
 		return (Collection<BambooBuild>) responses.get(taskRepository);
