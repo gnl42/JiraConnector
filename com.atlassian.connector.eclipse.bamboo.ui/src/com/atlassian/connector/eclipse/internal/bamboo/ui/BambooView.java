@@ -376,7 +376,7 @@ public class BambooView extends ViewPart {
 		tree.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				new OpenInBrowserAction().run();
+				new OpenBambooEditorAction(buildViewer).run();
 			}
 		});
 	}
@@ -544,6 +544,8 @@ public class BambooView extends ViewPart {
 
 		openBambooEditorAction = new OpenBambooEditorAction(this.buildViewer);
 		openBambooEditorAction.setText("Open");
+		openBambooEditorAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(openBambooEditorAction);
 
 		IActionBars actionBars = getViewSite().getActionBars();
 		actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), openRepoConfigAction);
