@@ -128,7 +128,12 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 			showTestResultsAction = new ShowTestResultsAction(bambooBuild);
 			showTestResultsAction.setText("Show Test Results");
 			showTestResultsAction.setImageDescriptor(BambooImages.JUNIT);
-			showTestResultsAction.setEnabled(true);
+			if (buildDetails != null
+					&& (buildDetails.getFailedTestDetails().size() + buildDetails.getSuccessfulTestDetails().size()) > 0) {
+				showTestResultsAction.setEnabled(true);
+			} else {
+				showTestResultsAction.setEnabled(false);
+			}
 		}
 	}
 
@@ -151,6 +156,12 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 				Text text = createReadOnlyText(toolkit, mainComposite, failedTests, "Failed Tests:", true, true);
 				text.setForeground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
 				GridDataFactory.fillDefaults().grab(true, false).hint(SWT.DEFAULT, DEFAULT_HEIGHT).applyTo(text);
+			}
+			if (buildDetails != null
+					&& (buildDetails.getFailedTestDetails().size() + buildDetails.getSuccessfulTestDetails().size()) > 0) {
+				showTestResultsAction.setEnabled(true);
+			} else {
+				showTestResultsAction.setEnabled(false);
 			}
 		} else {
 			link = createLinks(mainComposite, toolkit, "Retrieving tests from server failed. Click to", "try again",

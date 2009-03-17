@@ -23,11 +23,11 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -46,31 +46,29 @@ import java.util.Map;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class ShowBuildLogAction extends BaseSelectionListenerAction {
+public class ShowBuildLogAction extends AbstractBambooAction {
 	private static final String BAMBOO_BUILD_LOG_CONSOLE = "Bamboo Build Log for ";
 
-	private static Map<BambooBuild, MessageConsole> buildLogConsoles;
+	private static Map<BambooBuild, MessageConsole> buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
 
-	private BambooBuild selectedBambooBuild;
-
-	public ShowBuildLogAction() {
-		this(null);
+	public ShowBuildLogAction(ISelectionProvider selectionProvider) {
+		super(selectionProvider);
 	}
 
 	public ShowBuildLogAction(BambooBuild bambooBuild) {
-		super(null);
+		super(bambooBuild);
 		buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
-		selectedBambooBuild = bambooBuild;
 	}
 
 	@Override
 	public void run() {
-		if (selectedBambooBuild != null) {
-			final MessageConsole console = prepareConsole(selectedBambooBuild);
+		final BambooBuild build = getBuild();
+		if (build != null) {
+			final MessageConsole console = prepareConsole(build);
 			final MessageConsoleStream messageStream = console.newMessageStream();
 
-			RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(selectedBambooBuild, TasksUi.getRepositoryManager()
-					.getRepository(BambooCorePlugin.CONNECTOR_KIND, selectedBambooBuild.getServerUrl()));
+			RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager().getRepository(
+					BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
 			job.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void done(IJobChangeEvent event) {
@@ -78,7 +76,7 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 						String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
 						if (buildLog == null) {
 							//retrieval failed, remove console
-							handledFailedLogRetrieval(console, messageStream, selectedBambooBuild);
+							handledFailedLogRetrieval(console, messageStream, build);
 						} else {
 							try {
 								showConsole(console);
@@ -94,7 +92,7 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 						}
 					} else {
 						//retrieval failed, remove console
-						handledFailedLogRetrieval(console, messageStream, selectedBambooBuild);
+						handledFailedLogRetrieval(console, messageStream, build);
 					}
 				}
 			});
@@ -156,12 +154,12 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 		if (selection.size() == 1) {
 			if (selection.getFirstElement() instanceof BambooBuild) {
 				try {
-					selectedBambooBuild = (BambooBuild) selection.getFirstElement();
-					selectedBambooBuild.getNumber();
+					build = (BambooBuild) selection.getFirstElement();
+					build.getNumber();
 					return true;
 				} catch (UnsupportedOperationException e) {
 					// ignore
-					selectedBambooBuild = null;
+					build = null;
 				}
 			} else if (selection.getFirstElement() instanceof Object) {
 				System.out.println();

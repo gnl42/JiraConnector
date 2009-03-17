@@ -43,12 +43,12 @@ import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 import java.io.File;
 import java.util.Arrays;
@@ -59,39 +59,37 @@ import java.util.Collection;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class ShowTestResultsAction extends BaseSelectionListenerAction {
+public class ShowTestResultsAction extends AbstractBambooAction {
 
 	private static final String EMPTY_STRING = "";
 
-	BambooBuild selectedBuild;
-
 	public ShowTestResultsAction(BambooBuild build) {
-		super(null);
-		this.selectedBuild = build;
+		super(build);
 	}
 
-	public ShowTestResultsAction() {
-		this(null);
+	public ShowTestResultsAction(ISelectionProvider selectionProvider) {
+		super(selectionProvider);
 	}
 
 	@Override
 	public void run() {
-		if (selectedBuild != null) {
-			RetrieveTestResultsJob job = new RetrieveTestResultsJob(selectedBuild, TasksUi.getRepositoryManager()
-					.getRepository(BambooCorePlugin.CONNECTOR_KIND, selectedBuild.getServerUrl()));
+		final BambooBuild build = getBuild();
+		if (build != null) {
+			RetrieveTestResultsJob job = new RetrieveTestResultsJob(build, TasksUi.getRepositoryManager()
+					.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
 			job.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void done(IJobChangeEvent event) {
 					if (event.getResult() == Status.OK_STATUS) {
 						File testResults = ((RetrieveTestResultsJob) event.getJob()).getTestResultsFile();
 						if (testResults != null) {
-							showJUnitView(testResults, selectedBuild.getPlanKey() + "-" + selectedBuild.getNumber());
+							showJUnitView(testResults, build.getPlanKey() + "-" + build.getNumber());
 						} else {
 							Display.getDefault().syncExec(new Runnable() {
 								public void run() {
 									MessageDialog.openError(Display.getDefault().getActiveShell(), getText(),
-											"Retrieving test result for " + selectedBuild.getPlanKey() + "-"
-													+ selectedBuild.getNumber() + " failed. See error log for details.");
+											"Retrieving test result for " + build.getPlanKey() + "-"
+													+ build.getNumber() + " failed. See error log for details.");
 								}
 							});
 						}
