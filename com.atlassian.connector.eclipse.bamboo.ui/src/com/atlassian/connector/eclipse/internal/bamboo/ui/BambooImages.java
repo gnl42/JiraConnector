@@ -45,7 +45,7 @@ public class BambooImages {
 
 	public static final ImageDescriptor LABEL = create(T_OBJ, "annotate.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor COMMENT = create(T_OBJ, "comment-small.gif"); //$NON-NLS-1$
+	public static final ImageDescriptor COMMENT = create(T_OBJ, "pin_addcomment.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor RUN_BUILD = create(T_OBJ, "run_exc.gif"); //$NON-NLS-1$
 

@@ -11,8 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddCommentToBuildAction;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddLabelToBuildAction;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RunBuildAction;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,6 +26,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ControlContribution;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -195,9 +200,9 @@ public class BambooEditor extends SharedHeaderFormEditor {
 	private void updateHeader() {
 		BambooEditorInput input = getEditorInput();
 		getHeaderForm().getForm().setImage(BambooImages.BAMBOO.createImage());
-		getHeaderForm().getForm().setText(input.getName());
+		getHeaderForm().getForm().setText("Build " + input.getName());
 		setTitleToolTip(input.getToolTipText());
-		setPartName(input.getName());
+		setPartName(input.getToolTipText());
 	}
 
 	public void updateHeaderToolBar() {
@@ -242,12 +247,33 @@ public class BambooEditor extends SharedHeaderFormEditor {
 			}
 		}
 
+		Action runBuildAction = new RunBuildAction(bambooBuild);
+		runBuildAction.setToolTipText("Run Build on server");
+		runBuildAction.setImageDescriptor(BambooImages.RUN_BUILD);
+		toolBarManager.add(runBuildAction);
+
+		toolBarManager.add(new Separator());
+
+		Action addLabelToBuildAction = new AddLabelToBuildAction(bambooBuild);
+		addLabelToBuildAction.setToolTipText("Add Label to Build...");
+		addLabelToBuildAction.setImageDescriptor(BambooImages.LABEL);
+
+		toolBarManager.add(addLabelToBuildAction);
+
+		Action addCommentToBuildAction = new AddCommentToBuildAction(bambooBuild);
+		addCommentToBuildAction.setToolTipText("Add Comment to Build...");
+		addCommentToBuildAction.setImageDescriptor(BambooImages.COMMENT);
+
+		toolBarManager.add(addCommentToBuildAction);
+
+		toolBarManager.add(new Separator());
+
 		final String buildUrl = bambooBuild.getBuildUrl();
 		if (buildUrl != null && buildUrl.length() > 0) {
 			Action openWithBrowserAction = new Action() {
 				@Override
 				public void run() {
-					TasksUiUtil.openUrl(buildUrl);
+					TasksUiUtil.openUrl(BambooUtil.getUrlFromBuild(bambooBuild));
 				}
 			};
 			openWithBrowserAction.setImageDescriptor(CommonImages.BROWSER_OPEN_TASK);

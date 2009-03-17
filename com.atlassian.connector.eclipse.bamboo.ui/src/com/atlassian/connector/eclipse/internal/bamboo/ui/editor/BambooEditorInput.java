@@ -48,14 +48,16 @@ public class BambooEditorInput implements IEditorInput {
 	}
 
 	public String getName() {
-		String toolTipText = getToolTipText();
-		if (toolTipText == null) {
-			return null;
-		}
 		if (bambooBuild != null) {
-			return truncate(bambooBuild.getPlanName() + " [" + toolTipText + "]");
+			String number = "";
+			try {
+				number = String.valueOf(bambooBuild.getNumber());
+			} catch (UnsupportedOperationException e) {
+				//ignore
+			}
+			return truncate(bambooBuild.getPlanName() + "-" + number);
 		}
-		return truncate(toolTipText);
+		return truncate("Bamboo Build");
 	}
 
 	public IPersistableElement getPersistable() {
@@ -63,7 +65,16 @@ public class BambooEditorInput implements IEditorInput {
 	}
 
 	public String getToolTipText() {
-		return bambooBuild.getPlanKey() + "-" + bambooBuild.getNumber();
+		if (bambooBuild != null) {
+			String number = "";
+			try {
+				number = String.valueOf(bambooBuild.getNumber());
+			} catch (UnsupportedOperationException e) {
+				//ignore
+			}
+			return truncate(bambooBuild.getPlanKey() + "-" + number);
+		}
+		return truncate("Bamboo Build");
 	}
 
 	public Object getAdapter(Class adapter) {
