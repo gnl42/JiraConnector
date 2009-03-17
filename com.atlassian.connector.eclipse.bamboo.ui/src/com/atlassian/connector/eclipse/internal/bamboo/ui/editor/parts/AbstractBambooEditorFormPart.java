@@ -18,9 +18,11 @@ import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridLayout;
@@ -125,6 +127,35 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		text.setText(value);
 		toolkit.adapt(text, true, true);
 
+		return text;
+	}
+
+	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, int minWidth, int maxLines) {
+		int style = SWT.FLAT | SWT.READ_ONLY | SWT.BORDER | SWT.MULTI;
+		GC gc = new GC(composite);
+		gc.setFont(JFaceResources.getTextFont());
+
+		String[] lines = value.split("[\r\n]");
+		for (String line : lines) {
+			if (gc.textExtent(line).x > minWidth) {
+				style |= SWT.H_SCROLL;
+				break;
+			}
+		}
+		gc.dispose();
+
+		if (lines.length > maxLines) {
+			style |= SWT.V_SCROLL;
+		}
+
+		Text text = new Text(composite, style);
+		text.setFont(JFaceResources.getTextFont());
+		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
+		text.setText(value);
+		toolkit.adapt(text, true, true);
+
+		int height = Math.min(maxLines * text.getLineHeight(), lines.length * text.getLineHeight());
+		GridDataFactory.fillDefaults().grab(true, false).hint(minWidth, height).applyTo(text);
 		return text;
 	}
 
