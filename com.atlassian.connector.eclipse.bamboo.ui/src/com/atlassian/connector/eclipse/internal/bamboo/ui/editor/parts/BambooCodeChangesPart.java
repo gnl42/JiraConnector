@@ -27,12 +27,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * Part displaying code changes between current and last build
@@ -43,7 +43,7 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 
 	private TreeViewer changesViewer;
 
-	private Hyperlink link;
+	private Link link;
 
 	public BambooCodeChangesPart() {
 		super("");
@@ -59,7 +59,7 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 		createSectionAndComposite(parent, toolkit, 2, ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED
 				| ExpandableComposite.TWISTIE);
 
-		createLinks(mainComposite, toolkit, "Retrieving build details from server...", "", "", null);
+		createLink(mainComposite, toolkit, "Retrieving build details from server...", null, null, null);
 
 		toolkit.paintBordersFor(mainComposite);
 
@@ -76,7 +76,7 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 
 	private void createTreeViewer() {
 		Tree tree = toolkit.createTree(mainComposite, SWT.SINGLE);
-		GridDataFactory.fillDefaults().grab(true, false).hint(SWT.DEFAULT, 100).applyTo(tree);
+		GridDataFactory.fillDefaults().grab(true, false).hint(FULL_WIDTH, 100).applyTo(tree);
 		changesViewer = new TreeViewer(tree);
 		changesViewer.setContentProvider(new ITreeContentProvider() {
 
@@ -164,14 +164,13 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 			if (buildDetails.getCommitInfo().size() > 0) {
 				createTreeViewer();
 			} else {
-				createLinks(mainComposite, toolkit, "No code changes triggered this build.", null, null, null);
+				createLink(mainComposite, toolkit, "No code changes triggered this build.", null, null, null);
 			}
 		} else {
-			link = createLinks(mainComposite, toolkit, "Retrieving build details from server failed. Click to",
-					"try again", ".", new HyperlinkAdapter() {
-						@Override
-						public void linkActivated(HyperlinkEvent e) {
-							link.removeHyperlinkListener(this);
+			link = createLink(mainComposite, toolkit, "Retrieving build details from server failed. Click to",
+					"try again", ".", new Listener() {
+						public void handleEvent(Event event) {
+							link.removeListener(SWT.Selection, this);
 							getBuildEditor().retrieveBuildInfo();
 						}
 					});

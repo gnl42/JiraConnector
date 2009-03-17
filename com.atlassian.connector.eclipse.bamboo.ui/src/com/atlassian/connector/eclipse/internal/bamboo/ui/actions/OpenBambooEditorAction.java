@@ -73,6 +73,14 @@ public class OpenBambooEditorAction extends BaseSelectionListenerAction {
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		return selection.size() == 1;
+		if (selection.size() == 1) {
+			try {
+				((BambooBuild) selection.getFirstElement()).getNumber();
+				return true;
+			} catch (UnsupportedOperationException e) {
+				// ignore
+			}
+		}
+		return false;
 	}
 }

@@ -61,6 +61,8 @@ public class BambooImages {
 
 	public static final ImageDescriptor CHANGESET = create(T_OBJ, "changeset_obj.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor FAILED_TESTS = create(T_OBJ, "failedTests.png"); //$NON-NLS-1$
+
 	private static ImageDescriptor create(String prefix, String name) {
 		try {
 			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));

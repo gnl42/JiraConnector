@@ -199,8 +199,18 @@ public class BambooEditor extends SharedHeaderFormEditor {
 
 	private void updateHeader() {
 		BambooEditorInput input = getEditorInput();
-		getHeaderForm().getForm().setImage(BambooImages.BAMBOO.createImage());
-		getHeaderForm().getForm().setText("Build " + input.getName());
+		switch (bambooBuild.getStatus()) {
+		case FAILURE:
+			getHeaderForm().getForm().setImage(BambooImages.STATUS_FAILED.createImage());
+			break;
+		case SUCCESS:
+			getHeaderForm().getForm().setImage(BambooImages.STATUS_PASSED.createImage());
+			break;
+		default:
+			getHeaderForm().getForm().setImage(BambooImages.STATUS_DISABLED.createImage());
+			break;
+		}
+		getHeaderForm().getForm().setText("Build " + input.getToolTipText());
 		setTitleToolTip(input.getToolTipText());
 		setPartName(input.getToolTipText());
 	}

@@ -30,13 +30,13 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -48,21 +48,15 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 
 	protected static final int DEFAULT_HEIGHT = 125;
 
-	protected static final int SECTION_FULL_WIDTH = 600;
+	protected static final int FULL_WIDTH = 500;
 
-	protected static final int SECTION_HALF_WIDTH = 300;
+	protected static final RGB SUCCESS_BACKGROUND_TITLE = new RGB(66, 179, 66);
 
-	protected static final RGB SUCCESS_BACKGROUND_MAIN = new RGB(51, 153, 51);
+	protected static final RGB SUCCESS_BACKGROUND_CONTENT = new RGB(192, 229, 192);
 
-	protected static final RGB SUCCESS_BACKGROUND_SEPARATOR = new RGB(46, 137, 46);
+	protected static final RGB FAILED_BACKGROUND_CONTENT = new RGB(242, 192, 192);
 
-	protected static final RGB SUCCESS_BACKGROUND_TITLE = new RGB(81, 168, 81);
-
-	protected static final RGB FAILED_BACKGROUND_MAIN = new RGB(204, 51, 51);
-
-	protected static final RGB FAILED_BACKGROUND_SEPARATOR = new RGB(183, 46, 46);
-
-	protected static final RGB FAILED_BACKGROUND_TITLE = new RGB(212, 81, 81);
+	protected static final RGB FAILED_BACKGROUND_TITLE = new RGB(214, 61, 61);
 
 	protected BambooBuild bambooBuild;
 
@@ -130,7 +124,26 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		return text;
 	}
 
-	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, int minWidth, int maxLines) {
+	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
+			Image labelImage, int minWidth, int maxLines) {
+
+		if (labelImage != null && labelString != null) {
+			Composite labelComp = toolkit.createComposite(composite);
+			GridLayout layout = new GridLayout(2, false);
+			layout.marginHeight = 0;
+			layout.marginWidth = 0;
+			labelComp.setLayout(layout);
+			GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(labelComp);
+			createLabelControl(toolkit, labelComp, labelImage);
+			createLabelControl(toolkit, labelComp, labelString);
+		} else if (labelImage != null) {
+			Label label = createLabelControl(toolkit, composite, labelImage);
+			GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
+		} else if (labelString != null) {
+			Label label = createLabelControl(toolkit, composite, labelString);
+			GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
+		}
+
 		int style = SWT.FLAT | SWT.READ_ONLY | SWT.BORDER | SWT.MULTI;
 		GC gc = new GC(composite);
 		gc.setFont(JFaceResources.getTextFont());
@@ -157,6 +170,15 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		int height = Math.min(maxLines * text.getLineHeight(), lines.length * text.getLineHeight());
 		GridDataFactory.fillDefaults().grab(true, false).hint(minWidth, height).applyTo(text);
 		return text;
+	}
+
+	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
+			int minWidth, int maxLines) {
+		return createReadOnlyText(toolkit, composite, value, labelString, null, minWidth, maxLines);
+	}
+
+	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, int minWidth, int maxLines) {
+		return createReadOnlyText(toolkit, composite, value, null, null, minWidth, maxLines);
 	}
 
 	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
@@ -216,18 +238,41 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 	}
 
 	/**
-	 * Creates a composite with three hyperlinks, the middleone being the actual link.
+	 * Creates a composite with three hyperlinks, the middle one being the actual link.
 	 * 
 	 * @param parent
 	 * @param toolkit
 	 * @param pre
 	 * @param linkTxt
 	 * @param post
-	 * @param hyperlinkAdapter
+	 * @param listener
 	 * @return The actual hyperlink the adapter gets registered at
 	 */
-	protected Hyperlink createLinks(Composite parent, FormToolkit toolkit, String pre, String linkTxt, String post,
-			HyperlinkAdapter hyperlinkAdapter) {
+	protected Link createLink(Composite parent, FormToolkit toolkit, String pre, String linkTxt, String post,
+			Listener listener) {
+		Link link = new Link(parent, SWT.NONE);
+		link.setBackground(toolkit.getColors().getBackground());
+		link.setForeground(toolkit.getColors().getForeground());
+
+		StringBuilder builder = new StringBuilder();
+		if (pre != null) {
+			builder.append(pre);
+		}
+		if (linkTxt != null) {
+			builder.append(" <a>");
+			builder.append(linkTxt);
+			builder.append("</a> ");
+		}
+		if (post != null) {
+			builder.append(post);
+		}
+
+		link.setText(builder.toString());
+
+		if (listener != null) {
+			link.addListener(SWT.Selection, listener);
+		}
+
 		Composite linksComposite = toolkit.createComposite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
@@ -236,35 +281,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		layout.makeColumnsEqualWidth = false;
 		linksComposite.setLayout(layout);
 
-		Hyperlink link = toolkit.createImageHyperlink(linksComposite, SWT.NONE);
-		link.setUnderlined(false);
-		link.setEnabled(false);
-		if (pre == null) {
-			link.setVisible(false);
-		} else {
-			link.setText(pre);
-			link.setVisible(true);
-		}
-
-		link = toolkit.createImageHyperlink(linksComposite, SWT.NONE);
-		if (linkTxt == null) {
-			link.setVisible(false);
-		} else {
-			link.setText(linkTxt);
-			if (hyperlinkAdapter != null) {
-				link.addHyperlinkListener(hyperlinkAdapter);
-			}
-			link.setVisible(true);
-		}
-
-		link = toolkit.createImageHyperlink(linksComposite, SWT.NONE);
-		link.setUnderlined(false);
-		link.setEnabled(false);
-		Hyperlink postLink = toolkit.createImageHyperlink(linksComposite, SWT.NONE);
-		postLink.setUnderlined(false);
-		postLink.setEnabled(false);
-
-		GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL, SWT.CENTER).applyTo(linksComposite);
+		GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL, SWT.CENTER).applyTo(link);
 
 		return link;
 	}
@@ -293,11 +310,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 				getBuildEditor().reflow();
 			}
 		});
-		GridDataFactory.fillDefaults()
-				.grab(true, false)
-				.span(hColSpan, 1)
-				.hint(SECTION_FULL_WIDTH, -1)
-				.applyTo(section);
+		GridDataFactory.fillDefaults().grab(true, false).span(hColSpan, 1).applyTo(section);
 		mainComposite = toolkit.createComposite(section, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;

@@ -21,7 +21,7 @@
             class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooView"
             icon="icons/obj16/bamboo.png"
             id="com.atlassian.connector.eclipse.bamboo.ui.plans"
-            name="Bamboo">
+            name="Bamboo (beta)">
       </view>
       <category
             id="com.atlassian.connector.eclipse.ui.category"

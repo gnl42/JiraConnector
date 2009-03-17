@@ -45,63 +45,69 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 
 		Display display = parent.getDisplay();
 		Color foreground;
+		Color contentForeground;
+		Color contentBackground;
 		Color titleBackground;
-		Color mainBackground;
-		Color sepBackground;
-
 		String summary = "Build " + bambooBuild.getPlanKey() + "-" + String.valueOf(bambooBuild.getNumber());
 
 		switch (bambooBuild.getStatus()) {
 		case FAILURE:
 			foreground = display.getSystemColor(SWT.COLOR_WHITE);
+			contentForeground = display.getSystemColor(SWT.COLOR_BLACK);
+			contentBackground = new Color(display, FAILED_BACKGROUND_CONTENT);
 			titleBackground = new Color(display, FAILED_BACKGROUND_TITLE);
-			mainBackground = new Color(display, FAILED_BACKGROUND_MAIN);
-			sepBackground = new Color(display, FAILED_BACKGROUND_SEPARATOR);
 			summary += " failed.";
 			break;
 		case SUCCESS:
+			contentForeground = display.getSystemColor(SWT.COLOR_BLACK);
 			foreground = display.getSystemColor(SWT.COLOR_WHITE);
+			contentBackground = new Color(display, SUCCESS_BACKGROUND_CONTENT);
 			titleBackground = new Color(display, SUCCESS_BACKGROUND_TITLE);
-			mainBackground = new Color(display, SUCCESS_BACKGROUND_MAIN);
-			sepBackground = new Color(display, SUCCESS_BACKGROUND_SEPARATOR);
 			summary += " was successful.";
 			break;
 		default:
-			foreground = toolkit.getColors().getForeground();
-			titleBackground = mainBackground = sepBackground = toolkit.getColors().getBackground();
+			foreground = contentForeground = toolkit.getColors().getForeground();
+			contentBackground = titleBackground = toolkit.getColors().getBackground();
 			summary += " is in an unknown state.";
 		}
 
-		mainComposite.setBackground(mainBackground);
-
-		Composite sepComp = toolkit.createComposite(mainComposite);
+		Composite titleComp = toolkit.createComposite(mainComposite);
 		GridLayout layout = new GridLayout();
-		layout.marginWidth = 0;
 		layout.marginHeight = 2;
-		sepComp.setLayout(layout);
-		sepComp.setBackground(sepBackground);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(sepComp);
+		layout.marginTop = 3;
+		layout.marginWidth = 2;
+		titleComp.setLayout(layout);
+		titleComp.setBackground(titleBackground);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(titleComp);
 
-		Label label = createLabelControl(toolkit, sepComp, summary);
+		Label label = createLabelControl(toolkit, titleComp, summary);
 		label.setAlignment(SWT.CENTER);
 		label.setForeground(foreground);
 		label.setBackground(titleBackground);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
 
-		label = createLabelControl(toolkit, mainComposite, "Build completed on " + bambooBuild.getCompletionDate());
-		label.setForeground(foreground);
-		label.setBackground(mainBackground);
+		Composite contentComp = toolkit.createComposite(titleComp);
+		layout = new GridLayout();
+		contentComp.setLayout(layout);
+		contentComp.setBackground(contentBackground);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(contentComp);
+
+		label = createLabelControl(toolkit, contentComp, "Build completed on " + bambooBuild.getCompletionDate());
+		label.setBackground(contentBackground);
+		label.setForeground(contentForeground);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
 
-		label = createLabelControl(toolkit, mainComposite, "Build took " + bambooBuild.getDurationDescription());
-		label.setForeground(foreground);
-		label.setBackground(mainBackground);
+		label = createLabelControl(toolkit, contentComp, "Build took " + bambooBuild.getDurationDescription());
+		label.setBackground(contentBackground);
+		label.setForeground(contentForeground);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
 
-		label = createLabelControl(toolkit, mainComposite, "Build reason: " + bambooBuild.getReason());
-		label.setForeground(foreground);
-		label.setBackground(mainBackground);
+		label = createLabelControl(toolkit, contentComp, "Build reason: " + bambooBuild.getReason());
+		label.setBackground(contentBackground);
+		label.setForeground(contentForeground);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
+
+		GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(titleComp);
 
 		toolkit.paintBordersFor(mainComposite);
 

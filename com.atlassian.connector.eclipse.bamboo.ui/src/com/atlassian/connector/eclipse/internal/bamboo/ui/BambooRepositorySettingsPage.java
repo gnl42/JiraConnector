@@ -118,7 +118,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	private boolean initialized;
 
 	public BambooRepositorySettingsPage(TaskRepository taskRepository) {
-		super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
+		super("Bamboo Repository Settings (beta)", "Enter Bamboo server information", taskRepository);
 		setNeedsHttpAuth(true);
 		setNeedsEncoding(false);
 		setNeedsAnonymousLogin(false);

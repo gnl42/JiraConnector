@@ -15,13 +15,14 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowBuildLogAction;
 
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * Part displaying the build log
@@ -40,7 +41,7 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 
 	int errorLines = 0;
 
-	private Hyperlink link;
+	private Link link;
 
 	public BambooBuildLogPart() {
 		super("");
@@ -58,7 +59,7 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 
 		updateBuildLogSummary();
 
-		createLinks(mainComposite, toolkit, "Retrieving build logs from server...", "", "", null);
+		createLink(mainComposite, toolkit, "Retrieving build logs from server...", null, null, null);
 
 		toolkit.paintBordersFor(mainComposite);
 
@@ -75,7 +76,7 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 		for (String buildLogLine : buildLogLines) {
 			if (buildLogLine.startsWith(LOG_STR_ERROR)) {
 				String[] lineElements = buildLogLine.split("\t");
-				if (b.length() > 0) {
+				if (errorLines > 0) {
 					b.append("\n");
 				}
 				//remove first 3 tokens (type, date, time)
@@ -105,25 +106,23 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 
 		if (success) {
 			updateBuildLogSummary();
-			link = createLinks(mainComposite, toolkit, "The build generated " + String.valueOf(logLines) + " lines ("
+			link = createLink(mainComposite, toolkit, "The build generated " + String.valueOf(logLines) + " lines ("
 					+ String.valueOf(errorLines) + " error lines). See the", "full build log", "for details.",
-					new HyperlinkAdapter() {
-						@Override
-						public void linkActivated(HyperlinkEvent e) {
-							link.removeHyperlinkListener(this);
+					new Listener() {
+						public void handleEvent(Event event) {
+							link.removeListener(SWT.Selection, this);
 							new ShowBuildLogAction(bambooBuild).run();
 						}
 					});
 
 			if (buildLogSummary.length() > 0) {
-				createReadOnlyText(toolkit, mainComposite, buildLogSummary, 500, 10);
+				createReadOnlyText(toolkit, mainComposite, buildLogSummary, FULL_WIDTH, 10);
 			}
 		} else {
-			link = createLinks(mainComposite, toolkit, "Retrieving build logs from server failed. Click to",
-					"try again", ".", new HyperlinkAdapter() {
-						@Override
-						public void linkActivated(HyperlinkEvent e) {
-							link.removeHyperlinkListener(this);
+			link = createLink(mainComposite, toolkit, "Retrieving build logs from server failed. Click to",
+					"try again", ".", new Listener() {
+						public void handleEvent(Event event) {
+							link.removeListener(SWT.Selection, this);
 							getBuildEditor().retrieveBuildInfo();
 						}
 					});
