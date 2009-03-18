@@ -74,5 +74,7 @@ public class VersionedCommentDateComparatorTest extends TestCase {
 
 		assertTrue(0 > comparator.compare(c1, c2));
 
+		fail();
+
 	}
 }
