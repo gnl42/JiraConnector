@@ -26,6 +26,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Crucibl
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleGeneralCommentsPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewFilesPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
+import com.atlassian.connector.eclipse.ui.forms.IReflowRespectingPart;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -56,6 +57,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonThemes;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.internal.tasks.ui.util.SelectionProviderAdapter;
@@ -87,6 +89,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.themes.IThemeManager;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -98,7 +101,7 @@ import java.util.List;
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
  */
-public class CrucibleReviewEditorPage extends TaskFormPage {
+public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRespectingPart {
 
 	/**
 	 * Causes the form page to reflow on resize.
@@ -184,9 +187,13 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 
 	private Color selectionColor;
 
+	private final Color colorIncoming;
+
 	public CrucibleReviewEditorPage(FormEditor editor, String title) {
 		super(editor, CrucibleConstants.CRUCIBLE_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractCrucibleEditorFormPart>();
+		IThemeManager themeManager = PlatformUI.getWorkbench().getThemeManager();
+		colorIncoming = themeManager.getCurrentTheme().getColorRegistry().get(CommonThemes.COLOR_INCOMING_BACKGROUND);
 	}
 
 	@Override
@@ -293,11 +300,52 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				}
 			}
 		};
-		schedule(job, delay);
+		schedule(job, delay, force);
 
 	}
 
-	private void createFormContent() {
+//
+//	private synchronized void updateFormContent() {
+//		if (editorComposite == null) {
+//			return;
+//		}
+//
+//		assert (review != null);
+//
+//		if (parts == null || parts.size() == 0) {
+//			createInitialFormContent();
+//		} else {
+//
+//			try {
+//
+//				for (Control child : editorComposite.getChildren()) {
+//					child.setMenu(null);
+//					if (child instanceof Composite) {
+//						setMenu((Composite) child, null);
+//					}
+//				}
+//
+//				setReflow(false);
+//
+//				for (AbstractCrucibleEditorFormPart part : parts) {
+//					part.updateReview(review);
+//					part.updateControl(editorComposite, toolkit);
+//				}
+//
+//				setMenu(editorComposite, editorComposite.getMenu());
+//
+//				if (selectedComment != null && selectedCrucibleFile != null) {
+//					selectAndReveal(selectedCrucibleFile, selectedComment);
+//				}
+//
+//			} finally {
+//				setReflow(true);
+//				reflow();
+//			}
+//		}
+//	}
+
+	private void createInitialFormContent() {
 		if (editorComposite == null) {
 			return;
 		}
@@ -391,20 +439,29 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	 * Force a re-layout of entire form.
 	 */
 	public void reflow() {
-		if (reflow) {
-			// help the layout managers: ensure that the form width always matches
-			// the parent client area width.
-			Rectangle parentClientArea = form.getParent().getClientArea();
-			Point formSize = form.getSize();
-			if (formSize.x != parentClientArea.width) {
-				ScrollBar verticalBar = form.getVerticalBar();
-				int verticalBarWidth = verticalBar != null ? verticalBar.getSize().x : VERTICAL_BAR_WIDTH;
-				form.setSize(parentClientArea.width - verticalBarWidth, formSize.y);
-			}
 
-			form.layout(true, false);
-			form.reflow(true);
+		if (reflow) {
+			try {
+				form.setRedraw(false);
+				// help the layout managers: ensure that the form width always matches
+				// the parent client area width.
+				Rectangle parentClientArea = form.getParent().getClientArea();
+				Point formSize = form.getSize();
+				if (formSize.x != parentClientArea.width) {
+					ScrollBar verticalBar = form.getVerticalBar();
+					int verticalBarWidth = verticalBar != null ? verticalBar.getSize().x : VERTICAL_BAR_WIDTH;
+					form.setSize(parentClientArea.width - verticalBarWidth, formSize.y);
+				}
+
+				// TODO set this to true true?
+
+				form.layout(true, false);
+				form.reflow(true);
+			} finally {
+				form.setRedraw(true);
+			}
 		}
+
 	}
 
 	@Override
@@ -664,6 +721,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 	}
 
 	private void schedule(final CrucibleReviewChangeJob job, long delay) {
+		schedule(job, delay, false);
+	}
+
+	private void schedule(final CrucibleReviewChangeJob job, long delay, final boolean force) {
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {
@@ -687,7 +748,12 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 							} else if (status.isOK()) {
 								// TODO use the status?
 								getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
-								createFormContent();
+								if (force) {
+									createInitialFormContent();
+								} else {
+									createInitialFormContent();
+									// TODO Add this back//updateFormContent();
+								}
 								getEditor().updateHeaderToolBar();
 								TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
 							} else {
@@ -751,5 +817,17 @@ public class CrucibleReviewEditorPage extends TaskFormPage {
 				}
 			}
 		}
+	}
+
+	public boolean canReflow() {
+		return reflow;
+	}
+
+	public Color getColorIncoming() {
+		return colorIncoming;
+	}
+
+	public String getUserName() {
+		return getTaskRepository().getUserName();
 	}
 }
