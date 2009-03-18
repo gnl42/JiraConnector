@@ -84,8 +84,6 @@ public class TestResultExternalizer {
 			writer.setOutputStream(stream);
 			writer.writeApplicationsToStream(testResults, build, failed, success);
 			stream.flush();
-			stream.close();
-
 		} catch (IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, "Could not write: "
 					+ file.getAbsolutePath(), e));

@@ -37,7 +37,7 @@ public class RetrieveTestResultsJob extends Job {
 	private File testResults;
 
 	public RetrieveTestResultsJob(BambooBuild build, TaskRepository repository) {
-		super("Retrieve build log");
+		super("Retrieving test results");
 		this.build = build;
 		this.repository = repository;
 	}
@@ -51,7 +51,7 @@ public class RetrieveTestResultsJob extends Job {
 			testResults = tre.writeApplicationsToXML(build, details, File.createTempFile("bamboo_result", ".xml"));
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-					"Failed to retrieve build logs for build " + build.getPlanKey(), e));
+					"Failed to retrieve test results for build " + build.getPlanKey(), e));
 		} catch (IOException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 					"Failed to process test results for build " + build.getPlanKey(), e));
