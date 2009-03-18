@@ -81,7 +81,6 @@ public class CrucibleUiUtilTest extends TestCase {
 		((TaskRepositoryManager) TasksUi.getRepositoryManager()).removeRepository(taskRepository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
-		fail();
 	}
 
 	public void testGetCrucibleTaskFromId() {
@@ -113,7 +112,6 @@ public class CrucibleUiUtilTest extends TestCase {
 		TasksUiPlugin.getTaskList().deleteTask(createdTask);
 		((TaskRepositoryManager) TasksUi.getRepositoryManager()).removeRepository(taskRepository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
-		fail();
 	}
 
 	public void testGetCrucibleTaskRepositoryFromReview() {
