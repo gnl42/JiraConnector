@@ -11,14 +11,16 @@
 
 package com.atlassian.connector.eclipse.ui.forms;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.internal.forms.widgets.FormUtil;
 
 /**
  * A section that respects when the reflow is set to false on a part. This should be used for performance reasons when
@@ -44,7 +46,7 @@ public class ReflowRespectingSection extends Section {
 			toggle.setDecorationColor(colors.getColor(IFormColors.TB_TOGGLE));
 		}
 
-		boldFont = FormUtil.createBoldFont(colors.getDisplay(), parent.getFont());
+		boldFont = createBoldFont(colors.getDisplay(), parent.getFont());
 
 		setFont(boldFont);
 		if ((style & ExpandableComposite.TITLE_BAR) != 0 || (style & ExpandableComposite.SHORT_TITLE_BAR) != 0) {
@@ -68,6 +70,17 @@ public class ReflowRespectingSection extends Section {
 		if (reflowPart.canReflow()) {
 			super.reflow();
 		}
+	}
+
+	/**
+	 * From FormUtil on 3.3
+	 */
+	public static Font createBoldFont(Display display, Font regularFont) {
+		FontData[] fontDatas = regularFont.getFontData();
+		for (FontData element : fontDatas) {
+			element.setStyle(element.getStyle() | SWT.BOLD);
+		}
+		return new Font(display, fontDatas);
 	}
 
 }
