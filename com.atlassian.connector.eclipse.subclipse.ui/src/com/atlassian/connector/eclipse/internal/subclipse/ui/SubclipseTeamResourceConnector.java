@@ -346,6 +346,9 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	private IResource getLocalResourceFromFilePath(String filePath) {
+		if (filePath == null || filePath.length() <= 0) {
+			return null;
+		}
 		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 
 			if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
