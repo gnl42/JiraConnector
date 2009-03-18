@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.EditorLinkWithReviewSelectionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
 
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -72,6 +73,9 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		MonitorUi.addWindowPartListener(crucibleEditorTracker);
 		editorLinkWithReviewSelectionListener = new EditorLinkWithReviewSelectionListener();
 		MonitorUi.addWindowPostSelectionListener(editorLinkWithReviewSelectionListener);
+
+		plugin.getPreferenceStore().setDefault(CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW,
+				MessageDialogWithToggle.PROMPT);
 	}
 
 	/*
@@ -127,5 +131,14 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		if (activeReviewManager != null) {
 			TasksUi.getTaskActivityManager().addActivationListener(activeReviewManager);
 		}
+	}
+
+	public static void setActivateReviewPreference(String activationType) {
+		plugin.getPreferenceStore().setValue(CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW, activationType);
+		plugin.savePluginPreferences();
+	}
+
+	public static String getActivateReviewPreference() {
+		return plugin.getPreferenceStore().getString(CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW);
 	}
 }

@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -64,6 +65,7 @@ public class OpenVersionedVirtualFileAction extends Action {
 
 	@Override
 	public void run() {
+		CrucibleUiUtil.checkAndRequestReviewActivation(review);
 		try {
 			CommonsUiUtil.run(PlatformUI.getWorkbench().getProgressService(), new ICoreRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {

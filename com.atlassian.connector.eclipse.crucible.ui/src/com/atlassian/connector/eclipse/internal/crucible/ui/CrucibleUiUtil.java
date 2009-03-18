@@ -23,6 +23,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -117,6 +119,33 @@ public final class CrucibleUiUtil {
 			//ignore
 		}
 		return false;
+	}
+
+	public static void checkAndRequestReviewActivation(Review review) {
+		Review activeReview = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+		if (activeReview == null || !activeReview.getPermId().equals(review.getPermId())) {
+			//review activation
+			boolean activate = false;
+			String pref = CrucibleUiPlugin.getActivateReviewPreference();
+			if (pref.equals(MessageDialogWithToggle.ALWAYS)) {
+				activate = true;
+			} else if (pref.equals(MessageDialogWithToggle.NEVER)) {
+				activate = false;
+			} else {
+				// Ask the user whether to switch
+				final MessageDialogWithToggle m = MessageDialogWithToggle.openYesNoQuestion(null, "Review Activation",
+						"Review comments will only be visible in Java / Compare editors if the corresponding review is active."
+								+ "\n\nAn active review also helps tracking the context, as well as the time spent",
+						"Remember my decision", false, CrucibleUiPlugin.getDefault().getPreferenceStore(),
+						CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW);
+
+				activate = m.getReturnCode() == IDialogConstants.YES_ID || m.getReturnCode() == IDialogConstants.OK_ID;
+			}
+			if (activate) {
+				ITask task = CrucibleUiUtil.getCrucibleTask(review);
+				TasksUi.getTaskActivityManager().activateTask(task);
+			}
+		}
 	}
 
 }
