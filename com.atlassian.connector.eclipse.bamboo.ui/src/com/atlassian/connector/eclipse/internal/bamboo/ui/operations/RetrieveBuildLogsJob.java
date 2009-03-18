@@ -33,7 +33,7 @@ public class RetrieveBuildLogsJob extends Job {
 	private String buildLog;
 
 	public RetrieveBuildLogsJob(BambooBuild build, TaskRepository repository) {
-		super("Retrieve build log");
+		super("Retrieving build log");
 		this.build = build;
 		this.repository = repository;
 	}
@@ -49,7 +49,7 @@ public class RetrieveBuildLogsJob extends Job {
 			buildLog = client.getBuildLogs(monitor, repository, build);
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-					"Failed to retrieve build logs for build " + build.getPlanKey(), e));
+					"Failed to retrieve build log for build " + build.getPlanKey(), e));
 		}
 		return Status.OK_STATUS;
 	}
