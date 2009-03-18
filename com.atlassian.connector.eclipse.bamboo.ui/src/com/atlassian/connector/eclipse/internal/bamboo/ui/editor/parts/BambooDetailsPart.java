@@ -40,8 +40,7 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 	@Override
 	public Control createControl(Composite parent, FormToolkit toolkit) {
 		super.toolkit = toolkit;
-		createSectionAndComposite(parent, toolkit, 1, ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED
-				| ExpandableComposite.TITLE_BAR);
+		createSectionAndComposite(parent, toolkit, 1, ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR);
 
 		Display display = parent.getDisplay();
 		Color foreground;
