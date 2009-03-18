@@ -23,7 +23,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 public class AddGeneralReviewCommentAction extends AbstractAddCommentAction {
 
 	public AddGeneralReviewCommentAction(Review review) {
-		super("Add General Review Comment...");
+		super("Add General Review Comment");
 		setImageDescriptor(CrucibleImages.ADD_COMMENT);
 		setToolTipText("Add General Review Comment");
 		super.review = review;

@@ -13,6 +13,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
@@ -22,7 +26,11 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.views.TaskListView;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.tests.connector.MockTask;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -156,5 +164,50 @@ public class CrucibleUiUtilTest extends TestCase {
 		((TaskRepositoryManager) TasksUi.getRepositoryManager()).removeRepository(taskRepository,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
 
+	}
+
+	public void testIsFilePartOfActiveReview() {
+		String repositoryUrl = "http://crucible.atlassian.com/cru/";
+
+		Review reviewA = new ReviewBean(repositoryUrl);
+		Review reviewB = new ReviewBean(repositoryUrl);
+
+		ITask task = new MockTask("A");
+
+		CrucibleFile file1 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile("abc", "123"), null,
+				new PermIdBean("1")), false);
+		CrucibleFile file2 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile("def", "456"), null,
+				new PermIdBean("2")), false);
+		CrucibleFile file3 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile("ghi", "789"), null,
+				new PermIdBean("3")), false);
+		CrucibleFile file4 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile(null, null), null,
+				new PermIdBean("4")), false);
+		CrucibleFile file5 = new CrucibleFile(new CrucibleFileInfoImpl(null, null, new PermIdBean("5")), false);
+		CrucibleFile file6 = new CrucibleFile(null, false);
+
+		Set<CrucibleFileInfo> setA = new HashSet<CrucibleFileInfo>();
+		setA.add(file1.getCrucibleFileInfo());
+		setA.add(file2.getCrucibleFileInfo());
+		Set<CrucibleFileInfo> setB = new HashSet<CrucibleFileInfo>();
+		setB.add(file2.getCrucibleFileInfo());
+		setB.add(file3.getCrucibleFileInfo());
+		reviewA.setFiles(setA);
+		reviewB.setFiles(setB);
+
+		CrucibleUiPlugin.getDefault().getActiveReviewManager().setActiveReview(reviewA, task);
+
+		assertTrue(CrucibleUiUtil.isFilePartOfActiveReview(file1));
+		assertTrue(CrucibleUiUtil.isFilePartOfActiveReview(file2));
+		assertFalse(CrucibleUiUtil.isFilePartOfActiveReview(file3));
+
+		CrucibleUiPlugin.getDefault().getActiveReviewManager().setActiveReview(reviewB, task);
+
+		assertFalse(CrucibleUiUtil.isFilePartOfActiveReview(file1));
+		assertTrue(CrucibleUiUtil.isFilePartOfActiveReview(file2));
+		assertTrue(CrucibleUiUtil.isFilePartOfActiveReview(file3));
+
+		assertFalse(CrucibleUiUtil.isFilePartOfActiveReview(file4));
+		assertFalse(CrucibleUiUtil.isFilePartOfActiveReview(file5));
+		assertFalse(CrucibleUiUtil.isFilePartOfActiveReview(file6));
 	}
 }

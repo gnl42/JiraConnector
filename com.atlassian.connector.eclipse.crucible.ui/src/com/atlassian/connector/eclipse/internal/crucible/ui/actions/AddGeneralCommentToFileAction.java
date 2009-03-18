@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
@@ -55,37 +56,31 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
 			if (editorInput != null && editorPart != null) {
-				crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
-						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
-				if (crucibleFile != null && !crucibleFile.isOldFile()) {
+				if (crucibleFile == null) {
+					crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
+							CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+				}
+				if (crucibleFile != null && !crucibleFile.isOldFile()
+						&& CrucibleUtil.canAddCommentToReview(getReview())
+						&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
 					action.setEnabled(true);
 					setEnabled(true);
 					return;
 				}
 			}
-			action.setEnabled(false);
-			setEnabled(false);
-			crucibleFile = null;
-		} else {
-			action.setEnabled(false);
-			setEnabled(false);
-			crucibleFile = null;
 		}
+		action.setEnabled(false);
+		setEnabled(false);
+		crucibleFile = null;
 	}
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		if (crucibleFile != null && !crucibleFile.isOldFile()) {
+		if (crucibleFile != null && !crucibleFile.isOldFile() && CrucibleUtil.canAddCommentToReview(getReview())
+				&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		Review review = getReview();
-
-		return super.isEnabled() && CrucibleUtil.canAddCommentToReview(review);
 	}
 
 	@Override
@@ -109,7 +104,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 
 	@Override
 	protected String getDialogTitle() {
-		return getText();
+		return "Create General File Comment";
 	}
 
 	@Override
@@ -122,7 +117,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 
 	@Override
 	public String getToolTipText() {
-		return "Add General File Comment";
+		return "Add General File Comment...";
 	}
 
 	public void setActionListener(IReviewActionListener listener) {

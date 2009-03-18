@@ -13,13 +13,11 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -62,13 +60,6 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 				getDialogTitle(), review, reviewItem, parentComment, commentLines, getTaskKey(), getTaskId(),
 				getTaskRepository(), client);
 		commentDialog.open();
-	}
-
-	@Override
-	public boolean isEnabled() {
-		Review review = getReview();
-
-		return super.isEnabled() && CrucibleUtil.canAddCommentToReview(review);
 	}
 
 	protected abstract String getDialogTitle();

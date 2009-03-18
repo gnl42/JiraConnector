@@ -16,6 +16,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
+import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
@@ -92,6 +94,29 @@ public final class CrucibleUiUtil {
 		String currentUser = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
 				CrucibleUiUtil.getCrucibleTaskRepository(review)).getUserName();
 		return CrucibleUtil.isUserCompleted(currentUser, review);
+	}
+
+	public static boolean isFilePartOfActiveReview(CrucibleFile crucibleFile) {
+		Review activeReview = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+		if (activeReview == null || crucibleFile == null || crucibleFile.getCrucibleFileInfo() == null
+				|| crucibleFile.getCrucibleFileInfo().getFileDescriptor() == null) {
+			return false;
+		}
+		try {
+			for (CrucibleFileInfo fileInfo : activeReview.getFiles()) {
+				if (fileInfo != null
+						&& fileInfo.getFileDescriptor() != null
+						&& fileInfo.getFileDescriptor().getUrl().equals(
+								crucibleFile.getCrucibleFileInfo().getFileDescriptor().getUrl())
+						&& fileInfo.getFileDescriptor().getRevision().equals(
+								crucibleFile.getCrucibleFileInfo().getFileDescriptor().getRevision())) {
+					return true;
+				}
+			}
+		} catch (ValueNotYetInitialized e) {
+			//ignore
+		}
+		return false;
 	}
 
 }

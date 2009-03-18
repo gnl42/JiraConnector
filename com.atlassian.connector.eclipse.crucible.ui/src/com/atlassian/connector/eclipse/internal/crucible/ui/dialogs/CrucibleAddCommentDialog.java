@@ -373,11 +373,11 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 			run(true, false, new AddCommentRunnable());
 		} catch (InvocationTargetException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-			setErrorMessage("Unable to summarize the review");
+			setErrorMessage("Unable to add the comment to the review");
 			return;
 		} catch (InterruptedException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-			setErrorMessage("Unable to summarize the review");
+			setErrorMessage("Unable to add the comment to the review");
 			return;
 		}
 

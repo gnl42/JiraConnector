@@ -11,7 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.ICrucibleCompareSourceViewer;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -38,7 +40,7 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 	private ICrucibleCompareSourceViewer crucibleCompareSourceViewer;
 
 	public AddLineCommentToFileAction() {
-		super("Create Line Comment");
+		super("Create Line Comment...");
 	}
 
 	public AddLineCommentToFileAction(ICrucibleCompareSourceViewer crucibleCompareSourceViewer,
@@ -50,40 +52,45 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 
 	@Override
 	protected String getDialogTitle() {
-		return getText();
+		return "Create Line Comment";
 	}
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
 		if (action.isEnabled() && isEnabled()) {
-			if (crucibleCompareSourceViewer == null) {
-				getJavaEditorSelection(selection);
-			} else {
-				selectedRange = crucibleCompareSourceViewer.getSelection();
+			IEditorPart editorPart = getActiveEditor();
+			IEditorInput editorInput = getEditorInputFromSelection(selection);
+			if (editorInput != null && editorPart != null) {
+				crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
+						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+				if (crucibleCompareSourceViewer == null) {
+					getJavaEditorSelection(selection);
+				} else {
+					selectedRange = crucibleCompareSourceViewer.getSelection();
+				}
+				if (selectedRange != null && crucibleFile != null && !crucibleFile.isOldFile()
+						&& CrucibleUtil.canAddCommentToReview(getReview())
+						&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
+					action.setEnabled(true);
+					setEnabled(true);
+					return;
+				}
 			}
-			if (selectedRange != null && crucibleFile != null && !crucibleFile.isOldFile()) {
-				action.setEnabled(true);
-				setEnabled(true);
-				return;
-			}
-			action.setEnabled(false);
-			setEnabled(false);
-			selectedRange = null;
-			crucibleFile = null;
-		} else {
-			action.setEnabled(false);
-			setEnabled(false);
-			selectedRange = null;
-			crucibleFile = null;
 		}
+		action.setEnabled(false);
+		setEnabled(false);
+		selectedRange = null;
+		crucibleFile = null;
 	}
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (crucibleCompareSourceViewer != null) {
 			selectedRange = crucibleCompareSourceViewer.getSelection();
-			if (selectedRange != null && crucibleFile != null && !crucibleFile.isOldFile()) {
+			if (selectedRange != null && crucibleFile != null && !crucibleFile.isOldFile()
+					&& CrucibleUtil.canAddCommentToReview(getReview())
+					&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
 				return true;
 			}
 		}
@@ -110,6 +117,11 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 	@Override
 	protected CrucibleFile getCrucibleFile() {
 		return crucibleFile;
+	}
+
+	@Override
+	public String getToolTipText() {
+		return "Add Line Comment...";
 	}
 
 	@Override

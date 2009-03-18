@@ -588,6 +588,5 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.isUserCompleted(username, review));
 
 		assertFalse(CrucibleUtil.isUserCompleted(username2, review));
-
 	}
 }

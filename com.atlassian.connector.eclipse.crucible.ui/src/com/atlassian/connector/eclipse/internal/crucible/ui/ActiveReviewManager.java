@@ -205,4 +205,15 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 			}
 		}
 	}
+
+	/**
+	 * public for testing only!
+	 * 
+	 * @param review
+	 * @param task
+	 */
+	public void setActiveReview(Review review, ITask task) {
+		this.activeTask = task;
+		this.activeReview = review;
+	}
 }
