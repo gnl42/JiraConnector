@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.ui.forms.SizeCachingComposite;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
@@ -26,7 +27,6 @@ import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -44,26 +44,6 @@ import java.util.Map;
  * @author Thomas Ehrnhoefer
  */
 public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends ExpandablePart<T, V> {
-
-	public final class SizeCachingComposite extends Composite {
-		private Point cachedSize = null;
-
-		private SizeCachingComposite(Composite parent, int style) {
-			super(parent, style);
-		}
-
-		@Override
-		public Point computeSize(int wHint, int hHint, boolean changed) {
-			if (cachedSize == null) {
-				cachedSize = super.computeSize(wHint, hHint, changed);
-			}
-			return cachedSize;
-		}
-
-		public void clearCache() {
-			cachedSize = null;
-		}
-	}
 
 	protected Comment comment;
 

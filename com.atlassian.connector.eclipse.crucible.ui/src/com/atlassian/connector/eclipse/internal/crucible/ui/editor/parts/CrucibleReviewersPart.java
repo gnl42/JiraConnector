@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
+import com.atlassian.connector.eclipse.ui.forms.SizeCachingComposite;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -82,9 +83,11 @@ public class CrucibleReviewersPart {
 
 	private Composite createComposite(FormToolkit toolkit, Composite parent) {
 		if (toolkit != null) {
-			return toolkit.createComposite(parent);
+			Composite composite = new SizeCachingComposite(parent, SWT.NONE);
+			toolkit.adapt(composite);
+			return composite;
 		} else {
-			return new Composite(parent, SWT.NONE);
+			return new SizeCachingComposite(parent, SWT.NONE);
 		}
 	}
 

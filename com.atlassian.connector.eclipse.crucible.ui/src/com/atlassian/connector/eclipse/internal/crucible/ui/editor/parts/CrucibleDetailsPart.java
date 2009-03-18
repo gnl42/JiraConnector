@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.ui.forms.SizeCachingComposite;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -44,7 +45,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	private CrucibleReviewEditorPage crucibleEditor;
 
-	private Composite parentComposite;
+	private SizeCachingComposite parentComposite;
 
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review) {
@@ -66,7 +67,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 	public Control createControl(Composite parent, FormToolkit toolkit) {
 		//CHECKSTYLE:MAGIC:OFF
 
-		parentComposite = toolkit.createComposite(parent);
+		parentComposite = new SizeCachingComposite(parent, SWT.NONE);
+		toolkit.adapt(parentComposite);
 		GridLayout layout = new GridLayout(4, false);
 		layout.horizontalSpacing = 10;
 		layout.verticalSpacing = 10;
@@ -114,6 +116,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			c.dispose();
 		}
 		parentComposite.setMenu(null);
+		parentComposite.clearCache();
 
 		Text nameText = createReadOnlyText(toolkit, parentComposite, crucibleReview.getName(), null, false);
 		GridDataFactory.fillDefaults().span(4, 1).grab(true, false).applyTo(nameText);
