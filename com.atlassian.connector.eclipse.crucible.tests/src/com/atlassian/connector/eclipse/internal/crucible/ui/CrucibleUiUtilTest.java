@@ -22,11 +22,11 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
+import org.eclipse.mylyn.internal.tasks.core.TaskTask;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.views.TaskListView;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.tests.connector.MockTask;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 
 import java.util.HashSet;
@@ -172,7 +172,7 @@ public class CrucibleUiUtilTest extends TestCase {
 		Review reviewA = new ReviewBean(repositoryUrl);
 		Review reviewB = new ReviewBean(repositoryUrl);
 
-		ITask task = new MockTask("A");
+		ITask task = new TaskTask("kind", "url", "A");
 
 		CrucibleFile file1 = new CrucibleFile(new CrucibleFileInfoImpl(new VersionedVirtualFile("abc", "123"), null,
 				new PermIdBean("1")), false);
