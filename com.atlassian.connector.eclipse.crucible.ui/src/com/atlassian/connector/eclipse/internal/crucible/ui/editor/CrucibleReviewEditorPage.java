@@ -189,6 +189,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 	private final Color colorIncoming;
 
+	private Label initiaizingLabel;
+
 	public CrucibleReviewEditorPage(FormEditor editor, String title) {
 		super(editor, CrucibleConstants.CRUCIBLE_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractCrucibleEditorFormPart>();
@@ -247,10 +249,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			createComposite.setLayout(new GridLayout());
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createComposite);
 
-			Label createLabel = toolkit.createLabel(createComposite, "Initializing review editor...");
-			createLabel.setFont(JFaceResources.getBannerFont());
+			initiaizingLabel = toolkit.createLabel(createComposite, "Initializing review editor...");
+			initiaizingLabel.setFont(JFaceResources.getBannerFont());
 
-			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(createLabel);
+			GridDataFactory.fillDefaults().grab(true, false).align(SWT.CENTER, SWT.CENTER).applyTo(initiaizingLabel);
 
 			Display.getCurrent().asyncExec(new Runnable() {
 
@@ -280,7 +282,9 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 	}
 
 	private void downloadReviewAndRefresh(long delay, final boolean force) {
-
+		if (initiaizingLabel != null && !initiaizingLabel.isDisposed()) {
+			initiaizingLabel.setText("Initializing review editor...");
+		}
 		CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Retrieving Crucible Review "
 				+ getTask().getTaskKey(), getTaskRepository()) {
 			@Override
@@ -730,37 +734,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			public void done(final IJobChangeEvent event) {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						setBusy(false);
-
-						// TODO setup the image descriptor properly too 
-
-						IStatus status = job.getStatus();
-						if (editorComposite != null) {
-							if (status == null || review == null) {
-								// TODO use the status?
-								getEditor().setMessage("Unable to retrieve Review.  Click to try again.",
-										IMessageProvider.WARNING, new HyperlinkAdapter() {
-											@Override
-											public void linkActivated(HyperlinkEvent e) {
-												downloadReviewAndRefresh(0, true);
-											}
-										});
-							} else if (status.isOK()) {
-								// TODO use the status?
-								getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
-								if (force) {
-									createInitialFormContent();
-								} else {
-									createInitialFormContent();
-									// TODO Add this back//updateFormContent();
-								}
-								getEditor().updateHeaderToolBar();
-								TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
-							} else {
-								// TODO improve the message?
-								getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
-							}
-						}
+						reviewUpdateCompleted(job.getStatus(), force);
 					}
 				});
 			}
@@ -829,5 +803,50 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 	public String getUserName() {
 		return getTaskRepository().getUserName();
+	}
+
+	private void reviewUpdateCompleted(IStatus status, boolean force) {
+		setBusy(false);
+
+		// TODO setup the image descriptor properly too 
+
+		if (editorComposite != null) {
+			if (status == null || review == null) {
+				String message = "Unable to retrieve Review";
+				if (status.getMessage().contains("HTTP 401")) {
+					message += " (HTTP 401 - Unauthorized)";
+				}
+				message += ". Click to try again.";
+				getEditor().setMessage(message, IMessageProvider.WARNING, new HyperlinkAdapter() {
+					@Override
+					public void linkActivated(HyperlinkEvent e) {
+						downloadReviewAndRefresh(0, true);
+					}
+				});
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						if (initiaizingLabel != null && !initiaizingLabel.isDisposed()) {
+							initiaizingLabel.setText(initiaizingLabel.getText() + "failed.");
+							reflow();
+						}
+					}
+				});
+
+			} else if (status.isOK()) {
+				// TODO use the status?
+				getEditor().setMessage(status.getMessage(), IMessageProvider.NONE, null);
+				if (force) {
+					createInitialFormContent();
+				} else {
+					createInitialFormContent();
+					// TODO Add this back//updateFormContent();
+				}
+				getEditor().updateHeaderToolBar();
+				TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
+			} else {
+				// TODO improve the message?
+				getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
+			}
+		}
 	}
 }
