@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RunBuildJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
@@ -30,12 +31,21 @@ import org.eclipse.swt.widgets.Display;
  * @author Thomas Ehrnhoefer
  */
 public class RunBuildAction extends AbstractBambooAction {
+
 	public RunBuildAction(ISelectionProvider selectionProvider) {
 		super(selectionProvider);
+		initialize();
 	}
 
 	public RunBuildAction(BambooBuild build) {
 		super(build);
+		initialize();
+	}
+
+	private void initialize() {
+		setText("Run Build");
+		setToolTipText("Run Build on Server");
+		setImageDescriptor(BambooImages.RUN_BUILD);
 	}
 
 	@Override

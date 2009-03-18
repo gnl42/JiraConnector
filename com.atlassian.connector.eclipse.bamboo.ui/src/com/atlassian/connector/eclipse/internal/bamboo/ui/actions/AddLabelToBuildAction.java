@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -26,12 +27,21 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
  * @author Thomas Ehrnhoefer
  */
 public class AddLabelToBuildAction extends AbstractBambooAction {
+
 	public AddLabelToBuildAction(ISelectionProvider selectionProvider) {
 		super(selectionProvider);
+		inititalize();
 	}
 
 	public AddLabelToBuildAction(BambooBuild build) {
 		super(build);
+		inititalize();
+	}
+
+	private void inititalize() {
+		setText("Add Label to Build...");
+		setToolTipText("Add Label to Build");
+		setImageDescriptor(BambooImages.LABEL);
 	}
 
 	@Override

@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -28,10 +29,18 @@ import org.eclipse.mylyn.tasks.ui.TasksUi;
 public class AddCommentToBuildAction extends AbstractBambooAction {
 	public AddCommentToBuildAction(ISelectionProvider selectionProvider) {
 		super(selectionProvider);
+		initialize();
 	}
 
 	public AddCommentToBuildAction(BambooBuild build) {
 		super(build);
+		initialize();
+	}
+
+	private void initialize() {
+		setText("Add Comment to Build...");
+		setToolTipText("Add Comment to Build");
+		setImageDescriptor(BambooImages.COMMENT);
 	}
 
 	@Override

@@ -63,7 +63,6 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 
 		toolkit.paintBordersFor(mainComposite);
 
-		section.setClient(mainComposite);
 		setSection(toolkit, section);
 
 		return control;

@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowBuildLogAction;
 
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -63,7 +64,6 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 
 		toolkit.paintBordersFor(mainComposite);
 
-		section.setClient(mainComposite);
 		setSection(toolkit, section);
 
 		return control;
@@ -116,7 +116,8 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 					});
 
 			if (buildLogSummary.length() > 0) {
-				createReadOnlyText(toolkit, mainComposite, buildLogSummary, FULL_WIDTH, 10);
+				createReadOnlyText(toolkit, mainComposite, JFaceResources.getTextFont(), buildLogSummary, FULL_WIDTH,
+						10);
 			}
 		} else {
 			link = createLink(mainComposite, toolkit, "Retrieving build logs from server failed. Click to",

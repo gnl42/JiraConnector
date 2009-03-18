@@ -511,20 +511,14 @@ public class BambooView extends ViewPart {
 		buildViewer.addSelectionChangedListener(showTestResultsAction);
 
 		addLabelToBuildAction = new AddLabelToBuildAction(buildViewer);
-		addLabelToBuildAction.setText("Add Label to Build...");
-		addLabelToBuildAction.setImageDescriptor(BambooImages.LABEL);
 		addLabelToBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
 
 		addCommentToBuildAction = new AddCommentToBuildAction(buildViewer);
-		addCommentToBuildAction.setText("Add Comment to Build...");
-		addCommentToBuildAction.setImageDescriptor(BambooImages.COMMENT);
 		addCommentToBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
 
 		runBuildAction = new RunBuildAction(buildViewer);
-		runBuildAction.setText("Run Build");
-		runBuildAction.setImageDescriptor(BambooImages.RUN_BUILD);
 		runBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(runBuildAction);
 

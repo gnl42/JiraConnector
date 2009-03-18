@@ -18,10 +18,11 @@ import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
@@ -124,29 +125,11 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		return text;
 	}
 
-	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
-			Image labelImage, int minWidth, int maxLines) {
-
-		if (labelImage != null && labelString != null) {
-			Composite labelComp = toolkit.createComposite(composite);
-			GridLayout layout = new GridLayout(2, false);
-			layout.marginHeight = 0;
-			layout.marginWidth = 0;
-			labelComp.setLayout(layout);
-			GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(labelComp);
-			createLabelControl(toolkit, labelComp, labelImage);
-			createLabelControl(toolkit, labelComp, labelString);
-		} else if (labelImage != null) {
-			Label label = createLabelControl(toolkit, composite, labelImage);
-			GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
-		} else if (labelString != null) {
-			Label label = createLabelControl(toolkit, composite, labelString);
-			GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
-		}
-
+	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, Font font, String value, int minWidth,
+			int maxLines) {
 		int style = SWT.FLAT | SWT.READ_ONLY | SWT.BORDER | SWT.MULTI;
 		GC gc = new GC(composite);
-		gc.setFont(JFaceResources.getTextFont());
+		gc.setFont(font);
 
 		String[] lines = value.split("[\r\n]");
 		for (String line : lines) {
@@ -162,7 +145,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		}
 
 		Text text = new Text(composite, style);
-		text.setFont(JFaceResources.getTextFont());
+		text.setFont(font);
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
 		toolkit.adapt(text, true, true);
@@ -170,15 +153,6 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		int height = Math.min(maxLines * text.getLineHeight(), lines.length * text.getLineHeight());
 		GridDataFactory.fillDefaults().grab(true, false).hint(minWidth, height).applyTo(text);
 		return text;
-	}
-
-	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
-			int minWidth, int maxLines) {
-		return createReadOnlyText(toolkit, composite, value, labelString, null, minWidth, maxLines);
-	}
-
-	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, int minWidth, int maxLines) {
-		return createReadOnlyText(toolkit, composite, value, null, null, minWidth, maxLines);
 	}
 
 	protected Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
@@ -217,6 +191,8 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 
 				toolBarManager.createControl(toolbarComposite);
 				section.setTextClient(toolbarComposite);
+				// the toolbar will cause spacing, avoid extra spacing 
+				section.clientVerticalSpacing = 0;
 			}
 		}
 		control = section;
@@ -312,9 +288,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		});
 		GridDataFactory.fillDefaults().grab(true, false).span(hColSpan, 1).applyTo(section);
 		mainComposite = toolkit.createComposite(section, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		mainComposite.setLayout(layout);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(mainComposite);
+		mainComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
+		section.setClient(mainComposite);
 	}
 }

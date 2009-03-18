@@ -110,7 +110,6 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 
 		toolkit.paintBordersFor(mainComposite);
 
-		section.setClient(mainComposite);
 		setSection(toolkit, section);
 
 		return control;

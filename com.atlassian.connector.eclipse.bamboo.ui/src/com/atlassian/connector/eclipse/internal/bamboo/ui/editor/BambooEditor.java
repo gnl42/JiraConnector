@@ -258,22 +258,14 @@ public class BambooEditor extends SharedHeaderFormEditor {
 		}
 
 		Action runBuildAction = new RunBuildAction(bambooBuild);
-		runBuildAction.setToolTipText("Run Build on server");
-		runBuildAction.setImageDescriptor(BambooImages.RUN_BUILD);
 		toolBarManager.add(runBuildAction);
 
 		toolBarManager.add(new Separator());
 
 		Action addLabelToBuildAction = new AddLabelToBuildAction(bambooBuild);
-		addLabelToBuildAction.setToolTipText("Add Label to Build...");
-		addLabelToBuildAction.setImageDescriptor(BambooImages.LABEL);
-
 		toolBarManager.add(addLabelToBuildAction);
 
 		Action addCommentToBuildAction = new AddCommentToBuildAction(bambooBuild);
-		addCommentToBuildAction.setToolTipText("Add Comment to Build...");
-		addCommentToBuildAction.setImageDescriptor(BambooImages.COMMENT);
-
 		toolBarManager.add(addCommentToBuildAction);
 
 		toolBarManager.add(new Separator());

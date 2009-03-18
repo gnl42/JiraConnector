@@ -17,6 +17,9 @@ import com.atlassian.theplugin.commons.bamboo.TestDetails;
 
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -24,7 +27,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -61,7 +63,6 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 
 		toolkit.paintBordersFor(mainComposite);
 
-		section.setClient(mainComposite);
 		setSection(toolkit, section);
 
 		return control;
@@ -152,18 +153,25 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 				layout.numColumns = 2;
 			}
 			layout.marginWidth = 0;
+			layout.marginHeight = 0;
 			layout.makeColumnsEqualWidth = false;
 			labelComposite.setLayout(layout);
 			createReadOnlyText(toolkit, labelComposite, String.valueOf(failed + passed), "Tests in total:", false);
 			if (failed > 0) {
-				createReadOnlyText(toolkit, labelComposite, String.valueOf(failed), "        Failed:", false);
+				createReadOnlyText(toolkit, labelComposite, String.valueOf(failed), "   Failed:", false);
 			}
 			GridDataFactory.fillDefaults().grab(true, false).align(SWT.BEGINNING, SWT.TOP).applyTo(labelComposite);
 
 			String failedTests = getFailedTests();
 			if (failedTests.length() > 0) {
-				Text text = createReadOnlyText(toolkit, mainComposite, failedTests, "Failed Tests:",
-						BambooImages.FAILED_TESTS.createImage(), FULL_WIDTH / 2, 5);
+
+				Composite labelComp = toolkit.createComposite(mainComposite);
+				labelComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+				GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(labelComp);
+				createLabelControl(toolkit, labelComp, CommonImages.getImage(BambooImages.FAILED_TESTS));
+				createLabelControl(toolkit, labelComp, "Failed Tests:");
+				createReadOnlyText(toolkit, mainComposite, JFaceResources.getDefaultFont(), failedTests,
+						FULL_WIDTH / 2, 5);
 			}
 			if (buildDetails != null
 					&& (buildDetails.getFailedTestDetails().size() + buildDetails.getSuccessfulTestDetails().size()) > 0) {

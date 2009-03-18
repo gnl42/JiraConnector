@@ -48,7 +48,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Dialog for adding a lable or a comment to a build
+ * Dialog for adding a label or a comment to a build.
  * 
  * @author Thomas Ehrnhoefer
  */
@@ -106,7 +106,7 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 
 	public AddLabelOrCommentDialog(Shell parentShell, BambooBuild build, TaskRepository taskRepository, Type type) {
 		super(parentShell);
-		this.shellTitle = "Bamboo View";
+		this.shellTitle = "Bamboo";
 		this.build = build;
 		this.taskRepository = taskRepository;
 		this.type = type;
@@ -116,9 +116,13 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 	protected Control createPageControls(Composite parent) {
 		//CHECKSTYLE:MAGIC:OFF
 		getShell().setText(shellTitle);
-		setTitle(shellTitle);
+		setTitle("Bamboo Build");
 
-		setMessage(NLS.bind("Add a {0} to Build {1}", type == Type.LABEL ? "Label" : "Comment", build.getPlanKey()));
+		if (type == Type.LABEL) {
+			setMessage(NLS.bind("Add a label to build {0}", build.getPlanKey()));
+		} else {
+			setMessage(NLS.bind("Add a comment to build {0}", build.getPlanKey()));
+		}
 
 		//CHECKSTYLE:MAGIC:OFF
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -143,6 +147,7 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 			text = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
 			textGridData = new GridData(GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL
 					| GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
+			textGridData.heightHint = 50;
 			break;
 		default:
 			new Label(composite, SWT.NULL).setText("Label:");
@@ -212,8 +217,11 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		okButton = createButton(parent, IDialogConstants.CLIENT_ID + 1, NLS.bind("Add {0}",
-				type == Type.LABEL ? "label" : "comment"), true);
+		if (type == Type.LABEL) {
+			okButton = createButton(parent, IDialogConstants.CLIENT_ID + 1, "&Add Label", true);
+		} else {
+			okButton = createButton(parent, IDialogConstants.CLIENT_ID + 1, "&Add Comment", true);
+		}
 		okButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
