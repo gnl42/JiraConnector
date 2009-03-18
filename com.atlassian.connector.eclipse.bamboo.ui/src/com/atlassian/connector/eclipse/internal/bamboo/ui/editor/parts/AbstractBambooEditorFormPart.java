@@ -264,6 +264,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 
 	protected void reinitMainComposite() {
 		for (Control child : mainComposite.getChildren()) {
+			child.setMenu(null);
 			child.dispose();
 		}
 		mainComposite.setMenu(null);
@@ -288,7 +289,8 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		});
 		GridDataFactory.fillDefaults().grab(true, false).span(hColSpan, 1).applyTo(section);
 		mainComposite = toolkit.createComposite(section, SWT.NONE);
-		mainComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
+		// leave a margin for form borders
+		mainComposite.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(1).create());
 		section.setClient(mainComposite);
 	}
 }
