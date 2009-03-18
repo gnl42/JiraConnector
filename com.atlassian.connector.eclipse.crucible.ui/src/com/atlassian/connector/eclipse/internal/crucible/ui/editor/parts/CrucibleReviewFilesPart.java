@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -56,6 +57,8 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	private List<CrucibleFilePart> parts;
 
+	private Composite parentComposite;
+
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review) {
 		this.crucibleEditor = editor;
@@ -64,7 +67,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	}
 
 	@Override
-	public Collection<? extends ExpandablePart> getExpandableParts() {
+	public Collection<? extends ExpandablePart<?, ?>> getExpandableParts() {
 		return parts;
 	}
 
@@ -74,9 +77,9 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 	}
 
 	@Override
-	public Control createControl(Composite parent, final FormToolkit toolkit) {
+	public Control createControl(final Composite parent, final FormToolkit toolkit) {
 		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED;
-		filesSection = toolkit.createSection(parent, style);
+		filesSection = new ReflowRespectingSection(toolkit, parent, style, crucibleEditor);
 		filesSection.setText(getSectionTitle());
 		filesSection.clientVerticalSpacing = 0;
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(filesSection);
@@ -84,7 +87,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 		setSection(toolkit, filesSection);
 
 		if (filesSection.isExpanded()) {
-			Composite composite = createCommentViewers(toolkit);
+			Composite composite = createCommentViewers(parent, toolkit);
 			filesSection.setClient(composite);
 		} else {
 			filesSection.addExpansionListener(new ExpansionAdapter() {
@@ -93,12 +96,12 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 					if (filesSection.getClient() == null) {
 						try {
 							crucibleEditor.setReflow(false);
-							Composite composite = createCommentViewers(toolkit);
+							Composite composite = createCommentViewers(parent, toolkit);
 							filesSection.setClient(composite);
 						} finally {
 							crucibleEditor.setReflow(true);
 						}
-						crucibleEditor.reflow();
+						crucibleEditor.reflow(false);
 					}
 				}
 			});
@@ -120,41 +123,12 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	}
 
-	private Composite createCommentViewers(FormToolkit toolkit) {
-		//CHECKSTYLE:MAGIC:OFF
-		Composite composite = toolkit.createComposite(filesSection);
-		composite.setLayout(GridLayoutFactory.fillDefaults().create());
+	private Composite createCommentViewers(Composite parent, FormToolkit toolkit) {
+		parentComposite = toolkit.createComposite(filesSection);
+		parentComposite.setLayout(GridLayoutFactory.fillDefaults().create());
 
-		try {
-			List<CrucibleFileInfo> files = new ArrayList<CrucibleFileInfo>(crucibleReview.getFiles());
-			Collections.sort(files, new Comparator<CrucibleFileInfo>() {
-
-				public int compare(CrucibleFileInfo o1, CrucibleFileInfo o2) {
-					if (o1 != null && o2 != null) {
-						return o1.getFileDescriptor().getUrl().compareTo(o2.getFileDescriptor().getUrl());
-					}
-					return 0;
-				}
-
-			});
-
-			for (CrucibleFileInfo file : files) {
-				CrucibleFilePart part = new CrucibleFilePart(file, crucibleReview, crucibleEditor);
-				parts.add(part);
-				Control fileControl = part.createControl(composite, toolkit);
-				//GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
-				GridData gd = GridDataFactory.fillDefaults().grab(true, false).create();
-				if (!part.canExpand()) {
-					gd.horizontalIndent = 15;
-				}
-				fileControl.setLayoutData(gd);
-			}
-		} catch (ValueNotYetInitialized e) {
-			// TODO do something different here?
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-		}
-		//CHECKSTYLE:MAGIC:ON
-		return composite;
+		updateControl(crucibleReview, parent, toolkit, false);
+		return parentComposite;
 	}
 
 	@Override
@@ -172,6 +146,128 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 				part.selectAndReveal(comment);
 			}
 		}
+	}
+
+	@Override
+	public void updateControl(Review review, Composite parent, FormToolkit toolkit) {
+		updateControl(review, parent, toolkit, true);
+	}
+
+	public void updateControl(Review review, Composite parent, FormToolkit toolkit, boolean shouldHighlight) {
+		this.crucibleReview = review;
+		filesSection.setText(getSectionTitle());
+
+		if (parentComposite == null) {
+			if (filesSection.getClient() == null) {
+				try {
+					crucibleEditor.setReflow(false);
+					Composite composite = createCommentViewers(parent, toolkit);
+					filesSection.setClient(composite);
+				} finally {
+					crucibleEditor.setReflow(true);
+				}
+				crucibleEditor.reflow(false);
+			}
+			return;
+		}
+
+		parentComposite.setMenu(null);
+
+		try {
+			List<CrucibleFileInfo> files = new ArrayList<CrucibleFileInfo>(crucibleReview.getFiles());
+			Collections.sort(files, new Comparator<CrucibleFileInfo>() {
+
+				public int compare(CrucibleFileInfo o1, CrucibleFileInfo o2) {
+					if (o1 != null && o2 != null) {
+						return o1.getFileDescriptor().getUrl().compareTo(o2.getFileDescriptor().getUrl());
+					}
+					return 0;
+				}
+
+			});
+
+			// The following code is almost duplicated in the crucible general comments part
+			List<CrucibleFilePart> newParts = new ArrayList<CrucibleFilePart>();
+
+			Control prevControl = null;
+
+			for (int i = 0; i < files.size(); i++) {
+				CrucibleFileInfo file = files.get(i);
+
+				CrucibleFilePart oldPart = findPart(file);
+
+				if (oldPart != null) {
+					Control commentControl = oldPart.update(parentComposite, toolkit, file, crucibleReview);
+					if (commentControl != null) {
+
+						GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
+
+						if (prevControl != null) {
+							commentControl.moveBelow(prevControl);
+						} else if (parentComposite.getChildren().length > 0) {
+							commentControl.moveAbove(parentComposite.getChildren()[0]);
+						}
+						prevControl = commentControl;
+					}
+
+					newParts.add(oldPart);
+				} else {
+
+					CrucibleFilePart part = new CrucibleFilePart(file, crucibleReview, crucibleEditor);
+					newParts.add(part);
+					Control fileControl = part.createControl(parentComposite, toolkit);
+					//GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
+					GridData gd = GridDataFactory.fillDefaults().grab(true, false).create();
+					if (!part.canExpand()) {
+						gd.horizontalIndent = 15;
+					}
+					fileControl.setLayoutData(gd);
+
+					if (shouldHighlight) {
+						part.setIncomming(true);
+						part.decorate();
+					}
+
+					if (prevControl != null) {
+						fileControl.moveBelow(prevControl);
+					} else if (parentComposite.getChildren().length > 0) {
+						fileControl.moveAbove(parentComposite.getChildren()[0]);
+					}
+					prevControl = fileControl;
+				}
+			}
+
+			List<CrucibleFilePart> toRemove = new ArrayList<CrucibleFilePart>();
+
+			for (CrucibleFilePart part : parts) {
+				if (!newParts.contains(part)) {
+					toRemove.add(part);
+				}
+			}
+
+			for (CrucibleFilePart part : toRemove) {
+				part.dispose();
+			}
+
+			parts.clear();
+			parts.addAll(newParts);
+
+		} catch (ValueNotYetInitialized e) {
+			// TODO do something different here?
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		}
+
+	}
+
+	private CrucibleFilePart findPart(CrucibleFileInfo file) {
+
+		for (CrucibleFilePart part : parts) {
+			if (part.isCrucibleFile(file)) {
+				return part;
+			}
+		}
+
+		return null;
 	}
 
 }

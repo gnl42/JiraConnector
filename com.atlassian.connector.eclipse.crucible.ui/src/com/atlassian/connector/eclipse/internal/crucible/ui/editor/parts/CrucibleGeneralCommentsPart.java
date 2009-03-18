@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralReviewCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -52,17 +53,19 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 
 	private Section commentsSection;
 
-	private List<CommentPart> parts;
+	private List<GeneralCommentPart> parts;
+
+	private Composite parentComposite;
 
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review) {
 		this.crucibleEditor = editor;
 		this.crucibleReview = review;
-		parts = new ArrayList<CommentPart>();
+		parts = new ArrayList<GeneralCommentPart>();
 	}
 
 	@Override
-	public Collection<? extends ExpandablePart> getExpandableParts() {
+	public Collection<? extends ExpandablePart<?, ?>> getExpandableParts() {
 		return parts;
 	}
 
@@ -72,17 +75,17 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 	}
 
 	@Override
-	public Control createControl(Composite parent, final FormToolkit toolkit) {
+	public Control createControl(final Composite parent, final FormToolkit toolkit) {
 
 		int style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
-		commentsSection = toolkit.createSection(parent, style);
+		commentsSection = new ReflowRespectingSection(toolkit, parent, style, crucibleEditor);
 		commentsSection.setText(getSectionTitle());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(commentsSection);
 
 		setSection(toolkit, commentsSection);
 
 		if (commentsSection.isExpanded()) {
-			Composite composite = createCommentViewers(toolkit);
+			Composite composite = createCommentViewers(parent, toolkit);
 			commentsSection.setClient(composite);
 		} else {
 			commentsSection.addExpansionListener(new ExpansionAdapter() {
@@ -91,12 +94,12 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 					if (commentsSection.getClient() == null) {
 						try {
 							crucibleEditor.setReflow(false);
-							Composite composite = createCommentViewers(toolkit);
+							Composite composite = createCommentViewers(parent, toolkit);
 							commentsSection.setClient(composite);
 						} finally {
 							crucibleEditor.setReflow(true);
 						}
-						crucibleEditor.reflow();
+						crucibleEditor.reflow(false);
 					}
 				}
 			});
@@ -116,10 +119,47 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 
 	}
 
-	private Composite createCommentViewers(FormToolkit toolkit) {
-		//CHECKSTYLE:MAGIC:OFF
-		Composite composite = toolkit.createComposite(commentsSection);
-		composite.setLayout(GridLayoutFactory.fillDefaults().create());
+	private Composite createCommentViewers(Composite parent, FormToolkit toolkit) {
+		parentComposite = toolkit.createComposite(commentsSection);
+		parentComposite.setLayout(GridLayoutFactory.fillDefaults().create());
+
+		updateControl(crucibleReview, parent, toolkit, false);
+
+		return parentComposite;
+	}
+
+	@Override
+	protected void fillToolBar(ToolBarManager barManager) {
+		AddGeneralReviewCommentAction action = new AddGeneralReviewCommentAction(crucibleReview);
+		barManager.add(action);
+		super.fillToolBar(barManager);
+	}
+
+	@Override
+	public void updateControl(Review review, Composite parent, FormToolkit toolkit) {
+		updateControl(review, parent, toolkit, true);
+	}
+
+	public void updateControl(Review review, Composite parent, FormToolkit toolkit, boolean shouldHighlight) {
+		this.crucibleReview = review;
+
+		commentsSection.setText(getSectionTitle());
+
+		if (parentComposite == null) {
+			if (commentsSection.getClient() == null) {
+				try {
+					crucibleEditor.setReflow(false);
+					Composite composite = createCommentViewers(parent, toolkit);
+					commentsSection.setClient(composite);
+				} finally {
+					crucibleEditor.setReflow(true);
+				}
+				crucibleEditor.reflow(false);
+			}
+			return;
+		}
+
+		parentComposite.setMenu(null);
 
 		try {
 			List<GeneralComment> generalComments = new ArrayList<GeneralComment>(crucibleReview.getGeneralComments());
@@ -134,25 +174,82 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 
 			});
 
-			for (GeneralComment comment : generalComments) {
-				CommentPart generalCommentsComposite = new GeneralCommentPart(comment, crucibleReview, crucibleEditor);
-				parts.add(generalCommentsComposite);
-				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
-				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
+			// The following code is almost duplicated in the crucible review files part
+			List<GeneralCommentPart> newParts = new ArrayList<GeneralCommentPart>();
+
+			Control prevControl = null;
+
+			for (int i = 0; i < generalComments.size(); i++) {
+				GeneralComment comment = generalComments.get(i);
+
+				GeneralCommentPart oldPart = findPart(comment);
+
+				if (oldPart != null) {
+					Control commentControl = oldPart.update(parentComposite, toolkit, comment, crucibleReview);
+					if (commentControl != null && !commentControl.isDisposed()) {
+
+						GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
+
+						if (prevControl != null) {
+							commentControl.moveBelow(prevControl);
+						} else if (parentComposite.getChildren().length > 0) {
+							commentControl.moveAbove(parentComposite.getChildren()[0]);
+						}
+						prevControl = commentControl;
+					} else {
+						System.out.println("!!!!!!!!!!");
+					}
+
+					newParts.add(oldPart);
+				} else {
+					GeneralCommentPart commentPart = new GeneralCommentPart(comment, crucibleReview, crucibleEditor);
+					newParts.add(commentPart);
+					Control commentControl = commentPart.createControl(parentComposite, toolkit);
+
+					if (shouldHighlight && !comment.getAuthor().getUserName().equals(crucibleEditor.getUserName())) {
+						commentPart.setIncomming(true);
+						commentPart.decorate();
+					}
+
+					GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
+					if (prevControl != null) {
+						commentControl.moveBelow(prevControl);
+					} else if (parentComposite.getChildren().length > 0) {
+						commentControl.moveAbove(parentComposite.getChildren()[0]);
+					}
+					prevControl = commentControl;
+				}
 			}
+
+			List<GeneralCommentPart> toRemove = new ArrayList<GeneralCommentPart>();
+
+			for (GeneralCommentPart part : parts) {
+				if (!newParts.contains(part)) {
+					toRemove.add(part);
+				}
+			}
+
+			for (GeneralCommentPart part : toRemove) {
+				part.dispose();
+			}
+
+			parts.clear();
+			parts.addAll(newParts);
 
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
-
-		//CHECKSTYLE:MAGIC:ON
-		return composite;
 	}
 
-	@Override
-	protected void fillToolBar(ToolBarManager barManager) {
-		AddGeneralReviewCommentAction action = new AddGeneralReviewCommentAction(crucibleReview);
-		barManager.add(action);
-		super.fillToolBar(barManager);
+	private GeneralCommentPart findPart(GeneralComment comment) {
+
+		for (GeneralCommentPart part : parts) {
+			if (part.represents(comment)) {
+				return part;
+			}
+		}
+
+		return null;
 	}
+
 }

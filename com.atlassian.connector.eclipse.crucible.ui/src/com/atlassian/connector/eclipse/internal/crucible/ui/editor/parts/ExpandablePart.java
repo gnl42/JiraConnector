@@ -15,6 +15,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
+import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
@@ -22,6 +24,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -39,6 +42,9 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -46,7 +52,7 @@ import java.util.List;
  * 
  * @author Shawn Minto
  */
-public abstract class ExpandablePart {
+public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 
 	private Section commentSection;
 
@@ -54,22 +60,35 @@ public abstract class ExpandablePart {
 
 	private boolean enableToolbar = true;
 
-	private final List<ExpandablePart> childrenParts;
+	private boolean isIncomming = false;
+
+	private final List<V> childrenParts;
 
 	protected final CrucibleReviewEditorPage crucibleEditor;
 
+	protected Review crucibleReview;
+
 	private IReviewActionListener actionListener;
 
-	public ExpandablePart(CrucibleReviewEditorPage editor) {
+	private FormToolkit formToolkit;
+
+	private ToolBarManager toolBarManager;
+
+	private Label annotationImageLabel;
+
+	private Label annotationsTextLabel;
+
+	public ExpandablePart(CrucibleReviewEditorPage editor, Review crucibleReview) {
 		this.crucibleEditor = editor;
-		childrenParts = new ArrayList<ExpandablePart>();
+		this.crucibleReview = crucibleReview;
+		childrenParts = new ArrayList<V>();
 	}
 
-	protected void addChildPart(ExpandablePart part) {
+	protected void addChildPart(V part) {
 		childrenParts.add(part);
 	}
 
-	protected List<ExpandablePart> getChildrenParts() {
+	protected List<V> getChildrenParts() {
 		return childrenParts;
 	}
 
@@ -79,7 +98,7 @@ public abstract class ExpandablePart {
 
 	public Control createControl(Composite parent, final FormToolkit toolkit) {
 
-		String headerText = getSectionHeaderText();
+		this.formToolkit = toolkit;
 
 		int style = ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT;
 		if (canExpand()) {
@@ -90,8 +109,8 @@ public abstract class ExpandablePart {
 		style |= ExpandableComposite.EXPANDED;
 //		}
 
-		commentSection = toolkit.createSection(parent, style);
-		commentSection.setText(headerText);
+		commentSection = new ReflowRespectingSection(toolkit, parent, style, crucibleEditor);
+		updateSectionText();
 		commentSection.setTitleBarForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		GridData gd = GridDataFactory.fillDefaults().grab(true, false).create();
 		if (!canExpand()) {
@@ -101,26 +120,32 @@ public abstract class ExpandablePart {
 
 		final Composite actionsComposite = createSectionAnnotationsAndToolbar(commentSection, toolkit);
 
-		final ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+		toolBarManager = new ToolBarManager(SWT.FLAT);
 
 		ToolBar toolbarControl = toolBarManager.createControl(actionsComposite);
 		toolkit.adapt(toolbarControl);
 
 		if (commentSection.isExpanded() || crucibleEditor == null) {
 			isExpanded = true;
-			fillToolBar(toolBarManager, toolkit, isExpanded);
+			fillToolBar(toolBarManager, isExpanded);
 			if (canExpand()) {
 				Composite composite = createSectionContents(commentSection, toolkit);
 				commentSection.setClient(composite);
+				commentSection.addExpansionListener(new ExpansionAdapter() {
+					@Override
+					public void expansionStateChanged(ExpansionEvent e) {
+
+						fillToolBar(toolBarManager, e.getState());
+					}
+				});
 			}
 
 		} else {
-			fillToolBar(toolBarManager, toolkit, false);
+			fillToolBar(toolBarManager, false);
 			commentSection.addExpansionListener(new ExpansionAdapter() {
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
 					isExpanded = e.getState();
-					fillToolBar(toolBarManager, toolkit, isExpanded);
 
 					if (commentSection.getClient() == null) {
 						try {
@@ -139,13 +164,49 @@ public abstract class ExpandablePart {
 							}
 						}
 						if (crucibleEditor != null) {
-							crucibleEditor.reflow();
+							crucibleEditor.reflow(false);
 						}
 					}
 				}
 			});
 		}
 		return commentSection;
+	}
+
+	protected void update() {
+		updateSectionText();
+		updateAnnotationsArea();
+		updateToolbar();
+	}
+
+	private void updateSectionText() {
+		if (commentSection != null && !commentSection.isDisposed()) {
+			commentSection.setText(getSectionHeaderText());
+		}
+	}
+
+	private void updateToolbar() {
+		fillToolBar(toolBarManager, commentSection.isExpanded());
+	}
+
+	private void updateAnnotationsArea() {
+
+		ImageDescriptor annotationImage = getAnnotationImage();
+		if (annotationImageLabel != null && !annotationImageLabel.isDisposed()) {
+			if (annotationImage != null) {
+				annotationImageLabel.setImage(AtlassianImages.getImage(annotationImage));
+			} else {
+				annotationImageLabel.setImage(null);
+			}
+		}
+
+		String annotationsText = getAnnotationText();
+		if (annotationsText == null) {
+			annotationsText = "";
+		}
+		if (annotationsTextLabel != null && !annotationsTextLabel.isDisposed()) {
+			annotationsTextLabel.setText(annotationsText);
+		}
 	}
 
 	protected boolean canExpand() {
@@ -156,7 +217,7 @@ public abstract class ExpandablePart {
 		return commentSection;
 	}
 
-	private void fillToolBar(ToolBarManager toolbarManager, FormToolkit toolkit, boolean expanded) {
+	private void fillToolBar(ToolBarManager toolbarManager, boolean expanded) {
 
 		if (!enableToolbar) {
 			return;
@@ -231,19 +292,13 @@ public abstract class ExpandablePart {
 
 		annotationsComposite.setLayout(rowLayout);
 
-		ImageDescriptor annotationImage = getAnnotationImage();
-		if (annotationImage != null) {
-			Label imageLabel = toolkit.createLabel(annotationsComposite, "");
-			imageLabel.setImage(AtlassianImages.getImage(annotationImage));
-		}
+		annotationImageLabel = toolkit.createLabel(annotationsComposite, "");
 
-		String annotationsText = getAnnotationText();
-		if (annotationsText == null) {
-			annotationsText = "";
-		}
-		toolkit.createLabel(annotationsComposite, annotationsText);
+		annotationsTextLabel = toolkit.createLabel(annotationsComposite, "");
 
 		createCustomAnnotations(annotationsComposite, toolkit);
+
+		updateAnnotationsArea();
 
 //		Composite actionsComposite = toolkit.createComposite(toolbarComposite);
 //		actionsComposite.setBackground(null);
@@ -260,7 +315,7 @@ public abstract class ExpandablePart {
 	}
 
 	private boolean areChildrenExpanded() {
-		for (ExpandablePart child : childrenParts) {
+		for (V child : childrenParts) {
 			if (!child.isExpanded()) {
 				return false;
 			}
@@ -272,7 +327,7 @@ public abstract class ExpandablePart {
 		if (expanded != commentSection.isExpanded()) {
 			EditorUtil.toggleExpandableComposite(expanded, commentSection);
 		}
-		for (ExpandablePart child : childrenParts) {
+		for (V child : childrenParts) {
 			child.setExpanded(expanded);
 		}
 	}
@@ -292,6 +347,144 @@ public abstract class ExpandablePart {
 	public void disableToolbar() {
 		enableToolbar = false;
 	}
+
+	public void setIncomming(boolean newIncomming) {
+		this.isIncomming = newIncomming;
+	}
+
+	public boolean isIncomming() {
+		return isIncomming;
+	}
+
+	public void decorate() {
+		Section highlightedSection = getSection();
+		if (highlightedSection != null) {
+			Control client = highlightedSection.getClient();
+			if (client != null) {
+				Color color;
+				if (isIncomming()) {
+					color = crucibleEditor.getColorIncoming();
+				} else {
+					color = formToolkit.getColors().getBackground();
+				}
+
+				highlightControl(client, color);
+			}
+		}
+	}
+
+	private void highlightControl(Control client, Color highlightColor) {
+		if (highlightColor == null || highlightColor.isDisposed()) {
+			return;
+		}
+		if (!client.isDisposed()) {
+			if (highlightColor != null) {
+				client.setBackground(highlightColor);
+			}
+			if (client instanceof Composite) {
+				for (Control child : ((Composite) client).getChildren()) {
+					highlightControl(child, highlightColor);
+				}
+			}
+		}
+	}
+
+	public void dispose() {
+		if (getSection() != null) {
+			getSection().dispose();
+		}
+	}
+
+	protected final V findPart(T comment) {
+
+		for (V part : childrenParts) {
+			if (part.represents(comment)) {
+				return part;
+			}
+		}
+
+		return null;
+	}
+
+	protected final void updateChildren(Composite composite, FormToolkit toolkit, boolean shouldHighlight,
+			Collection<T> childrenObjects) {
+		if (childrenObjects.size() > 0) {
+			List<T> generalComments = new ArrayList<T>(childrenObjects);
+			Collections.sort(generalComments, getComparator());
+
+			// The following code is almost duplicated in the crucible review files part
+			List<V> newParts = new ArrayList<V>();
+
+			Control prevControl = null;
+
+			for (int i = 0; i < generalComments.size(); i++) {
+				T comment = generalComments.get(i);
+
+				V oldPart = findPart(comment);
+
+				if (oldPart != null) {
+					Control commentControl = oldPart.update(composite, toolkit, comment, crucibleReview);
+					if (commentControl != null && !commentControl.isDisposed()) {
+
+						GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
+
+						if (prevControl != null) {
+							commentControl.moveBelow(prevControl);
+						} else if (composite.getChildren().length > 1) {
+							commentControl.moveAbove(composite.getChildren()[1]);
+						}
+						prevControl = commentControl;
+					} else {
+						Thread.dumpStack();
+					}
+
+					newParts.add(oldPart);
+				} else {
+					V commentPart = createChildPart(comment, crucibleReview, crucibleEditor);
+					newParts.add(commentPart);
+					Control commentControl = commentPart.createControl(composite, toolkit);
+
+					if (shouldHighlight && shouldHighlight(comment, crucibleEditor)) {
+						commentPart.setIncomming(true);
+						commentPart.decorate();
+					}
+
+					GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
+					if (prevControl != null) {
+						commentControl.moveBelow(prevControl);
+					} else if (composite.getChildren().length > 1) {
+						commentControl.moveAbove(composite.getChildren()[1]);
+					}
+					prevControl = commentControl;
+				}
+			}
+
+			List<V> toRemove = new ArrayList<V>();
+
+			for (V part : childrenParts) {
+				if (!newParts.contains(part)) {
+					toRemove.add(part);
+				}
+			}
+
+			for (V part : toRemove) {
+				part.dispose();
+			}
+
+			childrenParts.clear();
+			childrenParts.addAll(newParts);
+		}
+	}
+
+	protected abstract boolean shouldHighlight(T comment, CrucibleReviewEditorPage crucibleEditor2);
+
+	protected abstract V createChildPart(T comment, Review crucibleReview2, CrucibleReviewEditorPage crucibleEditor2);
+
+	protected abstract Control update(Composite parentComposite, FormToolkit toolkit, T newComment, Review newReview);
+
+	protected abstract boolean represents(T comment);
+
+	protected abstract Comparator<T> getComparator();
 
 	protected abstract List<IReviewAction> getToolbarActions(boolean expanded);
 

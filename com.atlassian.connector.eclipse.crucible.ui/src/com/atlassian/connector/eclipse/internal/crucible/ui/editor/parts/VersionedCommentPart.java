@@ -20,8 +20,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -31,7 +31,6 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -40,13 +39,15 @@ import java.util.List;
  * 
  * @author Shawn Minto
  */
-public class VersionedCommentPart extends CommentPart {
+public class VersionedCommentPart extends CommentPart<VersionedComment, VersionedCommentPart> {
 
-	private final VersionedComment versionedComment;
+	private VersionedComment versionedComment;
 
 	private final CrucibleFileInfo crucibleFileInfo;
 
 	private final List<IReviewAction> customActions;
+
+	private Composite composite;
 
 	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo,
 			CrucibleReviewEditorPage editor) {
@@ -66,30 +67,9 @@ public class VersionedCommentPart extends CommentPart {
 
 	@Override
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
-		Composite composite = super.createSectionContents(section, toolkit);
+		composite = super.createSectionContents(section, toolkit);
 
-		if (versionedComment.getReplies().size() > 0) {
-			List<VersionedComment> generalComments = new ArrayList<VersionedComment>(versionedComment.getReplies());
-			Collections.sort(generalComments, new Comparator<VersionedComment>() {
-
-				public int compare(VersionedComment o1, VersionedComment o2) {
-					if (o1 != null && o2 != null) {
-						return o1.getCreateDate().compareTo(o2.getCreateDate());
-					}
-					return 0;
-				}
-
-			});
-
-			for (VersionedComment comment : generalComments) {
-				CommentPart generalCommentsComposite = new VersionedCommentPart(comment, crucibleReview,
-						crucibleFileInfo, crucibleEditor);
-				addChildPart(generalCommentsComposite);
-				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
-				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
-			}
-
-		}
+		updateChildren(composite, toolkit, false, versionedComment.getReplies());
 		return composite;
 	}
 
@@ -181,7 +161,150 @@ public class VersionedCommentPart extends CommentPart {
 		customActions.add(action);
 	}
 
-	public boolean isComment(VersionedComment commentToReveal) {
-		return commentToReveal.getPermId().equals(comment.getPermId());
+	@Override
+	protected Control update(Composite parentComposite, FormToolkit toolkit, VersionedComment newComment,
+			Review newReview) {
+
+		this.crucibleReview = newReview;
+		// TODO update the text 
+		if (newComment instanceof VersionedCommentBean && !deepEquals(((VersionedCommentBean) newComment), comment)) {
+			if (newComment instanceof VersionedComment) {
+				this.versionedComment = newComment;
+			}
+			this.comment = newComment;
+
+			Control createControl = createOrUpdateControl(parentComposite, toolkit);
+
+			return createControl;
+
+		}
+		return getSection();
+	}
+
+	/**
+	 * Temporarily Copied from VersionedCommentBean
+	 */
+	public boolean deepEquals(VersionedCommentBean c1, Object o) {
+		if (c1 == o) {
+			return true;
+		}
+		if (!(o instanceof VersionedCommentBean)) {
+			return false;
+		}
+		if (!c1.equals(o)) {
+			return false;
+		}
+
+		VersionedCommentBean that = (VersionedCommentBean) o;
+
+		if (c1.getFromEndLine() != that.getFromEndLine()) {
+			return false;
+		}
+		if (c1.isFromLineInfo() != that.isFromLineInfo()) {
+			return false;
+		}
+		if (c1.getFromStartLine() != that.getFromStartLine()) {
+			return false;
+		}
+		if (c1.getToEndLine() != that.getToEndLine()) {
+			return false;
+		}
+		if (c1.isToLineInfo() != that.isToLineInfo()) {
+			return false;
+		}
+		if (c1.getToStartLine() != that.getToStartLine()) {
+			return false;
+		}
+		if (c1.getReplies() != null ? !c1.getReplies().equals(that.getReplies()) : that.getReplies() != null) {
+			return false;
+		}
+
+		if (c1.getReplies().size() != that.getReplies().size()) {
+			return false;
+		}
+
+		for (VersionedComment vc : c1.getReplies()) {
+			boolean found = false;
+			for (VersionedComment tvc : that.getReplies()) {
+				if (vc.getPermId() == tvc.getPermId() && ((VersionedCommentBean) vc).deepEquals(vc)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	// TODO handle changed highlighting properly
+
+	protected final Control createOrUpdateControl(Composite parentComposite, FormToolkit toolkit) {
+		Control createdControl = null;
+		if (getSection() == null) {
+
+			Control newControl = createControl(parentComposite, toolkit);
+
+			setIncomming(true);
+			decorate();
+
+			createdControl = newControl;
+		} else {
+
+			if (commentTextComposite != null && !commentTextComposite.isDisposed()) {
+				Composite parent = commentTextComposite.getParent();
+				commentTextComposite.dispose();
+				createCommentArea(toolkit, composite);
+				if (parent.getChildren().length > 0) {
+					commentTextComposite.moveAbove(parent.getChildren()[0]);
+				}
+
+			}
+			updateChildren(composite, toolkit, true, versionedComment.getReplies());
+
+			createdControl = getSection();
+		}
+
+		if (sectionClient != null && !sectionClient.isDisposed()) {
+			sectionClient.clearCache();
+		}
+		getSection().layout(true, true);
+
+		update();
+
+		return createdControl;
+
+	}
+
+	@Override
+	protected VersionedCommentPart createChildPart(VersionedComment comment, Review crucibleReview2,
+			CrucibleReviewEditorPage crucibleEditor2) {
+		return new VersionedCommentPart(comment, crucibleReview2, crucibleFileInfo, crucibleEditor2);
+	}
+
+	@Override
+	protected Comparator<VersionedComment> getComparator() {
+		return new Comparator<VersionedComment>() {
+
+			public int compare(VersionedComment o1, VersionedComment o2) {
+				if (o1 != null && o2 != null) {
+					return o1.getCreateDate().compareTo(o2.getCreateDate());
+				}
+				return 0;
+			}
+
+		};
+	}
+
+	@Override
+	protected boolean represents(VersionedComment comment) {
+		return versionedComment.getPermId().equals(comment.getPermId());
+	}
+
+	@Override
+	protected boolean shouldHighlight(VersionedComment comment, CrucibleReviewEditorPage crucibleEditor2) {
+		return !comment.getAuthor().getUserName().equals(crucibleEditor.getUserName());
 	}
 }

@@ -146,13 +146,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				if (task.getRepositoryUrl().equals(repositoryUrl) && task.getTaskId().equals(taskId)) {
 					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 						public void run() {
-							getEditor().setMessage("Review has incoming changes", IMessageProvider.WARNING,
-									new HyperlinkAdapter() {
-										@Override
-										public void linkActivated(HyperlinkEvent e) {
-											downloadReviewAndRefresh(0, false);
-										}
-									});
+							downloadReviewAndRefresh(0, false);
 						}
 					});
 				}
@@ -308,46 +302,44 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 	}
 
-//
-//	private synchronized void updateFormContent() {
-//		if (editorComposite == null) {
-//			return;
-//		}
-//
-//		assert (review != null);
-//
-//		if (parts == null || parts.size() == 0) {
-//			createInitialFormContent();
-//		} else {
-//
-//			try {
-//
-//				for (Control child : editorComposite.getChildren()) {
-//					child.setMenu(null);
-//					if (child instanceof Composite) {
-//						setMenu((Composite) child, null);
-//					}
-//				}
-//
-//				setReflow(false);
-//
-//				for (AbstractCrucibleEditorFormPart part : parts) {
-//					part.updateReview(review);
-//					part.updateControl(editorComposite, toolkit);
-//				}
-//
-//				setMenu(editorComposite, editorComposite.getMenu());
-//
-//				if (selectedComment != null && selectedCrucibleFile != null) {
-//					selectAndReveal(selectedCrucibleFile, selectedComment);
-//				}
-//
-//			} finally {
-//				setReflow(true);
-//				reflow();
-//			}
-//		}
-//	}
+	private synchronized void updateFormContent() {
+		if (editorComposite == null) {
+			return;
+		}
+
+		assert (review != null);
+
+		if (parts == null || parts.size() == 0) {
+			createInitialFormContent();
+		} else {
+
+			try {
+
+				for (Control child : editorComposite.getChildren()) {
+					child.setMenu(null);
+					if (child instanceof Composite) {
+						setMenu((Composite) child, null);
+					}
+				}
+
+				setReflow(false);
+
+				for (AbstractCrucibleEditorFormPart part : parts) {
+					part.updateControl(review, editorComposite, toolkit);
+				}
+
+				setMenu(editorComposite, editorComposite.getMenu());
+
+				if (selectedComment != null && selectedCrucibleFile != null) {
+					selectAndReveal(selectedCrucibleFile, selectedComment);
+				}
+
+			} finally {
+				setReflow(true);
+				reflow(true);
+			}
+		}
+	}
 
 	private void createInitialFormContent() {
 		if (editorComposite == null) {
@@ -376,7 +368,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 		} finally {
 			setReflow(true);
-			reflow();
+			reflow(false);
 		}
 
 	}
@@ -442,7 +434,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 	/**
 	 * Force a re-layout of entire form.
 	 */
-	public void reflow() {
+	public void reflow(boolean all) {
 
 		if (reflow) {
 			try {
@@ -459,7 +451,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 				// TODO set this to true true?
 
-				form.layout(true, false);
+				form.layout(true, all);
 				form.reflow(true);
 			} finally {
 				form.setRedraw(true);
@@ -827,7 +819,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					public void run() {
 						if (initiaizingLabel != null && !initiaizingLabel.isDisposed()) {
 							initiaizingLabel.setText(initiaizingLabel.getText() + "failed.");
-							reflow();
+							reflow(false);
 						}
 					}
 				});
@@ -838,8 +830,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				if (force) {
 					createInitialFormContent();
 				} else {
-					createInitialFormContent();
-					// TODO Add this back//updateFormContent();
+					updateFormContent();
 				}
 				getEditor().updateHeaderToolBar();
 				TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);

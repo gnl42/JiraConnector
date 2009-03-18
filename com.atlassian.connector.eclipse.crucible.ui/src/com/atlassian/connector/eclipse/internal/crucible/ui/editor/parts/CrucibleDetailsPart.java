@@ -44,6 +44,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	private CrucibleReviewEditorPage crucibleEditor;
 
+	private Composite parentComposite;
+
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review) {
 		this.crucibleReview = review;
@@ -51,7 +53,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 	}
 
 	@Override
-	public Collection<? extends ExpandablePart> getExpandableParts() {
+	public Collection<? extends ExpandablePart<?, ?>> getExpandableParts() {
 		return null;
 	}
 
@@ -64,61 +66,29 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 	public Control createControl(Composite parent, FormToolkit toolkit) {
 		//CHECKSTYLE:MAGIC:OFF
 
-		Composite composite = toolkit.createComposite(parent);
+		parentComposite = toolkit.createComposite(parent);
 		GridLayout layout = new GridLayout(4, false);
 		layout.horizontalSpacing = 10;
 		layout.verticalSpacing = 10;
-		composite.setLayout(layout);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
+		parentComposite.setLayout(layout);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(parentComposite);
 
-		Text nameText = createReadOnlyText(toolkit, composite, crucibleReview.getName(), null, false);
-		GridDataFactory.fillDefaults().span(4, 1).grab(true, false).applyTo(nameText);
+		updateControl(this.crucibleReview, parent, toolkit);
 
-		Text stateText = createReadOnlyText(toolkit, composite, crucibleReview.getState().getDisplayName(), "State:",
-				false);
-		GridDataFactory.fillDefaults().applyTo(stateText);
-
-		Text openSinceText = createReadOnlyText(toolkit, composite, DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-				DateFormat.SHORT).format(crucibleReview.getCreateDate()), "Open Since:", false);
-		GridDataFactory.fillDefaults().applyTo(openSinceText);
-
-		Text authorText = createReadOnlyText(toolkit, composite, crucibleReview.getAuthor().getDisplayName(),
-				"Author:", false);
-		GridDataFactory.fillDefaults().applyTo(authorText);
-
-		Text moderatorText = createReadOnlyText(toolkit, composite, crucibleReview.getModerator().getDisplayName(),
-				"Moderator:", false);
-		GridDataFactory.fillDefaults().applyTo(moderatorText);
-
-		try {
-			new CrucibleReviewersPart(crucibleReview.getReviewers()).createControl(toolkit, composite);
-		} catch (ValueNotYetInitialized e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
-		}
-
-		GridDataFactory.fillDefaults().span(2, 1).applyTo(
-				createLabelControl(toolkit, composite, "Statement of Objectives:"));
-
-		Text descriptionText = createReadOnlyText(toolkit, composite, crucibleReview.getDescription(), null, true);
-		GridDataFactory.fillDefaults().grab(true, true).hint(400, SWT.DEFAULT).span(4, 1).applyTo(descriptionText);
-		//CHECKSTYLE:MAGIC:ON
-
-		toolkit.paintBordersFor(composite);
-
-		return composite;
+		return parentComposite;
 	}
 
-	private Text createReadOnlyText(FormToolkit toolkit, Composite composite, String value, String labelString,
+	private Text createReadOnlyText(FormToolkit toolkit, Composite parent, String value, String labelString,
 			boolean isMultiline) {
 
 		if (labelString != null) {
-			createLabelControl(toolkit, composite, labelString);
+			createLabelControl(toolkit, parent, labelString);
 		}
 		int style = SWT.FLAT | SWT.READ_ONLY;
 		if (isMultiline) {
 			style |= SWT.MULTI | SWT.WRAP;
 		}
-		Text text = new Text(composite, style);
+		Text text = new Text(parent, style);
 		text.setFont(EditorUtil.TEXT_FONT);
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
@@ -127,10 +97,57 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		return text;
 	}
 
-	private Label createLabelControl(FormToolkit toolkit, Composite composite, String labelString) {
-		Label labelControl = toolkit.createLabel(composite, labelString);
+	private Label createLabelControl(FormToolkit toolkit, Composite parent, String labelString) {
+		Label labelControl = toolkit.createLabel(parent, labelString);
 		labelControl.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		return labelControl;
+	}
+
+	@Override
+	public void updateControl(Review review, Composite parent, FormToolkit toolkit) {
+		this.crucibleReview = review;
+		if (parentComposite == null) {
+			createControl(parent, toolkit);
+		}
+
+		for (Control c : parentComposite.getChildren()) {
+			c.dispose();
+		}
+		parentComposite.setMenu(null);
+
+		Text nameText = createReadOnlyText(toolkit, parentComposite, crucibleReview.getName(), null, false);
+		GridDataFactory.fillDefaults().span(4, 1).grab(true, false).applyTo(nameText);
+
+		Text stateText = createReadOnlyText(toolkit, parentComposite, crucibleReview.getState().getDisplayName(),
+				"State:", false);
+		GridDataFactory.fillDefaults().applyTo(stateText);
+
+		Text openSinceText = createReadOnlyText(toolkit, parentComposite, DateFormat.getDateTimeInstance(
+				DateFormat.MEDIUM, DateFormat.SHORT).format(crucibleReview.getCreateDate()), "Open Since:", false);
+		GridDataFactory.fillDefaults().applyTo(openSinceText);
+
+		Text authorText = createReadOnlyText(toolkit, parentComposite, crucibleReview.getAuthor().getDisplayName(),
+				"Author:", false);
+		GridDataFactory.fillDefaults().applyTo(authorText);
+
+		Text moderatorText = createReadOnlyText(toolkit, parentComposite, crucibleReview.getModerator()
+				.getDisplayName(), "Moderator:", false);
+		GridDataFactory.fillDefaults().applyTo(moderatorText);
+
+		try {
+			new CrucibleReviewersPart(crucibleReview.getReviewers()).createControl(toolkit, parentComposite);
+		} catch (ValueNotYetInitialized e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
+		}
+
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(
+				createLabelControl(toolkit, parentComposite, "Statement of Objectives:"));
+
+		Text descriptionText = createReadOnlyText(toolkit, parentComposite, crucibleReview.getDescription(), null, true);
+		GridDataFactory.fillDefaults().grab(true, true).hint(400, SWT.DEFAULT).span(4, 1).applyTo(descriptionText);
+		//CHECKSTYLE:MAGIC:ON
+
+		toolkit.paintBordersFor(parentComposite);
 	}
 
 }

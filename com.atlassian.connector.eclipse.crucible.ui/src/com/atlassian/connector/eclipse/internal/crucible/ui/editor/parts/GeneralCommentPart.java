@@ -15,7 +15,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleRevie
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -23,19 +22,18 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * A UI part to represent a general comment in a review
  * 
  * @author Shawn Minto
  */
-public class GeneralCommentPart extends CommentPart {
+public class GeneralCommentPart extends CommentPart<GeneralComment, GeneralCommentPart> {
 
-	private final GeneralComment generalComment;
+	private GeneralComment generalComment;
+
+	private Composite composite;
 
 	public GeneralCommentPart(GeneralComment comment, Review review, CrucibleReviewEditorPage editor) {
 		super(comment, review, editor, null);
@@ -52,31 +50,27 @@ public class GeneralCommentPart extends CommentPart {
 
 	@Override
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
-		Composite composite = super.createSectionContents(section, toolkit);
+		composite = super.createSectionContents(section, toolkit);
 
-		if (generalComment.getReplies().size() > 0) {
-			List<GeneralComment> generalComments = new ArrayList<GeneralComment>(generalComment.getReplies());
-			Collections.sort(generalComments, new Comparator<GeneralComment>() {
+		updateChildren(composite, toolkit, false, generalComment.getReplies());
+		return composite;
+	}
 
-				public int compare(GeneralComment o1, GeneralComment o2) {
-					if (o1 != null && o2 != null) {
-						return o1.getCreateDate().compareTo(o2.getCreateDate());
-					}
-					return 0;
+	public Comparator<GeneralComment> getComparator() {
+		return new Comparator<GeneralComment>() {
+
+			public int compare(GeneralComment o1, GeneralComment o2) {
+				if (o1 != null && o2 != null) {
+					return o1.getCreateDate().compareTo(o2.getCreateDate());
 				}
-
-			});
-
-			for (GeneralComment comment : generalComments) {
-				GeneralCommentPart generalCommentsComposite = new GeneralCommentPart(comment, crucibleReview,
-						crucibleEditor);
-				addChildPart(generalCommentsComposite);
-				Control commentControl = generalCommentsComposite.createControl(composite, toolkit);
-				GridDataFactory.fillDefaults().grab(true, false).applyTo(commentControl);
+				return 0;
 			}
 
-		}
-		return composite;
+		};
+	}
+
+	public boolean represents(GeneralComment newComment) {
+		return newComment.getPermId().equals(generalComment.getPermId());
 	}
 
 	@Override
@@ -102,4 +96,71 @@ public class GeneralCommentPart extends CommentPart {
 		return null;
 	}
 
+	@Override
+	public Control update(Composite parentComposite, FormToolkit toolkit, GeneralComment newComment, Review newReview) {
+
+		this.crucibleReview = newReview;
+		// TODO update the text 
+		if (!newComment.equals(comment)) {
+			if (newComment instanceof GeneralComment) {
+				this.generalComment = newComment;
+			}
+			this.comment = newComment;
+
+			return createOrUpdateControl(parentComposite, toolkit);
+
+		}
+		return getSection();
+	}
+
+	// TODO handle changed highlighting properly
+
+	protected final Control createOrUpdateControl(Composite parentComposite, FormToolkit toolkit) {
+		Control createdControl = null;
+		if (getSection() == null) {
+
+			Control newControl = createControl(parentComposite, toolkit);
+
+			setIncomming(true);
+			decorate();
+
+			createdControl = newControl;
+		} else {
+
+			if (commentTextComposite != null && !commentTextComposite.isDisposed()) {
+				Composite parent = commentTextComposite.getParent();
+				commentTextComposite.dispose();
+				createCommentArea(toolkit, composite);
+				if (parent.getChildren().length > 0) {
+					commentTextComposite.moveAbove(parent.getChildren()[0]);
+				}
+
+			}
+			updateChildren(composite, toolkit, true, generalComment.getReplies());
+
+			createdControl = getSection();
+		}
+
+		if (sectionClient != null && !sectionClient.isDisposed()) {
+			sectionClient.clearCache();
+		}
+		getSection().layout(true, true);
+
+		update();
+
+		return createdControl;
+
+	}
+
+	@Override
+	protected GeneralCommentPart createChildPart(GeneralComment comment, Review crucibleReview2,
+			CrucibleReviewEditorPage crucibleEditor2) {
+		// ignore
+		return new GeneralCommentPart(comment, crucibleReview2, crucibleEditor2);
+	}
+
+	@Override
+	protected boolean shouldHighlight(GeneralComment comment, CrucibleReviewEditorPage crucibleEditor2) {
+		return !comment.getAuthor().getUserName().equals(crucibleEditor.getUserName());
+	}
 }

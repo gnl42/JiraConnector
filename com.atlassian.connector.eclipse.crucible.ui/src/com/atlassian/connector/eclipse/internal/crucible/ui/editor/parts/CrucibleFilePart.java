@@ -25,6 +25,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -38,7 +39,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -46,16 +47,15 @@ import java.util.List;
  * 
  * @author Shawn Minto
  */
-public class CrucibleFilePart extends ExpandablePart {
+public class CrucibleFilePart extends ExpandablePart<VersionedComment, VersionedCommentPart> {
 
-	private final CrucibleFileInfo crucibleFile;
+	private CrucibleFileInfo crucibleFile;
 
-	private final Review review;
+	private Composite composite;
 
 	public CrucibleFilePart(CrucibleFileInfo file, Review review, CrucibleReviewEditorPage editor) {
-		super(editor);
+		super(editor, review);
 		this.crucibleFile = file;
-		this.review = review;
 	}
 
 	@Override
@@ -66,21 +66,13 @@ public class CrucibleFilePart extends ExpandablePart {
 	@Override
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
 		//CHECKSTYLE:MAGIC:OFF
-		Composite composite = toolkit.createComposite(section);
+		composite = toolkit.createComposite(section);
 		GridLayout layout = new GridLayout(1, false);
 		layout.marginLeft = 15;
 		composite.setLayout(layout);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
 
-		List<VersionedComment> versionedComments = new ArrayList<VersionedComment>(crucibleFile.getVersionedComments());
-		Collections.sort(versionedComments, new VersionedCommentDateComparator());
-
-		for (VersionedComment comment : versionedComments) {
-			CommentPart fileComposite = new VersionedCommentPart(comment, review, crucibleFile, crucibleEditor);
-			addChildPart(fileComposite);
-			Control fileControl = fileComposite.createControl(composite, toolkit);
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(fileControl);
-		}
+		updateChildren(composite, toolkit, false, crucibleFile.getVersionedComments());
 		//CHECKSTYLE:MAGIC:ON
 		return composite;
 	}
@@ -120,7 +112,7 @@ public class CrucibleFilePart extends ExpandablePart {
 					&& oldFileDescriptor.getUrl().length() > 0 && oldFileDescriptor.getRevision() != null
 					&& oldFileDescriptor.getRevision().length() > 0) {
 				OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
-						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true), review);
+						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true), crucibleReview);
 				openOldAction.setText(oldFileDescriptor.getRevision());
 				openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
 				createActionHyperlink(toolbarComposite, toolkit, openOldAction);
@@ -144,7 +136,7 @@ public class CrucibleFilePart extends ExpandablePart {
 					&& newFileDescriptor.getRevision().length() > 0
 					&& crucibleFile.getCommitType() != CommitType.Deleted) {
 				OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
-						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false), review);
+						getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false), crucibleReview);
 				openNewAction.setText(newFileDescriptor.getRevision());
 				openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
 				createActionHyperlink(toolbarComposite, toolkit, openNewAction);
@@ -167,13 +159,17 @@ public class CrucibleFilePart extends ExpandablePart {
 				textHyperlink.setEnabled(false);
 				textHyperlink.setUnderlined(false);
 
-				CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(crucibleFile,
-						review);
-				compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
-						+ oldFileDescriptor.getRevision());
-				compareAction.setText("Compare");
-				// TODO set the image descriptor
-				createActionHyperlink(toolbarComposite, toolkit, compareAction);
+				if (newFileDescriptor != null && oldFileDescriptor != null) {
+
+					CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
+							crucibleFile, crucibleReview);
+					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
+							+ oldFileDescriptor.getRevision());
+					compareAction.setText("Compare");
+					// TODO set the image descriptor
+					createActionHyperlink(toolbarComposite, toolkit, compareAction);
+				}
+
 			} else if (filetype == FileType.Directory) {
 				toolkit.createLabel(toolbarComposite, " Directory");
 			} else if (filetype == FileType.Unknown) {
@@ -194,7 +190,7 @@ public class CrucibleFilePart extends ExpandablePart {
 	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
 		List<IReviewAction> actions = new ArrayList<IReviewAction>();
 		AddGeneralCommentToFileAction addFileCommentAction = new AddGeneralCommentToFileAction(new CrucibleFile(
-				crucibleFile, false), review);
+				crucibleFile, false), crucibleReview);
 		addFileCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
 		actions.add(addFileCommentAction);
 		return actions;
@@ -217,9 +213,9 @@ public class CrucibleFilePart extends ExpandablePart {
 			EditorUtil.toggleExpandableComposite(true, getSection());
 		}
 
-		for (ExpandablePart part : getChildrenParts()) {
+		for (ExpandablePart<?, ?> part : getChildrenParts()) {
 			if (part instanceof VersionedCommentPart) {
-				if (((VersionedCommentPart) part).isComment(commentToReveal)) {
+				if (((VersionedCommentPart) part).represents(commentToReveal)) {
 					part.setExpanded(true);
 					EditorUtil.ensureVisible(part.getSection());
 
@@ -231,4 +227,90 @@ public class CrucibleFilePart extends ExpandablePart {
 		}
 	}
 
+	public Control update(Composite parentComposite, FormToolkit toolkit, CrucibleFileInfo file, Review crucibleReview) {
+		this.crucibleReview = crucibleReview;
+		// TODO update the text 
+		if (!areEqual(file, crucibleFile)) {
+			this.crucibleFile = file;
+			Control createControl = createOrUpdateControl(parentComposite, toolkit);
+
+			getSection().layout(true, true);
+
+			update();
+
+			return createControl;
+
+		}
+		return getSection();
+	}
+
+	// TODO handle changed highlighting properly
+
+	private Control createOrUpdateControl(Composite parentComposite, FormToolkit toolkit) {
+		if (getSection() == null) {
+
+			Control createControl = createControl(parentComposite, toolkit);
+
+			setIncomming(true);
+			decorate();
+
+			return createControl;
+		} else {
+			updateChildren(composite, toolkit, true, crucibleFile.getVersionedComments());
+			return getSection();
+		}
+
+	}
+
+	private boolean areEqual(CrucibleFileInfo file, CrucibleFileInfo crucibleFile2) {
+		if (file.getNumberOfComments() == crucibleFile2.getNumberOfComments()) {
+			for (VersionedComment comment : file.getVersionedComments()) {
+				VersionedCommentBean commentBean = (VersionedCommentBean) comment;
+				boolean found = false;
+				for (VersionedComment comment2 : crucibleFile2.getVersionedComments()) {
+					if (commentBean.deepEquals(comment2)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+
+	public void dispose() {
+		getSection().dispose();
+	}
+
+	@Override
+	protected VersionedCommentPart createChildPart(VersionedComment comment, Review crucibleReview2,
+			CrucibleReviewEditorPage crucibleEditor2) {
+
+		return new VersionedCommentPart(comment, crucibleReview2, crucibleFile, crucibleEditor2);
+	}
+
+	@Override
+	protected Comparator<VersionedComment> getComparator() {
+		return new VersionedCommentDateComparator();
+	}
+
+	// we are not a child of an expandable part, so these 3 methods dont matter
+	@Override
+	protected boolean represents(VersionedComment comment) {
+		return false;
+	}
+
+	@Override
+	protected boolean shouldHighlight(VersionedComment comment, CrucibleReviewEditorPage crucibleEditor2) {
+		return false;
+	}
+
+	@Override
+	protected Control update(Composite parentComposite, FormToolkit toolkit, VersionedComment newComment,
+			Review newReview) {
+		return null;
+	}
 }

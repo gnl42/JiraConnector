@@ -40,7 +40,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 
 	public abstract CrucibleReviewEditorPage getReviewEditor();
 
-	public abstract Collection<? extends ExpandablePart> getExpandableParts();
+	public abstract Collection<? extends ExpandablePart<?, ?>> getExpandableParts();
 
 	protected void collapseAll() {
 		if (getExpandableParts() == null) {
@@ -49,13 +49,13 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 		try {
 			getReviewEditor().setReflow(false);
 
-			for (ExpandablePart part : getExpandableParts()) {
+			for (ExpandablePart<?, ?> part : getExpandableParts()) {
 				part.setExpanded(false);
 			}
 		} finally {
 			getReviewEditor().setReflow(true);
 		}
-		getReviewEditor().reflow();
+		getReviewEditor().reflow(false);
 	}
 
 	protected void expandAll() {
@@ -65,7 +65,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 		try {
 			getReviewEditor().setReflow(false);
 
-			for (ExpandablePart part : getExpandableParts()) {
+			for (ExpandablePart<?, ?> part : getExpandableParts()) {
 				part.setExpanded(true);
 			}
 			if (expandableSection != null && !expandableSection.isExpanded()) {
@@ -74,7 +74,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 		} finally {
 			getReviewEditor().setReflow(true);
 		}
-		getReviewEditor().reflow();
+		getReviewEditor().reflow(false);
 	}
 
 	protected void fillToolBar(ToolBarManager toolBarManager) {
@@ -120,5 +120,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 			}
 		}
 	}
+
+	public abstract void updateControl(Review review, Composite parent, FormToolkit toolkit);
 
 }

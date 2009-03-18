@@ -26,6 +26,7 @@ import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -42,19 +43,40 @@ import java.util.Map;
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
  */
-public abstract class CommentPart extends ExpandablePart {
+public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends ExpandablePart<T, V> {
 
-	protected final Comment comment;
+	public final class SizeCachingComposite extends Composite {
+		private Point cachedSize = null;
 
-	protected final Review crucibleReview;
+		private SizeCachingComposite(Composite parent, int style) {
+			super(parent, style);
+		}
+
+		@Override
+		public Point computeSize(int wHint, int hHint, boolean changed) {
+			if (cachedSize == null) {
+				cachedSize = super.computeSize(wHint, hHint, changed);
+			}
+			return cachedSize;
+		}
+
+		public void clearCache() {
+			cachedSize = null;
+		}
+	}
+
+	protected Comment comment;
 
 	protected final CrucibleFile crucibleFile;
 
+	protected Text commentTextComposite;
+
+	protected SizeCachingComposite sectionClient;
+
 	public CommentPart(Comment comment, Review crucibleReview, CrucibleReviewEditorPage editor,
 			CrucibleFile crucibleFile) {
-		super(editor);
+		super(editor, crucibleReview);
 		this.comment = comment;
-		this.crucibleReview = crucibleReview;
 		this.crucibleFile = crucibleFile;
 	}
 
@@ -63,19 +85,23 @@ public abstract class CommentPart extends ExpandablePart {
 		//CHECKSTYLE:MAGIC:OFF
 		section.clientVerticalSpacing = 0;
 
-		Composite composite = toolkit.createComposite(section);
+		sectionClient = new SizeCachingComposite(section, SWT.NONE);
+		toolkit.adapt(sectionClient);
 		GridLayout layout = new GridLayout(1, false);
 		layout.marginTop = 0;
 		layout.marginLeft = 9;
-		composite.setLayout(layout);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
-		String commentString = getCommentText();
+		sectionClient.setLayout(layout);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(sectionClient);
 
-		Text commentText = createReadOnlyText(toolkit, composite, commentString);
-		GridDataFactory.fillDefaults().hint(500, SWT.DEFAULT).applyTo(commentText);
+		createCommentArea(toolkit, sectionClient);
 
 		//CHECKSTYLE:MAGIC:ON
-		return composite;
+		return sectionClient;
+	}
+
+	protected void createCommentArea(FormToolkit toolkit, Composite parentComposite) {
+		commentTextComposite = createReadOnlyText(toolkit, parentComposite, getCommentText());
+		GridDataFactory.fillDefaults().hint(500, SWT.DEFAULT).applyTo(commentTextComposite);
 	}
 
 	private String getCommentText() {
