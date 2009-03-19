@@ -276,7 +276,30 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	private static IResource findResourceForPath(String filePath) {
 		IPath path = new Path(filePath);
 		final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+		if (resource == null) {
+			return findResourceForPath2(filePath);
+		}
 		return resource;
+	}
+
+	private static IResource findResourceForPath2(String filePath) {
+		if (filePath == null || filePath.length() <= 0) {
+			return null;
+		}
+		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+			IPath fileIPath = new Path(filePath);
+			IResource resource = project.findMember(fileIPath);
+			while (!fileIPath.isEmpty() && resource == null) {
+				fileIPath = fileIPath.removeFirstSegments(1);
+				resource = project.findMember(fileIPath);
+			}
+			if (resource == null) {
+				continue;
+			}
+
+			return resource;
+		}
+		return null;
 	}
 
 	private static IEditorPart openRemoteResource(String revisionString, IResource resource,
