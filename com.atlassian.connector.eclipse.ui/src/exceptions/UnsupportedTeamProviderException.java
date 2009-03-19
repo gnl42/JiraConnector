@@ -20,7 +20,7 @@ package exceptions;
 public class UnsupportedTeamProviderException extends RuntimeException {
 
 	public UnsupportedTeamProviderException(String message) {
-		super();
+		super(message);
 	}
 
 	public UnsupportedTeamProviderException() {
