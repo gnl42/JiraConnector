@@ -19,6 +19,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.ITypedElement;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -76,23 +77,24 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		IResource resource = findResourceForPath(filePath);
 		if (resource != null) {
 			IFileRevision oldFile = getFileRevision(resource, oldRevisionString, monitor);
-			IFileRevision newFile = getFileRevision(resource, newRevisionString, monitor);
+			if (oldFile != null) {
+				IFileRevision newFile = getFileRevision(resource, newRevisionString, monitor);
+				if (newFile != null) {
+					final ITypedElement left = new FileRevisionTypedElement(newFile, getLocalEncoding(resource));
+					final ITypedElement right = new FileRevisionTypedElement(oldFile, getLocalEncoding(resource));
 
-			if (oldFile != null && newFile != null) {
-				final ITypedElement left = new FileRevisionTypedElement(newFile, getLocalEncoding(resource));
-				final ITypedElement right = new FileRevisionTypedElement(oldFile, getLocalEncoding(resource));
-
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						CompareEditorInput input = new TeamCompareFileRevisionEditorInput(left, right,
-								AtlassianUiPlugin.getDefault()
-										.getWorkbench()
-										.getActiveWorkbenchWindow()
-										.getActivePage(), annotationModel);
-						TeamUiUtils.openCompareEditorForInput(input);
-					}
-				});
-				return true;
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							CompareEditorInput input = new TeamCompareFileRevisionEditorInput(left, right,
+									AtlassianUiPlugin.getDefault()
+											.getWorkbench()
+											.getActiveWorkbenchWindow()
+											.getActivePage(), annotationModel);
+							TeamUiUtils.openCompareEditorForInput(input);
+						}
+					});
+					return true;
+				}
 			}
 
 		}
@@ -109,14 +111,15 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		}
 
 		RepositoryProvider rp = RepositoryProvider.getProvider(project);
-		if (rp != null && rp.getFileHistoryProvider() != null) {
-
+		if (rp != null) {
 			// this project has a team nature associated with it in the workspace
 			IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
-			IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE, monitor);
-
-			if (fileHistory != null) {
-				return fileHistory.getFileRevision(revisionString);
+			if (historyProvider != null) {
+				IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE,
+						monitor);
+				if (fileHistory != null) {
+					return fileHistory.getFileRevision(revisionString);
+				}
 			}
 		}
 		return null;
@@ -286,18 +289,19 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		if (filePath == null || filePath.length() <= 0) {
 			return null;
 		}
-		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-			IPath fileIPath = new Path(filePath);
-			IResource resource = project.findMember(fileIPath);
-			while (!fileIPath.isEmpty() && resource == null) {
-				fileIPath = fileIPath.removeFirstSegments(1);
-				resource = project.findMember(fileIPath);
-			}
-			if (fileIPath.isEmpty() || resource == null) {
-				continue;
-			}
+		IContainer location = ResourcesPlugin.getWorkspace().getRoot();
 
-			return resource;
+		IPath path = new Path(filePath);
+		IResource resource = null;
+		while ((resource = match(location, path)) == null) {
+			path = path.removeFirstSegments(1);
+		}
+		return resource;
+	}
+
+	private static IResource match(IContainer location, IPath path) {
+		if (!path.isEmpty()) {
+			return location.findMember(path);
 		}
 		return null;
 	}
