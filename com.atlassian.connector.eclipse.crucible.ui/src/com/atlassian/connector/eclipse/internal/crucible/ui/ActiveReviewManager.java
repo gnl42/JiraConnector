@@ -26,7 +26,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskActivationListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -152,9 +154,10 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 
 	private void scheduleDownloadJob(final ITask task) {
 		Job downloadJob = new Job("Retrieving review from server") {
+
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-
+				IStatus errorStatus = null;
 				try {
 					TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(task.getRepositoryUrl());
 
@@ -168,17 +171,25 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 							// This should fire off a listener that we listen to to update the review properly
 							client.getReview(repository, taskId, false, monitor);
 						} else {
-							return new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
+							errorStatus = new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 									"Unable to get crucible client for repository");
+
 						}
 					} else {
-						return new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
+						errorStatus = new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 								"Crucible repository does not exist");
+
 					}
-					return Status.OK_STATUS;
 				} catch (CoreException e) {
-					return e.getStatus();
+					errorStatus = e.getStatus();
+
+				} finally {
+					if (errorStatus != null && !errorStatus.isOK()) {
+						StatusHandler.log(errorStatus);
+						TasksUiInternal.asyncDisplayStatus("Unable to retrieve Review", errorStatus);
+					}
 				}
+				return Status.OK_STATUS;
 			}
 		};
 		downloadJob.setUser(true);

@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -65,7 +66,9 @@ public class CrucibleReviewersPart {
 			// avoid blank gap on Linux
 			createLabelControl(toolkit, reviewersComposite, " ");
 		} else {
-			for (Reviewer reviewer : reviewers) {
+			Iterator<Reviewer> iterator = reviewers.iterator();
+			while (iterator.hasNext()) {
+				Reviewer reviewer = iterator.next();
 				Text text = createReadOnlyText(toolkit, reviewersComposite, reviewer.getDisplayName(), null, false);
 				text.setBackground(parent.getBackground());
 
@@ -75,7 +78,11 @@ public class CrucibleReviewersPart {
 				}
 
 				// XXX padding
-				createLabelControl(toolkit, reviewersComposite, " ");
+				String paddingText = " ";
+				if (iterator.hasNext()) {
+					paddingText = ", ";
+				}
+				createLabelControl(toolkit, reviewersComposite, paddingText);
 			}
 		}
 		//CHECKSTYLE:MAGIC:ON

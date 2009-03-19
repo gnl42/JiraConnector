@@ -65,6 +65,7 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskFormPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
@@ -102,6 +103,8 @@ import java.util.List;
  * @author Thomas Ehrnhoefer
  */
 public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRespectingPart {
+
+	private static final String INITIALIZATION_FAILED_MESSAGE = "Unable to retrieve Review. {0} {1}";
 
 	/**
 	 * Causes the form page to reflow on resize.
@@ -797,7 +800,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		return getTaskRepository().getUserName();
 	}
 
-	private void reviewUpdateCompleted(IStatus status, boolean force) {
+	private void reviewUpdateCompleted(final IStatus status, final boolean force) {
 		setBusy(false);
 
 		// TODO setup the image descriptor properly too 
@@ -805,7 +808,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		if (editorComposite != null) {
 			if (status == null || review == null) {
 				String message = "Unable to retrieve Review";
-				if (status.getMessage().contains("HTTP 401")) {
+				if (status != null && status.getMessage().contains("HTTP 401")) {
 					message += " (HTTP 401 - Unauthorized)";
 				}
 				message += ". Click to try again.";
@@ -815,10 +818,24 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						downloadReviewAndRefresh(0, true);
 					}
 				});
+
+				if (status != null && force) {
+					StatusHandler.log(status);
+				}
+
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						if (initiaizingLabel != null && !initiaizingLabel.isDisposed()) {
-							initiaizingLabel.setText(initiaizingLabel.getText() + "failed.");
+							String message0 = "";
+							String message1 = "";
+							if (status != null) {
+								message0 = status.getMessage() + ".";
+								if (force) {
+									message1 = "\nSee Error log for more details.";
+								}
+							}
+							String message = NLS.bind(INITIALIZATION_FAILED_MESSAGE, message0, message1);
+							initiaizingLabel.setText(message);
 							reflow(false);
 						}
 					}
