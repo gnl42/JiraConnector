@@ -17,6 +17,8 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import exceptions.UnsupportedTeamProviderException;
+
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.core.resources.IContainer;
@@ -111,6 +113,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		}
 
 		RepositoryProvider rp = RepositoryProvider.getProvider(project);
+		checkIfSupportedTeamProvider(rp);
 		if (rp != null) {
 			// this project has a team nature associated with it in the workspace
 			IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
@@ -124,6 +127,12 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		}
 		return null;
 
+	}
+
+	private static void checkIfSupportedTeamProvider(RepositoryProvider rp) {
+		if (rp != null && rp.getID().equals(TeamUiUtils.TEAM_PROV_ID_SVN_SUBVERSIVE)) {
+			throw new UnsupportedTeamProviderException("Subversive not supported");
+		}
 	}
 
 	private String getLocalEncoding(IResource resource) {
@@ -159,6 +168,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 				}
 
 				RepositoryProvider rp = RepositoryProvider.getProvider(project);
+				checkIfSupportedTeamProvider(rp);
 				if (rp != null && rp.getFileHistoryProvider() != null) {
 
 					// this project has a team nature associated with it in the workspace
@@ -239,6 +249,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 			}
 
 			RepositoryProvider rp = RepositoryProvider.getProvider(project);
+			checkIfSupportedTeamProvider(rp);
 			if (rp != null && rp.getFileHistoryProvider() != null) {
 
 				// this project has a team nature associated with it in the workspace
@@ -293,7 +304,8 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 		IPath path = new Path(filePath);
 		IResource resource = null;
-		while ((resource = match(location, path)) == null) {
+		while (!path.isEmpty() && resource == null) {
+			resource = match(location, path);
 			path = path.removeFirstSegments(1);
 		}
 		return resource;

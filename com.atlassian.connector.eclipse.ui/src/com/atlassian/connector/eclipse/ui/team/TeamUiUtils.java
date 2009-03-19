@@ -14,6 +14,8 @@ package com.atlassian.connector.eclipse.ui.team;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import exceptions.UnsupportedTeamProviderException;
+
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
@@ -53,6 +55,12 @@ import java.lang.reflect.Field;
  */
 public final class TeamUiUtils {
 
+	public static final String TEAM_PROVIDER_ID_CVS_ECLIPSE = "org.eclipse.team.cvs.core.cvsnature";
+
+	public static final String TEAM_PROV_ID_SVN_SUBCLIPSE = "org.tigris.subversion.subclipse.core.svnnature";
+
+	public static final String TEAM_PROV_ID_SVN_SUBVERSIVE = "org.eclipse.team.svn.core.svnnature";
+
 	private static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
 
 	private static final NotOpenedEditorPart NOT_OPENED_EDITOR = new NotOpenedEditorPart();
@@ -84,8 +92,13 @@ public final class TeamUiUtils {
 		}
 
 		// try a backup solution
-		return getRealEditorPart(defaultConnector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
-				otherRevisionString, monitor));
+		try {
+			return getRealEditorPart(defaultConnector.openFile(repoUrl, filePath, otherRevisionFilePath,
+					revisionString, otherRevisionString, monitor));
+		} catch (UnsupportedTeamProviderException e) {
+			TeamMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
+			return null;
+		}
 	}
 
 	public static void openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,
@@ -109,9 +122,14 @@ public final class TeamUiUtils {
 				}
 			}
 		}
-		if (!defaultConnector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
-				newRevisionString, annotationModel, monitor)) {
-			TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString, newRevisionString);
+		try {
+			if (!defaultConnector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
+					newRevisionString, annotationModel, monitor)) {
+				TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString,
+						newRevisionString);
+			}
+		} catch (UnsupportedTeamProviderException e) {
+			TeamMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
 		}
 	}
 
@@ -178,14 +196,23 @@ public final class TeamUiUtils {
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleEditorInput(editorInput)) {
-				CrucibleFile fileInfo = connector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+				CrucibleFile fileInfo;
+				try {
+					fileInfo = connector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+				} catch (UnsupportedTeamProviderException e) {
+					return null;
+				}
 				if (fileInfo != null) {
 					return fileInfo;
 				}
 			}
 		}
 
-		return defaultConnector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+		try {
+			return defaultConnector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+		} catch (UnsupportedTeamProviderException e) {
+			return null;
+		}
 	}
 
 	public static void selectAndReveal(final ITextEditor textEditor, int startLine, int endLine) {

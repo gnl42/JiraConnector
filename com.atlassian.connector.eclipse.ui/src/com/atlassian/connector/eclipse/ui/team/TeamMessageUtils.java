@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.ui.team;
 
+import exceptions.UnsupportedTeamProviderException;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -82,6 +84,28 @@ public final class TeamMessageUtils {
 				}
 			});
 		}
+	}
+
+	public static void openUnsupportedTeamProviderErrorMessage(final UnsupportedTeamProviderException exception) {
+		if (Display.getCurrent() != null) {
+			internalOpenUnsupportedTeamProviderErrorMessage(exception);
+		} else {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					internalOpenUnsupportedTeamProviderErrorMessage(exception);
+				}
+			});
+		}
+	}
+
+	private static void internalOpenUnsupportedTeamProviderErrorMessage(final UnsupportedTeamProviderException exception) {
+
+		String message = "Unsupported team provider ("
+				+ exception.getMessage()
+				+ ").\n\nPlease make sure that you are using Subclipse to access your SVN repositories."
+				+ "\nSubclipse is the only officially supported team provider for the Atlassian Eclipse Connector as of now.";
+
+		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
 
 	private static void internalOpenUnableToCompareErrorMessage(String repoUrl, String filePath, String oldRevision,
