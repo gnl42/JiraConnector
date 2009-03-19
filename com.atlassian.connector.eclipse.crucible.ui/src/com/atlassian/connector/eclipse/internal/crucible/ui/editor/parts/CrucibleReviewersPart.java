@@ -61,6 +61,7 @@ public class CrucibleReviewersPart {
 		layout.marginRight = 0;
 		layout.marginLeft = 0;
 		layout.marginWidth = 0;
+		layout.spacing = 0;
 		reviewersComposite.setLayout(layout);
 		if (reviewers.isEmpty()) {
 			// avoid blank gap on Linux
