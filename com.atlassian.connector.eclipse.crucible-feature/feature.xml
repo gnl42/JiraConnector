@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update label="%updateSiteName" url="http://update.atlassian.com/atlassian-eclipse-plugin"/>
+      <update label="%updateSiteName" url="http://update.atlassian.com/atlassian-eclipse-plugin/nightly"/>
    </url>
 
    <requires>
