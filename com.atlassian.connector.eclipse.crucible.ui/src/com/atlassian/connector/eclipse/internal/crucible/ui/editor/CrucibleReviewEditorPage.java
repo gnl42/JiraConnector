@@ -530,7 +530,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Review>(monitor) {
+						client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override
 							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -560,7 +560,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Object>(monitor) {
+						client.execute(new RemoteOperation<Object>(monitor, getTaskRepository()) {
 							@Override
 							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -591,7 +591,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Object>(monitor) {
+						client.execute(new RemoteOperation<Object>(monitor, getTaskRepository()) {
 							@Override
 							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -622,7 +622,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Review>(monitor) {
+						client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override
 							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -657,7 +657,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 							+ getTask().getTaskKey(), getTaskRepository()) {
 						@Override
 						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-							client.execute(new RemoteOperation<Review>(monitor) {
+							client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
 								@Override
 								public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 										IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -688,7 +688,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Review>(monitor) {
+						client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override
 							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -829,7 +829,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 							String message0 = "";
 							String message1 = "";
 							if (status != null) {
-								message0 = status.getMessage() + ".";
+								message0 = status.getMessage().trim() + ".";
 								if (force) {
 									message1 = "\nSee Error log for more details.";
 								}
