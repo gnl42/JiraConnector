@@ -293,7 +293,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 				fileIPath = fileIPath.removeFirstSegments(1);
 				resource = project.findMember(fileIPath);
 			}
-			if (resource == null) {
+			if (fileIPath.isEmpty() || resource == null) {
 				continue;
 			}
 
