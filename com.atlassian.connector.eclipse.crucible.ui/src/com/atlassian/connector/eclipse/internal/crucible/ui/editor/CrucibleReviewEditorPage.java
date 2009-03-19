@@ -37,6 +37,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
@@ -508,7 +509,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			try {
 				EnumSet<CrucibleAction> transitions = review.getTransitions();
 				EnumSet<CrucibleAction> actions = review.getActions();
-				State state = review.getState();
 				boolean needsSeparator = false;
 				if (actions.contains(CrucibleAction.COMPLETE) && !CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
 					createCompleteReviewAction(manager);
@@ -518,8 +518,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					createUncompleteReviewAction(manager);
 					needsSeparator = true;
 				}
-				if (review.isAllowReviewerToJoin()
-						&& (state == State.APPROVAL || state == State.DRAFT || state == State.REVIEW)) {
+				if (canJoinOrLeaveReview()) {
 					if (CrucibleUiUtil.isCurrentUserReviewer(review)) {
 						createLeaveReviewAction(manager);
 						needsSeparator = true;
@@ -575,6 +574,14 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		refreshAction.setImageDescriptor(CommonImages.REFRESH);
 		refreshAction.setToolTipText("Refresh");
 		manager.add(refreshAction);
+	}
+
+	private boolean canJoinOrLeaveReview() {
+		State state = review.getState();
+		User moderator = review.getModerator();
+		String moderatorName = moderator == null ? null : moderator.getUserName();
+		return review.isAllowReviewerToJoin() && !moderatorName.equals(CrucibleUiUtil.getCurrentUser(review))
+				&& (state == State.APPROVAL || state == State.DRAFT || state == State.REVIEW);
 	}
 
 	private void createSubmitReviewAction(IToolBarManager manager) {
