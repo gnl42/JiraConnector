@@ -432,11 +432,6 @@ public class CrucibleUtilTest extends TestCase {
 		review1.setDescription("des");
 		Set<CrucibleFileInfo> files = new LinkedHashSet<CrucibleFileInfo>();
 		review1.setFiles(files);
-		List<GeneralComment> genC = new ArrayList<GeneralComment>();
-		GeneralCommentBean genCBean = new GeneralCommentBean();
-		genCBean.setCreateDate(new Date(2L));
-		genC.add(genCBean);
-		review1.setGeneralComments(genC);
 		review1.setMetricsVersion(5);
 		review1.setModerator(new UserBean("mod"));
 		review1.setName("nam");
@@ -465,11 +460,6 @@ public class CrucibleUtilTest extends TestCase {
 		review.setDescription("des");
 		files = new LinkedHashSet<CrucibleFileInfo>();
 		review.setFiles(files);
-		genC = new ArrayList<GeneralComment>();
-		genCBean = new GeneralCommentBean();
-		genCBean.setCreateDate(new Date(2L));
-		genC.add(genCBean);
-		review.setGeneralComments(genC);
 		review.setMetricsVersion(5);
 		review.setModerator(new UserBean("mod"));
 		review.setName("nam");
@@ -484,10 +474,6 @@ public class CrucibleUtilTest extends TestCase {
 		review.setReviewers(reviewers);
 		review.setState(State.CLOSED);
 
-		//test for incomplete reviews
-		assertTrue(-1 == CrucibleUtil.createHash(review));
-		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
-
 		List<CrucibleAction> transitions = new ArrayList<CrucibleAction>();
 		transitions.add(CrucibleAction.CLOSE);
 		review1.setTransitions(transitions);
@@ -496,10 +482,31 @@ public class CrucibleUtilTest extends TestCase {
 		transitions.add(CrucibleAction.CLOSE);
 		review.setTransitions(transitions);
 
+		//test for incomplete reviews
+		assertTrue(-1 == CrucibleUtil.createHash(review));
+		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
+
+		List<GeneralComment> genC = new ArrayList<GeneralComment>();
+		GeneralCommentBean genCBean = new GeneralCommentBean();
+		genCBean.setCreateDate(new Date(2L));
+		genC.add(genCBean);
+		review1.setGeneralComments(genC);
+
+		genC = new ArrayList<GeneralComment>();
+		genCBean = new GeneralCommentBean();
+		genCBean.setCreateDate(new Date(2L));
+		genC.add(genCBean);
+		review.setGeneralComments(genC);
+
 		//test for same object
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review));
 
 		//test for equal reviews
+		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
+
+		// test for changed actions
+		actions.add(CrucibleAction.CLOSE);
+		review1.setActions(actions);
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
 
 		//test for unequal reviews

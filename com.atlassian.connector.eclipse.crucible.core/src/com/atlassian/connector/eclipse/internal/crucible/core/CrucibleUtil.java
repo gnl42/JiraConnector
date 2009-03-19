@@ -249,12 +249,6 @@ public final class CrucibleUtil {
 			final int prime = 31;
 			int result = 1;
 
-			int miniResult = 0;
-			for (CrucibleAction action : review.getActions()) {
-				miniResult += ((action == null) ? 0 : action.actionName().hashCode());
-			}
-			result = prime * result + miniResult;
-
 			result = prime * result + (review.isAllowReviewerToJoin() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
 			result = prime * result + ((review.getAuthor() == null) ? 0 : review.getAuthor().getUserName().hashCode());
 			result = prime * result + ((review.getCloseDate() == null) ? 0 : review.getCloseDate().hashCode());
@@ -265,7 +259,7 @@ public final class CrucibleUtil {
 					+ ((review.getCrucibleProject() == null) ? 0 : review.getCrucibleProject().getId().hashCode());
 			result = prime * result + ((review.getDescription() == null) ? 0 : review.getDescription().hashCode());
 
-			miniResult = 0;
+			int miniResult = 0;
 			for (CrucibleFileInfo file : review.getFiles()) {
 				miniResult += ((file.getFileDescriptor() == null) ? 0 : file.getFileDescriptor().getUrl().hashCode());
 				for (VersionedComment comment : file.getVersionedComments()) {
@@ -280,7 +274,6 @@ public final class CrucibleUtil {
 			}
 			result = prime * result + miniResult;
 
-			result = prime * result + review.getMetricsVersion();
 			result = prime * result
 					+ ((review.getModerator() == null) ? 0 : review.getModerator().getUserName().hashCode());
 			result = prime * result + ((review.getName() == null) ? 0 : review.getName().hashCode());
@@ -299,12 +292,6 @@ public final class CrucibleUtil {
 
 			result = prime * result + ((review.getState() == null) ? 0 : review.getState().name().hashCode());
 			result = prime * result + ((review.getSummary() == null) ? 0 : review.getSummary().hashCode());
-
-			miniResult = 0;
-			for (CrucibleAction action : review.getTransitions()) {
-				miniResult += ((action == null) ? 0 : action.actionName().hashCode());
-			}
-			result = prime * result + miniResult;
 
 			return result;
 		} catch (ValueNotYetInitialized e) {
