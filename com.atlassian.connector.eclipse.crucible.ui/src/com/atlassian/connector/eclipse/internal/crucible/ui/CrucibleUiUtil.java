@@ -21,6 +21,7 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
+import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -93,9 +94,31 @@ public final class CrucibleUiUtil {
 	}
 
 	public static boolean hasCurrentUserCompletedReview(Review review) {
+		String currentUser = getCurrentUser(review);
+		return CrucibleUtil.isUserCompleted(currentUser, review);
+	}
+
+	public static String getCurrentUser(Review review) {
 		String currentUser = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
 				CrucibleUiUtil.getCrucibleTaskRepository(review)).getUserName();
-		return CrucibleUtil.isUserCompleted(currentUser, review);
+		return currentUser;
+	}
+
+	public static boolean isUserReviewer(String userName, Review review) {
+		try {
+			for (Reviewer reviewer : review.getReviewers()) {
+				if (reviewer.getUserName().equals(userName)) {
+					return true;
+				}
+			}
+		} catch (ValueNotYetInitialized e) {
+			// ignore
+		}
+		return false;
+	}
+
+	public static boolean isCurrentUserReviewer(Review review) {
+		return isUserReviewer(CrucibleUiUtil.getCurrentUser(review), review);
 	}
 
 	public static boolean isFilePartOfActiveReview(CrucibleFile crucibleFile) {

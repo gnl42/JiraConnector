@@ -33,8 +33,10 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
@@ -95,6 +97,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.themes.IThemeManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -505,6 +508,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			try {
 				EnumSet<CrucibleAction> transitions = review.getTransitions();
 				EnumSet<CrucibleAction> actions = review.getActions();
+				State state = review.getState();
 				boolean needsSeparator = false;
 				if (actions.contains(CrucibleAction.COMPLETE) && !CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
 					createCompleteReviewAction(manager);
@@ -512,6 +516,21 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				}
 				if (actions.contains(CrucibleAction.UNCOMPLETE) && CrucibleUiUtil.hasCurrentUserCompletedReview(review)) {
 					createUncompleteReviewAction(manager);
+					needsSeparator = true;
+				}
+				if (review.isAllowReviewerToJoin()
+						&& (state == State.APPROVAL || state == State.DRAFT || state == State.REVIEW)) {
+					if (CrucibleUiUtil.isCurrentUserReviewer(review)) {
+						createLeaveReviewAction(manager);
+						needsSeparator = true;
+					} else {
+						createJoinReviewAction(manager);
+						needsSeparator = true;
+					}
+				}
+				if (actions.contains(CrucibleAction.APPROVE)
+						&& (review.getState() == State.APPROVAL || review.getState() == State.DRAFT)) {
+					createApproveReviewAction(manager);
 					needsSeparator = true;
 				}
 				if (needsSeparator) {
@@ -678,6 +697,117 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		recoverAction.setToolTipText("Recover Review");
 		recoverAction.setImageDescriptor(CrucibleImages.RECOVER);
 		manager.add(recoverAction);
+	}
+
+	private void createJoinReviewAction(IToolBarManager manager) {
+		Action joinReviewAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Join Crucible Review "
+						+ getTask().getTaskKey(), getTaskRepository()) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						final String currentUser = CrucibleUiUtil.getCurrentUser(review);
+						client.execute(new RemoteOperation<Object>(monitor, getTaskRepository()) {
+							@Override
+							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								PermId permId = new PermIdBean(CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId()));
+								server.addReviewers(serverCfg, permId, Collections.singleton(currentUser));
+								return review;
+							}
+						});
+						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+						if (CrucibleUiUtil.isUserReviewer(currentUser, review)) {
+							return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Joined Review.");
+						}
+						return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Could not join Review.");
+					}
+				};
+				schedule(job, 0L);
+			}
+		};
+		joinReviewAction.setText("Join");
+		joinReviewAction.setToolTipText("Join Review");
+		joinReviewAction.setImageDescriptor(CrucibleImages.JOIN);
+		manager.add(joinReviewAction);
+	}
+
+	private void createLeaveReviewAction(IToolBarManager manager) {
+		Action leaveReviewAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Leave Crucible Review "
+						+ getTask().getTaskKey(), getTaskRepository()) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						final String currentUser = CrucibleUiUtil.getCurrentUser(review);
+						client.execute(new RemoteOperation<Object>(monitor, getTaskRepository()) {
+							@Override
+							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								PermId permId = new PermIdBean(CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId()));
+								server.removeReviewer(serverCfg, permId, currentUser);
+								return review;
+							}
+						});
+						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+						if (CrucibleUiUtil.isUserReviewer(currentUser, review)) {
+							return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Could not leave Review.");
+						}
+						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Left Review.");
+					}
+				};
+				schedule(job, 0L);
+			}
+		};
+		leaveReviewAction.setText("Leave");
+		leaveReviewAction.setToolTipText("Leave Review");
+		leaveReviewAction.setImageDescriptor(CrucibleImages.LEAVE);
+		manager.add(leaveReviewAction);
+	}
+
+	private void createApproveReviewAction(IToolBarManager manager) {
+		final State initialState = review.getState();
+		Action approveReviewAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Approve/Start Crucible Review "
+						+ getTask().getTaskKey(), getTaskRepository()) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						final String currentUser = CrucibleUiUtil.getCurrentUser(review);
+						State state = review.getState();
+						review = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+							@Override
+							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								PermId permId = new PermIdBean(CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId()));
+								return server.approveReview(serverCfg, permId);
+							}
+						});
+						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
+						if (review.getState() == State.REVIEW) {
+							return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Review approved/started.");
+						}
+						return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Could not approve/start Review.");
+					}
+				};
+				schedule(job, 0L);
+			}
+		};
+		if (initialState == State.APPROVAL) {
+			approveReviewAction.setText("Approve");
+			approveReviewAction.setToolTipText("Approve Review");
+		} else {
+			approveReviewAction.setText("Start");
+			approveReviewAction.setToolTipText("Start Review");
+		}
+		approveReviewAction.setImageDescriptor(CrucibleImages.APPROVE);
+		manager.add(approveReviewAction);
 	}
 
 	private void createAbandonReviewAction(IToolBarManager manager) {
