@@ -82,6 +82,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -188,6 +190,37 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 	private Label initiaizingLabel;
 
+	private boolean pendingMarkRead = false;
+
+	private final IPartListener partVisibleListener = new IPartListener() {
+
+		public void partActivated(IWorkbenchPart part) {
+			if (part == getEditor()) {
+				markTaskAsRead();
+			}
+		}
+
+		public void partBroughtToTop(IWorkbenchPart part) {
+			if (part == getEditor()) {
+				markTaskAsRead();
+			}
+		}
+
+		public void partClosed(IWorkbenchPart part) {
+		}
+
+		public void partDeactivated(IWorkbenchPart part) {
+
+		}
+
+		public void partOpened(IWorkbenchPart part) {
+			if (part == getEditor()) {
+				markTaskAsRead();
+			}
+		}
+
+	};
+
 	public CrucibleReviewEditorPage(FormEditor editor, String title) {
 		super(editor, CrucibleConstants.CRUCIBLE_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractCrucibleEditorFormPart>();
@@ -203,11 +236,14 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		selectionProviderAdapter.setSelection(new StructuredSelection(getTask()));
 		site.setSelectionProvider(selectionProviderAdapter);
 		CrucibleCorePlugin.getDefault().getReviewCache().addCacheChangedListener(reviewCacheListener);
+
+		getSite().getPage().addPartListener(partVisibleListener);
 	}
 
 	@Override
 	public void dispose() {
 		CrucibleCorePlugin.getDefault().getReviewCache().removeCacheChangedListener(reviewCacheListener);
+		getSite().getPage().removePartListener(partVisibleListener);
 		super.dispose();
 		editorComposite = null;
 		toolkit = null;
@@ -850,11 +886,34 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					updateFormContent();
 				}
 				getEditor().updateHeaderToolBar();
-				TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
+				pendingMarkRead = true;
+				markTaskAsRead();
 			} else {
 				// TODO improve the message?
 				getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
 			}
+		}
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		super.setActive(active);
+		if (active) {
+			markTaskAsRead();
+		}
+	}
+
+	private void markTaskAsRead() {
+		if (pendingMarkRead) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					if (getSite().getPage().getActiveEditor() == getEditor()) {
+						TasksUiPlugin.getTaskDataManager().setTaskRead(getTask(), true);
+						pendingMarkRead = false;
+					}
+				}
+			});
+
 		}
 	}
 }
