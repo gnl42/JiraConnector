@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.jira.core.html.HTML2TextReader;
@@ -559,7 +560,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 							editableKeys.add(mapCommonAttributeKey(field.getId()));
 						}
 					}
-				} catch (JiraInsufficientPermissionException ex) {
+				} catch (JiraInsufficientPermissionException e) {
+					trace(e);
 					// flag as read-only to avoid calling getEditableAttributes() on each sync
 					data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY);
 				}
@@ -721,35 +723,40 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		// consider preserving HTML 
-		RemoteIssue remoteIssue = client.getSoapClient().getIssueByKey(jiraIssue.getKey(), monitor);
-		if (data.getRoot().getAttribute(TaskAttribute.DESCRIPTION) != null) {
-			if (remoteIssue.getDescription() == null) {
-				setAttributeValue(data, JiraAttribute.DESCRIPTION, ""); //$NON-NLS-1$
-			} else {
-				setAttributeValue(data, JiraAttribute.DESCRIPTION, remoteIssue.getDescription());
+		try {
+			RemoteIssue remoteIssue = client.getSoapClient().getIssueByKey(jiraIssue.getKey(), monitor);
+			if (data.getRoot().getAttribute(TaskAttribute.DESCRIPTION) != null) {
+				if (remoteIssue.getDescription() == null) {
+					setAttributeValue(data, JiraAttribute.DESCRIPTION, ""); //$NON-NLS-1$
+				} else {
+					setAttributeValue(data, JiraAttribute.DESCRIPTION, remoteIssue.getDescription());
+				}
 			}
-		}
-		if (data.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_ENVIRONMENT) != null) {
-			if (remoteIssue.getEnvironment() == null) {
-				setAttributeValue(data, JiraAttribute.ENVIRONMENT, ""); //$NON-NLS-1$
-			} else {
-				setAttributeValue(data, JiraAttribute.ENVIRONMENT, remoteIssue.getEnvironment());
+			if (data.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_ENVIRONMENT) != null) {
+				if (remoteIssue.getEnvironment() == null) {
+					setAttributeValue(data, JiraAttribute.ENVIRONMENT, ""); //$NON-NLS-1$
+				} else {
+					setAttributeValue(data, JiraAttribute.ENVIRONMENT, remoteIssue.getEnvironment());
+				}
 			}
-		}
-		RemoteCustomFieldValue[] fields = remoteIssue.getCustomFieldValues();
-		for (CustomField field : jiraIssue.getCustomFields()) {
-			if (field.isMarkupDetected()) {
-				innerLoop: for (RemoteCustomFieldValue remoteField : fields) {
-					if (field.getId().equals(remoteField.getCustomfieldId())) {
-						String attributeId = mapCommonAttributeKey(field.getId());
-						TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
-						if (attribute != null) {
-							attribute.setValues(Arrays.asList(remoteField.getValues()));
+			RemoteCustomFieldValue[] fields = remoteIssue.getCustomFieldValues();
+			for (CustomField field : jiraIssue.getCustomFields()) {
+				if (field.isMarkupDetected()) {
+					innerLoop: for (RemoteCustomFieldValue remoteField : fields) {
+						if (field.getId().equals(remoteField.getCustomfieldId())) {
+							String attributeId = mapCommonAttributeKey(field.getId());
+							TaskAttribute attribute = data.getRoot().getAttribute(attributeId);
+							if (attribute != null) {
+								attribute.setValues(Arrays.asList(remoteField.getValues()));
+							}
+							break innerLoop;
 						}
-						break innerLoop;
 					}
 				}
 			}
+		} catch (JiraInsufficientPermissionException e) {
+			// ignore
+			trace(e);
 		}
 		boolean retrieveComments = false;
 		for (Comment comment : jiraIssue.getComments()) {
@@ -771,9 +778,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					}
 					i++;
 				}
+			} catch (JiraInsufficientPermissionException e) {
+				// ignore
+				trace(e);
 			} catch (JiraServiceUnavailableException e) {
 				if ("Invalid element in org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteComment - level".equals(e.getMessage())) { //$NON-NLS-1$
 					// XXX ignore, see bug 260614
+					trace(e);
 				} else {
 					throw e;
 				}
@@ -808,17 +819,23 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				return;
 			}
 		}
-		JiraWorkLog[] remoteWorklogs = client.getWorklogs(jiraIssue.getKey(), monitor);
-		if (remoteWorklogs != null) {
-			int i = 1;
-			for (JiraWorkLog remoteWorklog : remoteWorklogs) {
-				String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i; //$NON-NLS-1$
-				TaskAttribute attribute = data.getRoot().createAttribute(attributeId);
-				attribute.getMetaData().setType(WorkLogConverter.TYPE_WORKLOG);
-				new WorkLogConverter().applyTo(remoteWorklog, attribute);
-				i++;
+		try {
+			JiraWorkLog[] remoteWorklogs = client.getWorklogs(jiraIssue.getKey(), monitor);
+			if (remoteWorklogs != null) {
+				int i = 1;
+				for (JiraWorkLog remoteWorklog : remoteWorklogs) {
+					String attributeId = WorkLogConverter.PREFIX_WORKLOG + "-" + i; //$NON-NLS-1$
+					TaskAttribute attribute = data.getRoot().createAttribute(attributeId);
+					attribute.getMetaData().setType(WorkLogConverter.TYPE_WORKLOG);
+					new WorkLogConverter().applyTo(remoteWorklog, attribute);
+					i++;
+				}
+			} else {
+				data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED);
 			}
-		} else {
+		} catch (JiraInsufficientPermissionException e) {
+			// ignore
+			trace(e);
 			data.getRoot().createAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED);
 		}
 	}
@@ -1188,6 +1205,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	private static void trace(IStatus status) {
 		if (TRACE_ENABLED) {
 			JiraCorePlugin.getDefault().getLog().log(status);
+		}
+	}
+
+	private static void trace(Exception e) {
+		if (TRACE_ENABLED) {
+			JiraCorePlugin.getDefault().getLog().log(
+					new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, "Error receiving infromation from JIRA", e)); //$NON-NLS-1$
 		}
 	}
 
