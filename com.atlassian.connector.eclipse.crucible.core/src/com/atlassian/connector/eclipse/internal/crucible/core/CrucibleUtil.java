@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
@@ -374,4 +375,152 @@ public final class CrucibleUtil {
 		}
 		return false;
 	}
+
+	// TODO add a param for whether it should be a deep comaparison?
+	public static boolean areVersionedCommentsDeepEquals(VersionedComment c1, VersionedComment c2) {
+		if (c1 == c2) {
+			return true;
+		}
+
+		if (!areCommentsEqual(c1, c2)) {
+			return false;
+		}
+
+		if (c1.getFromEndLine() != c2.getFromEndLine()) {
+			return false;
+		}
+		if (c1.isFromLineInfo() != c2.isFromLineInfo()) {
+			return false;
+		}
+		if (c1.getFromStartLine() != c2.getFromStartLine()) {
+			return false;
+		}
+		if (c1.getToEndLine() != c2.getToEndLine()) {
+			return false;
+		}
+		if (c1.isToLineInfo() != c2.isToLineInfo()) {
+			return false;
+		}
+		if (c1.getToStartLine() != c2.getToStartLine()) {
+			return false;
+		}
+		if (c1.getReplies() != null ? !c1.getReplies().equals(c2.getReplies()) : c2.getReplies() != null) {
+			return false;
+		}
+
+		if (c1.getReplies().size() != c2.getReplies().size()) {
+			return false;
+		}
+
+		for (VersionedComment vc1 : c1.getReplies()) {
+			boolean found = false;
+			for (VersionedComment vc2 : c2.getReplies()) {
+				if (vc1.getPermId() == vc2.getPermId() && areVersionedCommentsDeepEquals(vc1, vc2)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean areCommentsEqual(Comment c1, Comment c2) {
+		if (c1.isDefectApproved() != c2.isDefectApproved()) {
+			return false;
+		}
+		if (c1.isDefectRaised() != c2.isDefectRaised()) {
+			return false;
+		}
+		if (c1.isDeleted() != c2.isDeleted()) {
+			return false;
+		}
+		if (c1.isDraft() != c2.isDraft()) {
+			return false;
+		}
+		if (c1.isReply() != c2.isReply()) {
+			return false;
+		}
+		if (c1.getAuthor() != null ? !c1.getAuthor().equals(c2.getAuthor()) : c2.getAuthor() != null) {
+			return false;
+		}
+		if (c1.getCreateDate() != null ? !c1.getCreateDate().equals(c2.getCreateDate()) : c2.getCreateDate() != null) {
+			return false;
+		}
+		if (c1.getCustomFields() != null ? !c1.getCustomFields().equals(c2.getCustomFields())
+				: c2.getCustomFields() != null) {
+			return false;
+		}
+		if (c1.getMessage() != null ? !c1.getMessage().equals(c2.getMessage()) : c2.getMessage() != null) {
+			return false;
+		}
+		if (c1.getPermId() != null ? !c1.getPermId().equals(c2.getPermId()) : c2.getPermId() != null) {
+			return false;
+		}
+		return true;
+	}
+
+	// TODO add a param for whether it should be a deep comaparison?
+	public static boolean areCrucibleFilesDeepEqual(CrucibleFileInfo file, CrucibleFileInfo file2) {
+		if (file.getPermId() != null ? file.getPermId().getId().equals(file2.getPermId().getId())
+				: file2.getPermId() != null) {
+			return false;
+		}
+
+		if (file.getNumberOfComments() != file2.getNumberOfComments()) {
+			return false;
+		}
+		for (VersionedComment comment : file.getVersionedComments()) {
+			boolean found = false;
+			for (VersionedComment comment2 : file2.getVersionedComments()) {
+				if (CrucibleUtil.areVersionedCommentsDeepEquals(comment, comment2)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	// TODO add a param for whether it should be a deep comaparison?
+	public static boolean areGeneralCommentsDeepEquals(GeneralComment c1, GeneralComment c2) {
+		if (c1 == c2) {
+			return true;
+		}
+
+		if (!areCommentsEqual(c1, c2)) {
+			return false;
+		}
+
+		if (c1.getReplies() != null ? !c1.getReplies().equals(c2.getReplies()) : c2.getReplies() != null) {
+			return false;
+		}
+
+		if (c1.getReplies().size() != c2.getReplies().size()) {
+			return false;
+		}
+
+		for (GeneralComment vc1 : c1.getReplies()) {
+			boolean found = false;
+			for (GeneralComment vc2 : c2.getReplies()) {
+				if (vc1.getPermId() == vc2.getPermId() && areGeneralCommentsDeepEquals(vc1, vc2)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 }

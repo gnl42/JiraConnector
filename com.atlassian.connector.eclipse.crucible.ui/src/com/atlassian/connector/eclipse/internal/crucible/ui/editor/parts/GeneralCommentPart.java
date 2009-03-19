@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -101,7 +102,7 @@ public class GeneralCommentPart extends CommentPart<GeneralComment, GeneralComme
 
 		this.crucibleReview = newReview;
 		// TODO update the text 
-		if (!newComment.equals(comment)) {
+		if (!CrucibleUtil.areGeneralCommentsDeepEquals(newComment, generalComment)) {
 			if (newComment instanceof GeneralComment) {
 				this.generalComment = newComment;
 			}

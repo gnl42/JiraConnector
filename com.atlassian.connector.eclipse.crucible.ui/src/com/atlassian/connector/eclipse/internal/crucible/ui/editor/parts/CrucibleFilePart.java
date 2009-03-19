@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparator;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
@@ -25,7 +26,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.FileType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -230,7 +230,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 	public Control update(Composite parentComposite, FormToolkit toolkit, CrucibleFileInfo file, Review crucibleReview) {
 		this.crucibleReview = crucibleReview;
 		// TODO update the text 
-		if (!areEqual(file, crucibleFile)) {
+		if (!CrucibleUtil.areCrucibleFilesDeepEqual(file, crucibleFile)) {
 			this.crucibleFile = file;
 			Control createControl = createOrUpdateControl(parentComposite, toolkit);
 
@@ -260,25 +260,6 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 			return getSection();
 		}
 
-	}
-
-	private boolean areEqual(CrucibleFileInfo file, CrucibleFileInfo crucibleFile2) {
-		if (file.getNumberOfComments() == crucibleFile2.getNumberOfComments()) {
-			for (VersionedComment comment : file.getVersionedComments()) {
-				VersionedCommentBean commentBean = (VersionedCommentBean) comment;
-				boolean found = false;
-				for (VersionedComment comment2 : crucibleFile2.getVersionedComments()) {
-					if (commentBean.deepEquals(comment2)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					return false;
-				}
-			}
-		}
-		return false;
 	}
 
 	public void dispose() {

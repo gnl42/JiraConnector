@@ -196,8 +196,6 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 							commentControl.moveAbove(parentComposite.getChildren()[0]);
 						}
 						prevControl = commentControl;
-					} else {
-						System.out.println("!!!!!!!!!!");
 					}
 
 					newParts.add(oldPart);

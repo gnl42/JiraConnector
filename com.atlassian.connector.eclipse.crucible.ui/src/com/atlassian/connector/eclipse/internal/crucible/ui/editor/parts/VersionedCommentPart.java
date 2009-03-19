@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
@@ -20,7 +21,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
-import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -167,7 +167,8 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 		this.crucibleReview = newReview;
 		// TODO update the text 
-		if (newComment instanceof VersionedCommentBean && !deepEquals(((VersionedCommentBean) newComment), comment)) {
+		if (newComment instanceof VersionedComment
+				&& !CrucibleUtil.areVersionedCommentsDeepEquals(newComment, versionedComment)) {
 			if (newComment instanceof VersionedComment) {
 				this.versionedComment = newComment;
 			}
@@ -179,64 +180,6 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 		}
 		return getSection();
-	}
-
-	/**
-	 * Temporarily Copied from VersionedCommentBean
-	 */
-	public boolean deepEquals(VersionedCommentBean c1, Object o) {
-		if (c1 == o) {
-			return true;
-		}
-		if (!(o instanceof VersionedCommentBean)) {
-			return false;
-		}
-		if (!c1.equals(o)) {
-			return false;
-		}
-
-		VersionedCommentBean that = (VersionedCommentBean) o;
-
-		if (c1.getFromEndLine() != that.getFromEndLine()) {
-			return false;
-		}
-		if (c1.isFromLineInfo() != that.isFromLineInfo()) {
-			return false;
-		}
-		if (c1.getFromStartLine() != that.getFromStartLine()) {
-			return false;
-		}
-		if (c1.getToEndLine() != that.getToEndLine()) {
-			return false;
-		}
-		if (c1.isToLineInfo() != that.isToLineInfo()) {
-			return false;
-		}
-		if (c1.getToStartLine() != that.getToStartLine()) {
-			return false;
-		}
-		if (c1.getReplies() != null ? !c1.getReplies().equals(that.getReplies()) : that.getReplies() != null) {
-			return false;
-		}
-
-		if (c1.getReplies().size() != that.getReplies().size()) {
-			return false;
-		}
-
-		for (VersionedComment vc : c1.getReplies()) {
-			boolean found = false;
-			for (VersionedComment tvc : that.getReplies()) {
-				if (vc.getPermId() == tvc.getPermId() && ((VersionedCommentBean) vc).deepEquals(vc)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	// TODO handle changed highlighting properly

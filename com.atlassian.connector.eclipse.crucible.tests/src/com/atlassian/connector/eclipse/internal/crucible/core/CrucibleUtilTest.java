@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
@@ -26,6 +27,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewerBean;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 
 import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
@@ -595,5 +597,156 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.isUserCompleted(username, review));
 
 		assertFalse(CrucibleUtil.isUserCompleted(username2, review));
+	}
+
+	public void testVersionedCommentDeepEquals() {
+		VersionedCommentBean c1 = new VersionedCommentBean();
+		c1.setAuthor(new UserBean("sminto"));
+		c1.setCreateDate(new Date(2L));
+		c1.setDraft(true);
+		c1.setMessage("testing message");
+		c1.setToStartLine(1);
+		c1.setToEndLine(12);
+
+		VersionedCommentBean c2 = new VersionedCommentBean();
+		c2.setAuthor(new UserBean("sminto"));
+		c2.setCreateDate(new Date(2L));
+		c2.setDraft(true);
+		c2.setMessage("testing message");
+		c2.setToStartLine(1);
+		c2.setToEndLine(12);
+
+		assertTrue(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		VersionedCommentBean r1 = new VersionedCommentBean();
+		r1.setAuthor(new UserBean("sminto"));
+		r1.setCreateDate(new Date(2L));
+		r1.setDraft(true);
+		r1.setMessage("testing message");
+		r1.setToStartLine(1);
+		r1.setToEndLine(12);
+		r1.setReply(true);
+
+		VersionedCommentBean r2 = new VersionedCommentBean();
+		r2.setAuthor(new UserBean("sminto"));
+		r2.setCreateDate(new Date(2L));
+		r2.setDraft(true);
+		r2.setMessage("testing message");
+		r2.setToStartLine(1);
+		r2.setToEndLine(12);
+		r2.setReply(true);
+
+		c1.addReply(r1);
+		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		c2.addReply(r2);
+		assertTrue(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		r2.setMessage("test");
+		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		c2.setMessage("test");
+		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+	}
+
+	public void testGeneralCommentDeepEquals() {
+		GeneralCommentBean c1 = new GeneralCommentBean();
+		c1.setAuthor(new UserBean("sminto"));
+		c1.setCreateDate(new Date(2L));
+		c1.setDraft(true);
+		c1.setMessage("testing message");
+
+		GeneralCommentBean c2 = new GeneralCommentBean();
+		c2.setAuthor(new UserBean("sminto"));
+		c2.setCreateDate(new Date(2L));
+		c2.setDraft(true);
+		c2.setMessage("testing message");
+
+		assertTrue(CrucibleUtil.areGeneralCommentsDeepEquals(c1, c2));
+
+		GeneralCommentBean r1 = new GeneralCommentBean();
+		r1.setAuthor(new UserBean("sminto"));
+		r1.setCreateDate(new Date(2L));
+		r1.setDraft(true);
+		r1.setMessage("testing message");
+		r1.setReply(true);
+
+		GeneralCommentBean r2 = new GeneralCommentBean();
+		r2.setAuthor(new UserBean("sminto"));
+		r2.setCreateDate(new Date(2L));
+		r2.setDraft(true);
+		r2.setMessage("testing message");
+		r2.setReply(true);
+
+		c1.addReply(r1);
+		assertFalse(CrucibleUtil.areGeneralCommentsDeepEquals(c1, c2));
+
+		c2.addReply(r2);
+		assertTrue(CrucibleUtil.areGeneralCommentsDeepEquals(c1, c2));
+
+		r2.setMessage("test");
+		assertFalse(CrucibleUtil.areGeneralCommentsDeepEquals(c1, c2));
+
+		c2.setMessage("test");
+		assertFalse(CrucibleUtil.areGeneralCommentsDeepEquals(c1, c2));
+	}
+
+	public void testCrucibleFileDeepEquals() {
+
+		CrucibleFileInfoImpl f1 = new CrucibleFileInfoImpl(null, null, null);
+		CrucibleFileInfoImpl f2 = new CrucibleFileInfoImpl(null, null, null);
+
+		assertTrue(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
+
+		VersionedCommentBean c1 = new VersionedCommentBean();
+		c1.setAuthor(new UserBean("sminto"));
+		c1.setCreateDate(new Date(2L));
+		c1.setDraft(true);
+		c1.setMessage("testing message");
+		c1.setToStartLine(1);
+		c1.setToEndLine(12);
+
+		VersionedCommentBean c2 = new VersionedCommentBean();
+		c2.setAuthor(new UserBean("sminto"));
+		c2.setCreateDate(new Date(2L));
+		c2.setDraft(true);
+		c2.setMessage("testing message");
+		c2.setToStartLine(1);
+		c2.setToEndLine(12);
+
+		f1.addComment(c1);
+		f2.addComment(c2);
+
+		assertTrue(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
+
+		VersionedCommentBean r1 = new VersionedCommentBean();
+		r1.setAuthor(new UserBean("sminto"));
+		r1.setCreateDate(new Date(2L));
+		r1.setDraft(true);
+		r1.setMessage("testing message");
+		r1.setToStartLine(1);
+		r1.setToEndLine(12);
+		r1.setReply(true);
+
+		VersionedCommentBean r2 = new VersionedCommentBean();
+		r2.setAuthor(new UserBean("sminto"));
+		r2.setCreateDate(new Date(2L));
+		r2.setDraft(true);
+		r2.setMessage("testing message");
+		r2.setToStartLine(1);
+		r2.setToEndLine(12);
+		r2.setReply(true);
+
+		c1.addReply(r1);
+		assertFalse(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
+
+		c2.addReply(r2);
+		assertTrue(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
+
+		r2.setMessage("test");
+		assertFalse(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
+
+		c2.setMessage("test");
+		assertFalse(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
 	}
 }
