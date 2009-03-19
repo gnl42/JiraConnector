@@ -48,7 +48,7 @@ public final class TeamMessageUtils {
 //		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
 		String message = "Unable to open file.  Please check that:\n\n"
 				+ "- The enclosing project the project is checkd out at the latest revision.\n"
-				+ "- The file has not been moved or deleted since the creation of the review"
+				+ "- The file has not been moved or deleted since the creation of the review\n"
 				+ "- You are using a supported team provider. Supported providers: Subclipse";
 
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
@@ -72,7 +72,7 @@ public final class TeamMessageUtils {
 //		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
 		String message = "Unable to open file.  Please check that:\n\n"
 				+ "- The enclosing project the project is checkd out at the latest revision.\n"
-				+ "- The file has not been moved or deleted since the creation of the review"
+				+ "- The file has not been moved or deleted since the creation of the review\n"
 				+ "- You are using a supported team provider. Supported providers: Subclipse";
 
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
@@ -118,7 +118,7 @@ public final class TeamMessageUtils {
 //		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
 		String message = "Unable to compare revisions.  Please check that:\n\n"
 				+ "- The enclosing project the project is checkd out at the latest revision.\n"
-				+ "- The file has not been moved or deleted since the creation of the review"
+				+ "- The file has not been moved or deleted since the creation of the review\n"
 				+ "- You are using a supported team provider. Supported providers: Subclipse";
 
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
