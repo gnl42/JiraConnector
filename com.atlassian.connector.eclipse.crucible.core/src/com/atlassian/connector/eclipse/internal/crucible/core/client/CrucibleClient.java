@@ -131,26 +131,7 @@ public class CrucibleClient {
 
 	private <T> T executeRetry(RemoteOperation<T> op, IProgressMonitor monitor, Exception e) throws CoreException {
 		try {
-			AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-			String oldUserName = "";
-			String oldPassword = "";
-			if (credentials != null) {
-				oldUserName = credentials.getUserName();
-				oldPassword = credentials.getPassword();
-			}
 			location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-
-			String newUserName = "";
-			String newPassword = "";
-			if (credentials != null) {
-				newUserName = credentials.getUserName();
-				newPassword = credentials.getPassword();
-			}
-
-			if (newUserName == null || newPassword == null
-					|| (newUserName.equals(oldUserName) && newPassword.equals(oldPassword))) {
-				throw new UnsupportedRequestException();
-			}
 		} catch (UnsupportedRequestException ex) {
 			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
 					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));

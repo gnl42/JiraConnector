@@ -139,6 +139,7 @@ public class ActiveReviewManager implements ITaskActivationListener, IReviewCach
 			tasks.add(getActiveTask());
 			synchronizeJob = TasksUiPlugin.getTaskJobFactory().createSynchronizeTasksJob(
 					CrucibleCorePlugin.getRepositoryConnector(), tasks);
+			synchronizeJob.setUser(false);
 			synchronizeJob.addJobChangeListener(refreshJobRescheduler);
 			synchronizeJob.schedule(ACTIVE_REVIEW_POLLING_INTERVAL);
 		}
