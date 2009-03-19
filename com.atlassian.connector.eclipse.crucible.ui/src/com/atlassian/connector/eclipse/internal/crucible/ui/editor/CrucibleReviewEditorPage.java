@@ -579,7 +579,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 	private boolean canJoinOrLeaveReview() {
 		State state = review.getState();
 		User moderator = review.getModerator();
-		String moderatorName = moderator == null ? null : moderator.getUserName();
+		String moderatorName = moderator == null ? "" : moderator.getUserName();
 		return review.isAllowReviewerToJoin() && !moderatorName.equals(CrucibleUiUtil.getCurrentUser(review))
 				&& (state == State.APPROVAL || state == State.DRAFT || state == State.REVIEW);
 	}
