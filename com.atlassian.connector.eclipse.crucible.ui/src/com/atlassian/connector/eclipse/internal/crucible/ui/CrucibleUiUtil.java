@@ -133,9 +133,10 @@ public final class CrucibleUiUtil {
 				activate = false;
 			} else {
 				// Ask the user whether to switch
-				final MessageDialogWithToggle m = MessageDialogWithToggle.openYesNoQuestion(null, "Review Activation",
-						"Review comments will only be visible in Java / Compare editors if the corresponding review is active."
-								+ "\n\nAn active review also helps tracking the context, as well as the time spent",
+				final MessageDialogWithToggle m = MessageDialogWithToggle.openYesNoQuestion(
+						null,
+						"Activate Review",
+						"Review comments will only be visible in editors if the corresponding review is active.\n\nWould you like to activate this review?",
 						"Remember my decision", false, CrucibleUiPlugin.getDefault().getPreferenceStore(),
 						CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW);
 
