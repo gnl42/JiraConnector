@@ -530,7 +530,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+						client.execute(new RemoteOperation<Review>(monitor) {
 							@Override
 							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -560,7 +560,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Object>(monitor, getTaskRepository()) {
+						client.execute(new RemoteOperation<Object>(monitor) {
 							@Override
 							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -591,7 +591,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Object>(monitor, getTaskRepository()) {
+						client.execute(new RemoteOperation<Object>(monitor) {
 							@Override
 							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -622,7 +622,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+						client.execute(new RemoteOperation<Review>(monitor) {
 							@Override
 							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -657,7 +657,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 							+ getTask().getTaskKey(), getTaskRepository()) {
 						@Override
 						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-							client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+							client.execute(new RemoteOperation<Review>(monitor) {
 								@Override
 								public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 										IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -688,7 +688,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+						client.execute(new RemoteOperation<Review>(monitor) {
 							@Override
 							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -828,7 +828,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						if (initiaizingLabel != null && !initiaizingLabel.isDisposed()) {
 							String message0 = "";
 							String message1 = "";
-							if (status != null) {
+							if (status != null && status.getMessage() != null) {
 								message0 = status.getMessage().trim() + ".";
 								if (force) {
 									message1 = "\nSee Error log for more details.";
