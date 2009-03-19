@@ -61,7 +61,7 @@ public class CrucibleReviewersPart {
 		layout.marginRight = 0;
 		layout.marginLeft = 0;
 		layout.marginWidth = 0;
-		layout.spacing = 0;
+		layout.spacing = 1;
 		reviewersComposite.setLayout(layout);
 		if (reviewers.isEmpty()) {
 			// avoid blank gap on Linux
@@ -78,12 +78,9 @@ public class CrucibleReviewersPart {
 					imageLabel.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_COMPLETE));
 				}
 
-				// XXX padding
-				String paddingText = " ";
 				if (iterator.hasNext()) {
-					paddingText = ", ";
+					createReadOnlyText(toolkit, reviewersComposite, ", ", null, false);
 				}
-				createLabelControl(toolkit, reviewersComposite, paddingText);
 			}
 		}
 		//CHECKSTYLE:MAGIC:ON
