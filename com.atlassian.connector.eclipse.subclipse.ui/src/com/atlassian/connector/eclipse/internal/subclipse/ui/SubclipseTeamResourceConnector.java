@@ -244,9 +244,19 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				for (CrucibleFileInfo file : activeReview.getFiles()) {
 					VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
 					VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
-					SVNUrl newFileUrl = new SVNUrl(getAbsoluteUrl(fileDescriptor));
-					SVNUrl oldFileUrl = new SVNUrl(getAbsoluteUrl(oldFileDescriptor));
-					if (newFileUrl.equals(fileUrl) || oldFileUrl.equals(fileUrl)) {
+					SVNUrl newFileUrl = null;
+					String newAbsoluteUrl = getAbsoluteUrl(fileDescriptor);
+					if (newAbsoluteUrl != null) {
+						newFileUrl = new SVNUrl(newAbsoluteUrl);
+					}
+
+					SVNUrl oldFileUrl = null;
+					String oldAbsoluteUrl = getAbsoluteUrl(oldFileDescriptor);
+					if (oldAbsoluteUrl != null) {
+						oldFileUrl = new SVNUrl(oldAbsoluteUrl);
+					}
+					if ((newFileUrl != null && newFileUrl.equals(fileUrl))
+							|| (oldFileUrl != null && oldFileUrl.equals(fileUrl))) {
 						if (revision.equals(fileDescriptor.getRevision())) {
 							return new CrucibleFile(file, false);
 						}
