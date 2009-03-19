@@ -74,7 +74,7 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 			try {
 				if (!discardDrafts) {
 					//post all drafts
-					RemoteOperation<Object> publishDraftsOp = new RemoteOperation<Object>(monitor) {
+					RemoteOperation<Object> publishDraftsOp = new RemoteOperation<Object>(monitor, getTaskRepository()) {
 						@Override
 						public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 								IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -87,7 +87,7 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 					updatedReview = client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 				}
 				//summarize
-				RemoteOperation<Object> summarizeOp = new RemoteOperation<Object>(monitor) {
+				RemoteOperation<Object> summarizeOp = new RemoteOperation<Object>(monitor, getTaskRepository()) {
 					@Override
 					public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {

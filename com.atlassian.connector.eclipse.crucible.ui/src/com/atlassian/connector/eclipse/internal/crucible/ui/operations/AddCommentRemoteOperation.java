@@ -63,7 +63,7 @@ public final class AddCommentRemoteOperation extends CrucibleClient.RemoteOperat
 
 	public AddCommentRemoteOperation(TaskRepository repository, Review review, CrucibleClient client,
 			CrucibleFile reviewItem, String newComment, IProgressMonitor monitor) {
-		super(monitor);
+		super(monitor, repository);
 		this.review = review;
 		this.client = client;
 		this.reviewItem = reviewItem;

@@ -50,9 +50,9 @@ public class EclipseCrucibleServerCfgTest extends TestCase {
 
 		assertFalse(cfg1.hashCode() == cfg2.hashCode());
 		assertFalse(cfg1.hashCode() == cfg5.hashCode());
-		assertFalse(cfg1.hashCode() == cfg4.hashCode());
-		assertFalse(cfg2.hashCode() == cfg5.hashCode());
 		assertFalse(cfg4.hashCode() == cfg5.hashCode());
+		assertTrue(cfg2.hashCode() == cfg5.hashCode()); // different passwords do not mean different servers
+		assertTrue(cfg1.hashCode() == cfg4.hashCode()); // different passwords do not mean different servers
 
 		cfg1.setUsername("use");
 		cfg2.setUsername("use");
@@ -114,9 +114,9 @@ public class EclipseCrucibleServerCfgTest extends TestCase {
 
 		assertFalse(cfg1.equals(cfg2));
 		assertFalse(cfg1.equals(cfg5));
-		assertFalse(cfg1.equals(cfg4));
-		assertFalse(cfg2.equals(cfg5));
 		assertFalse(cfg4.equals(cfg5));
+		assertTrue(cfg2.equals(cfg5)); // different passwords do not mean different servers
+		assertTrue(cfg1.equals(cfg4)); // different passwords do not mean different servers
 
 		cfg1.setUsername("use");
 		cfg2.setUsername("use");

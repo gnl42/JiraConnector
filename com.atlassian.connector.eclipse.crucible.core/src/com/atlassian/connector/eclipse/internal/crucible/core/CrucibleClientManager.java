@@ -60,6 +60,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 
 		CrucibleClient client = super.getClient(taskRepository);
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
+		client.updateLocation(location);
 		CrucibleServerCfg serverCfg = getServerCfg(location, taskRepository, false);
 		updateHttpSessionCallback(location, serverCfg);
 

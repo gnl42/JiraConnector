@@ -167,7 +167,7 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 	public void updateRepositoryConfiguration(TaskRepository taskRepository, IProgressMonitor monitor)
 			throws CoreException {
 		CrucibleClient client = getClientManager().getClient(taskRepository);
-		client.updateRepositoryData(monitor);
+		client.updateRepositoryData(monitor, taskRepository);
 
 	}
 
