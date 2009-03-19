@@ -46,6 +46,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -119,6 +120,9 @@ public class CrucibleClient {
 		} catch (CrucibleLoginException e) {
 			return executeRetry(op, monitor, e);
 		} catch (RemoteApiLoginException e) {
+			if (e.getCause() instanceof IOException) {
+				throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
+			}
 			return executeRetry(op, monitor, e);
 		} catch (ServerPasswordNotProvidedException e) {
 			return executeRetry(op, monitor, e);
