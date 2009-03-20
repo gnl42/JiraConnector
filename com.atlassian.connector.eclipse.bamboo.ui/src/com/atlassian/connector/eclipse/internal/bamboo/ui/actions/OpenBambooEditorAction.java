@@ -61,7 +61,7 @@ public class OpenBambooEditorAction extends BaseSelectionListenerAction {
 						StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 								"Failed to open Bamboo Rich Editor: no available workbench window. Please try again."));
 					} else {
-						window.getActivePage().openEditor(input, BambooEditor.ID, true);
+						window.getActivePage().openEditor(input, BambooEditor.ID);
 					}
 				} catch (PartInitException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
