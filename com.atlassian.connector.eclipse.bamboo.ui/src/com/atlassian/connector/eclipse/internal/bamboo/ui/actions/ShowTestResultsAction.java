@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.CompositeJavaProject;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
@@ -31,6 +30,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.junit.launcher.AssertionVMArg;
 import org.eclipse.jdt.internal.junit.launcher.JUnitLaunchConfigurationConstants;
@@ -46,13 +46,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Action to open the Test Results
@@ -127,45 +126,60 @@ public class ShowTestResultsAction extends AbstractBambooAction {
 	}
 
 	private void showJUnitView(final File testResults, final String buildKey) {
-		Display.getDefault().asyncExec(new Runnable() {
-			@SuppressWarnings("restriction")
-			public void run() {
-				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-							TestRunnerViewPart.NAME);
-					final IJavaProject[] javaProjectsTmp = JavaModelManager.getJavaModelManager()
-							.getJavaModel()
-							.getJavaProjects();
-					final Collection<IJavaProject> javaProjects = Arrays.asList(javaProjectsTmp);
-					final CompositeJavaProject compositeProject = new CompositeJavaProject(javaProjects);
-//						final IJavaProject[] javaProjectsTmp = JavaCore.create(
-//								ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
-					final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, compositeProject) {
+		try {
+			Display.getDefault().asyncExec(new Runnable() {
+				@SuppressWarnings("restriction")
+				public void run() {
+					try {
+						// FIXME add null check for active workbench window
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+								TestRunnerViewPart.NAME);
+						final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, null) {
 
-						@Override
-						public boolean rerunTest(String testId, String className, String testName, String launchMode)
-								throws CoreException {
-							String name = className;
-							if (testName != null) {
-								name += "." + testName; //$NON-NLS-1$
+							@Override
+							public boolean rerunTest(String testId, String className, String testName, String launchMode)
+									throws CoreException {
+								String name = className;
+								if (testName != null) {
+									name += "." + testName; //$NON-NLS-1$
+								}
+								final IType testElement = /*compositeProject.*/findType(className);
+								if (testElement == null) {
+									throw new CoreException(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+											"Cannot find Java project which contains class " + className + "."));
+								}
+								final ILaunchConfigurationWorkingCopy newCfg = createLaunchConfiguration(testElement);
+								newCfg.launch(launchMode, null);
+								return true;
 							}
-							final IType testElement = compositeProject.findType(className);
-							if (testElement == null) {
-								throw new CoreException(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-										"Cannot find Java project which contains class " + className + "."));
+
+							private IType findType(String fullyQualifiedName) throws JavaModelException {
+								final IJavaProject[] projects = JavaModelManager.getJavaModelManager()
+										.getJavaModel()
+										.getJavaProjects();
+								for (IJavaProject project : projects) {
+									final IType itype = project.findType(fullyQualifiedName);
+									if (itype != null && itype.getResource().getProject().equals(project.getProject())) {
+										return itype;
+									}
+								}
+								return null;
 							}
-							final ILaunchConfigurationWorkingCopy newCfg = createLaunchConfiguration(testElement);
-							newCfg.launch(launchMode, null);
-							return true;
-						}
-					};
-					JUnitModel.importIntoTestRunSession(testResults, trs);
-					JUnitPlugin.getModel().addTestRunSession(trs);
-				} catch (Exception e) {
-					StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View"));
+						};
+						JUnitModel.importIntoTestRunSession(testResults, trs);
+						JUnitPlugin.getModel().addTestRunSession(trs);
+					} catch (Exception e) {
+						StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+								"Error opening JUnit View"));
+					}
 				}
-			}
-		});
+			});
+		} catch (NoClassDefFoundError e) {
+			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Failed to open test results", e));
+			TasksUiInternal.asyncDisplayStatus("JUnit not available", new Status(IStatus.ERROR,
+					BambooUiPlugin.PLUGIN_ID,
+					"Error opening JUnit View: JUnit is not available. See error log for details."));
+		}
 	}
 
 	/**
