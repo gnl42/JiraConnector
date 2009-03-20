@@ -74,9 +74,17 @@ public class CrucibleClient {
 
 		private final TaskRepository taskRepository;
 
+		private final boolean requestCredentials;
+
 		public RemoteOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
+			this(monitor, taskRepository, true);
+		}
+
+		public RemoteOperation(IProgressMonitor monitor, TaskRepository taskRepository, boolean requestCredentials) {
 			this.taskRepository = taskRepository;
+			this.requestCredentials = requestCredentials;
 			this.fMonitor = Policy.monitorFor(monitor);
+
 		}
 
 		public TaskRepository getTaskRepository() {
@@ -89,6 +97,10 @@ public class CrucibleClient {
 
 		public abstract T run(CrucibleServerFacade server, CrucibleServerCfg serverCfg, IProgressMonitor monitor)
 				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
+
+		public boolean shoudRequestCredentials() {
+			return requestCredentials;
+		}
 
 	}
 
@@ -104,9 +116,11 @@ public class CrucibleClient {
 	public <T> T execute(RemoteOperation<T> op) throws CoreException {
 		IProgressMonitor monitor = op.getMonitor();
 		TaskRepository taskRepository = op.getTaskRepository();
+		boolean requestCredentials = op.shoudRequestCredentials();
 		try {
 
-			if (taskRepository.getCredentials(AuthenticationType.REPOSITORY).getPassword().length() < 1) {
+			if (taskRepository.getCredentials(AuthenticationType.REPOSITORY).getPassword().length() < 1
+					&& requestCredentials) {
 				try {
 					location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
 				} catch (UnsupportedRequestException e) {
@@ -118,14 +132,14 @@ public class CrucibleClient {
 			updateServer();
 			return op.run(crucibleServer, crucibleServerCfg, op.getMonitor());
 		} catch (CrucibleLoginException e) {
-			return executeRetry(op, monitor, e);
+			return executeRetry(op, monitor, e, requestCredentials);
 		} catch (RemoteApiLoginException e) {
 			if (e.getCause() instanceof IOException) {
 				throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
 			}
-			return executeRetry(op, monitor, e);
+			return executeRetry(op, monitor, e, requestCredentials);
 		} catch (ServerPasswordNotProvidedException e) {
-			return executeRetry(op, monitor, e);
+			return executeRetry(op, monitor, e, requestCredentials);
 		} catch (RemoteApiException e) {
 			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
 		} finally {
@@ -133,14 +147,19 @@ public class CrucibleClient {
 		}
 	}
 
-	private <T> T executeRetry(RemoteOperation<T> op, IProgressMonitor monitor, Exception e) throws CoreException {
-		try {
-			location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-		} catch (UnsupportedRequestException ex) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
+	private <T> T executeRetry(RemoteOperation<T> op, IProgressMonitor monitor, Exception e, boolean requestCredentials)
+			throws CoreException {
+		if (requestCredentials) {
+			try {
+				location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
+			} catch (UnsupportedRequestException ex) {
+				throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
+						RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
+			}
+			return execute(op);
+		} else {
+			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
 		}
-		return execute(op);
 	}
 
 	public String getUserName() {
@@ -163,7 +182,7 @@ public class CrucibleClient {
 	}
 
 	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
-		execute(new RemoteOperation<Object>(monitor, taskRepository) {
+		execute(new RemoteOperation<Object>(monitor, taskRepository, false) {
 			@Override
 			public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
