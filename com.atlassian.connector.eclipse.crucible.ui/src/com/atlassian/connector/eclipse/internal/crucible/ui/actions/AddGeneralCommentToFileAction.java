@@ -47,6 +47,10 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 		super("Create General File Comment...");
 		super.review = review;
 		this.crucibleFile = file;
+
+		if (review != null && crucibleFile != null) {
+			setEnabled(CrucibleUtil.canAddCommentToReview(review));
+		}
 	}
 
 	@Override
