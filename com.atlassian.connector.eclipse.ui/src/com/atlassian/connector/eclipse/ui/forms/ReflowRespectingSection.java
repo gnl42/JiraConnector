@@ -67,7 +67,7 @@ public class ReflowRespectingSection extends Section {
 
 	@Override
 	protected void reflow() {
-		if (reflowPart.canReflow()) {
+		if (reflowPart != null && reflowPart.canReflow()) {
 			super.reflow();
 		}
 	}
