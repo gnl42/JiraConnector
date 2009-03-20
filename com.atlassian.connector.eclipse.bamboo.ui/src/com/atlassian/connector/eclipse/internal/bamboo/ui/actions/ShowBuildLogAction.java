@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -47,7 +48,6 @@ import java.util.Map;
  * @author Thomas Ehrnhoefer
  */
 public class ShowBuildLogAction extends AbstractBambooAction {
-	private static final String BAMBOO_BUILD_LOG_CONSOLE = "Bamboo Build Log for ";
 
 	private static Map<BambooBuild, MessageConsole> buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
 
@@ -105,8 +105,8 @@ public class ShowBuildLogAction extends AbstractBambooAction {
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		MessageConsole buildLogConsole = buildLogConsoles.get(build);
 		if (buildLogConsole == null) {
-			buildLogConsole = new MessageConsole(BAMBOO_BUILD_LOG_CONSOLE + build.getPlanKey() + " - "
-					+ build.getNumber(), BambooImages.CONSOLE) {
+			buildLogConsole = new MessageConsole(NLS.bind("Bamboo Build Log for {0}", build.getPlanKey() + "-"
+					+ build.getNumber()), BambooImages.CONSOLE) {
 				@Override
 				public IPageBookViewPage createPage(IConsoleView view) {
 					final IPageBookViewPage page = super.createPage(view);
