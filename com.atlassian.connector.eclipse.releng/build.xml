@@ -10,7 +10,7 @@
 	<target name="all" depends="clean,build,tests">
 	</target>
 
-	<target name="release" depends="clean,build,pack,generate-metadata">
+	<target name="release" depends="clean,build,pack,generate-metadata-common,generate-metadata">
 	</target>
 
 	<target name="pre-build">
@@ -63,7 +63,10 @@
 		</exec>
 	</target>
 
-	<target name="pack" depends="init,init-3.4">
+	<target name="pack" depends="init">
+		<!-- make sure Eclipse 3.4 is available -->
+		<antcall target="init-3.4"/>
+		
 		<antcall target="for-each-target">
 			<param name="call" value="pack-sites"/>
 		</antcall>
@@ -75,20 +78,25 @@
 		</antcall>
 	</target>
 
-	<target name="generate-metadata" depends="init">
+	<target name="generate-metadata-common" depends="init">
 		<!-- make sure Eclipse 3.4 is available -->
 		<antcall target="init-3.4"/>
-		
+
 		<!-- create generic site without associate sites -->
-		<property name="site.dir" value="${build.home}/3.3/site"/>
+		<property name="site.common.dir" value="${build.home}/3.3/site"/>
 		<copy todir="${build.home}/site">
-			<fileset dir="${site.dir}"/>
+			<fileset dir="${site.common.dir}"/>
 		</copy>
 		<antcall target="generate-metadata-helper">
 			<param name="dir" value="${build.home}/site"/>
 			<param name="name" value="${build.publish.name}"/>
 		</antcall>
-
+	</target>
+		
+	<target name="generate-metadata" depends="init">
+		<!-- make sure Eclipse 3.4 is available -->
+		<antcall target="init-3.4"/>
+		
 		<!-- handle Eclipse version specific sites -->
 		<antcall target="for-each-target">
 			<param name="call" value="generate-metadata-sites"/>
