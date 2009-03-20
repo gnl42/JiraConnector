@@ -110,7 +110,6 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 					+ String.valueOf(errorLines) + " error lines). See the", "full build log", "for details.",
 					new Listener() {
 						public void handleEvent(Event event) {
-							link.removeListener(SWT.Selection, this);
 							new ShowBuildLogAction(bambooBuild).run();
 						}
 					});
