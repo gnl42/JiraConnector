@@ -128,14 +128,16 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 		if (commentSection.isExpanded() || crucibleEditor == null) {
 			isExpanded = true;
 			fillToolBar(toolBarManager, isExpanded);
-			if (canExpand()) {
+			if (hasContents()) {
 				Composite composite = createSectionContents(commentSection, toolkit);
 				commentSection.setClient(composite);
 				commentSection.addExpansionListener(new ExpansionAdapter() {
 					@Override
 					public void expansionStateChanged(ExpansionEvent e) {
-
 						fillToolBar(toolBarManager, e.getState());
+						if (getSection() != null && !getSection().isDisposed()) {
+							getSection().layout();
+						}
 					}
 				});
 			}
@@ -146,7 +148,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
 					isExpanded = e.getState();
-
+					fillToolBar(toolBarManager, isExpanded);
 					if (commentSection.getClient() == null) {
 						try {
 							if (crucibleEditor != null) {
@@ -166,6 +168,9 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 						if (crucibleEditor != null) {
 							crucibleEditor.reflow(false);
 						}
+					}
+					if (getSection() != null && !getSection().isDisposed()) {
+						getSection().layout();
 					}
 				}
 			});
@@ -213,12 +218,15 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 		return true;
 	}
 
+	protected boolean hasContents() {
+		return canExpand();
+	}
+
 	public Section getSection() {
 		return commentSection;
 	}
 
 	private void fillToolBar(ToolBarManager toolbarManager, boolean expanded) {
-
 		if (!enableToolbar) {
 			return;
 		}

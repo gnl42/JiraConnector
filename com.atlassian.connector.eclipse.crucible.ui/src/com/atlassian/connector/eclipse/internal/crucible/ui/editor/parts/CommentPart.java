@@ -171,6 +171,16 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 	}
 
 	@Override
+	protected boolean canExpand() {
+		return !comment.isReply();
+	}
+
+	@Override
+	protected boolean hasContents() {
+		return true;
+	}
+
+	@Override
 	protected ImageDescriptor getAnnotationImage() {
 		if (comment.isDefectRaised() || comment.isDefectApproved()) {
 
