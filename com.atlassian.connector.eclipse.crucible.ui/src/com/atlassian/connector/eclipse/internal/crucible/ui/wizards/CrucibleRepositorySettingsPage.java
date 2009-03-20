@@ -20,6 +20,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
@@ -62,6 +63,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 			try {
 				client = clientManager.createTempClient(taskRepository, new CrucibleClientData());
 
+				monitor = Policy.backgroundMonitorFor(monitor);
 				client.validate(monitor, taskRepository);
 			} finally {
 				if (client != null) {
