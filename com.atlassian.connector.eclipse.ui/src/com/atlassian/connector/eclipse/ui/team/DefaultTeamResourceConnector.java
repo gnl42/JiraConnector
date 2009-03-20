@@ -235,8 +235,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 		if (resource != null) {
 			if (!(resource instanceof IFile)) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, "Resource is not a file: "
-						+ resource.getProjectRelativePath(), new Exception()));
+				TeamMessageUtils.openFileDoesntExistErrorMessage(repoUrl, otherRevisionFilePath, revisionString);
 				return null;
 			}
 
