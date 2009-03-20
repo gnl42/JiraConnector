@@ -75,7 +75,10 @@
 		</antcall>
 	</target>
 
-	<target name="generate-metadata" depends="init,init-3.4">
+	<target name="generate-metadata" depends="init">
+		<!-- make sure Eclipse 3.4 is available -->
+		<antcall target="init-3.4"/>
+		
 		<!-- create generic site without associate sites -->
 		<property name="site.dir" value="${build.home}/3.3/site"/>
 		<copy todir="${build.home}/site">
