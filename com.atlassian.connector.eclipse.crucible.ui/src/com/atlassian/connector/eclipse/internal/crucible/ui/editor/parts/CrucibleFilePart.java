@@ -60,7 +60,15 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	@Override
 	public boolean canExpand() {
-		return crucibleFile.getVersionedComments().size() != 0;
+		return canExpand(crucibleFile);
+	}
+
+	private boolean canExpand(CrucibleFileInfo file) {
+		if (file != null) {
+			return file.getVersionedComments().size() != 0;
+		}
+		return false;
+
 	}
 
 	@Override
@@ -231,8 +239,11 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 		this.crucibleReview = crucibleReview;
 		// TODO update the text 
 		if (!CrucibleUtil.areCrucibleFilesDeepEqual(file, crucibleFile)) {
+			boolean oldCanExpand = !canExpand(this.crucibleFile);
+			boolean newCanExpand = !canExpand(file);
 			this.crucibleFile = file;
-			Control createControl = createOrUpdateControl(parentComposite, toolkit);
+
+			Control createControl = createOrUpdateControl(parentComposite, toolkit, oldCanExpand != newCanExpand);
 
 			getSection().layout(true, true);
 
@@ -246,13 +257,15 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	// TODO handle changed highlighting properly
 
-	private Control createOrUpdateControl(Composite parentComposite, FormToolkit toolkit) {
+	private Control createOrUpdateControl(Composite parentComposite, FormToolkit toolkit, boolean needsRecreation) {
 		if (getSection() == null) {
 
 			Control createControl = createControl(parentComposite, toolkit);
 
-			setIncomming(true);
-			decorate();
+			return createControl;
+		} else if (needsRecreation) {
+			getSection().dispose();
+			Control createControl = createControl(parentComposite, toolkit);
 
 			return createControl;
 		} else {
