@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersi
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -91,15 +92,15 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 		StringBuilder builder = new StringBuilder();
 		if (versionedComment.getToEndLine() != 0) {
 			builder.append("[Lines: ");
-			builder.append(versionedComment.getToEndLine());
-			builder.append(" - ");
 			builder.append(versionedComment.getToStartLine());
+			builder.append(" - ");
+			builder.append(versionedComment.getToEndLine());
 			builder.append("]");
 		} else if (versionedComment.getFromEndLine() != 0) {
 			builder.append("[Lines: ");
-			builder.append(versionedComment.getFromEndLine());
-			builder.append(" - ");
 			builder.append(versionedComment.getFromStartLine());
+			builder.append(" - ");
+			builder.append(versionedComment.getFromEndLine());
 			builder.append("]");
 		} else if (versionedComment.getToStartLine() != 0) {
 			builder.append("[Lines: ");
@@ -121,7 +122,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 			//if both revisions are availabe (--> commitType neither added nor deleted), use compareAction
 			if (crucibleFileInfo.getCommitType() != CommitType.Deleted
-					&& crucibleFileInfo.getCommitType() != CommitType.Added) {
+					&& crucibleFileInfo.getCommitType() != CommitType.Added && canOpenCompare()) {
 				CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
 						crucibleFileInfo, versionedComment, crucibleReview);
 				compareAction.setToolTipText("Open the file to the comment in the compare editor");
@@ -147,6 +148,20 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 			createActionHyperlink(toolbarComposite, toolkit, customAction);
 		}
+	}
+
+	private boolean canOpenCompare() {
+		if (crucibleFileInfo != null) {
+			VersionedVirtualFile oldFileDescriptor = crucibleFileInfo.getOldFileDescriptor();
+			VersionedVirtualFile newFileDescriptor = crucibleFileInfo.getFileDescriptor();
+			if (oldFileDescriptor == null || oldFileDescriptor.getRevision() == null
+					|| oldFileDescriptor.getRevision().length() == 0 || newFileDescriptor == null
+					|| newFileDescriptor.getRevision() == null || newFileDescriptor.getRevision().length() == 0) {
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override
