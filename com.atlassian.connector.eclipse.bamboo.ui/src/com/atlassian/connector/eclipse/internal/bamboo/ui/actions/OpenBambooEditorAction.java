@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -37,16 +36,13 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  */
 public class OpenBambooEditorAction extends BaseSelectionListenerAction {
 
-	private final TreeViewer buildViewer;
-
-	public OpenBambooEditorAction(TreeViewer buildViewer) {
+	public OpenBambooEditorAction() {
 		super(null);
-		this.buildViewer = buildViewer;
 	}
 
 	@Override
 	public void run() {
-		ISelection s = buildViewer.getSelection();
+		ISelection s = super.getStructuredSelection();
 		if (s instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) s;
 			Object selected = selection.iterator().next();

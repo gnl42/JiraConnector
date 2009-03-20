@@ -376,7 +376,9 @@ public class BambooView extends ViewPart {
 		tree.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				new OpenBambooEditorAction(buildViewer).run();
+				if (openBambooEditorAction.isEnabled()) {
+					openBambooEditorAction.run();
+				}
 			}
 		});
 	}
@@ -536,7 +538,7 @@ public class BambooView extends ViewPart {
 		openRepoConfigAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(openRepoConfigAction);
 
-		openBambooEditorAction = new OpenBambooEditorAction(this.buildViewer);
+		openBambooEditorAction = new OpenBambooEditorAction();
 		openBambooEditorAction.setText("Open");
 		openBambooEditorAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(openBambooEditorAction);
