@@ -518,11 +518,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					createUncompleteReviewAction(manager);
 					needsSeparator = true;
 				}
-				if (canJoinOrLeaveReview()) {
-					if (CrucibleUiUtil.isCurrentUserReviewer(review)) {
-						createLeaveReviewAction(manager);
-						needsSeparator = true;
-					} else {
+				if (canJoinReview()) {
+					if (!CrucibleUiUtil.isCurrentUserReviewer(review)) {
 						createJoinReviewAction(manager);
 						needsSeparator = true;
 					}
@@ -576,7 +573,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		manager.add(refreshAction);
 	}
 
-	private boolean canJoinOrLeaveReview() {
+	private boolean canJoinReview() {
 		State state = review.getState();
 		User moderator = review.getModerator();
 		User author = review.getAuthor();
@@ -742,41 +739,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		joinReviewAction.setToolTipText("Join Review");
 		joinReviewAction.setImageDescriptor(CrucibleImages.JOIN);
 		manager.add(joinReviewAction);
-	}
-
-	private void createLeaveReviewAction(IToolBarManager manager) {
-		Action leaveReviewAction = new Action() {
-			@Override
-			public void run() {
-				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Leave Crucible Review "
-						+ getTask().getTaskKey(), getTaskRepository()) {
-					@Override
-					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						final String currentUser = CrucibleUiUtil.getCurrentUser(review);
-						client.execute(new RemoteOperation<Object>(monitor, getTaskRepository()) {
-							@Override
-							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
-									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
-									ServerPasswordNotProvidedException {
-								PermId permId = new PermIdBean(CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId()));
-								server.removeReviewer(serverCfg, permId, currentUser);
-								return review;
-							}
-						});
-						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
-						if (CrucibleUiUtil.isUserReviewer(currentUser, review)) {
-							return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Could not leave Review.");
-						}
-						return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, "Left Review.");
-					}
-				};
-				schedule(job, 0L);
-			}
-		};
-		leaveReviewAction.setText("Leave");
-		leaveReviewAction.setToolTipText("Leave Review");
-		leaveReviewAction.setImageDescriptor(CrucibleImages.LEAVE);
-		manager.add(leaveReviewAction);
 	}
 
 	private void createApproveReviewAction(IToolBarManager manager) {
