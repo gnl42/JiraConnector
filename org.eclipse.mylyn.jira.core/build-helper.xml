@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.eclipse.mylyn.jira.core" default="">
+<project name="org.eclipse.mylyn.jira.core" default="clean-source">
     <description>
             Generate SOAP stubs
     </description>
