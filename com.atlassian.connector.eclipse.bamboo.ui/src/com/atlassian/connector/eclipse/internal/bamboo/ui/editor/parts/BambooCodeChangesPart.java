@@ -17,6 +17,8 @@ import com.atlassian.theplugin.commons.VersionedFileInfo;
 import com.atlassian.theplugin.commons.bamboo.BambooChangeSet;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -175,5 +177,28 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 					});
 		}
 		getBuildEditor().reflow();
+	}
+
+	@Override
+	protected void fillToolBar(ToolBarManager toolBarManager) {
+		Action collapseAllAction = new Action("") { //$NON-NLS-1$
+			@Override
+			public void run() {
+				changesViewer.collapseAll();
+			}
+		};
+		collapseAllAction.setImageDescriptor(CommonImages.COLLAPSE_ALL);
+		collapseAllAction.setToolTipText("Collapse All");
+		toolBarManager.add(collapseAllAction);
+
+		Action expandAllAction = new Action("") { //$NON-NLS-1$
+			@Override
+			public void run() {
+				changesViewer.expandAll();
+			}
+		};
+		expandAllAction.setImageDescriptor(CommonImages.EXPAND_ALL);
+		expandAllAction.setToolTipText("Expand All");
+		toolBarManager.add(expandAllAction);
 	}
 }
