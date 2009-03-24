@@ -40,22 +40,17 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 	private IReviewActionListener actionListener;
 
 	public AddGeneralCommentToFileAction() {
-		this(null, null);
-	}
-
-	public AddGeneralCommentToFileAction(CrucibleFile file, Review review) {
 		super("Create General File Comment...");
-		super.review = review;
-		this.crucibleFile = file;
-
-		if (review != null && crucibleFile != null) {
-			setEnabled(CrucibleUtil.canAddCommentToReview(review));
-		}
 	}
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
+		//if file and review are already set, dont bother
+		if (crucibleFile != null && review != null) {
+			return;
+		}
+		//the following only applies if it is the action from the extension point
 		if (action.isEnabled() && isEnabled()) {
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
@@ -126,6 +121,14 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 
 	public void setActionListener(IReviewActionListener listener) {
 		this.actionListener = listener;
+	}
+
+	public void setCrucibleFile(CrucibleFile file) {
+		this.crucibleFile = file;
+	}
+
+	public void setReview(Review review) {
+		this.review = review;
 	}
 
 }

@@ -294,8 +294,9 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			AddLineCommentToFileAction addLineCommentAction = new AddLineCommentToFileAction(this,
 					crucibleAnnotationModel.getCrucibleFile());
 			addLineCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
-			AddGeneralCommentToFileAction addGeneralCommentAction = new AddGeneralCommentToFileAction(
-					crucibleAnnotationModel.getCrucibleFile(), review);
+			AddGeneralCommentToFileAction addGeneralCommentAction = new AddGeneralCommentToFileAction();
+			addGeneralCommentAction.setCrucibleFile(crucibleAnnotationModel.getCrucibleFile());
+			addGeneralCommentAction.setReview(review);
 
 			if (sourceViewer != null) {
 				sourceViewer.addSelectionChangedListener(addLineCommentAction);
