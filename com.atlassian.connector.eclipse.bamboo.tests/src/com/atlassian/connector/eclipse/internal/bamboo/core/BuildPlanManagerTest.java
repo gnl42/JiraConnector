@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.tests.util.MockBambooClie
 import com.atlassian.connector.eclipse.internal.bamboo.tests.util.MockBambooRepositoryConnector;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
@@ -80,7 +81,7 @@ public class BuildPlanManagerTest extends TestCase {
 		Collection<BambooBuild> expectedBuilds2 = createBuilds("repoRemoved");
 		bambooClientManager.addClient(client2, repo2);
 		client2.setResponse(expectedBuilds2, repo2);
-		buildPlanManager.refreshAllBuilds();
+		joinJob(buildPlanManager.refreshAllBuilds());
 
 		Map<TaskRepository, Collection<BambooBuild>> subscribedBuilds = buildPlanManager.getSubscribedBuilds();
 
@@ -129,7 +130,7 @@ public class BuildPlanManagerTest extends TestCase {
 		ArrayList<BambooBuild> expectedBuilds = createBuilds("yek");
 		client.setResponse(expectedBuilds, repository);
 
-		buildPlanManager.buildSubscriptionsChanged(repository);
+		joinJob(buildPlanManager.buildSubscriptionsChanged(repository));
 
 		subscribedBuilds = buildPlanManager.getSubscribedBuilds();
 
@@ -161,7 +162,7 @@ public class BuildPlanManagerTest extends TestCase {
 		int interval = BambooCorePlugin.getRefreshIntervalMinutes();
 		setRefreshIntervalMinutes(0);
 		toggleAutoRefresh();
-		buildPlanManager.reInitializeScheduler();
+		joinJob(buildPlanManager.reInitializeScheduler());
 
 		//get builds -> should be updated
 		subscribedBuilds = buildPlanManager.getSubscribedBuilds();
@@ -175,7 +176,7 @@ public class BuildPlanManagerTest extends TestCase {
 		//reset time to previous, toggle autoRefresh again
 		toggleAutoRefresh();
 		setRefreshIntervalMinutes(interval);
-		buildPlanManager.reInitializeScheduler();
+		joinJob(buildPlanManager.reInitializeScheduler());
 
 		//create new builds, set response, DO NOT REFRESH MANUALLY
 		expectedBuilds = createBuilds("yek");
@@ -201,7 +202,7 @@ public class BuildPlanManagerTest extends TestCase {
 		bambooClientManager.addClient(client, repository);
 		client.setResponse(expectedBuilds, repository);
 
-		buildPlanManager.refreshAllBuilds();
+		joinJob(buildPlanManager.refreshAllBuilds());
 		return buildPlanManager;
 	}
 
@@ -223,5 +224,14 @@ public class BuildPlanManagerTest extends TestCase {
 		BambooCorePlugin.getDefault().getPluginPreferences().setValue(BambooConstants.PREFERENCE_AUTO_REFRESH,
 				!BambooCorePlugin.isAutoRefresh());
 		BambooCorePlugin.getDefault().savePluginPreferences();
+	}
+
+	private void joinJob(Job job) {
+		assertNotNull(job);
+		try {
+			job.join();
+		} catch (InterruptedException e) {
+			fail("Failed to join job " + job.getName());
+		}
 	}
 }

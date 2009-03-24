@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.mylyn.commons.core.CoreUtil;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -189,7 +188,7 @@ public final class BuildPlanManager {
 		return subscribedBuilds;
 	}
 
-	public void buildSubscriptionsChanged(final TaskRepository repository) {
+	public Job buildSubscriptionsChanged(final TaskRepository repository) {
 		RefreshBuildsJob job = new RefreshBuildsJob("Refresh builds", repository);
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
@@ -202,8 +201,7 @@ public final class BuildPlanManager {
 			}
 		});
 		job.schedule();
-		joinIfInTestMode(job);
-
+		return job;
 	}
 
 	private void getRefreshedBuildsDiff(Collection<BambooBuild> newBuilds, TaskRepository taskRepository,
@@ -335,7 +333,7 @@ public final class BuildPlanManager {
 		notifyListeners(oldBuilds, changedBuilds, errorLog, forcedRefresh);
 	}
 
-	public void initializeScheduler(IRepositoryManager manager) {
+	public Job initializeScheduler(IRepositoryManager manager) {
 		this.repositoryManager = manager;
 		scheduledRefreshBuildsForAllRepositoriesJob = new RefreshBuildsForAllRepositoriesJob(false);
 		scheduledRefreshBuildsForAllRepositoriesJob.addJobChangeListener(new JobChangeAdapter() {
@@ -349,17 +347,17 @@ public final class BuildPlanManager {
 		});
 		if (BambooCorePlugin.isAutoRefresh()) {
 			scheduledRefreshBuildsForAllRepositoriesJob.schedule(); //first iteration without delay
-			joinIfInTestMode(scheduledRefreshBuildsForAllRepositoriesJob);
 		}
+		return scheduledRefreshBuildsForAllRepositoriesJob;
 	}
 
-	public void reInitializeScheduler() {
+	public Job reInitializeScheduler() {
 		if (this.repositoryManager != null && !scheduledRefreshBuildsForAllRepositoriesJob.isRunning()) {
 			if (scheduledRefreshBuildsForAllRepositoriesJob.cancel() && BambooCorePlugin.isAutoRefresh()) {
 				scheduledRefreshBuildsForAllRepositoriesJob.schedule(BambooCorePlugin.getRefreshIntervalMinutes() * 60000);
-				joinIfInTestMode(scheduledRefreshBuildsForAllRepositoriesJob);
 			}
 		}
+		return scheduledRefreshBuildsForAllRepositoriesJob;
 	}
 
 	public void handleFinishedRefreshAllBuildsJob(Map<TaskRepository, Collection<BambooBuild>> builds,
@@ -368,7 +366,7 @@ public final class BuildPlanManager {
 		processRefreshedBuildsAllRepositories(builds, forcedRefresh);
 	}
 
-	public void refreshAllBuilds() {
+	public Job refreshAllBuilds() {
 		//only trigger if refreshBuildsForAllRepositoriesJob exists and is not running
 		if (forcedRefreshBuildsForAllRepositoriesJob == null) {
 			forcedRefreshBuildsForAllRepositoriesJob = new RefreshBuildsForAllRepositoriesJob(true);
@@ -379,21 +377,11 @@ public final class BuildPlanManager {
 				}
 			});
 			forcedRefreshBuildsForAllRepositoriesJob.schedule();
-			joinIfInTestMode(forcedRefreshBuildsForAllRepositoriesJob);
 		}
+		return forcedRefreshBuildsForAllRepositoriesJob;
 	}
 
 	public boolean isFirstScheduledSynchronizationDone() {
 		return firstScheduledSynchronizationDone;
-	}
-
-	private static void joinIfInTestMode(Job job) {
-		if (CoreUtil.TEST_MODE && job != null) {
-			try {
-				job.join();
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		}
 	}
 }
