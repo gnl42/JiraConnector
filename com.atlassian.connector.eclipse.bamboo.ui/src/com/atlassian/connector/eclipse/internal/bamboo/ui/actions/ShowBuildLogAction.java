@@ -23,12 +23,13 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -47,58 +48,71 @@ import java.util.Map;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class ShowBuildLogAction extends AbstractBambooAction {
+public class ShowBuildLogAction extends BaseSelectionListenerAction {
 
 	private static Map<BambooBuild, MessageConsole> buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
 
-	public ShowBuildLogAction(ISelectionProvider selectionProvider) {
-		super(selectionProvider);
+	public ShowBuildLogAction() {
+		super(null);
+		initialize();
+		buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
 	}
 
-	public ShowBuildLogAction(BambooBuild bambooBuild) {
-		super(bambooBuild);
-		buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
+	private void initialize() {
+		setText("Show Build Log");
+		setImageDescriptor(BambooImages.CONSOLE);
 	}
 
 	@Override
 	public void run() {
-		final BambooBuild build = getBuild();
-		if (build != null) {
-			final MessageConsole console = prepareConsole(build);
-			final MessageConsoleStream messageStream = console.newMessageStream();
+		ISelection s = super.getStructuredSelection();
+		if (s instanceof IStructuredSelection) {
+			IStructuredSelection selection = (IStructuredSelection) s;
+			Object selected = selection.iterator().next();
+			if (selected instanceof BambooBuild) {
+				final BambooBuild build = (BambooBuild) selected;
+				if (build != null) {
+					downloadAndShowBuildLog(build);
 
-			RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager().getRepository(
-					BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
-			job.addJobChangeListener(new JobChangeAdapter() {
-				@Override
-				public void done(IJobChangeEvent event) {
-					if (event.getResult() == Status.OK_STATUS) {
-						String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
-						if (buildLog == null) {
-							//retrieval failed, remove console
-							handledFailedLogRetrieval(console, messageStream, build);
-						} else {
-							try {
-								showConsole(console);
-								messageStream.print(buildLog);
-							} finally {
-								try {
-									messageStream.close();
-								} catch (IOException e) {
-									StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-											"Failed to close console message stream"));
-								}
-							}
-						}
-					} else {
+				}
+			}
+		}
+	}
+
+	private void downloadAndShowBuildLog(final BambooBuild build) {
+		final MessageConsole console = prepareConsole(build);
+		final MessageConsoleStream messageStream = console.newMessageStream();
+
+		RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager().getRepository(
+				BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				if (event.getResult() == Status.OK_STATUS) {
+					String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
+					if (buildLog == null) {
 						//retrieval failed, remove console
 						handledFailedLogRetrieval(console, messageStream, build);
+					} else {
+						try {
+							showConsole(console);
+							messageStream.print(buildLog);
+						} finally {
+							try {
+								messageStream.close();
+							} catch (IOException e) {
+								StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+										"Failed to close console message stream"));
+							}
+						}
 					}
+				} else {
+					//retrieval failed, remove console
+					handledFailedLogRetrieval(console, messageStream, build);
 				}
-			});
-			job.schedule();
-
-		}
+			}
+		});
+		job.schedule();
 	}
 
 	private MessageConsole prepareConsole(BambooBuild build) {
@@ -154,15 +168,12 @@ public class ShowBuildLogAction extends AbstractBambooAction {
 		if (selection.size() == 1) {
 			if (selection.getFirstElement() instanceof BambooBuild) {
 				try {
-					build = (BambooBuild) selection.getFirstElement();
+					BambooBuild build = (BambooBuild) selection.getFirstElement();
 					build.getNumber();
 					return true;
 				} catch (UnsupportedOperationException e) {
 					// ignore
-					build = null;
 				}
-			} else if (selection.getFirstElement() instanceof Object) {
-				System.out.println();
 			}
 		}
 		return false;

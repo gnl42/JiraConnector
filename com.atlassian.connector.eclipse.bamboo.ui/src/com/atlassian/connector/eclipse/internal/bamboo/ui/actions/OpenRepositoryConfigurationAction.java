@@ -16,52 +16,45 @@ import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
+import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
 public class OpenRepositoryConfigurationAction extends BaseSelectionListenerAction {
-	private TaskRepository repository;
 
-	private boolean linkedAction = false;
-
-	private final TreeViewer buildViewer;
-
-	public OpenRepositoryConfigurationAction(TreeViewer buildViewer) {
+	public OpenRepositoryConfigurationAction() {
 		super(null);
-		this.buildViewer = buildViewer;
+		initialize();
 	}
 
-	public OpenRepositoryConfigurationAction(TaskRepository repository, TreeViewer buildViewer) {
-		super(null);
-		this.repository = repository;
-		this.buildViewer = buildViewer;
-		linkedAction = true;
+	private void initialize() {
+		setActionDefinitionId(IWorkbenchActionDefinitionIds.PROPERTIES);
+		setText("Properties...");
+		setToolTipText("Open the repository configuration");
 	}
 
 	@Override
 	public void run() {
-		if (repository != null && linkedAction) {
-			openConfiguration();
-		} else {
-			ISelection s = buildViewer.getSelection();
-			if (s instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) s;
-				Object selected = selection.iterator().next();
-				if (selected instanceof BambooBuild) {
-					final BambooBuild build = (BambooBuild) selected;
-					repository = TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
-							build.getServerUrl());
-					openConfiguration();
-				}
+		ISelection s = super.getStructuredSelection();
+		if (s instanceof IStructuredSelection) {
+			IStructuredSelection selection = (IStructuredSelection) s;
+			Object selected = selection.iterator().next();
+			if (selected instanceof BambooBuild) {
+				BambooBuild build = (BambooBuild) selected;
+				TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
+						BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl());
+				openConfiguration(repository);
+			} else if (selected instanceof TaskRepository) {
+				TaskRepository repository = (TaskRepository) selected;
+				openConfiguration(repository);
 			}
 		}
 	}
 
-	private void openConfiguration() {
+	private void openConfiguration(final TaskRepository repository) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				TasksUiUtil.openEditRepositoryWizard(repository);

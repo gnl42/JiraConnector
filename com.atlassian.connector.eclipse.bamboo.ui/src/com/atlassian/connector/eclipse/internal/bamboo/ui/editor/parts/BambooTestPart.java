@@ -19,6 +19,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -57,6 +58,8 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 		createSectionAndComposite(parent, toolkit, 1, ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED
 				| ExpandableComposite.TWISTIE);
 
+		createActions();
+
 		createLink(mainComposite, toolkit, "Retrieving build logs from server...", null, null, null);
 
 		createShowInJunitLink();
@@ -70,11 +73,14 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 
 	private void createShowInJunitLink() {
 		if (bambooBuild.getTestsFailed() + bambooBuild.getTestsPassed() > 0) {
-			createLink(mainComposite, toolkit, null, "Show Test Results", null, new Listener() {
+			Link link = createLink(mainComposite, toolkit, null, "Show Test Results", null, new Listener() {
 				public void handleEvent(Event event) {
 					showTestResultsAction.run();
 				}
 			});
+			if (!showTestResultsAction.isEnabled()) {
+				link.setEnabled(false);
+			}
 		}
 	}
 
@@ -126,15 +132,8 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 
 	private void createActions() {
 		if (showTestResultsAction == null) {
-			showTestResultsAction = new ShowTestResultsAction(bambooBuild);
-			showTestResultsAction.setText("Show Test Results");
-			showTestResultsAction.setImageDescriptor(BambooImages.JUNIT);
-			if (buildDetails != null
-					&& (buildDetails.getFailedTestDetails().size() + buildDetails.getSuccessfulTestDetails().size()) > 0) {
-				showTestResultsAction.setEnabled(true);
-			} else {
-				showTestResultsAction.setEnabled(false);
-			}
+			showTestResultsAction = new ShowTestResultsAction();
+			showTestResultsAction.selectionChanged(new StructuredSelection(bambooBuild));
 		}
 	}
 
@@ -172,12 +171,6 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 				createLabelControl(toolkit, labelComp, "Failed Tests:");
 				createReadOnlyText(toolkit, mainComposite, JFaceResources.getDefaultFont(), failedTests,
 						FULL_WIDTH / 2, 5);
-			}
-			if (buildDetails != null
-					&& (buildDetails.getFailedTestDetails().size() + buildDetails.getSuccessfulTestDetails().size()) > 0) {
-				showTestResultsAction.setEnabled(true);
-			} else {
-				showTestResultsAction.setEnabled(false);
 			}
 		} else {
 			link = createLink(mainComposite, toolkit, "Retrieving tests from server failed. Click to", "try again",

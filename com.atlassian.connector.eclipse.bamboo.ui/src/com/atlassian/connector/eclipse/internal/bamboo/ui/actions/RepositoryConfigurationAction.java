@@ -39,6 +39,15 @@ import org.eclipse.ui.PlatformUI;
 public class RepositoryConfigurationAction extends Action implements IMenuCreator {
 	private Menu menu;
 
+	public RepositoryConfigurationAction() {
+		initialize();
+	}
+
+	private void initialize() {
+		setText("Add Bamboo Repository...");
+		setImageDescriptor(BambooImages.ADD_REPOSITORY);
+	}
+
 	@Override
 	public void run() {
 		Display.getDefault().asyncExec(new Runnable() {

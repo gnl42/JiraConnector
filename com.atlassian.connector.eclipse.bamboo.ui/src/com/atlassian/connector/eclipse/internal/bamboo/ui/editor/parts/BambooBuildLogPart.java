@@ -11,17 +11,18 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowBuildLogAction;
 
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -93,10 +94,8 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 
 	@Override
 	protected void fillToolBar(ToolBarManager toolBarManager) {
-		showBuildLogAction = new ShowBuildLogAction(bambooBuild);
-		showBuildLogAction.setText("Show Build Log");
-		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
-		showBuildLogAction.setEnabled(true);
+		showBuildLogAction = new ShowBuildLogAction();
+		showBuildLogAction.selectionChanged(new StructuredSelection(bambooBuild));
 		toolBarManager.add(showBuildLogAction);
 	}
 
@@ -110,7 +109,9 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 					+ String.valueOf(errorLines) + " error lines). See the", "full build log", "for details.",
 					new Listener() {
 						public void handleEvent(Event event) {
-							new ShowBuildLogAction(bambooBuild).run();
+							BaseSelectionListenerAction showBuildAction = new ShowBuildLogAction();
+							showBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
+							showBuildAction.run();
 						}
 					});
 

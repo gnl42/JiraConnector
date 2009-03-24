@@ -38,6 +38,11 @@ public class OpenBambooEditorAction extends BaseSelectionListenerAction {
 
 	public OpenBambooEditorAction() {
 		super(null);
+		initialize();
+	}
+
+	private void initialize() {
+		setText("Open");
 	}
 
 	@Override

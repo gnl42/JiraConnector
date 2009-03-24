@@ -46,6 +46,7 @@ import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -81,7 +82,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
-import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -400,7 +400,9 @@ public class BambooView extends ViewPart {
 				} else if (linkedRepositories != null) {
 					TaskRepository repository = linkedRepositories.get(link);
 					if (repository != null) {
-						new OpenRepositoryConfigurationAction(repository, buildViewer).run();
+						BaseSelectionListenerAction openRepAction = new OpenRepositoryConfigurationAction();
+						openRepAction.selectionChanged(new StructuredSelection(repository));
+						openRepAction.run();
 					}
 				} else if (link.equals(OPEN_REPOSITORY_VIEW_LINK)) {
 					Display.getDefault().asyncExec(new Runnable() {
@@ -500,46 +502,36 @@ public class BambooView extends ViewPart {
 		openInBrowserAction.setImageDescriptor(CommonImages.BROWSER_SMALL);
 		buildViewer.addSelectionChangedListener(openInBrowserAction);
 
-		showBuildLogAction = new ShowBuildLogAction(buildViewer);
-		showBuildLogAction.setText("Show Build Log");
-		showBuildLogAction.setImageDescriptor(BambooImages.CONSOLE);
+		showBuildLogAction = new ShowBuildLogAction();
 		showBuildLogAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(showBuildLogAction);
 
-		showTestResultsAction = new ShowTestResultsAction(buildViewer);
-		showTestResultsAction.setText("Show Test Results");
-		showTestResultsAction.setImageDescriptor(BambooImages.JUNIT);
+		showTestResultsAction = new ShowTestResultsAction();
 		showTestResultsAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(showTestResultsAction);
 
-		addLabelToBuildAction = new AddLabelToBuildAction(buildViewer);
+		addLabelToBuildAction = new AddLabelToBuildAction();
 		addLabelToBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(addLabelToBuildAction);
 
-		addCommentToBuildAction = new AddCommentToBuildAction(buildViewer);
+		addCommentToBuildAction = new AddCommentToBuildAction();
 		addCommentToBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
 
-		runBuildAction = new RunBuildAction(buildViewer);
+		runBuildAction = new RunBuildAction();
 		runBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(runBuildAction);
 
 		repoConfigAction = new RepositoryConfigurationAction();
-		repoConfigAction.setText("Add Bamboo Repository...");
-		repoConfigAction.setImageDescriptor(BambooImages.ADD_REPOSITORY);
 		repoConfigAction.setMenuCreator((IMenuCreator) repoConfigAction);
 
 		toggleAutoRefreshAction = new ToggleAutoRefreshAction();
 
-		openRepoConfigAction = new OpenRepositoryConfigurationAction(buildViewer);
-		openRepoConfigAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.PROPERTIES);
-		openRepoConfigAction.setText("Properties...");
-		openRepoConfigAction.setToolTipText("Open the repository configuration");
+		openRepoConfigAction = new OpenRepositoryConfigurationAction();
 		openRepoConfigAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(openRepoConfigAction);
 
 		openBambooEditorAction = new OpenBambooEditorAction();
-		openBambooEditorAction.setText("Open");
 		openBambooEditorAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(openBambooEditorAction);
 

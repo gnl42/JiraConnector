@@ -29,6 +29,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorBusyIndicator;
@@ -47,6 +48,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
@@ -201,13 +203,13 @@ public class BambooEditor extends SharedHeaderFormEditor {
 		BambooEditorInput input = getEditorInput();
 		switch (bambooBuild.getStatus()) {
 		case FAILURE:
-			getHeaderForm().getForm().setImage(BambooImages.STATUS_FAILED.createImage());
+			getHeaderForm().getForm().setImage(CommonImages.getImage(BambooImages.STATUS_FAILED));
 			break;
 		case SUCCESS:
-			getHeaderForm().getForm().setImage(BambooImages.STATUS_PASSED.createImage());
+			getHeaderForm().getForm().setImage(CommonImages.getImage(BambooImages.STATUS_PASSED));
 			break;
 		default:
-			getHeaderForm().getForm().setImage(BambooImages.STATUS_DISABLED.createImage());
+			getHeaderForm().getForm().setImage(CommonImages.getImage(BambooImages.STATUS_DISABLED));
 			break;
 		}
 		getHeaderForm().getForm().setText("Build " + input.getToolTipText());
@@ -257,15 +259,18 @@ public class BambooEditor extends SharedHeaderFormEditor {
 			}
 		}
 
-		Action runBuildAction = new RunBuildAction(bambooBuild);
+		BaseSelectionListenerAction runBuildAction = new RunBuildAction();
+		runBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
 		toolBarManager.add(runBuildAction);
 
 		toolBarManager.add(new Separator());
 
-		Action addLabelToBuildAction = new AddLabelToBuildAction(bambooBuild);
+		BaseSelectionListenerAction addLabelToBuildAction = new AddLabelToBuildAction();
+		addLabelToBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
 		toolBarManager.add(addLabelToBuildAction);
 
-		Action addCommentToBuildAction = new AddCommentToBuildAction(bambooBuild);
+		BaseSelectionListenerAction addCommentToBuildAction = new AddCommentToBuildAction();
+		addCommentToBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
 		toolBarManager.add(addCommentToBuildAction);
 
 		toolBarManager.add(new Separator());

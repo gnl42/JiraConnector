@@ -17,23 +17,19 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrComm
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
-import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 /**
  * Action to add a comment to a build
  * 
  * @author Thomas Ehrnhoefer
  */
-public class AddCommentToBuildAction extends AbstractBambooAction {
-	public AddCommentToBuildAction(ISelectionProvider selectionProvider) {
-		super(selectionProvider);
-		initialize();
-	}
-
-	public AddCommentToBuildAction(BambooBuild build) {
-		super(build);
+public class AddCommentToBuildAction extends BaseSelectionListenerAction {
+	public AddCommentToBuildAction() {
+		super(null);
 		initialize();
 	}
 
@@ -45,11 +41,19 @@ public class AddCommentToBuildAction extends AbstractBambooAction {
 
 	@Override
 	public void run() {
-		final BambooBuild build = getBuild();
-		if (build != null) {
-			AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(null, build, TasksUi.getRepositoryManager()
-					.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()), Type.COMMENT);
-			dialog.open();
+		ISelection s = super.getStructuredSelection();
+		if (s instanceof IStructuredSelection) {
+			IStructuredSelection selection = (IStructuredSelection) s;
+			Object selected = selection.iterator().next();
+			if (selected instanceof BambooBuild) {
+				final BambooBuild build = (BambooBuild) selected;
+				if (build != null) {
+					AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(null, build,
+							TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
+									build.getServerUrl()), Type.COMMENT);
+					dialog.open();
+				}
+			}
 		}
 	}
 
