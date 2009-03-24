@@ -47,10 +47,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
@@ -62,6 +62,19 @@ import java.io.File;
  * @author Thomas Ehrnhoefer
  */
 public class ShowTestResultsAction extends BaseSelectionListenerAction {
+
+	private static boolean isJUnitAvailable = false;
+
+	static {
+		try {
+			if (JUnitPlugin.getDefault() != null) {
+				isJUnitAvailable = true;
+			}
+		} catch (Throwable e) {
+			StatusHandler.log(new Status(IStatus.WARNING, BambooUiPlugin.PLUGIN_ID,
+					"Failed to open test results. JUnit is not available.", e));
+		}
+	}
 
 	private static final String EMPTY_STRING = "";
 
@@ -117,15 +130,7 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		//check if JDT is available - if not, it should throw exception
-		try {
-			if (JUnitPlugin.getDefault() == null) {
-				return false;
-			}
-		} catch (Throwable e) {
-			return false;
-		}
-		if (selection.size() != 1) {
+		if (selection.size() != 1 || !isJUnitAvailable) {
 			return false;
 		}
 		BambooBuild build = (BambooBuild) selection.iterator().next();
@@ -141,65 +146,61 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 	}
 
 	private void showJUnitView(final File testResults, final String buildKey) {
-		try {
-			Display.getDefault().asyncExec(new Runnable() {
-				@SuppressWarnings("restriction")
-				public void run() {
-					try {
-						// FIXME add null check for active workbench window
-						IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-						if (activeWorkbenchWindow == null) {
-							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-									"Error opening JUnit View. No active workbench window."));
-							return;
-						}
-						activeWorkbenchWindow.getActivePage().showView(TestRunnerViewPart.NAME);
-						final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, null) {
-
-							@Override
-							public boolean rerunTest(String testId, String className, String testName, String launchMode)
-									throws CoreException {
-								String name = className;
-								if (testName != null) {
-									name += "." + testName; //$NON-NLS-1$
-								}
-								final IType testElement = /*compositeProject.*/findType(className);
-								if (testElement == null) {
-									throw new CoreException(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-											"Cannot find Java project which contains class " + className + "."));
-								}
-								final ILaunchConfigurationWorkingCopy newCfg = createLaunchConfiguration(testElement);
-								newCfg.launch(launchMode, null);
-								return true;
-							}
-
-							private IType findType(String fullyQualifiedName) throws JavaModelException {
-								final IJavaProject[] projects = JavaModelManager.getJavaModelManager()
-										.getJavaModel()
-										.getJavaProjects();
-								for (IJavaProject project : projects) {
-									final IType itype = project.findType(fullyQualifiedName);
-									if (itype != null && itype.getResource().getProject().equals(project.getProject())) {
-										return itype;
-									}
-								}
-								return null;
-							}
-						};
-						JUnitModel.importIntoTestRunSession(testResults, trs);
-						JUnitPlugin.getModel().addTestRunSession(trs);
-					} catch (Exception e) {
-						StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-								"Error opening JUnit View"));
-					}
+		Display.getDefault().asyncExec(new Runnable() {
+			@SuppressWarnings("restriction")
+			public void run() {
+				IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				if (activeWorkbenchWindow == null) {
+					StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+							"Error opening JUnit View. No active workbench window."));
+					return;
 				}
-			});
-		} catch (NoClassDefFoundError e) {
-			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Failed to open test results", e));
-			TasksUiInternal.asyncDisplayStatus("JUnit not available", new Status(IStatus.ERROR,
-					BambooUiPlugin.PLUGIN_ID,
-					"Error opening JUnit View: JUnit is not available. See error log for details."));
-		}
+				try {
+					activeWorkbenchWindow.getActivePage().showView(TestRunnerViewPart.NAME);
+				} catch (PartInitException e) {
+					StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
+					return;
+				}
+				final TestRunSession trs = new TestRunSession("Bamboo build " + buildKey, null) {
+
+					@Override
+					public boolean rerunTest(String testId, String className, String testName, String launchMode)
+							throws CoreException {
+						String name = className;
+						if (testName != null) {
+							name += "." + testName;
+						}
+						final IType testElement = /*compositeProject.*/findType(className);
+						if (testElement == null) {
+							throw new CoreException(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+									"Cannot find Java project which contains class " + className + "."));
+						}
+						final ILaunchConfigurationWorkingCopy newCfg = createLaunchConfiguration(testElement);
+						newCfg.launch(launchMode, null);
+						return true;
+					}
+
+					private IType findType(String fullyQualifiedName) throws JavaModelException {
+						final IJavaProject[] projects = JavaModelManager.getJavaModelManager()
+								.getJavaModel()
+								.getJavaProjects();
+						for (IJavaProject project : projects) {
+							final IType itype = project.findType(fullyQualifiedName);
+							if (itype != null && itype.getResource().getProject().equals(project.getProject())) {
+								return itype;
+							}
+						}
+						return null;
+					}
+				};
+				try {
+					JUnitModel.importIntoTestRunSession(testResults, trs);
+				} catch (CoreException e) {
+					StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
+				}
+				JUnitPlugin.getModel().addTestRunSession(trs);
+			}
+		});
 	}
 
 	/**
@@ -244,8 +245,8 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 		}
 			break;
 		default:
-			throw new IllegalArgumentException(
-					"Invalid element type to create a launch configuration: " + element.getClass().getName()); //$NON-NLS-1$
+			throw new IllegalArgumentException("Invalid element type to create a launch configuration: "
+					+ element.getClass().getName());
 		}
 
 		String testKindId = TestKindRegistry.getContainerTestKindId(element);
