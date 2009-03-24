@@ -114,6 +114,7 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 							showBuildAction.run();
 						}
 					});
+			link.setEnabled(showBuildLogAction.isEnabled());
 
 			if (buildLogSummary.length() > 0) {
 				createReadOnlyText(toolkit, mainComposite, JFaceResources.getTextFont(), buildLogSummary, FULL_WIDTH,

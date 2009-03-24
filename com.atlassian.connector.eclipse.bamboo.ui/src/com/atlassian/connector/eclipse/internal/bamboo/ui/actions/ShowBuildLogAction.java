@@ -49,13 +49,24 @@ import java.util.Map;
  * @author Thomas Ehrnhoefer
  */
 public class ShowBuildLogAction extends BaseSelectionListenerAction {
+	private static boolean isConsoleAvailable = false;
 
-	private static Map<BambooBuild, MessageConsole> buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
+	static {
+		try {
+			if (ConsolePlugin.getDefault() != null) {
+				isConsoleAvailable = true;
+			}
+		} catch (Throwable e) {
+			//ignore - swallow exception
+		}
+	}
+
+	private static Map<BambooBuild, Object> buildLogConsoles = new HashMap<BambooBuild, Object>();
 
 	public ShowBuildLogAction() {
 		super(null);
 		initialize();
-		buildLogConsoles = new HashMap<BambooBuild, MessageConsole>();
+		buildLogConsoles = new HashMap<BambooBuild, Object>();
 	}
 
 	private void initialize() {
@@ -72,100 +83,16 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 			if (selected instanceof BambooBuild) {
 				final BambooBuild build = (BambooBuild) selected;
 				if (build != null) {
-					downloadAndShowBuildLog(build);
+					new ShowBuildLogExecute().downloadAndShowBuildLog(build);
 
 				}
 			}
 		}
-	}
-
-	private void downloadAndShowBuildLog(final BambooBuild build) {
-		final MessageConsole console = prepareConsole(build);
-		final MessageConsoleStream messageStream = console.newMessageStream();
-
-		RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager().getRepository(
-				BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
-		job.addJobChangeListener(new JobChangeAdapter() {
-			@Override
-			public void done(IJobChangeEvent event) {
-				if (event.getResult() == Status.OK_STATUS) {
-					String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
-					if (buildLog == null) {
-						//retrieval failed, remove console
-						handledFailedLogRetrieval(console, messageStream, build);
-					} else {
-						try {
-							showConsole(console);
-							messageStream.print(buildLog);
-						} finally {
-							try {
-								messageStream.close();
-							} catch (IOException e) {
-								StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-										"Failed to close console message stream"));
-							}
-						}
-					}
-				} else {
-					//retrieval failed, remove console
-					handledFailedLogRetrieval(console, messageStream, build);
-				}
-			}
-		});
-		job.schedule();
-	}
-
-	private MessageConsole prepareConsole(BambooBuild build) {
-		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-		MessageConsole buildLogConsole = buildLogConsoles.get(build);
-		if (buildLogConsole == null) {
-			buildLogConsole = new MessageConsole(NLS.bind("Bamboo Build Log for {0}", build.getPlanKey() + "-"
-					+ build.getNumber()), BambooImages.CONSOLE) {
-				@Override
-				public IPageBookViewPage createPage(IConsoleView view) {
-					final IPageBookViewPage page = super.createPage(view);
-					view.getSite().getShell().getDisplay().asyncExec(new Runnable() {
-						public void run() {
-							((IOConsolePage) page).getViewer().setSelection(new TextSelection(0, 0));
-						}
-					});
-					return page;
-				}
-			};
-
-		}
-		buildLogConsoles.put(build, buildLogConsole);
-		consoleManager.addConsoles(new IConsole[] { buildLogConsole });
-
-		buildLogConsole.clearConsole();
-		return buildLogConsole;
-	}
-
-	private void showConsole(MessageConsole console) {
-		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-		consoleManager.showConsoleView(console);
-	}
-
-	private void handledFailedLogRetrieval(MessageConsole console, MessageConsoleStream stream, final BambooBuild build) {
-		try {
-			stream.close();
-		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-					"Failed to close console message stream"));
-		}
-		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
-		consoleManager.removeConsoles(new IConsole[] { console });
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				MessageDialog.openError(null, getText(), "Retrieving build logs for " + build.getPlanKey() + "-"
-						+ build.getNumber() + " failed. See error log for details.");
-			}
-		});
 	}
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		if (selection.size() == 1) {
+		if (selection.size() == 1 && isConsoleAvailable) {
 			if (selection.getFirstElement() instanceof BambooBuild) {
 				try {
 					BambooBuild build = (BambooBuild) selection.getFirstElement();
@@ -177,5 +104,93 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 			}
 		}
 		return false;
+	}
+
+	private class ShowBuildLogExecute {
+	
+		public void downloadAndShowBuildLog(final BambooBuild build) {
+			final MessageConsole console = prepareConsole(build);
+			final MessageConsoleStream messageStream = console.newMessageStream();
+
+			RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager().getRepository(
+					BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+			job.addJobChangeListener(new JobChangeAdapter() {
+				@Override
+				public void done(IJobChangeEvent event) {
+					if (event.getResult() == Status.OK_STATUS) {
+						String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
+						if (buildLog == null) {
+							//retrieval failed, remove console
+							handledFailedLogRetrieval(console, messageStream, build);
+						} else {
+							try {
+								showConsole(console);
+								messageStream.print(buildLog);
+							} finally {
+								try {
+									messageStream.close();
+								} catch (IOException e) {
+									StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+											"Failed to close console message stream"));
+								}
+							}
+						}
+					} else {
+						//retrieval failed, remove console
+						handledFailedLogRetrieval(console, messageStream, build);
+					}
+				}
+			});
+			job.schedule();
+		}
+
+		public MessageConsole prepareConsole(BambooBuild build) {
+			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+			MessageConsole buildLogConsole = (MessageConsole) buildLogConsoles.get(build);
+			if (buildLogConsole == null) {
+				buildLogConsole = new MessageConsole(NLS.bind("Bamboo Build Log for {0}", build.getPlanKey() + "-"
+						+ build.getNumber()), BambooImages.CONSOLE) {
+					@Override
+					public IPageBookViewPage createPage(IConsoleView view) {
+						final IPageBookViewPage page = super.createPage(view);
+						view.getSite().getShell().getDisplay().asyncExec(new Runnable() {
+							public void run() {
+								((IOConsolePage) page).getViewer().setSelection(new TextSelection(0, 0));
+							}
+						});
+						return page;
+					}
+				};
+
+			}
+			buildLogConsoles.put(build, buildLogConsole);
+			consoleManager.addConsoles(new IConsole[] { buildLogConsole });
+
+			buildLogConsole.clearConsole();
+			return buildLogConsole;
+		}
+
+		public void showConsole(MessageConsole console) {
+			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+			consoleManager.showConsoleView(console);
+		}
+
+		public void handledFailedLogRetrieval(MessageConsole console, MessageConsoleStream stream,
+				final BambooBuild build) {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+						"Failed to close console message stream"));
+			}
+			IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+			consoleManager.removeConsoles(new IConsole[] { console });
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					MessageDialog.openError(null, getText(), "Retrieving build logs for " + build.getPlanKey() + "-"
+							+ build.getNumber() + " failed. See error log for details.");
+				}
+			});
+		}
 	}
 }
