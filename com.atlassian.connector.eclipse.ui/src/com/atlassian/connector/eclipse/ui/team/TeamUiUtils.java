@@ -85,7 +85,9 @@ public final class TeamUiUtils {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
 				IEditorPart part = connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
 						otherRevisionString, monitor);
-				if (part != null) {
+				if (part == null) {
+					TeamMessageUtils.openCouldNotOpenFileErrorMessage(repoUrl, filePath, revisionString);
+				} else {
 					return getRealEditorPart(part);
 				}
 			}
@@ -93,8 +95,12 @@ public final class TeamUiUtils {
 
 		// try a backup solution
 		try {
-			return getRealEditorPart(defaultConnector.openFile(repoUrl, filePath, otherRevisionFilePath,
-					revisionString, otherRevisionString, monitor));
+			IEditorPart realEditorPart = getRealEditorPart(defaultConnector.openFile(repoUrl, filePath,
+					otherRevisionFilePath, revisionString, otherRevisionString, monitor));
+			if (realEditorPart == null) {
+				TeamMessageUtils.openCouldNotOpenFileErrorMessage(repoUrl, filePath, revisionString);
+			}
+			return realEditorPart;
 		} catch (UnsupportedTeamProviderException e) {
 			TeamMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
 			return null;

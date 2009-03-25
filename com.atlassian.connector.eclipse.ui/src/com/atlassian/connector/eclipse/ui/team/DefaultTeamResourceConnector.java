@@ -235,7 +235,6 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 		if (resource != null) {
 			if (!(resource instanceof IFile)) {
-				TeamMessageUtils.openFileDoesntExistErrorMessage(repoUrl, otherRevisionFilePath, revisionString);
 				return null;
 			}
 
@@ -277,11 +276,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 				}
 
-			} else {
-				TeamMessageUtils.openNotTeamResourceErrorMessage(repoUrl, filePath, revisionString);
 			}
-		} else {
-			TeamMessageUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
 		}
 		return null;
 	}

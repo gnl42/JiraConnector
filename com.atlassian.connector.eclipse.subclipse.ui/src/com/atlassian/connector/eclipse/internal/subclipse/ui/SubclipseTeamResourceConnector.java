@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.TeamMessageUtils;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -173,13 +172,10 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 							return getOpenedPart(part[0]);
 						}
 					} else {
-						TeamMessageUtils.openFileDeletedErrorMessage(repoUrl, filePath, revisionString);
-
 						return getOpenedPart(null);
 					}
 				}
 			} else {
-				TeamMessageUtils.openFileDoesntExistErrorMessage(repoUrl, filePath, revisionString);
 				return getOpenedPart(null);
 			}
 		} catch (SVNException e) {

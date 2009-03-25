@@ -45,7 +45,6 @@ public final class TeamMessageUtils {
 	}
 
 	private static void internalOpenFileDeletedErrorMessage(String repoUrl, String filePath, String revision) {
-//		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
 		String message = "Unable to open file.  Please check that:\n\n"
 				+ "- The enclosing project the project is checkd out at the latest revision.\n"
 				+ "- The file has not been moved or deleted since the creation of the review\n"
@@ -67,9 +66,20 @@ public final class TeamMessageUtils {
 		}
 	}
 
-	private static void internalOpenFileDoesntExistErrorMessage(String repoUrl, String filePath, String revision) {
+	public static void openCouldNotOpenFileErrorMessage(final String repoUrl, final String filePath,
+			final String revision) {
+		if (Display.getCurrent() != null) {
+			internalOpenFileDoesntExistErrorMessage(repoUrl, filePath, revision);
+		} else {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					internalOpenFileDoesntExistErrorMessage(repoUrl, filePath, revision);
+				}
+			});
+		}
+	}
 
-//		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
+	private static void internalOpenFileDoesntExistErrorMessage(String repoUrl, String filePath, String revision) {
 		String message = "Unable to open file.  Please check that:\n\n"
 				+ "- The enclosing project the project is checkd out at the latest revision.\n"
 				+ "- The file has not been moved or deleted since the creation of the review\n"
@@ -114,34 +124,11 @@ public final class TeamMessageUtils {
 
 	private static void internalOpenUnableToCompareErrorMessage(String repoUrl, String filePath, String oldRevision,
 			String newRevision) {
-
-//		String fileUrl = (repoUrl != null ? repoUrl : "") + filePath;
 		String message = "Unable to compare revisions.  Please check that:\n\n"
 				+ "- The enclosing project the project is checkd out at the latest revision.\n"
 				+ "- The file has not been moved or deleted since the creation of the review\n"
 				+ "- You are using a supported team provider. Supported providers: Subclipse";
 
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
-	}
-
-	public static void openNotTeamResourceErrorMessage(final String repoUrl, final String filePath,
-			final String revision) {
-		if (Display.getCurrent() != null) {
-			internalOpenNotTeamResourceErrorMessage(repoUrl, filePath, revision);
-		} else {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					internalOpenNotTeamResourceErrorMessage(repoUrl, filePath, revision);
-				}
-			});
-		}
-	}
-
-	private static void internalOpenNotTeamResourceErrorMessage(String repoUrl, String filePath, String revision) {
-		String fileUrl = repoUrl != null ? repoUrl : "" + filePath;
-		String message = "Please checkout the project as the following file is not managed by a team provider:\n\n"
-				+ fileUrl;
-
-		MessageDialog.openWarning(null, MESSAGE_DIALOG_TITLE, message);
 	}
 }
