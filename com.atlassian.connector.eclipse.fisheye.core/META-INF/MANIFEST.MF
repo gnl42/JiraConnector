@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Eclipse Connector Fisheye Core
+Bundle-SymbolicName: com.atlassian.connector.eclipse.fisheye.core;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.atlassian.connector.eclipse.internal.fisheye.core.FisheyeCorePlugin
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Atlassian
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.atlassian.connector.commons,
+ com.atlassian.connector.eclipse.core
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
