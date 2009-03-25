@@ -17,17 +17,21 @@ public class RemoteServerInfo implements java.io.Serializable {
 
 	private java.lang.String edition;
 
+	private org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteTimeInfo serverTime;
+
 	private java.lang.String version;
 
 	public RemoteServerInfo() {
 	}
 
 	public RemoteServerInfo(java.lang.String baseUrl, java.util.Calendar buildDate, java.lang.String buildNumber,
-			java.lang.String edition, java.lang.String version) {
+			java.lang.String edition, org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteTimeInfo serverTime,
+			java.lang.String version) {
 		this.baseUrl = baseUrl;
 		this.buildDate = buildDate;
 		this.buildNumber = buildNumber;
 		this.edition = edition;
+		this.serverTime = serverTime;
 		this.version = version;
 	}
 
@@ -104,6 +108,24 @@ public class RemoteServerInfo implements java.io.Serializable {
 	}
 
 	/**
+	 * Gets the serverTime value for this RemoteServerInfo.
+	 * 
+	 * @return serverTime
+	 */
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteTimeInfo getServerTime() {
+		return serverTime;
+	}
+
+	/**
+	 * Sets the serverTime value for this RemoteServerInfo.
+	 * 
+	 * @param serverTime
+	 */
+	public void setServerTime(org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteTimeInfo serverTime) {
+		this.serverTime = serverTime;
+	}
+
+	/**
 	 * Gets the version value for this RemoteServerInfo.
 	 * 
 	 * @return version
@@ -141,6 +163,7 @@ public class RemoteServerInfo implements java.io.Serializable {
 				&& ((this.buildDate == null && other.getBuildDate() == null) || (this.buildDate != null && this.buildDate.equals(other.getBuildDate())))
 				&& ((this.buildNumber == null && other.getBuildNumber() == null) || (this.buildNumber != null && this.buildNumber.equals(other.getBuildNumber())))
 				&& ((this.edition == null && other.getEdition() == null) || (this.edition != null && this.edition.equals(other.getEdition())))
+				&& ((this.serverTime == null && other.getServerTime() == null) || (this.serverTime != null && this.serverTime.equals(other.getServerTime())))
 				&& ((this.version == null && other.getVersion() == null) || (this.version != null && this.version.equals(other.getVersion())));
 		__equalsCalc = null;
 		return _equals;
@@ -165,6 +188,9 @@ public class RemoteServerInfo implements java.io.Serializable {
 		}
 		if (getEdition() != null) {
 			_hashCode += getEdition().hashCode();
+		}
+		if (getServerTime() != null) {
+			_hashCode += getServerTime().hashCode();
 		}
 		if (getVersion() != null) {
 			_hashCode += getVersion().hashCode();
@@ -202,6 +228,12 @@ public class RemoteServerInfo implements java.io.Serializable {
 		elemField.setFieldName("edition");
 		elemField.setXmlName(new javax.xml.namespace.QName("", "edition"));
 		elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+		elemField.setNillable(true);
+		typeDesc.addFieldDesc(elemField);
+		elemField = new org.apache.axis.description.ElementDesc();
+		elemField.setFieldName("serverTime");
+		elemField.setXmlName(new javax.xml.namespace.QName("", "serverTime"));
+		elemField.setXmlType(new javax.xml.namespace.QName("http://beans.soap.rpc.jira.atlassian.com", "RemoteTimeInfo"));
 		elemField.setNillable(true);
 		typeDesc.addFieldDesc(elemField);
 		elemField = new org.apache.axis.description.ElementDesc();

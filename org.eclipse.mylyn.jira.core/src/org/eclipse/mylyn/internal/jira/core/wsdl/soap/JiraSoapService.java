@@ -19,6 +19,11 @@ public interface JiraSoapService extends java.rmi.Remote {
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
+	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel getSecurityLevel(java.lang.String in0,
+			java.lang.String in1) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
+
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo getServerInfo(java.lang.String in0)
 			throws java.rmi.RemoteException;
 
@@ -75,11 +80,6 @@ public interface JiraSoapService extends java.rmi.Remote {
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
-
-	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel getSecurityLevel(java.lang.String in0,
-			java.lang.String in1) throws java.rmi.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
-			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException;
 
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject updateProject(java.lang.String in0,
 			org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject in1) throws java.rmi.RemoteException,
@@ -483,6 +483,13 @@ public interface JiraSoapService extends java.rmi.Remote {
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteFilter[] getSavedFilters(java.lang.String in0)
 			throws java.rmi.RemoteException, org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
+
+	public boolean addBase64EncodedAttachmentsToIssue(java.lang.String in0, java.lang.String in1,
+			java.lang.String[] in2, java.lang.String[] in3) throws java.rmi.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemotePermissionException,
+			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteValidationException,
 			org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
 
 	public org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject createProjectFromObject(java.lang.String in0,
