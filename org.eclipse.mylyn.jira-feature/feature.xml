@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.mylyn.jira_feature"
       label="%featureName"
-      version="3.1.0.qualifier"
+      version="3.2.0.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.mylyn">
 
@@ -57,14 +57,14 @@
          id="org.eclipse.mylyn.jira.ui"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="3.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.mylyn.jira.core"
          download-size="0"
          install-size="0"
-         version="3.1.0.qualifier"
+         version="3.2.0.qualifier"
          unpack="false"/>
 
    <plugin
