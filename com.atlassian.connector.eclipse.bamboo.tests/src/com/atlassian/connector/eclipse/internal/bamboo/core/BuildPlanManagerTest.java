@@ -227,11 +227,12 @@ public class BuildPlanManagerTest extends TestCase {
 	}
 
 	private void joinJob(Job job) {
-		assertNotNull(job);
-		try {
-			job.join();
-		} catch (InterruptedException e) {
-			fail("Failed to join job " + job.getName());
+		if (job != null) {
+			try {
+				job.join();
+			} catch (InterruptedException e) {
+				fail("Failed to join job " + job.getName());
+			}
 		}
 	}
 }
