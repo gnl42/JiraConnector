@@ -29,12 +29,6 @@ public class RemoveCommentAction extends AbstractBackgroundJobReviewAction {
 				CommonImages.REMOVE, new CrucibleRemoteOperation() {
 					public void run(CrucibleServerFacade server, CrucibleServerCfg serverCfg)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-						try {
-							Thread.sleep(10000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						server.removeComment(serverCfg, review.getPermId(), comment);
 					}
 				});
