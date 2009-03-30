@@ -246,7 +246,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 				readOnlyFields);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(objectivesSection);
 		objectivesComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(1).create());
-		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 80).applyTo(descriptionText);
+		GridDataFactory.fillDefaults().grab(true, true).hint(250, 80).applyTo(descriptionText);
 		objectivesSection.setClient(objectivesComp);
 		//CHECKSTYLE:MAGIC:ON
 
