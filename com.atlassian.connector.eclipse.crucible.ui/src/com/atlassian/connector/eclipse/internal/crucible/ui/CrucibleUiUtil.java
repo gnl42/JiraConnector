@@ -12,7 +12,9 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
@@ -63,6 +65,11 @@ public final class CrucibleUiUtil {
 			}
 		}
 		return null;
+	}
+
+	public static CrucibleClient getClient(Review review) {
+		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
+		return connector.getClientManager().getClient(getCrucibleTaskRepository(review));
 	}
 
 	public static ITask getCrucibleTask(Review review) {

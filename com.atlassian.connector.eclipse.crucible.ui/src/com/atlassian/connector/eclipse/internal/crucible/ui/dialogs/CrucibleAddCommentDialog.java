@@ -129,9 +129,9 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	private final CrucibleFile crucibleFile;
 
-	private static final String SAVE_LABEL = "&Save";
+	private static final String SAVE_LABEL = "&Post";
 
-	private static final String DRAFT_LABEL = "Save as &Draft";
+	private static final String DRAFT_LABEL = "Post as &Draft";
 
 	private static final String DEFECT_LABEL = "Defect";
 

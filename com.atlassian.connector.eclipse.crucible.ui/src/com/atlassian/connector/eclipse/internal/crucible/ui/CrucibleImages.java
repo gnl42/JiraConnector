@@ -53,11 +53,15 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor SUBMIT = create(T_OBJ, "pin_submit.png"); //$NON-NLS-1$
 
+	public static final ImageDescriptor COMMENT_EDIT = create(T_OBJ, "editing_16.gif"); //$NON-NLS-1$
+
 	public static final ImageDescriptor JOIN = create(T_OBJ, "pin_join.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor LEAVE = create(T_OBJ, "pin_leave.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor APPROVE = create(T_OBJ, "pin_approve.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor POST = create(T_OBJ, "pin_submit.png"); //$NON-NLS-1$
 
 	private CrucibleImages() {
 		// ignore

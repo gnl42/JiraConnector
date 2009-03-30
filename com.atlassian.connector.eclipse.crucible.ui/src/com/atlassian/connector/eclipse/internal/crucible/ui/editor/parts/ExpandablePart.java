@@ -449,6 +449,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 					newParts.add(oldPart);
 				} else {
 					V commentPart = createChildPart(comment, crucibleReview, crucibleEditor);
+					commentPart.hookCustomActionRunListener(actionListener);
 					newParts.add(commentPart);
 					Control commentControl = commentPart.createControl(composite, toolkit);
 

@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
@@ -88,10 +87,5 @@ public class ReplyToCommentAction extends AbstractAddCommentAction implements IR
 	@Override
 	protected Comment getParentComment() {
 		return comment;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return super.isEnabled() && CrucibleUtil.canAddCommentToReview(review);
 	}
 }

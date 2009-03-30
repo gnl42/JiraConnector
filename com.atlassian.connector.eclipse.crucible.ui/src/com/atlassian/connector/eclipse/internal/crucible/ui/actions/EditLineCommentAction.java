@@ -15,40 +15,43 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleAddCommentDialog;
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.CrucibleEditCommentDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.swt.widgets.Shell;
 
-/**
- * Abstract class to deal with adding comments to a review
- * 
- * @author Shawn Minto
- * @author Thomas Ehrnhoefer
- */
-public abstract class AbstractAddCommentAction extends AbstractReviewAction {
+public class EditLineCommentAction extends AbstractListenableReviewAction {
 
-	protected AbstractAddCommentAction(String text) {
-		super(text);
+	private final Shell shell;
+
+	private final Comment comment;
+
+	public EditLineCommentAction(Review review, Comment comment, Shell shell) {
+		super("Edit Comment");
+		this.review = review;
+		this.comment = comment;
+		this.shell = shell;
+	}
+
+	@Override
+	protected Review getReview() {
+		// ignore
+		return null;
 	}
 
 	public void run(IAction action) {
-
 		if (review == null) {
 			return;
 		}
-
-		LineRange commentLines = getSelectedRange();
-		CrucibleFile reviewItem = getCrucibleFile();
-		Comment parentComment = getParentComment();
 
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
@@ -58,30 +61,37 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 			return;
 		}
 
-		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(TasksUiInternal.getShell(),
-				getDialogTitle(), review, reviewItem, parentComment, commentLines, getTaskKey(), getTaskId(),
-				getTaskRepository(), client);
+		CrucibleEditCommentDialog commentDialog = new CrucibleEditCommentDialog(shell, getDialogTitle(), review,
+				comment, getTaskKey(), getTaskId(), getTaskRepository(), client);
 		commentDialog.open();
 	}
 
-	protected abstract String getDialogTitle();
-
-	protected CrucibleFile getCrucibleFile() {
-		return null;
+	private String getDialogTitle() {
+		return comment.isReply() == false ? "Edit Comment" : "Edit Reply";
 	}
 
-	protected LineRange getSelectedRange() {
-		return null;
+	@Override
+	public ImageDescriptor getImageDescriptor() {
+		return CrucibleImages.COMMENT_EDIT;
 	}
 
-	protected Comment getParentComment() {
-		return null;
+	@Override
+	public String getToolTipText() {
+		return "Edit";
+	}
+
+	public static boolean isApplicable(Review review, Comment comment) {
+		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
+		CrucibleClient client = connector.getClientManager()
+				.getClient(CrucibleUiUtil.getCrucibleTaskRepository(review));
+		return CrucibleUtil.canAddCommentToReview(review)
+				&& comment.getAuthor().getUserName().equals(client.getUserName());
+
 	}
 
 	@Override
 	public boolean isEnabled() {
-		Review myReview = getReview();
-		return super.isEnabled() && (myReview != null && CrucibleUtil.canAddCommentToReview(getReview()));
+		return super.isEnabled() && isApplicable(review, comment);
 	}
 
 }

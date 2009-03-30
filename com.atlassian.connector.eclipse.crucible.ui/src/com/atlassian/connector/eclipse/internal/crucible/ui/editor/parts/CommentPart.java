@@ -13,6 +13,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditLineCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.forms.SizeCachingComposite;
@@ -29,6 +32,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -196,6 +200,15 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 		if (isExpanded) {
 			if (!comment.isReply()) {
 				actions.add(new ReplyToCommentAction(comment, crucibleReview, crucibleFile));
+			}
+
+			if (EditLineCommentAction.isApplicable(crucibleReview, comment)) {
+				final Shell shell = getSection().getShell();
+				actions.add(new EditLineCommentAction(crucibleReview, comment, shell));
+				actions.add(new RemoveCommentAction(crucibleReview, comment, shell));
+				if (comment.isDraft()) {
+					actions.add(new PostDraftCommentAction(crucibleReview, comment, shell));
+				}
 			}
 		}
 		return actions;

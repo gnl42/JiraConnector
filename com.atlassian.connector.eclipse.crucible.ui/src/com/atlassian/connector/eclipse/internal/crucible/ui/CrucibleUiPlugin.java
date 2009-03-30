@@ -32,6 +32,8 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.crucible.ui";
 
+	public static final String PRODUCT_NAME = "Atlassian Crucible Connector";
+
 	// The shared instance
 	private static CrucibleUiPlugin plugin;
 

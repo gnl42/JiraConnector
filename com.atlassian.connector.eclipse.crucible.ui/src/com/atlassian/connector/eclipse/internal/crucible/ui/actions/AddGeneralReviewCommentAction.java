@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
@@ -37,10 +36,5 @@ public class AddGeneralReviewCommentAction extends AbstractAddCommentAction {
 	@Override
 	protected Review getReview() {
 		return review;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return super.isEnabled() && CrucibleUtil.canAddCommentToReview(review);
 	}
 }
