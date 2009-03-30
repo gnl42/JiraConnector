@@ -61,7 +61,9 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor APPROVE = create(T_OBJ, "pin_approve.png"); //$NON-NLS-1$
 
-	public static final ImageDescriptor POST = create(T_OBJ, "pin_submit.png"); //$NON-NLS-1$
+	public static final ImageDescriptor SET_REVIEWERS = create(T_OBJ, "pin_setreviewers.png"); //$NON-NLS-1$
+	
+		public static final ImageDescriptor POST = create(T_OBJ, "pin_submit.png"); //$NON-NLS-1$
 
 	private CrucibleImages() {
 		// ignore

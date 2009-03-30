@@ -15,6 +15,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
@@ -31,6 +33,9 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Utility class for the UI
@@ -178,4 +183,16 @@ public final class CrucibleUiUtil {
 		}
 	}
 
+	public static Set<CrucibleCachedUser> getCachedUsers(Review review) {
+		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
+				getCrucibleTaskRepository(review));
+		CrucibleClientData clientData = client.getClientData();
+		Set<CrucibleCachedUser> users;
+		if (clientData == null) {
+			users = new HashSet<CrucibleCachedUser>();
+		} else {
+			users = clientData.getCachedUsers();
+		}
+		return users;
+	}
 }

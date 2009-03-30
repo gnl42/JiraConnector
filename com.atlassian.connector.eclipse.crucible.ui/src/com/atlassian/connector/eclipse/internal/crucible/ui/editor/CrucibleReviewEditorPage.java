@@ -326,6 +326,13 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				+ getTask().getTaskKey(), getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+				//check if repositoryData is initialized
+				if (client.getClientData() == null || client.getClientData().getCachedUsers().size() == 0
+						|| client.getClientData().getCachedProjects().size() == 0) {
+					monitor.subTask("Updateing Repository Data");
+					client.updateRepositoryData(monitor, getTaskRepository());
+				}
+				monitor.subTask("Retrieving Crucible Review");
 
 				// TODO clean this up
 				Review cachedReview = CrucibleCorePlugin.getDefault().getReviewCache().getWorkingCopyReview(

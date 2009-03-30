@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -37,32 +38,35 @@ public class CrucibleReviewersPart {
 
 	private final Set<Reviewer> reviewers;
 
+	private Menu menu;
+
 	public CrucibleReviewersPart(Set<Reviewer> reviewers) {
 		super();
 		this.reviewers = reviewers;
 	}
 
-	public void createControl(FormToolkit toolkit, Composite parent) {
-		createControl(toolkit, parent, "Reviewers:");
+	public Composite createControl(FormToolkit toolkit, Composite parent) {
+		return createControl(toolkit, parent, "Reviewers:   ");
 	}
 
-	public void createControl(FormToolkit toolkit, Composite parent, String labelText) {
+	public Composite createControl(FormToolkit toolkit, Composite parent, String labelText) {
 		//CHECKSTYLE:MAGIC:OFF
 
-		Label label = createLabelControl(toolkit, parent, labelText);
-		GridDataFactory.fillDefaults().align(SWT.LEFT, SWT.TOP).applyTo(label);
-
 		Composite reviewersComposite = createComposite(toolkit, parent);
+
 		// use indent to make up for forms border gap
-		GridDataFactory.fillDefaults().grab(true, false).span(3, 1).hint(300, SWT.DEFAULT).applyTo(reviewersComposite);
+		GridDataFactory.fillDefaults().grab(true, false).hint(300, SWT.DEFAULT).applyTo(reviewersComposite);
 		RowLayout layout = new RowLayout();
 		layout.marginBottom = 0;
 		layout.marginTop = 0;
 		layout.marginRight = 0;
 		layout.marginLeft = 0;
 		layout.marginWidth = 0;
-		layout.spacing = 1;
+		layout.spacing = 0;
 		reviewersComposite.setLayout(layout);
+
+		createLabelControl(toolkit, reviewersComposite, labelText);
+
 		if (reviewers.isEmpty()) {
 			// avoid blank gap on Linux
 			createLabelControl(toolkit, reviewersComposite, " ");
@@ -83,12 +87,16 @@ public class CrucibleReviewersPart {
 				}
 			}
 		}
+		return reviewersComposite;
 		//CHECKSTYLE:MAGIC:ON
 	}
 
 	private Composite createComposite(FormToolkit toolkit, Composite parent) {
 		if (toolkit != null) {
 			Composite composite = new SizeCachingComposite(parent, SWT.NONE);
+			if (this.menu != null) {
+				EditorUtil.setMenu(composite, null);
+			}
 			toolkit.adapt(composite);
 			return composite;
 		} else {
@@ -121,6 +129,7 @@ public class CrucibleReviewersPart {
 	private Label createLabelControl(FormToolkit toolkit, Composite composite, String labelString) {
 
 		Label labelControl = null;
+		boolean isD = composite.isDisposed();
 		if (toolkit != null) {
 			labelControl = toolkit.createLabel(composite, labelString);
 			labelControl.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
@@ -130,5 +139,9 @@ public class CrucibleReviewersPart {
 		}
 
 		return labelControl;
+	}
+
+	public void setMenu(Menu menu) {
+		this.menu = menu;
 	}
 }
