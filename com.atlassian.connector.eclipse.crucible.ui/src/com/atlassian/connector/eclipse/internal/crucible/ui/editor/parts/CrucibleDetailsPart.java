@@ -190,6 +190,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		for (Control c : parentComposite.getChildren()) {
 			c.dispose();
+			//TODO disposing not necessary, simply updating labels and a re-layout should be sufficient; low priority though
 		}
 		parentComposite.setMenu(null);
 
@@ -266,7 +267,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 	}
 
 	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, Set<Reviewer> reviewers) {
-		if (reviewersComp == null) {
+		if (reviewersComp == null || reviewersComp.isDisposed()) {
 			reviewersComp = toolkit.createComposite(parent);
 			reviewersComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
 			GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(reviewersComp);
