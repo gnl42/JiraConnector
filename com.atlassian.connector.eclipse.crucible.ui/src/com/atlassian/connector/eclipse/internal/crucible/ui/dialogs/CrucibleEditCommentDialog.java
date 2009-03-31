@@ -243,6 +243,7 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 		GridData textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL);
 		textGridData.heightHint = 100;
+		textGridData.widthHint = 500;
 		commentText.setLayoutData(textGridData);
 		commentText.forceFocus();
 
