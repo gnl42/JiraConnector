@@ -146,7 +146,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		return labelControl;
 	}
 
-	private Control createUserComboControl(FormToolkit toolkit, Composite parent, String labelString, User selection) {
+	private Control createUserComboControl(FormToolkit toolkit, Composite parent, String labelString, User selection,
+			boolean readOnly) {
 		if (labelString != null) {
 			createLabelControl(toolkit, parent, labelString);
 		}
@@ -154,10 +155,14 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		Set<CrucibleCachedUser> users = CrucibleUiUtil.getCachedUsers(crucibleReview);
 
 		Control control;
-		if (users.size() == 1) {
-			Text text = new Text(parent, SWT.FLAT | SWT.BORDER);
-			text.setText(users.iterator().next().getUserName());
+		if (readOnly) {
+			Text text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
+			text.setFont(JFaceResources.getTextFont());
+			text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
+			text.setText(selection.getDisplayName());
+			text.setData(selection);
 			control = text;
+			toolkit.adapt(text, true, true);
 		} else {
 			CCombo combo = new CCombo(parent, SWT.BORDER);
 			ComboViewer comboViewer = new ComboViewer(combo);
@@ -220,11 +225,11 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		final Composite participantsComp = toolkit.createComposite(reviewersSection);
 
 		Control authorControl = createUserComboControl(toolkit, participantsComp, "Author: ",
-				crucibleReview.getAuthor());
+				crucibleReview.getAuthor(), readOnlyFields);
 		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(authorControl);
 
 		Control moderatorControl = createUserComboControl(toolkit, participantsComp, "Moderator: ",
-				crucibleReview.getModerator());
+				crucibleReview.getModerator(), readOnlyFields);
 		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(moderatorControl);
 
 		Composite reviewersPartComp = toolkit.createComposite(participantsComp);
