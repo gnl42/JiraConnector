@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
 import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSubclipseCompareEditorInput;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
@@ -27,12 +26,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -80,7 +81,8 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
-			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor) {
+			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor)
+			throws CoreException {
 		ISVNRemoteResource oldRemoteFile = getSvnRemoteFile(repoUrl, oldFilePath, newFilePath, oldRevisionString,
 				newRevisionString, monitor);
 		ISVNRemoteResource newRemoteFile = getSvnRemoteFile(repoUrl, newFilePath, oldFilePath, newRevisionString,
@@ -92,10 +94,10 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			CompareEditorInput compareEditorInput = new CrucibleSubclipseCompareEditorInput(left, right,
 					annotationModel);
 			TeamUiUtils.openCompareEditorForInput(compareEditorInput);
-
 			return true;
 		}
-		return false;
+		throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+				"Could not get revisions for {0}.", newFilePath)));
 	}
 
 	public ISVNRemoteFile getSvnRemoteFile(String repoUrl, String filePath, String otherRevisionFilePath,
@@ -131,9 +133,10 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
-			String otherRevisionString, final IProgressMonitor monitor) {
+			String otherRevisionString, final IProgressMonitor monitor) throws CoreException {
 		if (repoUrl == null) {
-			return null;
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+					"No repository URL given.."));
 		}
 		try {
 
@@ -152,7 +155,12 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 				if (localFile.getStatus().getLastChangedRevision().equals(svnRevision) && !localFile.isDirty()) {
 					// the file is not dirty and we have the right local copy
-					return getOpenedPart(TeamUiUtils.openLocalResource(localResource));
+					IEditorPart editorPart = TeamUiUtils.openLocalResource(localResource);
+					if (editorPart == null) {
+						throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+								NLS.bind("Could not open editor for {0}.", localFile.getName())));
+					}
+					return editorPart;
 
 				} else {
 					final ISVNRemoteFile remoteFile = getRemoteFile(localResource, filePath, svnRevision,
@@ -160,8 +168,9 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 					if (remoteFile != null) {
 						// we need to open the remote resource since the file is either dirty or the wrong revision
 
+						IEditorPart editorPart = null;
 						if (Display.getCurrent() != null) {
-							return getOpenedPart(openRemoteSvnFile(remoteFile, monitor));
+							editorPart = openRemoteSvnFile(remoteFile, monitor);
 						} else {
 							final IEditorPart[] part = new IEditorPart[1];
 							PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
@@ -169,28 +178,31 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 									part[0] = openRemoteSvnFile(remoteFile, monitor);
 								}
 							});
-							return getOpenedPart(part[0]);
+							editorPart = part[0];
 						}
+						if (editorPart == null) {
+							throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+									NLS.bind("Could not open editor for {0}.", remoteFile.getName())));
+						}
+						return editorPart;
 					} else {
-						return getOpenedPart(null);
+						throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+								NLS.bind("Could not get remote file for {0}.", filePath)));
 					}
 				}
 			} else {
-				return getOpenedPart(null);
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+						"Could not find local resource for {0}.", filePath)));
 			}
 		} catch (SVNException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			Status status = new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e);
+			StatusHandler.log(status);
+			throw new CoreException(status);
 		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			Status status = new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e);
+			StatusHandler.log(status);
+			throw new CoreException(status);
 		}
-		return null;
-	}
-
-	private IEditorPart getOpenedPart(IEditorPart editorPart) {
-		if (editorPart == null) {
-			return TeamUiUtils.getNotOpenedEditor();
-		}
-		return editorPart;
 	}
 
 	public boolean canHandleEditorInput(IEditorInput editorInput) {
@@ -263,7 +275,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 					}
 				}
 			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
 						"Review is not fully initialized.  Unable to get file from review.", e));
 			} catch (MalformedURLException e) {
 				// ignore

@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package exceptions;
+package com.atlassian.connector.eclipse.ui.exceptions;
 
 /**
  * <code>UnsupportedTeamProviderException</code> is thrown when the user tries to open a file using an unsupported team

@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.ui.team;
 
-import exceptions.UnsupportedTeamProviderException;
+import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;

@@ -12,12 +12,11 @@
 package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
-import exceptions.UnsupportedTeamProviderException;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.ITypedElement;
@@ -33,6 +32,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
@@ -68,13 +68,13 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
-			String otherRevisionString, IProgressMonitor monitor) {
+			String otherRevisionString, IProgressMonitor monitor) throws CoreException {
 		return openFileWithTeamApi(repoUrl, filePath, otherRevisionFilePath, revisionString, monitor);
 	}
 
 	public boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,
 			String oldRevisionString, String newRevisionString, final ICompareAnnotationModel annotationModel,
-			IProgressMonitor monitor) {
+			IProgressMonitor monitor) throws CoreException {
 		//TODO support for moved/deleted files
 		IResource resource = findResourceForPath(filePath);
 		if (resource != null) {
@@ -96,11 +96,19 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 						}
 					});
 					return true;
+				} else {
+					throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+							"Could not get new revision file {0}.", newRevisionString)));
 				}
+			} else {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+						"Could not get old revision file {0}.", oldRevisionString)));
 			}
-
+		} else {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not locate resource {0}.", filePath)));
 		}
-		return false;
+
 	}
 
 	private IFileRevision getFileRevision(IResource resource, String revisionString, IProgressMonitor monitor) {
@@ -108,7 +116,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 		if (project == null) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
-					"Unable to get project for resource", new Exception()));
+					"Unable to get project for resource"));
 			return null;
 		}
 
@@ -163,7 +171,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 				if (project == null) {
 					StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
-							"Unable to get project for resource", new Exception()));
+							"Unable to get project for resource"));
 					return null;
 				}
 
@@ -220,7 +228,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	private static IEditorPart openFileWithTeamApi(String repoUrl, String filePath, String otherRevisionFilePath,
-			final String revisionString, final IProgressMonitor monitor) {
+			final String revisionString, final IProgressMonitor monitor) throws CoreException {
 		// this is a good backup (Works for cvs and anyone that uses the history provider
 
 		// TODO add support for finding a project in the path so that we can find the proper resource 
@@ -235,15 +243,15 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 		if (resource != null) {
 			if (!(resource instanceof IFile)) {
-				return null;
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+						"Unable to get resource {0}.", filePath)));
 			}
 
 			IProject project = resource.getProject();
 
 			if (project == null) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
-						"Unable to get project for resource", new Exception()));
-				return null;
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+						"Unable to get project for resource {0}.", filePath)));
 			}
 
 			RepositoryProvider rp = RepositoryProvider.getProvider(project);
@@ -257,12 +265,14 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 				boolean inSync = isRemoteFileInSync(resource, rp);
 
+				IEditorPart editor = null;
+
 				if (inSync && localFileRevision.getContentIdentifier() != null
 						&& localFileRevision.getContentIdentifier().equals(revisionString)) {
-					return TeamUiUtils.openLocalResource(resource);
+					editor = TeamUiUtils.openLocalResource(resource);
 				} else {
 					if (Display.getCurrent() != null) {
-						return openRemoteResource(revisionString, resource, historyProvider, monitor);
+						editor = openRemoteResource(revisionString, resource, historyProvider, monitor);
 					} else {
 						final IEditorPart[] part = new IEditorPart[1];
 						final IResource res = resource;
@@ -271,14 +281,21 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 								part[0] = openRemoteResource(revisionString, res, historyProvider, monitor);
 							}
 						});
-						return part[0];
+						editor = part[0];
 					}
-
 				}
-
+				if (editor == null) {
+					throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+							"Unable to open editor for resource {0}.", filePath)));
+				} else {
+					return editor;
+				}
 			}
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+					"Unable to get repository provider for project {0}.", project.getName())));
 		}
-		return null;
+		throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+				"Unable to get resource {0}.", filePath)));
 	}
 
 	private static IResource findResourceForPath(String filePath) {
@@ -341,7 +358,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 					inSync = SyncInfo.isInSync(syncInfo.getKind());
 				} else {
 					StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-							"Unable to determine if file is in sync.  Trying to open remote file.", new Exception()));
+							"Unable to determine if file is in sync.  Trying to open remote file."));
 				}
 			} catch (TeamException e) {
 				StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
@@ -349,7 +366,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 			}
 		} else {
 			StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-					"Unable to determine if file is in sync.  Trying to open remote file.", new Exception()));
+					"Unable to determine if file is in sync.  Trying to open remote file."));
 		}
 		return inSync;
 	}

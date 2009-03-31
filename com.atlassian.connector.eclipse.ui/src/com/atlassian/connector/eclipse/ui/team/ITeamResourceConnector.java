@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -29,12 +30,13 @@ public interface ITeamResourceConnector {
 	boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor);
 
 	IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
-			String otherRevisionString, IProgressMonitor monitor);
+			String otherRevisionString, IProgressMonitor monitor) throws CoreException;
 
 	boolean canHandleEditorInput(IEditorInput editorInput);
 
 	CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview);
 
 	boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath, String oldRevisionString,
-			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor);
+			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor)
+			throws CoreException;
 }

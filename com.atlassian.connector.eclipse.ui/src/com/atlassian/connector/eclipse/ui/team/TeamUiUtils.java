@@ -12,9 +12,8 @@
 package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-
-import exceptions.UnsupportedTeamProviderException;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
@@ -23,6 +22,7 @@ import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -63,8 +63,6 @@ public final class TeamUiUtils {
 
 	private static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
 
-	private static final NotOpenedEditorPart NOT_OPENED_EDITOR = new NotOpenedEditorPart();
-
 	private TeamUiUtils() {
 	}
 
@@ -83,26 +81,25 @@ public final class TeamUiUtils {
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
-				IEditorPart part = connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
-						otherRevisionString, monitor);
-				if (part == null) {
-					TeamMessageUtils.openCouldNotOpenFileErrorMessage(repoUrl, filePath, revisionString);
-				} else {
-					return getRealEditorPart(part);
+				try {
+					return connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
+							otherRevisionString, monitor);
+				} catch (CoreException e) {
+					//ignore and try with default
+					System.err.println();
 				}
 			}
 		}
 
 		// try a backup solution
 		try {
-			IEditorPart realEditorPart = getRealEditorPart(defaultConnector.openFile(repoUrl, filePath,
-					otherRevisionFilePath, revisionString, otherRevisionString, monitor));
-			if (realEditorPart == null) {
-				TeamMessageUtils.openCouldNotOpenFileErrorMessage(repoUrl, filePath, revisionString);
-			}
-			return realEditorPart;
+			return defaultConnector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
+					otherRevisionString, monitor);
 		} catch (UnsupportedTeamProviderException e) {
 			TeamMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
+			return null;
+		} catch (CoreException e) {
+			TeamMessageUtils.openCouldNotOpenFileErrorMessage(repoUrl, filePath, revisionString);
 			return null;
 		}
 	}
@@ -122,9 +119,13 @@ public final class TeamUiUtils {
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
-				if (connector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
-						newRevisionString, annotationModel, monitor)) {
-					return;
+				try {
+					if (connector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
+							newRevisionString, annotationModel, monitor)) {
+						return;
+					}
+				} catch (CoreException e) {
+					//ignore and try with default
 				}
 			}
 		}
@@ -136,6 +137,8 @@ public final class TeamUiUtils {
 			}
 		} catch (UnsupportedTeamProviderException e) {
 			TeamMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
+		} catch (CoreException e) {
+			TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString, newRevisionString);
 		}
 	}
 
@@ -156,17 +159,6 @@ public final class TeamUiUtils {
 					"Editor is not an ITextEditor or editor inputs not equal" + editor));
 		}
 		return null;
-	}
-
-	public static IEditorPart getNotOpenedEditor() {
-		return NOT_OPENED_EDITOR;
-	}
-
-	private static IEditorPart getRealEditorPart(IEditorPart editorPart) {
-		if (editorPart == NOT_OPENED_EDITOR) {
-			return null;
-		}
-		return editorPart;
 	}
 
 	public static IEditorPart openLocalResource(final IResource resource) {
