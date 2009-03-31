@@ -22,6 +22,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
@@ -195,4 +196,10 @@ public final class CrucibleUiUtil {
 		}
 		return users;
 	}
+
+	public static boolean canModifyComment(Review review, Comment comment) {
+		return CrucibleUtil.canAddCommentToReview(review)
+				&& comment.getAuthor().getUserName().equals(CrucibleUiUtil.getCurrentUser(review));
+	}
+
 }

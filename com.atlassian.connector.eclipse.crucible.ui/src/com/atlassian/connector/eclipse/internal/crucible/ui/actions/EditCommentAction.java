@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -29,13 +28,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Shell;
 
-public class EditLineCommentAction extends AbstractListenableReviewAction {
+public class EditCommentAction extends AbstractListenableReviewAction {
 
 	private final Shell shell;
 
 	private final Comment comment;
 
-	public EditLineCommentAction(Review review, Comment comment, Shell shell) {
+	public EditCommentAction(Review review, Comment comment, Shell shell) {
 		super("Edit Comment");
 		this.review = review;
 		this.comment = comment;
@@ -80,18 +79,9 @@ public class EditLineCommentAction extends AbstractListenableReviewAction {
 		return "Edit";
 	}
 
-	public static boolean isApplicable(Review review, Comment comment) {
-		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
-		CrucibleClient client = connector.getClientManager()
-				.getClient(CrucibleUiUtil.getCrucibleTaskRepository(review));
-		return CrucibleUtil.canAddCommentToReview(review)
-				&& comment.getAuthor().getUserName().equals(client.getUserName());
-
-	}
-
 	@Override
 	public boolean isEnabled() {
-		return super.isEnabled() && isApplicable(review, comment);
+		return super.isEnabled() && CrucibleUiUtil.canModifyComment(review, comment);
 	}
 
 }

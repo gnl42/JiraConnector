@@ -12,8 +12,9 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
-import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditLineCommentAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.ReplyToCommentAction;
@@ -202,9 +203,9 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 				actions.add(new ReplyToCommentAction(comment, crucibleReview, crucibleFile));
 			}
 
-			if (EditLineCommentAction.isApplicable(crucibleReview, comment)) {
+			if (CrucibleUiUtil.canModifyComment(crucibleReview, comment)) {
 				final Shell shell = getSection().getShell();
-				actions.add(new EditLineCommentAction(crucibleReview, comment, shell));
+				actions.add(new EditCommentAction(crucibleReview, comment, shell));
 				actions.add(new RemoveCommentAction(crucibleReview, comment, shell));
 				if (comment.isDraft()) {
 					actions.add(new PostDraftCommentAction(crucibleReview, comment, shell));
