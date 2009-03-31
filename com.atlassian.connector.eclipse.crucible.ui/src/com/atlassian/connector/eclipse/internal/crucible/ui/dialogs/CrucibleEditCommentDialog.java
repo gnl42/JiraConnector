@@ -265,8 +265,9 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 
 	private void updateButtonsState() {
 		processFields();
-		boolean isModified = !commentText.getText().equals(comment.getMessage())
-				|| (!comment.isReply() && (defect != comment.isDefectRaised() || !customFieldSelections.equals(comment.getCustomFields())));
+		boolean areMetricsModified = !comment.isReply()
+				&& (defect != comment.isDefectRaised() || !customFieldSelections.equals(comment.getCustomFields()));
+		boolean isModified = !commentText.getText().equals(comment.getMessage()) || areMetricsModified;
 		if (updateButton != null && !updateButton.isDisposed()) {
 			updateButton.setEnabled(isModified);
 		}
