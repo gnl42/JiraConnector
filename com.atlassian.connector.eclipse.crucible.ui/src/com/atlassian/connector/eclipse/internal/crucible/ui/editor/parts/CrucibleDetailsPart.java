@@ -23,7 +23,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ReviewerSelectionDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.connector.eclipse.ui.AtlassianImages;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -40,7 +39,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -68,11 +66,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.text.DateFormat;
@@ -95,6 +90,10 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		public Set<Reviewer> getReviewers() {
 			return reviewers;
+		}
+
+		public SetReviewersAction() {
+			this(null);
 		}
 
 		public SetReviewersAction(JobChangeAdapter jobChangeAdapter) {
@@ -157,7 +156,9 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 					}
 				};
 				job.schedule();
-				job.addJobChangeListener(jobChangeAdapter);
+				if (jobChangeAdapter != null) {
+					job.addJobChangeListener(jobChangeAdapter);
+				}
 			}
 		}
 	}
@@ -364,13 +365,13 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		Composite reviewersPartComp = toolkit.createComposite(participantsComp);
 		reviewersPartComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(reviewersPartComp);
+		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).applyTo(reviewersPartComp);
 
 		createReviewersPart(toolkit, reviewersPartComp, hasModifyFilesAction);
 
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersSection);
 		participantsComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(2).create());
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(participantsComp);
+		GridDataFactory.fillDefaults().grab(true, false).hint(250, -1).applyTo(participantsComp);
 		reviewersSection.setClient(participantsComp);
 
 		Section objectivesSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE
@@ -392,7 +393,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		});
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(objectivesSection);
 		objectivesComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(1).create());
-		GridDataFactory.fillDefaults().grab(true, true).hint(250, 80).applyTo(descriptionText);
+		GridDataFactory.fillDefaults().grab(true, true).hint(250, -1).applyTo(descriptionText);
 		objectivesSection.setClient(objectivesComp);
 		//CHECKSTYLE:MAGIC:ON
 
@@ -410,49 +411,24 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		if (reviewersComp == null || reviewersComp.isDisposed()) {
 			reviewersComp = toolkit.createComposite(parent);
 			reviewersComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
-			GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(reviewersComp);
+			GridDataFactory.fillDefaults().grab(true, true).applyTo(reviewersComp);
 		}
 
 		try {
+			if (canEditReviewers) {
+				setReviewersAction = new SetReviewersAction();
+				setReviewersAction.setToolTipText("Add/Remove Reviewers");
+				setReviewersAction.setImageDescriptor(CrucibleImages.SET_REVIEWERS);
+			}
+
 			Set<Reviewer> reviewers = crucibleReview.getReviewers();
 			CrucibleReviewersPart crucibleReviewersPart = new CrucibleReviewersPart(reviewers);
 			crucibleReviewersPart.setMenu(parent.getMenu());
-			reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp);
-
-			if (canEditReviewers) {
-				addReviewersAction(toolkit, parent);
-			}
+			reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp, setReviewersAction);
 
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 	}
 
-	private void addReviewersAction(final FormToolkit toolkit, final Composite parent) {
-		setReviewersAction = new SetReviewersAction(new JobChangeAdapter() {
-			@Override
-			public void done(IJobChangeEvent event) {
-				crucibleEditor.attributesModified();
-				disposeReviewersPart();
-				createReviewersPart(toolkit, parent, true);
-				crucibleEditor.reflow(true);
-			}
-		});
-		setReviewersAction.setToolTipText("Add/Remove Reviewers");
-		setReviewersAction.setImageDescriptor(CrucibleImages.SET_REVIEWERS);
-
-		ImageHyperlink hyperlink = toolkit.createImageHyperlink(parent, SWT.NONE);
-		if (setReviewersAction.getImageDescriptor() != null) {
-			hyperlink.setImage(AtlassianImages.getImage(setReviewersAction.getImageDescriptor()));
-		} else {
-			hyperlink.setText(setReviewersAction.getText());
-		}
-		hyperlink.setToolTipText(setReviewersAction.getToolTipText());
-		hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
-			@Override
-			public void linkActivated(HyperlinkEvent e) {
-				setReviewersAction.run();
-			}
-		});
-	}
 }

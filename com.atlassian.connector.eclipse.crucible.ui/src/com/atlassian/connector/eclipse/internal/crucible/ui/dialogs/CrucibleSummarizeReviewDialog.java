@@ -110,9 +110,9 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 
 	private static final String OTHER_DRAFTS_WARNING = "Warning - Other participants' draft comments will be discarded.";
 
-	private static final String OPEN_REVIEWS_WARNING = "The following reviewers have not yet finished this review: ";
+	private static final String OPEN_REVIEWS_WARNING = "Reviewers not yet finished: ";
 
-	private static final String COMPLETED_REVIEWS_INFO = "The following people have completed this review:";
+	private static final String COMPLETED_REVIEWS_INFO = "Reviewers that have finished this review:";
 
 	private final Review review;
 
