@@ -11,6 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -18,30 +21,50 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ReviewerSelectionDialog;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.AtlassianImages;
+import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
+import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
+import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
+import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
@@ -54,6 +77,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import java.text.DateFormat;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -62,6 +86,81 @@ import java.util.Set;
  * @author Shawn Minto
  */
 public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
+
+	private final class SetReviewersAction extends Action {
+
+		private final JobChangeAdapter jobChangeAdapter;
+
+		private Set<Reviewer> reviewers;
+
+		public Set<Reviewer> getReviewers() {
+			return reviewers;
+		}
+
+		public SetReviewersAction(JobChangeAdapter jobChangeAdapter) {
+			this.jobChangeAdapter = jobChangeAdapter;
+		}
+
+		@Override
+		public void run() {
+			ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(Display.getDefault().getActiveShell(),
+					crucibleReview, CrucibleUiUtil.getCachedUsers(crucibleReview));
+			if (dialog.open() == Window.OK) {
+				reviewers = dialog.getSelectedReviewers();
+				final Set<String> reviewerUserNames = new HashSet<String>();
+				for (Reviewer reviewer : reviewers) {
+					reviewerUserNames.add(reviewer.getUserName());
+				}
+
+				boolean unchanged;
+				try {
+					unchanged = reviewers.size() == crucibleReview.getReviewers().size()
+							&& reviewers.containsAll(crucibleReview.getReviewers());
+				} catch (ValueNotYetInitialized e) {
+					unchanged = false;
+				}
+				if (unchanged) {
+					changedAttributes.remove(ReviewAttributeType.REVIEWERS);
+				} else {
+					changedAttributes.put(ReviewAttributeType.REVIEWERS, reviewers);
+				}
+				final TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(crucibleReview);
+				CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Set Reviewers", repository) {
+					@Override
+					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+						final MultiStatus status = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.ERROR,
+								"Failed to set reviewers", null);
+						client.execute(new RemoteOperation<Object>(monitor, repository) {
+							@Override
+							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+									ServerPasswordNotProvidedException {
+								try {
+									server.setReviewers(serverCfg, crucibleReview.getPermId(), reviewerUserNames);
+								} catch (Exception e) {
+									status.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+											"Failed to set reviewers.", e));
+								}
+								return null;
+							}
+						});
+						crucibleReview = client.getReview(repository, CrucibleUtil.getTaskIdFromReview(crucibleReview),
+								true, monitor);
+						if (status.getChildren().length > 0) {
+							StatusHandler.log(status);
+							crucibleEditor.getEditor()
+									.setMessage("Error while setting reviewers. See error log for details.",
+											IMessageProvider.ERROR);
+						}
+						//TODO refresh editor / set to not busy
+						return Status.OK_STATUS;
+					}
+				};
+				job.schedule();
+				job.addJobChangeListener(jobChangeAdapter);
+			}
+		}
+	}
 
 	private Review crucibleReview;
 
@@ -77,10 +176,13 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	private IAction setReviewersAction;
 
+	private boolean newReview;
+
 	@Override
-	public void initialize(CrucibleReviewEditorPage editor, Review review) {
+	public void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview) {
 		this.crucibleReview = review;
 		this.crucibleEditor = editor;
+		this.newReview = isNewReview;
 	}
 
 	@Override
@@ -146,8 +248,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		return labelControl;
 	}
 
-	private Control createUserComboControl(FormToolkit toolkit, Composite parent, String labelString, User selection,
-			boolean readOnly) {
+	private Control createUserComboControl(FormToolkit toolkit, Composite parent, String labelString,
+			final User selectedUser, boolean readOnly, final ReviewAttributeType reviewAttributeType) {
 		if (labelString != null) {
 			createLabelControl(toolkit, parent, labelString);
 		}
@@ -156,21 +258,37 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		Control control;
 		if (readOnly) {
-			Text text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
+			final Text text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
 			text.setFont(JFaceResources.getTextFont());
 			text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
-			text.setText(selection.getDisplayName());
-			text.setData(selection);
+			text.setText(selectedUser.getDisplayName());
+			text.setData(selectedUser);
+			text.setEditable(false);
 			control = text;
 			toolkit.adapt(text, true, true);
 		} else {
-			CCombo combo = new CCombo(parent, SWT.BORDER);
+			final CCombo combo = new CCombo(parent, SWT.BORDER);
+			combo.setEditable(false);
 			ComboViewer comboViewer = new ComboViewer(combo);
 			comboViewer.setLabelProvider(new CrucibleUserLabelProvider());
 			comboViewer.setContentProvider(new CrucibleUserContentProvider());
 			comboViewer.setInput(users);
+			comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
+					ISelection selection = event.getSelection();
+					if (selection instanceof IStructuredSelection) {
+						CrucibleCachedUser user = ((CrucibleCachedUser) ((IStructuredSelection) selection).getFirstElement());
+						if (user.getUserName().equals(selectedUser.getUserName())) {
+							changedAttributes.remove(reviewAttributeType);
+						} else {
+							changedAttributes.put(reviewAttributeType, user);
+						}
+						crucibleEditor.attributesModified();
+					}
+				}
+			});
 
-			comboViewer.setSelection(new StructuredSelection(new CrucibleCachedUser(selection)));
+			comboViewer.setSelection(new StructuredSelection(new CrucibleCachedUser(selectedUser)));
 			control = combo;
 		}
 		control.setBackground(toolkit.getColors().getBackground());
@@ -194,18 +312,29 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		}
 		parentComposite.setMenu(null);
 
-		boolean readOnlyFields = true;
+		boolean hasModifyFilesAction = false;
 		try {
 			Set<CrucibleAction> actions = crucibleReview.getActions();
 			if (actions != null && actions.contains(CrucibleAction.MODIFY_FILES)) {
-				readOnlyFields = false;
+				hasModifyFilesAction = true;
 			}
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
 					"Could not retrieve available Crucible actions", e));
 		}
 
-		Text nameText = createText(toolkit, parentComposite, crucibleReview.getName(), null, false, readOnlyFields);
+		Text nameText = createText(toolkit, parentComposite, crucibleReview.getName(), null, false, !newReview);
+		nameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				String modifiedName = ((Text) e.widget).getText();
+				if (modifiedName.equals(crucibleReview.getName())) {
+					changedAttributes.remove(ReviewAttributeType.TITLE);
+				} else {
+					changedAttributes.put(ReviewAttributeType.TITLE, modifiedName);
+				}
+				crucibleEditor.attributesModified();
+			}
+		});
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(nameText);
 
 		Composite statusComp = toolkit.createComposite(parentComposite);
@@ -226,18 +355,18 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		final Composite participantsComp = toolkit.createComposite(reviewersSection);
 
 		Control authorControl = createUserComboControl(toolkit, participantsComp, "Author: ",
-				crucibleReview.getAuthor(), readOnlyFields);
+				crucibleReview.getAuthor(), !newReview, ReviewAttributeType.AUTHOR);
 		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(authorControl);
 
 		Control moderatorControl = createUserComboControl(toolkit, participantsComp, "Moderator: ",
-				crucibleReview.getModerator(), readOnlyFields);
+				crucibleReview.getModerator(), !newReview, ReviewAttributeType.MODERATOR);
 		GridDataFactory.fillDefaults().grab(false, false).align(SWT.BEGINNING, SWT.TOP).applyTo(moderatorControl);
 
 		Composite reviewersPartComp = toolkit.createComposite(participantsComp);
 		reviewersPartComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(reviewersPartComp);
 
-		createReviewersPart(toolkit, reviewersPartComp, null);
+		createReviewersPart(toolkit, reviewersPartComp, hasModifyFilesAction);
 
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersSection);
 		participantsComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(2).create());
@@ -249,7 +378,18 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		objectivesSection.setText("Statement of Objectives");
 		Composite objectivesComp = toolkit.createComposite(objectivesSection);
 		Text descriptionText = createText(toolkit, objectivesComp, crucibleReview.getDescription(), null, true,
-				readOnlyFields);
+				!newReview);
+		descriptionText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				String modifiedName = ((Text) e.widget).getText();
+				if (modifiedName.equals(crucibleReview.getDescription())) {
+					changedAttributes.remove(ReviewAttributeType.OBJECTIVE);
+				} else {
+					changedAttributes.put(ReviewAttributeType.OBJECTIVE, modifiedName);
+				}
+				crucibleEditor.attributesModified();
+			}
+		});
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(objectivesSection);
 		objectivesComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(1).create());
 		GridDataFactory.fillDefaults().grab(true, true).hint(250, 80).applyTo(descriptionText);
@@ -266,21 +406,20 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		}
 	}
 
-	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, Set<Reviewer> reviewers) {
+	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, boolean canEditReviewers) {
 		if (reviewersComp == null || reviewersComp.isDisposed()) {
 			reviewersComp = toolkit.createComposite(parent);
 			reviewersComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
 			GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(reviewersComp);
 		}
+
 		try {
-			if (reviewers == null) {
-				reviewers = crucibleReview.getReviewers();
-			}
+			Set<Reviewer> reviewers = crucibleReview.getReviewers();
 			CrucibleReviewersPart crucibleReviewersPart = new CrucibleReviewersPart(reviewers);
 			crucibleReviewersPart.setMenu(parent.getMenu());
 			reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp);
 
-			if (setReviewersAction == null) {
+			if (canEditReviewers) {
 				addReviewersAction(toolkit, parent);
 			}
 
@@ -290,19 +429,15 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 	}
 
 	private void addReviewersAction(final FormToolkit toolkit, final Composite parent) {
-		setReviewersAction = new Action() {
+		setReviewersAction = new SetReviewersAction(new JobChangeAdapter() {
 			@Override
-			public void run() {
-				ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(parent.getShell(), crucibleReview,
-						CrucibleUiUtil.getCachedUsers(crucibleReview));
-				if (dialog.open() == Window.OK) {
-					Set<Reviewer> reviewers = dialog.getSelectedReviewers();
-					disposeReviewersPart();
-					createReviewersPart(toolkit, parent, reviewers);
-					crucibleEditor.reflow(true);
-				}
+			public void done(IJobChangeEvent event) {
+				crucibleEditor.attributesModified();
+				disposeReviewersPart();
+				createReviewersPart(toolkit, parent, true);
+				crucibleEditor.reflow(true);
 			}
-		};
+		});
 		setReviewersAction.setToolTipText("Add/Remove Reviewers");
 		setReviewersAction.setImageDescriptor(CrucibleImages.SET_REVIEWERS);
 

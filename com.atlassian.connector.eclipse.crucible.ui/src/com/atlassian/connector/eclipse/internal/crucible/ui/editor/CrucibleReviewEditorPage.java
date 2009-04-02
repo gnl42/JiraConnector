@@ -406,7 +406,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 			for (AbstractCrucibleEditorFormPart part : parts) {
 				getManagedForm().addPart(part);
-				part.initialize(this, review);
+				part.initialize(this, review, false);
 				part.createControl(editorComposite, toolkit);
 			}
 
@@ -1024,5 +1024,18 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			});
 
 		}
+	}
+
+	public void attributesModified() {
+		// TODO as soon as attributes can be submitted via Rest API (ACC-32), continue here
+//		boolean changesFound = false;
+//		for (int i = 0; i < parts.size() && !changesFound; i++) {
+//			changesFound = parts.get(i).hasChangedAttributes();
+//		}
+//		if (changesFound) {
+//			//TODO enable action
+//		} else {
+//			//TODO disable action
+//		}
 	}
 }

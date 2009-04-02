@@ -59,10 +59,13 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	private Composite parentComposite;
 
+	private boolean newReview;
+
 	@Override
-	public void initialize(CrucibleReviewEditorPage editor, Review review) {
+	public void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview) {
 		this.crucibleEditor = editor;
 		this.crucibleReview = review;
+		this.newReview = isNewReview;
 		parts = new ArrayList<CrucibleFilePart>();
 	}
 

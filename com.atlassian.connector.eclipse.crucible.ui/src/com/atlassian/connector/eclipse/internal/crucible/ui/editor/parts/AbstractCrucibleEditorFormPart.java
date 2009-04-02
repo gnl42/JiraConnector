@@ -26,6 +26,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A form part that needs to be aware of the review that it is displaying
@@ -34,13 +36,29 @@ import java.util.Collection;
  */
 public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePart {
 
+	/*
+	 * changable attributes in a review
+	 */
+	public enum ReviewAttributeType {
+		TITLE, OBJECTIVE, REVIEWERS, AUTHOR, MODERATOR, FILES;
+	}
+
+	/*
+	 * attributes that got changed in the this part
+	 */
+	protected final Map<ReviewAttributeType, Object> changedAttributes;
+
 	private Section expandableSection;
 
-	public abstract void initialize(CrucibleReviewEditorPage editor, Review review);
+	public abstract void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview);
 
 	public abstract CrucibleReviewEditorPage getReviewEditor();
 
 	public abstract Collection<? extends ExpandablePart<?, ?>> getExpandableParts();
+
+	public AbstractCrucibleEditorFormPart() {
+		changedAttributes = new HashMap<ReviewAttributeType, Object>();
+	}
 
 	protected void collapseAll() {
 		if (getExpandableParts() == null) {
@@ -78,7 +96,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 	}
 
 	protected void fillToolBar(ToolBarManager toolBarManager) {
-		Action collapseAllAction = new Action("") { //$NON-NLS-1$
+		Action collapseAllAction = new Action("") {
 			@Override
 			public void run() {
 				collapseAll();
@@ -88,7 +106,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 		collapseAllAction.setToolTipText("Collapse All");
 		toolBarManager.add(collapseAllAction);
 
-		Action expandAllAction = new Action("") { //$NON-NLS-1$
+		Action expandAllAction = new Action("") {
 			@Override
 			public void run() {
 				expandAll();
@@ -123,4 +141,16 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 
 	public abstract void updateControl(Review review, Composite parent, FormToolkit toolkit);
 
+	/**
+	 * Retrieves a copy of the changed attributes map
+	 * 
+	 * @return
+	 */
+	public Map<ReviewAttributeType, Object> getChangedAttributes() {
+		return new HashMap<ReviewAttributeType, Object>(changedAttributes);
+	}
+
+	public boolean hasChangedAttributes() {
+		return changedAttributes.size() > 0;
+	}
 }

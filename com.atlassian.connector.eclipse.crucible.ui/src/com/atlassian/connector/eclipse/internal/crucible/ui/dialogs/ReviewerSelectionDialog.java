@@ -134,7 +134,11 @@ public class ReviewerSelectionDialog extends Dialog {
 
 		tree.getViewer().addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
-				selectedReviewers.add(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
+				if (event.getChecked()) {
+					selectedReviewers.add(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
+				} else {
+					selectedReviewers.remove(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
+				}
 			}
 		});
 
@@ -149,7 +153,7 @@ public class ReviewerSelectionDialog extends Dialog {
 		CrucibleCachedUser[] users = new CrucibleCachedUser[reviewers.size()];
 		int i = 0;
 		for (Reviewer reviewer : reviewers) {
-			users[i] = new CrucibleCachedUser(reviewer);
+			users[i++] = new CrucibleCachedUser(reviewer);
 		}
 		return users;
 	}
