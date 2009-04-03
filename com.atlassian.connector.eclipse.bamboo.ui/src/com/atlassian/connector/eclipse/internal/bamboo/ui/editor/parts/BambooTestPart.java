@@ -86,7 +86,7 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 
 	private String getFailedTests() {
 		if (buildDetails == null) {
-			return "";
+			return null;
 		}
 		StringBuilder b = new StringBuilder();
 		Iterator<TestDetails> it = buildDetails.getFailedTestDetails().iterator();
@@ -138,30 +138,30 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 	}
 
 	@Override
-	public void buildInfoRetrievalDone(boolean success) {
+	public void buildInfoRetrievalDone() {
 		reinitMainComposite();
 
-		if (success) {
-			Composite labelComposite = toolkit.createComposite(mainComposite, SWT.NONE);
-			int failed = bambooBuild.getTestsFailed();
-			int passed = bambooBuild.getTestsPassed();
-			GridLayout layout = new GridLayout();
-			if (failed > 0) {
-				layout.numColumns = 4;
-			} else {
-				layout.numColumns = 2;
-			}
-			layout.marginWidth = 0;
-			layout.marginHeight = 0;
-			layout.makeColumnsEqualWidth = false;
-			labelComposite.setLayout(layout);
-			createReadOnlyText(toolkit, labelComposite, String.valueOf(failed + passed), "Tests in total:", false);
-			if (failed > 0) {
-				createReadOnlyText(toolkit, labelComposite, String.valueOf(failed), "   Failed:", false);
-			}
-			GridDataFactory.fillDefaults().grab(true, false).align(SWT.BEGINNING, SWT.TOP).applyTo(labelComposite);
+		Composite labelComposite = toolkit.createComposite(mainComposite, SWT.NONE);
+		int failed = bambooBuild.getTestsFailed();
+		int passed = bambooBuild.getTestsPassed();
+		GridLayout layout = new GridLayout();
+		if (failed > 0) {
+			layout.numColumns = 4;
+		} else {
+			layout.numColumns = 2;
+		}
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		layout.makeColumnsEqualWidth = false;
+		labelComposite.setLayout(layout);
+		createReadOnlyText(toolkit, labelComposite, String.valueOf(failed + passed), "Tests in total:", false);
+		if (failed > 0) {
+			createReadOnlyText(toolkit, labelComposite, String.valueOf(failed), "   Failed:", false);
+		}
+		GridDataFactory.fillDefaults().grab(true, false).align(SWT.BEGINNING, SWT.TOP).applyTo(labelComposite);
 
-			String failedTests = getFailedTests();
+		String failedTests = getFailedTests();
+		if (failedTests != null) {
 			if (failedTests.length() > 0) {
 
 				Composite labelComp = toolkit.createComposite(mainComposite);

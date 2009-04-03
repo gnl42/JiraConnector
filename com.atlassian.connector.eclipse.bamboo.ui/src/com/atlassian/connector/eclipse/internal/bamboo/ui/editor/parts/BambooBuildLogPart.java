@@ -100,10 +100,10 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 	}
 
 	@Override
-	public void buildInfoRetrievalDone(boolean success) {
+	public void buildInfoRetrievalDone() {
 		reinitMainComposite();
 
-		if (success) {
+		if (buildLog != null) {
 			updateBuildLogSummary();
 			link = createLink(mainComposite, toolkit, "The build generated " + String.valueOf(logLines) + " lines ("
 					+ String.valueOf(errorLines) + " error lines). See the", "full build log", "for details.",

@@ -201,7 +201,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 	protected void fillToolBar(ToolBarManager toolBarManager) {
 	}
 
-	public void buildInfoRetrievalDone(boolean success) {
+	public void buildInfoRetrievalDone() {
 
 	}
 

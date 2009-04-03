@@ -158,10 +158,10 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 	}
 
 	@Override
-	public void buildInfoRetrievalDone(boolean success) {
+	public void buildInfoRetrievalDone() {
 		reinitMainComposite();
 
-		if (success) {
+		if (buildDetails != null) {
 			if (buildDetails.getCommitInfo().size() > 0) {
 				createTreeViewer();
 			} else {

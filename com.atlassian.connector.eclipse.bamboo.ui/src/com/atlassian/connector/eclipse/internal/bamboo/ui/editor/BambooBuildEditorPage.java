@@ -76,16 +76,22 @@ public class BambooBuildEditorPage extends BambooFormPage {
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
-
-			status = new MultiStatus(BambooUiPlugin.PLUGIN_ID, 0, "Retrieval of full build information failed", null);
+			IStatus buildLogStatus = Status.OK_STATUS;
 			try {
 				buildLog = client.getBuildLogs(monitor, repository, build);
-				buildDetails = client.getBuildDetails(monitor, repository, build);
-				status = new Status(IStatus.OK, BambooUiPlugin.PLUGIN_ID, null);
 			} catch (CoreException e) {
-				status = new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Failed to retrieve build logs for build "
-						+ build.getPlanKey(), e);
+				buildLogStatus = new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+						"Failed to retrieve build logs for build " + build.getPlanKey(), e);
 			}
+			IStatus buildDetailsStatus = Status.OK_STATUS;
+			try {
+				buildDetails = client.getBuildDetails(monitor, repository, build);
+			} catch (CoreException e) {
+				buildDetailsStatus = new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+						"Failed to retrieve build details for build " + build.getPlanKey(), e);
+			}
+			status = new MultiStatus(BambooUiPlugin.PLUGIN_ID, 0, new IStatus[] { buildLogStatus, buildDetailsStatus },
+					"Retrieval of full build information failed", null);
 			return Status.OK_STATUS;
 		}
 
@@ -204,13 +210,13 @@ public class BambooBuildEditorPage extends BambooFormPage {
 			getEditor().updateHeaderToolBar();
 			setFocus();
 
-			downloadAndRefreshBuild(0, false);
+			downloadAndRefreshBuild(0);
 		} finally {
 			setReflow(true);
 		}
 	}
 
-	private void downloadAndRefreshBuild(long delay, final boolean force) {
+	private void downloadAndRefreshBuild(long delay) {
 		final RetrieveFullBuildInfoJob job = new RetrieveFullBuildInfoJob("Retrieve full build details");
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
@@ -220,13 +226,12 @@ public class BambooBuildEditorPage extends BambooFormPage {
 						setBusy(false);
 						IStatus status = job.getStatus();
 						if (editorComposite != null) {
-							if (!status.isOK() || buildDetails == null || buildLog == null) {
-								getEditor().setMessage(
-										"Unable to retrieve full bamboo build details.  Click to try again.",
-										IMessageProvider.WARNING, new HyperlinkAdapter() {
+							if (!status.isOK()/* || buildDetails == null || buildLog == null*/) {
+								getEditor().setMessage(status.getMessage(), IMessageProvider.WARNING,
+										new HyperlinkAdapter() {
 											@Override
 											public void linkActivated(HyperlinkEvent e) {
-												downloadAndRefreshBuild(0, true);
+												downloadAndRefreshBuild(0);
 											}
 										});
 							} else {
@@ -235,7 +240,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 							for (AbstractBambooEditorFormPart part : parts) {
 								part.setBuildDetails(buildDetails);
 								part.setBuildLog(buildLog);
-								part.buildInfoRetrievalDone(status.isOK());
+								part.buildInfoRetrievalDone();
 							}
 						}
 					}
@@ -372,6 +377,6 @@ public class BambooBuildEditorPage extends BambooFormPage {
 	}
 
 	public void retrieveBuildInfo() {
-		downloadAndRefreshBuild(0, true);
+		downloadAndRefreshBuild(0);
 	}
 }
