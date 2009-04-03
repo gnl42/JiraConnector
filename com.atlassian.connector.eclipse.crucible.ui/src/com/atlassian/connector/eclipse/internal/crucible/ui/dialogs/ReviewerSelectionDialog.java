@@ -13,27 +13,19 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewerBean;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.mylyn.internal.provisional.commons.ui.SubstringPatternFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
@@ -75,6 +67,8 @@ public class ReviewerSelectionDialog extends Dialog {
 
 	private final Review review;
 
+	private ReviewersSelectionTreePart reviewersSelectionTreePart;
+
 	public ReviewerSelectionDialog(Shell shell, Review review, Set<CrucibleCachedUser> users) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -109,40 +103,8 @@ public class ReviewerSelectionDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout());
-		GridData gd = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH);
-		composite.setLayoutData(gd);
-
-		CheckboxFilteredTree tree = new CheckboxFilteredTree(composite, SWT.CHECK | SWT.MULTI | SWT.V_SCROLL
-				| SWT.BORDER, new SubstringPatternFilter());
-		GridDataFactory.fillDefaults().grab(true, true).hint(200, 225).applyTo(tree);
-
-		tree.getViewer().setContentProvider(new CrucibleUserContentProvider());
-
-		tree.getViewer().setInput(CrucibleUiUtil.getCachedUsers(review));
-
-		tree.getViewer().setLabelProvider(new CrucibleUserLabelProvider());
-
-		for (TreeItem item : tree.getViewer().getTree().getItems()) {
-			if (selectedReviewers.contains(item.getText())) {
-				item.setChecked(true);
-			}
-		}
-
-		tree.getViewer().setCheckedElements(getCachedUsersFromReviewers(selectedReviewers)); //TODO does not work
-
-		tree.getViewer().addCheckStateListener(new ICheckStateListener() {
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				if (event.getChecked()) {
-					selectedReviewers.add(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
-				} else {
-					selectedReviewers.remove(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
-				}
-			}
-		});
-
-		parent.pack();
+		reviewersSelectionTreePart = new ReviewersSelectionTreePart(selectedReviewers, review);
+		Composite composite = reviewersSelectionTreePart.createControl(parent);
 
 		applyDialogFont(composite);
 
@@ -159,6 +121,6 @@ public class ReviewerSelectionDialog extends Dialog {
 	}
 
 	public Set<Reviewer> getSelectedReviewers() {
-		return selectedReviewers;
+		return reviewersSelectionTreePart.getSelectedReviewers();
 	}
 }

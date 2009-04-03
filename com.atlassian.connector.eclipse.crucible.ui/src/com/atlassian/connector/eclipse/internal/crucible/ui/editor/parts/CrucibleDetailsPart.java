@@ -72,7 +72,6 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import java.text.DateFormat;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -85,12 +84,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 	private final class SetReviewersAction extends Action {
 
 		private final JobChangeAdapter jobChangeAdapter;
-
-		private Set<Reviewer> reviewers;
-
-		public Set<Reviewer> getReviewers() {
-			return reviewers;
-		}
 
 		public SetReviewersAction() {
 			this(null);
@@ -105,11 +98,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(Display.getDefault().getActiveShell(),
 					crucibleReview, CrucibleUiUtil.getCachedUsers(crucibleReview));
 			if (dialog.open() == Window.OK) {
-				reviewers = dialog.getSelectedReviewers();
-				final Set<String> reviewerUserNames = new HashSet<String>();
-				for (Reviewer reviewer : reviewers) {
-					reviewerUserNames.add(reviewer.getUserName());
-				}
+				Set<Reviewer> reviewers = dialog.getSelectedReviewers();
+				final Set<String> reviewerUserNames = CrucibleUiUtil.getUserNamesFromUsers(reviewers);
 
 				boolean unchanged;
 				try {
@@ -151,7 +141,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 									.setMessage("Error while setting reviewers. See error log for details.",
 											IMessageProvider.ERROR);
 						}
-						//TODO refresh editor / set to not busy
 						return Status.OK_STATUS;
 					}
 				};

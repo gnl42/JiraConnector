@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepository
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
@@ -27,6 +28,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -35,6 +37,7 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -107,14 +110,38 @@ public final class CrucibleUiUtil {
 	}
 
 	public static boolean hasCurrentUserCompletedReview(Review review) {
-		String currentUser = getCurrentUser(review);
+		String currentUser = getCurrentUserName(review);
 		return CrucibleUtil.isUserCompleted(currentUser, review);
 	}
 
-	public static String getCurrentUser(Review review) {
-		String currentUser = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
-				CrucibleUiUtil.getCrucibleTaskRepository(review)).getUserName();
+	public static String getCurrentUserName(Review review) {
+		return getCurrentUserName(CrucibleUiUtil.getCrucibleTaskRepository(review));
+	}
+
+	public static CrucibleCachedUser getCurrentCachedUser(TaskRepository repository) {
+		return getCachedUser(getCurrentUserName(repository), repository);
+	}
+
+	public static CrucibleCachedUser getCurrentCachedUser(Review review) {
+		TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
+		return getCachedUser(getCurrentUserName(repository), repository);
+	}
+
+	public static String getCurrentUserName(TaskRepository repository) {
+		String currentUser = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getClient(repository)
+				.getUserName();
 		return currentUser;
+	}
+
+	public static CrucibleCachedUser getCachedUser(String userName, TaskRepository repository) {
+		for (CrucibleCachedUser user : getCachedUsers(repository)) {
+			if (userName.equals(user.getUserName())) {
+				return user;
+			}
+		}
+		return null;
 	}
 
 	public static boolean isUserReviewer(String userName, Review review) {
@@ -131,7 +158,7 @@ public final class CrucibleUiUtil {
 	}
 
 	public static boolean isCurrentUserReviewer(Review review) {
-		return isUserReviewer(CrucibleUiUtil.getCurrentUser(review), review);
+		return isUserReviewer(CrucibleUiUtil.getCurrentUserName(review), review);
 	}
 
 	public static boolean isFilePartOfActiveReview(CrucibleFile crucibleFile) {
@@ -185,8 +212,11 @@ public final class CrucibleUiUtil {
 	}
 
 	public static Set<CrucibleCachedUser> getCachedUsers(Review review) {
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
-				getCrucibleTaskRepository(review));
+		return getCachedUsers(getCrucibleTaskRepository(review));
+	}
+
+	public static Set<CrucibleCachedUser> getCachedUsers(TaskRepository repository) {
+		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
 		CrucibleClientData clientData = client.getClientData();
 		Set<CrucibleCachedUser> users;
 		if (clientData == null) {
@@ -197,9 +227,35 @@ public final class CrucibleUiUtil {
 		return users;
 	}
 
+	public static Set<CrucibleCachedProject> getCachedProjects(TaskRepository repository) {
+		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
+		CrucibleClientData clientData = client.getClientData();
+		Set<CrucibleCachedProject> projects;
+		if (clientData == null) {
+			projects = new HashSet<CrucibleCachedProject>();
+		} else {
+			projects = clientData.getCachedProjects();
+		}
+		return projects;
+	}
+
 	public static boolean canModifyComment(Review review, Comment comment) {
 		return CrucibleUtil.canAddCommentToReview(review)
-				&& comment.getAuthor().getUserName().equals(CrucibleUiUtil.getCurrentUser(review));
+				&& comment.getAuthor().getUserName().equals(CrucibleUiUtil.getCurrentUserName(review));
+	}
+
+	public static Set<String> getUserNamesFromUsers(Collection<? extends User> users) {
+		final Set<String> userNames = new HashSet<String>();
+		for (User user : users) {
+			userNames.add(user.getUserName());
+		}
+		return userNames;
+	}
+
+	public static boolean hasCachedData(TaskRepository repository) {
+		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
+		CrucibleClientData clientData = client.getClientData();
+		return clientData.hasData();
 	}
 
 }

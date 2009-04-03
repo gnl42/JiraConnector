@@ -586,8 +586,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		User author = review.getAuthor();
 		String moderatorName = moderator == null ? "" : moderator.getUserName();
 		String authorName = author == null ? "" : author.getUserName();
-		return review.isAllowReviewerToJoin() && !moderatorName.equals(CrucibleUiUtil.getCurrentUser(review))
-				&& !authorName.equals(CrucibleUiUtil.getCurrentUser(review))
+		return review.isAllowReviewerToJoin() && !moderatorName.equals(CrucibleUiUtil.getCurrentUserName(review))
+				&& !authorName.equals(CrucibleUiUtil.getCurrentUserName(review))
 				&& (state == State.APPROVAL || state == State.DRAFT || state == State.REVIEW);
 	}
 
@@ -721,7 +721,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						final String currentUser = CrucibleUiUtil.getCurrentUser(review);
+						final String currentUser = CrucibleUiUtil.getCurrentUserName(review);
 						client.execute(new RemoteOperation<Object>(monitor, getTaskRepository()) {
 							@Override
 							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
@@ -757,7 +757,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						final String currentUser = CrucibleUiUtil.getCurrentUser(review);
+						final String currentUser = CrucibleUiUtil.getCurrentUserName(review);
 						State state = review.getState();
 						review = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override

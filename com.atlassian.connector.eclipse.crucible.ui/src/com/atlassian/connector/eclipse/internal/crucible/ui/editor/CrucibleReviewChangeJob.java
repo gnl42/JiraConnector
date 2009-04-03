@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.sync.SynchronizationJob;
 
 import java.util.Collections;
 
@@ -37,13 +38,20 @@ public abstract class CrucibleReviewChangeJob extends Job {
 
 	private final TaskRepository taskRepository;
 
+	private final boolean waitForTaskListSync;
+
 	protected CrucibleReviewChangeJob(String name, TaskRepository taskRepository) {
+		this(name, taskRepository, false);
+	}
+
+	protected CrucibleReviewChangeJob(String name, TaskRepository taskRepository, boolean waitForTaskListSync) {
 		super(name);
 		this.taskRepository = taskRepository;
+		this.waitForTaskListSync = waitForTaskListSync;
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	public IStatus run(IProgressMonitor monitor) {
 		setStatus(Status.CANCEL_STATUS);
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(taskRepository);
@@ -53,9 +61,16 @@ public abstract class CrucibleReviewChangeJob extends Job {
 		try {
 			IStatus result = execute(client, monitor);
 			setStatus(result);
-			TasksUiPlugin.getTaskJobFactory()
-					.createSynchronizeRepositoriesJob(Collections.singleton(taskRepository))
-					.schedule();
+			SynchronizationJob synchronizeRepositoriesJob = TasksUiPlugin.getTaskJobFactory()
+					.createSynchronizeRepositoriesJob(Collections.singleton(taskRepository));
+			synchronizeRepositoriesJob.schedule();
+			if (waitForTaskListSync) {
+				try {
+					synchronizeRepositoriesJob.join();
+				} catch (InterruptedException e) {
+					//ignore
+				}
+			}
 		} catch (CoreException e) {
 			setStatus(e.getStatus());
 		}
