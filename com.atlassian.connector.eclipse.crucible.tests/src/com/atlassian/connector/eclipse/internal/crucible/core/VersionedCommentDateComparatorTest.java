@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import com.atlassian.connector.commons.misc.IntRange;
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 
 import java.util.Date;
@@ -32,45 +34,35 @@ public class VersionedCommentDateComparatorTest extends TestCase {
 		// test comment equal
 		VersionedCommentBean c1 = new VersionedCommentBean();
 		c1.setCreateDate(d1);
-		c1.setToLineInfo(true);
-		c1.setToStartLine(10);
-		c1.setToEndLine(11);
+		c1.setToLineRanges(new IntRanges(new IntRange(10, 11)));
 
 		assertEquals(0, comparator.compare(c1, c1));
 
 		// test comment equal
 		VersionedCommentBean c2 = new VersionedCommentBean();
 		c2.setCreateDate(d1);
-		c2.setToLineInfo(true);
-		c2.setToStartLine(10);
-		c2.setToEndLine(11);
+		c2.setToLineRanges(new IntRanges(new IntRange(10, 11)));
 
 		assertEquals(0, comparator.compare(c1, c2));
 
 		// test line number smaller
 		c2 = new VersionedCommentBean();
 		c2.setCreateDate(d1);
-		c2.setToLineInfo(true);
-		c2.setToStartLine(9);
-		c2.setToEndLine(11);
+		c2.setToLineRanges(new IntRanges(new IntRange(9, 11)));
 
 		assertTrue(0 < comparator.compare(c1, c2));
 
 		// test line number larger
 		c2 = new VersionedCommentBean();
 		c2.setCreateDate(d1);
-		c2.setToLineInfo(true);
-		c2.setToStartLine(11);
-		c2.setToEndLine(11);
+		c2.setToLineRanges(new IntRanges(new IntRange(11)));
 
 		assertTrue(0 > comparator.compare(c1, c2));
 
 		// test date newer
 		c2 = new VersionedCommentBean();
 		c2.setCreateDate(d2);
-		c2.setToLineInfo(true);
-		c2.setToStartLine(10);
-		c2.setToEndLine(11);
+		c2.setToLineRanges(new IntRanges(new IntRange(10, 11)));
 
 		assertTrue(0 > comparator.compare(c1, c2));
 	}

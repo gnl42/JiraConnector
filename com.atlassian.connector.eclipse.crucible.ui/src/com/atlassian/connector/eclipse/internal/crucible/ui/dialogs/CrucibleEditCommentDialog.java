@@ -263,6 +263,8 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 		return composite;
 	}
 
+	//CHECKSTYLE:MAGIC:ON
+
 	private void updateButtonsState() {
 		processFields();
 		boolean areMetricsModified = !comment.isReply()

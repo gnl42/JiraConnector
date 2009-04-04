@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
@@ -88,32 +89,22 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 		return text;
 	}
 
-	private String getLineNumberText() {
-		StringBuilder builder = new StringBuilder();
-		if (versionedComment.getToEndLine() != 0) {
-			builder.append("[Lines: ");
-			builder.append(versionedComment.getToStartLine());
-			builder.append(" - ");
-			builder.append(versionedComment.getToEndLine());
-			builder.append("]");
-		} else if (versionedComment.getFromEndLine() != 0) {
-			builder.append("[Lines: ");
-			builder.append(versionedComment.getFromStartLine());
-			builder.append(" - ");
-			builder.append(versionedComment.getFromEndLine());
-			builder.append("]");
-		} else if (versionedComment.getToStartLine() != 0) {
-			builder.append("[Lines: ");
-			builder.append(versionedComment.getToStartLine());
-			builder.append("]");
-		} else if (versionedComment.getFromStartLine() != 0) {
-			builder.append("[Lines: ");
-			builder.append(versionedComment.getFromStartLine());
-			builder.append("]");
+	private String getLineInfo(IntRanges intRanges) {
+		if (intRanges.getTotalMin() == intRanges.getTotalMax()) {
+			return "[Line " + intRanges.getTotalMin() + "]";
 		} else {
-			builder.append("[General File]");
+			return "[Lines: " + intRanges.toNiceString() + "]";
 		}
-		return builder.toString();
+	}
+
+	private String getLineNumberText() {
+		if (versionedComment.isToLineInfo()) {
+			return getLineInfo(versionedComment.getToLineRanges());
+		} else if (versionedComment.isFromLineInfo()) {
+			return getLineInfo(versionedComment.getFromLineRanges());
+		} else {
+			return "[General File]";
+		}
 	}
 
 	@Override

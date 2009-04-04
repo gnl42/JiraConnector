@@ -23,28 +23,29 @@ import java.util.Date;
  */
 public class VersionedCommentDateComparator implements Comparator<VersionedComment> {
 
+	private int getStartLine(VersionedComment vc) {
+		if (vc.isToLineInfo()) {
+			return vc.getToLineRanges().getTotalMin();
+		} else if (vc.isFromLineInfo()) {
+			return vc.getFromLineRanges().getTotalMin();
+		} else {
+			return 0;
+		}
+	}
+
 	public int compare(VersionedComment o1, VersionedComment o2) {
 		if (o1 != null && o2 != null) {
-			int difference = 0;
-			if (o1.isToLineInfo() && o2.isToLineInfo()) {
-				Integer start1 = o1.getToStartLine();
-				Integer start2 = o2.getToStartLine();
-
-				difference = start1.compareTo(start2);
-			} else if (o1.isToLineInfo()) {
-				difference = 1;
-			} else if (o2.isToLineInfo()) {
-				difference = -1;
-			}
-
+			Integer start1 = getStartLine(o1);
+			Integer start2 = getStartLine(o2);
+			final int difference = start1.compareTo(start2);
 			if (difference == 0) {
 				Date d1 = o1.getCreateDate();
 				Date d2 = o2.getCreateDate();
-				difference = d1.compareTo(d2);
+				return d1.compareTo(d2);
+			} else {
+				return difference;
 			}
-			return difference;
 		}
 		return 0;
 	}
-
 }
