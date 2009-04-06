@@ -91,7 +91,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 	private String getLineInfo(IntRanges intRanges) {
 		if (intRanges.getTotalMin() == intRanges.getTotalMax()) {
-			return "[Line " + intRanges.getTotalMin() + "]";
+			return "[Line: " + intRanges.getTotalMin() + "]";
 		} else {
 			return "[Lines: " + intRanges.toNiceString() + "]";
 		}

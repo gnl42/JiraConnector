@@ -27,7 +27,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -76,7 +78,20 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 			ErrorDialog.openError(shell, CrucibleUiPlugin.PRODUCT_NAME, message, status);
 			return;
 		}
-		new RemoteOperationJob(review, client, getTaskRepository()).schedule();
+		RemoteOperationJob remoteOperationJob = new RemoteOperationJob(review, client, getTaskRepository());
+		remoteOperationJob.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						setEnabled(true);
+					}
+
+				});
+			}
+		});
+		setEnabled(false);
+		remoteOperationJob.schedule();
 	}
 
 	private class RemoteOperationJob extends Job {
