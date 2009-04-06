@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralReviewCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
@@ -133,8 +134,10 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 
 	@Override
 	protected void fillToolBar(ToolBarManager barManager) {
-		AddGeneralReviewCommentAction action = new AddGeneralReviewCommentAction(crucibleReview);
-		barManager.add(action);
+		if (CrucibleUtil.canAddCommentToReview(crucibleReview)) {
+			AddGeneralReviewCommentAction action = new AddGeneralReviewCommentAction(crucibleReview);
+			barManager.add(action);
+		}
 		super.fillToolBar(barManager);
 	}
 

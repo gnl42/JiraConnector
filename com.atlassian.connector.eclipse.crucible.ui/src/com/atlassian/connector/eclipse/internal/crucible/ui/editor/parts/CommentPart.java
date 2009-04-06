@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
@@ -199,7 +200,7 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
 		List<IReviewAction> actions = new ArrayList<IReviewAction>();
 		if (isExpanded) {
-			if (!comment.isReply()) {
+			if (!comment.isReply() && CrucibleUtil.canAddCommentToReview(crucibleReview)) {
 				actions.add(new ReplyToCommentAction(comment, crucibleReview, crucibleFile));
 			}
 

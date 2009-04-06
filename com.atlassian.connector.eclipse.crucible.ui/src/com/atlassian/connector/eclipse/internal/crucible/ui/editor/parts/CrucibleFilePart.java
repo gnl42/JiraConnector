@@ -197,11 +197,13 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 	@Override
 	protected List<IReviewAction> getToolbarActions(boolean isExpanded) {
 		List<IReviewAction> actions = new ArrayList<IReviewAction>();
-		AddGeneralCommentToFileAction addFileCommentAction = new AddGeneralCommentToFileAction();
-		addFileCommentAction.setCrucibleFile(new CrucibleFile(crucibleFile, false));
-		addFileCommentAction.setReview(crucibleReview);
-		addFileCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
-		actions.add(addFileCommentAction);
+		if (CrucibleUtil.canAddCommentToReview(crucibleReview)) {
+			AddGeneralCommentToFileAction addFileCommentAction = new AddGeneralCommentToFileAction();
+			addFileCommentAction.setCrucibleFile(new CrucibleFile(crucibleFile, false));
+			addFileCommentAction.setReview(crucibleReview);
+			addFileCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
+			actions.add(addFileCommentAction);
+		}
 		return actions;
 	}
 

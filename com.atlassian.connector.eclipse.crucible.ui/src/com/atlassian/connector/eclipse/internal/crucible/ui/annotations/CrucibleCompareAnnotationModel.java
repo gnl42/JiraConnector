@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -289,21 +290,22 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			}
 		}
 
-		@SuppressWarnings("restriction")
 		public void registerContextMenu() {
-			AddLineCommentToFileAction addLineCommentAction = new AddLineCommentToFileAction(this,
-					crucibleAnnotationModel.getCrucibleFile());
-			addLineCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
-			AddGeneralCommentToFileAction addGeneralCommentAction = new AddGeneralCommentToFileAction();
-			addGeneralCommentAction.setCrucibleFile(crucibleAnnotationModel.getCrucibleFile());
-			addGeneralCommentAction.setReview(review);
+			if (CrucibleUtil.canAddCommentToReview(review)) {
+				AddLineCommentToFileAction addLineCommentAction = new AddLineCommentToFileAction(this,
+						crucibleAnnotationModel.getCrucibleFile());
+				addLineCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
+				AddGeneralCommentToFileAction addGeneralCommentAction = new AddGeneralCommentToFileAction();
+				addGeneralCommentAction.setCrucibleFile(crucibleAnnotationModel.getCrucibleFile());
+				addGeneralCommentAction.setReview(review);
 
-			if (sourceViewer != null) {
-				sourceViewer.addSelectionChangedListener(addLineCommentAction);
-				sourceViewer.addSelectionChangedListener(addGeneralCommentAction);
+				if (sourceViewer != null) {
+					sourceViewer.addSelectionChangedListener(addLineCommentAction);
+					sourceViewer.addSelectionChangedListener(addGeneralCommentAction);
+				}
+				mergeSourceViewer.addTextAction(addLineCommentAction);
+				mergeSourceViewer.addTextAction(addGeneralCommentAction);
 			}
-			mergeSourceViewer.addTextAction(addLineCommentAction);
-			mergeSourceViewer.addTextAction(addGeneralCommentAction);
 		}
 
 		public LineRange getSelection() {
