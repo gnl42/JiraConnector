@@ -999,7 +999,15 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				markTaskAsRead();
 			} else {
 				// TODO improve the message?
-				getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, null);
+				getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, new HyperlinkAdapter() {
+					@Override
+					public void linkActivated(HyperlinkEvent e) {
+						downloadReviewAndRefresh(0, true);
+					}
+				});
+				if (force) {
+					StatusHandler.log(status);
+				}
 			}
 		}
 	}
