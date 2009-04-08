@@ -13,10 +13,15 @@ package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 
 /**
  * Interface for Team connectors for opening files in the local workspace
@@ -39,4 +44,17 @@ public interface ITeamResourceConnector {
 	boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath, String oldRevisionString,
 			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor)
 			throws CoreException;
+
+	SortedSet<Long> getRevisionsForFile(IFile files, IProgressMonitor monitor) throws CoreException;
+
+	Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * @param repositoryUrl
+	 *            The repository URL to get changesets from, or NULL to retrieve form all available repositories
+	 * @param limit
+	 *            The amount of revisions to retrieve
+	 */
+	Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
+			IProgressMonitor monitor) throws CoreException;
 }

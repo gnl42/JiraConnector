@@ -49,6 +49,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -89,12 +90,35 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	}
 
 	@Override
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible) {
 		//check if cached data is available, if not, start background process to fetch it
 		if (visible && !CrucibleUiUtil.hasCachedData(repository)) {
-			updateCache();
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					// ignore
+					updateCache();
+				}
+			});
+		} else if (visible) {
+			//preselect
+			preselectDefaultUsers();
 		}
 		super.setVisible(visible);
+	}
+
+	private void preselectDefaultUsers() {
+		Set<CrucibleCachedProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
+		projectsComboViewer.setInput(cachedProjects);
+		Set<CrucibleCachedUser> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
+		moderatorComboViewer.setInput(cachedUsers);
+		authorComboViewer.setInput(cachedUsers);
+		CrucibleCachedUser currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
+		if (currentUser != null) {
+			newReview.setModerator(currentUser.createUserFromCachedUser());
+			newReview.setAuthor(currentUser.createUserFromCachedUser());
+			moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
+			authorComboViewer.setSelection(new StructuredSelection(currentUser));
+		}
 	}
 
 	private void updateCache() {
@@ -122,16 +146,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		if (!CrucibleUiUtil.hasCachedData(repository)) {
 			setErrorMessage("Could not retrieve available projects and users from server.");
 		}
-		Set<CrucibleCachedProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
-		projectsComboViewer.setInput(cachedProjects);
-		Set<CrucibleCachedUser> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
-		moderatorComboViewer.setInput(cachedUsers);
-		authorComboViewer.setInput(cachedUsers);
-		CrucibleCachedUser currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
-		if (currentUser != null) {
-			moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
-			authorComboViewer.setSelection(new StructuredSelection(currentUser));
-		}
+		preselectDefaultUsers();
 		reviewersSelectionTreePart.updateInput();
 	}
 
@@ -145,6 +160,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 		new Label(composite, SWT.NONE).setText("Project:");
 		final CCombo projectsCombo = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(projectsCombo);
 		projectsCombo.setEditable(false);
 		projectsComboViewer = new ComboViewer(projectsCombo);
 		projectsComboViewer.setLabelProvider(new CrucibleProjectsLabelProvider());
@@ -164,12 +180,17 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 		new Label(composite, SWT.NONE).setText("Moderator:");
 		CCombo moderatorCombo = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(moderatorCombo);
 		moderatorCombo.setEditable(false);
 		moderatorComboViewer = new ComboViewer(moderatorCombo);
 		moderatorComboViewer.setLabelProvider(new CrucibleUserLabelProvider());
 		moderatorComboViewer.setContentProvider(new CrucibleUserContentProvider());
 		Set<CrucibleCachedUser> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
 		moderatorComboViewer.setInput(cachedUsers);
+		CrucibleCachedUser currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
+		if (currentUser != null) {
+			moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
+		}
 		moderatorComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
@@ -179,18 +200,18 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				}
 			}
 		});
-		CrucibleCachedUser currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
-		if (currentUser != null) {
-			moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
-		}
 
 		new Label(composite, SWT.NONE).setText("Author:");
 		final CCombo authorCombo = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(authorCombo);
 		authorCombo.setEditable(false);
 		authorComboViewer = new ComboViewer(authorCombo);
 		authorComboViewer.setLabelProvider(new CrucibleUserLabelProvider());
 		authorComboViewer.setContentProvider(new CrucibleUserContentProvider());
 		authorComboViewer.setInput(cachedUsers);
+		if (currentUser != null) {
+			authorComboViewer.setSelection(new StructuredSelection(currentUser));
+		}
 		authorComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
@@ -200,9 +221,6 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				}
 			}
 		});
-		if (currentUser != null) {
-			authorComboViewer.setSelection(new StructuredSelection(currentUser));
-		}
 
 		Label label = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		GridDataFactory.fillDefaults().grab(true, false).span(6, 1).applyTo(label);
@@ -244,6 +262,11 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	public boolean isPageComplete() {
 		return newReview != null && newReview.getProjectKey() != null && newReview.getModerator() != null
 				&& newReview.getAuthor() != null;
+	}
+
+	@Override
+	public boolean canFlipToNextPage() {
+		return isPageComplete();
 	}
 
 	public void applyTo() {

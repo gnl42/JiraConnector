@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedRepository;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
@@ -225,6 +226,18 @@ public final class CrucibleUiUtil {
 			users = clientData.getCachedUsers();
 		}
 		return users;
+	}
+
+	public static Set<CrucibleCachedRepository> getCachedRepositories(TaskRepository repository) {
+		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
+		CrucibleClientData clientData = client.getClientData();
+		Set<CrucibleCachedRepository> repositories;
+		if (clientData == null) {
+			repositories = new HashSet<CrucibleCachedRepository>();
+		} else {
+			repositories = clientData.getCachedRepositories();
+		}
+		return repositories;
 	}
 
 	public static Set<CrucibleCachedProject> getCachedProjects(TaskRepository repository) {

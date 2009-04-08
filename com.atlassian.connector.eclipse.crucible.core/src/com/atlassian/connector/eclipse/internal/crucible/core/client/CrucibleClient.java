@@ -23,6 +23,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
+import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
@@ -326,6 +327,10 @@ public class CrucibleClient {
 				monitor.subTask("Retrieving Crucible users");
 				List<User> users = server.getUsers(serverCfg);
 				clientData.setUsers(users);
+
+				monitor.subTask("Retrieving Crucible repositories");
+				List<Repository> repositories = server.getRepositories(serverCfg);
+				clientData.setRepositories(repositories);
 				return null;
 			}
 		});

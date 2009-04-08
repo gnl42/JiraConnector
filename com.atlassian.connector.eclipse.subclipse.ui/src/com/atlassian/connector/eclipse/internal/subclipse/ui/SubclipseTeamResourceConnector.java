@@ -13,6 +13,8 @@ package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
 import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSubclipseCompareEditorInput;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
+import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -26,6 +28,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,12 +50,18 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.tigris.subversion.subclipse.core.ISVNLocalFile;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
+import org.tigris.subversion.subclipse.core.ISVNRemoteFolder;
 import org.tigris.subversion.subclipse.core.ISVNRemoteResource;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.ISVNResource;
 import org.tigris.subversion.subclipse.core.SVNException;
+import org.tigris.subversion.subclipse.core.commands.GetLogsCommand;
+import org.tigris.subversion.subclipse.core.history.ILogEntry;
+import org.tigris.subversion.subclipse.core.history.LogEntryChangePath;
 import org.tigris.subversion.subclipse.core.resources.RemoteFile;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
+import org.tigris.subversion.subclipse.ui.Policy;
+import org.tigris.subversion.subclipse.ui.SVNUIPlugin;
 import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
 import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
@@ -61,6 +70,11 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
 import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Connector to handle connecting to a subclipse repository
@@ -98,6 +112,105 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 		throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
 				"Could not get revisions for {0}.", newFilePath)));
+	}
+
+	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
+		Assert.isNotNull(file);
+		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(file);
+		try {
+			monitor.beginTask("Getting Revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
+			SVNRevision revision = SVNRevision.HEAD;
+			ISVNRemoteResource remoteResource = local.getRemoteResource(revision);
+			GetLogsCommand getLogsCommand = new GetLogsCommand(remoteResource, revision, new SVNRevision.Number(0),
+					SVNRevision.HEAD, false, 0, null, true);
+			getLogsCommand.run(monitor);
+			ILogEntry[] logEntries = getLogsCommand.getLogEntries();
+			SortedSet<Long> revisions = new TreeSet<Long>();
+			for (ILogEntry logEntrie : logEntries) {
+				revisions.add(new Long(logEntrie.getRevision().getNumber()));
+			}
+			return revisions;
+		} catch (Exception e) {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+					"Error while retrieving Revisions for file " + file.getName() + ".", e));
+		}
+	}
+
+	public Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> getLatestChangesets(String repositoryUrl,
+			int limit, IProgressMonitor monitor) {
+		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
+				monitor);
+		monitor.beginTask("Retrieving changeset for SVN (subclipse) repositories", repos.length);
+		Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> map = new HashMap<CustomRepository, SortedSet<CustomChangeSetLogEntry>>();
+		for (ISVNRepositoryLocation repo : repos) {
+			//if a repository is given and the repo does not match the given repository, skip it
+			if (repositoryUrl != null && !repositoryUrl.equals(repo.getUrl().toString())) {
+				continue;
+			}
+			IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
+			CustomRepository customRepository = new CustomRepository(repo.getUrl().toString());
+			SortedSet<CustomChangeSetLogEntry> changesets = new TreeSet<CustomChangeSetLogEntry>();
+			ISVNRemoteFolder rootFolder = repo.getRootFolder();
+
+			subMonitor.beginTask("Retrieving changesets for " + repo.getLabel(), 101);
+			GetLogsCommand getLogsCommand = new GetLogsCommand(rootFolder, SVNRevision.HEAD, SVNRevision.HEAD,
+					new SVNRevision.Number(0), false, limit, null, true);
+			try {
+				getLogsCommand.run(subMonitor);
+				ILogEntry[] logEntries = getLogsCommand.getLogEntries();
+				for (ILogEntry logEntry : logEntries) {
+					LogEntryChangePath[] logEntryChangePaths = logEntry.getLogEntryChangePaths();
+					String[] changed = new String[logEntryChangePaths.length];
+					for (int i = 0; i < logEntryChangePaths.length; i++) {
+						changed[i] = logEntryChangePaths[i].getPath();
+
+					}
+					CustomChangeSetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.getComment(),
+							logEntry.getAuthor(), logEntry.getRevision().toString(), logEntry.getDate(), changed,
+							customRepository);
+					changesets.add(customEntry);
+				}
+			} catch (SVNException e) {
+				// ignore
+			}
+			map.put(customRepository, changesets);
+			subMonitor.done();
+		}
+		return map;
+
+	}
+
+	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+			throws CoreException {
+		Assert.isNotNull(files);
+
+		Map<IFile, SortedSet<Long>> map = new HashMap<IFile, SortedSet<Long>>();
+
+		monitor.beginTask("Getting Revisions", files.size());
+
+		for (IFile file : files) {
+			ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(file);
+			IProgressMonitor submonitor = Policy.subMonitorFor(monitor, 1);
+			try {
+				submonitor.beginTask("Getting revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
+				SVNRevision revision = SVNRevision.HEAD;
+				GetLogsCommand getLogsCommand = new GetLogsCommand(local.getRemoteResource(revision), revision,
+						new SVNRevision.Number(0), SVNRevision.HEAD, false, 0, null, true);
+				getLogsCommand.run(submonitor);
+				ILogEntry[] logEntries = getLogsCommand.getLogEntries();
+				SortedSet<Long> revisions = new TreeSet<Long>();
+				for (ILogEntry logEntrie : logEntries) {
+					revisions.add(new Long(logEntrie.getRevision().getNumber()));
+				}
+				map.put(file, revisions);
+			} catch (Exception e) {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+						"Error while retrieving Revisions for file " + file.getName() + ".", e));
+			} finally {
+				submonitor.done();
+			}
+		}
+		return map;
 	}
 
 	public ISVNRemoteFile getSvnRemoteFile(String repoUrl, String filePath, String otherRevisionFilePath,

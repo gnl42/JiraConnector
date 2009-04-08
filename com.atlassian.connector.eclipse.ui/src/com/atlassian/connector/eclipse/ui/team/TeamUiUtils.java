@@ -22,9 +22,11 @@ import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
@@ -34,6 +36,7 @@ import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -47,6 +50,10 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 
 /**
  * A utility class for doing UI related operations for team items
@@ -102,6 +109,90 @@ public final class TeamUiUtils {
 			TeamMessageUtils.openCouldNotOpenFileErrorMessage(repoUrl, filePath, revisionString);
 			return null;
 		}
+	}
+
+	public static SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
+		Assert.isNotNull(file);
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled()) {
+				try {
+					return connector.getRevisionsForFile(file, monitor);
+				} catch (CoreException e) {
+					// ignore and try other connector(s)
+				}
+			}
+		}
+		return defaultConnector.getRevisionsForFile(file, monitor);
+	}
+
+	/**
+	 * Retrieve (some)changesets for (a given) repository
+	 * 
+	 * @param repositoryUrl
+	 *            The repository URL to get changesets from, or NULL to retrieve form all available repositories
+	 * @param limit
+	 *            The amount of revisions to retrieve
+	 */
+	public static Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> getAllChangesets(String repositoryUrl,
+			int limit, IProgressMonitor monitor) throws CoreException {
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
+		MultiStatus status = new MultiStatus(AtlassianUiPlugin.PLUGIN_ID, IStatus.ERROR,
+				"Error while retrieving changesets", null);
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+		Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> toReturn;
+		toReturn = new HashMap<CustomRepository, SortedSet<CustomChangeSetLogEntry>>();
+		monitor.beginTask("Retrieving changesets", teamResourceManager.getTeamConnectors().size() + 1);
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
+			if (connector.isEnabled()) {
+				try {
+					toReturn.putAll(connector.getLatestChangesets(repositoryUrl, limit, subMonitor));
+				} catch (CoreException e) {
+					status.add(e.getStatus());
+				}
+			}
+			subMonitor.done();
+		}
+		IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
+		try {
+			toReturn.putAll(defaultConnector.getLatestChangesets(repositoryUrl, limit, subMonitor));
+		} catch (CoreException e) {
+			status.add(e.getStatus());
+		}
+		subMonitor.done();
+		monitor.done();
+		//if no changeset was retrieved and errors occurred, return errors
+		if (toReturn.size() == 0 && status.getChildren().length > 0) {
+			throw new CoreException(status);
+		}
+		return toReturn;
+	}
+
+	public static Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+			throws CoreException {
+		Assert.isNotNull(files);
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled()) {
+				try {
+					return connector.getRevisionsForFile(files, monitor);
+				} catch (CoreException e) {
+					// ignore and try other connector(s)
+				}
+			}
+		}
+		return defaultConnector.getRevisionsForFile(files, monitor);
 	}
 
 	public static void openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,

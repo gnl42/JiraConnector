@@ -91,8 +91,8 @@ public class ReviewersSelectionTreePart {
 		GridData gd = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH);
 		composite.setLayoutData(gd);
 
-		tree = new CheckboxFilteredTree(composite, SWT.CHECK | SWT.MULTI | SWT.V_SCROLL
-				| SWT.H_SCROLL | SWT.BORDER, new SubstringPatternFilter());
+		tree = new CheckboxFilteredTree(composite, SWT.CHECK | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER,
+				new SubstringPatternFilter());
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
 

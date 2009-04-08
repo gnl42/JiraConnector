@@ -50,7 +50,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * A default team resource provider that just uses the limited Eclipse team API
@@ -72,6 +75,26 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
 			String otherRevisionString, IProgressMonitor monitor) throws CoreException {
 		return openFileWithTeamApi(repoUrl, filePath, otherRevisionFilePath, revisionString, monitor);
+	}
+
+	public Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> getLatestChangesets(String repositoryUrl,
+			int limit, IProgressMonitor monitor) throws CoreException {
+		//TODO
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
+				"Connectors other than Subclipse not yet supported."));
+	}
+
+	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
+		//TODO
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
+				"Connectors other than Subclipse not yet supported."));
+	}
+
+	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+			throws CoreException {
+		//TODO
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
+				"Connectors other than Subclipse not yet supported."));
 	}
 
 	public boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,

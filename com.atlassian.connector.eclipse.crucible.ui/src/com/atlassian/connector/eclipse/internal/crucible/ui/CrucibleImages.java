@@ -62,8 +62,14 @@ public final class CrucibleImages {
 	public static final ImageDescriptor APPROVE = create(T_OBJ, "pin_approve.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor SET_REVIEWERS = create(T_OBJ, "pin_setreviewers.png"); //$NON-NLS-1$
-	
-		public static final ImageDescriptor POST = create(T_OBJ, "pin_submit.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor POST = create(T_OBJ, "pin_submit.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor FILE = create(T_OBJ, "file_obj.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor CHANGESET = create(T_OBJ, "changeset_obj.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor REPOSITORY = create(T_OBJ, "repository_rep.gif"); //$NON-NLS-1$
 
 	private CrucibleImages() {
 		// ignore
