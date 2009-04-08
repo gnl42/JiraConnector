@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.mylyn.tasks.ui.repositories">
+      <connectorCore
+            class="com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeRepositoryConnector"
+            id="fisheye"
+            name="FishEye">
+      </connectorCore>
+      <connectorUi
+            brandingIcon="icons/obj16/fisheye-16.png"
+            class="com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeRepositoryConnectorUi"
+            id="fisheye"
+            name="FishEye"
+            overlayIcon="icons/obj16/fisheye-overlay.png">
+      </connectorUi>
+   </extension>
+
+</plugin>
