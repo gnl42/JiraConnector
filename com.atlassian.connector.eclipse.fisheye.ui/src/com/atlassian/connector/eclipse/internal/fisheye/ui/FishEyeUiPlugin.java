@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.fisheye.ui;
+package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
