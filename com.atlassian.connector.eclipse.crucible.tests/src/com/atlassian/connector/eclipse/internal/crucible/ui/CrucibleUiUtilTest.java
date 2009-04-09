@@ -23,10 +23,12 @@ import com.atlassian.connector.eclipse.internal.crucible.core.configuration.Ecli
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProjectBean;
+import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
@@ -34,6 +36,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewerBean;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
@@ -475,6 +478,25 @@ public class CrucibleUiUtilTest extends TestCase {
 		review.setReviewers(Collections.singleton((Reviewer) new ReviewerBean("user", true)));
 
 		assertTrue(CrucibleUiUtil.isCurrentUserReviewer(review));
+	}
+
+	public void testCanModifyComment() {
+		TaskRepository repo = createMockRepository();
+		TasksUi.getRepositoryManager().addRepository(repo);
+
+		Review review = new ReviewBean(repo.getUrl());
+		review.setActions(MiscUtil.buildHashSet(CrucibleAction.COMMENT));
+		GeneralCommentBean comment = new GeneralCommentBean();
+		final String connUserName = repo.getCredentials(AuthenticationType.REPOSITORY).getUserName();
+		UserBean me = new UserBean("not" + connUserName);
+		comment.setAuthor(me);
+		assertFalse(CrucibleUiUtil.canModifyComment(review, comment));
+		comment.setAuthor(new UserBean(connUserName));
+		assertTrue(CrucibleUiUtil.canModifyComment(review, comment));
+		review.setActions(MiscUtil.buildHashSet(CrucibleAction.VIEW, CrucibleAction.COMMENT, CrucibleAction.CLOSE));
+		assertTrue(CrucibleUiUtil.canModifyComment(review, comment));
+		review.setActions(MiscUtil.buildHashSet(CrucibleAction.VIEW, CrucibleAction.CLOSE));
+		assertFalse(CrucibleUiUtil.canModifyComment(review, comment));
 	}
 
 }
