@@ -124,13 +124,13 @@
 		<fail message="Required property build.publish.location is not set" unless="build.publish.location"/>
 
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
-		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}" keyfile="${build.publish.keyfile}" trust="true" verbose="true">
+		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}" keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 			<fileset dir="${build.home}/site"/>
 		</scp>
-		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.3" keyfile="${build.publish.keyfile}" trust="true" verbose="true">
+		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.3" keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 			<fileset dir="${build.home}/3.3/site"/>
 		</scp>
-		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.4" keyfile="${build.publish.keyfile}" trust="true" verbose="true">
+		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.4" keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 			<fileset dir="${build.home}/3.4/site"/>
 		</scp>
 	</target>
