@@ -19,6 +19,8 @@ package com.atlassian.connector.eclipse.ui.exceptions;
  */
 public class UnsupportedTeamProviderException extends RuntimeException {
 
+	private static final long serialVersionUID = 4980403261986245835L;
+
 	public UnsupportedTeamProviderException(String message) {
 		super(message);
 	}

@@ -40,8 +40,6 @@ public class BuildPlanManagerTest extends TestCase {
 
 	private final int nrOfBuilds = 5;
 
-	private BuildsChangedEvent buildChangedEvent;
-
 	@Override
 	protected void setUp() throws Exception {
 		//turn off auto refresh

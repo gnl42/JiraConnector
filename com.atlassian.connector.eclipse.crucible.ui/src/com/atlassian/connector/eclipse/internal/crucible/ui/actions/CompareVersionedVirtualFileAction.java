@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.PlatformUI;
 
 import java.lang.reflect.InvocationTargetException;
@@ -49,8 +48,6 @@ public class CompareVersionedVirtualFileAction extends Action implements IReview
 	private final Review review;
 
 	private final VersionedComment versionedComment;
-
-	private IPartListener editorOpenedListener;
 
 	public CompareVersionedVirtualFileAction(CrucibleFileInfo crucibleFile, VersionedComment versionedComment,
 			Review review) {

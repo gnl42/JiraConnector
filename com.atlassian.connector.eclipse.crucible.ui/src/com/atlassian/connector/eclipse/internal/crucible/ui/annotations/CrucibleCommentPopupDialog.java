@@ -58,7 +58,7 @@ public class CrucibleCommentPopupDialog extends PopupDialog implements IReviewAc
 	private static CrucibleCommentPopupDialog currentPopupDialog;
 
 	public CrucibleCommentPopupDialog(Shell parent, int shellStyle) {
-		super(parent, shellStyle, false, false, false, false, null, null);
+		super(parent, shellStyle, false, false, false, false, false, null, null);
 	}
 
 	@Override

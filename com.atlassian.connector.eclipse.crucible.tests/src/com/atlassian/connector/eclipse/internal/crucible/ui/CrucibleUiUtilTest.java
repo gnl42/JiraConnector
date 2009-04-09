@@ -11,18 +11,14 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
-import com.atlassian.connector.eclipse.internal.crucible.core.configuration.EclipseCrucibleServerCfg;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
@@ -38,7 +34,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
@@ -270,12 +265,6 @@ public class CrucibleUiUtilTest extends TestCase {
 
 	private Review createMockReview(TaskRepository repo) {
 		TasksUi.getRepositoryManager().addRepository(repo);
-
-		CrucibleRepositoryConnector repoConnector = new CrucibleRepositoryConnector();
-		CrucibleClientManager clientManager = repoConnector.getClientManager();
-		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
-		CrucibleServerCfg serverCfg = getServerCfg(location, repo, false);
-
 		Review review = new ReviewBean(repo.getRepositoryUrl());
 		return review;
 	}
@@ -284,25 +273,6 @@ public class CrucibleUiUtilTest extends TestCase {
 		TaskRepository repo = new TaskRepository(CrucibleCorePlugin.CONNECTOR_KIND, "http://crucible.atlassian.com");
 		repo.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("user", "pass"), false);
 		return repo;
-	}
-
-	private CrucibleServerCfg getServerCfg(AbstractWebLocation location, TaskRepository taskRepository,
-			boolean isTemporary) {
-
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		String username = "";
-		String password = "";
-		if (credentials != null) {
-			username = credentials.getUserName();
-			password = credentials.getPassword();
-		}
-
-		EclipseCrucibleServerCfg config = new EclipseCrucibleServerCfg(taskRepository.getRepositoryLabel(),
-				location.getUrl(), isTemporary);
-		config.setUsername(username);
-		config.setPassword(password);
-
-		return config;
 	}
 
 	public void testGetCurrentUserNameReview() {

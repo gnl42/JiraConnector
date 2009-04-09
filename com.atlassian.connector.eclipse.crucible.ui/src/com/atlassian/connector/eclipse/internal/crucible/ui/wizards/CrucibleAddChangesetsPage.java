@@ -418,6 +418,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		final MenuItem getNextRevisions = new MenuItem(contextMenuSource, SWT.PUSH);
 		getNextRevisions.setText("Get 10 more Revisions");
 		getNextRevisions.addSelectionListener(new SelectionAdapter() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				TreeSelection selection = getTreeSelection(availableTreeViewer);

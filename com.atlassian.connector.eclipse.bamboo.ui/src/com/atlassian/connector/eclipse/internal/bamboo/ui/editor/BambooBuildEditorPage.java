@@ -148,8 +148,6 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 	private boolean reflow;
 
-	private Control highlightedControl;
-
 	private static final int VERTICAL_BAR_WIDTH = 15;
 
 	private Text initLabel;
@@ -347,8 +345,6 @@ public class BambooBuildEditorPage extends BambooFormPage {
 		}
 
 		parts.clear();
-
-		highlightedControl = null;
 
 		Menu menu = editorComposite.getMenu();
 		// preserve context menu

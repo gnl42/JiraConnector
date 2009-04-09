@@ -59,13 +59,10 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	private Composite parentComposite;
 
-	private boolean newReview;
-
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview) {
 		this.crucibleEditor = editor;
 		this.crucibleReview = review;
-		this.newReview = isNewReview;
 		parts = new ArrayList<CrucibleFilePart>();
 	}
 
@@ -256,7 +253,6 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 			parts.addAll(newParts);
 
 		} catch (ValueNotYetInitialized e) {
-			// TODO do something different here?
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 

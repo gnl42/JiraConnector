@@ -65,6 +65,7 @@ public class MockBambooClient extends BambooClient {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, TaskRepository taskRepository,
 			boolean promptForCredentials) throws CoreException {

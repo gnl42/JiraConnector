@@ -31,8 +31,6 @@ import java.util.Map;
  */
 public class MockBambooClientManager extends BambooClientManager {
 
-	private MockBambooClient client;
-
 	private final Map<TaskRepository, MockBambooClient> clients = new HashMap<TaskRepository, MockBambooClient>();
 
 	public MockBambooClientManager(File tmp) {

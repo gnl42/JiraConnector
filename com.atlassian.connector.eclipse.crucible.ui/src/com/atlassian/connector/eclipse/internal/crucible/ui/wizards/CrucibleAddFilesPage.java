@@ -13,11 +13,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -40,7 +38,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.DisposeEvent;
@@ -81,10 +78,7 @@ public class CrucibleAddFilesPage extends WizardPage {
 
 		private final java.util.List<IFile> files;
 
-		private final String repositoryUrl;
-
-		public GetMultipleRevisionsRunnable(String repositoryUrl, java.util.List<IFile> files) {
-			this.repositoryUrl = repositoryUrl;
+		public GetMultipleRevisionsRunnable(java.util.List<IFile> files) {
 			this.files = files;
 		}
 
@@ -112,10 +106,7 @@ public class CrucibleAddFilesPage extends WizardPage {
 
 		private final IFile file;
 
-		private final String repositoryUrl;
-
-		public GetRevisionsRunnable(String repositoryUrl, IFile file) {
-			this.repositoryUrl = repositoryUrl;
+		public GetRevisionsRunnable(IFile file) {
 			this.file = file;
 		}
 
@@ -136,10 +127,6 @@ public class CrucibleAddFilesPage extends WizardPage {
 		}
 	}
 
-	private final TaskRepository repository;
-
-	private Review review;
-
 	private TreeViewer treeViewer;
 
 	private final Map<IFile, SortedSet<Long>> selectedFiles = new HashMap<IFile, SortedSet<Long>>();
@@ -158,16 +145,10 @@ public class CrucibleAddFilesPage extends WizardPage {
 
 	private ComboViewer diffComboViewer;
 
-	public CrucibleAddFilesPage(TaskRepository repository) {
+	public CrucibleAddFilesPage() {
 		super("crucibleFiles");
-		Assert.isNotNull(repository);
 		setTitle("Add Files to Review");
 		setDescription("Please select the files you want to have reviewed.");
-		this.repository = repository;
-	}
-
-	public void setReview(Review review) {
-		this.review = review;
 	}
 
 	public void createControl(Composite parent) {
@@ -508,8 +489,7 @@ public class CrucibleAddFilesPage extends WizardPage {
 			}
 		}
 		if (filesToUpdate.size() > 0) {
-			GetMultipleRevisionsRunnable revisionsRunnable = new GetMultipleRevisionsRunnable(repository.getUrl(),
-					filesToUpdate);
+			GetMultipleRevisionsRunnable revisionsRunnable = new GetMultipleRevisionsRunnable(filesToUpdate);
 			Exception exception;
 			try {
 				getContainer().run(true, false, revisionsRunnable);
@@ -537,7 +517,7 @@ public class CrucibleAddFilesPage extends WizardPage {
 	}
 
 	private void updateRevision(final IFile file) {
-		GetRevisionsRunnable revisionsRunnable = new GetRevisionsRunnable(repository.getUrl(), file);
+		GetRevisionsRunnable revisionsRunnable = new GetRevisionsRunnable(file);
 		Exception exception;
 		try {
 			getContainer().run(true, false, revisionsRunnable);

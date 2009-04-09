@@ -149,7 +149,6 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		statesList = new ListViewer(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		statesList.setContentProvider(new TreeContentProvider() {
 			@Override
-			@SuppressWarnings("unchecked")
 			public Object[] getElements(Object inputElement) {
 				if (inputElement instanceof Object[]) {
 					return (Object[]) inputElement;

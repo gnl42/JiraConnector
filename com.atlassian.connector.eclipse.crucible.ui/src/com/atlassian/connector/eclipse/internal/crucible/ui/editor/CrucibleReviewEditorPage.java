@@ -757,8 +757,6 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						+ getTask().getTaskKey(), getTaskRepository()) {
 					@Override
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-						final String currentUser = CrucibleUiUtil.getCurrentUserName(review);
-						State state = review.getState();
 						review = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override
 							public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,

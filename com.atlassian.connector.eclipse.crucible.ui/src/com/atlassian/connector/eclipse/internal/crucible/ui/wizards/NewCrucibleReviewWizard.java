@@ -56,7 +56,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 
 	private Review createdReview;
 
-	private CrucibleAddFilesPage addFilesPage;
+//	private CrucibleAddFilesPage addFilesPage;
 
 	private CrucibleAddChangesetsPage addChangeSetsPage;
 

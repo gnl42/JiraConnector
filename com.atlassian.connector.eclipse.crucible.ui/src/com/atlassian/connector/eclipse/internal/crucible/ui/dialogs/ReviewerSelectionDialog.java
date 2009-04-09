@@ -20,14 +20,10 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.ReviewerBean;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.FilteredTree;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,28 +34,6 @@ import java.util.Set;
  * @author Thomas Ehrnhoefer
  */
 public class ReviewerSelectionDialog extends Dialog {
-
-	private class CheckboxFilteredTree extends FilteredTree {
-
-		protected CheckboxFilteredTree(Composite parent) {
-			super(parent);
-		}
-
-		public CheckboxFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
-			super(parent, treeStyle, filter);
-		}
-
-		@Override
-		protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
-			return new CheckboxTreeViewer(parent, style);
-		}
-
-		@Override
-		public CheckboxTreeViewer getViewer() {
-			return (CheckboxTreeViewer) super.getViewer();
-		}
-
-	}
 
 	private final Set<Reviewer> selectedReviewers;
 
@@ -109,15 +83,6 @@ public class ReviewerSelectionDialog extends Dialog {
 		applyDialogFont(composite);
 
 		return composite;
-	}
-
-	private CrucibleCachedUser[] getCachedUsersFromReviewers(Set<Reviewer> reviewers) {
-		CrucibleCachedUser[] users = new CrucibleCachedUser[reviewers.size()];
-		int i = 0;
-		for (Reviewer reviewer : reviewers) {
-			users[i++] = new CrucibleCachedUser(reviewer);
-		}
-		return users;
 	}
 
 	public Set<Reviewer> getSelectedReviewers() {

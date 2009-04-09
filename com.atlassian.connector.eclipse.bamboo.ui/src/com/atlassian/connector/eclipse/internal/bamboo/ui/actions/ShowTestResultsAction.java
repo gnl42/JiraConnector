@@ -44,7 +44,6 @@ import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -146,7 +145,6 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 
 	private void showJUnitView(final File testResults, final String buildKey) {
 		Display.getDefault().asyncExec(new Runnable() {
-			@SuppressWarnings("restriction")
 			public void run() {
 				new ShowTestResultsExecution().execute(testResults, buildKey);
 			}
@@ -160,7 +158,7 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 	 * @author Thomas Ehrnhoefer
 	 */
 	private class ShowTestResultsExecution {
-	
+
 		private static final String EMPTY_STRING = "";
 
 		public void execute(final File testResults, final String buildKey) {

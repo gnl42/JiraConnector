@@ -292,7 +292,7 @@ public final class BuildPlanManager {
 			listener.buildsUpdated(event);
 		}
 		//send failed refreshes to error log
-		if (failed) {
+		if (failed && errorLog != null) {
 
 			if (forcedRefresh) {
 				MultiStatus refreshStatus = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0,
