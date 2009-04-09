@@ -123,6 +123,7 @@ public class CrucibleReviewersPart {
 				if (iterator.hasNext()) {
 					text = createReadOnlyText(toolkit, singleReviewersComposite, ", ", null, false);
 					GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(text);
+					text.setBackground(parent.getBackground());
 				}
 			}
 			GridDataFactory.fillDefaults().hint(250, SWT.DEFAULT).grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(
