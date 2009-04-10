@@ -67,11 +67,13 @@ public class JiraClientManager {
 		if (!file.exists()) {
 			// clean up legacy data
 			File[] clients = this.cacheLocation.listFiles();
-			for (File directory : clients) {
-				File oldData = new File(directory, "server.ser"); //$NON-NLS-1$
-				if (oldData.exists()) {
-					oldData.delete();
-					directory.delete();
+			if (clients != null) {
+				for (File directory : clients) {
+					File oldData = new File(directory, "server.ser"); //$NON-NLS-1$
+					if (oldData.exists()) {
+						oldData.delete();
+						directory.delete();
+					}
 				}
 			}
 		} else {

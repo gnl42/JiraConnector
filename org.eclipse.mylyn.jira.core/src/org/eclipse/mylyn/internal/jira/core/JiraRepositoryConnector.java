@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
@@ -428,7 +429,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private void trace(IStatus status) {
 		if (TRACE_ENABLED) {
-			JiraCorePlugin.getDefault().getLog().log(status);
+			StatusHandler.log(status);
 		}
 	}
 

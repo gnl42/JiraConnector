@@ -38,11 +38,13 @@ public class JiraCorePlugin extends Plugin {
 
 	private static JiraCorePlugin plugin;
 
-	private JiraClientManager clientManager;
+	private static JiraClientManager clientManager;
 
 	public final static String CONNECTOR_KIND = "jira"; //$NON-NLS-1$
 
 	public final static String LABEL = NLS.bind(Messages.JiraCorePlugin_JIRA_description, "3.4"); //$NON-NLS-1$
+
+	private static boolean initialized;
 
 	/**
 	 * The constructor.
@@ -62,13 +64,21 @@ public class JiraCorePlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		File serverCache = getStateLocation().append("serverCache").toFile(); //$NON-NLS-1$
+		initialize(serverCache);
+	}
+
+	public static void initialize(File serverCacheDirectory) {
+		if (initialized) {
+			throw new IllegalStateException("Already initialized"); //$NON-NLS-1$
+		}
+		initialized = true;
 
 		// Turn off logging for the Attachment check. We don't want or need soap
 		// with attachments
 		Logger logger = Logger.getLogger("org.apache.axis.utils.JavaUtils"); //$NON-NLS-1$
 		logger.setLevel(Level.SEVERE);
 
-		clientManager = new JiraClientManager(serverCache);
+		clientManager = new JiraClientManager(serverCacheDirectory);
 		clientManager.start();
 	}
 
@@ -93,7 +103,10 @@ public class JiraCorePlugin extends Plugin {
 		return plugin;
 	}
 
-	public JiraClientManager getClientManager() {
+	public static JiraClientManager getClientManager() {
+		if (!initialized) {
+			throw new IllegalStateException("Not yet initialized"); //$NON-NLS-1$
+		}
 		return clientManager;
 	}
 

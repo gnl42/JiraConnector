@@ -282,7 +282,7 @@ public class JiraUtil {
 
 	public static void trace(IStatus status) {
 		if (TRACE_ENABLED) {
-			JiraCorePlugin.getDefault().getLog().log(status);
+			StatusHandler.log(status);
 		}
 	}
 

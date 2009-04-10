@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.jira.core.html.HTML2TextReader;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
@@ -893,6 +894,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	@Override
 	public RepositoryResponse postTaskData(TaskRepository repository, TaskData taskData,
 			Set<TaskAttribute> changedAttributes, IProgressMonitor monitor) throws CoreException {
+		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask(Messages.JiraTaskDataHandler_Sending_task, IProgressMonitor.UNKNOWN);
 			JiraClient client = clientFactory.getJiraClient(repository);
@@ -1204,14 +1206,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static void trace(IStatus status) {
 		if (TRACE_ENABLED) {
-			JiraCorePlugin.getDefault().getLog().log(status);
+			StatusHandler.log(status);
 		}
 	}
 
 	private static void trace(Exception e) {
 		if (TRACE_ENABLED) {
-			JiraCorePlugin.getDefault().getLog().log(
-					new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, "Error receiving infromation from JIRA", e)); //$NON-NLS-1$
+			StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+					"Error receiving infromation from JIRA", e)); //$NON-NLS-1$
 		}
 	}
 

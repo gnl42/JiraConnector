@@ -46,7 +46,7 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 
 	private JiraClientFactory() {
 		this.taskRepositoryLocationFactory = new TaskRepositoryLocationFactory();
-		this.clientManager = JiraCorePlugin.getDefault().getClientManager();
+		this.clientManager = JiraCorePlugin.getClientManager();
 	}
 
 	/* For testing. */
