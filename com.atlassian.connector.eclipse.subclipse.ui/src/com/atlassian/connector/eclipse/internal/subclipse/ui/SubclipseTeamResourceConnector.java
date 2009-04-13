@@ -152,26 +152,28 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			SortedSet<CustomChangeSetLogEntry> changesets = new TreeSet<CustomChangeSetLogEntry>();
 			ISVNRemoteFolder rootFolder = repo.getRootFolder();
 
-			subMonitor.beginTask("Retrieving changesets for " + repo.getLabel(), 101);
-			GetLogsCommand getLogsCommand = new GetLogsCommand(rootFolder, SVNRevision.HEAD, SVNRevision.HEAD,
-					new SVNRevision.Number(0), false, limit, null, true);
-			try {
-				getLogsCommand.run(subMonitor);
-				ILogEntry[] logEntries = getLogsCommand.getLogEntries();
-				for (ILogEntry logEntry : logEntries) {
-					LogEntryChangePath[] logEntryChangePaths = logEntry.getLogEntryChangePaths();
-					String[] changed = new String[logEntryChangePaths.length];
-					for (int i = 0; i < logEntryChangePaths.length; i++) {
-						changed[i] = logEntryChangePaths[i].getPath();
+			if (limit > 0) { //do not retrieve unlimited revisions
+				subMonitor.beginTask("Retrieving changesets for " + repo.getLabel(), 101);
+				GetLogsCommand getLogsCommand = new GetLogsCommand(rootFolder, SVNRevision.HEAD, SVNRevision.HEAD,
+						new SVNRevision.Number(0), false, limit, null, true);
+				try {
+					getLogsCommand.run(subMonitor);
+					ILogEntry[] logEntries = getLogsCommand.getLogEntries();
+					for (ILogEntry logEntry : logEntries) {
+						LogEntryChangePath[] logEntryChangePaths = logEntry.getLogEntryChangePaths();
+						String[] changed = new String[logEntryChangePaths.length];
+						for (int i = 0; i < logEntryChangePaths.length; i++) {
+							changed[i] = logEntryChangePaths[i].getPath();
 
+						}
+						CustomChangeSetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.getComment(),
+								logEntry.getAuthor(), logEntry.getRevision().toString(), logEntry.getDate(), changed,
+								customRepository);
+						changesets.add(customEntry);
 					}
-					CustomChangeSetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.getComment(),
-							logEntry.getAuthor(), logEntry.getRevision().toString(), logEntry.getDate(), changed,
-							customRepository);
-					changesets.add(customEntry);
+				} catch (SVNException e) {
+					// ignore
 				}
-			} catch (SVNException e) {
-				// ignore
 			}
 			map.put(customRepository, changesets);
 			subMonitor.done();

@@ -114,10 +114,23 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		authorComboViewer.setInput(cachedUsers);
 		CrucibleCachedUser currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
 		if (currentUser != null) {
-			newReview.setModerator(currentUser.createUserFromCachedUser());
-			newReview.setAuthor(currentUser.createUserFromCachedUser());
-			moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
-			authorComboViewer.setSelection(new StructuredSelection(currentUser));
+			if (newReview.getAuthor() == null) {
+				newReview.setAuthor(currentUser.createUserFromCachedUser());
+				authorComboViewer.setSelection(new StructuredSelection(currentUser));
+			} else {
+				authorComboViewer.setSelection(new StructuredSelection(new CrucibleCachedUser(newReview.getAuthor())));
+			}
+			if (newReview.getModerator() == null) {
+				newReview.setModerator(currentUser.createUserFromCachedUser());
+				moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
+			} else {
+				moderatorComboViewer.setSelection(new StructuredSelection(new CrucibleCachedUser(
+						newReview.getModerator())));
+			}
+			if (newReview.getCrucibleProject() != null) {
+				projectsComboViewer.setSelection(new StructuredSelection(new CrucibleCachedProject(
+						newReview.getCrucibleProject())));
+			}
 		}
 	}
 

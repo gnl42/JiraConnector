@@ -37,10 +37,12 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -90,6 +92,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private static final String SELECT_MAPPING = "Select Mapping";
 
+	private static final String FAKE_NODE = "...";
+
 	private class ChangesetLabelProvider extends LabelProvider {
 		@Override
 		public Image getImage(Object element) {
@@ -100,6 +104,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				return CommonImages.getImage(CrucibleImages.REPOSITORY);
 			} else if (element instanceof CustomChangeSetLogEntry) {
 				return CommonImages.getImage(CrucibleImages.CHANGESET);
+			} else if (element == FAKE_NODE) {
+				return null;
 			} else if (element instanceof String) {
 				return CommonImages.getImage(CrucibleImages.FILE);
 			}
@@ -116,6 +122,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			} else if (element instanceof CustomChangeSetLogEntry) {
 				CustomChangeSetLogEntry logEntry = (CustomChangeSetLogEntry) element;
 				return logEntry.getRevision() + " [" + logEntry.getAuthor() + "] - " + logEntry.getComment();
+			} else if (element == FAKE_NODE) {
+				return FAKE_NODE;
 			} else if (element instanceof String) {
 				return (String) element;
 			}
@@ -133,6 +141,10 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			}
 			if (parentElement instanceof CustomRepository) {
 				//root, repository URLs
+				if (logEntries.get(parentElement).size() == 0) {
+					//if no retrieved changeset, create fake node for lazy loading
+					return new String[] { FAKE_NODE };
+				}
 				return logEntries.get(parentElement).toArray();
 			} else if (parentElement instanceof CustomChangeSetLogEntry) {
 				//changeset files
@@ -164,7 +176,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				return logEntries.size() > 0;
 			} else if (element instanceof CustomRepository) {
 				//change sets for a repository
-				return logEntries.get(element).size() > 0;
+//				return logEntries.get(element).size() > 0;
+				return true;
 			} else if (element instanceof CustomChangeSetLogEntry) {
 				//changeset elements
 				return ((CustomChangeSetLogEntry) element).getChangedFiles().length > 0;
@@ -451,6 +464,30 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				getNextRevisions.setEnabled(hasSelection);
 			}
 		});
+		availableTreeViewer.addTreeListener(new ITreeViewerListener() {
+			public void treeCollapsed(TreeExpansionEvent event) {
+				// ignore
+
+			}
+
+			public void treeExpanded(TreeExpansionEvent event) {
+				// first time of expanding: retrieve first 10 changesets
+				final Object object = event.getElement();
+				if (object instanceof CustomRepository) {
+					SortedSet<CustomChangeSetLogEntry> logEntries = availableLogEntries.get(object);
+					int currentNumberOfEntries = logEntries == null ? 0 : logEntries.size();
+					if (currentNumberOfEntries == 0) {
+						updateChangesets(((CustomRepository) object).getUrl(), 10);
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								// expand tree after filling
+								availableTreeViewer.expandToLevel(object, 1);
+							}
+						});
+					}
+				}
+			}
+		});
 	}
 
 	private void createButtonComp(Composite composite) {
@@ -549,10 +586,10 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if (visible) {
+		if (visible && availableLogEntries.isEmpty()) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					updateChangesets(null, 10);
+					updateChangesets(null, 0);
 				}
 			});
 		}
