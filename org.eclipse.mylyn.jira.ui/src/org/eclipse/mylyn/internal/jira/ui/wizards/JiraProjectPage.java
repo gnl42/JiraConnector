@@ -252,7 +252,7 @@ public class JiraProjectPage extends WizardPage {
 				if (e.getCause() instanceof CoreException) {
 					setErrorMessage(((CoreException) e.getCause()).getMessage());
 				} else {
-					// FIXME 3.1 replace with proper exception handling
+					// FIXME 3.2 replace with proper exception handling
 					StatusHandler.fail(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, "Error updating attributes", e)); //$NON-NLS-1$
 				}
 				return;
@@ -291,7 +291,7 @@ public class JiraProjectPage extends WizardPage {
 						return new Project[] { project };
 					}
 				} catch (CoreException e) {
-					// FIXME 3.1 replace with proper exception handling
+					// FIXME 3.2 replace with proper exception handling
 					StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data", //$NON-NLS-1$
 							e));
 				}
