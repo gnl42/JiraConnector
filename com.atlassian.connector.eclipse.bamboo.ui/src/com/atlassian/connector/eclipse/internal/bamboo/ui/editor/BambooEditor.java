@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddCommentToBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddLabelToBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RunBuildAction;
+import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -35,7 +36,6 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorBusyIndicator;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.internal.tasks.ui.editors.IBusyEditor;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.SWT;
@@ -327,7 +327,7 @@ public class BambooEditor extends SharedHeaderFormEditor {
 	public void showBusy(boolean busy) {
 		if (editorBusyIndicator != null) {
 			if (busy) {
-				if (TasksUiInternal.isAnimationsEnabled()) {
+				if (AtlassianUiUtil.isAnimationsEnabled()) {
 					editorBusyIndicator.start();
 				}
 			} else {
