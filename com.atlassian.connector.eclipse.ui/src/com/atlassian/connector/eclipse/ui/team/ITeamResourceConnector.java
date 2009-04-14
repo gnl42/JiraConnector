@@ -55,6 +55,6 @@ public interface ITeamResourceConnector {
 	 * @param limit
 	 *            The amount of revisions to retrieve
 	 */
-	Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
+	Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
 			IProgressMonitor monitor) throws CoreException;
 }

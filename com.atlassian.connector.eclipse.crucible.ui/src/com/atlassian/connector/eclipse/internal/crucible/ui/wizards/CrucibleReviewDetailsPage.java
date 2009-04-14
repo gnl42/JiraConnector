@@ -147,7 +147,6 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 								"Failed to update repository data", e));
 					}
 				}
-
 			}
 		};
 		try {

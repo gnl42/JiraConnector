@@ -20,7 +20,7 @@ import java.util.Date;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class CustomChangeSetLogEntry implements Comparable<CustomChangeSetLogEntry> {
+public class CustomChangeSetLogEntry implements ICustomChangesetLogEntry {
 
 	private final String comment;
 
@@ -69,7 +69,7 @@ public class CustomChangeSetLogEntry implements Comparable<CustomChangeSetLogEnt
 		return date;
 	}
 
-	public int compareTo(CustomChangeSetLogEntry other) {
+	public int compareTo(ICustomChangesetLogEntry other) {
 		return this.date.compareTo(other.getDate()) * -1;
 	}
 

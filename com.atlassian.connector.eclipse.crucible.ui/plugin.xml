@@ -21,7 +21,6 @@
             id="com.atlassian.connector.eclipse.internal.crucible.ui.crucible.edior.factory">
       </pageFactory>
    </extension>
-   
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
@@ -54,6 +53,22 @@
          id="com.atlassian.connector.eclipse.crucible.ui.popup"
          name="Crucible Review Actions"
          point="org.eclipse.ui.popupMenus">
+      <objectContribution
+              adaptable="true"
+              id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewContribution"
+              objectClass="com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry">
+              
+              <action
+                    class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewAction"
+                    enablesFor="+"
+                    id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewAction"
+                    label="Create Review..."
+                    menubarPath="mylyn"
+                    style="push"
+                    tooltip="Create a review from the selected Revision">
+			</action> 
+			
+      </objectContribution>
       <objectContribution
             id="com.atlassian.connector.eclipse.crucible.ui.objectContribution1"
             objectClass="org.eclipse.ui.IEditorInput">

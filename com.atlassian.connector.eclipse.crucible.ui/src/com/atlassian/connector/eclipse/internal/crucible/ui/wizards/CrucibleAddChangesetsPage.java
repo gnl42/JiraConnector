@@ -17,8 +17,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
-import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
+import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -102,7 +102,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			}
 			if (element instanceof CustomRepository) {
 				return CommonImages.getImage(CrucibleImages.REPOSITORY);
-			} else if (element instanceof CustomChangeSetLogEntry) {
+			} else if (element instanceof ICustomChangesetLogEntry) {
 				return CommonImages.getImage(CrucibleImages.CHANGESET);
 			} else if (element == FAKE_NODE) {
 				return null;
@@ -119,8 +119,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			}
 			if (element instanceof CustomRepository) {
 				return ((CustomRepository) element).getUrl();
-			} else if (element instanceof CustomChangeSetLogEntry) {
-				CustomChangeSetLogEntry logEntry = (CustomChangeSetLogEntry) element;
+			} else if (element instanceof ICustomChangesetLogEntry) {
+				ICustomChangesetLogEntry logEntry = (ICustomChangesetLogEntry) element;
 				return logEntry.getRevision() + " [" + logEntry.getAuthor() + "] - " + logEntry.getComment();
 			} else if (element == FAKE_NODE) {
 				return FAKE_NODE;
@@ -133,7 +133,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private class ChangesetContentProvider implements ITreeContentProvider {
 
-		private Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> logEntries;
+		private Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> logEntries;
 
 		public Object[] getChildren(Object parentElement) {
 			if (logEntries == null || parentElement == null) {
@@ -146,9 +146,9 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 					return new String[] { FAKE_NODE };
 				}
 				return logEntries.get(parentElement).toArray();
-			} else if (parentElement instanceof CustomChangeSetLogEntry) {
+			} else if (parentElement instanceof ICustomChangesetLogEntry) {
 				//changeset files
-				return ((CustomChangeSetLogEntry) parentElement).getChangedFiles();
+				return ((ICustomChangesetLogEntry) parentElement).getChangedFiles();
 			}
 			return new Object[0];
 		}
@@ -160,9 +160,9 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			if (element instanceof Map || element instanceof CustomRepository) {
 				//root, repository URLs
 				return null;
-			} else if (element instanceof CustomChangeSetLogEntry) {
+			} else if (element instanceof ICustomChangesetLogEntry) {
 				//changeset elements
-				return ((CustomChangeSetLogEntry) element).getRepository();
+				return ((ICustomChangesetLogEntry) element).getRepository();
 			}
 			return null;
 		}
@@ -178,9 +178,9 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				//change sets for a repository
 //				return logEntries.get(element).size() > 0;
 				return true;
-			} else if (element instanceof CustomChangeSetLogEntry) {
+			} else if (element instanceof ICustomChangesetLogEntry) {
 				//changeset elements
-				return ((CustomChangeSetLogEntry) element).getChangedFiles().length > 0;
+				return ((ICustomChangesetLogEntry) element).getChangedFiles().length > 0;
 			}
 			return false;
 		}
@@ -204,15 +204,15 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			if (newInput instanceof Map) {
-				logEntries = (Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>>) newInput;
+				logEntries = (Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>>) newInput;
 			}
 		}
 
 	}
 
-	private final Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> availableLogEntries;
+	private final Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> availableLogEntries;
 
-	private final Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> selectedLogEntries;
+	private final Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
 
 	private TreeViewer availableTreeViewer;
 
@@ -229,14 +229,22 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	private final Map<CustomRepository, ComboViewer> mappingCombos;
 
 	public CrucibleAddChangesetsPage(TaskRepository repository) {
+		this(repository, new TreeSet<ICustomChangesetLogEntry>());
+	}
+
+	public CrucibleAddChangesetsPage(TaskRepository repository, SortedSet<ICustomChangesetLogEntry> logEntries) {
 		super("crucibleChangesets"); //$NON-NLS-1$
 		setTitle("Add Changesets to Review");
 		setDescription("Please select the changesets that should be included in the review.");
-		this.availableLogEntries = new HashMap<CustomRepository, SortedSet<CustomChangeSetLogEntry>>();
-		this.selectedLogEntries = new HashMap<CustomRepository, SortedSet<CustomChangeSetLogEntry>>();
+		this.availableLogEntries = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
+		this.selectedLogEntries = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
 		this.repositoryMappings = new HashMap<CustomRepository, CrucibleCachedRepository>();
 		this.mappingCombos = new HashMap<CustomRepository, ComboViewer>();
 		this.taskRepository = repository;
+		if (logEntries.size() > 0) {
+			this.selectedLogEntries.put(logEntries.first().getRepository(), logEntries);
+			this.repositoryMappings.put(logEntries.first().getRepository(), null);
+		}
 	}
 
 	public void createControl(Composite parent) {
@@ -439,9 +447,9 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 					Iterator<Object> iterator = (selection).iterator();
 					while (iterator.hasNext()) {
 						Object element = iterator.next();
-						if (element instanceof CustomChangeSetLogEntry) {
-							CustomRepository customRepository = ((CustomChangeSetLogEntry) element).getRepository();
-							SortedSet<CustomChangeSetLogEntry> logEntries = availableLogEntries.get(customRepository);
+						if (element instanceof ICustomChangesetLogEntry) {
+							CustomRepository customRepository = ((ICustomChangesetLogEntry) element).getRepository();
+							SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(customRepository);
 							int currentNumberOfEntries = logEntries == null ? 0 : logEntries.size();
 							updateChangesets(customRepository.getUrl(), currentNumberOfEntries + 10);
 						}
@@ -449,7 +457,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				} else {
 					//update all
 					for (CustomRepository customRepository : availableLogEntries.keySet()) {
-						SortedSet<CustomChangeSetLogEntry> logEntries = availableLogEntries.get(customRepository);
+						SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(customRepository);
 						int currentNumberOfEntries = logEntries == null ? 0 : logEntries.size();
 						updateChangesets(customRepository.getUrl(), currentNumberOfEntries + 10);
 					}
@@ -474,7 +482,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				// first time of expanding: retrieve first 10 changesets
 				final Object object = event.getElement();
 				if (object instanceof CustomRepository) {
-					SortedSet<CustomChangeSetLogEntry> logEntries = availableLogEntries.get(object);
+					SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(object);
 					int currentNumberOfEntries = logEntries == null ? 0 : logEntries.size();
 					if (currentNumberOfEntries == 0) {
 						updateChangesets(((CustomRepository) object).getUrl(), 10);
@@ -527,7 +535,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		selectedTreeViewer.setLabelProvider(new ChangesetLabelProvider());
 		selectedTreeViewer.setContentProvider(new ChangesetContentProvider());
 		selectedTreeViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
-		selectedTreeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
 		final Menu contextMenuSource = new Menu(getShell(), SWT.POP_UP);
 		tree.setMenu(contextMenuSource);
 		MenuItem addFile = new MenuItem(contextMenuSource, SWT.PUSH);
@@ -551,7 +558,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				try {
-					Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> retrieved = TeamUiUtils.getAllChangesets(
+					Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> retrieved = TeamUiUtils.getAllChangesets(
 							repositoryUrl, numberToRetrieve, monitor);
 					for (CustomRepository customRepository : retrieved.keySet()) {
 						if (retrieved.get(customRepository) == null) {
@@ -590,6 +597,9 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					updateChangesets(null, 0);
+					selectedTreeViewer.setInput(selectedLogEntries);
+					updateCombos();
+					validatePage();
 				}
 			});
 		}
@@ -612,14 +622,14 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			Set<CustomRepository> expandedRepositories = new HashSet<CustomRepository>();
 			while (iterator.hasNext()) {
 				Object element = iterator.next();
-				if (element instanceof CustomChangeSetLogEntry) {
-					CustomRepository customRepository = ((CustomChangeSetLogEntry) element).getRepository();
-					SortedSet<CustomChangeSetLogEntry> changesets = selectedLogEntries.get(customRepository);
+				if (element instanceof ICustomChangesetLogEntry) {
+					CustomRepository customRepository = ((ICustomChangesetLogEntry) element).getRepository();
+					SortedSet<ICustomChangesetLogEntry> changesets = selectedLogEntries.get(customRepository);
 					if (changesets == null) {
-						changesets = new TreeSet<CustomChangeSetLogEntry>();
+						changesets = new TreeSet<ICustomChangesetLogEntry>();
 					}
 					if (add) {
-						changesets.add((CustomChangeSetLogEntry) element);
+						changesets.add((ICustomChangesetLogEntry) element);
 					} else {
 						changesets.remove(element);
 					}
@@ -658,7 +668,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			Iterator<Object> iterator = (selection).iterator();
 			while (iterator.hasNext()) {
 				Object element = iterator.next();
-				if (element instanceof CustomChangeSetLogEntry) {
+				if (element instanceof ICustomChangesetLogEntry) {
 					validSelections.add((selection).getPathsFor(element)[0]);
 				}
 			}
@@ -680,7 +690,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		return null;
 	}
 
-	public Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> getSelectedLogEntries() {
+	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getSelectedLogEntries() {
 		return selectedLogEntries;
 	}
 

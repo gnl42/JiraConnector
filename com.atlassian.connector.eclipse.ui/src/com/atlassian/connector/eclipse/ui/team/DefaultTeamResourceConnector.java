@@ -77,7 +77,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return openFileWithTeamApi(repoUrl, filePath, otherRevisionFilePath, revisionString, monitor);
 	}
 
-	public Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> getLatestChangesets(String repositoryUrl,
+	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
 			int limit, IProgressMonitor monitor) throws CoreException {
 		//TODO
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,

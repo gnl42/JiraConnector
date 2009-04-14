@@ -18,8 +18,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
-import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
+import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -59,14 +59,14 @@ import java.util.SortedSet;
 public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private class AddFilesAndPatchesToReviewJob extends CrucibleReviewChangeJob {
-		private final Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> selectedLogEntries;
+		private final Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
 
 		private final String patchRepository;
 
 		private final String patch;
 
 		public AddFilesAndPatchesToReviewJob(String name, TaskRepository taskRepository,
-				Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> selectedLogEntries, String patch,
+				Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries, String patch,
 				String patchRepository) {
 			super(name, taskRepository);
 			this.selectedLogEntries = selectedLogEntries;
@@ -87,7 +87,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 									selectedLogEntries.get(customRepository).size());
 							//collect revisions
 							ArrayList<String> revisions = new ArrayList<String>();
-							for (CustomChangeSetLogEntry logEntry : selectedLogEntries.get(customRepository)) {
+							for (ICustomChangesetLogEntry logEntry : selectedLogEntries.get(customRepository)) {
 								revisions.add(logEntry.getRevision());
 							}
 							//add revisions to review
@@ -129,10 +129,19 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 
 	private CrucibleAddPatchPage addPatchPage;
 
+	private SortedSet<ICustomChangesetLogEntry> preselectedLogEntries;
+
 	public NewCrucibleReviewWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
 		super(taskRepository, taskSelection);
 		setWindowTitle("New");
 		setNeedsProgressMonitor(true);
+	}
+
+	public NewCrucibleReviewWizard(TaskRepository taskRepository, SortedSet<ICustomChangesetLogEntry> selectedLogEntries) {
+		super(taskRepository, null);
+		setWindowTitle("New");
+		setNeedsProgressMonitor(true);
+		this.preselectedLogEntries = selectedLogEntries;
 	}
 
 	@Override
@@ -156,7 +165,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		 */
 //		addFilesPage = new CrucibleAddFilesPage(getTaskRepository());
 //		addPage(addFilesPage);
-		addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository());
+		addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository(), preselectedLogEntries);
 		addPage(addChangeSetsPage);
 
 		addPatchPage = new CrucibleAddPatchPage(getTaskRepository());
@@ -206,7 +215,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 	}
 
 	private void addFilesAndPatchToReview(
-			final Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> selectedLogEntries, final String patch,
+			final Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries, final String patch,
 			final String patchRepository) {
 		if (selectedLogEntries.size() == 0 && patch == null) {
 			return;

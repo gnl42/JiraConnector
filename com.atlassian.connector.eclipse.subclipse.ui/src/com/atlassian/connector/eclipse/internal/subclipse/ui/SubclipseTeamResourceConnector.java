@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
+import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -136,12 +137,12 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 	}
 
-	public Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> getLatestChangesets(String repositoryUrl,
+	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
 			int limit, IProgressMonitor monitor) {
 		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
 				monitor);
 		monitor.beginTask("Retrieving changeset for SVN (subclipse) repositories", repos.length);
-		Map<CustomRepository, SortedSet<CustomChangeSetLogEntry>> map = new HashMap<CustomRepository, SortedSet<CustomChangeSetLogEntry>>();
+		Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> map = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
 		for (ISVNRepositoryLocation repo : repos) {
 			//if a repository is given and the repo does not match the given repository, skip it
 			if (repositoryUrl != null && !repositoryUrl.equals(repo.getUrl().toString())) {
@@ -149,7 +150,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			}
 			IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
 			CustomRepository customRepository = new CustomRepository(repo.getUrl().toString());
-			SortedSet<CustomChangeSetLogEntry> changesets = new TreeSet<CustomChangeSetLogEntry>();
+			SortedSet<ICustomChangesetLogEntry> changesets = new TreeSet<ICustomChangesetLogEntry>();
 			ISVNRemoteFolder rootFolder = repo.getRootFolder();
 
 			if (limit > 0) { //do not retrieve unlimited revisions
@@ -166,7 +167,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 							changed[i] = logEntryChangePaths[i].getPath();
 
 						}
-						CustomChangeSetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.getComment(),
+						ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.getComment(),
 								logEntry.getAuthor(), logEntry.getRevision().toString(), logEntry.getDate(), changed,
 								customRepository);
 						changesets.add(customEntry);
