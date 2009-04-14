@@ -36,7 +36,6 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
-import org.eclipse.ui.internal.console.IOConsolePage;
 import org.eclipse.ui.part.IPageBookViewPage;
 
 import java.io.IOException;
@@ -107,7 +106,7 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 	}
 
 	private class ShowBuildLogExecute {
-	
+
 		public void downloadAndShowBuildLog(final BambooBuild build) {
 			final MessageConsole console = prepareConsole(build);
 			final MessageConsoleStream messageStream = console.newMessageStream();
@@ -154,8 +153,11 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 					public IPageBookViewPage createPage(IConsoleView view) {
 						final IPageBookViewPage page = super.createPage(view);
 						view.getSite().getShell().getDisplay().asyncExec(new Runnable() {
+							@SuppressWarnings("restriction")
 							public void run() {
-								((IOConsolePage) page).getViewer().setSelection(new TextSelection(0, 0));
+								//needed due to a delay in the console display and thus a problem (race condition) with the action enablement
+								((org.eclipse.ui.internal.console.IOConsolePage) page).getViewer().setSelection(
+										new TextSelection(0, 0));
 							}
 						});
 						return page;
