@@ -50,6 +50,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Wizard for creating a new review
@@ -129,19 +130,21 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 
 	private CrucibleAddPatchPage addPatchPage;
 
-	private SortedSet<ICustomChangesetLogEntry> preselectedLogEntries;
+	private final SortedSet<ICustomChangesetLogEntry> preselectedLogEntries;
 
-	public NewCrucibleReviewWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
-		super(taskRepository, taskSelection);
-		setWindowTitle("New");
-		setNeedsProgressMonitor(true);
-	}
+//	public NewCrucibleReviewWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
+//		super(taskRepository, taskSelection);
+//		setWindowTitle("New");
+//		setNeedsProgressMonitor(true);
+//		this.preselectedLogEntries = new TreeSet<ICustomChangesetLogEntry>();
+//	}
 
 	public NewCrucibleReviewWizard(TaskRepository taskRepository, SortedSet<ICustomChangesetLogEntry> selectedLogEntries) {
 		super(taskRepository, null);
 		setWindowTitle("New");
 		setNeedsProgressMonitor(true);
-		this.preselectedLogEntries = selectedLogEntries;
+		this.preselectedLogEntries = selectedLogEntries == null ? new TreeSet<ICustomChangesetLogEntry>()
+				: selectedLogEntries;
 	}
 
 	@Override
