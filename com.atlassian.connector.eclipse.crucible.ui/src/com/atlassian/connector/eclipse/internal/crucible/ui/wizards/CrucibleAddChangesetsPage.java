@@ -352,14 +352,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		});
 	}
 
-	@Override
-	public boolean isPageComplete() {
-		// ignore
-		return super.isPageComplete();
-	}
-
 	private void updateCombos() {
-		// ignore
 		Display.getDefault().asyncExec(new Runnable() {
 
 			public void run() {
