@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.compare,
  org.eclipse.jface.text,
  org.eclipse.mylyn.commons.net
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.subclipse.ui,
  com.atlassian.connector.eclipse.internal.subclipse.ui.compare
 Bundle-Vendor: Atlassian
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
