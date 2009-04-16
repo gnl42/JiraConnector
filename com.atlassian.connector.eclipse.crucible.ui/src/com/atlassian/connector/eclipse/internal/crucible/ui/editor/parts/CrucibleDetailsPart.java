@@ -55,6 +55,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -62,7 +63,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
@@ -95,8 +95,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		@Override
 		public void run() {
-			ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(Display.getDefault().getActiveShell(),
-					crucibleReview, CrucibleUiUtil.getCachedUsers(crucibleReview));
+			ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(TasksUiInternal.getShell(), crucibleReview,
+					CrucibleUiUtil.getCachedUsers(crucibleReview));
 			if (dialog.open() == Window.OK) {
 				Set<Reviewer> reviewers = dialog.getSelectedReviewers();
 				final Set<String> reviewerUserNames = CrucibleUiUtil.getUserNamesFromUsers(reviewers);

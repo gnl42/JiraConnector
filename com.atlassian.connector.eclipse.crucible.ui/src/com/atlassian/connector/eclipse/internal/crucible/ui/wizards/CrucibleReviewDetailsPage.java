@@ -35,7 +35,9 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -251,6 +253,11 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		reviewersSelectionTreePart = new ReviewersSelectionTreePart(newReview);
 		Composite reviewersComp = reviewersSelectionTreePart.createControl(composite);
 		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).hint(-1, 150).applyTo(reviewersComp);
+		reviewersSelectionTreePart.setCheckStateListener(new ICheckStateListener() {
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				getWizard().getContainer().updateButtons();
+			}
+		});
 
 		anyoneCanJoin = new Button(composite, SWT.CHECK);
 		anyoneCanJoin.setText("Allow anyone to join");
@@ -272,8 +279,39 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		return newReview != null && newReview.getProjectKey() != null && newReview.getModerator() != null
-				&& newReview.getAuthor() != null;
+		return newReview != null && hasRequiredFields() && hasValidReviewers();
+	}
+
+	private boolean hasRequiredFields() {
+		setErrorMessage(null);
+		if (newReview.getProjectKey() == null) {
+			setErrorMessage("Please select a project");
+			return false;
+		}
+		if (newReview.getModerator() == null) {
+			setErrorMessage("Please select a moderator");
+			return false;
+		}
+		if (newReview.getAuthor() == null) {
+			setErrorMessage("Please select an author");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean hasValidReviewers() {
+		setErrorMessage(null);
+		for (Reviewer reviewer : reviewersSelectionTreePart.getSelectedReviewers()) {
+			if (newReview.getAuthor().getUserName().equals(reviewer.getUserName())) {
+				setErrorMessage("The author might not be a reviewer as well.");
+				return false;
+			}
+			if (newReview.getModerator().getUserName().equals(reviewer.getUserName())) {
+				setErrorMessage("The moderator might not be a reviewer as well.");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

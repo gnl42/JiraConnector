@@ -228,6 +228,16 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private final Map<CustomRepository, ComboViewer> mappingCombos;
 
+	private Button addButton;
+
+	private Button removeButton;
+
+	private MenuItem removeChangesetMenuItem;
+
+	private MenuItem getNextRevisionsMenuItem;
+
+	private MenuItem addChangesetMenuTiem;
+
 	public CrucibleAddChangesetsPage(TaskRepository repository) {
 		this(repository, new TreeSet<ICustomChangesetLogEntry>());
 	}
@@ -252,11 +262,11 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).create());
 
 		Label label = new Label(composite, SWT.NONE);
-		label.setText("Select files from your workspace:");
+		label.setText("Select changesets from your repositories:");
 
 		new Label(composite, SWT.NONE).setText("");
 
-		new Label(composite, SWT.NONE).setText("Files selected for the review:");
+		new Label(composite, SWT.NONE).setText("Changesets selected for the review:");
 
 		createLeftViewer(composite);
 
@@ -421,17 +431,13 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		availableTreeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
 		final Menu contextMenuSource = new Menu(getShell(), SWT.POP_UP);
 		tree.setMenu(contextMenuSource);
-		final MenuItem addFile = new MenuItem(contextMenuSource, SWT.PUSH);
-		addFile.setText("Add");
-		addFile.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				addChangesets();
-			}
-		});
-		final MenuItem getNextRevisions = new MenuItem(contextMenuSource, SWT.PUSH);
-		getNextRevisions.setText("Get 10 more Revisions");
-		getNextRevisions.addSelectionListener(new SelectionAdapter() {
+		addChangesetMenuTiem = new MenuItem(contextMenuSource, SWT.PUSH);
+		addChangesetMenuTiem.setText("Add");
+
+		addChangesetMenuTiem.setEnabled(false);
+		getNextRevisionsMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
+		getNextRevisionsMenuItem.setText("Get 10 more Revisions");
+		getNextRevisionsMenuItem.addSelectionListener(new SelectionAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -457,12 +463,17 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				}
 			}
 		});
+		addChangesetMenuTiem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				addChangesets();
+				updateButtonEnablement();
+			}
+		});
 		tree.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				boolean hasSelection = validateTreeSelection(availableTreeViewer);
-				addFile.setEnabled(hasSelection);
-				getNextRevisions.setEnabled(hasSelection);
+				updateButtonEnablement();
 			}
 		});
 		availableTreeViewer.addTreeListener(new ITreeViewerListener() {
@@ -496,27 +507,31 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		buttonComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 		GridDataFactory.fillDefaults().grab(false, true).span(1, 2).applyTo(buttonComp);
 
-		Button addButton = new Button(buttonComp, SWT.PUSH);
+		addButton = new Button(buttonComp, SWT.PUSH);
 		addButton.setText("Add -->");
 		addButton.setToolTipText("Add all selected changesets");
 		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addChangesets();
+				updateButtonEnablement();
 			}
 		});
+		addButton.setEnabled(false);
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(addButton);
 
-		Button removeButton = new Button(buttonComp, SWT.PUSH);
+		removeButton = new Button(buttonComp, SWT.PUSH);
 		removeButton.setText("<-- Remove");
 		removeButton.setToolTipText("Remove all selected changesets");
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				removeChangesets();
+				updateButtonEnablement();
 			}
 
 		});
+		removeButton.setEnabled(false);
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(removeButton);
 	}
 
@@ -530,21 +545,52 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		selectedTreeViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		final Menu contextMenuSource = new Menu(getShell(), SWT.POP_UP);
 		tree.setMenu(contextMenuSource);
-		MenuItem addFile = new MenuItem(contextMenuSource, SWT.PUSH);
-		addFile.setText("Remove");
-		addFile.addSelectionListener(new SelectionAdapter() {
+		removeChangesetMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
+		removeChangesetMenuItem.setText("Remove");
+		removeChangesetMenuItem.setEnabled(false);
+		removeChangesetMenuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				removeChangesets();
+				updateButtonEnablement();
 			}
 		});
 
 		tree.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				validateTreeSelection(selectedTreeViewer);
+				updateButtonEnablement();
 			}
 		});
+	}
+
+	private void updateButtonEnablement() {
+		//right viewer
+		TreeSelection selection = validateTreeSelection(selectedTreeViewer);
+		removeButton.setEnabled(selection != null && !selection.isEmpty());
+		removeChangesetMenuItem.setEnabled(selection != null && !selection.isEmpty());
+		//left viewer
+		selection = validateTreeSelection(availableTreeViewer);
+		addButton.setEnabled(selection != null && !selection.isEmpty() && !hasAlreadyChosenChangesetSelected(selection));
+		addChangesetMenuTiem.setEnabled(selection != null && !selection.isEmpty()
+				&& !hasAlreadyChosenChangesetSelected(selection));
+		getNextRevisionsMenuItem.setEnabled(selection != null && !selection.isEmpty());
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean hasAlreadyChosenChangesetSelected(TreeSelection selection) {
+		for (CustomRepository repository : selectedLogEntries.keySet()) {
+			Iterator<Object> iterator = (selection).iterator();
+			while (iterator.hasNext()) {
+				Object element = iterator.next();
+				if (element instanceof ICustomChangesetLogEntry) {
+					if (selectedLogEntries.get(repository).contains(element)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private void updateChangesets(final String repositoryUrl, final int numberToRetrieve) {
@@ -654,7 +700,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean validateTreeSelection(TreeViewer treeViewer) {
+	private TreeSelection validateTreeSelection(TreeViewer treeViewer) {
 		TreeSelection selection = getTreeSelection(treeViewer);
 		if (selection != null) {
 			ArrayList<TreePath> validSelections = new ArrayList<TreePath>();
@@ -669,10 +715,10 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			ISelection newSelection = new TreeSelection(validSelections.toArray(new TreePath[validSelections.size()]),
 					(selection).getElementComparer());
 			treeViewer.setSelection(newSelection);
-			return !newSelection.isEmpty();
+		} else {
+			treeViewer.setSelection(new TreeSelection());
 		}
-		treeViewer.setSelection(new TreeSelection());
-		return (!treeViewer.getSelection().isEmpty());
+		return getTreeSelection(treeViewer);
 	}
 
 	private TreeSelection getTreeSelection(TreeViewer treeViewer) {

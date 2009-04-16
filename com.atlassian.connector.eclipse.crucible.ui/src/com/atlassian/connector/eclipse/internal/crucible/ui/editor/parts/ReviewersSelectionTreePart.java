@@ -50,6 +50,8 @@ public class ReviewersSelectionTreePart {
 
 	private CheckboxFilteredTree tree;
 
+	private ICheckStateListener externalListener;
+
 //	private final Set<Reviewer> allReviewers;
 
 //	private final Review review;
@@ -85,6 +87,10 @@ public class ReviewersSelectionTreePart {
 		this.review = review;
 	}
 
+	public void setCheckStateListener(ICheckStateListener listener) {
+		externalListener = listener;
+	}
+
 	public Composite createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout());
@@ -94,7 +100,7 @@ public class ReviewersSelectionTreePart {
 		tree = new CheckboxFilteredTree(composite, SWT.CHECK | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER,
 				new SubstringPatternFilter());
 
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
+		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 500).applyTo(tree);
 
 		tree.getViewer().setContentProvider(new CrucibleUserContentProvider());
 
@@ -116,6 +122,9 @@ public class ReviewersSelectionTreePart {
 					selectedReviewers.add(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
 				} else {
 					selectedReviewers.remove(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
+				}
+				if (externalListener != null) {
+					externalListener.checkStateChanged(event);
 				}
 			}
 		});

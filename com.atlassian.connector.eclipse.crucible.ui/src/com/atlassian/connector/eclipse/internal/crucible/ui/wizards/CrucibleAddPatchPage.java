@@ -124,16 +124,20 @@ public class CrucibleAddPatchPage extends WizardPage {
 		setErrorMessage(null);
 
 		boolean allFine = true;
+		String errorMessage = null;
 		if (patchText.getText().length() < 1) {
-			setErrorMessage("In order to create a review from a patch,"
-					+ " copy the patch to the clipboard before opening this Wizard.");
+			errorMessage = "In order to create a review from a patch,"
+					+ " copy the patch to the clipboard before opening this Wizard.";
 			allFine = false;
 		} else if (selectedRepository == null) {
-			setErrorMessage("Please choose a repository on Crucible this patch relates to.");
+			errorMessage = "Please choose a repository on Crucible this patch relates to.";
 			allFine = false;
 		}
 		if (includePatch) {
 			setPageComplete(allFine);
+			if (errorMessage != null) {
+				setErrorMessage(errorMessage);
+			}
 		} else {
 			setPageComplete(true);
 		}

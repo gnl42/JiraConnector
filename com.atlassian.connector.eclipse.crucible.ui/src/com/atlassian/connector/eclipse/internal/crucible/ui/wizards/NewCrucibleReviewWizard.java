@@ -173,7 +173,6 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 
 		addPatchPage = new CrucibleAddPatchPage(getTaskRepository());
 		addPage(addPatchPage);
-
 	}
 
 	@Override
