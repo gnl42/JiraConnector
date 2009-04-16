@@ -25,5 +25,6 @@ Export-Package: com.atlassian.connector.eclipse.ui,
  com.atlassian.connector.eclipse.ui.commons,
  com.atlassian.connector.eclipse.ui.dialogs,
  com.atlassian.connector.eclipse.ui.editor,
+ com.atlassian.connector.eclipse.ui.exceptions,
  com.atlassian.connector.eclipse.ui.forms,
  com.atlassian.connector.eclipse.ui.team
