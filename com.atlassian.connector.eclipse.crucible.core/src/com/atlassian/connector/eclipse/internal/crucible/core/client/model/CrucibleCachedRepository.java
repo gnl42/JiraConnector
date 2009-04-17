@@ -25,11 +25,11 @@ public class CrucibleCachedRepository implements Serializable {
 
 	private static final long serialVersionUID = -2217544468152826345L;
 
-	private String name;
+	private final String name;
 
-	private String type;
+	private final String type;
 
-	private boolean enabled;
+	private final boolean enabled;
 
 	public CrucibleCachedRepository(Repository repository) {
 		this(repository.getName(), repository.getType(), repository.isEnabled());
@@ -46,24 +46,12 @@ public class CrucibleCachedRepository implements Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getType() {
 		return type;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public boolean isEnabled() {
 		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	public Repository createRepositoryFromCached() {

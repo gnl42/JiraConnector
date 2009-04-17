@@ -248,11 +248,11 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
 
 		objectivesText = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
-		GridDataFactory.fillDefaults().grab(true, true).span(4, 2).hint(-1, -1).applyTo(objectivesText);
+		GridDataFactory.fillDefaults().grab(true, true).span(4, 2).applyTo(objectivesText);
 
 		reviewersSelectionTreePart = new ReviewersSelectionTreePart(newReview);
 		Composite reviewersComp = reviewersSelectionTreePart.createControl(composite);
-		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).hint(-1, 150).applyTo(reviewersComp);
+		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).hint(SWT.DEFAULT, 150).applyTo(reviewersComp);
 		reviewersSelectionTreePart.setCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				getWizard().getContainer().updateButtons();

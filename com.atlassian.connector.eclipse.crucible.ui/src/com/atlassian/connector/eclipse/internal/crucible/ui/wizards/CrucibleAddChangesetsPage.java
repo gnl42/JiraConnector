@@ -263,14 +263,11 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Select changesets from your repositories:");
-
-		new Label(composite, SWT.NONE).setText("");
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
 
 		new Label(composite, SWT.NONE).setText("Changesets selected for the review:");
 
 		createLeftViewer(composite);
-
-		GridDataFactory.fillDefaults().applyTo(label);
 
 		createButtonComp(composite);
 

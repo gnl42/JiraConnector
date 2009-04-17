@@ -287,7 +287,6 @@ public class CrucibleAddFilesPage extends WizardPage {
 
 			@SuppressWarnings("unchecked")
 			public Object[] getElements(Object inputElement) {
-				// ignore
 				if (inputElement instanceof SortedSet) {
 					return ((SortedSet) inputElement).toArray();
 				}
@@ -420,12 +419,11 @@ public class CrucibleAddFilesPage extends WizardPage {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	private ArrayList<IFile> getSelectedFilesSource() {
 		ArrayList<IFile> selected = new ArrayList<IFile>();
 		ISelection selection = treeViewer.getSelection();
 		if (selection instanceof IStructuredSelection) {
-			Iterator<Object> it = ((IStructuredSelection) selection).iterator();
+			Iterator<?> it = ((IStructuredSelection) selection).iterator();
 			while (it.hasNext()) {
 				Object element = it.next();
 				if (element instanceof IFile) {
@@ -436,12 +434,11 @@ public class CrucibleAddFilesPage extends WizardPage {
 		return selected;
 	}
 
-	@SuppressWarnings("unchecked")
 	private ArrayList<IFile> getSelectedFilesTarget() {
 		ArrayList<IFile> selected = new ArrayList<IFile>();
 		ISelection selection = selectedFilesViewer.getSelection();
 		if (selection instanceof IStructuredSelection) {
-			Iterator<Object> it = ((IStructuredSelection) selection).iterator();
+			Iterator<?> it = ((IStructuredSelection) selection).iterator();
 			while (it.hasNext()) {
 				Object element = it.next();
 				if (element instanceof IFile) {
