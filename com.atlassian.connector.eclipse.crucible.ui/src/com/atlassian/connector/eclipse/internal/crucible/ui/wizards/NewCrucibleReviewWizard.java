@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.ITask;
@@ -95,19 +97,22 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 							createdReview = server.addRevisionsToReview(serverCfg, createdReview.getPermId(),
 									addChangeSetsPage.getRepositoryMappings().get(customRepository).getName(),
 									revisions);
+							changesetsAddedToReview = true;
 						}
 						//add patch
-						if (patch != null) {
+						if (patch != null && patch.length() > 0 && patchRepository != null
+								&& patchRepository.length() > 0 && !patchAddedToReview) {
 							createdReview = server.addPatchToReview(serverCfg, createdReview.getPermId(),
 									patchRepository, patch);
+							patchAddedToReview = true;
 						}
 						return createdReview;
 					}
 				});
 			} catch (final CoreException e) {
+				creationProcessFailedMessage = "Could not add revisions to review. See error log for details.";
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						addChangeSetsPage.setErrorMessage("Could not add revisions to review. See error log for details.");
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 								"Error adding revisions to Review", e));
 					}
@@ -120,9 +125,15 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		}
 	}
 
+	private boolean changesetsAddedToReview;
+
+	private boolean patchAddedToReview;
+
 	private CrucibleReviewDetailsPage detailsPage;
 
 	private Review createdReview;
+
+	private String creationProcessFailedMessage;
 
 //	private CrucibleAddFilesPage addFilesPage;
 
@@ -131,6 +142,12 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 	private CrucibleAddPatchPage addPatchPage;
 
 	private final SortedSet<ICustomChangesetLogEntry> preselectedLogEntries;
+
+	private Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd;
+
+	private String patchRepositoryToAdd;
+
+	private String patchToAdd;
 
 //	public NewCrucibleReviewWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
 //		super(taskRepository, taskSelection);
@@ -175,16 +192,50 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		addPage(addPatchPage);
 	}
 
+	private boolean patchAlreadyAdded() {
+		if (patchToAdd == null || patchRepositoryToAdd == null) {
+			return false;
+		}
+		if (addPatchPage == null || addPatchPage.getPatch() == null || addPatchPage.getPatchRepository() == null) {
+			return false;
+		}
+		return patchToAdd.equals(addPatchPage.getPatch())
+				&& patchRepositoryToAdd.equals(addPatchPage.getPatchRepository());
+	}
+
 	@Override
 	public boolean performFinish() {
+		creationProcessFailedMessage = null;
+		IWizardPage currentPage = getContainer().getCurrentPage();
+		if (currentPage instanceof WizardPage) {
+			((WizardPage) currentPage).setErrorMessage(null);
+		}
 		//create review if not yet done
 		if (createdReview == null) {
 			createReview();
+			if (createdReview == null) {
+				if (currentPage instanceof WizardPage) {
+					((WizardPage) currentPage).setErrorMessage(creationProcessFailedMessage);
+				}
+				return false;
+			}
 		}
 
-		String patch = addPatchPage.hasPatch() ? null : addPatchPage.getPatch();
-		String patchRepository = addPatchPage.hasPatch() ? null : addPatchPage.getPatchRepository();
-		addFilesAndPatchToReview(addChangeSetsPage.getSelectedLogEntries(), patch, patchRepository);
+		//if patch has changed, add it again
+		if (!patchAlreadyAdded()) {
+			patchAddedToReview = false;
+		}
+		patchToAdd = addPatchPage.hasPatch() ? null : addPatchPage.getPatch();
+		patchRepositoryToAdd = addPatchPage.hasPatch() ? null : addPatchPage.getPatchRepository();
+		changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
+		addFilesAndPatchToReview(changesetsToAdd, patchToAdd, patchRepositoryToAdd);
+
+		if (creationProcessFailedMessage != null) {
+			if (currentPage instanceof WizardPage) {
+				((WizardPage) currentPage).setErrorMessage(creationProcessFailedMessage);
+			}
+			return false;
+		}
 
 		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -209,11 +260,12 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		try {
 			getContainer().run(true, false, runnable);
 		} catch (Exception e) {
-			detailsPage.setErrorMessage("Could not open created review. Please refresh tasklist.");
+			if (currentPage instanceof WizardPage) {
+				((WizardPage) currentPage).setErrorMessage("Could not open created review. Please refresh tasklist.");
+			}
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error opening review", e));
 		}
-
-		return createdReview != null;
+		return createdReview != null && creationProcessFailedMessage == null;
 	}
 
 	private void addFilesAndPatchToReview(
@@ -232,7 +284,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		try {
 			getContainer().run(true, true, runnable);
 		} catch (Exception e) {
-			detailsPage.setErrorMessage("Could not add revisions to review. See error log for details.");
+			creationProcessFailedMessage = "Could not add revisions to review. See error log for details.";
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error adding revisions to Review",
 					e));
 		}
@@ -257,9 +309,9 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 						}
 					});
 				} catch (final CoreException e) {
+					creationProcessFailedMessage = "Could not create review. See error log for details.";
 					Display.getDefault().syncExec(new Runnable() {
 						public void run() {
-							detailsPage.setErrorMessage("Could not create review. See error log for details.");
 							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 									"Error creating Review", e));
 						}
@@ -279,7 +331,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		try {
 			getContainer().run(true, true, runnable);
 		} catch (Exception e) {
-			detailsPage.setErrorMessage("Could not create review. See error log for details.");
+			creationProcessFailedMessage = "Could not create review. See error log for details.";
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error creating Review", e));
 		}
 	}

@@ -16,6 +16,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
@@ -56,5 +57,5 @@ public interface ITeamResourceConnector {
 	 *            The amount of revisions to retrieve
 	 */
 	Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
-			IProgressMonitor monitor) throws CoreException;
+			IProgressMonitor monitor, MultiStatus status) throws CoreException;
 }

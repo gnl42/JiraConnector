@@ -25,6 +25,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -236,7 +237,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private MenuItem getNextRevisionsMenuItem;
 
-	private MenuItem addChangesetMenuTiem;
+	private MenuItem addChangesetMenuItem;
 
 	public CrucibleAddChangesetsPage(TaskRepository repository) {
 		this(repository, new TreeSet<ICustomChangesetLogEntry>());
@@ -428,10 +429,10 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		availableTreeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
 		final Menu contextMenuSource = new Menu(getShell(), SWT.POP_UP);
 		tree.setMenu(contextMenuSource);
-		addChangesetMenuTiem = new MenuItem(contextMenuSource, SWT.PUSH);
-		addChangesetMenuTiem.setText("Add");
+		addChangesetMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
+		addChangesetMenuItem.setText("Add");
 
-		addChangesetMenuTiem.setEnabled(false);
+		addChangesetMenuItem.setEnabled(false);
 		getNextRevisionsMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
 		getNextRevisionsMenuItem.setText("Get 10 more Revisions");
 		getNextRevisionsMenuItem.addSelectionListener(new SelectionAdapter() {
@@ -441,13 +442,20 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				TreeSelection selection = getTreeSelection(availableTreeViewer);
 				if (selection != null) {
 					Iterator<Object> iterator = (selection).iterator();
+					Set<CustomRepository> alreadyDone = new TreeSet<CustomRepository>();
 					while (iterator.hasNext()) {
 						Object element = iterator.next();
+						CustomRepository customRepository = null;
 						if (element instanceof ICustomChangesetLogEntry) {
-							CustomRepository customRepository = ((ICustomChangesetLogEntry) element).getRepository();
+							customRepository = ((ICustomChangesetLogEntry) element).getRepository();
+						} else if (element instanceof CustomRepository) {
+							customRepository = (CustomRepository) element;
+						}
+						if (customRepository != null && !alreadyDone.contains(customRepository)) {
 							SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(customRepository);
 							int currentNumberOfEntries = logEntries == null ? 0 : logEntries.size();
 							updateChangesets(customRepository.getUrl(), currentNumberOfEntries + 10);
+							alreadyDone.add(customRepository);
 						}
 					}
 				} else {
@@ -460,7 +468,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				}
 			}
 		});
-		addChangesetMenuTiem.addSelectionListener(new SelectionAdapter() {
+		addChangesetMenuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addChangesets();
@@ -563,15 +571,31 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private void updateButtonEnablement() {
 		//right viewer
-		TreeSelection selection = validateTreeSelection(selectedTreeViewer);
+		TreeSelection selection = validateTreeSelection(selectedTreeViewer, false);
 		removeButton.setEnabled(selection != null && !selection.isEmpty());
 		removeChangesetMenuItem.setEnabled(selection != null && !selection.isEmpty());
 		//left viewer
-		selection = validateTreeSelection(availableTreeViewer);
-		addButton.setEnabled(selection != null && !selection.isEmpty() && !hasAlreadyChosenChangesetSelected(selection));
-		addChangesetMenuTiem.setEnabled(selection != null && !selection.isEmpty()
-				&& !hasAlreadyChosenChangesetSelected(selection));
+		selection = validateTreeSelection(availableTreeViewer, true);
+		boolean changesetsOnly = hasChangesetsOnly(selection);
+		addButton.setEnabled(selection != null && !selection.isEmpty() && !hasAlreadyChosenChangesetSelected(selection)
+				&& changesetsOnly);
+		addChangesetMenuItem.setEnabled(selection != null && !selection.isEmpty()
+				&& !hasAlreadyChosenChangesetSelected(selection) && changesetsOnly);
 		getNextRevisionsMenuItem.setEnabled(selection != null && !selection.isEmpty());
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean hasChangesetsOnly(TreeSelection selection) {
+		if (selection != null) {
+			Iterator<Object> iterator = (selection).iterator();
+			while (iterator.hasNext()) {
+				Object element = iterator.next();
+				if (element instanceof CustomRepository) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -591,11 +615,13 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	}
 
 	private void updateChangesets(final String repositoryUrl, final int numberToRetrieve) {
+		final MultiStatus status = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.WARNING,
+				"Error while retrieving changesets", null);
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				try {
 					Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> retrieved = TeamUiUtils.getAllChangesets(
-							repositoryUrl, numberToRetrieve, monitor);
+							repositoryUrl, numberToRetrieve, monitor, status);
 					for (CustomRepository customRepository : retrieved.keySet()) {
 						if (retrieved.get(customRepository) == null) {
 							continue;
@@ -607,9 +633,9 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 							availableLogEntries.put(customRepository, retrieved.get(customRepository));
 						}
 					}
+
 				} catch (CoreException e) {
-					setErrorMessage(e.getStatus().getMessage());
-					StatusHandler.log(e.getStatus());
+					status.add(e.getStatus());
 				}
 			}
 		};
@@ -617,13 +643,16 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			setErrorMessage(null);
 			getContainer().run(true, true, runnable);
 		} catch (Exception e) {
-			setErrorMessage("Could not retrieve revisions for selected file. See error log for details");
-			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to retrieve revisions", e));
+			status.add(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to retrieve revisions", e));
 		}
 		if (availableLogEntries != null) {
 			availableTreeViewer.setInput(availableLogEntries);
 		}
-		validatePage();
+
+		if (status.getChildren().length > 0 && status.getSeverity() == IStatus.ERROR) { //only log errors, swallow warnings
+			setErrorMessage("Error while retrieving changesets. See error log for details.");
+			StatusHandler.log(status);
+		}
 	}
 
 	@Override
@@ -697,7 +726,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	}
 
 	@SuppressWarnings("unchecked")
-	private TreeSelection validateTreeSelection(TreeViewer treeViewer) {
+	private TreeSelection validateTreeSelection(TreeViewer treeViewer, boolean allowChangesetsSelection) {
 		TreeSelection selection = getTreeSelection(treeViewer);
 		if (selection != null) {
 			ArrayList<TreePath> validSelections = new ArrayList<TreePath>();
@@ -706,11 +735,13 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				Object element = iterator.next();
 				if (element instanceof ICustomChangesetLogEntry) {
 					validSelections.add((selection).getPathsFor(element)[0]);
+				} else if (allowChangesetsSelection && element instanceof CustomRepository) {
+					validSelections.add((selection).getPathsFor(element)[0]);
 				}
 			}
 			//set new selection
-			ISelection newSelection = new TreeSelection(validSelections.toArray(new TreePath[validSelections.size()]),
-					(selection).getElementComparer());
+			TreeSelection newSelection = new TreeSelection(
+					validSelections.toArray(new TreePath[validSelections.size()]), (selection).getElementComparer());
 			treeViewer.setSelection(newSelection);
 		} else {
 			treeViewer.setSelection(new TreeSelection());
@@ -726,7 +757,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		return null;
 	}
 
-	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getSelectedLogEntries() {
+	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getSelectedChangesets() {
 		return selectedLogEntries;
 	}
 

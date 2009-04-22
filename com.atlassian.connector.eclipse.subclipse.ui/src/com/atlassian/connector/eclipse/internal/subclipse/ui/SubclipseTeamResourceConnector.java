@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
 import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSubclipseCompareEditorInput;
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
@@ -34,6 +35,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -138,7 +140,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor) {
+			int limit, IProgressMonitor monitor, MultiStatus status) {
 		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
 				monitor);
 		monitor.beginTask("Retrieving changeset for SVN (subclipse) repositories", repos.length);
@@ -173,7 +175,8 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 						changesets.add(customEntry);
 					}
 				} catch (SVNException e) {
-					// ignore
+					status.add(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+							"Could not retrieve changesets from " + customRepository.getUrl(), e));
 				}
 			}
 			map.put(customRepository, changesets);

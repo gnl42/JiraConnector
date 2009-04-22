@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -78,7 +79,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor) throws CoreException {
+			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
 		//TODO
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
 				"Connectors other than Subclipse not yet supported."));

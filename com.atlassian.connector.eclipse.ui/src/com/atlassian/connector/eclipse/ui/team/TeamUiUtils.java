@@ -139,12 +139,10 @@ public final class TeamUiUtils {
 	 *            The amount of revisions to retrieve
 	 */
 	public static Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getAllChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor) throws CoreException {
+			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
-		MultiStatus status = new MultiStatus(AtlassianUiPlugin.PLUGIN_ID, IStatus.ERROR,
-				"Error while retrieving changesets", null);
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 		Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> toReturn;
 		toReturn = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
@@ -153,7 +151,7 @@ public final class TeamUiUtils {
 			IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
 			if (connector.isEnabled()) {
 				try {
-					toReturn.putAll(connector.getLatestChangesets(repositoryUrl, limit, subMonitor));
+					toReturn.putAll(connector.getLatestChangesets(repositoryUrl, limit, subMonitor, status));
 				} catch (CoreException e) {
 					status.add(e.getStatus());
 				}
@@ -162,7 +160,7 @@ public final class TeamUiUtils {
 		}
 		IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
 		try {
-			toReturn.putAll(defaultConnector.getLatestChangesets(repositoryUrl, limit, subMonitor));
+			toReturn.putAll(defaultConnector.getLatestChangesets(repositoryUrl, limit, subMonitor, status));
 		} catch (CoreException e) {
 			status.add(e.getStatus());
 		}
