@@ -168,25 +168,27 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private CrucibleTypeSelectionPage typeSelectionPage;
 
-//	public NewCrucibleReviewWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
-//		super(taskRepository, taskSelection);
-//		setWindowTitle("New");
-//		setNeedsProgressMonitor(true);
-//		this.preselectedLogEntries = new TreeSet<ICustomChangesetLogEntry>();
-//	}
+	public CrucibleReviewWizard(TaskRepository taskRepository) {
+		this(taskRepository, null, Type.UNDEFINED);
+	}
 
 	public CrucibleReviewWizard(TaskRepository taskRepository, SortedSet<ICustomChangesetLogEntry> selectedLogEntries) {
+		this(taskRepository, selectedLogEntries, selectedLogEntries != null ? Type.ADD_CHANGESET : Type.UNDEFINED);
+	}
+
+	public CrucibleReviewWizard(TaskRepository taskRepository, SortedSet<ICustomChangesetLogEntry> selectedLogEntries,
+			Type type) {
 		super(taskRepository, null);
 		setWindowTitle("New");
 		setNeedsProgressMonitor(true);
 		this.preselectedLogEntries = selectedLogEntries == null ? new TreeSet<ICustomChangesetLogEntry>()
 				: selectedLogEntries;
+		wizardType = type;
 	}
 
 	public CrucibleReviewWizard(Review review, Type type) {
-		this(CrucibleUiUtil.getCrucibleTaskRepository(review), null);
+		this(CrucibleUiUtil.getCrucibleTaskRepository(review), null, type);
 		this.crucibleReview = review;
-		wizardType = type;
 	}
 
 	@Override
@@ -203,8 +205,11 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 
 	@Override
 	public void addPages() {
-		typeSelectionPage = new CrucibleTypeSelectionPage(getTaskRepository());
-		addPage(typeSelectionPage);
+		//do not use page selection if wizard type is already set
+		if (wizardType == Type.UNDEFINED) {
+			typeSelectionPage = new CrucibleTypeSelectionPage(getTaskRepository());
+			addPage(typeSelectionPage);
+		}
 		//only add details page if review is not already existing
 		if (crucibleReview == null) {
 			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository());
