@@ -15,8 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.model.Cruci
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesContentProvider;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
+import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ComboViewerSelectionDialog;
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -28,19 +27,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
@@ -53,12 +51,11 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -70,7 +67,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
@@ -225,6 +221,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private Set<CrucibleCachedRepository> cachedRepositories;
 
+	private String[] cachedRepositoriesAsString;
+
 	private final Map<CustomRepository, CrucibleCachedRepository> repositoryMappings;
 
 	private final Map<CustomRepository, ComboViewer> mappingCombos;
@@ -283,7 +281,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	private void createRepositoryMappingComp(Composite composite) {
 		final Composite mappingComposite = new Composite(composite, SWT.NONE);
 		GridDataFactory.fillDefaults().grab(false, true).applyTo(mappingComposite);
-		mappingComposite.setLayout(GridLayoutFactory.fillDefaults().create());
+		mappingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
 		final Table table = new Table(mappingComposite, SWT.BORDER);
 		table.setHeaderVisible(true);
@@ -326,7 +324,49 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		final TableViewerColumn column2 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
 		column2.getColumn().setText("Crucible Repository");
 		column2.getColumn().setWidth(100);
-		column2.setLabelProvider(new ColumnLabelProvider());
+		column2.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof CustomRepository) {
+					if (repositoryMappings.containsKey(element) && repositoryMappings.get(element) != null) {
+						return repositoryMappings.get(element).getName();
+					}
+				}
+				return "";
+			}
+
+			@Override
+			public Image getImage(Object element) {
+				return null;
+			}
+		});
+
+		final Button editButton = new Button(mappingComposite, SWT.PUSH);
+		editButton.setText("Edit...");
+		editButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selectRepositoryMapping();
+			}
+		});
+		editButton.setEnabled(false);
+
+		table.addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				selectRepositoryMapping();
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				ISelection selection = repositoriesMappingViewer.getSelection();
+				if (selection instanceof IStructuredSelection && ((IStructuredSelection) selection).size() == 1) {
+					editButton.setEnabled(true);
+				} else {
+					editButton.setEnabled(false);
+				}
+			}
+
+		});
 
 		mappingComposite.addControlListener(new ControlAdapter() {
 			public void controlResized(ControlEvent e) {
@@ -360,41 +400,23 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		});
 	}
 
-	private void updateCombos() {
-		Display.getDefault().asyncExec(new Runnable() {
-
-			public void run() {
-				if (cachedRepositories == null) {
-					cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
-				}
-				TableItem[] items = repositoriesMappingViewer.getTable().getItems();
-				for (int i = 0; i < items.length; i++) {
-					final CustomRepository customRepository = (CustomRepository) repositoriesMappingViewer.getElementAt(i);
-					TableEditor editor = new TableEditor(repositoriesMappingViewer.getTable());
-					final CCombo combo = new CCombo(repositoriesMappingViewer.getTable(), SWT.NONE);
-					combo.setText(SELECT_MAPPING);
-					combo.setEditable(false);
-					final ComboViewer comboViewer = new ComboViewer(combo);
-					mappingCombos.put(customRepository, comboViewer);
-					comboViewer.setContentProvider(new CrucibleRepositoriesContentProvider());
-					comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
-					comboViewer.setInput(cachedRepositories);
-					comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-						public void selectionChanged(SelectionChangedEvent event) {
-							if (comboViewer.getSelection() instanceof IStructuredSelection) {
-								Object selected = ((IStructuredSelection) comboViewer.getSelection()).getFirstElement();
-								if (cachedRepositories.contains(selected)) {
-									repositoryMappings.put(customRepository, (CrucibleCachedRepository) selected);
-								}
-							}
-							validatePage();
-						}
-					});
-					editor.grabHorizontal = true;
-					editor.setEditor(combo, items[i], 1);
-				}
+	private void selectRepositoryMapping() {
+		ISelection selection = repositoriesMappingViewer.getSelection();
+		if (selection instanceof IStructuredSelection && ((IStructuredSelection) selection).size() == 1) {
+			CustomRepository repository = (CustomRepository) ((IStructuredSelection) selection).getFirstElement();
+			if (cachedRepositories == null) {
+				cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
 			}
-		});
+			ComboViewerSelectionDialog dialog = new ComboViewerSelectionDialog(repositoriesMappingViewer.getTable()
+					.getShell(), "Select", "Choose Crucible Repository: ", cachedRepositories);
+			int returnCode = dialog.open();
+			if (returnCode == IDialogConstants.OK_ID) {
+				CrucibleCachedRepository crucibleRepository = dialog.getSelection();
+				repositoryMappings.put(repository, crucibleRepository);
+				repositoriesMappingViewer.setInput(repositoryMappings);
+			}
+		}
+		validatePage();
 	}
 
 	/*
@@ -663,7 +685,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				public void run() {
 					updateChangesets(null, 0);
 					selectedTreeViewer.setInput(selectedLogEntries);
-					updateCombos();
 					validatePage();
 				}
 			});
@@ -719,7 +740,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			}
 			selectedTreeViewer.setInput(selectedLogEntries);
 			repositoriesMappingViewer.setInput(selectedLogEntries);
-			updateCombos();
 			selectedTreeViewer.setExpandedElements(expandedRepositories.toArray());
 		}
 		validatePage();

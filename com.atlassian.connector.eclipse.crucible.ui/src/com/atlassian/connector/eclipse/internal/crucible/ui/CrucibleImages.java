@@ -71,6 +71,10 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor REPOSITORY = create(T_OBJ, "repository_rep.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor ADD_CHANGESET = create(T_OBJ, "add_changeset.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor ADD_PATCH = create(T_OBJ, "add_patch.gif"); //$NON-NLS-1$
+
 	private CrucibleImages() {
 		// ignore
 	}

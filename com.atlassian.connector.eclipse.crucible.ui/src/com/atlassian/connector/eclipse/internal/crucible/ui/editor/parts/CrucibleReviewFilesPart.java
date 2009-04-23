@@ -11,8 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard.Type;
 import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -21,11 +24,15 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -133,6 +140,36 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	@Override
 	protected void fillToolBar(ToolBarManager barManager) {
+		Action addChangesetAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewWizard wizard = new CrucibleReviewWizard(crucibleReview, Type.ADD_CHANGESET);
+				WizardDialog wd = new WizardDialog(TasksUiInternal.getShell(), wizard);
+				wd.setBlockOnOpen(true);
+				wd.open();
+			}
+		};
+		addChangesetAction.setText("Add changesets...");
+		addChangesetAction.setToolTipText("Add changesets to the Review.");
+		addChangesetAction.setImageDescriptor(CrucibleImages.ADD_CHANGESET);
+		barManager.add(addChangesetAction);
+
+		Action addPatchAction = new Action() {
+			@Override
+			public void run() {
+				CrucibleReviewWizard wizard = new CrucibleReviewWizard(crucibleReview, Type.ADD_PATCH);
+				WizardDialog wd = new WizardDialog(TasksUiInternal.getShell(), wizard);
+				wd.setBlockOnOpen(true);
+				wd.open();
+			}
+		};
+		addPatchAction.setText("Add Patch...");
+		addPatchAction.setToolTipText("Add a patch to the Review");
+		addPatchAction.setImageDescriptor(CrucibleImages.ADD_PATCH);
+		barManager.add(addPatchAction);
+
+		barManager.add(new Separator());
+
 		super.fillToolBar(barManager);
 	}
 

@@ -16,7 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleCustomFilterPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleNamedFilterPage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPage;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.NewCrucibleReviewWizard;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
@@ -49,7 +49,7 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository, ITaskMapping selection) {
-		return new NewCrucibleReviewWizard(taskRepository, null);
+		return new CrucibleReviewWizard(taskRepository, null);
 	}
 
 	@Override

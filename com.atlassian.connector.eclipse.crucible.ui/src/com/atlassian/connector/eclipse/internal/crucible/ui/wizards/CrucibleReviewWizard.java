@@ -59,7 +59,11 @@ import java.util.TreeSet;
  * 
  * @author Thomas Ehrnhoefer
  */
-public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard {
+public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
+
+	public enum Type {
+		EMPTY, ADD_CHANGESET, ADD_PATCH, ALL, UNDEFINED;
+	}
 
 	private class AddFilesAndPatchesToReviewJob extends CrucibleReviewChangeJob {
 		private final Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
@@ -80,33 +84,35 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		@Override
 		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 			try {
-				createdReview = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+				crucibleReview = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
 					@Override
 					public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						//add revisions
-						for (CustomRepository customRepository : selectedLogEntries.keySet()) {
-							monitor.beginTask("Adding revisions to repository " + customRepository.getUrl(),
-									selectedLogEntries.get(customRepository).size());
-							//collect revisions
-							ArrayList<String> revisions = new ArrayList<String>();
-							for (ICustomChangesetLogEntry logEntry : selectedLogEntries.get(customRepository)) {
-								revisions.add(logEntry.getRevision());
+						if (selectedLogEntries != null) {
+							for (CustomRepository customRepository : selectedLogEntries.keySet()) {
+								monitor.beginTask("Adding revisions to repository " + customRepository.getUrl(),
+										selectedLogEntries.get(customRepository).size());
+								//collect revisions
+								ArrayList<String> revisions = new ArrayList<String>();
+								for (ICustomChangesetLogEntry logEntry : selectedLogEntries.get(customRepository)) {
+									revisions.add(logEntry.getRevision());
+								}
+								//add revisions to review
+								crucibleReview = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(),
+										addChangeSetsPage.getRepositoryMappings().get(customRepository).getName(),
+										revisions);
+								changesetsAddedToReview = true;
 							}
-							//add revisions to review
-							createdReview = server.addRevisionsToReview(serverCfg, createdReview.getPermId(),
-									addChangeSetsPage.getRepositoryMappings().get(customRepository).getName(),
-									revisions);
-							changesetsAddedToReview = true;
 						}
 						//add patch
 						if (patch != null && patch.length() > 0 && patchRepository != null
 								&& patchRepository.length() > 0 && !patchAddedToReview) {
-							createdReview = server.addPatchToReview(serverCfg, createdReview.getPermId(),
+							crucibleReview = server.addPatchToReview(serverCfg, crucibleReview.getPermId(),
 									patchRepository, patch);
 							patchAddedToReview = true;
 						}
-						return createdReview;
+						return crucibleReview;
 					}
 				});
 			} catch (final CoreException e) {
@@ -119,8 +125,17 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 				});
 				throw e;
 			}
-			createdReview = client.getReview(getTaskRepository(),
-					CrucibleUtil.getTaskIdFromReview(detailsPage.getReview()), true, monitor);
+			String taskID;
+			if (crucibleReview != null) {
+				taskID = CrucibleUtil.getTaskIdFromReview(crucibleReview);
+			} else if (detailsPage != null) {
+				taskID = CrucibleUtil.getTaskIdFromReview(detailsPage.getReview());
+			} else {
+				taskID = null;
+			}
+			if (taskID != null) {
+				crucibleReview = client.getReview(getTaskRepository(), taskID, true, monitor);
+			}
 			return Status.OK_STATUS;
 		}
 	}
@@ -131,7 +146,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 
 	private CrucibleReviewDetailsPage detailsPage;
 
-	private Review createdReview;
+	private Review crucibleReview;
 
 	private String creationProcessFailedMessage;
 
@@ -149,6 +164,10 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 
 	private String patchToAdd;
 
+	private Type wizardType = Type.UNDEFINED;
+
+	private CrucibleTypeSelectionPage typeSelectionPage;
+
 //	public NewCrucibleReviewWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
 //		super(taskRepository, taskSelection);
 //		setWindowTitle("New");
@@ -156,12 +175,18 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 //		this.preselectedLogEntries = new TreeSet<ICustomChangesetLogEntry>();
 //	}
 
-	public NewCrucibleReviewWizard(TaskRepository taskRepository, SortedSet<ICustomChangesetLogEntry> selectedLogEntries) {
+	public CrucibleReviewWizard(TaskRepository taskRepository, SortedSet<ICustomChangesetLogEntry> selectedLogEntries) {
 		super(taskRepository, null);
 		setWindowTitle("New");
 		setNeedsProgressMonitor(true);
 		this.preselectedLogEntries = selectedLogEntries == null ? new TreeSet<ICustomChangesetLogEntry>()
 				: selectedLogEntries;
+	}
+
+	public CrucibleReviewWizard(Review review, Type type) {
+		this(CrucibleUiUtil.getCrucibleTaskRepository(review), null);
+		this.crucibleReview = review;
+		wizardType = type;
 	}
 
 	@Override
@@ -178,18 +203,30 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 
 	@Override
 	public void addPages() {
-		detailsPage = new CrucibleReviewDetailsPage(getTaskRepository());
-		addPage(detailsPage);
+		typeSelectionPage = new CrucibleTypeSelectionPage(getTaskRepository());
+		addPage(typeSelectionPage);
+		//only add details page if review is not already existing
+		if (crucibleReview == null) {
+			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository());
+			addPage(detailsPage);
+		}
+		if (wizardType == Type.UNDEFINED) {
+			wizardType = Type.ALL;
+		}
 		/*
 		 * The addFilesPage is disabled because adding files to a review is not supported by API.
 		 */
 //		addFilesPage = new CrucibleAddFilesPage(getTaskRepository());
-//		addPage(addFilesPage);
-		addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository(), preselectedLogEntries);
-		addPage(addChangeSetsPage);
+//		(addFilesPage);
+		if (wizardType == Type.ADD_CHANGESET || wizardType == Type.ALL) {
+			addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository(), preselectedLogEntries);
+			addPage(addChangeSetsPage);
+		}
 
-		addPatchPage = new CrucibleAddPatchPage(getTaskRepository());
-		addPage(addPatchPage);
+		if (wizardType == Type.ADD_PATCH || wizardType == Type.ALL) {
+			addPatchPage = new CrucibleAddPatchPage(getTaskRepository());
+			addPage(addPatchPage);
+		}
 	}
 
 	private boolean patchAlreadyAdded() {
@@ -204,6 +241,35 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 	}
 
 	@Override
+	public IWizardPage getNextPage(IWizardPage page) {
+		if (page instanceof CrucibleTypeSelectionPage) {
+			wizardType = ((CrucibleTypeSelectionPage) page).getType();
+			return detailsPage;
+		}
+		if (page instanceof CrucibleReviewDetailsPage) {
+			if (wizardType == Type.ADD_CHANGESET || wizardType == Type.ALL) {
+				return addChangeSetsPage;
+			} else if (wizardType == Type.ADD_PATCH) {
+				return addPatchPage;
+			}
+			return null;
+		}
+		if (page instanceof CrucibleAddChangesetsPage) {
+			if (wizardType == Type.ALL) {
+				return addPatchPage;
+			}
+			return null;
+		}
+		return super.getNextPage(page);
+	}
+
+	@Override
+	public IWizardPage getPreviousPage(IWizardPage page) {
+		// ignore
+		return super.getPreviousPage(page);
+	}
+
+	@Override
 	public boolean performFinish() {
 		creationProcessFailedMessage = null;
 		IWizardPage currentPage = getContainer().getCurrentPage();
@@ -211,9 +277,9 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 			((WizardPage) currentPage).setErrorMessage(null);
 		}
 		//create review if not yet done
-		if (createdReview == null) {
+		if (crucibleReview == null) {
 			createReview();
-			if (createdReview == null) {
+			if (crucibleReview == null) {
 				if (currentPage instanceof WizardPage) {
 					((WizardPage) currentPage).setErrorMessage(creationProcessFailedMessage);
 				}
@@ -225,9 +291,13 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		if (!patchAlreadyAdded()) {
 			patchAddedToReview = false;
 		}
-		patchToAdd = addPatchPage.hasPatch() ? null : addPatchPage.getPatch();
-		patchRepositoryToAdd = addPatchPage.hasPatch() ? null : addPatchPage.getPatchRepository();
-		changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
+		if (addPatchPage != null) {
+			patchToAdd = addPatchPage.hasPatch() ? addPatchPage.getPatch() : null;
+			patchRepositoryToAdd = addPatchPage.hasPatch() ? addPatchPage.getPatchRepository() : null;
+		}
+		if (addChangeSetsPage != null) {
+			changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
+		}
 		addFilesAndPatchToReview(changesetsToAdd, patchToAdd, patchRepositoryToAdd);
 
 		if (creationProcessFailedMessage != null) {
@@ -240,9 +310,9 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 		final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				final ITask task = TasksUi.getRepositoryModel().createTask(getTaskRepository(),
-						CrucibleUtil.getTaskIdFromPermId(createdReview.getPermId().getId()));
+						CrucibleUtil.getTaskIdFromPermId(crucibleReview.getPermId().getId()));
 				try {
-					TaskData taskData = CrucibleUiUtil.getClient(createdReview).getTaskData(getTaskRepository(),
+					TaskData taskData = CrucibleUiUtil.getClient(crucibleReview).getTaskData(getTaskRepository(),
 							task.getTaskId(), monitor);
 					CrucibleCorePlugin.getRepositoryConnector().updateTaskFromTaskData(getTaskRepository(), task,
 							taskData);
@@ -265,13 +335,13 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 			}
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error opening review", e));
 		}
-		return createdReview != null && creationProcessFailedMessage == null;
+		return crucibleReview != null && creationProcessFailedMessage == null;
 	}
 
 	private void addFilesAndPatchToReview(
 			final Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries, final String patch,
 			final String patchRepository) {
-		if (selectedLogEntries.size() == 0 && patch == null) {
+		if ((selectedLogEntries == null || selectedLogEntries.size() == 0) && patch == null) {
 			return;
 		}
 		final AddFilesAndPatchesToReviewJob job = new AddFilesAndPatchesToReviewJob("Add revisions to review",
@@ -296,7 +366,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 				try {
-					createdReview = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+					crucibleReview = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
 						@Override
 						public Review run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
 								IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
@@ -318,7 +388,7 @@ public class NewCrucibleReviewWizard extends NewTaskWizard implements INewWizard
 					});
 					throw e;
 				}
-				createdReview = client.getReview(getTaskRepository(),
+				crucibleReview = client.getReview(getTaskRepository(),
 						CrucibleUtil.getTaskIdFromReview(detailsPage.getReview()), true, monitor);
 				return Status.OK_STATUS;
 			}

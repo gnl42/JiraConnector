@@ -75,7 +75,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 		includePatchButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-
+				String s = patchText.getText();
 				includePatch = includePatchButton.getSelection();
 				validatePage();
 			}

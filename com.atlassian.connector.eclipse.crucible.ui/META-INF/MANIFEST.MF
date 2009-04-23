@@ -24,13 +24,13 @@ Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleU
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.ui;x-internal:=true,
- com.atlassian.connector.eclipse.internal.crucible.ui.actions,
- com.atlassian.connector.eclipse.internal.crucible.ui.annotations,
+ com.atlassian.connector.eclipse.internal.crucible.ui.actions;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.annotations;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.commons;x-internal:=true,
- com.atlassian.connector.eclipse.internal.crucible.ui.dialogs,
- com.atlassian.connector.eclipse.internal.crucible.ui.editor,
- com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts,
- com.atlassian.connector.eclipse.internal.crucible.ui.notifications,
- com.atlassian.connector.eclipse.internal.crucible.ui.operations,
+ com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.editor;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.notifications;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.operations;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.wizards;x-internal:=true
 Bundle-Vendor: Atlassian

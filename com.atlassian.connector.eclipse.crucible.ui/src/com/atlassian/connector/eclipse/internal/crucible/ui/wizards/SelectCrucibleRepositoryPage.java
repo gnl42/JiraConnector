@@ -44,6 +44,6 @@ public class SelectCrucibleRepositoryPage extends SelectRepositoryPage {
 	}
 
 	protected IWizard createWizard(TaskRepository taskRepository) {
-		return new NewCrucibleReviewWizard(taskRepository, logEntries);
+		return new CrucibleReviewWizard(taskRepository, logEntries);
 	}
 }

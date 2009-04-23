@@ -14,5 +14,5 @@ Require-Bundle: org.junit,
  com.atlassian.connector.eclipse.bamboo.core,
  com.atlassian.connector.eclipse.bamboo.tests,
  com.atlassian.connector.eclipse.bamboo.ui
-Export-Package: com.atlassian.connector.eclipse
+Export-Package: com.atlassian.connector.eclipse;x-internal:=true
 Bundle-Vendor: Atlassian
