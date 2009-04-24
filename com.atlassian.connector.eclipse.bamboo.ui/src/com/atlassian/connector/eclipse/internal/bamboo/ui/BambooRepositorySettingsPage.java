@@ -54,8 +54,6 @@ import java.util.Set;
  * Wizard page for configuring a Bamboo repository.
  * 
  * @author Shawn Minto
- */
-/**
  * @author thomas
  */
 public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage {
