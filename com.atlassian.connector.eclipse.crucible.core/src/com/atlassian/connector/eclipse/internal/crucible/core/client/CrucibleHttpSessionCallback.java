@@ -11,10 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
-import com.atlassian.theplugin.commons.cfg.Server;
-import com.atlassian.theplugin.commons.cfg.ServerCfg;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
@@ -34,12 +32,13 @@ import java.util.Map;
  * An implementation of HttpSessionCallback that can handle setting the HttpClient information on a per-server basis
  * 
  * @author Shawn Minto
+ * @author Wojciech Seliga
  */
 public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 
-	private final Map<CrucibleServerCfg, HttpClient> httpClients = new HashMap<CrucibleServerCfg, HttpClient>();
+	private final Map<ServerData, HttpClient> httpClients = new HashMap<ServerData, HttpClient>();
 
-	private final Map<String, CrucibleServerCfg> locations = new HashMap<String, CrucibleServerCfg>();
+	private final Map<String, ServerData> locations = new HashMap<String, ServerData>();
 
 	private final IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
 
@@ -47,7 +46,7 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 		idleConnectionTimeoutThread.start();
 	}
 
-	public synchronized HttpClient getHttpClient(Server server) throws HttpProxySettingsException {
+	public synchronized HttpClient getHttpClient(ServerData server) throws HttpProxySettingsException {
 		HttpClient httpClient = httpClients.get(server);
 
 		// TODO handle the case where we dont have a client initialized
@@ -60,7 +59,7 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 		// we don't need to do anything here right now	
 	}
 
-	public synchronized void removeClient(ServerCfg server) {
+	public synchronized void removeClient(ServerData server) {
 		HttpClient client = httpClients.remove(server);
 		if (client != null) {
 			shutdown(client);
@@ -68,13 +67,13 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 	}
 
 	public synchronized void removeClient(AbstractWebLocation location) {
-		ServerCfg server = locations.remove(location.getUrl());
+		ServerData server = locations.remove(location.getUrl());
 		if (server != null) {
 			removeClient(server);
 		}
 	}
 
-	public synchronized void updateHostConfiguration(AbstractWebLocation location, CrucibleServerCfg serverCfg) {
+	public synchronized void updateHostConfiguration(AbstractWebLocation location, ServerData serverCfg) {
 		HttpClient httpClient = httpClients.get(serverCfg);
 		if (httpClient == null) {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());

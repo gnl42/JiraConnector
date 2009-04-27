@@ -11,10 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core.client;
 
-import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
-import com.atlassian.theplugin.commons.cfg.Server;
-import com.atlassian.theplugin.commons.cfg.ServerCfg;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
@@ -34,23 +32,24 @@ import java.util.Map;
  * An implementation of HttpSessionCallback that can handle setting the HttpClient information on a per-server basis
  * 
  * @author Shawn Minto
+ * @author Wojciech Seliga
  */
 public class BambooHttpSessionCallback implements HttpSessionCallback {
 
-	private final Map<ServerCfg, HttpClient> httpClients;
+	/** synchronized on this BambooHttpSessionCallback */
+	private final Map<ServerData, HttpClient> httpClients = new HashMap<ServerData, HttpClient>();
 
 	private final MultiThreadedHttpConnectionManager connectionManager;
 
 	private final IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
 
 	public BambooHttpSessionCallback() {
-		this.httpClients = new HashMap<ServerCfg, HttpClient>();
 		this.connectionManager = new MultiThreadedHttpConnectionManager();
 		WebUtil.addConnectionManager(connectionManager);
 		idleConnectionTimeoutThread.start();
 	}
 
-	public synchronized HttpClient getHttpClient(Server server) throws HttpProxySettingsException {
+	public synchronized HttpClient getHttpClient(ServerData server) throws HttpProxySettingsException {
 		HttpClient httpClient = httpClients.get(server);
 
 		// TODO handle the case where we dont have a client initialized
@@ -63,14 +62,14 @@ public class BambooHttpSessionCallback implements HttpSessionCallback {
 		// we don't need to do anything here right now	
 	}
 
-	public synchronized void removeClient(ServerCfg serverCfg) {
+	public synchronized void removeClient(ServerData serverCfg) {
 		HttpClient client = httpClients.remove(serverCfg);
 		if (client != null) {
 			shutdown(client);
 		}
 	}
 
-	public synchronized HttpClient initialize(AbstractWebLocation location, ServerCfg serverCfg) {
+	public synchronized HttpClient initialize(AbstractWebLocation location, ServerData serverCfg) {
 		HttpClient httpClient = httpClients.get(serverCfg);
 		if (httpClient == null) {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
@@ -95,7 +94,7 @@ public class BambooHttpSessionCallback implements HttpSessionCallback {
 		}
 	}
 
-	public synchronized void updateHostConfiguration(AbstractWebLocation location, BambooServerCfg serverCfg) {
+	public synchronized void updateHostConfiguration(AbstractWebLocation location, ServerData serverCfg) {
 		HttpClient httpClient = httpClients.get(serverCfg);
 		if (httpClient == null) {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());

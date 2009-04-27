@@ -23,7 +23,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ReviewerSelectionDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -33,6 +32,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -121,7 +121,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 								"Failed to set reviewers", null);
 						client.execute(new RemoteOperation<Object>(monitor, repository) {
 							@Override
-							public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
+							public Object run(CrucibleServerFacade server, ServerData serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
 								try {
@@ -248,7 +248,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		Control control;
 		if (readOnly) {
-			final Text text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
+			final Text text = new Text(parent, SWT.READ_ONLY);
 			text.setFont(JFaceResources.getTextFont());
 			text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 			text.setText(selectedUser.getDisplayName());
@@ -281,8 +281,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			comboViewer.setSelection(new StructuredSelection(new CrucibleCachedUser(selectedUser)));
 			control = combo;
 		}
-		control.setBackground(toolkit.getColors().getBackground());
-		control.setForeground(toolkit.getColors().getForeground());
 		control.setFont(JFaceResources.getDefaultFont());
 		control.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		toolkit.adapt(control, true, true);
@@ -360,7 +358,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersSection);
 		participantsComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(2).create());
-		GridDataFactory.fillDefaults().grab(true, false).hint(250, -1).applyTo(participantsComp);
+		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(participantsComp);
 		reviewersSection.setClient(participantsComp);
 
 		Section objectivesSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE

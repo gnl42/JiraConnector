@@ -51,6 +51,7 @@ public class CrucibleReviewersPart {
 		this.reviewers = reviewers;
 	}
 
+	// ??? unused?
 	public Composite createControl(FormToolkit toolkit, Composite parent) {
 		return createControl(toolkit, parent, "Reviewers:   ");
 	}
@@ -102,28 +103,28 @@ public class CrucibleReviewersPart {
 
 			Iterator<Reviewer> iterator = reviewers.iterator();
 			while (iterator.hasNext()) {
-				Composite singleReviewersComposite = createComposite(toolkit, reviewersComposite);
-				singleReviewersComposite.setLayout(GridLayoutFactory.fillDefaults()
-						.numColumns(3)
-						.spacing(0, 0)
-						.create());
+				final Reviewer reviewer = iterator.next();
+				final Composite singleReviewersComposite = createComposite(toolkit, reviewersComposite);
+				singleReviewersComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(
+						reviewer.isCompleted() ? 3 : 2).spacing(0, 0).margins(0, 0).create());
 
-				Reviewer reviewer = iterator.next();
 				Text text = createReadOnlyText(toolkit, singleReviewersComposite, reviewer.getDisplayName(), null,
 						false);
 				GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(text);
 				text.setBackground(parent.getBackground());
+//				text.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_CYAN));
 
 				if (reviewer.isCompleted()) {
-					Label imageLabel = createLabelControl(toolkit, singleReviewersComposite, "");
+					Label imageLabel = createLabelControl(toolkit, singleReviewersComposite, "fsdfssdfds");
 					imageLabel.setImage(CrucibleImages.getImage(CrucibleImages.REVIEWER_COMPLETE));
-					GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(imageLabel);
+					GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).indent(2, 0).applyTo(imageLabel);
 				}
 
 				if (iterator.hasNext()) {
 					Label label = createLabelControl(toolkit, singleReviewersComposite, ", ");
 					GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
 					label.setBackground(parent.getBackground());
+					//				label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_MAGENTA));
 				}
 			}
 			GridDataFactory.fillDefaults().hint(250, SWT.DEFAULT).grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(
@@ -175,7 +176,7 @@ public class CrucibleReviewersPart {
 		if (isMultiline) {
 			style |= SWT.MULTI | SWT.WRAP;
 		}
-		Text text = new Text(composite, style);
+		Text text = new Text(composite, style | SWT.MULTI);
 		text.setFont(EditorUtil.TEXT_FONT);
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);

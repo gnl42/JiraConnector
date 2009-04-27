@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.swt.widgets.Shell;
@@ -27,8 +27,8 @@ public class RemoveCommentAction extends AbstractBackgroundJobReviewAction {
 	public RemoveCommentAction(final Review review, final Comment comment, Shell shell) {
 		super("Remove Comment", review, comment, shell, "Removing a comment from review " + review.getPermId().getId(),
 				CommonImages.REMOVE, new CrucibleRemoteOperation() {
-					public void run(CrucibleServerFacade server, CrucibleServerCfg serverCfg)
-							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+					public void run(CrucibleServerFacade server, ServerData serverCfg) throws CrucibleLoginException,
+							RemoteApiException, ServerPasswordNotProvidedException {
 						server.removeComment(serverCfg, review.getPermId(), comment);
 					}
 				});

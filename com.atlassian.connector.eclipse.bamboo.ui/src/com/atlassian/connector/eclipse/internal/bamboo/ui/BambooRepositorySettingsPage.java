@@ -75,7 +75,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 				client.validate(monitor, taskRepository);
 			} finally {
 				if (client != null) {
-					clientManager.deleteTempClient(client);
+					clientManager.deleteTempClient(client.getServerCfg());
 				}
 			}
 		}
@@ -315,15 +315,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			CommonsUiUtil.run(getContainer(), new ICoreRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-					BambooClient client = null;
-					try {
-						client = clientManager.getClient(repository);
-						data[0] = client.updateRepositoryData(monitor, repository);
-					} finally {
-						if (client != null) {
-							clientManager.deleteTempClient(client);
-						}
-					}
+					final BambooClient client = clientManager.getClient(repository);
+					data[0] = client.updateRepositoryData(monitor, repository);
 				}
 			});
 

@@ -67,7 +67,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 				client.validate(monitor, taskRepository);
 			} finally {
 				if (client != null) {
-					clientManager.deleteTempClient(client);
+					clientManager.deleteTempClient(client.getServerData());
 				}
 			}
 		}

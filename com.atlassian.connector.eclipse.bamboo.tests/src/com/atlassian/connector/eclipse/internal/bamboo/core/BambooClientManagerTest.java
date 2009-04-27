@@ -11,14 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
-import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
-import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
-import com.atlassian.connector.eclipse.internal.bamboo.core.configuration.EclipseBambooServerCfg;
-import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
+import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerCfg;
+
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -32,7 +30,7 @@ public class BambooClientManagerTest extends TestCase {
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
 				false);
 		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();
-		BambooServerCfg serverConfiguration = getServerCfg(bambooClientManager.getTaskRepositoryLocationFactory()
+		ServerData serverConfiguration = getServerCfg(bambooClientManager.getTaskRepositoryLocationFactory()
 				.createWebLocation(repository), repository, false);
 		bambooClientManager.getClient(repository);
 		HttpClient httpClient = null;
@@ -58,7 +56,7 @@ public class BambooClientManagerTest extends TestCase {
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
 				false);
 		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();
-		BambooServerCfg serverConfiguration = getServerCfg(bambooClientManager.getTaskRepositoryLocationFactory()
+		ServerData serverConfiguration = getServerCfg(bambooClientManager.getTaskRepositoryLocationFactory()
 				.createWebLocation(repository), repository, false);
 		bambooClientManager.getClient(repository);
 		HttpClient httpClient = null;
@@ -81,40 +79,5 @@ public class BambooClientManagerTest extends TestCase {
 		}
 		assertNotNull(httpClient2);
 		assertFalse(httpClient == httpClient2);
-	}
-
-	public void testCreateDeleteTempClient() {
-		TaskRepository repository = new TaskRepository(BambooCorePlugin.CONNECTOR_KIND, "http://studio.atlassian.com");
-		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
-				false);
-		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();
-		BambooClient client1 = bambooClientManager.createTempClient(repository, new BambooClientData());
-		assertNotNull(client1);
-		BambooClient client2 = bambooClientManager.createTempClient(repository, new BambooClientData());
-		assertNotNull(client2);
-		assertFalse(client1 == client2);
-		assertTrue(bambooClientManager.getTempClients().containsKey(client1));
-		assertTrue(bambooClientManager.getTempClients().containsKey(client2));
-		bambooClientManager.deleteTempClient(client1);
-		assertFalse(bambooClientManager.getTempClients().containsKey(client1));
-		bambooClientManager.deleteTempClient(client2);
-		assertFalse(bambooClientManager.getTempClients().containsKey(client2));
-		bambooClientManager.deleteTempClient(null);
-	}
-
-	private BambooServerCfg getServerCfg(AbstractWebLocation location, TaskRepository taskRepository,
-			boolean isTemporary) {
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		String username = "";
-		String password = "";
-		if (credentials != null) {
-			username = credentials.getUserName();
-			password = credentials.getPassword();
-		}
-		EclipseBambooServerCfg config = new EclipseBambooServerCfg(taskRepository.getRepositoryLabel(),
-				location.getUrl(), isTemporary);
-		config.setUsername(username);
-		config.setPassword(password);
-		return config;
 	}
 }

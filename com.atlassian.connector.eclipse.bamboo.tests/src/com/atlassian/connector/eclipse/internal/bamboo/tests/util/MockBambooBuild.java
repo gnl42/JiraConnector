@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.tests.util;
 
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
-import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import java.util.Date;
 import java.util.Set;
@@ -35,12 +35,10 @@ public class MockBambooBuild implements BambooBuild {
 	}
 
 	public Date getCompletionDate() {
-		// ignore
 		return null;
 	}
 
 	public String getDurationDescription() {
-		// ignore
 		return null;
 	}
 
@@ -49,12 +47,10 @@ public class MockBambooBuild implements BambooBuild {
 	}
 
 	public String getPlanName() {
-		// ignore
 		return null;
 	}
 
 	public int getNumber() throws UnsupportedOperationException {
-		// ignore
 		return 0;
 	}
 
@@ -64,57 +60,42 @@ public class MockBambooBuild implements BambooBuild {
 	}
 
 	public String getRelativeBuildDate() {
-		// ignore
 		return null;
 	}
 
 	public String getResultUrl() {
-		// ignore
 		return null;
 	}
 
 	public Date getStartDate() {
-		// ignore
 		return null;
 	}
 
 	public String getTestSummary() {
-		// ignore
 		return null;
 	}
 
 	public String getBuildUrl() {
-		// ignore
 		return null;
 	}
 
 	public Set<String> getCommiters() {
-		// ignore
 		return null;
 	}
 
 	public boolean getEnabled() {
-		// ignore
 		return false;
 	}
 
 	public String getErrorMessage() {
-		// ignore
 		return null;
 	}
 
 	public Date getPollingTime() {
-		// ignore
 		return null;
 	}
 
 	public String getProjectName() {
-		// ignore
-		return null;
-	}
-
-	public BambooServerCfg getServer() {
-		// ignore
 		return null;
 	}
 
@@ -123,28 +104,27 @@ public class MockBambooBuild implements BambooBuild {
 	}
 
 	public BuildStatus getStatus() {
-		// ignore
 		return null;
 	}
 
 	public int getTestsFailed() {
-		// ignore
 		return 0;
 	}
 
 	public int getTestsPassed() {
-		// ignore
 		return 0;
 	}
 
 	public boolean isMyBuild() {
-		// ignore
 		return false;
 	}
 
 	public boolean isValid() {
-		// ignore
 		return false;
+	}
+
+	public ServerData getServer() {
+		return null;
 	}
 
 }

@@ -15,13 +15,13 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,7 +49,7 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 	private final CrucibleRemoteOperation remoteOperation;
 
 	protected interface CrucibleRemoteOperation {
-		void run(CrucibleServerFacade crucibleServerFacade, CrucibleServerCfg crucibleServerCfg)
+		void run(CrucibleServerFacade crucibleServerFacade, ServerData crucibleServerCfg)
 				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
 	}
 
@@ -113,7 +113,7 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 				crucibleClient.execute(new CrucibleClient.RemoteOperation<Void>(monitor, getTaskRepository()) {
 
 					@Override
-					public Void run(CrucibleServerFacade server, CrucibleServerCfg serverCfg, IProgressMonitor monitor)
+					public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						remoteOperation.run(server, serverCfg);
 						return null;

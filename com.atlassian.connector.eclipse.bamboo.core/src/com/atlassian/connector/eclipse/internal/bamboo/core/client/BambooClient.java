@@ -17,10 +17,10 @@ import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.bamboo.BambooServerFacade;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
-import com.atlassian.theplugin.commons.cfg.BambooServerCfg;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,6 +41,7 @@ import java.util.Collection;
  * Bridge between Mylyn and the ACC API's
  * 
  * @author Shawn Minto
+ * @author Wojciech Seliga
  */
 public class BambooClient {
 
@@ -48,7 +49,7 @@ public class BambooClient {
 
 	private final AbstractWebLocation location;
 
-	private final BambooServerCfg serverCfg;
+	private ServerData serverCfg;
 
 	private final BambooServerFacade server;
 
@@ -69,12 +70,16 @@ public class BambooClient {
 
 	}
 
-	public BambooClient(AbstractWebLocation location, BambooServerCfg serverCfg, BambooServerFacade server,
+	public BambooClient(AbstractWebLocation location, ServerData serverCfg, BambooServerFacade server,
 			BambooClientData data) {
 		this.location = location;
 		this.clientData = data;
 		this.serverCfg = serverCfg;
 		this.server = server;
+	}
+
+	public ServerData getServerCfg() {
+		return serverCfg;
 	}
 
 	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
@@ -123,11 +128,9 @@ public class BambooClient {
 		if (credentials != null) {
 			String newUserName = taskrepository.getCredentials(AuthenticationType.REPOSITORY).getUserName();
 			String newPassword = taskrepository.getCredentials(AuthenticationType.REPOSITORY).getPassword();
-			serverCfg.setUsername(newUserName);
-			serverCfg.setPassword(newPassword);
+			serverCfg = new ServerData(serverCfg.getName(), serverCfg.getServerId(), newUserName, newPassword,
+					serverCfg.getUrl());
 		}
-		serverCfg.setPlans(BambooUtil.getSubscribedPlans(taskrepository));
-		serverCfg.setUseFavourites(false);
 	}
 
 	public boolean hasRepositoryData() {
@@ -154,14 +157,15 @@ public class BambooClient {
 		return clientData;
 	}
 
-	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, TaskRepository taskRepository,
+	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, final TaskRepository taskRepository,
 			boolean promptForCredentials) throws CoreException {
 		return execute(new RemoteOperation<Collection<BambooBuild>>(monitor) {
 			@Override
 			public Collection<BambooBuild> run(IProgressMonitor monitor) throws CrucibleLoginException,
 					RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving builds");
-				return server.getSubscribedPlansResults(serverCfg);
+				return server.getSubscribedPlansResults(serverCfg, BambooUtil.getSubscribedPlans(taskRepository),
+						false, 0);
 			}
 		}, taskRepository, promptForCredentials);
 	}

@@ -15,7 +15,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooHttpSessionCallback;
-import com.atlassian.theplugin.commons.cfg.ServerCfg;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
@@ -39,25 +39,21 @@ public class MockBambooClientManager extends BambooClientManager {
 
 	@Override
 	protected BambooClient createClient(TaskRepository taskRepository, BambooClientData data) {
-		// ignore
 		return null;
 	}
 
 	@Override
 	protected BambooClientData createRepositoryConfiguration() {
-		// ignore
 		return null;
 	}
 
 	@Override
 	public BambooClient createTempClient(TaskRepository taskRepository, BambooClientData data) {
-		// ignore
 		return null;
 	}
 
 	@Override
-	public void deleteTempClient(BambooClient client) {
-		// ignore
+	public void deleteTempClient(ServerData client) {
 	}
 
 	@Override
@@ -67,60 +63,50 @@ public class MockBambooClientManager extends BambooClientManager {
 
 	@Override
 	public BambooHttpSessionCallback getClientCallback() {
-		// ignore
 		return null;
 	}
 
 	@Override
 	public TaskRepositoryLocationFactory getTaskRepositoryLocationFactory() {
-		// ignore
 		return null;
 	}
 
-	@Override
-	public Map<BambooClient, ServerCfg> getTempClients() {
-		// ignore
-		return new HashMap<BambooClient, ServerCfg>();
-	}
+//	@Override
+//	public Map<BambooClient, ServerCfg> getTempClients() {
+//		// ignore
+//		return new HashMap<BambooClient, ServerCfg>();
+//	}
 
 	@Override
 	public synchronized void repositoryRemoved(TaskRepository repository) {
-		// ignore
 	}
 
 	@Override
 	public void readCache() {
-		// ignore
 	}
 
 	@Override
 	public void repositoriesRead() {
-		// ignore
 	}
 
 	@Override
 	public synchronized void repositoryAdded(TaskRepository repository) {
-		// ignore
 	}
 
 	@Override
 	public synchronized void repositorySettingsChanged(TaskRepository repository) {
-		// ignore
 	}
 
 	@Override
 	public void repositoryUrlChanged(TaskRepository repository, String oldUrl) {
-		// ignore
 	}
 
 	@Override
 	public void setTaskRepositoryLocationFactory(TaskRepositoryLocationFactory taskRepositoryLocationFactory) {
-		// ignore
 	}
 
 	@Override
 	public void writeCache() {
-		// ignore
 	}
 
 	public void addClient(MockBambooClient client, TaskRepository repository) {

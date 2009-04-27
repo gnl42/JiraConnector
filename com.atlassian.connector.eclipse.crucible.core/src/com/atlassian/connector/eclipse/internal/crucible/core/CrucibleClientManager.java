@@ -11,26 +11,22 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerCfg;
+
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleHttpSessionCallback;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
-import com.atlassian.connector.eclipse.internal.crucible.core.configuration.EclipseCrucibleServerCfg;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
-import com.atlassian.theplugin.commons.cfg.ServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacadeImpl;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
-import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
-import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Class to manage the clients and data on a per-repository basis
@@ -38,9 +34,6 @@ import java.util.Map;
  * @author Shawn Minto
  */
 public class CrucibleClientManager extends RepositoryClientManager<CrucibleClient, CrucibleClientData> {
-
-	// list of clients used for validating credentials.  Should only be created through the RepositorySettingsPage
-	private final Map<CrucibleClient, ServerCfg> tempClients = new HashMap<CrucibleClient, ServerCfg>();
 
 	// the server facade
 	private CrucibleServerFacade crucibleServerFacade;
@@ -61,7 +54,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		CrucibleClient client = super.getClient(taskRepository);
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 		client.updateLocation(location);
-		CrucibleServerCfg serverCfg = getServerCfg(location, taskRepository, false);
+		ServerData serverCfg = getServerCfg(location, taskRepository, false);
 		updateHttpSessionCallback(location, serverCfg);
 
 		return client;
@@ -71,9 +64,9 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	protected CrucibleClient createClient(TaskRepository taskRepository, CrucibleClientData data) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
-		CrucibleServerCfg serverCfg = getServerCfg(location, taskRepository, false);
+		ServerData serverCfg = getServerCfg(location, taskRepository, false);
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
-		CrucibleServerFacade crucibleServer = getCrucibleServer(serverCfg, callback);
+		CrucibleServerFacade crucibleServer = getCrucibleServer(callback);
 
 		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager);
 	}
@@ -81,17 +74,14 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	public CrucibleClient createTempClient(TaskRepository taskRepository, CrucibleClientData data) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
-		CrucibleServerCfg serverCfg = getServerCfg(location, taskRepository, true);
+		ServerData serverCfg = getServerCfg(location, taskRepository, true);
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
-		CrucibleServerFacade crucibleServer = getCrucibleServer(serverCfg, callback);
+		CrucibleServerFacade crucibleServer = getCrucibleServer(callback);
 
-		CrucibleClient tempClient = new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager);
-		tempClients.put(tempClient, serverCfg);
-		return tempClient;
+		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager);
 	}
 
-	private synchronized CrucibleServerFacade getCrucibleServer(CrucibleServerCfg serverCfg,
-			HttpSessionCallback callback) {
+	private synchronized CrucibleServerFacade getCrucibleServer(HttpSessionCallback callback) {
 		if (crucibleServerFacade == null) {
 			crucibleServerFacade = CrucibleServerFacadeImpl.getInstance();
 			crucibleServerFacade.setCallback(callback);
@@ -99,9 +89,8 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		return crucibleServerFacade;
 	}
 
-	public void deleteTempClient(CrucibleClient client) {
-		ServerCfg serverCfg = tempClients.remove(client);
-		clientCallback.removeClient(serverCfg);
+	public void deleteTempClient(ServerData serverData) {
+		clientCallback.removeClient(serverData);
 	}
 
 	@Override
@@ -113,35 +102,13 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 
 	}
 
-	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, CrucibleServerCfg serverCfg) {
+	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, ServerData serverCfg) {
 		updateHttpSessionCallback(location, serverCfg);
 		return clientCallback;
 	}
 
-	private void updateHttpSessionCallback(AbstractWebLocation location, CrucibleServerCfg serverCfg) {
+	private void updateHttpSessionCallback(AbstractWebLocation location, ServerData serverCfg) {
 		clientCallback.updateHostConfiguration(location, serverCfg);
-	}
-
-	/**
-	 * public for testing
-	 */
-	public CrucibleServerCfg getServerCfg(AbstractWebLocation location, TaskRepository taskRepository,
-			boolean isTemporary) {
-
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		String username = "";
-		String password = "";
-		if (credentials != null) {
-			username = credentials.getUserName();
-			password = credentials.getPassword();
-		}
-
-		EclipseCrucibleServerCfg config = new EclipseCrucibleServerCfg(taskRepository.getRepositoryLabel(),
-				location.getUrl(), isTemporary);
-		config.setUsername(username);
-		config.setPassword(password);
-
-		return config;
 	}
 
 	@Override
@@ -166,15 +133,6 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	 */
 	public CrucibleHttpSessionCallback getClientCallback() {
 		return clientCallback;
-	}
-
-	/**
-	 * For testing purposes only
-	 * 
-	 * @return
-	 */
-	public Map<CrucibleClient, ServerCfg> getTempClients() {
-		return tempClients;
 	}
 
 	/**

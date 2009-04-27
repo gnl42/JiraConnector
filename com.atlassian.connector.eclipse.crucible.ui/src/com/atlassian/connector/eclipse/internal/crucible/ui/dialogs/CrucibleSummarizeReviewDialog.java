@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewersPart;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -29,6 +28,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -76,9 +76,8 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 					//post all drafts
 					RemoteOperation<Object> publishDraftsOp = new RemoteOperation<Object>(monitor, getTaskRepository()) {
 						@Override
-						public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg,
-								IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
-								ServerPasswordNotProvidedException {
+						public Object run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+								throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 							server.publishAllCommentsForReview(serverCfg, review.getPermId());
 							return null;
 						}
@@ -89,7 +88,7 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 				//summarize
 				RemoteOperation<Object> summarizeOp = new RemoteOperation<Object>(monitor, getTaskRepository()) {
 					@Override
-					public Object run(CrucibleServerFacade server, CrucibleServerCfg serverCfg, IProgressMonitor monitor)
+					public Object run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						// ignore
 						server.summarizeReview(serverCfg, review.getPermId());

@@ -11,11 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
-import com.atlassian.connector.eclipse.internal.crucible.core.configuration.EclipseCrucibleServerCfg;
-import com.atlassian.theplugin.commons.cfg.CrucibleServerCfg;
+import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerCfg;
+
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -44,7 +43,7 @@ public class CrucibleClientManagerTest extends TestCase {
 		CrucibleRepositoryConnector repoConnector = new CrucibleRepositoryConnector();
 		CrucibleClientManager clientManager = repoConnector.getClientManager();
 		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
-		CrucibleServerCfg serverCfg = getServerCfg(location, repo, false);
+		ServerData serverCfg = getServerCfg(location, repo, false);
 
 		clientManager.getClient(repo);
 		HttpClient httpClient1 = null;
@@ -76,7 +75,7 @@ public class CrucibleClientManagerTest extends TestCase {
 		CrucibleRepositoryConnector repoConnector = new CrucibleRepositoryConnector();
 		CrucibleClientManager clientManager = repoConnector.getClientManager();
 		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
-		CrucibleServerCfg serverCfg = getServerCfg(location, repo, false);
+		ServerData serverCfg = getServerCfg(location, repo, false);
 
 		clientManager.getClient(repo);
 		HttpClient httpClient1 = null;
@@ -95,48 +94,4 @@ public class CrucibleClientManagerTest extends TestCase {
 		assertTrue(assertion);
 	}
 
-	public void testCreateDeleteTempClient() {
-		TaskRepository repo = new TaskRepository(CrucibleCorePlugin.CONNECTOR_KIND, "http://crucible.atlassian.com");
-		repo.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("user", "pass"), false);
-
-		CrucibleRepositoryConnector repoConnector = new CrucibleRepositoryConnector();
-		CrucibleClientManager clientManager = repoConnector.getClientManager();
-
-		CrucibleClient client1 = clientManager.createTempClient(repo, new CrucibleClientData());
-		assertNotNull(client1);
-
-		CrucibleClient client2 = clientManager.createTempClient(repo, new CrucibleClientData());
-		assertNotNull(client2);
-
-		assertFalse(client1 == client2);
-
-		assertTrue(clientManager.getTempClients().containsKey(client1));
-		assertTrue(clientManager.getTempClients().containsKey(client2));
-
-		clientManager.deleteTempClient(client1);
-		assertFalse(clientManager.getTempClients().containsValue(client1));
-		clientManager.deleteTempClient(client2);
-		assertFalse(clientManager.getTempClients().containsValue(client2));
-
-		clientManager.deleteTempClient(null);
-	}
-
-	private CrucibleServerCfg getServerCfg(AbstractWebLocation location, TaskRepository taskRepository,
-			boolean isTemporary) {
-
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		String username = "";
-		String password = "";
-		if (credentials != null) {
-			username = credentials.getUserName();
-			password = credentials.getPassword();
-		}
-
-		EclipseCrucibleServerCfg config = new EclipseCrucibleServerCfg(taskRepository.getRepositoryLabel(),
-				location.getUrl(), isTemporary);
-		config.setUsername(username);
-		config.setPassword(password);
-
-		return config;
-	}
 }
