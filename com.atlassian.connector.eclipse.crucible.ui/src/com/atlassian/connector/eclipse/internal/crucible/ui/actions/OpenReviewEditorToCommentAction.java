@@ -90,7 +90,7 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 						for (IWorkbenchPage page : window.getPages()) {
 							IEditorPart part = page.findEditor(editorInput);
 							if (part != null) {
-								selectAndRevealCommentInEditorPage(page, part);
+								selectAndRevealCommentInEditorPage(page, part, true);
 								return;
 							}
 						}
@@ -100,7 +100,7 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 							IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 							IEditorPart part = page.openEditor(editorInput, TaskEditor.ID_EDITOR);
 							if (part != null) {
-								selectAndRevealCommentInEditorPage(page, part);
+								selectAndRevealCommentInEditorPage(page, part, true);
 								return;
 							}
 						} catch (PartInitException e) {
@@ -116,7 +116,7 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 		}
 	}
 
-	private void selectAndRevealCommentInEditorPage(IWorkbenchPage page, IEditorPart part) {
+	private void selectAndRevealCommentInEditorPage(IWorkbenchPage page, IEditorPart part, boolean reveal) {
 		TaskEditor taskEditor = (TaskEditor) part;
 		taskEditor.setActivePage(CrucibleConstants.CRUCIBLE_EDITOR_PAGE_ID);
 		IFormPage activePage = taskEditor.getActivePageInstance();
@@ -125,7 +125,7 @@ public class OpenReviewEditorToCommentAction extends Action implements IReviewAc
 				page.bringToTop(part);
 			}
 
-			((CrucibleReviewEditorPage) activePage).selectAndReveal(crucibleFile, comment);
+			((CrucibleReviewEditorPage) activePage).selectAndReveal(crucibleFile, comment, reveal);
 		}
 		if (actionListener != null) {
 			actionListener.actionRan(this);

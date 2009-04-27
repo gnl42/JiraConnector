@@ -173,14 +173,14 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 		super.fillToolBar(barManager);
 	}
 
-	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment) {
+	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment, boolean reveal) {
 		if (!filesSection.isExpanded()) {
 			EditorUtil.toggleExpandableComposite(true, filesSection);
 		}
 
 		for (CrucibleFilePart part : parts) {
 			if (part.isCrucibleFile(crucibleFile)) {
-				part.selectAndReveal(comment);
+				part.selectAndReveal(comment, reveal);
 			}
 		}
 	}

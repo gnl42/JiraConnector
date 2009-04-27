@@ -381,7 +381,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				setMenu(editorComposite, editorComposite.getMenu());
 
 				if (selectedComment != null && selectedCrucibleFile != null) {
-					selectAndReveal(selectedCrucibleFile, selectedComment);
+					selectAndReveal(selectedCrucibleFile, selectedComment, false);
 				}
 
 			} finally {
@@ -413,7 +413,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			setMenu(editorComposite, editorComposite.getMenu());
 
 			if (selectedComment != null && selectedCrucibleFile != null) {
-				selectAndReveal(selectedCrucibleFile, selectedComment);
+				selectAndReveal(selectedCrucibleFile, selectedComment, true);
 			}
 
 		} finally {
@@ -881,7 +881,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		setBusy(true);
 	}
 
-	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment) {
+	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment, boolean reveal) {
 		this.selectedCrucibleFile = crucibleFile;
 		this.selectedComment = comment;
 		if (selectedCrucibleFile == null || selectedComment == null) {
@@ -891,7 +891,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		} else {
 			for (AbstractCrucibleEditorFormPart part : parts) {
 				if (part instanceof CrucibleReviewFilesPart) {
-					((CrucibleReviewFilesPart) part).selectAndReveal(crucibleFile, comment);
+					((CrucibleReviewFilesPart) part).selectAndReveal(crucibleFile, comment, reveal);
 				}
 			}
 		}

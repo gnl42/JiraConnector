@@ -219,7 +219,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 		return crucibleFileToReveal.getPermId().equals(crucibleFile.getPermId());
 	}
 
-	public void selectAndReveal(VersionedComment commentToReveal) {
+	public void selectAndReveal(VersionedComment commentToReveal, boolean reveal) {
 		if (!getSection().isExpanded()) {
 			EditorUtil.toggleExpandableComposite(true, getSection());
 		}
@@ -228,7 +228,9 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 			if (part instanceof VersionedCommentPart) {
 				if (((VersionedCommentPart) part).represents(commentToReveal)) {
 					part.setExpanded(true);
-					EditorUtil.ensureVisible(part.getSection());
+					if (reveal) {
+						EditorUtil.ensureVisible(part.getSection());
+					}
 
 					crucibleEditor.setHighlightedPart(part);
 
