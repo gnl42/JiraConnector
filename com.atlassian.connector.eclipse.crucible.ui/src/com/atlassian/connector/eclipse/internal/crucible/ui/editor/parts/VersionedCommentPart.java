@@ -51,6 +51,8 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 	private Composite composite;
 
+	private CompareVersionedVirtualFileAction compareAction;
+
 	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo,
 			CrucibleReviewEditorPage editor) {
 		super(comment, review, editor, new CrucibleFile(crucibleFileInfo, false));
@@ -114,8 +116,8 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 			//if both revisions are availabe (--> commitType neither added nor deleted), use compareAction
 			if (crucibleFileInfo.getCommitType() != CommitType.Deleted
 					&& crucibleFileInfo.getCommitType() != CommitType.Added && canOpenCompare()) {
-				CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
-						crucibleFileInfo, versionedComment, crucibleReview);
+				compareAction = new CompareVersionedVirtualFileAction(crucibleFileInfo, versionedComment,
+						crucibleReview);
 				compareAction.setToolTipText("Open the file to the comment in the compare editor");
 				compareAction.setText(getLineNumberText());
 				// TODO set the image descriptor
@@ -170,8 +172,10 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 	@Override
 	protected Control update(Composite parentComposite, FormToolkit toolkit, VersionedComment newComment,
 			Review newReview) {
-
 		this.crucibleReview = newReview;
+		if (compareAction != null) {
+			this.compareAction.updateReview(newReview, crucibleFileInfo, newComment);
+		}
 		// TODO update the text 
 		if (newComment instanceof VersionedComment
 				&& !CrucibleUtil.areVersionedCommentsDeepEquals(newComment, versionedComment)) {

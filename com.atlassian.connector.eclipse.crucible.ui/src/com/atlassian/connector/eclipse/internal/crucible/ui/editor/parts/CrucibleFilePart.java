@@ -53,6 +53,8 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	private Composite composite;
 
+	private CompareVersionedVirtualFileAction compareAction;
+
 	public CrucibleFilePart(CrucibleFileInfo file, Review review, CrucibleReviewEditorPage editor) {
 		super(editor, review);
 		this.crucibleFile = file;
@@ -169,8 +171,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 				if (newFileDescriptor != null && oldFileDescriptor != null) {
 
-					CompareVersionedVirtualFileAction compareAction = new CompareVersionedVirtualFileAction(
-							crucibleFile, crucibleReview);
+					compareAction = new CompareVersionedVirtualFileAction(crucibleFile, crucibleReview);
 					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
 							+ oldFileDescriptor.getRevision());
 					compareAction.setText("Compare");
@@ -242,6 +243,9 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	public Control update(Composite parentComposite, FormToolkit toolkit, CrucibleFileInfo file, Review crucibleReview) {
 		this.crucibleReview = crucibleReview;
+		if (compareAction != null) {
+			this.compareAction.updateReview(crucibleReview, file);
+		}
 		// TODO update the text 
 		if (!CrucibleUtil.areCrucibleFilesDeepEqual(file, crucibleFile)) {
 			boolean oldCanExpand = !canExpand(this.crucibleFile);

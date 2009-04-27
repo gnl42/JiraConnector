@@ -59,8 +59,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 					crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
 							CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 				}
-				if (crucibleFile != null && !crucibleFile.isOldFile()
-						&& CrucibleUtil.canAddCommentToReview(getReview())
+				if (crucibleFile != null && CrucibleUtil.canAddCommentToReview(getReview())
 						&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
 					action.setEnabled(true);
 					setEnabled(true);
@@ -75,7 +74,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		if (crucibleFile != null && !crucibleFile.isOldFile() && CrucibleUtil.canAddCommentToReview(getReview())
+		if (crucibleFile != null && CrucibleUtil.canAddCommentToReview(getReview())
 				&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
 			return true;
 		}

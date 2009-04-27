@@ -41,13 +41,13 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class CompareVersionedVirtualFileAction extends Action implements IReviewAction {
 
-	private final CrucibleFileInfo crucibleFile;
+	private CrucibleFileInfo crucibleFile;
 
 	private IReviewActionListener actionListener;
 
-	private final Review review;
+	private Review review;
 
-	private final VersionedComment versionedComment;
+	private VersionedComment versionedComment;
 
 	public CompareVersionedVirtualFileAction(CrucibleFileInfo crucibleFile, VersionedComment versionedComment,
 			Review review) {
@@ -58,6 +58,17 @@ public class CompareVersionedVirtualFileAction extends Action implements IReview
 
 	public CompareVersionedVirtualFileAction(CrucibleFileInfo crucibleFile, Review review) {
 		this(crucibleFile, null, review);
+	}
+
+	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile) {
+		this.review = updatedReview;
+		this.crucibleFile = updatedFile;
+	}
+
+	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile, VersionedComment updatedComment) {
+		this.review = updatedReview;
+		this.crucibleFile = updatedFile;
+		this.versionedComment = updatedComment;
 	}
 
 	@Override

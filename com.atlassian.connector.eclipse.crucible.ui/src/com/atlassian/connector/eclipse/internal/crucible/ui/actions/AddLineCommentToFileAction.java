@@ -69,8 +69,7 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 				} else {
 					selectedRange = crucibleCompareSourceViewer.getSelection();
 				}
-				if (selectedRange != null && crucibleFile != null && !crucibleFile.isOldFile()
-						&& CrucibleUtil.canAddCommentToReview(getReview())
+				if (selectedRange != null && crucibleFile != null && CrucibleUtil.canAddCommentToReview(getReview())
 						&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
 					action.setEnabled(true);
 					setEnabled(true);
@@ -88,8 +87,7 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (crucibleCompareSourceViewer != null) {
 			selectedRange = crucibleCompareSourceViewer.getSelection();
-			if (selectedRange != null && crucibleFile != null && !crucibleFile.isOldFile()
-					&& CrucibleUtil.canAddCommentToReview(getReview())
+			if (selectedRange != null && crucibleFile != null && CrucibleUtil.canAddCommentToReview(getReview())
 					&& CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
 				return true;
 			}
