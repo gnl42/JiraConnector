@@ -33,7 +33,7 @@ public class CrucibleTypeSelectionPage extends WizardPage {
 
 	private final TaskRepository taskRepository;
 
-	private Type selectedType;
+	private Type selectedType = Type.EMPTY;
 
 	public CrucibleTypeSelectionPage(TaskRepository repository) {
 		super("crucibleSelection"); //$NON-NLS-1$

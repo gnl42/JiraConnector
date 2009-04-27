@@ -210,11 +210,6 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			typeSelectionPage = new CrucibleTypeSelectionPage(getTaskRepository());
 			addPage(typeSelectionPage);
 		}
-		//only add details page if review is not already existing
-		if (crucibleReview == null) {
-			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository());
-			addPage(detailsPage);
-		}
 		if (wizardType == Type.UNDEFINED) {
 			wizardType = Type.ALL;
 		}
@@ -231,6 +226,11 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		if (wizardType == Type.ADD_PATCH || wizardType == Type.ALL) {
 			addPatchPage = new CrucibleAddPatchPage(getTaskRepository());
 			addPage(addPatchPage);
+		}
+		//only add details page if review is not already existing
+		if (crucibleReview == null) {
+			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository());
+			addPage(detailsPage);
 		}
 	}
 
@@ -249,29 +249,29 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 	public IWizardPage getNextPage(IWizardPage page) {
 		if (page instanceof CrucibleTypeSelectionPage) {
 			wizardType = ((CrucibleTypeSelectionPage) page).getType();
-			return detailsPage;
-		}
-		if (page instanceof CrucibleReviewDetailsPage) {
 			if (wizardType == Type.ADD_CHANGESET || wizardType == Type.ALL) {
 				return addChangeSetsPage;
 			} else if (wizardType == Type.ADD_PATCH) {
 				return addPatchPage;
+			} else if (wizardType == Type.EMPTY) {
+				return detailsPage;
 			}
-			return null;
 		}
 		if (page instanceof CrucibleAddChangesetsPage) {
 			if (wizardType == Type.ALL) {
 				return addPatchPage;
 			}
-			return null;
+			return detailsPage;
+		}
+		if (page instanceof CrucibleAddPatchPage) {
+			return detailsPage;
 		}
 		return super.getNextPage(page);
 	}
 
 	@Override
-	public IWizardPage getPreviousPage(IWizardPage page) {
-		// ignore
-		return super.getPreviousPage(page);
+	public boolean canFinish() {
+		return detailsPage.canFlipToNextPage();
 	}
 
 	@Override
