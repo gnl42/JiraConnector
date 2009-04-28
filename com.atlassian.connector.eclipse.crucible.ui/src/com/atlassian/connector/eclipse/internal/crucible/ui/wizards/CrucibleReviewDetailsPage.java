@@ -11,12 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsLabelProvider;
@@ -27,14 +23,9 @@ import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -43,10 +34,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -55,7 +44,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 /**
@@ -82,13 +70,16 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	private Button anyoneCanJoin;
 
-	public CrucibleReviewDetailsPage(TaskRepository repository) {
+	private final CrucibleReviewWizard wizard;
+
+	public CrucibleReviewDetailsPage(TaskRepository repository, CrucibleReviewWizard wizard) {
 		super("crucibleDetails"); //$NON-NLS-1$
 		Assert.isNotNull(repository);
 		setTitle("New Crucible Review");
-		setDescription("Please enter the details of the review.");
+		setDescription("Enter the details of the review.");
 		this.repository = repository;
 		newReview = new ReviewBean(repository.getUrl());
+		this.wizard = wizard;
 	}
 
 	@Override
@@ -98,7 +89,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					// ignore
-					updateCache();
+					wizard.updateCache(CrucibleReviewDetailsPage.this);
+					preselectDefaultUsers();
+					reviewersSelectionTreePart.updateInput();
 				}
 			});
 		} else if (visible) {
@@ -111,6 +104,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	private void preselectDefaultUsers() {
 		Set<CrucibleCachedProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
 		projectsComboViewer.setInput(cachedProjects);
+		if (cachedProjects.size() > 0) {
+			projectsComboViewer.setSelection(new StructuredSelection(cachedProjects.iterator().next()));
+		}
 		Set<CrucibleCachedUser> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
 		moderatorComboViewer.setInput(cachedUsers);
 		authorComboViewer.setInput(cachedUsers);
@@ -136,47 +132,16 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		}
 	}
 
-	private void updateCache() {
-		IRunnableWithProgress runnable = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
-				CrucibleClient client = connector.getClientManager().getClient(repository);
-				if (client != null) {
-					try {
-						client.updateRepositoryData(monitor, repository);
-					} catch (CoreException e) {
-						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-								"Failed to update repository data", e));
-					}
-				}
-			}
-		};
-		try {
-			getContainer().run(true, true, runnable);
-		} catch (Exception ex) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Failed to update repository data",
-					ex));
-		}
-		if (!CrucibleUiUtil.hasCachedData(repository)) {
-			setErrorMessage("Could not retrieve available projects and users from server.");
-		}
-		preselectDefaultUsers();
-		reviewersSelectionTreePart.updateInput();
-	}
-
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(6).create());
+		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(6).margins(5, 5).create());
 
 		new Label(composite, SWT.NONE).setText("Title:");
 		titleText = new Text(composite, SWT.BORDER);
 		GridDataFactory.fillDefaults().span(5, 1).grab(true, false).applyTo(titleText);
 
 		new Label(composite, SWT.NONE).setText("Project:");
-		final CCombo projectsCombo = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(projectsCombo);
-		projectsCombo.setEditable(false);
-		projectsComboViewer = new ComboViewer(projectsCombo);
+		projectsComboViewer = new ComboViewer(composite);
 		projectsComboViewer.setLabelProvider(new CrucibleProjectsLabelProvider());
 		projectsComboViewer.setContentProvider(new CrucibleProjectsContentProvider());
 		Set<CrucibleCachedProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
@@ -191,12 +156,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				}
 			}
 		});
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(projectsComboViewer.getCombo());
 
 		new Label(composite, SWT.NONE).setText("Moderator:");
-		CCombo moderatorCombo = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(moderatorCombo);
-		moderatorCombo.setEditable(false);
-		moderatorComboViewer = new ComboViewer(moderatorCombo);
+		moderatorComboViewer = new ComboViewer(composite);
 		moderatorComboViewer.setLabelProvider(new CrucibleUserLabelProvider());
 		moderatorComboViewer.setContentProvider(new CrucibleUserContentProvider());
 		Set<CrucibleCachedUser> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
@@ -214,12 +177,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				}
 			}
 		});
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(moderatorComboViewer.getCombo());
 
 		new Label(composite, SWT.NONE).setText("Author:");
-		final CCombo authorCombo = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(authorCombo);
-		authorCombo.setEditable(false);
-		authorComboViewer = new ComboViewer(authorCombo);
+		authorComboViewer = new ComboViewer(composite);
 		authorComboViewer.setLabelProvider(new CrucibleUserLabelProvider());
 		authorComboViewer.setContentProvider(new CrucibleUserContentProvider());
 		authorComboViewer.setInput(cachedUsers);
@@ -235,6 +196,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				}
 			}
 		});
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(authorComboViewer.getCombo());
 
 		Label label = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		GridDataFactory.fillDefaults().grab(true, false).span(6, 1).applyTo(label);
@@ -245,10 +207,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 		label = new Label(composite, SWT.NONE);
 		label.setText("Reviewers:");
-		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
+		GridDataFactory.fillDefaults().span(2, 1).indent(5, SWT.DEFAULT).applyTo(label);
 
 		objectivesText = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
-		GridDataFactory.fillDefaults().grab(true, true).span(4, 2).applyTo(objectivesText);
+		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200).span(4, 2).applyTo(objectivesText);
 
 		reviewersSelectionTreePart = new ReviewersSelectionTreePart(newReview);
 		Composite reviewersComp = reviewersSelectionTreePart.createControl(composite);
@@ -269,7 +231,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		updateData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				updateCache();
+				wizard.updateCache(CrucibleReviewDetailsPage.this);
+				preselectDefaultUsers();
+				reviewersSelectionTreePart.updateInput();
 			}
 		});
 
@@ -285,15 +249,15 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	private boolean hasRequiredFields() {
 		setErrorMessage(null);
 		if (newReview.getProjectKey() == null) {
-			setErrorMessage("Please select a project");
+			setErrorMessage("Select a project");
 			return false;
 		}
 		if (newReview.getModerator() == null) {
-			setErrorMessage("Please select a moderator");
+			setErrorMessage("Select a moderator");
 			return false;
 		}
 		if (newReview.getAuthor() == null) {
-			setErrorMessage("Please select an author");
+			setErrorMessage("Select an author");
 			return false;
 		}
 		return true;

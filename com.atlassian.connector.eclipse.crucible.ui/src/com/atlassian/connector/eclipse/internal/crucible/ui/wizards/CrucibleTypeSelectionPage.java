@@ -18,8 +18,6 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -33,65 +31,45 @@ public class CrucibleTypeSelectionPage extends WizardPage {
 
 	private final TaskRepository taskRepository;
 
-	private Type selectedType = Type.EMPTY;
+	private Button patchReview;
+
+	private Button changesetReview;
 
 	public CrucibleTypeSelectionPage(TaskRepository repository) {
 		super("crucibleSelection"); //$NON-NLS-1$
 		setTitle("Select type of review to create");
-		setDescription("Please select which kind of review you want to create.");
+		setDescription("Select which kind of review you want to create.");
 		this.taskRepository = repository;
 	}
 
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(GridLayoutFactory.fillDefaults().create());
+		composite.setLayout(GridLayoutFactory.fillDefaults().margins(5, 5).create());
 
-		new Label(composite, SWT.NONE).setText("Do you want to create a");
+		new Label(composite, SWT.NONE).setText("Select how you want to add files to the review:");
 
 		Composite buttonComp = new Composite(composite, SWT.NULL);
 		buttonComp.setLayout(GridLayoutFactory.fillDefaults().margins(10, 5).create());
 
-		Button emptyReview = new Button(buttonComp, SWT.RADIO);
-		emptyReview.setText("Empty Review without files,");
-		emptyReview.setSelection(true);
-		emptyReview.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectedType = Type.EMPTY;
-			}
-		});
-		Button changesetReview = new Button(buttonComp, SWT.RADIO);
-		changesetReview.setText("Review from changesets,");
-		changesetReview.setSelection(false);
-		changesetReview.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectedType = Type.ADD_CHANGESET;
-			}
-		});
-		Button patchReview = new Button(buttonComp, SWT.RADIO);
-		patchReview.setText("Review from a patch, or");
-		patchReview.setSelection(false);
-		patchReview.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectedType = Type.ADD_PATCH;
-			}
-		});
-		Button allReview = new Button(buttonComp, SWT.RADIO);
-		allReview.setText("Review with all options.");
-		allReview.setSelection(false);
-		allReview.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				selectedType = Type.ALL;
-			}
-		});
+		changesetReview = new Button(buttonComp, SWT.CHECK);
+		changesetReview.setText("From a Changeset");
+		patchReview = new Button(buttonComp, SWT.CHECK);
+		patchReview.setText("From a Patch");
+
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonComp);
 		setControl(composite);
 	}
 
 	public Type getType() {
-		return selectedType;
+		if (patchReview.getSelection()) {
+			if (changesetReview.getSelection()) {
+				return Type.ALL;
+			}
+			return Type.ADD_PATCH;
+		}
+		if (changesetReview.getSelection()) {
+			return Type.ADD_CHANGESET;
+		}
+		return Type.EMPTY;
 	}
 }

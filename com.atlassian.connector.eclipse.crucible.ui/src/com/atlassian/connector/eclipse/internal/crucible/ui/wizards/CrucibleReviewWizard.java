@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
@@ -179,7 +180,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 	public CrucibleReviewWizard(TaskRepository taskRepository, SortedSet<ICustomChangesetLogEntry> selectedLogEntries,
 			Type type) {
 		super(taskRepository, null);
-		setWindowTitle("New");
+		setWindowTitle("New Crucible Review");
 		setNeedsProgressMonitor(true);
 		this.preselectedLogEntries = selectedLogEntries == null ? new TreeSet<ICustomChangesetLogEntry>()
 				: selectedLogEntries;
@@ -219,17 +220,17 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 //		addFilesPage = new CrucibleAddFilesPage(getTaskRepository());
 //		(addFilesPage);
 		if (wizardType == Type.ADD_CHANGESET || wizardType == Type.ALL) {
-			addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository(), preselectedLogEntries);
+			addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository(), preselectedLogEntries, this);
 			addPage(addChangeSetsPage);
 		}
 
 		if (wizardType == Type.ADD_PATCH || wizardType == Type.ALL) {
-			addPatchPage = new CrucibleAddPatchPage(getTaskRepository());
+			addPatchPage = new CrucibleAddPatchPage(getTaskRepository(), this);
 			addPage(addPatchPage);
 		}
 		//only add details page if review is not already existing
 		if (crucibleReview == null) {
-			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository());
+			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository(), this);
 			addPage(detailsPage);
 		}
 	}
@@ -271,7 +272,10 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 
 	@Override
 	public boolean canFinish() {
-		return detailsPage.canFlipToNextPage();
+		if (detailsPage != null) {
+			return detailsPage.canFlipToNextPage();
+		}
+		return super.canFinish();
 	}
 
 	@Override
@@ -282,7 +286,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			((WizardPage) currentPage).setErrorMessage(null);
 		}
 		//create review if not yet done
-		if (crucibleReview == null) {
+		if (crucibleReview == null && detailsPage != null) {
 			createReview();
 			if (crucibleReview == null) {
 				if (currentPage instanceof WizardPage) {
@@ -303,7 +307,9 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		if (addChangeSetsPage != null) {
 			changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
 		}
-		addFilesAndPatchToReview(changesetsToAdd, patchToAdd, patchRepositoryToAdd);
+		if (wizardType == Type.ADD_CHANGESET || wizardType == Type.ADD_PATCH) {
+			addFilesAndPatchToReview(changesetsToAdd, patchToAdd, patchRepositoryToAdd);
+		}
 
 		if (creationProcessFailedMessage != null) {
 			if (currentPage instanceof WizardPage) {
@@ -336,7 +342,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			getContainer().run(true, false, runnable);
 		} catch (Exception e) {
 			if (currentPage instanceof WizardPage) {
-				((WizardPage) currentPage).setErrorMessage("Could not open created review. Please refresh tasklist.");
+				((WizardPage) currentPage).setErrorMessage("Could not open created review. Refresh tasklist.");
 			}
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error opening review", e));
 		}
@@ -407,6 +413,32 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		} catch (Exception e) {
 			creationProcessFailedMessage = "Could not create review. See error log for details.";
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error creating Review", e));
+		}
+	}
+
+	public void updateCache(WizardPage currentPage) {
+		IRunnableWithProgress runnable = new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+				CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
+				CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
+				if (client != null) {
+					try {
+						client.updateRepositoryData(monitor, getTaskRepository());
+					} catch (CoreException e) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Failed to update repository data", e));
+					}
+				}
+			}
+		};
+		try {
+			getContainer().run(true, true, runnable);
+		} catch (Exception ex) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Failed to update repository data",
+					ex));
+		}
+		if (!CrucibleUiUtil.hasCachedData(getTaskRepository())) {
+			currentPage.setErrorMessage("Could not retrieve available projects and users from server.");
 		}
 	}
 }

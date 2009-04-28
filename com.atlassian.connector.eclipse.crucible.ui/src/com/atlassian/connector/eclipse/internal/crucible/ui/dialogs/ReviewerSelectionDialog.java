@@ -77,6 +77,7 @@ public class ReviewerSelectionDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		getShell().setText("Select Reviewer(s)");
 		reviewersSelectionTreePart = new ReviewersSelectionTreePart(selectedReviewers, review);
 		Composite composite = reviewersSelectionTreePart.createControl(parent);
 

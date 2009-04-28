@@ -148,7 +148,7 @@ public class CrucibleAddFilesPage extends WizardPage {
 	public CrucibleAddFilesPage() {
 		super("crucibleFiles");
 		setTitle("Add Files to Review");
-		setDescription("Please select the files you want to have reviewed.");
+		setDescription("Select the files you want to have reviewed.");
 	}
 
 	public void createControl(Composite parent) {

@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -65,9 +64,8 @@ public class ComboViewerSelectionDialog extends Dialog {
 
 		new Label(composite, SWT.NONE).setText(labelText);
 
-		final Combo combo = new Combo(composite, SWT.READ_ONLY);
-		combo.setText("Please select");
-		final ComboViewer comboViewer = new ComboViewer(combo);
+		final ComboViewer comboViewer = new ComboViewer(composite);
+		comboViewer.getCombo().setText("Select");
 		comboViewer.setContentProvider(new CrucibleRepositoriesContentProvider());
 		comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
 		comboViewer.setInput(inputObjects);
@@ -82,6 +80,7 @@ public class ComboViewerSelectionDialog extends Dialog {
 				getButton(IDialogConstants.OK_ID).setEnabled(selection != null);
 			}
 		});
+		GridDataFactory.fillDefaults().hint(50, SWT.DEFAULT).applyTo(comboViewer.getCombo());
 
 		applyDialogFont(composite);
 		return composite;

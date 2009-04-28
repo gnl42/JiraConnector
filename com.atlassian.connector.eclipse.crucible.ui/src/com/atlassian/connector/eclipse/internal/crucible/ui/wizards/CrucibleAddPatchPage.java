@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -58,20 +57,23 @@ public class CrucibleAddPatchPage extends WizardPage {
 
 	private boolean includePatch = false;
 
-	public CrucibleAddPatchPage(TaskRepository repository) {
+	private final CrucibleReviewWizard wizard;
+
+	public CrucibleAddPatchPage(TaskRepository repository, CrucibleReviewWizard wizard) {
 		super("cruciblePatch"); //$NON-NLS-1$
 		setTitle("Add Patch to Review");
 		setDescription("Review the patch from the clipboard to add it to the review.");
 		this.taskRepository = repository;
+		this.wizard = wizard;
 	}
 
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).margins(5, 5).create());
 
 		final Button includePatchButton = new Button(composite, SWT.CHECK);
 		includePatchButton.setText("Include this Patch in the review:");
-		GridDataFactory.fillDefaults().span(2, 1).applyTo(includePatchButton);
+		GridDataFactory.fillDefaults().applyTo(includePatchButton);
 		includePatchButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -82,15 +84,14 @@ public class CrucibleAddPatchPage extends WizardPage {
 		});
 
 		patchText = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(patchText);
+		GridDataFactory.fillDefaults().span(2, 1).hint(SWT.DEFAULT, 220).grab(true, true).applyTo(patchText);
 		patchText.setEditable(false);
-		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(patchText);
 
-		new Label(composite, SWT.NONE).setText("Select the repository on Crucible:");
-		CCombo repositoryCombo = new CCombo(composite, SWT.BORDER);
-		repositoryCombo.setText("Select Repository");
-		repositoryCombo.setEditable(false);
-		comboViewer = new ComboViewer(repositoryCombo);
+		Label label = new Label(composite, SWT.NONE);
+		label.setText("Select the repository on Crucible:");
+		GridDataFactory.fillDefaults().grab(false, false).applyTo(label);
+		comboViewer = new ComboViewer(composite);
+		comboViewer.getCombo().setText("Select Repository");
 		comboViewer.setContentProvider(new CrucibleRepositoriesContentProvider());
 		comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -102,6 +103,21 @@ public class CrucibleAddPatchPage extends WizardPage {
 					}
 				}
 				validatePage();
+			}
+		});
+		GridDataFactory.fillDefaults()
+				.align(SWT.BEGINNING, SWT.BEGINNING)
+				.grab(true, false)
+				.hint(100, SWT.DEFAULT)
+				.applyTo(comboViewer.getCombo());
+
+		Button updateData = new Button(composite, SWT.PUSH);
+		updateData.setText("Update Repository Data");
+		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
+		updateData.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				wizard.updateCache(CrucibleAddPatchPage.this);
 			}
 		});
 
@@ -130,7 +146,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 					+ " copy the patch to the clipboard before opening this Wizard.";
 			allFine = false;
 		} else if (selectedRepository == null) {
-			errorMessage = "Please choose a repository on Crucible this patch relates to.";
+			errorMessage = "Choose a repository on Crucible this patch relates to.";
 			allFine = false;
 		}
 		if (includePatch) {
@@ -155,6 +171,9 @@ public class CrucibleAddPatchPage extends WizardPage {
 		if (visible) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
+					if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
+						wizard.updateCache(CrucibleAddPatchPage.this);
+					}
 					//copy content from clipboard
 					Clipboard clipboard = new Clipboard(Display.getDefault());
 					Object patch = clipboard.getContents(TextTransfer.getInstance());

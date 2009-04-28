@@ -100,7 +100,7 @@ public class ReviewersSelectionTreePart {
 		tree = new CheckboxFilteredTree(composite, SWT.CHECK | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER,
 				new SubstringPatternFilter());
 
-		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 500).applyTo(tree);
+		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 250).applyTo(tree);
 
 		tree.getViewer().setContentProvider(new CrucibleUserContentProvider());
 

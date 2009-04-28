@@ -36,7 +36,7 @@ public class CreateReviewAction extends BaseSelectionListenerAction implements I
 	private ISelection selection;
 
 	public CreateReviewAction() {
-		super("Create Review...");
+		super("New Crucible Review...");
 	}
 
 	public void run(IAction action) {

@@ -237,14 +237,17 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private MenuItem addChangesetMenuItem;
 
-	public CrucibleAddChangesetsPage(TaskRepository repository) {
-		this(repository, new TreeSet<ICustomChangesetLogEntry>());
+	private final CrucibleReviewWizard wizard;
+
+	public CrucibleAddChangesetsPage(TaskRepository repository, CrucibleReviewWizard wizard) {
+		this(repository, new TreeSet<ICustomChangesetLogEntry>(), wizard);
 	}
 
-	public CrucibleAddChangesetsPage(TaskRepository repository, SortedSet<ICustomChangesetLogEntry> logEntries) {
+	public CrucibleAddChangesetsPage(TaskRepository repository, SortedSet<ICustomChangesetLogEntry> logEntries,
+			CrucibleReviewWizard wizard) {
 		super("crucibleChangesets"); //$NON-NLS-1$
-		setTitle("Add Changesets to Review");
-		setDescription("Please select the changesets that should be included in the review.");
+		setTitle("Select Changesets");
+		setDescription("Select the changesets that should be included in the review.");
 		this.availableLogEntries = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
 		this.selectedLogEntries = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
 		this.repositoryMappings = new HashMap<CustomRepository, CrucibleCachedRepository>();
@@ -254,11 +257,12 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			this.selectedLogEntries.put(logEntries.first().getRepository(), logEntries);
 			this.repositoryMappings.put(logEntries.first().getRepository(), null);
 		}
+		this.wizard = wizard;
 	}
 
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).create());
+		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).margins(5, 5).create());
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setText("Select changesets from your repositories:");
@@ -273,6 +277,16 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		createRightViewer(composite);
 
 		createRepositoryMappingComp(composite);
+
+		Button updateData = new Button(composite, SWT.PUSH);
+		updateData.setText("Update Repository Data");
+		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
+		updateData.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				wizard.updateCache(CrucibleAddChangesetsPage.this);
+			}
+		});
 
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
@@ -408,7 +422,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
 			}
 			ComboViewerSelectionDialog dialog = new ComboViewerSelectionDialog(repositoriesMappingViewer.getTable()
-					.getShell(), "Select", "Choose Crucible Repository: ", cachedRepositories);
+					.getShell(), "Map Local to Crucible Repository", "Map \"" + repository.getUrl() + "\" to: ",
+					cachedRepositories);
 			int returnCode = dialog.open();
 			if (returnCode == IDialogConstants.OK_ID) {
 				CrucibleCachedRepository crucibleRepository = dialog.getSelection();
@@ -431,12 +446,10 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			if (repositoryMappings.get(customRepository) == null) {
 				setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
 				allFine = false;
+				break;
 			}
-			break;
 		}
-
 		setPageComplete(allFine);
-
 		getContainer().updateButtons();
 	}
 
@@ -444,7 +457,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		Tree tree = new Tree(parent, SWT.MULTI | SWT.BORDER);
 		availableTreeViewer = new TreeViewer(tree);
 
-		GridDataFactory.fillDefaults().grab(true, true).span(1, 2).hint(300, SWT.DEFAULT).applyTo(tree);
+		GridDataFactory.fillDefaults().grab(true, true).span(1, 2).hint(300, 220).applyTo(tree);
 		availableTreeViewer.setLabelProvider(new ChangesetLabelProvider());
 		availableTreeViewer.setContentProvider(new ChangesetContentProvider());
 		availableTreeViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
@@ -452,11 +465,13 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		final Menu contextMenuSource = new Menu(getShell(), SWT.POP_UP);
 		tree.setMenu(contextMenuSource);
 		addChangesetMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
-		addChangesetMenuItem.setText("Add");
+		addChangesetMenuItem.setText("Add to Review");
+
+		new MenuItem(contextMenuSource, SWT.SEPARATOR);
 
 		addChangesetMenuItem.setEnabled(false);
 		getNextRevisionsMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
-		getNextRevisionsMenuItem.setText("Get 10 more Revisions");
+		getNextRevisionsMenuItem.setText("Get 10 More Revisions");
 		getNextRevisionsMenuItem.addSelectionListener(new SelectionAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -573,7 +588,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		final Menu contextMenuSource = new Menu(getShell(), SWT.POP_UP);
 		tree.setMenu(contextMenuSource);
 		removeChangesetMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
-		removeChangesetMenuItem.setText("Remove");
+		removeChangesetMenuItem.setText("Remove from Review");
 		removeChangesetMenuItem.setEnabled(false);
 		removeChangesetMenuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -680,12 +695,17 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if (visible && availableLogEntries.isEmpty()) {
+		if (visible && (availableLogEntries.isEmpty() || !CrucibleUiUtil.hasCachedData(taskRepository))) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					updateChangesets(null, 0);
-					selectedTreeViewer.setInput(selectedLogEntries);
-					validatePage();
+					if (availableLogEntries.isEmpty()) {
+						updateChangesets(null, 0);
+						selectedTreeViewer.setInput(selectedLogEntries);
+						validatePage();
+					}
+					if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
+						wizard.updateCache(CrucibleAddChangesetsPage.this);
+					}
 				}
 			});
 		}
@@ -731,7 +751,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 							repositoryMappings.remove(customRepository);
 							ComboViewer viewer = mappingCombos.remove(customRepository);
 							if (viewer != null) {
-								viewer.getCCombo().dispose();
+								viewer.getCombo().dispose();
 							}
 						}
 					}
