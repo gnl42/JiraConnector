@@ -267,7 +267,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		if (page instanceof CrucibleAddPatchPage) {
 			return detailsPage;
 		}
-		return super.getNextPage(page);
+		return null;
 	}
 
 	@Override

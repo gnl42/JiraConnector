@@ -280,7 +280,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		return isPageComplete();
+		return false;
 	}
 
 	public void applyTo() {
