@@ -273,7 +273,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 	@Override
 	public boolean canFinish() {
 		if (detailsPage != null) {
-			return detailsPage.canFlipToNextPage();
+			return detailsPage.isPageComplete();
 		}
 		return super.canFinish();
 	}
