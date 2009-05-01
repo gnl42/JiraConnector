@@ -59,6 +59,8 @@ public class CrucibleAddPatchPage extends WizardPage {
 
 	private final CrucibleReviewWizard wizard;
 
+	protected boolean patchPasted = false;
+
 	public CrucibleAddPatchPage(TaskRepository repository, CrucibleReviewWizard wizard) {
 		super("cruciblePatch"); //$NON-NLS-1$
 		setTitle("Add Patch to Review");
@@ -174,11 +176,12 @@ public class CrucibleAddPatchPage extends WizardPage {
 					if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
 						wizard.updateCache(CrucibleAddPatchPage.this);
 					}
-					//copy content from clipboard
+					//copy content from clipboard, only if not already done
 					Clipboard clipboard = new Clipboard(Display.getDefault());
 					Object patch = clipboard.getContents(TextTransfer.getInstance());
-					if (patch != null && patch instanceof String) {
+					if (patch != null && patch instanceof String && !patchPasted) {
 						patchText.setText((String) patch);
+						patchPasted = true;
 					}
 					if (cachedRepositories == null) {
 						cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
