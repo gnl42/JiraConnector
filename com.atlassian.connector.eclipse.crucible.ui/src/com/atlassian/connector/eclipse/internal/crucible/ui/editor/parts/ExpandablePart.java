@@ -416,13 +416,15 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 
 	protected final void updateChildren(Composite composite, FormToolkit toolkit, boolean shouldHighlight,
 			Collection<T> childrenObjects) {
+
+		List<V> toRemove = new ArrayList<V>();
+		List<V> newParts = new ArrayList<V>();
+
 		if (childrenObjects.size() > 0) {
 			List<T> generalComments = new ArrayList<T>(childrenObjects);
 			Collections.sort(generalComments, getComparator());
 
 			// The following code is almost duplicated in the crucible review files part
-			List<V> newParts = new ArrayList<V>();
-
 			Control prevControl = null;
 
 			for (int i = 0; i < generalComments.size(); i++) {
@@ -468,21 +470,24 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 				}
 			}
 
-			List<V> toRemove = new ArrayList<V>();
-
 			for (V part : childrenParts) {
 				if (!newParts.contains(part)) {
 					toRemove.add(part);
 				}
 			}
 
-			for (V part : toRemove) {
-				part.dispose();
+		} else {
+			for (V part : childrenParts) {
+				toRemove.add(part);
 			}
-
-			childrenParts.clear();
-			childrenParts.addAll(newParts);
 		}
+
+		for (V part : toRemove) {
+			part.dispose();
+		}
+
+		childrenParts.clear();
+		childrenParts.addAll(newParts);
 	}
 
 	protected abstract boolean shouldHighlight(T comment, CrucibleReviewEditorPage crucibleEditor2);

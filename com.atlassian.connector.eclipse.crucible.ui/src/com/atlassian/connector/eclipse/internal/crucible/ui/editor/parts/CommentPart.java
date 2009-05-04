@@ -90,6 +90,7 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 		GridDataFactory.fillDefaults().hint(500, SWT.DEFAULT).applyTo(commentTextComposite);
 	}
 
+	// TODO could be moved to a util method
 	private String getCommentText() {
 		String commentText = comment.getMessage();
 
