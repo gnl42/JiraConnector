@@ -27,4 +27,4 @@ Export-Package: com.atlassian.connector.eclipse.ui;x-internal:=true,
  com.atlassian.connector.eclipse.ui.editor;x-internal:=true,
  com.atlassian.connector.eclipse.ui.exceptions;x-internal:=true,
  com.atlassian.connector.eclipse.ui.forms;x-internal:=true,
- com.atlassian.connector.eclipse.ui.team;x-internal:=true
+ com.atlassian.connector.eclipse.ui.team;x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.subclipse.ui"

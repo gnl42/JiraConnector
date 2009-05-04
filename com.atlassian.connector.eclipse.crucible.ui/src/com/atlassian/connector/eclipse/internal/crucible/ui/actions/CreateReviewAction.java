@@ -40,11 +40,10 @@ public class CreateReviewAction extends BaseSelectionListenerAction implements I
 	}
 
 	public void run(IAction action) {
-		// ignore
-		if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
+		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
 			return;
 		}
-		Iterator it = ((IStructuredSelection) selection).iterator();
+		Iterator<?> it = ((IStructuredSelection) selection).iterator();
 		SortedSet<ICustomChangesetLogEntry> logEntries = new TreeSet<ICustomChangesetLogEntry>();
 		while (it.hasNext()) {
 			Object obj = it.next();
