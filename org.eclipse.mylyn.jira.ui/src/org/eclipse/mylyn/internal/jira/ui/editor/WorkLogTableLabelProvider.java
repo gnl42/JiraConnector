@@ -20,8 +20,8 @@ public class WorkLogTableLabelProvider extends ColumnLabelProvider {
 
 	private final JiraTimeFormat format;
 
-	public WorkLogTableLabelProvider() {
-		format = new JiraTimeFormat();
+	public WorkLogTableLabelProvider(JiraTimeFormat format) {
+		this.format = format;
 	}
 
 	public String getColumnText(Object element, int columnIndex) {

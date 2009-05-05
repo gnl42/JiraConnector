@@ -29,6 +29,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.internal.jira.core.WorkLogConverter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
+import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
@@ -53,7 +55,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
 	private static final String ID_POPUP_MENU = "org.eclipse.mylyn.jira.ui.editor.menu.worklog"; //$NON-NLS-1$
 
-	private final String[] columns = { Messages.WorkLogPart_Creator, Messages.WorkLogPart_Date, Messages.WorkLogPart_Worked, Messages.WorkLogPart_Description };
+	private final String[] columns = { Messages.WorkLogPart_Creator, Messages.WorkLogPart_Date,
+			Messages.WorkLogPart_Worked, Messages.WorkLogPart_Description };
 
 	private final int[] columnWidths = { 130, 70, 100, 150 };
 
@@ -117,7 +120,9 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 			workLogList.add(log);
 		}
 		attachmentsViewer.setContentProvider(new ArrayContentProvider());
-		attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider());
+		attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider(new JiraTimeFormat(
+				JiraUtil.getWorkDaysPerWeek(getTaskEditorPage().getTaskRepository()),
+				JiraUtil.getWorkHoursPerDay(getTaskEditorPage().getTaskRepository()))));
 		attachmentsViewer.addOpenListener(new IOpenListener() {
 			public void open(OpenEvent event) {
 				TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(),
