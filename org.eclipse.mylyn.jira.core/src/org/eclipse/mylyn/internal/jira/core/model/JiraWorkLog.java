@@ -16,6 +16,7 @@ import java.util.Date;
 
 /**
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 public class JiraWorkLog implements Serializable {
 
@@ -41,7 +42,13 @@ public class JiraWorkLog implements Serializable {
 
 	private Date updated;
 
+	private boolean autoAdjustEstimate;
+
 	public JiraWorkLog() {
+	}
+
+	public boolean isAutoAdjustEstimate() {
+		return autoAdjustEstimate;
 	}
 
 	public String getAuthor() {
@@ -87,6 +94,10 @@ public class JiraWorkLog implements Serializable {
 		return updated;
 	}
 
+	public void setAutoAdjustEstimate(boolean autoAdjustEstimate) {
+		this.autoAdjustEstimate = autoAdjustEstimate;
+	}
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
@@ -127,4 +138,105 @@ public class JiraWorkLog implements Serializable {
 		this.updated = updated;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((author == null) ? 0 : author.hashCode());
+		result = prime * result + (autoAdjustEstimate ? 1231 : 1237);
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+		result = prime * result + ((created == null) ? 0 : created.hashCode());
+		result = prime * result + ((groupLevel == null) ? 0 : groupLevel.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((roleLevelId == null) ? 0 : roleLevelId.hashCode());
+		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+		result = prime * result + (int) (timeSpent ^ (timeSpent >>> 32));
+		result = prime * result + ((updateAuthor == null) ? 0 : updateAuthor.hashCode());
+		result = prime * result + ((updated == null) ? 0 : updated.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		JiraWorkLog other = (JiraWorkLog) obj;
+		if (author == null) {
+			if (other.author != null) {
+				return false;
+			}
+		} else if (!author.equals(other.author)) {
+			return false;
+		}
+		if (autoAdjustEstimate != other.autoAdjustEstimate) {
+			return false;
+		}
+		if (comment == null) {
+			if (other.comment != null) {
+				return false;
+			}
+		} else if (!comment.equals(other.comment)) {
+			return false;
+		}
+		if (created == null) {
+			if (other.created != null) {
+				return false;
+			}
+		} else if (!created.equals(other.created)) {
+			return false;
+		}
+		if (groupLevel == null) {
+			if (other.groupLevel != null) {
+				return false;
+			}
+		} else if (!groupLevel.equals(other.groupLevel)) {
+			return false;
+		}
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (roleLevelId == null) {
+			if (other.roleLevelId != null) {
+				return false;
+			}
+		} else if (!roleLevelId.equals(other.roleLevelId)) {
+			return false;
+		}
+		if (startDate == null) {
+			if (other.startDate != null) {
+				return false;
+			}
+		} else if (!startDate.equals(other.startDate)) {
+			return false;
+		}
+		if (timeSpent != other.timeSpent) {
+			return false;
+		}
+		if (updateAuthor == null) {
+			if (other.updateAuthor != null) {
+				return false;
+			}
+		} else if (!updateAuthor.equals(other.updateAuthor)) {
+			return false;
+		}
+		if (updated == null) {
+			if (other.updated != null) {
+				return false;
+			}
+		} else if (!updated.equals(other.updated)) {
+			return false;
+		}
+		return true;
+	}
 }

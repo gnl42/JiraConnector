@@ -268,6 +268,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 			securityLevelAttribute.setValue(SecurityLevel.NONE.getId());
 		}
+
+		data.getRoot().createAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
 	}
 
 	public TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
@@ -957,8 +959,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			IProgressMonitor monitor) throws JiraException {
 		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
 		if (attribute != null) {
-			JiraWorkLog log = new WorkLogConverter().createFrom(attribute);
-			client.addWorkLog(issue.getKey(), log, monitor);
+			TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
+			//if no flag is set or flag is set and true, submit
+			if (submitFlagAttribute == null || submitFlagAttribute.getValue().equals(String.valueOf(true))) {
+				JiraWorkLog log = new WorkLogConverter().createFrom(attribute);
+				client.addWorkLog(issue.getKey(), log, monitor);
+			}
 		}
 	}
 

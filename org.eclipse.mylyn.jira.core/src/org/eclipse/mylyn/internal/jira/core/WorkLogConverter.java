@@ -22,6 +22,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 /**
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 public class WorkLogConverter extends AbstractComplexAttributeConverter<JiraWorkLog> {
 
@@ -53,6 +54,8 @@ public class WorkLogConverter extends AbstractComplexAttributeConverter<JiraWork
 
 	public static final String ATTRIBUTE_WORKLOG_NEW = "attribute.jira.worklog.new"; //$NON-NLS-1$
 
+	public static final String ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG = "attribute.jira.worklog.new.submit.flag"; //$NON-NLS-1$
+
 	public final static JiraField<String> ROLE_LEVEL_ID = create(String.class,
 			"roleLevelId", Messages.WorkLogConverter_Role_Level, //$NON-NLS-1$
 			TaskAttribute.TYPE_SHORT_TEXT);
@@ -68,6 +71,9 @@ public class WorkLogConverter extends AbstractComplexAttributeConverter<JiraWork
 
 	public final static JiraField<IRepositoryPerson> UPDATE_AUTHOR = create(IRepositoryPerson.class, "updateAuthor", //$NON-NLS-1$
 			Messages.WorkLogConverter_Author, TaskAttribute.TYPE_PERSON);
+
+	public static final JiraField<Boolean> ADJUST_ESTIMATE = create(Boolean.class,
+			"autoAdjustEstimate", Messages.WorkLogConverter_Auto_Adjust_Estimate, TaskAttribute.TYPE_BOOLEAN); //$NON-NLS-1$
 
 	private static <T> JiraField<T> create(Class<T> clazz, String key, String label, String type) {
 		JiraField<T> field = new JiraField<T>(clazz, "attribute.jira.worklog." + key, key, label, type); //$NON-NLS-1$

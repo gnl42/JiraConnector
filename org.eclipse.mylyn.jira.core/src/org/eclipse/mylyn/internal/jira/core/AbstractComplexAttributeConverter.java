@@ -75,6 +75,11 @@ public abstract class AbstractComplexAttributeConverter<T> {
 					if (value == null) {
 						value = 0;
 					}
+				} else if (TaskAttribute.TYPE_BOOLEAN.equals(taskField.getType())) {
+					value = mapper.getBooleanValue(attribute);
+					if (value == null) {
+						value = false;
+					}
 				} else {
 					value = attribute.getValue();
 				}

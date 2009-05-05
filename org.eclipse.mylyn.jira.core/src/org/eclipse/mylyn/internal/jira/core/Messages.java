@@ -107,6 +107,8 @@ public class Messages extends NLS {
 
 	public static String JiraTaskDataHandler_Sending_task;
 
+	public static String WorkLogConverter_Auto_Adjust_Estimate;
+
 	public static String WorkLogConverter_Author;
 
 	public static String WorkLogConverter_Comment;
