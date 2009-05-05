@@ -46,7 +46,7 @@
       <import plugin="org.apache.commons.discovery" version="0.2.0" match="compatible"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.commons.logging" version="1.0.4" match="compatible"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.0.1.I20080716" match="compatible"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090505" match="equivalent"/>
       <import plugin="org.eclipse.mylyn.commons.soap" version="3.0.0" match="compatible"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.net"/>
