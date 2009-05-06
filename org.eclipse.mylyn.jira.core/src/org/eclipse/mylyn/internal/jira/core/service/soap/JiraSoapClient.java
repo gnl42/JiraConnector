@@ -651,8 +651,13 @@ public class JiraSoapClient extends AbstractSoapClient {
 				JiraTimeFormat formatter = new JiraTimeFormat(jiraClient.getConfiguration().getWorkDaysPerWeek(),
 						jiraClient.getConfiguration().getWorkHoursPerDay());
 				RemoteWorklog remoteLog = JiraSoapConverter.convert(log, formatter);
-				remoteLog = getSoapService().addWorklogAndAutoAdjustRemainingEstimate(loginToken.getCurrentValue(),
-						issueKey, remoteLog);
+				if (log.isAutoAdjustEstimate()) {
+					remoteLog = getSoapService().addWorklogAndAutoAdjustRemainingEstimate(loginToken.getCurrentValue(),
+							issueKey, remoteLog);
+				} else {
+					remoteLog = getSoapService().addWorklogAndRetainRemainingEstimate(loginToken.getCurrentValue(),
+							issueKey, remoteLog);
+				}
 				return (remoteLog != null) ? JiraSoapConverter.convert(remoteLog) : null;
 			}
 		});

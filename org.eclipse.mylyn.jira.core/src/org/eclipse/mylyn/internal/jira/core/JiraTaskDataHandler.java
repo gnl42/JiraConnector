@@ -921,7 +921,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 								JiraCorePlugin.ID_PLUGIN, IStatus.OK, "Could not create issue.", null)); //$NON-NLS-1$
 					}
 
-					postWorkLog(repository, client, taskData, issue, monitor);
+					if (taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED) == null) {
+						postWorkLog(repository, client, taskData, issue, monitor);
+					}
 
 					// this is severely broken: should return id instead
 					//return issue.getKey();
@@ -960,8 +962,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
 		if (attribute != null) {
 			TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
-			//if no flag is set or flag is set and true, submit
-			if (submitFlagAttribute == null || submitFlagAttribute.getValue().equals(String.valueOf(true))) {
+			//if flag is set and true, submit
+			if (submitFlagAttribute != null && submitFlagAttribute.getValue().equals(String.valueOf(true))) {
 				JiraWorkLog log = new WorkLogConverter().createFrom(attribute);
 				client.addWorkLog(issue.getKey(), log, monitor);
 			}

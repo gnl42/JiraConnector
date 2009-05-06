@@ -305,8 +305,9 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
 		toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Start_Date);
 		dateWidget = new DateTime(newWorkLogComposite, SWT.DATE);
-		dateWidget.setDate(newWorkDoneDate.get(Calendar.YEAR), newWorkDoneDate.get(Calendar.MONTH),
-				newWorkDoneDate.get(Calendar.DAY_OF_MONTH));
+		dateWidget.setYear(newWorkDoneDate.get(Calendar.YEAR));
+		dateWidget.setMonth(newWorkDoneDate.get(Calendar.MONTH));
+		dateWidget.setDay(newWorkDoneDate.get(Calendar.DAY_OF_MONTH));
 		dateWidget.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		toolkit.adapt(dateWidget, true, true);
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.FILL).applyTo(dateWidget);
@@ -319,8 +320,9 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		});
 
 		timeWidget = new DateTime(newWorkLogComposite, SWT.TIME);
-		timeWidget.setTime(newWorkDoneDate.get(Calendar.HOUR_OF_DAY), newWorkDoneDate.get(Calendar.MINUTE),
-				newWorkDoneDate.get(Calendar.SECOND));
+		timeWidget.setHours(newWorkDoneDate.get(Calendar.HOUR_OF_DAY));
+		timeWidget.setMinutes(newWorkDoneDate.get(Calendar.MINUTE));
+		timeWidget.setSeconds(newWorkDoneDate.get(Calendar.SECOND));
 		timeWidget.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		toolkit.adapt(timeWidget, true, true);
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.FILL).applyTo(timeWidget);

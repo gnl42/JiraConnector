@@ -14,6 +14,7 @@ package org.eclipse.mylyn.jira.tests.client;
 
 import java.io.File;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -710,5 +711,47 @@ public class JiraClientTest extends TestCase {
 		assertEquals("10010", securityLevels[1].getId());
 		assertEquals("Users", securityLevels[2].getName());
 		assertEquals("10001", securityLevels[2].getId());
+	}
+
+	public void testAddWorkLog() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+
+		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
+		issue.setEstimate(1200);
+		client.updateIssue(issue, "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
+
+		assertEquals(1200, issue.getEstimate());
+
+		JiraWorkLog worklog1 = new JiraWorkLog();
+		worklog1.setAutoAdjustEstimate(false);
+		worklog1.setComment("comment");
+		Date time = new GregorianCalendar().getTime();
+		worklog1.setStartDate(time);
+		worklog1.setTimeSpent(120);
+
+		JiraWorkLog receivedWorklog = client.addWorkLog(issue.getKey(), worklog1, null);
+		client.updateIssue(issue, "", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
+
+		assertEquals(1200, issue.getEstimate());
+		assertEquals("comment", receivedWorklog.getComment());
+		assertEquals(120, receivedWorklog.getTimeSpent());
+		assertEquals(time, receivedWorklog.getStartDate());
+
+		worklog1 = new JiraWorkLog();
+		worklog1.setAutoAdjustEstimate(true);
+		worklog1.setComment("comment2");
+		time = new GregorianCalendar().getTime();
+		worklog1.setStartDate(time);
+		worklog1.setTimeSpent(240);
+
+		receivedWorklog = client.addWorkLog(issue.getKey(), worklog1, null);
+		issue = client.getIssueByKey(issue.getKey(), null);
+
+		assertEquals(1200 - 240, issue.getEstimate());
+		assertEquals("comment2", receivedWorklog.getComment());
+		assertEquals(240, receivedWorklog.getTimeSpent());
+		assertEquals(time, receivedWorklog.getStartDate());
 	}
 }
