@@ -22,7 +22,9 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleRevie
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
@@ -31,6 +33,7 @@ import com.atlassian.theplugin.commons.remoteapi.ServerData;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -117,13 +120,8 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 					}
 				});
 			} catch (final CoreException e) {
-				creationProcessFailedMessage = "Could not add revisions to review. See error log for details.";
-				Display.getDefault().syncExec(new Runnable() {
-					public void run() {
-						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-								"Error adding revisions to Review", e));
-					}
-				});
+				creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+						"Error adding revisions to Review", e));
 				throw e;
 			}
 			String taskID;
@@ -149,7 +147,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private Review crucibleReview;
 
-	private String creationProcessFailedMessage;
+	private MultiStatus creationProcessStatus;
 
 //	private CrucibleAddFilesPage addFilesPage;
 
@@ -280,7 +278,8 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		creationProcessFailedMessage = null;
+		creationProcessStatus = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.OK,
+				"Error during review creation. See error log for details.", null);
 		IWizardPage currentPage = getContainer().getCurrentPage();
 		if (currentPage instanceof WizardPage) {
 			((WizardPage) currentPage).setErrorMessage(null);
@@ -290,7 +289,8 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			createReview();
 			if (crucibleReview == null) {
 				if (currentPage instanceof WizardPage) {
-					((WizardPage) currentPage).setErrorMessage(creationProcessFailedMessage);
+					((WizardPage) currentPage).setErrorMessage(creationProcessStatus.getMessage());
+					StatusHandler.log(creationProcessStatus);
 				}
 				return false;
 			}
@@ -310,10 +310,19 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		if (wizardType == Type.ADD_CHANGESET || wizardType == Type.ADD_PATCH) {
 			addFilesAndPatchToReview(changesetsToAdd, patchToAdd, patchRepositoryToAdd);
 		}
+		try {
+			if (crucibleReview != null && detailsPage.startImmediately()
+					&& crucibleReview.getActions().contains(CrucibleAction.SUBMIT)) {
+				startReview();
+			}
+		} catch (ValueNotYetInitialized e1) {
+			//ignore
+		}
 
-		if (creationProcessFailedMessage != null) {
+		if (creationProcessStatus.getSeverity() != IStatus.OK) {
 			if (currentPage instanceof WizardPage) {
-				((WizardPage) currentPage).setErrorMessage(creationProcessFailedMessage);
+				((WizardPage) currentPage).setErrorMessage(creationProcessStatus.getMessage());
+				StatusHandler.log(creationProcessStatus);
 			}
 			return false;
 		}
@@ -346,7 +355,42 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error opening review", e));
 		}
-		return crucibleReview != null && creationProcessFailedMessage == null;
+		return crucibleReview != null && creationProcessStatus.getSeverity() == IStatus.OK;
+	}
+
+	private void startReview() {
+		try {
+			getContainer().run(true, true, new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("start review", getTaskRepository()) {
+						@Override
+						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+							try {
+								crucibleReview = client.execute(new RemoteOperation<Review>(monitor,
+										getTaskRepository()) {
+									@Override
+									public Review run(CrucibleServerFacade server, ServerData serverCfg,
+											IProgressMonitor monitor) throws CrucibleLoginException,
+											RemoteApiException, ServerPasswordNotProvidedException {
+										return server.submitReview(serverCfg, crucibleReview.getPermId());
+									}
+								});
+							} catch (final CoreException e) {
+								creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+										"Error starting review", e));
+								throw e;
+							}
+							crucibleReview = client.getReview(getTaskRepository(),
+									CrucibleUtil.getTaskIdFromReview(detailsPage.getReview()), true, monitor);
+							return Status.OK_STATUS;
+						}
+					};
+					job.run(monitor);
+				}
+			});
+		} catch (Exception e) {
+			creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error starting review", e));
+		}
 	}
 
 	private void addFilesAndPatchToReview(
@@ -365,9 +409,8 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		try {
 			getContainer().run(true, true, runnable);
 		} catch (Exception e) {
-			creationProcessFailedMessage = "Could not add revisions to review. See error log for details.";
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error adding revisions to Review",
-					e));
+			creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Error adding revisions to review", e));
 		}
 	}
 
@@ -389,13 +432,8 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 						}
 					});
 				} catch (final CoreException e) {
-					creationProcessFailedMessage = "Could not create review. See error log for details.";
-					Display.getDefault().syncExec(new Runnable() {
-						public void run() {
-							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-									"Error creating Review", e));
-						}
-					});
+					creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"Error creating review", e));
 					throw e;
 				}
 				crucibleReview = client.getReview(getTaskRepository(),
@@ -411,8 +449,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		try {
 			getContainer().run(true, true, runnable);
 		} catch (Exception e) {
-			creationProcessFailedMessage = "Could not create review. See error log for details.";
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error creating Review", e));
+			creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error creating Review", e));
 		}
 	}
 

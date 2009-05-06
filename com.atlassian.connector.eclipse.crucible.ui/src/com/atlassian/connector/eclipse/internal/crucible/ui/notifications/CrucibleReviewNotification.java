@@ -24,7 +24,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A custom crucible change notification
@@ -54,10 +56,14 @@ public class CrucibleReviewNotification extends AbstractNotification {
 			description = "New review";
 			isNew = true;
 		} else {
+			Set<String> descriptions = new HashSet<String>();
 			isNew = false;
 			description = "";
 			for (CrucibleNotification notification : notifications) {
-				description += notification.getPresentationMessage() + "\n";
+				if (!descriptions.contains(notification.getPresentationMessage())) {
+					descriptions.add(notification.getPresentationMessage());
+					description += notification.getPresentationMessage() + "\n";
+				}
 			}
 		}
 		this.repositoryUrl = repositoryUrl;

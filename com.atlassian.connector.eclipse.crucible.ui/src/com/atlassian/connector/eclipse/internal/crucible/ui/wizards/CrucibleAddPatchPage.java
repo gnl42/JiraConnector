@@ -64,7 +64,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 	public CrucibleAddPatchPage(TaskRepository repository, CrucibleReviewWizard wizard) {
 		super("cruciblePatch"); //$NON-NLS-1$
 		setTitle("Add Patch to Review");
-		setDescription("Review the patch from the clipboard to add it to the review.");
+		setDescription("Attach a patch from the clipboard to the review.");
 		this.taskRepository = repository;
 		this.wizard = wizard;
 	}
@@ -74,7 +74,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).margins(5, 5).create());
 
 		final Button includePatchButton = new Button(composite, SWT.CHECK);
-		includePatchButton.setText("Include this Patch in the review:");
+		includePatchButton.setText("Include this Patch from the clipboard in the review:");
 		GridDataFactory.fillDefaults().applyTo(includePatchButton);
 		includePatchButton.addSelectionListener(new SelectionAdapter() {
 			@Override

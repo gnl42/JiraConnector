@@ -36,6 +36,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -71,6 +73,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	private Button anyoneCanJoin;
 
 	private final CrucibleReviewWizard wizard;
+
+	private Button startReview;
 
 	public CrucibleReviewDetailsPage(TaskRepository repository, CrucibleReviewWizard wizard) {
 		super("crucibleDetails"); //$NON-NLS-1$
@@ -138,6 +142,12 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 		new Label(composite, SWT.NONE).setText("Title:");
 		titleText = new Text(composite, SWT.BORDER);
+		titleText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				newReview.setSummary(titleText.getText());
+				getContainer().updateButtons();
+			}
+		});
 		GridDataFactory.fillDefaults().span(5, 1).grab(true, false).applyTo(titleText);
 
 		new Label(composite, SWT.NONE).setText("Project:");
@@ -227,7 +237,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 		Button updateData = new Button(composite, SWT.PUSH);
 		updateData.setText("Update Repository Data");
-		GridDataFactory.fillDefaults().span(6, 1).align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
+		GridDataFactory.fillDefaults().span(4, 1).align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
 		updateData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -236,6 +246,11 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				reviewersSelectionTreePart.updateInput();
 			}
 		});
+
+		startReview = new Button(composite, SWT.CHECK);
+		startReview.setText("Start review immediately (if permitted)");
+		GridDataFactory.fillDefaults().span(2, 1).align(SWT.BEGINNING, SWT.BEGINNING).indent(5, SWT.DEFAULT).applyTo(
+				startReview);
 
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
@@ -258,6 +273,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		}
 		if (newReview.getAuthor() == null) {
 			setErrorMessage("Select an author");
+			return false;
+		}
+		if (newReview.getSummary() == null || newReview.getSummary().trim().length() == 0) {
+			setErrorMessage("Enter a title / summary for the review");
 			return false;
 		}
 		return true;
@@ -297,6 +316,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	public Set<Reviewer> getReviewers() {
 		return reviewersSelectionTreePart.getSelectedReviewers();
+	}
+
+	public boolean startImmediately() {
+		return startReview.getSelection();
 	}
 
 }

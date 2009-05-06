@@ -364,6 +364,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			}
 		});
 		editButton.setEnabled(false);
+		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(editButton);
 
 		table.addSelectionListener(new SelectionListener() {
 
