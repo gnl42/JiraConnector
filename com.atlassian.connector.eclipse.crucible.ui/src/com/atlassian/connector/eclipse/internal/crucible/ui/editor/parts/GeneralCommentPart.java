@@ -53,7 +53,7 @@ public class GeneralCommentPart extends CommentPart<GeneralComment, GeneralComme
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
 		composite = super.createSectionContents(section, toolkit);
 
-		updateChildren(composite, toolkit, false, generalComment.getReplies());
+		updateChildren(composite, toolkit, false, generalComment.getReplies2());
 		return composite;
 	}
 
@@ -137,7 +137,7 @@ public class GeneralCommentPart extends CommentPart<GeneralComment, GeneralComme
 				}
 
 			}
-			updateChildren(composite, toolkit, true, generalComment.getReplies());
+			updateChildren(composite, toolkit, true, generalComment.getReplies2());
 
 			createdControl = getSection();
 		}

@@ -268,15 +268,8 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 			othersDrafts.add(getReviewer(comment.getAuthor()));
 		}
 		if (!comment.isReply()) {
-			if (comment instanceof VersionedComment) {
-				for (VersionedComment versionedComment : ((VersionedComment) comment).getReplies()) {
-					checkCommentForDraft(versionedComment, othersDrafts);
-				}
-			}
-			if (comment instanceof GeneralComment) {
-				for (GeneralComment generalComment : ((GeneralComment) comment).getReplies()) {
-					checkCommentForDraft(generalComment, othersDrafts);
-				}
+			for (Comment reply : comment.getReplies()) {
+				checkCommentForDraft(reply, othersDrafts);
 			}
 		}
 	}

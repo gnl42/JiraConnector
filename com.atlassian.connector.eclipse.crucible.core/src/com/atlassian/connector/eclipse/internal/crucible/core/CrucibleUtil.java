@@ -316,7 +316,7 @@ public final class CrucibleUtil {
 			result += ((customValue == null) ? 0 : customValue.getConfigVersion());
 		}
 
-		for (GeneralComment reply : comment.getReplies()) {
+		for (GeneralComment reply : comment.getReplies2()) {
 			result = createHashForGeneralComment(result, reply);
 		}
 
@@ -340,7 +340,7 @@ public final class CrucibleUtil {
 			result += ((customValue == null) ? 0 : customValue.getConfigVersion());
 		}
 
-		for (VersionedComment reply : comment.getReplies()) {
+		for (VersionedComment reply : comment.getReplies2()) {
 			result = createHashForVersionedComment(result, reply);
 		}
 
@@ -412,9 +412,9 @@ public final class CrucibleUtil {
 			return false;
 		}
 
-		for (VersionedComment vc1 : c1.getReplies()) {
+		for (VersionedComment vc1 : c1.getReplies2()) {
 			boolean found = false;
-			for (VersionedComment vc2 : c2.getReplies()) {
+			for (VersionedComment vc2 : c2.getReplies2()) {
 				if (vc1.getPermId() == vc2.getPermId() && areVersionedCommentsDeepEquals(vc1, vc2)) {
 					found = true;
 					break;
@@ -507,9 +507,9 @@ public final class CrucibleUtil {
 			return false;
 		}
 
-		for (GeneralComment vc1 : c1.getReplies()) {
+		for (GeneralComment vc1 : c1.getReplies2()) {
 			boolean found = false;
-			for (GeneralComment vc2 : c2.getReplies()) {
+			for (GeneralComment vc2 : c2.getReplies2()) {
 				if (vc1.getPermId() == vc2.getPermId() && areGeneralCommentsDeepEquals(vc1, vc2)) {
 					found = true;
 					break;

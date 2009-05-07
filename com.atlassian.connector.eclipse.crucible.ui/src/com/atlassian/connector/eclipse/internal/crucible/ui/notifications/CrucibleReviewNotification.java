@@ -182,6 +182,7 @@ public class CrucibleReviewNotification extends AbstractNotification {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		return null;
 	}

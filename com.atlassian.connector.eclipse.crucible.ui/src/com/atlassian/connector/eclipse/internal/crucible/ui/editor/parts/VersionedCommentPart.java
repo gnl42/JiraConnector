@@ -73,7 +73,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 	protected Composite createSectionContents(Section section, FormToolkit toolkit) {
 		composite = super.createSectionContents(section, toolkit);
 
-		updateChildren(composite, toolkit, false, versionedComment.getReplies());
+		updateChildren(composite, toolkit, false, versionedComment.getReplies2());
 		return composite;
 	}
 
@@ -215,7 +215,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 				}
 
 			}
-			updateChildren(composite, toolkit, true, versionedComment.getReplies());
+			updateChildren(composite, toolkit, true, versionedComment.getReplies2());
 
 			createdControl = getSection();
 		}
