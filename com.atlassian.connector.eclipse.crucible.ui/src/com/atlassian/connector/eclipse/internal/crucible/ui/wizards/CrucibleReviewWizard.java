@@ -311,7 +311,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			addFilesAndPatchToReview(changesetsToAdd, patchToAdd, patchRepositoryToAdd);
 		}
 		try {
-			if (crucibleReview != null && detailsPage.startImmediately()
+			if (crucibleReview != null && detailsPage != null && detailsPage.startImmediately()
 					&& crucibleReview.getActions().contains(CrucibleAction.SUBMIT)) {
 				startReview();
 			}
