@@ -259,10 +259,10 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 						VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
 
 						IPath newPath = new Path(fileDescriptor.getUrl());
-						final IResource newResource = ResourcesPlugin.getWorkspace().getRoot().findMember(newPath);
+						final IResource newResource = findResourceForPath(newPath.toPortableString());
 
 						IPath oldPath = new Path(fileDescriptor.getUrl());
-						final IResource oldResource = ResourcesPlugin.getWorkspace().getRoot().findMember(oldPath);
+						final IResource oldResource = findResourceForPath(oldPath.toPortableString());
 
 						if ((newResource != null && newResource.equals(file))
 								|| (oldResource != null && oldResource.equals(file))) {
