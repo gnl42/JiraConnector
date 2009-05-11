@@ -139,7 +139,8 @@ public class BuildPlanManagerTest extends TestCase {
 		assertTrue(nrOfBuilds == builds.size());
 
 		for (BambooBuild build : expectedBuilds) {
-			assertTrue(builds.contains(build));
+			assertTrue("Expected build " + build.getPlanKey() + "-" + build.getNumber()
+					+ " not contained in retrieved builds.", builds.contains(build));
 		}
 	}
 
