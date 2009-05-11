@@ -225,6 +225,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 	};
 
+	private AbstractCrucibleEditorFormPart focusablePart;
+
 	public CrucibleReviewEditorPage(FormEditor editor, String title) {
 		super(editor, CrucibleConstants.CRUCIBLE_EDITOR_PAGE_ID, title);
 		parts = new ArrayList<AbstractCrucibleEditorFormPart>();
@@ -443,7 +445,8 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 	}
 
 	private void createFormParts() {
-		parts.add(new CrucibleDetailsPart());
+		focusablePart = new CrucibleDetailsPart();
+		parts.add(focusablePart);
 		parts.add(new CrucibleGeneralCommentsPart());
 		parts.add(new CrucibleReviewFilesPart());
 	}
@@ -1029,6 +1032,15 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				}
 			});
 
+		}
+	}
+
+	@Override
+	public void setFocus() {
+		if (focusablePart == null) {
+			initiaizingLabel.forceFocus();
+		} else {
+			focusablePart.setFocus();
 		}
 	}
 

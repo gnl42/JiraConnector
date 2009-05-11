@@ -168,6 +168,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	private boolean newReview;
 
+	private Text reviewTitleText;
+
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview) {
 		this.crucibleReview = review;
@@ -311,8 +313,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 					"Could not retrieve available Crucible actions", e));
 		}
 
-		Text nameText = createText(toolkit, parentComposite, crucibleReview.getName(), null, false, !newReview);
-		nameText.addModifyListener(new ModifyListener() {
+		reviewTitleText = createText(toolkit, parentComposite, crucibleReview.getName(), null, false, !newReview);
+		reviewTitleText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				String modifiedName = ((Text) e.widget).getText();
 				if (modifiedName.equals(crucibleReview.getName())) {
@@ -323,7 +325,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 				crucibleEditor.attributesModified();
 			}
 		});
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(nameText);
+		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(reviewTitleText);
 
 		Composite statusComp = toolkit.createComposite(parentComposite);
 		statusComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(4).spacing(10, 0).create());
@@ -418,4 +420,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		}
 	}
 
+	@Override
+	public void setFocus() {
+		reviewTitleText.setFocus();
+	}
 }
