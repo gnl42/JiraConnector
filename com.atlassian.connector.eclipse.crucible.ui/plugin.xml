@@ -115,5 +115,16 @@
             sequence="F2">
       </key>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="com.atlassian.connector.eclipse.crucible.ui.com.atlassian.connector.eclipse.cruicible.ui.comment.marker"
+            name="com.atlassian.connector.eclipse.cruicible.ui.comment.annotation">
+      </type>
+   </extension>
+   <extension
+         id="com.atlassian.connector.eclipse.cruicible.ui.comment.marker"
+         point="org.eclipse.core.resources.markers">
+   </extension>
 
 </plugin>
