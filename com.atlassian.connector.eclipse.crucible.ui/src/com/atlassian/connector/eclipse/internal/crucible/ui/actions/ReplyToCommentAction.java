@@ -48,7 +48,7 @@ public class ReplyToCommentAction extends AbstractAddCommentAction implements IR
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		return TasksUiImages.COMMENT_REPLY;
+		return TasksUiImages.COMMENT_REPLY_SMALL;
 	}
 
 	@Override

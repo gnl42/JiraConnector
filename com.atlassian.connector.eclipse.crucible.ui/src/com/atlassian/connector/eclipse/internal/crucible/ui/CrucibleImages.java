@@ -53,7 +53,11 @@ public final class CrucibleImages {
 
 	public static final ImageDescriptor SUBMIT = create(T_OBJ, "pin_submit.png"); //$NON-NLS-1$
 
-	public static final ImageDescriptor COMMENT_EDIT = create(T_OBJ, "editing_16.gif"); //$NON-NLS-1$
+	public static final ImageDescriptor COMMENT_EDIT = create(T_OBJ, "ico_small_edit.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor COMMENT_DELETE = create(T_OBJ, "ico_small_delete.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor COMMENT_POST = create(T_OBJ, "ico_small_publish.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor JOIN = create(T_OBJ, "pin_join.png"); //$NON-NLS-1$
 
