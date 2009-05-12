@@ -360,9 +360,10 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private void startReview() {
 		try {
+			//submit review
 			getContainer().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("start review", getTaskRepository()) {
+					CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("submit review", getTaskRepository()) {
 						@Override
 						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 							try {
@@ -382,12 +383,48 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 							}
 							crucibleReview = client.getReview(getTaskRepository(),
 									CrucibleUtil.getTaskIdFromReview(detailsPage.getReview()), true, monitor);
+
 							return Status.OK_STATUS;
 						}
 					};
 					job.run(monitor);
 				}
 			});
+			//if possible, approve review
+			if (crucibleReview.getActions().contains(CrucibleAction.APPROVE)) {
+				getContainer().run(true, true, new IRunnableWithProgress() {
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+						CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("approve review", getTaskRepository()) {
+							@Override
+							protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
+									throws CoreException {
+								try {
+									crucibleReview = client.execute(new RemoteOperation<Review>(monitor,
+											getTaskRepository()) {
+										@Override
+										public Review run(CrucibleServerFacade server, ServerData serverCfg,
+												IProgressMonitor monitor) throws CrucibleLoginException,
+												RemoteApiException, ServerPasswordNotProvidedException {
+											return server.approveReview(serverCfg, crucibleReview.getPermId());
+										}
+									});
+								} catch (final CoreException e) {
+									creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+											"Error starting review", e));
+									throw e;
+								}
+								crucibleReview = client.getReview(getTaskRepository(),
+										CrucibleUtil.getTaskIdFromReview(detailsPage.getReview()), true, monitor);
+								return Status.OK_STATUS;
+							}
+						};
+						job.run(monitor);
+					}
+				});
+
+			}
+		} catch (ValueNotYetInitialized e) {
+			// ignore
 		} catch (Exception e) {
 			creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error starting review", e));
 		}
