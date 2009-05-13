@@ -58,7 +58,7 @@
 			</fileset>
 		</delete>
 		
-		<exec executable="/usr/bin/Xvfb" spawn="true">
+		<exec executable="${xvfb.path}" spawn="true">
 			<arg value=":99"/>
 		</exec>
 	</target>
