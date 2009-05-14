@@ -20,6 +20,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BuildsChangedListene
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparator.SortOrder;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddCommentToBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddLabelToBuildAction;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.NewTaskFromFailedBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenBambooEditorAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.OpenRepositoryConfigurationAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RepositoryConfigurationAction;
@@ -215,6 +216,8 @@ public class BambooView extends ViewPart {
 	private BaseSelectionListenerAction addCommentToBuildAction;
 
 	private BaseSelectionListenerAction runBuildAction;
+
+	private BaseSelectionListenerAction newTaskFromFailedBuildAction;
 
 	private Action repoConfigAction;
 
@@ -448,6 +451,7 @@ public class BambooView extends ViewPart {
 		contextMenuManager.add(runBuildAction);
 		contextMenuManager.add(addLabelToBuildAction);
 		contextMenuManager.add(addCommentToBuildAction);
+		contextMenuManager.add(newTaskFromFailedBuildAction);
 		contextMenuManager.add(new Separator());
 		contextMenuManager.add(refreshAction);
 		contextMenuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -517,6 +521,10 @@ public class BambooView extends ViewPart {
 		addCommentToBuildAction = new AddCommentToBuildAction();
 		addCommentToBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(addCommentToBuildAction);
+
+		newTaskFromFailedBuildAction = new NewTaskFromFailedBuildAction();
+		newTaskFromFailedBuildAction.setEnabled(false);
+		buildViewer.addSelectionChangedListener(newTaskFromFailedBuildAction);
 
 		runBuildAction = new RunBuildAction();
 		runBuildAction.setEnabled(false);

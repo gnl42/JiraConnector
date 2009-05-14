@@ -16,6 +16,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddCommentToBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddLabelToBuildAction;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.NewTaskFromFailedBuildAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.RunBuildAction;
 import com.atlassian.connector.eclipse.ui.commons.AtlassianUiUtil;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -272,6 +273,10 @@ public class BambooEditor extends SharedHeaderFormEditor {
 		BaseSelectionListenerAction addCommentToBuildAction = new AddCommentToBuildAction();
 		addCommentToBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
 		toolBarManager.add(addCommentToBuildAction);
+
+		BaseSelectionListenerAction newTaskFromFailedBuildAction = new NewTaskFromFailedBuildAction();
+		newTaskFromFailedBuildAction.selectionChanged(new StructuredSelection(bambooBuild));
+		toolBarManager.add(newTaskFromFailedBuildAction);
 
 		toolBarManager.add(new Separator());
 
