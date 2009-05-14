@@ -127,4 +127,8 @@ public class MockBambooBuild implements BambooBuild {
 		return null;
 	}
 
+	public Throwable getException() {
+		return null;
+	}
+
 }

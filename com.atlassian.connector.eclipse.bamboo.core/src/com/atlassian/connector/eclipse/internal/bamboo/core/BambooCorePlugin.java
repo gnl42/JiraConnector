@@ -17,6 +17,8 @@ import com.atlassian.theplugin.commons.util.LoggerImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.osgi.framework.BundleContext;
 
 import java.io.File;
@@ -54,6 +56,12 @@ public class BambooCorePlugin extends Plugin {
 		plugin.getPluginPreferences().setDefault(BambooConstants.PREFERENCE_AUTO_REFRESH,
 				BambooConstants.DEFAULT_AUTO_REFRESH);
 		buildPlanManager = new BuildPlanManager();
+		plugin.getPluginPreferences().addPropertyChangeListener(new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				buildPlanManager.reInitializeScheduler();
+			}
+		});
+
 	}
 
 	@Override
@@ -100,13 +108,11 @@ public class BambooCorePlugin extends Plugin {
 	public static void setRefreshIntervalMinutes(int minutes) {
 		plugin.getPluginPreferences().setValue(BambooConstants.PREFERENCE_REFRESH_INTERVAL, minutes);
 		plugin.savePluginPreferences();
-		getBuildPlanManager().reInitializeScheduler();
 	}
 
 	public static void toggleAutoRefresh() {
 		plugin.getPluginPreferences().setValue(BambooConstants.PREFERENCE_AUTO_REFRESH, !isAutoRefresh());
 		plugin.savePluginPreferences();
-		getBuildPlanManager().reInitializeScheduler();
 	}
 
 	public static boolean isAutoRefresh() {
