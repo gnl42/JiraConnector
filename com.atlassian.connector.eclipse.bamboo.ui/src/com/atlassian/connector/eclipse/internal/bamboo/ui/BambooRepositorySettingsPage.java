@@ -193,7 +193,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		buttonComposite.setLayout(buttonLayout);
 
 		Button selectFavorites = new Button(buttonComposite, SWT.PUSH);
-		selectFavorites.setText("&Favorites");
+		selectFavorites.setText("&Favourites");
 		selectFavorites.addSelectionListener(new SelectionAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override
