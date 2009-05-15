@@ -170,19 +170,14 @@ public class BambooEditor extends SharedHeaderFormEditor {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// ignore
-
 	}
 
 	@Override
 	public void doSaveAs() {
-		// ignore
-
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		// ignore
 		return false;
 	}
 

@@ -132,6 +132,21 @@
                name="BambooBuild">
          </editor>
       </extension>
+      <extension
+            point="org.eclipse.ui.preferencePages">
+         <page
+               category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
+               class="com.atlassian.connector.eclipse.bamboo.ui.preferences.BambooPreferencePage"
+               id="com.atlassian.connector.eclipse.bamboo.ui.preferences.BambooPreferencePage"
+               name="Bamboo">
+         </page>
+      </extension>
+      <extension
+            point="org.eclipse.core.runtime.preferences">
+         <initializer
+               class="com.atlassian.connector.eclipse.bamboo.ui.preferences.PreferenceInitializer">
+         </initializer>
+      </extension>
       <!--<extension point="org.eclipse.ui.decorators">
       <decorator
             class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooViewLabelDecorator"

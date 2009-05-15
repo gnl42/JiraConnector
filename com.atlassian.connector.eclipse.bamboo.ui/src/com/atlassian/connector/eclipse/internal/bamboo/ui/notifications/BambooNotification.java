@@ -126,6 +126,7 @@ public class BambooNotification extends AbstractNotification {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
