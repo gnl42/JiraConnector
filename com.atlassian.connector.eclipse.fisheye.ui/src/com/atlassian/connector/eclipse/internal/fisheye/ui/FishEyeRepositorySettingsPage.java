@@ -1,36 +1,21 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-//import org.eclipse.mylyn.internal.provisional.commons.ui.CommonsUiUtil;
-//import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
-import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage.Validator;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
 
 public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
@@ -43,10 +28,11 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 	}
+
 //	private class BambooValidator extends Validator {
 //
 //		private final TaskRepository taskRepository;
@@ -151,12 +137,11 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 
 	@Override
 	protected void createContributionControls(Composite parent) {
-		// don't call the super method since the Bamboo connector does not take advantage of the tasks UI extensions
 
-		Label label = new Label(parent, SWT.LEFT);
-		label.setText("Wojtek");
+//		Label label = new Label(parent, SWT.LEFT);
+//		label.setText("@todo: Under construction");
 //		return labe
-				
+
 //		ExpandableComposite section = createSection(parent, "Build Plans");
 //		section.setExpanded(true);
 //		if (section.getLayoutData() instanceof GridData) {

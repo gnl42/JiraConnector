@@ -32,7 +32,7 @@
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <command
-               commandId="com.atlassian.connector.eclipse.fisheye.ui.showInFishEyeCommand"
+               commandId="com.atlassian.connector.eclipse.fisheye.ui.copyFishEyeLinkToClipboardCommand"
                style="push" label="Copy FishEye link (adaptable)">
 			  <visibleWhen>
 			    <or>
@@ -115,6 +115,21 @@
             class="com.atlassian.connector.eclipse.internal.fisheye.ui.command.CopyFishEyeLinkToClipboardCommand"
             commandId="com.atlassian.connector.eclipse.fisheye.ui.copyFishEyeLinkToClipboardCommand">
       </handler>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.atlassian.connector.eclipse.fisheye.ui.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
+            class="com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage"
+            id="com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage"
+            name="FishEye">
+      </page>
    </extension>
 
 </plugin>

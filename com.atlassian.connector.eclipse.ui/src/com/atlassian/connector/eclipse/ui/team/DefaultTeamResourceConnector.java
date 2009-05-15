@@ -51,6 +51,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
+import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -433,4 +436,78 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return inSync;
 	}
 
+	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
+		//resource
+		final IProject project = resource.getProject();
+		if (project == null) {
+			return null;
+		}
+
+		RepositoryProvider rp = RepositoryProvider.getProvider(project);
+		checkIfSupportedTeamProvider(rp);
+		if (rp == null) {
+			return null;
+		}
+
+		final IFileHistoryProvider historyProvider = rp.getFileHistoryProvider();
+		if (historyProvider != null) {
+			// this project has a team nature associated with it in the workspace
+
+			IFileRevision localFileRevision = historyProvider.getWorkspaceFileRevision(resource);
+			if (localFileRevision == null) {
+				return null;
+			}
+			final URI uri = localFileRevision.getURI();
+			if (uri != null) {
+				// for CVS URI will include also query with revision number (like ?r=3.23), we want to cut it off
+				// without introducing dependency on CVS
+				final String query = uri.getQuery();
+				String uriStr = uri.toString();
+				final int index = uriStr.lastIndexOf("?" + query);
+				if (index != -1) {
+					uriStr = uriStr.substring(0, index);
+				}
+
+				return new RevisionInfo(uriStr, localFileRevision.getContentIdentifier());
+			}
+			return new RevisionInfo(localFileRevision.getContentIdentifier(), null);
+//
+//			boolean inSync = isRemoteFileInSync(file, rp);
+//
+//			if (inSync && localFileRevision.getContentIdentifier() != null) {
+//
+//				for (CrucibleFileInfo fileInfo : activeReviewFiles) {
+//					VersionedVirtualFile fileDescriptor = fileInfo.getFileDescriptor();
+//					VersionedVirtualFile oldFileDescriptor = fileInfo.getOldFileDescriptor();
+//
+//					IPath newPath = new Path(fileDescriptor.getUrl());
+//					final IResource newResource = ResourcesPlugin.getWorkspace().getRoot().findMember(newPath);
+//
+//					IPath oldPath = new Path(fileDescriptor.getUrl());
+//					final IResource oldResource = ResourcesPlugin.getWorkspace().getRoot().findMember(oldPath);
+//
+//					if ((newResource != null && newResource.equals(file))
+//							|| (oldResource != null && oldResource.equals(file))) {
+//
+//						String revision = localFileRevision.getContentIdentifier();
+//
+//						if (revision.equals(fileDescriptor.getRevision())) {
+//							return new CrucibleFile(fileInfo, false);
+//						}
+//						if (revision.equals(oldFileDescriptor.getRevision())) {
+//							return new CrucibleFile(fileInfo, true);
+//						}
+//					}
+//				}
+//
+//				return null;
+//			}
+		}
+		return null;
+	}
+
+	public Collection<String> getRepositories(IProgressMonitor monitor) {
+		// @todo wseliga implement it
+		return Collections.emptyList();
+	}
 }

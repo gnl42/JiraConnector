@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.ui.team;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
@@ -48,8 +49,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,6 +131,46 @@ public final class TeamUiUtils {
 			}
 		}
 		return defaultConnector.getRevisionsForFile(file, monitor);
+	}
+
+	private interface ConnectorOperation<T> {
+		T execute(ITeamResourceConnector connector, IProgressMonitor monitor) throws CoreException;
+	}
+
+	private static <T> T executeOnConnectors(ConnectorOperation<T> operation, IProgressMonitor monitor)
+			throws CoreException {
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled()) {
+				try {
+					return operation.execute(connector, monitor);
+				} catch (CoreException e) {
+					// ignore and try other connector(s)
+				}
+			}
+		}
+		return operation.execute(defaultConnector, monitor);
+	}
+
+	public static Collection<String> getRepositories(IProgressMonitor monitor) {
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+		Collection<String> res = MiscUtil.buildArrayList();
+
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled()) {
+//				try {
+				res.addAll(connector.getRepositories(monitor));
+//				} catch (CoreException e) {
+//					StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
+//							"Cannot get repositories for a connector"));
+//					// ignore and try other connector(s)
+//				}
+			}
+		}
+		res.addAll(defaultConnector.getRepositories(monitor));
+		return res;
+
 	}
 
 	/**
@@ -302,6 +345,21 @@ public final class TeamUiUtils {
 		}
 	}
 
+	public static RevisionInfo getLocalRevision(@NotNull IResource resource) throws CoreException {
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled()) {
+				RevisionInfo res = connector.getLocalRevision(resource);
+				if (res != null) {
+					return res;
+				}
+			}
+		}
+		return defaultConnector.getLocalRevision(resource);
+
+	}
+
 	public static void selectAndReveal(final ITextEditor textEditor, int startLine, int endLine) {
 		IDocumentProvider documentProvider = textEditor.getDocumentProvider();
 		IEditorInput editorInput = textEditor.getEditorInput();
@@ -355,7 +413,7 @@ public final class TeamUiUtils {
 		if (contentViewer instanceof TextMergeViewer) {
 			TextMergeViewer textMergeViewer = (TextMergeViewer) contentViewer;
 			try {
-				Class clazz = TextMergeViewer.class;
+				Class<TextMergeViewer> clazz = TextMergeViewer.class;
 				Field declaredField = clazz.getDeclaredField("fLeft");
 				declaredField.setAccessible(true);
 				final MergeSourceViewer fLeft = (MergeSourceViewer) declaredField.get(textMergeViewer);

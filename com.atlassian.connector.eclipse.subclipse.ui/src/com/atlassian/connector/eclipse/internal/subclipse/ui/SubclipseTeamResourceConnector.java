@@ -19,11 +19,13 @@ import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.core.resources.IFile;
@@ -72,6 +74,7 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 import java.net.MalformedURLException;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -137,6 +140,16 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
 					"Error while retrieving Revisions for file " + file.getName() + ".", e));
 		}
+	}
+
+	public Collection<String> getRepositories(IProgressMonitor monitor) {
+		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
+				monitor);
+		List<String> res = MiscUtil.buildArrayList(repos.length);
+		for (ISVNRepositoryLocation repo : repos) {
+			res.add(repo.getUrl().toString());
+		}
+		return res;
 	}
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
@@ -512,6 +525,25 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			}
 		}
 		return null;
+	}
+
+	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
+		final IProject project = resource.getProject();
+		if (project == null) {
+			return null;
+		}
+		if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
+			ISVNLocalResource x = SVNWorkspaceRoot.getSVNResourceFor(resource);
+
+			try {
+				return new RevisionInfo(x.getUrl().toString(), x.getStatus().getLastChangedRevision().toString());
+			} catch (SVNException e) {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+						"Cannot determine SVN information for resource [" + resource + "]", e));
+			}
+		}
+		return null;
+
 	}
 
 	private String getEditorId(IWorkbench workbench, ISVNRemoteFile file) {

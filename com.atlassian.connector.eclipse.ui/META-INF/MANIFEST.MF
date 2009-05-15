@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.jface.text,
  org.eclipse.compare,
- org.eclipse.mylyn.commons.net
+ org.eclipse.mylyn.commons.net,
+ org.jetbrains.annotations
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.ui;x-internal:=true,
@@ -27,4 +28,5 @@ Export-Package: com.atlassian.connector.eclipse.ui;x-internal:=true,
  com.atlassian.connector.eclipse.ui.editor;x-internal:=true,
  com.atlassian.connector.eclipse.ui.exceptions;x-internal:=true,
  com.atlassian.connector.eclipse.ui.forms;x-internal:=true,
- com.atlassian.connector.eclipse.ui.team;x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.subclipse.ui"
+ com.atlassian.connector.eclipse.ui.preferences,
+ com.atlassian.connector.eclipse.ui.team;x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.subclipse.ui, com.atlassian.connector.eclipse.crucible.tests, com.atlassian.connector.eclipse.fisheye.ui"
