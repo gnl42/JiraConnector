@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
-
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -30,7 +29,8 @@ final class TableLabelProvider extends LabelProvider implements ITableLabelProvi
 			return row.getFishEyeServer();
 		case 2:
 			return row.getFishEyeRepo();
+		default:
+			return "???";
 		}
-		return "???";
 	}
 }

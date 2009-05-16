@@ -484,9 +484,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 					uriStr = uriStr.substring(0, index);
 				}
 
-				return new RevisionInfo(uriStr, localFileRevision.getContentIdentifier());
+				return new RevisionInfo(uriStr, localFileRevision.getContentIdentifier(), null);
 			}
-			return new RevisionInfo(localFileRevision.getContentIdentifier(), null);
+			return new RevisionInfo(localFileRevision.getContentIdentifier(), null, null);
 //
 //			boolean inSync = isRemoteFileInSync(file, rp);
 //

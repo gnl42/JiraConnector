@@ -35,7 +35,7 @@ public class FishEyeUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		settingsManager = new FishEyeSettingsManager();
+		settingsManager = new FishEyeSettingsManager(getPreferenceStore());
 	}
 
 	/*

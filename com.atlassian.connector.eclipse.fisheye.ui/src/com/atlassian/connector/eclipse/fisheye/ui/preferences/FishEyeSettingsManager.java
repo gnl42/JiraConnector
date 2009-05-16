@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -20,25 +21,96 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
 
+/**
+ * This class uses somewhat crazy approach for persisting preferences - XML is serialized to a string and then such
+ * string is put into properties using standard {@link IPreferenceStore} interface. Such approach is also used by other
+ * standard Eclipse plugins - e.g. JDT uses it for persisting JRE configuration.
+ * 
+ * @author Wojciech Seliga
+ */
 public class FishEyeSettingsManager {
+	private static final String MAPPING_ELEMENT = "mapping";
+
+	private static final String ROOT_ELEMENT = "mappings";
+
+	private static final String SCM_PATH = "scmPath";
+
+	private static final String FISHEYE_SERVER = "fishEyeServer";
+
+	private static final String FISHEYE_REPO = "fishEyeRepo";
+
 	private final List<FishEyeMappingConfiguration> mappings = MiscUtil.buildArrayList();
 
-	public FishEyeSettingsManager() {
-		mappings.add(new FishEyeMappingConfiguration("https://studio.atlassian.com/svn/ACC/",
-				"https://studio.atlassian.com/source/", "ACC"));
-		mappings.add(new FishEyeMappingConfiguration("https://studio.atlassian.com/svn/PLE/",
-				"https://studio.atlassian.com/source/", "PLE"));
+	private final IPreferenceStore preferenceStore;
 
+	private static final String PREFERENCE_MAPPINGS = ROOT_ELEMENT;
+
+	public FishEyeSettingsManager(IPreferenceStore preferenceStore) {
+		this.preferenceStore = preferenceStore;
+		load();
 	}
 
 	public List<FishEyeMappingConfiguration> getMappings() {
 		return mappings;
+	}
+
+	private void load() {
+		final String mappingsStr = preferenceStore.getString(PREFERENCE_MAPPINGS);
+		if (mappingsStr == null || mappingsStr.length() == 0) {
+			return;
+		}
+		try {
+			final Document document = new SAXBuilder().build(new StringReader(mappingsStr));
+			@SuppressWarnings("unchecked")
+			final List<Element> mappingElements = document.getRootElement().getChildren();
+			for (Element element : mappingElements) {
+				if (element.getName().equals(MAPPING_ELEMENT)) {
+					mappings.add(new FishEyeMappingConfiguration(element.getAttributeValue(SCM_PATH),
+							element.getAttributeValue(FISHEYE_SERVER), element.getAttributeValue(FISHEYE_REPO)));
+				}
+			}
+		} catch (JDOMException e) {
+			StatusHandler.log(new Status(IStatus.WARNING, FishEyeUiPlugin.PLUGIN_ID,
+					"Error while loading FishEye preferences", e));
+		} catch (IOException e) {
+			StatusHandler.log(new Status(IStatus.WARNING, FishEyeUiPlugin.PLUGIN_ID,
+					"Error while loading FishEye preferences", e));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void save() throws IOException {
+		final Element root = new Element(ROOT_ELEMENT);
+		for (FishEyeMappingConfiguration mapping : mappings) {
+			final Element mappingElem = new Element(MAPPING_ELEMENT);
+			mappingElem.setAttribute(SCM_PATH, mapping.getScmPath());
+			mappingElem.setAttribute(FISHEYE_SERVER, mapping.getFishEyeServer());
+			mappingElem.setAttribute(FISHEYE_REPO, mapping.getFishEyeRepo());
+			root.getChildren().add(mappingElem);
+		}
+		final StringWriter sw = new StringWriter();
+		new XMLOutputter().output(root, sw);
+		preferenceStore.setValue(PREFERENCE_MAPPINGS, sw.toString());
+		if (preferenceStore instanceof IPersistentPreferenceStore) {
+			((IPersistentPreferenceStore) preferenceStore).save();
+		}
 	}
 
 	@Nullable
@@ -71,6 +143,9 @@ public class FishEyeSettingsManager {
 			throw new CoreException(new Status(IStatus.ERROR, FishEyeCorePlugin.PLUGIN_ID,
 					"Cannot find matching FishEye repository for " + revisionInfo));
 		}
+
+		// for binary resources the URL is like: $SERVER_URL/browse/~raw,r=$REVISION/$REPO/$PATH
+
 		final String path = scmPath.substring(cfgScmPath.length());
 		final String repo = cfg.getFishEyeRepo();
 		final String fishEyeUrl = cfg.getFishEyeServer();
@@ -79,17 +154,28 @@ public class FishEyeSettingsManager {
 			res.append('/');
 		}
 		res.append("browse/");
+
+		final boolean isBinary = revisionInfo.isBinary() != null && revisionInfo.isBinary();
+
+		if (isBinary && revisionInfo.getRevision() != null) {
+			res.append("~raw,r=");
+			res.append(revisionInfo.getRevision());
+			res.append("/");
+		}
+
 		res.append(repo);
 		if (!path.startsWith("/")) {
 			res.append('/');
 		}
 		res.append(path);
-		if (revisionInfo.getRevision() != null) {
-			res.append("?r=");
-			res.append(revisionInfo.getRevision());
-		}
-		if (lineRange != null) {
-			res.append("#l").append(lineRange.getStartLine());
+		if (!isBinary) {
+			if (revisionInfo.getRevision() != null) {
+				res.append("?r=");
+				res.append(revisionInfo.getRevision());
+			}
+			if (lineRange != null) {
+				res.append("#l").append(lineRange.getStartLine());
+			}
 		}
 		return res.toString();
 	}

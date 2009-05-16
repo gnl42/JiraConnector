@@ -2,6 +2,9 @@ package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
@@ -24,6 +27,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,11 +44,9 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 	public FishEyePreferencePage() {
 		super("FishEye Preferences");
-		setPreferenceStore(FishEyeUiPlugin.getDefault().getPreferenceStore());
+		//setPreferenceStore(FishEyeUiPlugin.getDefault().getPreferenceStore());
 		setDescription("Add, remove or edit FishEye mapping configuration.");
 		noDefaultAndApplyButton();
-		int a = 50 + 14230;
-		System.out.println(a);
 	}
 
 //	/**
@@ -186,4 +188,16 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		return ancestor;
 	}
 
+	@Override
+	public boolean performOk() {
+		try {
+			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().save();
+		} catch (IOException e) {
+			ErrorDialog.openError(getShell(), "Atlassian Eclipse Connector",
+					"Error while saving FishEye mapping configuration", new Status(IStatus.ERROR,
+							FishEyeUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			return false;
+		}
+		return super.performOk();
+	}
 }

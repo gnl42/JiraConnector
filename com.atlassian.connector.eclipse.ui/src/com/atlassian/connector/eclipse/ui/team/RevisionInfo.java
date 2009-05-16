@@ -16,9 +16,12 @@ public class RevisionInfo {
 
 	private final String revision;
 
-	public RevisionInfo(String scmPath, String revision) {
+	private final Boolean isBinary;
+
+	public RevisionInfo(String scmPath, String revision, Boolean isBinary) {
 		this.scmPath = scmPath;
 		this.revision = revision;
+		this.isBinary = isBinary;
 	}
 
 	public String getScmPath() {
@@ -27,6 +30,10 @@ public class RevisionInfo {
 
 	public String getRevision() {
 		return revision;
+	}
+
+	public Boolean isBinary() {
+		return isBinary;
 	}
 
 	@Override

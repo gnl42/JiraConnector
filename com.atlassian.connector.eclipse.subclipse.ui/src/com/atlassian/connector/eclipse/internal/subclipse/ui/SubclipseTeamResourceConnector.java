@@ -69,6 +69,7 @@ import org.tigris.subversion.subclipse.ui.Policy;
 import org.tigris.subversion.subclipse.ui.SVNUIPlugin;
 import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
 import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
+import org.tigris.subversion.svnclientadapter.ISVNProperty;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
@@ -533,10 +534,12 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			return null;
 		}
 		if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
-			ISVNLocalResource x = SVNWorkspaceRoot.getSVNResourceFor(resource);
-
+			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
+			final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
+			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"));
 			try {
-				return new RevisionInfo(x.getUrl().toString(), x.getStatus().getLastChangedRevision().toString());
+				return new RevisionInfo(svnResource.getUrl().toString(), 
+						svnResource.getStatus().getLastChangedRevision().toString(), isBinary);
 			} catch (SVNException e) {
 				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
 						"Cannot determine SVN information for resource [" + resource + "]", e));

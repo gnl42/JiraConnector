@@ -1,14 +1,14 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
+import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
+
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
-import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
-import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 
 public class FishEyeRepositoryConnectorUi extends AbstractRepositoryConnectorUi {
 

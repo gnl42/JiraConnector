@@ -53,6 +53,48 @@ import java.util.Set;
 
 public class AddFishEyeMappingDialog extends ProgressDialog {
 
+	private final class FishEyeServerButtonHandler extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent event) {
+			final ListDialog ld = new ListDialog(getShell());
+			ld.setAddCancelButton(true);
+			ld.setContentProvider(new ArrayContentProvider());
+			ld.setLabelProvider(new LabelProvider() {
+
+				public Image getImage(Object element) {
+					if (element instanceof TaskRepository) {
+						TaskRepository taskRepo = (TaskRepository) element;
+						if (taskRepo.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)) {
+							return FishEyeImages.getImage(FishEyeImages.FISHEYE_ICON);
+						}
+					}
+					return null;
+				}
+
+				public String getText(Object element) {
+					if (element instanceof TaskRepository) {
+						TaskRepository taskRepo = (TaskRepository) element;
+						return taskRepo.getRepositoryLabel() + " (" + taskRepo.getRepositoryUrl() + ")";
+					}
+					return element.toString();
+				}
+
+			});
+			Set<TaskRepository> fishEyeTaskRepos = TasksUi.getRepositoryManager().getRepositories(
+					FishEyeCorePlugin.CONNECTOR_KIND);
+			if (fishEyeTaskRepos != null) {
+				ld.setInput(fishEyeTaskRepos.toArray());
+				ld.setTitle("Select FishEye Repository");
+				if (ld.open() == Window.OK) {
+					final Object[] result = ld.getResult();
+					if (result != null && result.length > 0 /*&& result[0] instanceof*/) {
+						fishEyeServerEdit.setText(result[0].toString());
+					}
+				}
+			}
+
+		}
+	}
+
 	private FishEyeMappingConfiguration cfg;
 
 	private Text scmPathEdit;
@@ -147,55 +189,14 @@ public class AddFishEyeMappingDialog extends ProgressDialog {
 
 		});
 		GridDataFactory.fillDefaults().grab(false, false).span(1, 1).applyTo(scmButton);
-		createLabel(parent, "FishEye Server");
+		createLabel(parent, "FishEye Server URL");
 		fishEyeServerEdit = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		GridDataFactory.fillDefaults().grab(true, false).span(1, 1).applyTo(fishEyeServerEdit);
 
 		final Button fishEyeServerButton = new Button(parent, SWT.PUSH);
 		GridDataFactory.fillDefaults().grab(false, false).span(1, 1).applyTo(fishEyeServerButton);
 		fishEyeServerButton.setText("...");
-		fishEyeServerButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				final ListDialog ld = new ListDialog(getShell());
-				ld.setAddCancelButton(true);
-				ld.setContentProvider(new ArrayContentProvider());
-				ld.setLabelProvider(new LabelProvider() {
-
-					public Image getImage(Object element) {
-						if (element instanceof TaskRepository) {
-							TaskRepository taskRepo = (TaskRepository) element;
-							if (taskRepo.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)) {
-								return FishEyeImages.getImage(FishEyeImages.FISHEYE_ICON);
-							}
-						}
-						return null;
-					}
-
-					public String getText(Object element) {
-						if (element instanceof TaskRepository) {
-							TaskRepository taskRepo = (TaskRepository) element;
-							return taskRepo.getRepositoryLabel() + " (" + taskRepo.getRepositoryUrl() + ")";
-						}
-						return element.toString();
-					}
-
-				});
-				Set<TaskRepository> repositories = TasksUi.getRepositoryManager().getRepositories(
-						FishEyeCorePlugin.CONNECTOR_KIND);
-				if (repositories != null) {
-					ld.setInput(repositories.toArray());
-					ld.setTitle("Select FishEye Repository");
-					if (ld.open() == Window.OK) {
-						final Object[] result = ld.getResult();
-						if (result != null && result.length > 0 /*&& result[0] instanceof*/) {
-							fishEyeServerEdit.setText(result[0].toString());
-						}
-					}
-				}
-
-			}
-
-		});
+		fishEyeServerButton.addSelectionListener(new FishEyeServerButtonHandler());
 
 		createLabel(parent, "FishEye Repository");
 		fishEyeRepoEdit = new Text(parent, SWT.SINGLE | SWT.BORDER);
