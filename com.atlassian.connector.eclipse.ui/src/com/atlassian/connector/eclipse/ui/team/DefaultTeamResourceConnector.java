@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
@@ -50,6 +51,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.osgi.framework.Bundle;
 
 import java.net.URI;
 import java.util.Collection;
@@ -65,6 +67,8 @@ import java.util.SortedSet;
  * @author Shawn Minto
  */
 public class DefaultTeamResourceConnector implements ITeamResourceConnector {
+
+	private static final String SUBVERSIVE_MINIMUM_VERSION = "0.7.8";
 
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
 		// the default one handles anything
@@ -167,6 +171,18 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	private static void checkIfSupportedTeamProvider(RepositoryProvider rp) {
+		//only support subversive > 0.7.8
+		Bundle bundle = Platform.getBundle("org.eclipse.team.svn");
+		if (bundle != null) {
+			Object version = bundle.getHeaders().get("Bundle-Version");
+			if (version != null && version instanceof String) {
+				if (((String) version).compareTo(SUBVERSIVE_MINIMUM_VERSION) < 0) {
+					throw new UnsupportedTeamProviderException("Subversive versions < 0.7.8 are not supported");
+				} else {
+					return;
+				}
+			}
+		}
 		if (rp != null && rp.getID().equals(TeamUiUtils.TEAM_PROV_ID_SVN_SUBVERSIVE)) {
 			throw new UnsupportedTeamProviderException("Subversive not supported");
 		}
