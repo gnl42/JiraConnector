@@ -11,14 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui.command;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 
-public class ShowInFishEyeCommand extends AbstractHandler {
+public class ShowInFishEyeCommand extends AbstractFishEyeLinkCommand {
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		return null;
+	@Override
+	protected void processUrl(String url) {
+		TasksUiUtil.openUrl(url);
 	}
 
 }

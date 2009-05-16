@@ -86,7 +86,7 @@
       <command
             description="Show in FishEye tooltip (todo)"
             id="com.atlassian.connector.eclipse.fisheye.ui.showInFishEyeCommand"
-            name="Show in FishEye">
+            name="FishEye">
       </command>
       <command
             description="Copy FishEye link to clipboard"
