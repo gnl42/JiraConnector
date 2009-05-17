@@ -36,4 +36,8 @@ public class FishEyeMappingConfiguration {
 		return fishEyeRepo;
 	}
 
+	public FishEyeMappingConfiguration getClone() {
+		return new FishEyeMappingConfiguration(scmPath, fishEyeServer, fishEyeRepo);
+	}
+
 }

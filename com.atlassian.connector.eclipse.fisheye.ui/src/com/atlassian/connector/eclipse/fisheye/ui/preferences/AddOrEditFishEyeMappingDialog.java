@@ -51,7 +51,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Set;
 
-public class AddFishEyeMappingDialog extends ProgressDialog {
+public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	private final class FishEyeServerButtonHandler extends SelectionAdapter {
 		public void widgetSelected(SelectionEvent event) {
@@ -103,7 +103,13 @@ public class AddFishEyeMappingDialog extends ProgressDialog {
 
 	private Text fishEyeRepoEdit;
 
-	protected AddFishEyeMappingDialog(Shell parentShell) {
+	protected AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeMappingConfiguration initialConfiguration) {
+		super(parentShell);
+		setShellStyle(getShellStyle() | SWT.RESIZE);
+		cfg = initialConfiguration;
+	}
+
+	protected AddOrEditFishEyeMappingDialog(Shell parentShell) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
@@ -132,7 +138,7 @@ public class AddFishEyeMappingDialog extends ProgressDialog {
 	public static void main(String[] args) {
 		Display display = new Display();
 		final Shell shell = new Shell(display);
-		new AddFishEyeMappingDialog(shell).open();
+		new AddOrEditFishEyeMappingDialog(shell).open();
 //		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(shell);
 //		GridDataFactory.fillDefaults().grab(true, true).applyTo(tableViewer.getControl());
 	}
@@ -276,24 +282,19 @@ public class AddFishEyeMappingDialog extends ProgressDialog {
 			}
 
 		});
+
+		if (cfg != null) {
+			scmPathEdit.setText(cfg.getScmPath());
+			fishEyeServerEdit.setText(cfg.getFishEyeServer());
+			fishEyeRepoEdit.setText(cfg.getFishEyeRepo());
+		}
+
 		return parent;
 	}
 
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, false).addSelectionListener(
-				new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						okPressed();
-					}
-				});
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false).addSelectionListener(
-				new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						cancelPressed();
-					}
-				});
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 
 }

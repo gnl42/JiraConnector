@@ -1,6 +1,7 @@
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -42,6 +43,8 @@ import java.util.List;
 
 public class FishEyePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
+	private List<FishEyeMappingConfiguration> mapping;
+
 	public FishEyePreferencePage() {
 		super("FishEye Preferences");
 		//setPreferenceStore(FishEyeUiPlugin.getDefault().getPreferenceStore());
@@ -80,9 +83,6 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(parent);
 
 		final TableViewer tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-//		Table table = new Table(shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
-//		table.setLinesVisible(true);
-//		table.setHeaderVisible(true);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(tableViewer.getControl());
 		Composite panel = new Composite(parent, SWT.NONE);
 		RowLayout panelLayout = new RowLayout(SWT.VERTICAL);
@@ -97,15 +97,16 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		final Button editButton = new Button(panel, SWT.PUSH);
 		editButton.setText("Edit");
 
-		final List<FishEyeMappingConfiguration> mapping = FishEyeUiPlugin.getDefault()
+		final List<FishEyeMappingConfiguration> mappingLive = FishEyeUiPlugin.getDefault()
 				.getFishEyeSettingsManager()
 				.getMappings();
-//			MiscUtil.buildArrayList(new FishEyeMappingConfiguration[] {
-//				new FishEyeMappingConfiguration("https://fsdfsd", "server1", "repo1"),
-//				new FishEyeMappingConfiguration("https://fdsfsdfsd", "server2", "repo1"),
-//				new FishEyeMappingConfiguration("https://fsdfsd.com", "server1", "repo2") });
 
-		String[] titles = { "SCM Path", "FishEye Server", "FishEye Repository" };
+		mapping = MiscUtil.buildArrayList(mappingLive.size());
+		for (FishEyeMappingConfiguration cfg : mappingLive) {
+			mapping.add(cfg.getClone());
+		}
+
+		final String[] titles = { "SCM Path", "FishEye Server", "FishEye Repository" };
 		int[] bounds = { 100, 200, 100 };
 		for (int i = 0; i < titles.length; i++) {
 			TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
@@ -146,23 +147,13 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 			}
 
 		});
-//		for (int i = 0; i < 100; i++) {
-//			TableItem item = new TableItem(table, SWT.NONE);
-//			item.setText(0, "x");
-//			item.setText(1, "y");
-//			item.setText(2, "!");
-//		}
-
-//		for (int i = 0; i < titles.length; i++) {
-//			table.getColumn(i).pack();
-//		}
 		tableViewer.setInput(mapping);
 		tableViewer.setSelection(null);
 		addButton.setFocus();
 		addButton.addSelectionListener(new SelectionAdapter() {
 
 			public void widgetSelected(SelectionEvent e) {
-				AddFishEyeMappingDialog dialog = new AddFishEyeMappingDialog(getShell());
+				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell());
 				if (dialog.open() == Window.OK) {
 					final FishEyeMappingConfiguration cfg = dialog.getCfg();
 					if (cfg != null) {
@@ -173,6 +164,29 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 			}
 
 		});
+		editButton.addSelectionListener(new SelectionAdapter() {
+
+			public void widgetSelected(SelectionEvent e) {
+				if (tableViewer.getSelection() instanceof IStructuredSelection) {
+					Object selection = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
+					if (selection instanceof FishEyeMappingConfiguration) {
+						FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
+						AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), mappingCfg);
+						if (dialog.open() == Window.OK) {
+							final FishEyeMappingConfiguration cfg = dialog.getCfg();
+							if (cfg != null) {
+								int index = mapping.indexOf(mappingCfg);
+								assert index >= 0;
+								mapping.set(index, cfg);
+								tableViewer.refresh();
+							}
+						}
+					}
+				}
+			}
+
+		});
+
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				IStructuredSelection ssel = (IStructuredSelection) tableViewer.getSelection();
@@ -191,6 +205,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 	@Override
 	public boolean performOk() {
 		try {
+			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().setMappings(mapping);
 			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().save();
 		} catch (IOException e) {
 			ErrorDialog.openError(getShell(), "Atlassian Eclipse Connector",

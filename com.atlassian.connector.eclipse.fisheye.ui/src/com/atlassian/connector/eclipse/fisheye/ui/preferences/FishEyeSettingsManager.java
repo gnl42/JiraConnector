@@ -67,8 +67,20 @@ public class FishEyeSettingsManager {
 		load();
 	}
 
+	/**
+	 * 
+	 * @return live copy of mappings
+	 */
 	public List<FishEyeMappingConfiguration> getMappings() {
 		return mappings;
+	}
+
+	public void setMappings(@NotNull List<FishEyeMappingConfiguration> newMappings) {
+		if (newMappings == null) {
+			throw new IllegalArgumentException("List cannot be null");
+		}
+		mappings.clear();
+		mappings.addAll(newMappings);
 	}
 
 	private void load() {
