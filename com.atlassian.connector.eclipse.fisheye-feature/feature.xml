@@ -6,7 +6,7 @@
       provider-name="%providerName"
       plugin="com.atlassian.connector.eclipse.ui">
 
-   <description url="http://www.example.com/description">
+   <description url="http://atlassian.com">
       %description
    </description>
 
