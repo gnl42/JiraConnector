@@ -33,6 +33,8 @@ public final class AtlassianImages {
 //
 //	public static final ImageDescriptor DELETE = create(TOOL, "delete.gif");
 
+	public static final ImageDescriptor ATLASSIAN_LOGO = create("misc", "Atlassian.png");
+
 	private AtlassianImages() {
 	}
 
