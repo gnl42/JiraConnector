@@ -26,7 +26,7 @@ public final class ServerDataUtil {
 	/**
 	 * public for testing
 	 */
-	public static ServerData getServerCfg(AbstractWebLocation location, TaskRepository taskRepository,
+	public static ServerData getServerData(AbstractWebLocation location, TaskRepository taskRepository,
 			boolean isTemporary) {
 
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);

@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerCfg;
+import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
@@ -59,7 +59,7 @@ public class CrucibleClientManagerUiTest extends TestCase {
 		CrucibleRepositoryConnector repoConnector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClientManager clientManager = repoConnector.getClientManager();
 		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
-		ServerData serverCfg = getServerCfg(location, repo, false);
+		ServerData serverCfg = getServerData(location, repo, false);
 
 		boolean assertion = false;
 		HttpClient httpClient1 = null;

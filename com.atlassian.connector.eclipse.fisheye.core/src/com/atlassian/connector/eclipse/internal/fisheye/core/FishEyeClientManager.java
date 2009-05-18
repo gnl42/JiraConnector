@@ -1,12 +1,134 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Atlassian and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlassian - initial API and implementation
+ ******************************************************************************/
 package com.atlassian.connector.eclipse.internal.fisheye.core;
 
-//import com.atlassian.connector.eclipse.internal.bamboo.core.RepositoryClientManager;
-//import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
-//import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
+import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
-public class FishEyeClientManager {
+import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
+import com.atlassian.theplugin.commons.fisheye.FishEyeServerFacade;
+import com.atlassian.theplugin.commons.fisheye.FishEyeServerFacadeImpl;
+import com.atlassian.theplugin.commons.remoteapi.ServerData;
+import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
+
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
+
+import java.io.File;
+
+public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient, FishEyeClientData> {
+
+	/** follows ACC approach for channeling all calls through a singleton */
+	private FishEyeServerFacade crucibleServerFacade;
+
+	private final HttpSessionCallbackImpl clientCallback;
+
+	public FishEyeClientManager(File cacheFile) {
+		super(cacheFile);
+		clientCallback = new HttpSessionCallbackImpl();
+	}
+
+	@Override
+	public synchronized FishEyeClient getClient(TaskRepository taskRepository) {
+
+		FishEyeClient client = super.getClient(taskRepository);
+		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
+		client.updateLocation(location);
+		ServerData serverCfg = getServerData(location, taskRepository, false);
+		updateHttpSessionCallback(location, serverCfg);
+
+		return client;
+	}
+
+	@Override
+	protected FishEyeClient createClient(TaskRepository taskRepository, FishEyeClientData data) {
+		return createTempClientImpl(taskRepository, data, false);
+	}
+
+	public FishEyeClient createTempClient(TaskRepository taskRepository, FishEyeClientData data) {
+		return createTempClientImpl(taskRepository, data, true);
+	}
+
+	private FishEyeClient createTempClientImpl(TaskRepository taskRepository, FishEyeClientData data,
+			boolean isTemporary) {
+		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
+
+		ServerData serverCfg = getServerData(location, taskRepository, isTemporary);
+		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
+		FishEyeServerFacade crucibleServer = getFishEyeServerFacade(callback);
+
+		return new FishEyeClient(location, serverCfg, crucibleServer, data);
+	}
+
+	private synchronized FishEyeServerFacade getFishEyeServerFacade(HttpSessionCallback callback) {
+		if (crucibleServerFacade == null) {
+			crucibleServerFacade = FishEyeServerFacadeImpl.getInstance();
+			crucibleServerFacade.setCallback(callback);
+		}
+		return crucibleServerFacade;
+	}
+
+	public void deleteTempClient(ServerData serverData) {
+		clientCallback.removeClient(serverData);
+	}
+
+	@Override
+	public synchronized void repositoryRemoved(TaskRepository taskRepository) {
+		super.repositoryRemoved(taskRepository);
+
+		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
+		clientCallback.removeClient(location);
+
+	}
+
+	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, ServerData serverCfg) {
+		updateHttpSessionCallback(location, serverCfg);
+		return clientCallback;
+	}
+
+	private void updateHttpSessionCallback(AbstractWebLocation location, ServerData serverCfg) {
+		clientCallback.updateHostConfiguration(location, serverCfg);
+	}
+
+	@Override
+	protected FishEyeClientData createRepositoryConfiguration() {
+		return new FishEyeClientData();
+	}
+
+	@Override
+	public TaskRepositoryLocationFactory getTaskRepositoryLocationFactory() {
+		TaskRepositoryLocationFactory parentFactory = super.getTaskRepositoryLocationFactory();
+		if (parentFactory == null) {
+			return new TaskRepositoryLocationFactory();
+		} else {
+			return parentFactory;
+		}
+	}
+
+	/**
+	 * For testing purposes only
+	 * 
+	 * @return
+	 */
+	public HttpSessionCallbackImpl getClientCallback() {
+		return clientCallback;
+	}
+
+	/**
+	 * For testing purposes only
+	 */
+	public void clear() {
+		clientCallback.clear();
+	}
 
 }
-//extends RepositoryClientManager<FishE, BambooClientData> {
-//
-//}

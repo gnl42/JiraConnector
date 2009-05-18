@@ -1,6 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Atlassian and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlassian - initial API and implementation
+ ******************************************************************************/
+
 package com.atlassian.connector.eclipse.internal.fisheye.core;
 
-import java.io.File;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -13,20 +23,19 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
+import java.io.File;
+
 public class FishEyeRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String REPOSITORY_LABEL = "FishEye";
 
-//	private BambooClientManager clientManager;
+	private FishEyeClientManager clientManager;
 
-	private File repositoryConfigurationCacheFile;
+	private final File repositoryConfigurationCacheFile;
 
 	public FishEyeRepositoryConnector() {
 		FishEyeCorePlugin.getDefault().setRepositoryConnector(this);
-//		if (BambooCorePlugin.getDefault() != null) {
-//			this.repositoryConfigurationCacheFile = BambooCorePlugin.getDefault().getRepositoryConfigurationCacheFile();
-//		}
-
+		this.repositoryConfigurationCacheFile = FishEyeCorePlugin.getDefault().getRepositoryConfigurationCacheFile();
 	}
 
 	@Override
@@ -49,12 +58,12 @@ public class FishEyeRepositoryConnector extends AbstractRepositoryConnector {
 		return false;
 	}
 
-//	public synchronized BambooClientManager getClientManager() {
-//		if (clientManager == null) {
-//			clientManager = new BambooClientManager(getRepositoryConfigurationCacheFile());
-//		}
-//		return clientManager;
-//	}
+	public synchronized FishEyeClientManager getClientManager() {
+		if (clientManager == null) {
+			clientManager = new FishEyeClientManager(getRepositoryConfigurationCacheFile());
+		}
+		return clientManager;
+	}
 
 	@Override
 	public String getConnectorKind() {

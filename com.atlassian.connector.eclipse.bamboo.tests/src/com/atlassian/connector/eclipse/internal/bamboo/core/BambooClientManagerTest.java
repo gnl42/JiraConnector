@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
-import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerCfg;
+import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
 import com.atlassian.theplugin.commons.remoteapi.ServerData;
@@ -30,7 +30,7 @@ public class BambooClientManagerTest extends TestCase {
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
 				false);
 		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();
-		ServerData serverConfiguration = getServerCfg(bambooClientManager.getTaskRepositoryLocationFactory()
+		ServerData serverConfiguration = getServerData(bambooClientManager.getTaskRepositoryLocationFactory()
 				.createWebLocation(repository), repository, false);
 		bambooClientManager.getClient(repository);
 		HttpClient httpClient = null;
@@ -56,7 +56,7 @@ public class BambooClientManagerTest extends TestCase {
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
 				false);
 		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();
-		ServerData serverConfiguration = getServerCfg(bambooClientManager.getTaskRepositoryLocationFactory()
+		ServerData serverConfiguration = getServerData(bambooClientManager.getTaskRepositoryLocationFactory()
 				.createWebLocation(repository), repository, false);
 		bambooClientManager.getClient(repository);
 		HttpClient httpClient = null;
@@ -68,7 +68,7 @@ public class BambooClientManagerTest extends TestCase {
 		assertNotNull(httpClient);
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("nameuser", "wordpass"),
 				false);
-		serverConfiguration = getServerCfg(bambooClientManager.getTaskRepositoryLocationFactory().createWebLocation(
+		serverConfiguration = getServerData(bambooClientManager.getTaskRepositoryLocationFactory().createWebLocation(
 				repository), repository, false);
 		bambooClientManager.getClient(repository);
 		HttpClient httpClient2 = null;

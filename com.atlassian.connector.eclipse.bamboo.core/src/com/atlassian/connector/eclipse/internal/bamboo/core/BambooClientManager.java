@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
-import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerCfg;
+import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
@@ -49,7 +49,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	public synchronized BambooClient getClient(TaskRepository taskRepository) {
 		BambooClient client = super.getClient(taskRepository);
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
-		ServerData serverCfg = getServerCfg(location, taskRepository, false);
+		ServerData serverCfg = getServerData(location, taskRepository, false);
 		updateHttpSessionCallback(location, serverCfg);
 
 		return client;
@@ -63,7 +63,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	protected BambooClient createClient(TaskRepository taskRepository, BambooClientData data) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
-		ServerData serverCfg = getServerCfg(location, taskRepository, false);
+		ServerData serverCfg = getServerData(location, taskRepository, false);
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
 		BambooServerFacade bambooFacade = getBambooFacade(callback);
 
@@ -73,7 +73,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	public BambooClient createTempClient(TaskRepository taskRepository, BambooClientData data) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
-		ServerData serverCfg = getServerCfg(location, taskRepository, true);
+		ServerData serverCfg = getServerData(location, taskRepository, true);
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
 		BambooServerFacade crucibleServer = getBambooFacade(callback);
 
@@ -98,7 +98,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 		super.repositoryRemoved(repository);
 
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(repository);
-		ServerData serverCfg = getServerCfg(location, repository, false);
+		ServerData serverCfg = getServerData(location, repository, false);
 		clientCallback.removeClient(serverCfg);
 
 		BambooCorePlugin.getBuildPlanManager().repositoryRemoved(repository);

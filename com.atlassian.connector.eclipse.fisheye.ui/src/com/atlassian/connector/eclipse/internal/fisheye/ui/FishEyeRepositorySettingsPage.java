@@ -1,11 +1,12 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
+import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
@@ -18,48 +19,29 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 
 	private class FishEyeValidator extends Validator {
 
-		public FishEyeValidator(TaskRepository repository) {
-			// TODO Auto-generated constructor stub
+		private final FishEyeClientManager clientManager;
+
+		private final TaskRepository repository;
+
+		public FishEyeValidator(TaskRepository repository, FishEyeClientManager clientManager) {
+			this.repository = repository;
+			this.clientManager = clientManager;
 		}
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
-			// TODO Auto-generated method stub
-
+			FishEyeClient client = null;
+			try {
+				client = clientManager.createTempClient(repository, new FishEyeClientData());
+				client.validate(monitor, repository);
+			} finally {
+				if (client != null) {
+					clientManager.deleteTempClient(client.getServerData());
+				}
+			}
 		}
 
 	}
-
-//	private class BambooValidator extends Validator {
-//
-//		private final TaskRepository taskRepository;
-//
-//		public BambooValidator(TaskRepository taskRepository) {
-//			this.taskRepository = taskRepository;
-//		}
-//
-//		@Override
-//		public void run(IProgressMonitor monitor) throws CoreException {
-//			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-//			BambooClient client = null;
-//			try {
-//				client = clientManager.createTempClient(taskRepository, new BambooClientData());
-//				client.validate(monitor, taskRepository);
-//			} finally {
-//				if (client != null) {
-//					clientManager.deleteTempClient(client);
-//				}
-//			}
-//		}
-//	}
-
-	private static final int FISHEYE_REPO_VIEWER_HEIGHT = 100;
-
-	private CheckboxTreeViewer planViewer;
-
-	private boolean validSettings;
-
-	private boolean initialized;
 
 	public FishEyeRepositorySettingsPage(TaskRepository taskRepository) {
 		super("FishEye Repository Settings", "Enter FishEye server information", taskRepository);
@@ -96,11 +78,6 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 
 	@Override
 	protected void createContributionControls(Composite parent) {
-
-//		Label label = new Label(parent, SWT.LEFT);
-//		label.setText("@todo: Under construction");
-//		return labe
-
 	}
 
 	@Override
@@ -110,7 +87,9 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 
 	@Override
 	protected Validator getValidator(TaskRepository repository) {
-		return new FishEyeValidator(repository);
+		return new FishEyeValidator(repository, FishEyeCorePlugin.getDefault()
+				.getRepositoryConnector()
+				.getClientManager());
 	}
 
 	@Override
@@ -124,20 +103,6 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 			}
 		}
 		return false;
-	}
-
-	@Override
-	protected void applyValidatorResult(Validator validator) {
-		this.validSettings = validator != null && validator.getStatus() == Status.OK_STATUS;
-		super.applyValidatorResult(validator);
-	}
-
-	@Override
-	protected void validateSettings() {
-		super.validateSettings();
-//		if (validSettings) {
-////			refreshBuildPlans();
-//		}
 	}
 
 	@Override

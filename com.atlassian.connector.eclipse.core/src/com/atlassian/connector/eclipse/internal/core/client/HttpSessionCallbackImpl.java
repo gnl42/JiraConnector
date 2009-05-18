@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.crucible.core.client;
+package com.atlassian.connector.eclipse.internal.core.client;
 
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
 import com.atlassian.theplugin.commons.remoteapi.ServerData;
@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Shawn Minto
  * @author Wojciech Seliga
  */
-public class CrucibleHttpSessionCallback implements HttpSessionCallback {
+public class HttpSessionCallbackImpl implements HttpSessionCallback {
 
 	private final Map<ServerData, HttpClient> httpClients = new HashMap<ServerData, HttpClient>();
 
@@ -42,7 +42,7 @@ public class CrucibleHttpSessionCallback implements HttpSessionCallback {
 
 	private final IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
 
-	public CrucibleHttpSessionCallback() {
+	public HttpSessionCallbackImpl() {
 		idleConnectionTimeoutThread.start();
 	}
 

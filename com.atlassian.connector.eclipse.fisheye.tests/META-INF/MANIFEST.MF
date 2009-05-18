@@ -8,3 +8,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.junit,
  com.atlassian.connector.eclipse.fisheye.core;bundle-version="1.0.0",
  com.atlassian.connector.eclipse.fisheye.ui;bundle-version="1.0.0"
+Export-Package: com.atlassian.connector.eclipse.internal.fisheye.tests;x-internal:=true

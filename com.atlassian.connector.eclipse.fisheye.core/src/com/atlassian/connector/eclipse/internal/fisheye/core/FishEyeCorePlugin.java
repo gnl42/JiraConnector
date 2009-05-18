@@ -1,15 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Atlassian and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlassian - initial API and implementation
+ ******************************************************************************/
+
 package com.atlassian.connector.eclipse.internal.fisheye.core;
 
 import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+
+import java.io.File;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 public class FishEyeCorePlugin extends Plugin {
+
+	private static final String REPOSITORY_CONFIGURATIONS_FOLDER_PATH = "repositoryConfigurations";
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.fisheye.core";
@@ -56,6 +73,12 @@ public class FishEyeCorePlugin extends Plugin {
 	 */
 	public static FishEyeCorePlugin getDefault() {
 		return plugin;
+	}
+
+	public File getRepositoryConfigurationCacheFile() {
+		IPath stateLocation = Platform.getStateLocation(getBundle());
+		IPath cacheFile = stateLocation.append(REPOSITORY_CONFIGURATIONS_FOLDER_PATH);
+		return cacheFile.toFile();
 	}
 
 	public void setRepositoryConnector(FishEyeRepositoryConnector repositoryConnector) {

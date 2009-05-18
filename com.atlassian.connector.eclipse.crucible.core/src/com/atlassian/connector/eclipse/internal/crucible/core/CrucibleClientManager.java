@@ -11,11 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
-import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerCfg;
+import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
+import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleHttpSessionCallback;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacadeImpl;
@@ -38,13 +38,13 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	// the server facade
 	private CrucibleServerFacade crucibleServerFacade;
 
-	private final CrucibleHttpSessionCallback clientCallback;
+	private final HttpSessionCallbackImpl clientCallback;
 
 	private final ReviewCache cachedReviewManager;
 
 	public CrucibleClientManager(File cacheFile, ReviewCache cachedReviewManager) {
 		super(cacheFile);
-		clientCallback = new CrucibleHttpSessionCallback();
+		clientCallback = new HttpSessionCallbackImpl();
 		this.cachedReviewManager = cachedReviewManager;
 	}
 
@@ -54,7 +54,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		CrucibleClient client = super.getClient(taskRepository);
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 		client.updateLocation(location);
-		ServerData serverCfg = getServerCfg(location, taskRepository, false);
+		ServerData serverCfg = getServerData(location, taskRepository, false);
 		updateHttpSessionCallback(location, serverCfg);
 
 		return client;
@@ -64,7 +64,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	protected CrucibleClient createClient(TaskRepository taskRepository, CrucibleClientData data) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
-		ServerData serverCfg = getServerCfg(location, taskRepository, false);
+		ServerData serverCfg = getServerData(location, taskRepository, false);
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
 		CrucibleServerFacade crucibleServer = getCrucibleServer(callback);
 
@@ -74,7 +74,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	public CrucibleClient createTempClient(TaskRepository taskRepository, CrucibleClientData data) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
-		ServerData serverCfg = getServerCfg(location, taskRepository, true);
+		ServerData serverCfg = getServerData(location, taskRepository, true);
 		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
 		CrucibleServerFacade crucibleServer = getCrucibleServer(callback);
 
@@ -131,7 +131,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	 * 
 	 * @return
 	 */
-	public CrucibleHttpSessionCallback getClientCallback() {
+	public HttpSessionCallbackImpl getClientCallback() {
 		return clientCallback;
 	}
 
