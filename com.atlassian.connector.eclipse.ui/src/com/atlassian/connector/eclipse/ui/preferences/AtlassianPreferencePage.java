@@ -20,7 +20,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -57,26 +56,21 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 	protected Control createContents(Composite parent) {
 		final Composite composite = new Composite(parent, SWT.NULL);
 		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).grab(false, false).applyTo(composite);
-		final RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
-		rowLayout.fill = true;
-		rowLayout.marginBottom = 0;
-		rowLayout.center = true;
-		rowLayout.marginTop = 0;
-		rowLayout.spacing = 0;
-		rowLayout.marginLeft = 0;
-		rowLayout.marginRight = 0;
-		composite.setLayout(rowLayout);
+		GridLayoutFactory.fillDefaults().numColumns(1).margins(5, 0).spacing(0, 0).applyTo(composite);
 		final Label label = new Label(composite, SWT.CENTER);
 		final Image image = AtlassianImages.getImage(AtlassianImages.ATLASSIAN_LOGO);
 		label.setImage(image);
-		final RowData logoRowData = new RowData(image.getBounds().width + 100, image.getBounds().height);
-		label.setLayoutData(logoRowData);
+
+		final int logoWidth = image.getBounds().width + 100;
+		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.FILL).hint(logoWidth, image.getBounds().height).applyTo(
+				label);
+
 		label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 
 		try {
 			final Browser browser = new Browser(composite, SWT.NONE);
 			browser.setText(TEXT_HTML);
-			browser.setLayoutData(new RowData(logoRowData.width, 350));
+			GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.FILL).hint(logoWidth, 350).applyTo(browser);
 			browser.addLocationListener(new LocationListener() {
 
 				public void changed(LocationEvent event) {
@@ -95,7 +89,8 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 			final Composite nestedComposite = new Composite(composite, SWT.NONE);
 			nestedComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 			GridLayoutFactory.fillDefaults().numColumns(1).margins(4, 0).applyTo(nestedComposite);
-			nestedComposite.setLayoutData(new RowData(logoRowData.width, SWT.DEFAULT));
+			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.FILL).hint(logoWidth, SWT.DEFAULT).applyTo(
+					nestedComposite);
 
 			Link link = new Link(nestedComposite, SWT.NONE);
 			link.setText(TEXT_MAIN);
@@ -107,10 +102,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 					openUrl(e.text);
 				}
 			});
-			GridDataFactory.fillDefaults()
-					.align(SWT.CENTER, SWT.TOP)
-					.hint(logoRowData.width, SWT.DEFAULT)
-					.applyTo(link);
+			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.TOP).hint(logoWidth, SWT.DEFAULT).applyTo(link);
 
 			final FontRegistry fontRegistry = new FontRegistry();
 			fontRegistry.put("big", new FontData[] { new FontData("Arial", 18, SWT.BOLD) });
