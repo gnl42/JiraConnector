@@ -27,14 +27,19 @@
          </command>
       </menuContribution>
 	   
-	<!-- copy FishEye link to clipboard functionalities --> 
+	<!-- copy FishEye link to clipboard functionalities -->
+	
+	<!-- this is somewhat crazy: I am trying to plug into using several means to be position the actions
+	in the optimal place: near Copy section - if possible or at the very end (additions) section
+	as last resort. Unfortunately sections (separator) are not named consistently across Cclipse --> 
 
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <command
                commandId="com.atlassian.connector.eclipse.fisheye.ui.copyFishEyeLinkToClipboardCommand"
-               style="push" label="Copy FishEye link (adaptable)">
+               style="push">
 			  <visibleWhen>
+			  <and>
 			    <or>
 			  	<with variable="selection">
 			  		<count value="1"/>
@@ -53,10 +58,17 @@
 						<adapt type="org.eclipse.core.resources.IResource"/>
 					</or>
 			  	</or>
+				<with variable="activePartId">
+				<not><or>
+<!--					<equals value="org.eclipse.ui.views.ContentOutline"/> -->
+					<equals value="org.eclipse.ui.navigator.ProjectExplorer"/>
+					<equals value="org.eclipse.jdt.ui.PackageExplorer"/>
+				</or></not>
+				</with>
+			  	</and>
 			  </visibleWhen>
          </command>
       </menuContribution>
-
       <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=group.copy">
          <command
@@ -64,9 +76,17 @@
                style="push">
          </command>
       </menuContribution>
-
+      
       <menuContribution
             locationURI="menu:edit?before=cut.ext">
+         <command
+               commandId="com.atlassian.connector.eclipse.fisheye.ui.copyFishEyeLinkToClipboardCommand"
+               style="push">
+         </command>
+      </menuContribution>
+
+      <menuContribution 
+      		locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=group.edit">
          <command
                commandId="com.atlassian.connector.eclipse.fisheye.ui.copyFishEyeLinkToClipboardCommand"
                style="push">
@@ -89,9 +109,9 @@
             name="FishEye">
       </command>
       <command
-            description="Copy FishEye link to clipboard"
+            description="Copy FishEye Link to Clipboard"
             id="com.atlassian.connector.eclipse.fisheye.ui.copyFishEyeLinkToClipboardCommand"
-            name="Copy FishEye link to clipboard">
+            name="Copy FishEye Link to Clipboard">
       </command>
    </extension>
    <extension
