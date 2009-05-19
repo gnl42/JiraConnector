@@ -92,7 +92,6 @@ public class JiraProjectPage extends WizardPage {
 		this.repository = repository;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void createControl(Composite parent) {
 		// create the composite to hold the widgets
 		Composite composite = new Composite(parent, SWT.NULL);
