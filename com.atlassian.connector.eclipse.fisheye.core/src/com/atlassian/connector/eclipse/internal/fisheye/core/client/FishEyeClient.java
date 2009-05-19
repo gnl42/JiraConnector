@@ -159,7 +159,7 @@ public class FishEyeClient implements ProductClient<FishEyeClientData> {
 		execute(new FishEyeRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(FishEyeServerFacade server, ServerData aServerData, IProgressMonitor monitor)
-					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+					throws RemoteApiException, ServerPasswordNotProvidedException {
 
 				monitor.subTask("Retrieving FishEye repositories");
 				Collection<String> repositories = server.getRepositories(aServerData);

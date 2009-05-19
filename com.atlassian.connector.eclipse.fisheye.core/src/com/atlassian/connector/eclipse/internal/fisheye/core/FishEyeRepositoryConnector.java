@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.core;
 
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -114,8 +116,8 @@ public class FishEyeRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateRepositoryConfiguration(TaskRepository taskRepository, IProgressMonitor monitor)
 			throws CoreException {
-//		BambooClient client = getClientManager().getClient(taskRepository);
-//		client.updateRepositoryData(monitor, taskRepository);
+		FishEyeClient client = getClientManager().getClient(taskRepository);
+		client.updateRepositoryData(monitor, taskRepository);
 	}
 
 	@Override
@@ -123,9 +125,9 @@ public class FishEyeRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	public synchronized void flush() {
-//		if (clientManager != null) {
-//			clientManager.writeCache();
-//		}
+		if (clientManager != null) {
+			clientManager.writeCache();
+		}
 	}
 
 }

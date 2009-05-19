@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -28,6 +29,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -103,10 +105,10 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		GridDataFactory.fillDefaults().grab(false, false).applyTo(panel);
 		final Button addButton = new Button(panel, SWT.PUSH);
 		addButton.setText("Add");
-		final Button removeButton = new Button(panel, SWT.PUSH);
-		removeButton.setText("Remove");
 		final Button editButton = new Button(panel, SWT.PUSH);
 		editButton.setText("Edit");
+		final Button removeButton = new Button(panel, SWT.PUSH);
+		removeButton.setText("Remove");
 
 		final List<FishEyeMappingConfiguration> mappingLive = FishEyeUiPlugin.getDefault()
 				.getFishEyeSettingsManager()
@@ -164,7 +166,9 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		addButton.addSelectionListener(new SelectionAdapter() {
 
 			public void widgetSelected(SelectionEvent e) {
-				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell());
+				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
+						TasksUi.getRepositoryManager().getRepositories(FishEyeCorePlugin.CONNECTOR_KIND),
+						FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
 				if (dialog.open() == Window.OK) {
 					final FishEyeMappingConfiguration cfg = dialog.getCfg();
 					if (cfg != null) {
@@ -182,7 +186,11 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 					Object selection = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
 					if (selection instanceof FishEyeMappingConfiguration) {
 						FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
-						AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), mappingCfg);
+						AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
+								mappingCfg, TasksUi.getRepositoryManager().getRepositories(
+										FishEyeCorePlugin.CONNECTOR_KIND), FishEyeCorePlugin.getDefault()
+										.getRepositoryConnector()
+										.getClientManager());
 						if (dialog.open() == Window.OK) {
 							final FishEyeMappingConfiguration cfg = dialog.getCfg();
 							if (cfg != null) {

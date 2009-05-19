@@ -63,6 +63,10 @@ public class FishEyeCorePlugin extends Plugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		if (repositoryConnector != null) {
+			repositoryConnector.flush();
+		}
+
 		super.stop(context);
 	}
 
