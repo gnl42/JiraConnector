@@ -12,8 +12,8 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowTestResultsAction;
-import com.atlassian.theplugin.commons.bamboo.TestDetails;
 
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-
-import java.util.Iterator;
 
 /**
  * Part displaying the Test summary
@@ -84,46 +82,6 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 		}
 	}
 
-	private String getFailedTests() {
-		if (buildDetails == null) {
-			return null;
-		}
-		StringBuilder b = new StringBuilder();
-		Iterator<TestDetails> it = buildDetails.getFailedTestDetails().iterator();
-		while (it.hasNext()) {
-			TestDetails details = it.next();
-			String testClassName = details.getTestClassName();
-			int index = testClassName.lastIndexOf('.');
-			if (index == -1) {
-				testClassName = "N/A";
-			} else {
-				testClassName = testClassName.substring(index + 1);
-			}
-			b.append(testClassName);
-			b.append("  : ");
-			b.append(formatTestMethodName(details.getTestMethodName()));
-			if (it.hasNext()) {
-				b.append("\n");
-			}
-		}
-		return b.toString();
-	}
-
-	private String formatTestMethodName(String methodName) {
-		int i = methodName.indexOf("test");
-		if (i != -1) {
-			methodName = methodName.substring(i + 4);
-		}
-		StringBuilder b = new StringBuilder();
-		for (char c : methodName.toCharArray()) {
-			if (Character.isUpperCase(c)) {
-				b.append(" ");
-			}
-			b.append(c);
-		}
-		return b.toString();
-	}
-
 	@Override
 	protected void fillToolBar(ToolBarManager toolBarManager) {
 		createActions();
@@ -160,7 +118,7 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 		}
 		GridDataFactory.fillDefaults().grab(true, false).align(SWT.BEGINNING, SWT.TOP).applyTo(labelComposite);
 
-		String failedTests = getFailedTests();
+		String failedTests = BambooUiUtil.getFailedTestsDescription(buildDetails);
 		if (failedTests != null) {
 			if (failedTests.length() > 0) {
 

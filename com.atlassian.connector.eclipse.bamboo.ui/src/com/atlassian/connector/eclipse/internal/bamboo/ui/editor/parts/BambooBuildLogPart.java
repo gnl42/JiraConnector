@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowBuildLogAction;
 
 import org.eclipse.jface.action.ToolBarManager;
@@ -32,8 +33,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Thomas Ehrnhoefer
  */
 public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
-
-	private static final String LOG_STR_ERROR = "error";
 
 	private ShowBuildLogAction showBuildLogAction;
 
@@ -75,7 +74,7 @@ public class BambooBuildLogPart extends AbstractBambooEditorFormPart {
 		String[] buildLogLines = buildLog == null ? new String[0] : buildLog.split("[\r\n]");
 		StringBuilder b = new StringBuilder();
 		for (String buildLogLine : buildLogLines) {
-			if (buildLogLine.startsWith(LOG_STR_ERROR)) {
+			if (buildLogLine.startsWith(BambooUiUtil.LOG_STR_ERROR)) {
 				String[] lineElements = buildLogLine.split("\t");
 				if (errorLines > 0) {
 					b.append("\n");

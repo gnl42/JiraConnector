@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiUtil;
 import com.atlassian.theplugin.commons.BambooFileInfo;
 import com.atlassian.theplugin.commons.VersionedFileInfo;
 import com.atlassian.theplugin.commons.bamboo.BambooChangeSet;
@@ -70,11 +71,6 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 		return control;
 	}
 
-	private String getCommentSnippet(String comment) {
-		String[] commentLines = comment.split("[\r\n]");
-		return commentLines.length == 0 ? "N/A" : commentLines[0];
-	}
-
 	private void createTreeViewer() {
 		Tree tree = toolkit.createTree(mainComposite, SWT.SINGLE);
 		GridDataFactory.fillDefaults().grab(true, false).hint(FULL_WIDTH, 100).applyTo(tree);
@@ -128,7 +124,7 @@ public class BambooCodeChangesPart extends AbstractBambooEditorFormPart {
 			public String getText(Object element) {
 				if (element instanceof BambooChangeSet) {
 					return "[" + ((BambooChangeSet) element).getAuthor() + "]   "
-							+ getCommentSnippet(((BambooChangeSet) element).getComment());
+							+ BambooUiUtil.getCommentSnippet(((BambooChangeSet) element).getComment());
 				} else if (element instanceof BambooFileInfo) {
 					return ((VersionedFileInfo) element).getFileDescriptor().getAbsoluteUrl();
 				} else {
