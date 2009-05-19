@@ -47,6 +47,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.provisional.commons.ui.EnhancedFilteredTree;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -101,7 +102,7 @@ public class JiraProjectPage extends WizardPage {
 
 		// create the list of bug reports
 		// TODO e3.5 use new FilteredTree API
-		projectTree = new FilteredTree(composite, SWT.SINGLE | SWT.BORDER, //
+		projectTree = new EnhancedFilteredTree(composite, SWT.SINGLE | SWT.BORDER, //
 				new PatternFilter() { // matching on project keys
 					@Override
 					protected boolean isLeafMatch(Viewer viewer, Object element) {
