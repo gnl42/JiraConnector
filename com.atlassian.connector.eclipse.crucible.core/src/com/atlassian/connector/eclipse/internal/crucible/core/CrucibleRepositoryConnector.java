@@ -44,9 +44,20 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String REPOSITORY_LABEL = "Crucible";
 
+	private static final String IS_FISHEYE_PROP = "isFishEye";
+
 	private CrucibleClientManager clientManager;
 
 	private File repositoryConfigurationCacheFile;
+
+	public static void updateFishEyeStatus(TaskRepository taskRepository, boolean isFishEye) {
+		taskRepository.setProperty(IS_FISHEYE_PROP, String.valueOf(isFishEye));
+	}
+
+	public static boolean isFishEye(TaskRepository taskRepository) {
+		final String prop = taskRepository.getProperty(IS_FISHEYE_PROP);
+		return prop != null && Boolean.valueOf(prop);
+	}
 
 	public CrucibleRepositoryConnector() {
 		CrucibleCorePlugin.setRepositoryConnector(this);

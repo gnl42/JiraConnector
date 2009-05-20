@@ -41,7 +41,6 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -68,46 +67,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
-
-//	private final class FishEyeServerButtonHandler extends SelectionAdapter {
-//		public void widgetSelected(SelectionEvent event) {
-//			final ListDialog ld = new ListDialog(getShell());
-//			ld.setAddCancelButton(true);
-//			ld.setContentProvider(new ArrayContentProvider());
-//			ld.setLabelProvider(new LabelProvider() {
-//
-//				public Image getImage(Object element) {
-//					if (element instanceof TaskRepository) {
-//						TaskRepository taskRepo = (TaskRepository) element;
-//						if (taskRepo.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)) {
-//							return FishEyeImages.getImage(FishEyeImages.FISHEYE_ICON);
-//						}
-//					}
-//					return null;
-//				}
-//
-//				public String getText(Object element) {
-//					if (element instanceof TaskRepository) {
-//						TaskRepository taskRepo = (TaskRepository) element;
-//						return taskRepo.getRepositoryLabel() + " (" + taskRepo.getRepositoryUrl() + ")";
-//					}
-//					return element.toString();
-//				}
-//
-//			});
-//			if (fishEyeTaskRepos != null) {
-//				ld.setInput(fishEyeTaskRepos.toArray());
-//				ld.setTitle("Select FishEye Repository");
-//				if (ld.open() == Window.OK) {
-//					final Object[] result = ld.getResult();
-//					if (result != null && result.length > 0 /*&& result[0] instanceof*/) {
-//						fishEyeServerEdit.setText(result[0].toString());
-//					}
-//				}
-//			}
-//
-//		}
-//	}
 
 	private final class OnShowHandler extends ShellAdapter {
 		public void shellActivated(ShellEvent event) {
@@ -306,24 +265,23 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		if (cfg != null) {
 			scmPathEdit.setText(cfg.getScmPath());
 			if (cfg.getFishEyeServer() != null) {
-				final TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
-						FishEyeCorePlugin.CONNECTOR_KIND, cfg.getFishEyeServer());
+				final TaskRepository repository = findByUrl(cfg.getFishEyeServer());
 				if (repository != null) {
 					fishEyeServerCombo.setSelection(new StructuredSelection(repository));
-				}
-				Set<String> cachedRepositories = fishEyeClientManager.getClient(repository)
-						.getClientData()
-						.getCachedRepositories();
-				// handling the case where the repository could have been deleted or hasn't been yet fetched by the client 
-				if (cfg != null && cfg.getFishEyeRepo() != null) {
-					if (!cachedRepositories.contains(cfg.getFishEyeRepo())) {
-						cachedRepositories = new HashSet<String>(cachedRepositories);
-						cachedRepositories.add(cfg.getFishEyeRepo());
+					Set<String> cachedRepositories = fishEyeClientManager.getClient(repository)
+							.getClientData()
+							.getCachedRepositories();
+					// handling the case where the repository could have been deleted or hasn't been yet fetched by the client 
+					if (cfg != null && cfg.getFishEyeRepo() != null) {
+						if (!cachedRepositories.contains(cfg.getFishEyeRepo())) {
+							cachedRepositories = new HashSet<String>(cachedRepositories);
+							cachedRepositories.add(cfg.getFishEyeRepo());
+						}
 					}
+					final Object[] cachedRepositoriesArray = cachedRepositories.toArray();
+					Arrays.sort(cachedRepositoriesArray);
+					fishEyeRepoCombo.setInput(cachedRepositoriesArray);
 				}
-				final Object[] cachedRepositoriesArray = cachedRepositories.toArray();
-				Arrays.sort(cachedRepositoriesArray);
-				fishEyeRepoCombo.setInput(cachedRepositoriesArray);
 			}
 		}
 
@@ -369,6 +327,15 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 		getShell().addShellListener(new OnShowHandler());
 		return parent;
+	}
+
+	private TaskRepository findByUrl(String url) {
+		for (TaskRepository taskRepository : taskRepositories) {
+			if (taskRepository.getUrl().equals(url)) {
+				return taskRepository;
+			}
+		}
+		return null;
 	}
 
 	private void updateOkButtonState() {

@@ -13,12 +13,18 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
+import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
@@ -48,6 +54,10 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 
 	private Button buttonPrompt;
 
+	private Button fishEyeButton;
+
+	private boolean isFishEyeDetected;
+
 	private class CrucibleValidator extends Validator {
 
 		private final TaskRepository taskRepository;
@@ -58,6 +68,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 
 		@Override
 		public void run(IProgressMonitor monitor) throws CoreException {
+			isFishEyeDetected = false;
 			CrucibleClientManager clientManager = CrucibleCorePlugin.getRepositoryConnector().getClientManager();
 			CrucibleClient client = null;
 			try {
@@ -70,6 +81,26 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 					clientManager.deleteTempClient(client.getServerData());
 				}
 			}
+
+			// now try if it's FishEye
+			FishEyeClient fishEyeClient = null;
+			try {
+				fishEyeClient = clientManager.createTempFishEyeClient(taskRepository, new FishEyeClientData());
+				monitor = Policy.backgroundMonitorFor(monitor);
+				fishEyeClient.validate(monitor, taskRepository);
+				isFishEyeDetected = true;
+			} catch (CoreException e) {
+				if (CrucibleRepositoryConnector.isFishEye(taskRepository)) {
+					throw new CoreException(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"This server does not seem to be integrated with FishEye.", e));
+				}
+				// if it's not marked as FishEye - that's OK. No exception re-thrown
+			} finally {
+				if (fishEyeClient != null) {
+					clientManager.deleteTempFishEyeClient(fishEyeClient.getServerData());
+				}
+			}
+//			}
 		}
 	}
 
@@ -152,11 +183,21 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 		} else {
 			buttonPrompt.setSelection(true);
 		}
+		ExpandableComposite fishEyeSection = createSection(parentControl, "FishEye");
+		fishEyeSection.setExpanded(true);
+		fishEyeButton = new Button(fishEyeSection, SWT.CHECK);
+		fishEyeButton.setText("Crucible Server Contains FishEye Instance");
+		fishEyeSection.setClient(fishEyeButton);
+		fishEyeButton.setSelection(CrucibleRepositoryConnector.isFishEye(repository));
 	}
 
 	@Override
 	public void applyTo(TaskRepository repository) {
 		super.applyTo(repository);
+		CrucibleCorePlugin.getRepositoryConnector();
+		CrucibleRepositoryConnector.updateFishEyeStatus(repository, fishEyeButton.getSelection());
+
+		// @todo wseliga I think it does not belong here. Should be in Crucible preference page
 		//store activation preference
 		if (buttonAlways.getSelection()) {
 			CrucibleUiPlugin.setActivateReviewPreference(MessageDialogWithToggle.ALWAYS);
@@ -165,5 +206,19 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 		} else {
 			CrucibleUiPlugin.setActivateReviewPreference(MessageDialogWithToggle.PROMPT);
 		}
+	}
+
+	@Override
+	protected void applyValidatorResult(Validator validator) {
+		if (validator != null && validator.getStatus() == Status.OK_STATUS) {
+			if (isFishEyeDetected && !fishEyeButton.getSelection()) {
+				if (MessageDialog.openQuestion(getShell(), "Combined FishEye & Crucible detected",
+						"This Crucible server is connected to Fisheye.\n"
+								+ "Would you like to connect to the Fisheye server as well?")) {
+					fishEyeButton.setSelection(true);
+				}
+			}
+		}
+		super.applyValidatorResult(validator);
 	}
 }

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -21,6 +22,9 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -29,6 +33,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -60,30 +65,26 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 	public FishEyePreferencePage() {
 		super("FishEye Preferences");
-		//setPreferenceStore(FishEyeUiPlugin.getDefault().getPreferenceStore());
 		setDescription("Add, remove or edit FishEye mapping configuration.");
 		noDefaultAndApplyButton();
 	}
-
-//	/**
-//	 * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to manipulate various
-//	 * types of preferences. Each field editor knows how to save and restore itself.
-//	 */
-//	public void createFieldEditors() {
-//		addField(new StringFieldEditor(PreferenceConstants.SERVER_URL, "Default &FishEye server:",
-//				getFieldEditorParent()));
-////		addField(new DirectoryFieldEditor(PreferenceConstants.SERVER_URL, "Default &FishEye server:",
-////				getFieldEditorParent()));
-//		addField(new StringFieldEditor(PreferenceConstants.REPO, "&Default repository:", getFieldEditorParent()));
-//
-//		addField(new StringFieldEditor(PreferenceConstants.P_BOOLEAN, "&Project path", getFieldEditorParent()));
-//
-//	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
+	}
+
+	private List<TaskRepository> getFishEyeServers() {
+		List<TaskRepository> fishEyeLikeRepos = MiscUtil.buildArrayList();
+		final List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
+		for (TaskRepository taskRepository : allRepositories) {
+			if (taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)
+					|| CrucibleRepositoryConnector.isFishEye(taskRepository)) {
+				fishEyeLikeRepos.add(taskRepository);
+			}
+		}
+		return fishEyeLikeRepos;
 	}
 
 	@Override
@@ -104,9 +105,9 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 		GridDataFactory.fillDefaults().grab(false, false).applyTo(panel);
 		final Button addButton = new Button(panel, SWT.PUSH);
-		addButton.setText("Add");
+		addButton.setText("Add...");
 		final Button editButton = new Button(panel, SWT.PUSH);
-		editButton.setText("Edit");
+		editButton.setText("Edit...");
 		final Button removeButton = new Button(panel, SWT.PUSH);
 		removeButton.setText("Remove");
 
@@ -167,7 +168,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 			public void widgetSelected(SelectionEvent e) {
 				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
-						TasksUi.getRepositoryManager().getRepositories(FishEyeCorePlugin.CONNECTOR_KIND),
+						getFishEyeServers(),
 						FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
 				if (dialog.open() == Window.OK) {
 					final FishEyeMappingConfiguration cfg = dialog.getCfg();
@@ -182,26 +183,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		editButton.addSelectionListener(new SelectionAdapter() {
 
 			public void widgetSelected(SelectionEvent e) {
-				if (tableViewer.getSelection() instanceof IStructuredSelection) {
-					Object selection = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
-					if (selection instanceof FishEyeMappingConfiguration) {
-						FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
-						AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
-								mappingCfg, TasksUi.getRepositoryManager().getRepositories(
-										FishEyeCorePlugin.CONNECTOR_KIND), FishEyeCorePlugin.getDefault()
-										.getRepositoryConnector()
-										.getClientManager());
-						if (dialog.open() == Window.OK) {
-							final FishEyeMappingConfiguration cfg = dialog.getCfg();
-							if (cfg != null) {
-								int index = mapping.indexOf(mappingCfg);
-								assert index >= 0;
-								mapping.set(index, cfg);
-								tableViewer.refresh();
-							}
-						}
-					}
-				}
+				handleEditMapping(tableViewer.getSelection(), tableViewer);
 			}
 
 		});
@@ -217,8 +199,33 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		});
 
 		tableViewer.getControl().setSize(tableViewer.getControl().computeSize(SWT.DEFAULT, 200));
+		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				handleEditMapping(event.getSelection(), tableViewer);
+			}
+		});
 
 		return ancestor;
+	}
+
+	private void handleEditMapping(ISelection aSelection, TableViewer tableViewer) {
+		if (aSelection instanceof IStructuredSelection) {
+			Object selection = ((IStructuredSelection) aSelection).getFirstElement();
+			if (selection instanceof FishEyeMappingConfiguration) {
+				FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
+				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), mappingCfg,
+						getFishEyeServers(), FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
+				if (dialog.open() == Window.OK) {
+					final FishEyeMappingConfiguration cfg = dialog.getCfg();
+					if (cfg != null) {
+						int index = mapping.indexOf(mappingCfg);
+						assert index >= 0;
+						mapping.set(index, cfg);
+						tableViewer.refresh();
+					}
+				}
+			}
+		}
 	}
 
 	@Override
