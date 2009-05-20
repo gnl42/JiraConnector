@@ -162,7 +162,7 @@ public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
 					final String description = createBuildDescription(build, infoJob.getBuildLog(),
 							infoJob.getBuildDetails());
 
-					Display.getDefault().syncExec(new Runnable() {
+					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 							TaskMapping taskMapping = new TaskMapping() {
@@ -189,7 +189,7 @@ public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
 						}
 					});
 				} else {
-					Display.getDefault().syncExec(new Runnable() {
+					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							MessageDialog.openError(null, getText(), "Retrieving build details for "
 									+ build.getPlanKey() + "-" + build.getNumber()
