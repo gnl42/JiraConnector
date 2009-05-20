@@ -46,7 +46,7 @@ public final class TeamMessageUtils {
 
 	private static void internalOpenFileDeletedErrorMessage(String repoUrl, String filePath, String revision) {
 		String message = "Unable to open file.  Please check that:\n\n"
-				+ "- The enclosing project the project is checkd out at the latest revision.\n"
+				+ "- The enclosing project the project is checked out at the latest revision.\n"
 				+ "- The file has not been moved or deleted since the creation of the review\n"
 				+ "- You are using a supported team provider. Supported providers: Subclipse";
 
@@ -81,7 +81,7 @@ public final class TeamMessageUtils {
 
 	private static void internalOpenFileDoesntExistErrorMessage(String repoUrl, String filePath, String revision) {
 		String message = "Unable to open file.  Please check that:\n\n"
-				+ "- The enclosing project the project is checkd out at the latest revision.\n"
+				+ "- The enclosing project the project is checked out at the latest revision.\n"
 				+ "- The file has not been moved or deleted since the creation of the review\n"
 				+ "- You are using a supported team provider. Supported providers: Subclipse";
 
@@ -125,7 +125,7 @@ public final class TeamMessageUtils {
 	private static void internalOpenUnableToCompareErrorMessage(String repoUrl, String filePath, String oldRevision,
 			String newRevision) {
 		String message = "Unable to compare revisions.  Please check that:\n\n"
-				+ "- The enclosing project the project is checkd out at the latest revision.\n"
+				+ "- The enclosing project the project is checked out at the latest revision.\n"
 				+ "- The file has not been moved or deleted since the creation of the review\n"
 				+ "- You are using a supported team provider. Supported providers: Subclipse";
 
