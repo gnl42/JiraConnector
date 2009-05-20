@@ -125,7 +125,6 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 	@Override
 	public void applyTo(final TaskRepository repository) {
-		// ignore
 		this.repository = applyToValidate(repository);
 		Object[] items = planViewer.getCheckedElements();
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
