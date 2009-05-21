@@ -56,7 +56,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 	}
 
 	public void configureHttpMethod(AbstractHttpSession session, HttpMethod method) {
-		session.adjustHttpHeader(method);
+		// nothing to do here
 	}
 
 	public synchronized void removeClient(ServerData server) {
