@@ -188,7 +188,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 		fishEyeButton = new Button(fishEyeSection, SWT.CHECK);
 		fishEyeButton.setText("Crucible Server Contains FishEye Instance");
 		fishEyeSection.setClient(fishEyeButton);
-		fishEyeButton.setSelection(CrucibleRepositoryConnector.isFishEye(repository));
+		fishEyeButton.setSelection(repository != null && CrucibleRepositoryConnector.isFishEye(repository));
 	}
 
 	@Override
