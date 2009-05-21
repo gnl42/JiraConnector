@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -143,12 +144,12 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 	}
 
-	public Collection<String> getRepositories(IProgressMonitor monitor) {
+	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
 		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
 				monitor);
-		List<String> res = MiscUtil.buildArrayList(repos.length);
+		List<RepositoryInfo> res = MiscUtil.buildArrayList(repos.length);
 		for (ISVNRepositoryLocation repo : repos) {
-			res.add(repo.getUrl().toString());
+			res.add(new RepositoryInfo(repo.getUrl().toString(), repo.getLabel()));
 		}
 		return res;
 	}
@@ -538,8 +539,9 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
 			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"));
 			try {
-				return new RevisionInfo(svnResource.getUrl().toString(), 
-						svnResource.getStatus().getLastChangedRevision().toString(), isBinary);
+				return new RevisionInfo(svnResource.getUrl().toString(), svnResource.getStatus()
+						.getLastChangedRevision()
+						.toString(), isBinary);
 			} catch (SVNException e) {
 				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
 						"Cannot determine SVN information for resource [" + resource + "]", e));

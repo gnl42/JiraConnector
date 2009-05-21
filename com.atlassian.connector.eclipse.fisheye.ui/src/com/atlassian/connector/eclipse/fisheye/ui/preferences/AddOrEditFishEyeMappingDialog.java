@@ -18,6 +18,7 @@ import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClien
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
+import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -69,10 +70,20 @@ import java.util.Set;
 public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	private final class OnShowHandler extends ShellAdapter {
+		@Override
 		public void shellActivated(ShellEvent event) {
-			updateOkButtonState();
+			if (scmRepositories != null) {
+				return;
+			}
 			try {
-				run(true, false, runnable);
+				run(true, false, new IRunnableWithProgress() {
+
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+						monitor.beginTask("Collecting data about workspace SCM repositories", IProgressMonitor.UNKNOWN);
+						scmRepositories = TeamUiUtils.getRepositories(monitor);
+						monitor.done();
+					}
+				});
 			} catch (InvocationTargetException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, FishEyeUiPlugin.PLUGIN_ID,
 						"Cannot collect data about workspace SCM repositories", e.getCause()));
@@ -83,6 +94,8 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 						"Cannot collect data about workspace SCM repositories", e));
 				setErrorMessage("Cannot collect data about workspace SCM repositories");
 				return;
+			} finally {
+				updateOkButtonState();
 			}
 		}
 	}
@@ -101,16 +114,9 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	private final FishEyeClientManager fishEyeClientManager;
 
-	private Collection<String> repositories;
+	private Collection<RepositoryInfo> scmRepositories;
 
-	private final IRunnableWithProgress runnable = new IRunnableWithProgress() {
-
-		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-			monitor.beginTask("Collecting data about workspace SCM repositories", IProgressMonitor.UNKNOWN);
-			repositories = TeamUiUtils.getRepositories(monitor);
-			monitor.done();
-		}
-	};
+	private Button updateServerDataButton;
 
 	/**
 	 * Creates dialog in "edit" mode - with initial selections
@@ -201,8 +207,10 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		GridLayout layout = new GridLayout(3, false);
 		layout.makeColumnsEqualWidth = false;
 		parent.setLayout(layout);
-		createLabel(parent, "SCM Path");
+		createLabel(parent, "SCM Path:");
 		scmPathEdit = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		scmPathEdit.setToolTipText("Locally used path (URL) to your source code versioning repository"
+				+ " - currently only SVN is supported");
 		GridDataFactory.fillDefaults().grab(true, false).span(1, 1).hint(400, SWT.DEFAULT).applyTo(scmPathEdit);
 		final Button scmButton = new Button(parent, SWT.PUSH);
 		scmButton.setText("...");
@@ -213,13 +221,22 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 				ld.setAddCancelButton(true);
 				ld.setContentProvider(new ArrayContentProvider());
 				ld.setLabelProvider(new LabelProvider());
-				if (repositories != null) {
-					ld.setInput(repositories.toArray());
+				if (scmRepositories != null) {
+					ld.setInput(scmRepositories.toArray());
 					ld.setTitle("Select SCM Repository");
+					ld.setMessage("Select SCM repository in this workspace for this FishEye mapping.\n"
+							+ "You can adjust it afterwards.");
+					for (RepositoryInfo repositoryInfo : scmRepositories) {
+						if (scmPathEdit.getText().equals(repositoryInfo.getScmPath())) {
+							ld.setInitialSelections(new Object[] { repositoryInfo });
+						}
+					}
 					if (ld.open() == Window.OK) {
 						final Object[] result = ld.getResult();
 						if (result != null && result.length > 0) {
-							scmPathEdit.setText(result[0].toString());
+							if (result[0] instanceof RepositoryInfo) {
+								scmPathEdit.setText(((RepositoryInfo) result[0]).getScmPath());
+							}
 						}
 					}
 				}
@@ -228,17 +245,17 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 		});
 
-		createLabel(parent, "FishEye Server");
+		createLabel(parent, "FishEye Server:");
 		fishEyeServerCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(fishEyeServerCombo.getControl());
 
-		createLabel(parent, "FishEye Repository");
+		createLabel(parent, "FishEye Repository:");
 		fishEyeRepoCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(fishEyeRepoCombo.getControl());
 		fishEyeRepoCombo.setContentProvider(new ArrayContentProvider());
 		fishEyeRepoCombo.setLabelProvider(new LabelProvider());
 
-		final Button updateServerDataButton = new Button(parent, SWT.PUSH);
+		updateServerDataButton = new Button(parent, SWT.PUSH);
 		updateServerDataButton.setText("Refresh");
 		GridDataFactory.fillDefaults().grab(false, false).span(3, 1).align(SWT.RIGHT, SWT.FILL).applyTo(
 				updateServerDataButton);
@@ -298,6 +315,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 					}
 				}
 				updateOkButtonState();
+				updateRefreshButtonState();
 			}
 		});
 
@@ -326,6 +344,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		});
 
 		getShell().addShellListener(new OnShowHandler());
+		updateRefreshButtonState();
 		return parent;
 	}
 
@@ -341,6 +360,10 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 	private void updateOkButtonState() {
 		boolean isEnabled = (getSelectedRepo() != null && getSelectedServer() != null && scmPathEdit.getText().length() > 0);
 		okButton.setEnabled(isEnabled);
+	}
+
+	private void updateRefreshButtonState() {
+		updateServerDataButton.setEnabled(getSelectedServer() != null);
 	}
 
 	private void updateServerData(final TaskRepository taskRepository) {
@@ -401,6 +424,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	protected void createButtonsForButtonBar(Composite parent) {
 		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		updateOkButtonState();
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 

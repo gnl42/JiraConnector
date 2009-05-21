@@ -70,6 +70,6 @@ public interface ITeamResourceConnector {
 	 * @return repositories applicable for the current workspace
 	 */
 	@NotNull
-	Collection<String> getRepositories(IProgressMonitor monitor);
+	Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor);
 
 }

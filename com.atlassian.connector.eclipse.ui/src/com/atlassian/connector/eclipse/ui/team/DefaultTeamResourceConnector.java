@@ -522,7 +522,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	public Collection<String> getRepositories(IProgressMonitor monitor) {
+	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
 		// @todo wseliga implement it
 		return Collections.emptyList();
 	}

@@ -153,9 +153,15 @@ public final class TeamUiUtils {
 		return operation.execute(defaultConnector, monitor);
 	}
 
-	public static Collection<String> getRepositories(IProgressMonitor monitor) {
+	/**
+	 * @param monitor
+	 *            progress monitor
+	 * @return all supported repositories configured in current workspace
+	 */
+	@NotNull
+	public static Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
-		Collection<String> res = MiscUtil.buildArrayList();
+		Collection<RepositoryInfo> res = MiscUtil.buildArrayList();
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled()) {
