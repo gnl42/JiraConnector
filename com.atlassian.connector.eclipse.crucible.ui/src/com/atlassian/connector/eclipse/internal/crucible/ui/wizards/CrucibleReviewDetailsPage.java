@@ -54,6 +54,8 @@ import java.util.Set;
  * @author Thomas Ehrnhoefer
  */
 public class CrucibleReviewDetailsPage extends WizardPage {
+	private static final String ENTER_THE_DETAILS_OF_THE_REVIEW = "Enter the details of the review.";
+
 	private final TaskRepository repository;
 
 	private final ReviewBean newReview;
@@ -76,11 +78,13 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	private Button startReview;
 
+	private boolean firstTimeCheck = true;
+
 	public CrucibleReviewDetailsPage(TaskRepository repository, CrucibleReviewWizard wizard) {
 		super("crucibleDetails"); //$NON-NLS-1$
 		Assert.isNotNull(repository);
 		setTitle("New Crucible Review");
-		setDescription("Enter the details of the review.");
+		setDescription(ENTER_THE_DETAILS_OF_THE_REVIEW);
 		this.repository = repository;
 		newReview = new ReviewBean(repository.getUrl());
 		this.wizard = wizard;
@@ -263,22 +267,29 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	private boolean hasRequiredFields() {
 		setErrorMessage(null);
+		String newMessage = null;
 		if (newReview.getProjectKey() == null) {
-			setErrorMessage("Select a project");
-			return false;
+			newMessage = "Select a project";
 		}
 		if (newReview.getModerator() == null) {
-			setErrorMessage("Select a moderator");
-			return false;
+			newMessage = "Select a moderator";
 		}
 		if (newReview.getAuthor() == null) {
-			setErrorMessage("Select an author");
-			return false;
+			newMessage = "Select an author";
 		}
 		if (newReview.getSummary() == null || newReview.getSummary().trim().length() == 0) {
-			setErrorMessage("Enter a title / summary for the review");
+			newMessage = "Enter a title for the review";
+		}
+		if (newMessage != null) {
+			if (firstTimeCheck) {
+				setMessage(newMessage);
+			} else {
+				setErrorMessage(newMessage);
+			}
 			return false;
 		}
+		setMessage(ENTER_THE_DETAILS_OF_THE_REVIEW);
+		firstTimeCheck = false;
 		return true;
 	}
 

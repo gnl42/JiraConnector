@@ -473,6 +473,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		addChangesetMenuItem.setEnabled(false);
 		getNextRevisionsMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
 		getNextRevisionsMenuItem.setText("Get 10 More Revisions");
+		getNextRevisionsMenuItem.setEnabled(false);
 		getNextRevisionsMenuItem.addSelectionListener(new SelectionAdapter() {
 			@SuppressWarnings("unchecked")
 			@Override
