@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
@@ -58,6 +59,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ListDialog;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,28 +179,6 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	}
 
-	/**
-	 * for easy testing
-	 * 
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
-		Display display = new Display();
-		final Shell shell = new Shell(display);
-		final TaskRepository stac = new TaskRepository(FishEyeCorePlugin.CONNECTOR_KIND,
-				"https://studio.atlassian.com/source");
-		stac.setRepositoryLabel("StAC");
-		stac.setCredentials(AuthenticationType.HTTP, new AuthenticationCredentials("user", "pass"), false);
-
-		final TaskRepository localFe = new TaskRepository(FishEyeCorePlugin.CONNECTOR_KIND, "http://localhost:8060");
-		localFe.setRepositoryLabel("Local FishEye 1.6.4");
-		localFe.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("wseliga", "wseliga"),
-				false);
-		FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration("http://demo", localFe.getUrl(), "TST");
-		new AddOrEditFishEyeMappingDialog(shell, cfg, MiscUtil.buildArrayList(stac, localFe), new FishEyeClientManager(
-				File.createTempFile("elipseconnector", "tmp"))).open();
-	}
-
 	@Override
 	protected Control createPageControls(Composite parent) {
 		getShell().setText((cfg == null ? "Add" : "Edit") + " FishEye Mapping");
@@ -220,12 +200,17 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 				final ListDialog ld = new ListDialog(getShell());
 				ld.setAddCancelButton(true);
 				ld.setContentProvider(new ArrayContentProvider());
-				ld.setLabelProvider(new LabelProvider());
+				ld.setLabelProvider(new LabelProvider() {
+					@Override
+					public Image getImage(Object element) {
+						return CrucibleImages.getImage(CrucibleImages.REPOSITORY);
+					}
+				});
 				if (scmRepositories != null) {
 					ld.setInput(scmRepositories.toArray());
 					ld.setTitle("Select SCM Repository");
 					ld.setMessage("Select SCM repository in this workspace for this FishEye mapping.\n"
-							+ "You can adjust it afterwards.");
+							+ "You can adjust it afterwards to narrow it down to the more specific path.");
 					for (RepositoryInfo repositoryInfo : scmRepositories) {
 						if (scmPathEdit.getText().equals(repositoryInfo.getScmPath())) {
 							ld.setInitialSelections(new Object[] { repositoryInfo });
@@ -240,9 +225,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 						}
 					}
 				}
-
 			}
-
 		});
 
 		createLabel(parent, "FishEye Server:");
@@ -295,9 +278,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 							cachedRepositories.add(cfg.getFishEyeRepo());
 						}
 					}
-					final Object[] cachedRepositoriesArray = cachedRepositories.toArray();
-					Arrays.sort(cachedRepositoriesArray);
-					fishEyeRepoCombo.setInput(cachedRepositoriesArray);
+					fishEyeRepoCombo.setInput(getSortedRepositories(cachedRepositories));
 				}
 			}
 		}
@@ -311,7 +292,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 						final TaskRepository taskRepository = (TaskRepository) selection.getFirstElement();
 						final FishEyeClientData clientData = fishEyeClientManager.getClient(taskRepository)
 								.getClientData();
-						fishEyeRepoCombo.setInput(clientData.getCachedRepositories().toArray());
+						fishEyeRepoCombo.setInput(getSortedRepositories(clientData.getCachedRepositories()));
 					}
 				}
 				updateOkButtonState();
@@ -397,7 +378,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 						public void run() {
 							if (!monitor.isCanceled()) {
 								final ISelection oldSelection = fishEyeRepoCombo.getSelection();
-								fishEyeRepoCombo.setInput(clientData.getCachedRepositories().toArray());
+								fishEyeRepoCombo.setInput(getSortedRepositories(clientData.getCachedRepositories()));
 								fishEyeRepoCombo.setSelection(oldSelection);
 								setErrorMessage(null);
 							}
@@ -422,10 +403,42 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	}
 
+	@NotNull
+	private String[] getSortedRepositories(Collection<String> unsortedRepos) {
+		if (unsortedRepos == null) {
+			return new String[0];
+		}
+		final String[] tmp = unsortedRepos.toArray(new String[0]);
+		Arrays.sort(tmp);
+		return tmp;
+	}
+
 	protected void createButtonsForButtonBar(Composite parent) {
 		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		updateOkButtonState();
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+	}
+
+	/**
+	 * for easy testing
+	 * 
+	 * @throws IOException
+	 */
+	public static void main(String[] args) throws IOException {
+		Display display = new Display();
+		final Shell shell = new Shell(display);
+		final TaskRepository stac = new TaskRepository(FishEyeCorePlugin.CONNECTOR_KIND,
+				"https://studio.atlassian.com/source");
+		stac.setRepositoryLabel("StAC");
+		stac.setCredentials(AuthenticationType.HTTP, new AuthenticationCredentials("user", "pass"), false);
+
+		final TaskRepository localFe = new TaskRepository(FishEyeCorePlugin.CONNECTOR_KIND, "http://localhost:8060");
+		localFe.setRepositoryLabel("Local FishEye 1.6.4");
+		localFe.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("wseliga", "wseliga"),
+				false);
+		FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration("http://demo", localFe.getUrl(), "TST");
+		new AddOrEditFishEyeMappingDialog(shell, cfg, MiscUtil.buildArrayList(stac, localFe), new FishEyeClientManager(
+				File.createTempFile("elipseconnector", "tmp"))).open();
 	}
 
 }

@@ -63,6 +63,8 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 	private List<FishEyeMappingConfiguration> mapping;
 
+	public static final String ID = "com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage";
+
 	public FishEyePreferencePage() {
 		super("FishEye Preferences");
 		setDescription("Add, remove or edit FishEye mapping configuration.");
@@ -168,8 +170,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 			public void widgetSelected(SelectionEvent e) {
 				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
-						getFishEyeServers(),
-						FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
+						getFishEyeServers(), FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
 				if (dialog.open() == Window.OK) {
 					final FishEyeMappingConfiguration cfg = dialog.getCfg();
 					if (cfg != null) {

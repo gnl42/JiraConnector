@@ -11,10 +11,6 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTError;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.LocationEvent;
-import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -46,12 +42,6 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 			+ "information right there in your development environment. Viewing your "
 			+ "code in <a href=\"http://www.atlassian.com/software/fisheye\">FishEye</a> is just a click away.";
 
-	private static final String TEXT_HTML = "<html><body bgcolor=\"white\"><center>" + "<font size=\"2\">" + TEXT_MAIN
-			+ "<br><br><br><br></font>" + "<font size=\"5\">Developed by Atlassian for you to lust after<br>"
-			+ "<a href=\"http://www.atlassian.com/\"><b>http://www.atlassian.com/<b></a></font>"
-			+ "<br><br><br><br><font size=\"2\">Licensed under the Eclipse Public License Version 1.0 (\"EPL\")."
-			+ "<br>Copyright (c) Atlassian 2009</font>" + "</center></body></html>";
-
 	@Override
 	protected Control createContents(Composite parent) {
 		final Composite composite = new Composite(parent, SWT.NULL);
@@ -67,75 +57,61 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 
 		label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 
-		try {
-			final Browser browser = new Browser(composite, SWT.NONE);
-			browser.setText(TEXT_HTML);
-			GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.FILL).hint(logoWidth, 350).applyTo(browser);
-			browser.addLocationListener(new LocationListener() {
+		// OK, when we cannot just embed the browser, then
+		// we can always build something decent manually:
 
-				public void changed(LocationEvent event) {
-				}
+		final Composite nestedComposite = new Composite(composite, SWT.NONE);
+		nestedComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+		GridLayoutFactory.fillDefaults().numColumns(1).margins(4, 0).applyTo(nestedComposite);
+		GridDataFactory.fillDefaults()
+				.align(SWT.CENTER, SWT.FILL)
+				.hint(logoWidth, SWT.DEFAULT)
+				.applyTo(nestedComposite);
 
-				public void changing(LocationEvent event) {
-					event.doit = false;
-					openUrl(event.location);
-				}
+		Link link = new Link(nestedComposite, SWT.NONE);
+		link.setText(TEXT_MAIN);
 
-			});
-		} catch (SWTError e) {
-			// OK, when we cannot just embed the browser, then
-			// we can always build something decent manually:
+		link.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+		link.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				openUrl(e.text);
+			}
+		});
+		GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.TOP).hint(logoWidth, SWT.DEFAULT).applyTo(link);
 
-			final Composite nestedComposite = new Composite(composite, SWT.NONE);
-			nestedComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-			GridLayoutFactory.fillDefaults().numColumns(1).margins(4, 0).applyTo(nestedComposite);
-			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.FILL).hint(logoWidth, SWT.DEFAULT).applyTo(
-					nestedComposite);
+		final FontRegistry fontRegistry = new FontRegistry();
+		fontRegistry.put("big", new FontData[] { new FontData("Arial", 18, SWT.BOLD) });
+		final Font bigFont = fontRegistry.get("big");
 
-			Link link = new Link(nestedComposite, SWT.NONE);
-			link.setText(TEXT_MAIN);
+		// a spacer
+		new Label(nestedComposite, SWT.NONE).setVisible(false);
 
-			link.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-			link.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					openUrl(e.text);
-				}
-			});
-			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.TOP).hint(logoWidth, SWT.DEFAULT).applyTo(link);
+		final Link link2 = createLink(nestedComposite, "Developed by Atlassian for you to lust after", -1);
+		link2.setFont(bigFont);
 
-			final FontRegistry fontRegistry = new FontRegistry();
-			fontRegistry.put("big", new FontData[] { new FontData("Arial", 18, SWT.BOLD) });
-			final Font bigFont = fontRegistry.get("big");
+		link2.setText("Developed by Atlassian for you to lust after");
+		final Link link3 = createLink(nestedComposite,
+				"<a href=\"http://www.atlassian.com/\">http://www.atlassian.com/</a>", -1);
+		link3.setFont(bigFont);
 
-			// a spacer
-			new Label(nestedComposite, SWT.NONE).setVisible(false);
+		// a spacer
+		new Label(nestedComposite, SWT.NONE).setVisible(false);
 
-			final Link link2 = createLink(nestedComposite, "Developed by Atlassian for you to lust after", -1);
-			link2.setFont(bigFont);
+		createLink(nestedComposite, "Licensed under the Eclipse Public License Version 1.0 (\"EPL\").", -1);
+		createLink(nestedComposite, "Copyright (c) Atlassian 2009", -1);
 
-			link2.setText("Developed by Atlassian for you to lust after");
-			final Link link3 = createLink(nestedComposite,
-					"<a href=\"http://www.atlassian.com/\">http://www.atlassian.com/</a>", -1);
-			link3.setFont(bigFont);
-
-			// a spacer
-			new Label(nestedComposite, SWT.NONE).setVisible(false);
-
-			createLink(nestedComposite, "Licensed under the Eclipse Public License Version 1.0 (\"EPL\").", -1);
-			createLink(nestedComposite, "Copyright (c) Atlassian 2009", -1);
-
-			// a spacer
-			new Label(nestedComposite, SWT.NONE).setVisible(false);
-		}
+		// a spacer
+		new Label(nestedComposite, SWT.NONE).setVisible(false);
 
 		final Composite buttonBar = new Composite(composite, SWT.NONE);
 		buttonBar.setLayout(new RowLayout());
 
 		createButton(buttonBar, "On-line Help",
 				"http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Eclipse+Connector");
-		createButton(buttonBar, "Raise Issue", "https://studio.atlassian.com/browse/PLE/");
 		createButton(buttonBar, "Visit Forum", "http://forums.atlassian.com/forum.jspa?forumID=124&start=0");
+		createButton(buttonBar, "Raise Support Case", "https://support.atlassian.com/browse/ECSP");
+		createButton(buttonBar, "Raise Issue", "https://studio.atlassian.com/browse/PLE");
 
 		return composite;
 	}
@@ -160,6 +136,7 @@ public class AtlassianPreferencePage extends PreferencePage implements IWorkbenc
 	private void createButton(final Composite parent, String text, final String url) {
 		Button helpButton = new Button(parent, SWT.PUSH);
 		helpButton.setText(text);
+		helpButton.setToolTipText("Open " + url);
 		helpButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

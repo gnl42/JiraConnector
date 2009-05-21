@@ -11,7 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui.command;
 
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -22,14 +24,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,21 +44,12 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 		LineRange lineRange = null;
 
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		/*		if (selection instanceof TextSelection) {
-					final TextSelection textSelection = (TextSelection) selection;
-				} else*/
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			if (structuredSelection.getFirstElement() instanceof IAdaptable) {
 				resource = (IResource) ((IAdaptable) structuredSelection.getFirstElement()).getAdapter(IResource.class);
 				lineRange = getSelectedLineRange(event);
 			}
-			//			Display.getDefault().asyncExec(new Runnable() {
-			//				public void run() {
-			//					MessageDialog.openInformation(null, "mytitle", structuredSelection.toString());
-			//				}
-			//
-			//			});
 		} else {
 			final IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
 			if (activeEditor != null) {
@@ -68,7 +63,7 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 			}
 		}
 		if (resource != null) {
-			processResource(resource, lineRange);
+			processResource(resource, lineRange, HandlerUtil.getActiveShell(event));
 		}
 
 		return null;
@@ -76,7 +71,7 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 
 	protected abstract void processUrl(@NotNull String url);
 
-	private void processResource(IResource resource, LineRange lineRange) {
+	private void processResource(IResource resource, LineRange lineRange, final Shell shell) {
 		try {
 			final String url = FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().buildFishEyeUrl(resource,
 					lineRange);
@@ -85,8 +80,16 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 			}
 
 		} catch (CoreException e) {
-			ErrorDialog.openError(null, FishEyeUiPlugin.PLUGIN_ID, "Cannot open " + resource.getName()
-					+ " in FishEye web UI", e.getStatus());
+			new ErrorDialogWithHyperlink(shell, "Error", "Cannot build FishEye URL for " + resource.getName() + ": "
+					+ e.getMessage(), "<a>Configure FishEye Settings</a>", new Runnable() {
+				public void run() {
+					final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell,
+							FishEyePreferencePage.ID, null, null);
+					if (prefDialog != null) {
+						prefDialog.open();
+					}
+				}
+			}).open();
 		}
 	}
 
