@@ -24,6 +24,7 @@ plugin@com.atlassian.connector.eclipse.fisheye.ui=SVN,trunk,https://studio.atlas
 plugin@com.atlassian.connector.eclipse.subclipse.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.subclipse.ui
 plugin@com.atlassian.connector.eclipse.tests=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.tests
 plugin@com.atlassian.connector.eclipse.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.ui
+plugin@com.atlassian.connector.eclipse.help=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipsehelp
 
 plugin@com.atlassian.connector.commons=SVN,trunk,https://studio.atlassian.com/svn/ACC,,com.atlassian.connector.commons
 plugin@com.atlassian.connector.commons.tests.dependencies=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.commons.tests.dependencies
