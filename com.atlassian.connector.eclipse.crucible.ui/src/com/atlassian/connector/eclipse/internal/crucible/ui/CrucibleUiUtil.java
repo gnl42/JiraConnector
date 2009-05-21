@@ -129,11 +129,13 @@ public final class CrucibleUiUtil {
 	}
 
 	public static String getCurrentUserName(TaskRepository repository) {
+		/*
 		String currentUser = CrucibleCorePlugin.getRepositoryConnector()
 				.getClientManager()
 				.getClient(repository)
 				.getUserName();
-		return currentUser;
+		*/
+		return repository.getUserName();
 	}
 
 	public static CrucibleCachedUser getCachedUser(String userName, TaskRepository repository) {
