@@ -19,6 +19,7 @@ import org.eclipse.mylyn.jira.tests.client.JiraClientTest;
 import org.eclipse.mylyn.jira.tests.client.JiraWebClientTest;
 import org.eclipse.mylyn.jira.tests.core.FilterDefinitionConverterTest;
 import org.eclipse.mylyn.jira.tests.core.JiraTimeFormatTest;
+import org.eclipse.mylyn.jira.tests.ui.JiraConnectorUiStandaloneTest;
 
 /**
  * @author Steffen Pingel
@@ -32,7 +33,7 @@ public class AllJiraHeadlessStandaloneTests {
 		suite.addTestSuite(JiraClientTest.class);
 		suite.addTestSuite(JiraWebClientTest.class);
 		suite.addTestSuite(FilterDefinitionConverterTest.class);
-		suite.addTestSuite(JiraClientOfflineTest.class);
+		suite.addTestSuite(JiraConnectorUiStandaloneTest.class);
 		return suite;
 	}
 

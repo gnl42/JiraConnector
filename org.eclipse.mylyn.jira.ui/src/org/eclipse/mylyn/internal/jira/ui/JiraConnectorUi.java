@@ -54,7 +54,10 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
  */
 public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
-	private static Pattern TASK_PATTERN = Pattern.compile("([A-Z]+)-\\d+"); //$NON-NLS-1$
+	/**
+	 * Public for testing only.
+	 */
+	public static Pattern TASK_PATTERN = Pattern.compile("(^|\\s)(([A-Z]+)-\\d+)"); //$NON-NLS-1$
 
 	public enum JiraTaskKind {
 		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
@@ -166,13 +169,13 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 			List<IHyperlink> links = null;
 			Matcher m = TASK_PATTERN.matcher(text);
 			while (m.find()) {
-				String projectKey = m.group(1);
+				String projectKey = m.group(3);
 				if (client.getCache().getProjectByKey(projectKey) != null) {
 					if (links == null) {
 						links = new ArrayList<IHyperlink>();
 					}
-					Region region = new Region(textOffset + m.start(), m.end() - m.start());
-					links.add(new TaskHyperlink(region, repository, m.group()));
+					Region region = new Region(textOffset + m.start(2), m.end() - m.start(2));
+					links.add(new TaskHyperlink(region, repository, m.group(2)));
 				}
 			}
 			return links == null ? null : links.toArray(new IHyperlink[0]);

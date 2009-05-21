@@ -81,6 +81,9 @@ public class JiraConnectorUiTest extends TestCase {
 		assertEquals(2, result.length);
 		assertEquals(new Region(4, 7), result[0].getHyperlinkRegion());
 		assertEquals(new Region(16, 7), result[1].getHyperlinkRegion());
+
+		result = connectorUi.findHyperlinks(repository, "PRONE-PRONE-1", -1, 0);
+		assertNull(result);
 	}
 
 	public void testGetTaskHistoryUrl() {
