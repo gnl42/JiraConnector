@@ -71,7 +71,7 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		super.createButtonsForButtonBar(parent);
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.HELP_ID, "Help", false);
 	}
 
@@ -99,7 +99,7 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 
 	@Override
 	protected Image getImage() {
-		return getWarningImage();
+		return getErrorImage();
 	}
 
 }

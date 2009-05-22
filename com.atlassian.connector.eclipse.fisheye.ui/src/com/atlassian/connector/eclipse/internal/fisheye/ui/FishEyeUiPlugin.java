@@ -13,6 +13,8 @@ public class FishEyeUiPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.fisheye.ui";
 
+	public static final String PRODUCT_NAME = "FishEye Connector";
+
 	// The shared instance
 	private static FishEyeUiPlugin plugin;
 
