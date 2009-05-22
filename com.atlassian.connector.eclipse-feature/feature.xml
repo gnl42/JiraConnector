@@ -28,11 +28,6 @@
          name="Crucible Integration"/>
 
    <includes
-         id="com.atlassian.connector.eclipse.fisheye"
-         version="0.0.0"
-         name="Fisheye Integration"/>
-
-   <includes
          id="com.atlassian.connector.eclipse.bamboo"
          version="0.0.0"
          name="Bamboo Integration"/>
@@ -47,12 +42,5 @@
       <import feature="org.eclipse.mylyn.jira_feature" version="3.1.0.I20090217" match="equivalent"/>
       <import feature="org.eclipse.mylyn_feature" version="3.1.0.I20090217" match="equivalent"/>
    </requires>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.help"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 </feature>
