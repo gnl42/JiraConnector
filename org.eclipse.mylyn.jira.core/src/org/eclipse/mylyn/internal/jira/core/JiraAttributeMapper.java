@@ -90,6 +90,8 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 			return JiraAttribute.TYPE.id();
 		} else if (TaskAttribute.DATE_DUE.equals(key)) {
 			return JiraAttribute.DUE_DATE.id();
+		} else if (TaskAttribute.VERSION.equals(key)) {
+			return JiraAttribute.AFFECTSVERSIONS.id();
 		}
 		return super.mapToRepositoryKey(parent, key);
 	}
