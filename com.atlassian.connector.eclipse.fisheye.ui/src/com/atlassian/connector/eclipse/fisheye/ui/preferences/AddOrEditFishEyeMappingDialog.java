@@ -44,6 +44,8 @@ import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
@@ -70,6 +72,39 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
+
+	private final class ScmButtonSelectionListener extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent event) {
+			final ListDialog ld = new ListDialog(getShell());
+			ld.setAddCancelButton(true);
+			ld.setContentProvider(new ArrayContentProvider());
+			ld.setLabelProvider(new LabelProvider() {
+				@Override
+				public Image getImage(Object element) {
+					return CrucibleImages.getImage(CrucibleImages.REPOSITORY);
+				}
+			});
+			if (scmRepositories != null) {
+				ld.setInput(scmRepositories.toArray());
+				ld.setTitle("Select SCM Repository");
+				ld.setMessage("Select SCM repository in this workspace for this FishEye mapping.\n"
+						+ "You can adjust it afterwards to narrow it down to the more specific path.");
+				for (RepositoryInfo repositoryInfo : scmRepositories) {
+					if (scmPathEdit.getText().equals(repositoryInfo.getScmPath())) {
+						ld.setInitialSelections(new Object[] { repositoryInfo });
+					}
+				}
+				if (ld.open() == Window.OK) {
+					final Object[] result = ld.getResult();
+					if (result != null && result.length > 0) {
+						if (result[0] instanceof RepositoryInfo) {
+							scmPathEdit.setText(((RepositoryInfo) result[0]).getScmPath());
+						}
+					}
+				}
+			}
+		}
+	}
 
 	private final class OnShowHandler extends ShellAdapter {
 		@Override
@@ -119,6 +154,8 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 	private Collection<RepositoryInfo> scmRepositories;
 
 	private Button updateServerDataButton;
+
+	private TaskRepository currentTaskRepository;
 
 	/**
 	 * Creates dialog in "edit" mode - with initial selections
@@ -195,38 +232,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		final Button scmButton = new Button(parent, SWT.PUSH);
 		scmButton.setText("...");
 		GridDataFactory.fillDefaults().grab(false, false).span(1, 1).applyTo(scmButton);
-		scmButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				final ListDialog ld = new ListDialog(getShell());
-				ld.setAddCancelButton(true);
-				ld.setContentProvider(new ArrayContentProvider());
-				ld.setLabelProvider(new LabelProvider() {
-					@Override
-					public Image getImage(Object element) {
-						return CrucibleImages.getImage(CrucibleImages.REPOSITORY);
-					}
-				});
-				if (scmRepositories != null) {
-					ld.setInput(scmRepositories.toArray());
-					ld.setTitle("Select SCM Repository");
-					ld.setMessage("Select SCM repository in this workspace for this FishEye mapping.\n"
-							+ "You can adjust it afterwards to narrow it down to the more specific path.");
-					for (RepositoryInfo repositoryInfo : scmRepositories) {
-						if (scmPathEdit.getText().equals(repositoryInfo.getScmPath())) {
-							ld.setInitialSelections(new Object[] { repositoryInfo });
-						}
-					}
-					if (ld.open() == Window.OK) {
-						final Object[] result = ld.getResult();
-						if (result != null && result.length > 0) {
-							if (result[0] instanceof RepositoryInfo) {
-								scmPathEdit.setText(((RepositoryInfo) result[0]).getScmPath());
-							}
-						}
-					}
-				}
-			}
-		});
+		scmButton.addSelectionListener(new ScmButtonSelectionListener());
 
 		createLabel(parent, "FishEye Server:");
 		fishEyeServerCombo = new ComboViewer(new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
@@ -267,6 +273,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 			if (cfg.getFishEyeServer() != null) {
 				final TaskRepository repository = findByUrl(cfg.getFishEyeServer());
 				if (repository != null) {
+					currentTaskRepository = repository;
 					fishEyeServerCombo.setSelection(new StructuredSelection(repository));
 					Set<String> cachedRepositories = fishEyeClientManager.getClient(repository)
 							.getClientData()
@@ -283,16 +290,26 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 			}
 		}
 
-		// only now listeners - as previously they could have been triggered by restoring default selection (edit mode)
+		// Listeners at the end - after we restored settings (in edit mode)
+		// Otherwise they would be called during fields initialization and that could break - as they depend on each other.
+		scmPathEdit.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				updateOkButtonState();
+			}
+		});
+
 		fishEyeServerCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 					if (selection.getFirstElement() instanceof TaskRepository) {
 						final TaskRepository taskRepository = (TaskRepository) selection.getFirstElement();
-						final FishEyeClientData clientData = fishEyeClientManager.getClient(taskRepository)
-								.getClientData();
-						fishEyeRepoCombo.setInput(getSortedRepositories(clientData.getCachedRepositories()));
+						if (!taskRepository.equals(currentTaskRepository)) {
+							currentTaskRepository = taskRepository;
+							final FishEyeClientData clientData = fishEyeClientManager.getClient(taskRepository)
+									.getClientData();
+							fishEyeRepoCombo.setInput(getSortedRepositories(clientData.getCachedRepositories()));
+						}
 					}
 				}
 				updateOkButtonState();
