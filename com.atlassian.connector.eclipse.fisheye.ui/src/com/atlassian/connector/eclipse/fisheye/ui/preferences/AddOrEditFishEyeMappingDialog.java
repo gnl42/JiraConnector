@@ -306,9 +306,13 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 						final TaskRepository taskRepository = (TaskRepository) selection.getFirstElement();
 						if (!taskRepository.equals(currentTaskRepository)) {
 							currentTaskRepository = taskRepository;
-							final FishEyeClientData clientData = fishEyeClientManager.getClient(taskRepository)
-									.getClientData();
-							fishEyeRepoCombo.setInput(getSortedRepositories(clientData.getCachedRepositories()));
+							final FishEyeClient client = fishEyeClientManager.getClient(taskRepository);
+							if (!client.hasRepositoryData()) {
+								updateServerData(taskRepository);
+							} else {
+								fishEyeRepoCombo.setInput(getSortedRepositories(client.getClientData()
+										.getCachedRepositories()));
+							}
 						}
 					}
 				}
