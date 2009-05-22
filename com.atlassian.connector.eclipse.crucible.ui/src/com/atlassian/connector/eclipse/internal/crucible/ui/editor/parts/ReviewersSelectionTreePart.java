@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.mylyn.internal.provisional.commons.ui.SubstringPatternFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -113,6 +114,8 @@ public class ReviewersSelectionTreePart {
 				item.setChecked(true);
 			}
 		}
+
+		tree.getViewer().setSorter(new ViewerSorter());
 
 		tree.getViewer().setCheckedElements(getCachedUsersFromReviewers(selectedReviewers));
 

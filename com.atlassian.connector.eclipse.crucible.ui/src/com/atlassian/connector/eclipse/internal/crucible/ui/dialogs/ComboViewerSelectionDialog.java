@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -68,6 +69,7 @@ public class ComboViewerSelectionDialog extends Dialog {
 		comboViewer.getCombo().setText("Select");
 		comboViewer.setContentProvider(new CrucibleRepositoriesContentProvider());
 		comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
+		comboViewer.setSorter(new ViewerSorter());
 		comboViewer.setInput(inputObjects);
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
