@@ -67,7 +67,9 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 	public FishEyePreferencePage() {
 		super("FishEye Preferences");
-		setDescription("Add, remove or edit FishEye mapping configuration.");
+		setDescription("Add, remove or edit FishEye mapping configuration.\n"
+				+ "Mapping your local SCM repositories to a Fisheye Server Repository "
+				+ "is necessary for looking up files in Fisheye correctly.");
 		noDefaultAndApplyButton();
 	}
 
