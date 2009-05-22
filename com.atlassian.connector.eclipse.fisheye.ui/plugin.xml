@@ -28,10 +28,9 @@
          <action
                label="Copy FishEye Link to Clipboard"
                tooltip="Copy FishEye Link to Clipboard"
-               class="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkAction"
+               class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.CopyFishEyeLinkAction"
                menubarPath="team.main/group10"
                enablesFor="1"
-               icon="icons/obj16/fisheye-16.png"
                id="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkObjectAction">
          </action>
       </objectContribution>
@@ -45,20 +44,54 @@
          <action overrideActionId="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkObjectAction"
                label="Copy FishEye Link to Clipboard"
                tooltip="Copy FishEye Link to Clipboard"
-               class="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkAction"
+               class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.CopyFishEyeLinkAction"
+               menubarPath="team.main/group10"
+               enablesFor="1"
+               id="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkFromEditorObjectAction">
+         </action>
+      </objectContribution>
+
+		<!-- clone of the above stuff - but for opening in FishEye -->
+
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectContribution">
+         <action
+               label="Open in FishEye"
+               tooltip="Open in FishEye"
+               class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.OpenInFishEyeLinkAction"
                menubarPath="team.main/group10"
                enablesFor="1"
                icon="icons/obj16/fisheye-16.png"
-               id="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkFromEditorObjectAction">
+               id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectAction">
+         </action>
+      </objectContribution>
+      
+      <!-- I need the second action which overrides the first in order to have line number of the
+      selected code in the editor if possible --> 
+      <objectContribution
+            objectClass="org.eclipse.ui.IEditorInput"
+            adaptable="true"
+            id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectContribution">
+         <action overrideActionId="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectAction"
+               label="Open in FishEye"
+               tooltip="Open in FishEye"
+               class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.OpenInFishEyeLinkAction"
+               menubarPath="team.main/group10"
+               enablesFor="1"
+               icon="icons/obj16/fisheye-16.png"
+               id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeFromEditorObjectAction">
          </action>
       </objectContribution>
       
    </extension>
-   
-   <extension point="org.eclipse.ui.menus">
-   
-	<!-- Show in FishEye -->
 
+	<!-- Show in FishEye - plese decide if you don't want it - works only in e3.4 or higher -->
+   
+<!--
+   <extension point="org.eclipse.ui.menus">
+  
       <menuContribution
             locationURI="popup:org.eclipse.ui.menus.showInMenu">
          <command
@@ -67,18 +100,6 @@
          </command>
       </menuContribution>
 	   
-	<!-- copy FishEye link to clipboard functionalities -->
-	
-	<!-- this is somewhat crazy: I am trying to plug into using several means to be position the actions
-	in the optimal place: near Copy section - if possible or at the very end (additions) section
-	as last resort. Unfortunately sections (separator) are not named consistently across Cclipse --> 
-
-	<menuContribution
-       locationURI="menu:team.main">
-		<command commandId="com.atlassian.connector.eclipse.fisheye.ui.copyFishEyeLinkToClipboardCommand"
-        	style="push">
-		</command>     	  
-	</menuContribution>
    </extension>
    
    <extension
@@ -116,6 +137,7 @@
             commandId="com.atlassian.connector.eclipse.fisheye.ui.copyFishEyeLinkToClipboardCommand">
       </handler>
    </extension>
+   -->
    <extension
          point="org.eclipse.ui.preferencePages">
       <page

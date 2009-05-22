@@ -9,9 +9,10 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.fisheye.ui;
+package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
 
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
@@ -24,23 +25,18 @@ import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.jetbrains.annotations.Nullable;
 
-public class CopyFishEyeLinkAction extends BaseSelectionListenerAction implements IWorkbenchWindowActionDelegate {
+public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAction {
 
-	private static final class ResultBean {
+	protected static final class ResultBean {
 		private final IResource resource;
 
 		private final LineRange lineRange;
@@ -55,8 +51,8 @@ public class CopyFishEyeLinkAction extends BaseSelectionListenerAction implement
 
 	private ResultBean selectionData;
 
-	public CopyFishEyeLinkAction() {
-		super("Copy FishEye Link to Clipboard");
+	public AbstractFishEyeLinkAction(String text) {
+		super(text);
 	}
 
 	public void dispose() {
@@ -152,11 +148,7 @@ public class CopyFishEyeLinkAction extends BaseSelectionListenerAction implement
 		return null;
 	}
 
-	protected void processUrl(String url) {
-		final Clipboard clipboard = new Clipboard(Display.getDefault());
-		TextTransfer textTransfer = TextTransfer.getInstance();
-		clipboard.setContents(new Object[] { url }, new Transfer[] { textTransfer });
-	}
+	protected abstract void processUrl(String url);
 
 	private void processResource(IResource resource, LineRange lineRange, final Shell shell) {
 		try {
