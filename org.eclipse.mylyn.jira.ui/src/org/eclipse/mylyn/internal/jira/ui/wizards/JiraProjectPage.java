@@ -12,8 +12,6 @@
 
 package org.eclipse.mylyn.internal.jira.ui.wizards;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +20,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -47,7 +44,9 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.EnhancedFilteredTree;
+import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -222,40 +221,28 @@ public class JiraProjectPage extends WizardPage {
 	private void updateProjectsFromRepository(final boolean force) {
 		final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		if (!client.getCache().hasDetails() || force) {
-			try {
-				IRunnableWithProgress runner = new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						try {
-							JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-							client.getCache().refreshDetails(monitor);
-						} catch (JiraException e) {
-							throw new InvocationTargetException(new CoreException(
-									JiraCorePlugin.toStatus(repository, e)));
-						} catch (OperationCanceledException e) {
-							// canceled
-							throw new InterruptedException();
-						} finally {
-							monitor.done();
-						}
+			ICoreRunnable runner = new ICoreRunnable() {
+				public void run(IProgressMonitor monitor) throws CoreException {
+					try {
+						JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+						client.getCache().refreshDetails(monitor);
+					} catch (JiraException e) {
+						throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 					}
-				};
-
-				if (getContainer().getShell().isVisible()) {
-					getContainer().run(true, true, runner);
-				} else {
-					PlatformUI.getWorkbench().getProgressService().busyCursorWhile(runner);
 				}
-			} catch (InterruptedException e) {
+			};
+
+			try {
+				if (getContainer().getShell().isVisible()) {
+					CommonUiUtil.run(getContainer(), runner);
+				} else {
+					CommonUiUtil.busyCursorWhile(runner);
+				}
+			} catch (OperationCanceledException e) {
 				// canceled
 				return;
-			} catch (InvocationTargetException e) {
-				if (e.getCause() instanceof CoreException) {
-					setErrorMessage(((CoreException) e.getCause()).getMessage());
-				} else {
-					// FIXME 3.2 replace with proper exception handling
-					StatusHandler.fail(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, "Error updating attributes", e)); //$NON-NLS-1$
-				}
-				return;
+			} catch (CoreException e) {
+				CommonUiUtil.setMessage(this, e.getStatus());
 			}
 		}
 
@@ -291,8 +278,8 @@ public class JiraProjectPage extends WizardPage {
 						return new Project[] { project };
 					}
 				} catch (CoreException e) {
-					// FIXME 3.2 replace with proper exception handling
-					StatusHandler.fail(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, "Failed to load task data", //$NON-NLS-1$
+					StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN,
+							"Failed to determine selected project", //$NON-NLS-1$
 							e));
 				}
 			}
