@@ -29,7 +29,11 @@ public final class FishEyeImages {
 
 	private static final String T_OBJ = "obj16"; //$NON-NLS-1$
 
+	private static final String T_WIZBAN = "wizban"; //$NON-NLS-1$
+
 	public static final ImageDescriptor FISHEYE_ICON = create(T_OBJ, "fisheye-16.png"); //$NON-NLS-1$
+
+	public static final ImageDescriptor FISHEYE_WIZ_BAN_ICON = create(T_WIZBAN, "fisheye-logo.png"); //$NON-NLS-1$
 
 	private FishEyeImages() {
 	}

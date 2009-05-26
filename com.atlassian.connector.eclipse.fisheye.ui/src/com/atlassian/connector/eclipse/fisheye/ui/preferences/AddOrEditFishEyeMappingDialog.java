@@ -163,6 +163,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeMappingConfiguration initialConfiguration,
 			Collection<TaskRepository> taskRepositories, FishEyeClientManager fishEyeClientManager) {
 		super(parentShell);
+		setTitleImage(FishEyeImages.getImage(FishEyeImages.FISHEYE_WIZ_BAN_ICON));
 		this.fishEyeClientManager = fishEyeClientManager;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		cfg = initialConfiguration;
