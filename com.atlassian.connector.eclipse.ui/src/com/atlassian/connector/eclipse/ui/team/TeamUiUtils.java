@@ -294,7 +294,7 @@ public final class TeamUiUtils {
 			}
 		} else {
 			StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
-					"Editor is not an ITextEditor or editor inputs not equal" + editor));
+					"Editor is not an ITextEditor or editor inputs not equal " + editor));
 		}
 		return null;
 	}
