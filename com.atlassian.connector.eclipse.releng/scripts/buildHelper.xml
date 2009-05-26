@@ -770,4 +770,37 @@
 		</java>
     </target>
 	
+	<target name="mirror-helper">
+		<condition property="featureArg" value="-featureId ${featureId}" else=""><isset property="featureId"/></condition>
+
+		<property name="timeout" value="3600000" />
+		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
+    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.3.3}/eclipse" />
+		<property name="vmargs" value=" -Xms40m -Xmx512m"/>    	
+		
+		<condition property="featureMessage" value="${featureId}" else="all features"><isset property="featureId"/></condition>
+		<echo message="Mirroring ${featureMessage} from ${from} to ${to}" />
+    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
+    		classname="org.eclipse.core.launcher.Main">
+	        <classpath>
+	    		<fileset dir="${eclipse.home}/plugins">
+	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
+	          	</fileset>
+	        </classpath>
+		    <jvmarg line="${vmargs}"/>
+		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
+		    <arg value="-application"/>
+    		<arg value="${application}"/>
+    		<arg value="-command"/>
+    		<arg value="mirror"/>
+    		<arg value="-from"/>
+    		<arg value="${from}"/>
+    		<arg value="-to"/>
+    		<arg value="${to}" />
+    		<arg line="${featureArg}"/>
+		</java>
+    </target>
+
 </project>

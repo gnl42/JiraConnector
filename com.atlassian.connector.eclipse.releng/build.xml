@@ -142,5 +142,47 @@
 			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.4}"/>
 		</antcall>
 	</target>
+
+	<target name="mirror" depends="init">
+		<antcall target="init-3.4"/>
+		
+		<property name="to" value="${build.home}/mirror/e3.4"/>
+		<mkdir dir="${to}"/>
+
+		<antcall target="mirror-helper">
+			<param name="from" value="http://download.eclipse.org/tools/mylyn/update/e3.4"/>
+		</antcall>
+		<antcall target="mirror-helper">
+			<param name="from" value="http://download.eclipse.org/tools/mylyn/update/extras"/>
+			<param name="featureId" value="org.eclipse.mylyn.jira_feature"/>
+		</antcall>
+		<antcall target="mirror-helper">
+			<param name="from" value="http://subclipse.tigris.org/update_1.4.x"/>
+			<param name="featureId" value="org.tigris.subversion.subclipse.mylyn"/>
+		</antcall>
+		<antcall target="mirror-helper">
+			<param name="from" value="http://subclipse.tigris.org/update_1.4.x"/>
+			<param name="featureId" value="org.tigris.subversion.subclipse"/>
+		</antcall>
+		<antcall target="mirror-helper">
+			<param name="from" value="http://subclipse.tigris.org/update_1.4.x"/>
+			<param name="featureId" value="org.tigris.subversion.clientadapter.feature"/>
+		</antcall>
+		<antcall target="mirror-helper">
+			<param name="from" value="http://subclipse.tigris.org/update_1.4.x"/>
+			<param name="featureId" value="org.tigris.subversion.clientadapter.svnkit.feature"/>
+		</antcall>
+		<antcall target="mirror-helper">
+			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin/e3.4/"/>
+		</antcall>
+		
+		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml"/>
+		<move file="${to}/mirror.xml" tofile="${to}/site.xml"/>
+		
+		<antcall target="generate-metadata-helper">
+			<param name="dir" value="${to}"/>
+			<param name="name" value="${build.publish.name}"/>
+		</antcall>
+	</target>
 	
 </project>
