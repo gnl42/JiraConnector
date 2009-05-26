@@ -119,6 +119,16 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 						monitor.beginTask("Collecting data about workspace SCM repositories", IProgressMonitor.UNKNOWN);
 						scmRepositories = TeamUiUtils.getRepositories(monitor);
 						monitor.done();
+
+						if (scmRepositories == null || scmRepositories.size() == 0) {
+							getShell().getDisplay().asyncExec(new Runnable() {
+								public void run() {
+									setErrorMessage("You need to define workspace"
+											+ " SCM repositories to enable FishEye mapping");
+									scmButton.setEnabled(false);
+								}
+							});
+						}
 					}
 				});
 			} catch (InvocationTargetException e) {
@@ -142,6 +152,8 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 	private ComboViewer fishEyeRepoCombo;
 
 	private Button okButton;
+
+	private Button scmButton;
 
 	private FishEyeMappingConfiguration cfg;
 
@@ -230,7 +242,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		scmPathEdit.setToolTipText("Locally used path (URL) to your source code versioning repository"
 				+ " - currently only SVN is supported");
 		GridDataFactory.fillDefaults().grab(true, false).span(1, 1).hint(400, SWT.DEFAULT).applyTo(scmPathEdit);
-		final Button scmButton = new Button(parent, SWT.PUSH);
+		scmButton = new Button(parent, SWT.PUSH);
 		scmButton.setText("...");
 		GridDataFactory.fillDefaults().grab(false, false).span(1, 1).applyTo(scmButton);
 		scmButton.addSelectionListener(new ScmButtonSelectionListener());
