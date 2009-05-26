@@ -34,6 +34,8 @@
       <import feature="com.atlassian.connector.eclipse.crucible" version="1.0.0.qualifier" match="equivalent"/>
       <import plugin="org.tigris.subversion.subclipse.core" version="1.4.0" match="compatible"/>
       <import plugin="org.tigris.subversion.subclipse.ui" version="1.4.0" match="compatible"/>
+      <import feature="org.tigris.subversion.subclipse" version="1.4.0" match="compatible"/>
+      <import feature="org.tigris.subversion.clientadapter.feature" version="1.4.0" match="compatible"/>
    </requires>
 
    <plugin
