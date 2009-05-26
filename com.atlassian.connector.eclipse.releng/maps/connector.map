@@ -26,8 +26,8 @@ plugin@com.atlassian.connector.eclipse.tests=SVN,tags/1.0.0,https://studio.atlas
 plugin@com.atlassian.connector.eclipse.ui=SVN,tags/1.0.0,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.ui
 plugin@com.atlassian.connector.eclipse.help=SVN,tags/1.0.0,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.help
 
-plugin@com.atlassian.connector.commons=SVN,tags/1.0.0,https://studio.atlassian.com/svn/ACC,,com.atlassian.connector.commons
-plugin@com.atlassian.connector.commons.tests.dependencies=SVN,tags/1.0.0,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.commons.tests.dependencies
+plugin@com.atlassian.connector.commons=SVN,trunk,https://studio.atlassian.com/svn/ACC,,com.atlassian.connector.commons
+plugin@com.atlassian.connector.commons.tests.dependencies=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.commons.tests.dependencies
 
 
 !plugin@com.thoughtworks.xstream=SVN,tags/1.0.0,https://studio.atlassian.com/svn/PLE,,com.thoughtworks.xstream
