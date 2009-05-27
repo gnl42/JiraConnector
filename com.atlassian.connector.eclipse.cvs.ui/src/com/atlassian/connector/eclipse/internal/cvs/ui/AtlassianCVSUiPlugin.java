@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.internal.subclipse.ui;
+package com.atlassian.connector.eclipse.internal.cvs.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -6,24 +6,25 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AtlassianSubclipseUiPlugin extends AbstractUIPlugin {
+public class AtlassianCVSUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.subclipse.ui";
+	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.cvs.ui";
 
 	// The shared instance
-	private static AtlassianSubclipseUiPlugin plugin;
-	
+	private static AtlassianCvsUiPlugin plugin;
+
 	/**
 	 * The constructor
 	 */
-	public AtlassianSubclipseUiPlugin() {
+	public AtlassianCVSUiPlugin() {
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
@@ -33,6 +34,7 @@ public class AtlassianSubclipseUiPlugin extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
@@ -40,10 +42,10 @@ public class AtlassianSubclipseUiPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
-	public static AtlassianSubclipseUiPlugin getDefault() {
+	public static AtlassianCvsUiPlugin getDefault() {
 		return plugin;
 	}
 

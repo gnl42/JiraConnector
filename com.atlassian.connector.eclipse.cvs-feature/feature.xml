@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.atlassian.connector.eclipse.subclipse"
+      id="com.atlassian.connector.eclipse.cvs"
       label="%featureName"
       version="1.0.0.qualifier"
       provider-name="%providerName"
@@ -32,14 +32,12 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
       <import feature="com.atlassian.connector.eclipse.crucible" version="1.0.0.qualifier" match="equivalent"/>
-      <import plugin="org.tigris.subversion.subclipse.core" version="1.4.0" match="compatible"/>
-      <import plugin="org.tigris.subversion.subclipse.ui" version="1.4.0" match="compatible"/>
-      <import feature="org.tigris.subversion.subclipse" version="1.4.0" match="compatible"/>
-      <import feature="org.tigris.subversion.clientadapter.feature" version="1.4.0" match="compatible"/>
+      <import plugin="org.eclipse.team.cvs.core"/>
+      <import plugin="org.eclipse.team.cvs.ui"/>
    </requires>
 
    <plugin
-         id="com.atlassian.connector.eclipse.subclipse.ui"
+         id="com.atlassian.connector.eclipse.cvs.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

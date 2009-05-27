@@ -1,15 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector Subclipse UI
-Bundle-SymbolicName: com.atlassian.connector.eclipse.subclipse.ui;singleton:=true
+Bundle-Name: Atlassian Eclipse Connector CVS UI
+Bundle-SymbolicName: com.atlassian.connector.eclipse.cvs.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.subclipse.ui.AtlassianSubclipseUiPlugin
+Bundle-Activator: com.atlassian.connector.eclipse.internal.cvs.ui.AtlassianCVSUiPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  com.atlassian.connector.eclipse.ui,
  org.eclipse.mylyn.commons.core,
- org.tigris.subversion.subclipse.core;bundle-version="[1.4.0,2.0.0)",
- org.tigris.subversion.subclipse.ui;bundle-version="[1.4.0,2.0.0)",
  org.eclipse.team.core,
  org.eclipse.core.filesystem,
  org.eclipse.ui.ide,
@@ -18,9 +16,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.compare,
  org.eclipse.jface.text,
- org.eclipse.mylyn.commons.net
+ org.eclipse.mylyn.commons.net,
+ org.eclipse.team.cvs.core;bundle-version="3.3.101",
+ org.eclipse.team.cvs.ui;bundle-version="3.3.100"
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.subclipse.ui;x-internal:=true,
- com.atlassian.connector.eclipse.internal.subclipse.ui.compare;x-internal:=true
+Export-Package: com.atlassian.connector.eclipse.internal.cvs.ui;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.cvs.ui.compare;x-internal:=true
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

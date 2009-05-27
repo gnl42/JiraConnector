@@ -9,89 +9,44 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.subclipse.ui;
+package com.atlassian.connector.eclipse.internal.cvs.ui;
 
-import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSubclipseCompareEditorInput;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorRegistry;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
-import org.tigris.subversion.subclipse.core.ISVNLocalFile;
-import org.tigris.subversion.subclipse.core.ISVNLocalResource;
-import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
-import org.tigris.subversion.subclipse.core.ISVNRemoteFolder;
-import org.tigris.subversion.subclipse.core.ISVNRemoteResource;
-import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
-import org.tigris.subversion.subclipse.core.ISVNResource;
-import org.tigris.subversion.subclipse.core.SVNException;
-import org.tigris.subversion.subclipse.core.commands.GetLogsCommand;
-import org.tigris.subversion.subclipse.core.history.ILogEntry;
-import org.tigris.subversion.subclipse.core.history.LogEntryChangePath;
-import org.tigris.subversion.subclipse.core.resources.RemoteFile;
-import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
-import org.tigris.subversion.subclipse.ui.Policy;
-import org.tigris.subversion.subclipse.ui.SVNUIPlugin;
-import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
-import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
-import org.tigris.subversion.svnclientadapter.ISVNProperty;
-import org.tigris.subversion.svnclientadapter.SVNRevision;
-import org.tigris.subversion.svnclientadapter.SVNUrl;
 
-import java.net.MalformedURLException;
-import java.text.ParseException;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Connector to handle connecting to a subclipse repository
  * 
  * @author Shawn Minto
  */
-public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
+public class CVSTeamResourceConnector implements ITeamResourceConnector {
 
-	public SubclipseTeamResourceConnector() {
+	public CVSTeamResourceConnector() {
 	}
 
 	public boolean isEnabled() {
@@ -105,6 +60,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
 			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor)
 			throws CoreException {
+		/*
 		ISVNRemoteResource oldRemoteFile = getSvnRemoteFile(repoUrl, oldFilePath, newFilePath, oldRevisionString,
 				newRevisionString, monitor);
 		ISVNRemoteResource newRemoteFile = getSvnRemoteFile(repoUrl, newFilePath, oldFilePath, newRevisionString,
@@ -118,12 +74,14 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			TeamUiUtils.openCompareEditorForInput(compareEditorInput);
 			return true;
 		}
-		throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+		*/
+		throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, NLS.bind(
 				"Could not get revisions for {0}.", newFilePath)));
 	}
 
 	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(file);
+		/*
 		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(file);
 		try {
 			monitor.beginTask("Getting Revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
@@ -139,9 +97,10 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			}
 			return revisions;
 		} catch (Exception e) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-					"Error while retrieving Revisions for file " + file.getName() + ".", e));
-		}
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
+						"Error while retrieving Revisions for file " + file.getName() + ".", e));
+		}*/
+		return null;
 	}
 
 	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
@@ -156,6 +115,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
 			int limit, IProgressMonitor monitor, MultiStatus status) {
+		/*
 		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
 				monitor);
 		monitor.beginTask("Retrieving changeset for SVN (subclipse) repositories", repos.length);
@@ -198,13 +158,14 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			subMonitor.done();
 		}
 		return map;
-
+		*/
+		return null;
 	}
 
 	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
 			throws CoreException {
 		Assert.isNotNull(files);
-
+		/*
 		Map<IFile, SortedSet<Long>> map = new HashMap<IFile, SortedSet<Long>>();
 
 		monitor.beginTask("Getting Revisions", files.size());
@@ -225,15 +186,18 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				}
 				map.put(file, revisions);
 			} catch (Exception e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
 						"Error while retrieving Revisions for file " + file.getName() + ".", e));
 			} finally {
 				submonitor.done();
 			}
 		}
 		return map;
+		*/
+		return null;
 	}
 
+	/*
 	public ISVNRemoteFile getSvnRemoteFile(String repoUrl, String filePath, String otherRevisionFilePath,
 			String revisionString, String otherRevisionString, final IProgressMonitor monitor) {
 		if (repoUrl == null) {
@@ -259,19 +223,21 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				return getRemoteFile(localResource, filePath, svnRevision, otherSvnRevision, localFileNotFound);
 			}
 		} catch (SVNException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 		return null;
 	}
+	*/
 
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
 			String otherRevisionString, final IProgressMonitor monitor) throws CoreException {
 		if (repoUrl == null) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
 					"No repository URL given.."));
 		}
+		/*
 		try {
 
 			IResource localResource = getLocalResourceFromFilePath(filePath);
@@ -291,8 +257,8 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 					// the file is not dirty and we have the right local copy
 					IEditorPart editorPart = TeamUiUtils.openLocalResource(localResource);
 					if (editorPart == null) {
-						throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-								NLS.bind("Could not open editor for {0}.", localFile.getName())));
+						throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, NLS.bind(
+								"Could not open editor for {0}.", localFile.getName())));
 					}
 					return editorPart;
 
@@ -315,31 +281,34 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 							editorPart = part[0];
 						}
 						if (editorPart == null) {
-							throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-									NLS.bind("Could not open editor for {0}.", remoteFile.getName())));
+							throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, NLS.bind(
+									"Could not open editor for {0}.", remoteFile.getName())));
 						}
 						return editorPart;
 					} else {
-						throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-								NLS.bind("Could not get remote file for {0}.", filePath)));
+						throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, NLS.bind(
+								"Could not get remote file for {0}.", filePath)));
 					}
 				}
 			} else {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, NLS.bind(
 						"Could not find local resource for {0}.", filePath)));
 			}
 		} catch (SVNException e) {
-			Status status = new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e);
+			Status status = new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e);
 			StatusHandler.log(status);
 			throw new CoreException(status);
 		} catch (ParseException e) {
-			Status status = new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e);
+			Status status = new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e);
 			StatusHandler.log(status);
 			throw new CoreException(status);
 		}
+		*/
+		return null;
 	}
 
 	public boolean canHandleEditorInput(IEditorInput editorInput) {
+		/*
 		if (editorInput instanceof FileEditorInput) {
 			try {
 				IFile file = ((FileEditorInput) editorInput).getFile();
@@ -348,16 +317,18 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 					return true;
 				}
 			} catch (SVNException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
 						"Unable to get svn information for local file.", e));
 			}
 		} else if (editorInput instanceof RemoteFileEditorInput) {
 			return true;
 		}
+		*/
 		return false;
 	}
 
 	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
+		/*
 		SVNUrl fileUrl = null;
 		String revision = null;
 		if (editorInput instanceof FileEditorInput) {
@@ -370,7 +341,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 					revision = localFile.getStatus().getLastChangedRevision().toString();
 				}
 			} catch (SVNException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
 						"Unable to get svn information for local file.", e));
 			}
 		} else if (editorInput instanceof RemoteFileEditorInput) {
@@ -409,18 +380,19 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 					}
 				}
 			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
 						"Review is not fully initialized.  Unable to get file from review.", e));
 			} catch (MalformedURLException e) {
 				// ignore
 			}
 		}
+		*/
 		return null;
 	}
 
 	private String getAbsoluteUrl(VersionedVirtualFile fileDescriptor) {
 		//TODO might need some performance tweak, but works for now for M2
-		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+		/*for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 
 			if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
 				try {
@@ -440,27 +412,30 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 						return projectResource.getUrl().toString();
 					}
 				} catch (Exception e) {
-					StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+					StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
 			}
-		}
+		}*/
 		return null;
 	}
 
+	/*
 	private IEditorPart openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) {
 		try {
-			IWorkbench workbench = AtlassianSubclipseUiPlugin.getDefault().getWorkbench();
+			IWorkbench workbench = AtlassianCVSUiPlugin.getDefault().getWorkbench();
 			IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 
 			RemoteFileEditorInput editorInput = new CustomRemoteFileEditorInput(remoteFile, monitor);
 			String editorId = getEditorId(workbench, remoteFile);
 			return page.openEditor(editorInput, editorId);
 		} catch (PartInitException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 		return null;
 	}
+	*/
 
+	/*
 	private ISVNLocalFile getLocalFile(IResource localResource) throws SVNException {
 		ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(localResource);
 
@@ -469,7 +444,9 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 		return null;
 	}
+	*/
 
+	/*
 	private ISVNRemoteFile getRemoteFile(IResource localResource, String filePath, SVNRevision svnRevision,
 			SVNRevision otherSvnRevision, boolean localFileNotFound) throws ParseException, SVNException {
 
@@ -496,7 +473,9 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 		return null;
 	}
+	*/
 
+	/*
 	private IResource getLocalResourceFromFilePath(String filePath) {
 		if (filePath == null || filePath.length() <= 0) {
 			return null;
@@ -522,15 +501,15 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 						return resource;
 					}
 				} catch (Exception e) {
-					StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+					StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
 			}
 		}
 		return null;
-	}
+	}*/
 
 	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
-		final IProject project = resource.getProject();
+		/*final IProject project = resource.getProject();
 		if (project == null) {
 			return null;
 		}
@@ -543,14 +522,14 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 						.getLastChangedRevision()
 						.toString(), isBinary);
 			} catch (SVNException e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
 						"Cannot determine SVN information for resource [" + resource + "]", e));
 			}
-		}
+		}*/
 		return null;
-
 	}
 
+	/*
 	private String getEditorId(IWorkbench workbench, ISVNRemoteFile file) {
 		IEditorRegistry registry = workbench.getEditorRegistry();
 		String filename = file.getName();
@@ -565,35 +544,6 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			id = descriptor.getId();
 		}
 		return id;
-	}
+	}*/
 
-// Code that can work if there is no file in the local workspace 
-//	private RemoteFile getRemoteFile(String repoUrl, String filePath, String revisionString,
-//	ISVNRepositoryLocation location) throws MalformedURLException, ParseException, SVNException {
-//RemoteFile file;
-//SVNUrl svnUrl = new SVNUrl(repoUrl).appendPath(filePath);
-//SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
-//
-//ISVNClientAdapter svnClient = location.getSVNClient();
-//ISVNInfo info = null;
-//try {
-//	if (location.getRepositoryRoot().equals(svnUrl)) {
-//		file = new RemoteFile(location, svnUrl, svnRevision);
-//	} else {
-//		info = svnClient.getInfo(svnUrl, svnRevision, svnRevision);
-//	}
-//} catch (SVNClientException e) {
-//	throw new SVNException("Can't get latest remote resource for " + svnUrl);
-//}
-//
-//if (info == null) {
-//	file = null;//new RemoteFile(location, svnUrl, svnRevision);
-//} else {
-//	file = new RemoteFile(
-//			null, // we don't know its parent
-//			location, svnUrl, svnRevision, info.getLastChangedRevision(), info.getLastChangedDate(),
-//			info.getLastCommitAuthor());
-//}
-//return file;
-//}
 }
