@@ -20,8 +20,10 @@ import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -30,6 +32,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
+import org.eclipse.team.internal.ccvs.core.ICVSFolder;
+import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
+import org.eclipse.team.internal.ccvs.core.ICVSResource;
+import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
+import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
+import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
+import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
+import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
+import org.eclipse.team.internal.ccvs.ui.repo.RepositoryRoot;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
@@ -39,7 +51,7 @@ import java.util.Map;
 import java.util.SortedSet;
 
 /**
- * Connector to handle connecting to a subclipse repository
+ * Connector to handle connecting to a CVS repository
  * 
  * @author Shawn Minto
  */
@@ -102,15 +114,18 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
+	@SuppressWarnings("restriction")
 	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
-		/*ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
-				monitor);
-		List<RepositoryInfo> res = MiscUtil.buildArrayList(repos.length);
-		for (ISVNRepositoryLocation repo : repos) {
-			res.add(new RepositoryInfo(repo.getUrl().toString(), repo.getLabel()));
+		ICVSRepositoryLocation[] repositories = CVSProviderPlugin.getPlugin().getKnownRepositories();
+		List<RepositoryInfo> res = MiscUtil.buildArrayList(repositories.length);
+		final RepositoryManager repositoryManager = CVSUIPlugin.getPlugin().getRepositoryManager();
+
+		for (ICVSRepositoryLocation repo : repositories) {
+			final RepositoryRoot root = repositoryManager.getRepositoryRootFor(repo);
+			final String name = (root != null && root.getName() != null) ? root.getName() : null;
+			res.add(new RepositoryInfo(repo.getLocation(true), name));
 		}
-		return res;*/
-		return null;
+		return res;
 	}
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
@@ -508,27 +523,27 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}*/
 
+	@SuppressWarnings("restriction")
 	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
-		/*final IProject project = resource.getProject();
+		final IProject project = resource.getProject();
 		if (project == null) {
 			return null;
 		}
-		if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
-			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
-			final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
-			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"));
-			try {
-				return new RevisionInfo(svnResource.getUrl().toString(), svnResource.getStatus()
-						.getLastChangedRevision()
-						.toString(), isBinary);
-			} catch (SVNException e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
-						"Cannot determine SVN information for resource [" + resource + "]", e));
-			}
-		}*/
+
+		if (CVSWorkspaceRoot.isSharedWithCVS(project)) {
+			final ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
+			final ResourceSyncInfo syncInfo = cvsResource.getSyncInfo();
+			//final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
+			boolean isBinary = false /* FIXME: (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"))*/;
+
+			final ICVSFolder folder = (ICVSFolder) CVSWorkspaceRoot.getCVSResourceFor(project);
+			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
+
+			return new RevisionInfo(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(),
+					syncInfo.getRevision(), isBinary);
+		}
 		return null;
 	}
-
 	/*
 	private String getEditorId(IWorkbench workbench, ISVNRemoteFile file) {
 		IEditorRegistry registry = workbench.getEditorRegistry();
