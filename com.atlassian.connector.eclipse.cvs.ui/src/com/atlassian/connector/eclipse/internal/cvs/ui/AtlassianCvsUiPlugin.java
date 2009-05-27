@@ -6,7 +6,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AtlassianCVSUiPlugin extends AbstractUIPlugin {
+public class AtlassianCvsUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.cvs.ui";
@@ -17,7 +17,7 @@ public class AtlassianCVSUiPlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor
 	 */
-	public AtlassianCVSUiPlugin() {
+	public AtlassianCvsUiPlugin() {
 	}
 
 	/*
