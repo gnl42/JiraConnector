@@ -33,8 +33,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
 	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
-		// disabled, see bug 274790
-		//setNeedsFooter(true);
+		setNeedsSubmitButton(true);
 	}
 
 	@Override
