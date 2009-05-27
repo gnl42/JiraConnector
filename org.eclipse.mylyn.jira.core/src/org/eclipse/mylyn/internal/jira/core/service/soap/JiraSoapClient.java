@@ -92,7 +92,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 	 */
 	private static final long DEFAULT_SESSION_TIMEOUT = 1000L * 60L * 10L;
 
-	private JiraSoapService soapService = null;
+	private JiraSoapService soapService;
 
 	private final Lock soapServiceLock = new ReentrantLock();
 

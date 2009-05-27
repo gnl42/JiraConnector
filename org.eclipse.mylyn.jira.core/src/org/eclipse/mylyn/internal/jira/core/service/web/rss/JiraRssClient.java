@@ -36,13 +36,15 @@ public class JiraRssClient {
 
 	private final boolean useGZipCompression;
 
-	public JiraRssClient(JiraClient client) {
+	private final JiraWebSession session;
+
+	public JiraRssClient(JiraClient client, JiraWebSession session) {
 		this.client = client;
+		this.session = session;
 		this.useGZipCompression = client.useCompression();
 	}
 
 	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {
-		JiraWebSession session = new JiraWebSession(client);
 		session.doInSession(callback, monitor);
 	}
 

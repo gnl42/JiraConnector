@@ -60,18 +60,21 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssHandler;
 
 /**
- * TODO look at creation Operation classes to perform each of these actions TODO extract field names into constants
- * 
  * @author Brock Janiczak
  * @author Steffen Pingel
  * @author Eugene Kuleshov
  */
+// TODO look at creation Operation classes to perform each of these actions 
+// TODO extract field names into constants
 public class JiraWebClient {
 
 	private final JiraClient client;
 
-	public JiraWebClient(JiraClient client) {
+	private final JiraWebSession session;
+
+	public JiraWebClient(JiraClient client, JiraWebSession session) {
 		this.client = client;
+		this.session = session;
 	}
 
 	public void addCommentToIssue(final JiraIssue issue, final String comment, IProgressMonitor monitor)
@@ -596,14 +599,12 @@ public class JiraWebClient {
 
 	public WebServerInfo getWebServerInfo(IProgressMonitor monitor) throws JiraException {
 		final WebServerInfo webServerInfo = new WebServerInfo();
-		final JiraWebSession s = new JiraWebSession(client);
-		s.setLogEnabled(true);
-		s.doInSession(new JiraWebSessionCallback() {
+		session.doInSession(new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				webServerInfo.setBaseUrl(s.getBaseURL());
-				webServerInfo.setCharacterEncoding(s.getCharacterEncoding());
-				webServerInfo.setInsecureRedirect(s.isInsecureRedirect());
+				webServerInfo.setBaseUrl(session.getBaseURL());
+				webServerInfo.setCharacterEncoding(session.getCharacterEncoding());
+				webServerInfo.setInsecureRedirect(session.isInsecureRedirect());
 			}
 		}, monitor);
 		return webServerInfo;
@@ -766,7 +767,6 @@ public class JiraWebClient {
 	}
 
 	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {
-		JiraWebSession session = new JiraWebSession(client);
 		session.doInSession(callback, monitor);
 	}
 

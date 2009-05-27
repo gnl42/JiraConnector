@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.Cookie;
@@ -24,13 +27,13 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.SimpleHttpConnectionManager;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -69,13 +72,20 @@ public class JiraWebSession {
 
 	protected static final String USER_AGENT = "JiraConnector"; //$NON-NLS-1$
 
-	private static final Object SESSION_ID_COOKIE = "JSESSIONID"; //$NON-NLS-1$
+	private static final Object SESSION_ID_COOKIE = "JSESSIONID"; //$NON-NLS-1$x
+
+	private HttpClient httpClient;
+
+	private HostConfiguration hostConfiguration;
+
+	private final Lock authenticationLock;
 
 	public JiraWebSession(JiraClient client, String baseUrl) {
 		this.client = client;
 		this.baseUrl = baseUrl;
 		this.secure = baseUrl.startsWith("https"); //$NON-NLS-1$
 		this.location = client.getLocation();
+		this.authenticationLock = new ReentrantLock();
 	}
 
 	public JiraWebSession(JiraClient client) {
@@ -84,22 +94,54 @@ public class JiraWebSession {
 
 	public void doInSession(JiraWebSessionCallback callback, IProgressMonitor monitor) throws JiraException {
 		monitor = Policy.monitorFor(monitor);
-		SimpleHttpConnectionManager connectionManager = new SimpleHttpConnectionManager();
 		try {
-			HttpClient httpClient = new HttpClient(connectionManager);
-			HostConfiguration hostConfiguration = login(httpClient, monitor);
-			try {
-				callback.configure(httpClient, hostConfiguration, baseUrl, client.getConfiguration()
-						.getFollowRedirects());
-				callback.run(client, baseUrl, monitor);
-			} catch (IOException e) {
-				throw new JiraException(e);
-			} finally {
-				logout(httpClient, hostConfiguration, monitor);
+			lock(monitor);
+			if (httpClient == null) {
+				httpClient = new HttpClient(WebUtil.getConnectionManager());
+			}
+			if (hostConfiguration == null) {
+				hostConfiguration = login(httpClient, monitor);
 			}
 		} finally {
-			connectionManager.shutdown();
+			unlock(monitor);
 		}
+		try {
+			callback.configure(httpClient, hostConfiguration, baseUrl, client.getConfiguration().getFollowRedirects());
+			callback.run(client, baseUrl, monitor);
+		} catch (IOException e) {
+			throw new JiraException(e);
+		}
+	}
+
+	public void doLogout(IProgressMonitor monitor) throws JiraException {
+		monitor = Policy.monitorFor(monitor);
+		try {
+			lock(monitor);
+			if (hostConfiguration == null) {
+				// never logged in
+				return;
+			}
+			logout(httpClient, hostConfiguration, monitor);
+		} finally {
+			unlock(monitor);
+		}
+	}
+
+	private void lock(IProgressMonitor monitor) {
+		while (!monitor.isCanceled()) {
+			try {
+				if (authenticationLock.tryLock(2000, TimeUnit.MILLISECONDS)) {
+					return;
+				}
+			} catch (InterruptedException e) {
+				throw new OperationCanceledException();
+			}
+		}
+		throw new OperationCanceledException();
+	}
+
+	private void unlock(IProgressMonitor monitor) {
+		authenticationLock.unlock();
 	}
 
 	protected String getCharacterEncoding() {

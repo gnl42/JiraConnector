@@ -47,23 +47,14 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.SingleIssueCollector;
 import org.eclipse.mylyn.internal.jira.core.model.filter.TextFilter;
 import org.eclipse.mylyn.internal.jira.core.service.soap.JiraSoapClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebClient;
+import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSession;
 import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssClient;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a
  * {@link JiraClientData} object to persist the repository configuration. It has life-cycle methods to allow data in the
- * cache to be reloaded.
- * 
- * This interface exposes the full set of services available from a Jira installation. It provides a unified inferface
- * for the SOAP and Web/RSS services available.
- * 
- * TODO this class needs to be populated using the SOAP or JAX-RPC interfaces. Once this is done it should be cached on
- * disk somewhere so we don't have to query the server each time a client loads. It should be possible to reload and
- * restore the cache information. We also need to store the images in a cache somewhere since we will ue them a lot.
- * 
- * TODO explain this is an attempt to enrich the jira service layer
- * 
- * TODO move all of the assignee stuff somewhere else.
+ * cache to be reloaded. This interface exposes the full set of services available from a Jira installation. It provides
+ * a unified interface for the SOAP and Web/RSS services available.
  * 
  * @author Brock Janiczak
  * @author Steffen Pingel
@@ -122,8 +113,9 @@ public class JiraClient {
 		this.configuration = configuration;
 
 		this.cache = new JiraClientCache(this);
-		this.rssClient = new JiraRssClient(this);
-		this.webClient = new JiraWebClient(this);
+		JiraWebSession webSession = new JiraWebSession(this);
+		this.webClient = new JiraWebClient(this, webSession);
+		this.rssClient = new JiraRssClient(this, webSession);
 		this.soapClient = new JiraSoapClient(this);
 	}
 
@@ -405,10 +397,8 @@ public class JiraClient {
 	}
 
 	/**
-	 * Force a login to the remote repository.
-	 * 
-	 * There is no need to call this method as all services should automatically login when the session is about to
-	 * expire. If you need to check if the credentials are valid, call
+	 * Force a login to the remote repository. There is no need to call this method as all services should automatically
+	 * login when the session is about to expire. If you need to check if the credentials are valid, call
 	 * {@link org.eclipse.mylyn.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
 	 */
 	public void login(IProgressMonitor monitor) throws JiraException {

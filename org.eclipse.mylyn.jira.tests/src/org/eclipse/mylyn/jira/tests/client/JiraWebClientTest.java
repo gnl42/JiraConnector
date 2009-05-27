@@ -21,6 +21,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebClient;
+import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSession;
 import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
 import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 
@@ -41,7 +42,7 @@ public class JiraWebClientTest extends TestCase {
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
 		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password));
-		webClient = new JiraWebClient(client);
+		webClient = new JiraWebClient(client, new JiraWebSession(client));
 
 		JiraTestUtil.refreshDetails(client);
 	}
