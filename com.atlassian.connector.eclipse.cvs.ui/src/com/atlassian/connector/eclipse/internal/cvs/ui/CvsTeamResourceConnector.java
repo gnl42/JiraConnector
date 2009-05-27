@@ -533,14 +533,13 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		if (CVSWorkspaceRoot.isSharedWithCVS(project)) {
 			final ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 			final ResourceSyncInfo syncInfo = cvsResource.getSyncInfo();
-			//final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
-			boolean isBinary = false /* FIXME: (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"))*/;
+			final Boolean isBinary = syncInfo.getKeywordMode().isBinary();
 
 			final ICVSFolder folder = (ICVSFolder) CVSWorkspaceRoot.getCVSResourceFor(project);
 			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
 
 			return new RevisionInfo(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(),
-					syncInfo.getRevision(), isBinary);
+					"".equals(syncInfo.getRevision()) ? null : syncInfo.getRevision(), isBinary);
 		}
 		return null;
 	}
