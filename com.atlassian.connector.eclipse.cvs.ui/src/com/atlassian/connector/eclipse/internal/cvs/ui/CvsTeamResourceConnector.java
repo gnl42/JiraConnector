@@ -20,7 +20,6 @@ import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -44,9 +43,9 @@ import java.util.SortedSet;
  * 
  * @author Shawn Minto
  */
-public class CVSTeamResourceConnector implements ITeamResourceConnector {
+public class CvsTeamResourceConnector implements ITeamResourceConnector {
 
-	public CVSTeamResourceConnector() {
+	public CvsTeamResourceConnector() {
 	}
 
 	public boolean isEnabled() {
@@ -97,20 +96,21 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 			}
 			return revisions;
 		} catch (Exception e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
 						"Error while retrieving Revisions for file " + file.getName() + ".", e));
 		}*/
 		return null;
 	}
 
 	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
-		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
+		/*ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
 				monitor);
 		List<RepositoryInfo> res = MiscUtil.buildArrayList(repos.length);
 		for (ISVNRepositoryLocation repo : repos) {
 			res.add(new RepositoryInfo(repo.getUrl().toString(), repo.getLabel()));
 		}
-		return res;
+		return res;*/
+		return null;
 	}
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
@@ -186,7 +186,7 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 				}
 				map.put(file, revisions);
 			} catch (Exception e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
 						"Error while retrieving Revisions for file " + file.getName() + ".", e));
 			} finally {
 				submonitor.done();
@@ -223,9 +223,9 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 				return getRemoteFile(localResource, filePath, svnRevision, otherSvnRevision, localFileNotFound);
 			}
 		} catch (SVNException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		} catch (ParseException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 		return null;
 	}
@@ -257,7 +257,7 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 					// the file is not dirty and we have the right local copy
 					IEditorPart editorPart = TeamUiUtils.openLocalResource(localResource);
 					if (editorPart == null) {
-						throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, NLS.bind(
+						throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, NLS.bind(
 								"Could not open editor for {0}.", localFile.getName())));
 					}
 					return editorPart;
@@ -281,25 +281,25 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 							editorPart = part[0];
 						}
 						if (editorPart == null) {
-							throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, NLS.bind(
+							throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, NLS.bind(
 									"Could not open editor for {0}.", remoteFile.getName())));
 						}
 						return editorPart;
 					} else {
-						throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, NLS.bind(
+						throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, NLS.bind(
 								"Could not get remote file for {0}.", filePath)));
 					}
 				}
 			} else {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, NLS.bind(
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, NLS.bind(
 						"Could not find local resource for {0}.", filePath)));
 			}
 		} catch (SVNException e) {
-			Status status = new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e);
+			Status status = new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, e.getMessage(), e);
 			StatusHandler.log(status);
 			throw new CoreException(status);
 		} catch (ParseException e) {
-			Status status = new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e);
+			Status status = new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, e.getMessage(), e);
 			StatusHandler.log(status);
 			throw new CoreException(status);
 		}
@@ -317,7 +317,7 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 					return true;
 				}
 			} catch (SVNException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
 						"Unable to get svn information for local file.", e));
 			}
 		} else if (editorInput instanceof RemoteFileEditorInput) {
@@ -341,7 +341,7 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 					revision = localFile.getStatus().getLastChangedRevision().toString();
 				}
 			} catch (SVNException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
 						"Unable to get svn information for local file.", e));
 			}
 		} else if (editorInput instanceof RemoteFileEditorInput) {
@@ -380,7 +380,7 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 					}
 				}
 			} catch (ValueNotYetInitialized e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
 						"Review is not fully initialized.  Unable to get file from review.", e));
 			} catch (MalformedURLException e) {
 				// ignore
@@ -412,7 +412,7 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 						return projectResource.getUrl().toString();
 					}
 				} catch (Exception e) {
-					StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
+					StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
 			}
 		}*/
@@ -422,14 +422,14 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 	/*
 	private IEditorPart openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) {
 		try {
-			IWorkbench workbench = AtlassianCVSUiPlugin.getDefault().getWorkbench();
+			IWorkbench workbench = AtlassianCvsUiPlugin.getDefault().getWorkbench();
 			IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 
 			RemoteFileEditorInput editorInput = new CustomRemoteFileEditorInput(remoteFile, monitor);
 			String editorId = getEditorId(workbench, remoteFile);
 			return page.openEditor(editorInput, editorId);
 		} catch (PartInitException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 		return null;
 	}
@@ -501,7 +501,7 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 						return resource;
 					}
 				} catch (Exception e) {
-					StatusHandler.log(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID, e.getMessage(), e));
+					StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
 			}
 		}
@@ -522,7 +522,7 @@ public class CVSTeamResourceConnector implements ITeamResourceConnector {
 						.getLastChangedRevision()
 						.toString(), isBinary);
 			} catch (SVNException e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianCVSUiPlugin.PLUGIN_ID,
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
 						"Cannot determine SVN information for resource [" + resource + "]", e));
 			}
 		}*/
