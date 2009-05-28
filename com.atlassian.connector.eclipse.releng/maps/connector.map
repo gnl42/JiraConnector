@@ -8,6 +8,8 @@ feature@com.atlassian.connector.eclipse.bamboo=SVN,trunk,https://studio.atlassia
 feature@com.atlassian.connector.eclipse.crucible=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.crucible-feature
 feature@com.atlassian.connector.eclipse.fisheye=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.fisheye-feature
 feature@com.atlassian.connector.eclipse.subclipse=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.subclipse-feature
+feature@com.atlassian.connector.eclipse.subversive=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.subversive-feature
+feature@com.atlassian.connector.eclipse.cvs=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.cvs-feature
 feature@com.atlassian.connector.eclipse.dependencies=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.dependencies-feature
 feature@com.atlassian.connector.eclipse.test=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.test-feature
 
@@ -22,6 +24,8 @@ plugin@com.atlassian.connector.eclipse.fisheye.core=SVN,trunk,https://studio.atl
 plugin@com.atlassian.connector.eclipse.fisheye.tests=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.fisheye.tests
 plugin@com.atlassian.connector.eclipse.fisheye.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.fisheye.ui
 plugin@com.atlassian.connector.eclipse.subclipse.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.subclipse.ui
+plugin@com.atlassian.connector.eclipse.cvs.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.cvs.ui
+plugin@com.atlassian.connector.eclipse.subversive.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.subversive.ui
 plugin@com.atlassian.connector.eclipse.tests=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.tests
 plugin@com.atlassian.connector.eclipse.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.ui
 plugin@com.atlassian.connector.eclipse.help=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.help

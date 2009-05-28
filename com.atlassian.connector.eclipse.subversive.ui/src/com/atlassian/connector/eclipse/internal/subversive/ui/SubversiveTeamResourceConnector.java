@@ -18,11 +18,11 @@ import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
-import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -31,8 +31,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.team.core.RepositoryProvider;
+import org.eclipse.team.svn.core.SVNTeamPlugin;
+import org.eclipse.team.svn.core.connector.SVNConnectorException;
+import org.eclipse.team.svn.core.connector.SVNProperty;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
+import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
+import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
@@ -395,9 +401,10 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
+	/*
 	private String getAbsoluteUrl(VersionedVirtualFile fileDescriptor) {
 		//TODO might need some performance tweak, but works for now for M2
-		/*for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 
 			if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
 				try {
@@ -420,9 +427,9 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 					StatusHandler.log(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
 			}
-		}*/
+		}
 		return null;
-	}
+	}*/
 
 	/*
 	private IEditorPart openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) {
@@ -513,25 +520,29 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}*/
 
-	@SuppressWarnings("restriction")
 	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
-		/*final IProject project = resource.getProject();
+		final IProject project = resource.getProject();
 		if (project == null) {
 			return null;
 		}
 
-		if (CVSWorkspaceRoot.isSharedWithCVS(project)) {
-			final ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
-			final ResourceSyncInfo syncInfo = cvsResource.getSyncInfo();
-			final Boolean isBinary = syncInfo.getKeywordMode().isBinary();
+		// check if project is associated with Subversive Team provider, 
+		// if we don't test it asRepositoryResource will throw RuntimeException
+		RepositoryProvider provider = RepositoryProvider.getProvider(project, SVNTeamPlugin.NATURE_ID);
+		if (provider == null) {
+			return null;
+		}
 
-			final ICVSFolder folder = (ICVSFolder) CVSWorkspaceRoot.getCVSResourceFor(project);
-			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
+		IRepositoryResource svnResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
+		try {
+			String mimeTypeProp = SVNUtility.getPropertyForNotConnected(resource, SVNProperty.BuiltIn.MIME_TYPE);
+			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
 
-			return new RevisionInfo(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(),
-					"".equals(syncInfo.getRevision()) ? null : syncInfo.getRevision(), isBinary);
-		}*/
-		return null;
+			return new RevisionInfo(svnResource.getUrl(), Long.toString(svnResource.getRevision()), isBinary);
+		} catch (SVNConnectorException e) {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+					"Cannot determine SVN information for resource [" + resource + "]", e));
+		}
 	}
 	/*
 	private String getEditorId(IWorkbench workbench, ISVNRemoteFile file) {

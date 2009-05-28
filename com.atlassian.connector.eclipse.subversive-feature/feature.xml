@@ -34,6 +34,7 @@
       <import plugin="org.eclipse.team.svn"/>
       <import plugin="org.eclipse.team.svn.core"/>
       <import plugin="org.eclipse.team.svn.ui"/>
+      <import feature="org.eclipse.team.svn"/>
    </requires>
 
    <plugin

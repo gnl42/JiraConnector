@@ -166,17 +166,28 @@ public class FishEyeSettingsManager {
 			res.append('/');
 		}
 		res.append("browse/");
+
+		final boolean isBinary = revisionInfo.isBinary() != null && revisionInfo.isBinary();
+
+		if (isBinary && revisionInfo.getRevision() != null) {
+			res.append("~r=");
+			res.append(revisionInfo.getRevision());
+			res.append("/");
+		}
+
 		res.append(repo);
 		if (!path.startsWith("/")) {
 			res.append('/');
 		}
 		res.append(path);
-		if (revisionInfo.getRevision() != null) {
-			res.append("?r=");
-			res.append(revisionInfo.getRevision());
-		}
-		if (lineRange != null) {
-			res.append("#l").append(lineRange.getStartLine());
+		if (!isBinary) {
+			if (revisionInfo.getRevision() != null) {
+				res.append("?r=");
+				res.append(revisionInfo.getRevision());
+			}
+			if (lineRange != null) {
+				res.append("#l").append(lineRange.getStartLine());
+			}
 		}
 		return res.toString();
 	}
