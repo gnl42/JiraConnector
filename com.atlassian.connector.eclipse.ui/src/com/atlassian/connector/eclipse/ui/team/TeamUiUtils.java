@@ -362,8 +362,9 @@ public final class TeamUiUtils {
 				}
 			}
 		}
-		return defaultConnector.getLocalRevision(resource);
-
+		// We fail to understand Team API here. 
+		//return defaultConnector.getLocalRevision(resource);
+		return null;
 	}
 
 	public static void selectAndReveal(final ITextEditor textEditor, int startLine, int endLine) {
