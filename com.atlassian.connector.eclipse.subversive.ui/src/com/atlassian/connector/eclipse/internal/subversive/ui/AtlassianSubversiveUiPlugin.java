@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.internal.cvs.ui;
+package com.atlassian.connector.eclipse.internal.subversive.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -6,18 +6,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AtlassianCvsUiPlugin extends AbstractUIPlugin {
+public class AtlassianSubversiveUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.cvs.ui";
 
 	// The shared instance
-	private static AtlassianCvsUiPlugin plugin;
+	private static AtlassianSubversiveUiPlugin plugin;
 
 	/**
 	 * The constructor
 	 */
-	public AtlassianCvsUiPlugin() {
+	public AtlassianSubversiveUiPlugin() {
 	}
 
 	/*
@@ -45,7 +45,7 @@ public class AtlassianCvsUiPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static AtlassianCvsUiPlugin getDefault() {
+	public static AtlassianSubversiveUiPlugin getDefault() {
 		return plugin;
 	}
 

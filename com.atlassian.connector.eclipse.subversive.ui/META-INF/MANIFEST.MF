@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Eclipse Connector CVS UI
-Bundle-SymbolicName: com.atlassian.connector.eclipse.cvs.ui;singleton:=true
+Bundle-SymbolicName: com.atlassian.connector.eclipse.subversive.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.cvs.ui.AtlassianCvsUiPlugin
+Bundle-Activator: com.atlassian.connector.eclipse.internal.subversive.ui.AtlassianSubversiveUiPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  com.atlassian.connector.eclipse.ui,
@@ -20,6 +20,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.cvs.core,
  org.eclipse.team.cvs.ui
 Bundle-ActivationPolicy: lazy
-Export-Package: com.atlassian.connector.eclipse.internal.cvs.ui;x-internal:=true
+Export-Package: com.atlassian.connector.eclipse.internal.subversive.ui;x-internal:=true
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

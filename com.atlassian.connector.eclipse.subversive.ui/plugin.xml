@@ -2,7 +2,7 @@
    <extension
          point="com.atlassian.connector.eclipse.ui.teamConnector">
       <teamConnector
-            class="com.atlassian.connector.eclipse.internal.cvs.ui.CvsTeamResourceConnector">
+            class="com.atlassian.connector.eclipse.internal.subversive.ui.SubversiveTeamResourceConnector">
       </teamConnector>
    </extension>
      <!--extension point="org.eclipse.core.runtime.adapters">

@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.cvs.ui;
+package com.atlassian.connector.eclipse.internal.subversive.ui;
 
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
@@ -55,9 +55,9 @@ import java.util.SortedSet;
  * 
  * @author Shawn Minto
  */
-public class CvsTeamResourceConnector implements ITeamResourceConnector {
+public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
-	public CvsTeamResourceConnector() {
+	public SubversiveTeamResourceConnector() {
 	}
 
 	public boolean isEnabled() {
@@ -86,7 +86,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 			return true;
 		}
 		*/
-		throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, NLS.bind(
+		throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
 				"Could not get revisions for {0}.", newFilePath)));
 	}
 
@@ -249,7 +249,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
 			String otherRevisionString, final IProgressMonitor monitor) throws CoreException {
 		if (repoUrl == null) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
 					"No repository URL given.."));
 		}
 		/*
