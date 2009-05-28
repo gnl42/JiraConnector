@@ -60,6 +60,14 @@
 			<property name="type" value="feature" />
 			<property name="id" value="com.atlassian.connector.eclipse.subclipse" />
 		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.subversive" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
+			<property name="id" value="com.atlassian.connector.eclipse.cvs" />
+		</ant>
 	</target>
 	
 	<!-- ===================================================================== -->
@@ -82,6 +90,12 @@
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	<target name="assemble.com.atlassian.connector.eclipse.subclipse">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<target name="assemble.com.atlassian.connector.eclipse.subversive">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<target name="assemble.com.atlassian.connector.eclipse.cvs">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
 	<target name="assemble.com.atlassian.connector.eclipse.test">
