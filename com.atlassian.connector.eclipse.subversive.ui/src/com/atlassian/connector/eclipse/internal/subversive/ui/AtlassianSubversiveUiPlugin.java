@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class AtlassianSubversiveUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.cvs.ui";
+	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.subversive.ui";
 
 	// The shared instance
 	private static AtlassianSubversiveUiPlugin plugin;
