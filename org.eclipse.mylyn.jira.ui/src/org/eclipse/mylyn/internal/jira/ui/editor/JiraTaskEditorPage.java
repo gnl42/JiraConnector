@@ -34,6 +34,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 	public JiraTaskEditorPage(TaskEditor editor) {
 		super(editor, JiraCorePlugin.CONNECTOR_KIND);
 		setNeedsSubmitButton(true);
+		setNeedsPrivateSection(true);
 	}
 
 	@Override
