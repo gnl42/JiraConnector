@@ -117,6 +117,10 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	@SuppressWarnings("restriction")
 	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
 		ICVSRepositoryLocation[] repositories = CVSProviderPlugin.getPlugin().getKnownRepositories();
+		if (repositories == null) {
+			return MiscUtil.buildArrayList();
+		}
+
 		List<RepositoryInfo> res = MiscUtil.buildArrayList(repositories.length);
 		final RepositoryManager repositoryManager = CVSUIPlugin.getPlugin().getRepositoryManager();
 

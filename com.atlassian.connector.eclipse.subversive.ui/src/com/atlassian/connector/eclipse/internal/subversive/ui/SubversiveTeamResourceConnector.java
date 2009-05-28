@@ -23,7 +23,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -32,16 +31,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
-import org.eclipse.team.internal.ccvs.core.ICVSFolder;
-import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
-import org.eclipse.team.internal.ccvs.core.ICVSResource;
-import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
-import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
-import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
-import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
-import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
-import org.eclipse.team.internal.ccvs.ui.repo.RepositoryRoot;
+import org.eclipse.team.svn.core.resource.IRepositoryLocation;
+import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
@@ -114,16 +105,15 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	@SuppressWarnings("restriction")
 	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
-		ICVSRepositoryLocation[] repositories = CVSProviderPlugin.getPlugin().getKnownRepositories();
-		List<RepositoryInfo> res = MiscUtil.buildArrayList(repositories.length);
-		final RepositoryManager repositoryManager = CVSUIPlugin.getPlugin().getRepositoryManager();
+		IRepositoryLocation[] repositories = SVNRemoteStorage.instance().getRepositoryLocations();
+		if (repositories == null) {
+			return MiscUtil.buildArrayList();
+		}
 
-		for (ICVSRepositoryLocation repo : repositories) {
-			final RepositoryRoot root = repositoryManager.getRepositoryRootFor(repo);
-			final String name = (root != null && root.getName() != null) ? root.getName() : null;
-			res.add(new RepositoryInfo(repo.getLocation(true), name));
+		List<RepositoryInfo> res = MiscUtil.buildArrayList(repositories.length);
+		for (IRepositoryLocation repo : repositories) {
+			res.add(new RepositoryInfo(repo.getUrl(), repo.getLabel()));
 		}
 		return res;
 	}
@@ -525,7 +515,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
 	@SuppressWarnings("restriction")
 	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
-		final IProject project = resource.getProject();
+		/*final IProject project = resource.getProject();
 		if (project == null) {
 			return null;
 		}
@@ -540,7 +530,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
 			return new RevisionInfo(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(),
 					"".equals(syncInfo.getRevision()) ? null : syncInfo.getRevision(), isBinary);
-		}
+		}*/
 		return null;
 	}
 	/*

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector CVS UI
+Bundle-Name: Atlassian Eclipse Connector Subversive UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.subversive.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.subversive.ui.AtlassianSubversiveUiPlugin
@@ -17,8 +17,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.compare,
  org.eclipse.jface.text,
  org.eclipse.mylyn.commons.net,
- org.eclipse.team.cvs.core,
- org.eclipse.team.cvs.ui
+ org.eclipse.team.svn.core,
+ org.eclipse.team.svn.ui
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.subversive.ui;x-internal:=true
 Bundle-Vendor: Atlassian
