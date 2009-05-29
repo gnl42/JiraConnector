@@ -24,6 +24,11 @@
 			<param name="update.site" value="${subclipse.site}"/>
 			<param name="update.version" value="${subclipse.version}"/>
 		</antcall>
+		<antcall target="install-bundle">
+			<param name="update.feature" value="org.eclipse.team.svn"/>
+			<param name="update.site" value="${subversive.site}"/>
+			<param name="update.version" value="${subversive.version}"/>
+		</antcall>
 		
 		<!-- only keep mylyn map that corresponds to current target -->
 		<delete>
