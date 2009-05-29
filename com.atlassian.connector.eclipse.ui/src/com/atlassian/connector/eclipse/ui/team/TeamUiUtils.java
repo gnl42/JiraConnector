@@ -53,7 +53,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -95,8 +94,8 @@ public final class TeamUiUtils {
 					return connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
 							otherRevisionString, monitor);
 				} catch (CoreException e) {
+					StatusHandler.log(e.getStatus());
 					//ignore and try with default
-					System.err.println();
 				}
 			}
 		}
@@ -193,8 +192,7 @@ public final class TeamUiUtils {
 			monitor = new NullProgressMonitor();
 		}
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
-		Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> toReturn;
-		toReturn = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
+		Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> toReturn = MiscUtil.buildHashMap();
 		monitor.beginTask("Retrieving changesets", teamResourceManager.getTeamConnectors().size() + 1);
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
@@ -203,6 +201,9 @@ public final class TeamUiUtils {
 					toReturn.putAll(connector.getLatestChangesets(repositoryUrl, limit, subMonitor, status));
 				} catch (CoreException e) {
 					status.add(e.getStatus());
+				} catch (RuntimeException e) {
+					status.add(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+							"Exception encountered while building list of the latest changesets", e));
 				}
 			}
 			subMonitor.done();
@@ -212,6 +213,9 @@ public final class TeamUiUtils {
 			toReturn.putAll(defaultConnector.getLatestChangesets(repositoryUrl, limit, subMonitor, status));
 		} catch (CoreException e) {
 			status.add(e.getStatus());
+		} catch (Exception e) {
+			status.add(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+					"Exception encountered while building list of the latest changesets", e));
 		}
 		subMonitor.done();
 		monitor.done();

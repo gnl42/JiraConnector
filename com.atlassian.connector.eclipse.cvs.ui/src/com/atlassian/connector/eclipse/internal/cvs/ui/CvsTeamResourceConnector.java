@@ -43,6 +43,7 @@ import org.eclipse.team.internal.ccvs.ui.repo.RepositoryRoot;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -62,7 +63,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
 		// @todo implement it
-		return true;
+		return false;
 	}
 
 	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
@@ -76,7 +77,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(file);
 		// @todo implement it
-		return null;
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID, "Not implemented yet for CVS."));
 	}
 
 	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
@@ -99,13 +100,13 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
 			IProgressMonitor monitor, MultiStatus status) {
 		// @todo implement it
-		return null;
+		return Collections.emptyMap();
 	}
 
 	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor) throws CoreException {
 		// @todo implement it
 		Assert.isNotNull(files);
-		return null;
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID, "Not implemented yet for CVS."));
 	}
 
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
