@@ -754,4 +754,16 @@ public class JiraClientTest extends TestCase {
 		assertEquals(240, receivedWorklog.getTimeSpent());
 		assertEquals(time, receivedWorklog.getStartDate());
 	}
+
+	public void testProjectSecurityLevelNotAccessible() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.GUEST);
+		Project project = client.getCache().getProjectById("10050");
+		assertNull(project.getSecurityLevels());
+	}
+
+	public void testProjectSecurityLevelAccessible() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+		Project project = client.getCache().getProjectById("10050");
+		assertNotNull(project.getSecurityLevels());
+	}
 }
