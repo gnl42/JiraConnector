@@ -40,7 +40,7 @@ public class CrucibleInformationControl extends DefaultInformationControl implem
 
 	@SuppressWarnings("restriction")
 	public CrucibleInformationControl(Shell parent, CrucibleInformationControlCreator crucibleInformationControlCreator) {
-		super(parent, SWT.NONE, new HTMLTextPresenter(true));
+		super(parent, new HTMLTextPresenter(true));
 //		super(parent, true);
 		this.informationControlCreator = crucibleInformationControlCreator;
 		commentPopupDialog = new CrucibleCommentPopupDialog(parent, SWT.NO_FOCUS | SWT.ON_TOP);

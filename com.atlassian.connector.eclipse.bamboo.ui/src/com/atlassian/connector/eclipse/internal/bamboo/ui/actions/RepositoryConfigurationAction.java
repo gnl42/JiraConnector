@@ -23,9 +23,9 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.views.TaskRepositoriesView;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.NewRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.ITasksUiConstants;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.wizards.TaskRepositoryWizardDialog;
@@ -131,11 +131,10 @@ public class RepositoryConfigurationAction extends Action implements IMenuCreato
 			@Override
 			public void run() {
 				Display.getDefault().asyncExec(new Runnable() {
-					@SuppressWarnings("restriction")
 					public void run() {
 						try {
 							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-									TaskRepositoriesView.ID);
+									ITasksUiConstants.ID_VIEW_TASKS);
 						} catch (PartInitException e) {
 							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 									"Failed to show Repositories View"));

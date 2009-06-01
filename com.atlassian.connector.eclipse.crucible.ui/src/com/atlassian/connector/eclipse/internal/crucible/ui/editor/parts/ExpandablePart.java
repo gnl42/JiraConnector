@@ -22,7 +22,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -333,7 +333,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 
 	public void setExpanded(boolean expanded) {
 		if (expanded != commentSection.isExpanded()) {
-			EditorUtil.toggleExpandableComposite(expanded, commentSection);
+			CommonFormUtil.setExpanded(commentSection, expanded);
 		}
 		for (V child : childrenParts) {
 			child.setExpanded(expanded);

@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 
 /**
  * Abstract class to deal with adding comments to a review
@@ -58,7 +58,7 @@ public abstract class AbstractAddCommentAction extends AbstractReviewAction {
 			return;
 		}
 
-		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(TasksUiInternal.getShell(),
+		CrucibleAddCommentDialog commentDialog = new CrucibleAddCommentDialog(WorkbenchUtil.getShell(),
 				getDialogTitle(), review, reviewItem, parentComment, commentLines, getTaskKey(), getTaskId(),
 				getTaskRepository(), client);
 		commentDialog.open();

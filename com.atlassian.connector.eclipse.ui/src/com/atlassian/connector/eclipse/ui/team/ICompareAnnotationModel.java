@@ -15,6 +15,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.compare.internal.MergeSourceViewer;
 
+@SuppressWarnings("restriction")
 public interface ICompareAnnotationModel {
 	void attachToViewer(MergeSourceViewer left, MergeSourceViewer fRight);
 

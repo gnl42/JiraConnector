@@ -77,6 +77,7 @@ public class BambooEditorInput implements IEditorInput {
 		return truncate("Bamboo Build");
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		if (adapter == IEditorInput.class) {
 			return this;

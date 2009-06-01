@@ -190,6 +190,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		 * the ruler that gets created in this method is longer than the editor, meaning its not an overview
 		 * (not next to the scrollbar)
 		 */
+		@SuppressWarnings("unused")
 		private void createOverviewRuler(IDocument newInput, Class<SourceViewer> sourceViewerClazz)
 				throws SecurityException, NoSuchMethodException, NoSuchFieldException, IllegalArgumentException,
 				IllegalAccessException, InvocationTargetException {
@@ -255,7 +256,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			sourceViewer.showAnnotations(true);
 			sourceViewer.showAnnotationsOverview(true);
 
-			Iterator iter = (ruler).getDecoratorIterator();
+			Iterator<?> iter = (ruler).getDecoratorIterator();
 			if (iter.hasNext()) {
 				for (Object obj = iter.next(); iter.hasNext(); obj = iter.next()) {
 					if (obj instanceof AnnotationRulerColumn) {

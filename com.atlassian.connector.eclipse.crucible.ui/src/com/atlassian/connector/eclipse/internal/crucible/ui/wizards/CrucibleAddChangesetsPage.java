@@ -87,8 +87,6 @@ import java.util.TreeSet;
  */
 public class CrucibleAddChangesetsPage extends WizardPage {
 
-	private static final String SELECT_MAPPING = "Select Mapping";
-
 	private static final String FAKE_NODE = "...";
 
 	private class ChangesetLabelProvider extends LabelProvider {
@@ -150,6 +148,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			return new Object[0];
 		}
 
+		@SuppressWarnings("unchecked")
 		public Object getParent(Object element) {
 			if (logEntries == null) {
 				return null;
@@ -164,6 +163,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			return null;
 		}
 
+		@SuppressWarnings("unchecked")
 		public boolean hasChildren(Object element) {
 			if (logEntries == null) {
 				return false;
@@ -220,8 +220,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	private final TaskRepository taskRepository;
 
 	private Set<CrucibleCachedRepository> cachedRepositories;
-
-	private String[] cachedRepositoriesAsString;
 
 	private final Map<CustomRepository, CrucibleCachedRepository> repositoryMappings;
 

@@ -32,8 +32,8 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -155,7 +155,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 				public void run() {
 					CrucibleReviewWizard wizard = new CrucibleReviewWizard(crucibleReview, Type.ADD_CHANGESET);
 					wizard.setWindowTitle("Add Changeset");
-					WizardDialog wd = new WizardDialog(TasksUiInternal.getShell(), wizard);
+					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), wizard);
 					wd.setBlockOnOpen(true);
 					wd.open();
 				}
@@ -170,7 +170,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 				public void run() {
 					CrucibleReviewWizard wizard = new CrucibleReviewWizard(crucibleReview, Type.ADD_PATCH);
 					wizard.setWindowTitle("Add Patch");
-					WizardDialog wd = new WizardDialog(TasksUiInternal.getShell(), wizard);
+					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), wizard);
 					wd.setBlockOnOpen(true);
 					wd.open();
 				}
@@ -188,7 +188,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 
 	public void selectAndReveal(CrucibleFileInfo crucibleFile, VersionedComment comment, boolean reveal) {
 		if (!filesSection.isExpanded()) {
-			EditorUtil.toggleExpandableComposite(true, filesSection);
+			CommonFormUtil.setExpanded(filesSection, true);
 		}
 
 		for (CrucibleFilePart part : parts) {

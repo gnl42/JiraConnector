@@ -141,7 +141,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 	private final HashMap<String, CustomField> customFieldSelections;
 
-	private CommentPart commentPart;
+	private CommentPart<?, ?> commentPart;
 
 	private FormToolkit toolkit;
 

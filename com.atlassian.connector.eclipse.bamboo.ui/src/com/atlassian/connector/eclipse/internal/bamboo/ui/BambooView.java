@@ -54,8 +54,8 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
-import org.eclipse.mylyn.internal.tasks.ui.views.TaskRepositoriesView;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.ui.ITasksUiConstants;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.osgi.util.NLS;
@@ -128,7 +128,7 @@ public class BambooView extends ViewPart {
 		protected boolean updateSelection(IStructuredSelection selection) {
 			if (selection.size() >= 1) {
 				try {
-					Iterator it = selection.iterator();
+					Iterator<?> it = selection.iterator();
 					while (it.hasNext()) {
 						((BambooBuild) it.next()).getNumber();
 					}
@@ -409,10 +409,9 @@ public class BambooView extends ViewPart {
 					}
 				} else if (link.equals(OPEN_REPOSITORY_VIEW_LINK)) {
 					Display.getDefault().asyncExec(new Runnable() {
-						@SuppressWarnings("restriction")
 						public void run() {
 							try {
-								getSite().getPage().showView(TaskRepositoriesView.ID);
+								getSite().getPage().showView(ITasksUiConstants.ID_VIEW_TASKS);
 							} catch (PartInitException e) {
 								StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 										"Failed to show Task Repositories View"));

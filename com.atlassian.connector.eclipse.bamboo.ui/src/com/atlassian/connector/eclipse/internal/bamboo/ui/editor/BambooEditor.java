@@ -34,9 +34,9 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorBusyIndicator;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
-import org.eclipse.mylyn.internal.tasks.ui.editors.IBusyEditor;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.editor.EditorBusyIndicator;
+import org.eclipse.mylyn.internal.provisional.commons.ui.editor.IBusyEditor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.SWT;
@@ -140,7 +140,7 @@ public class BambooEditor extends SharedHeaderFormEditor {
 		getHeaderForm().getForm().setMenu(menu);
 		Composite head = getHeaderForm().getForm().getForm().getHead();
 		if (head != null) {
-			EditorUtil.setMenu(head, menu);
+			CommonUiUtil.setMenu(head, menu);
 		}
 	}
 
@@ -346,7 +346,7 @@ public class BambooEditor extends SharedHeaderFormEditor {
 					}
 				}
 
-				EditorUtil.setEnabledState(form.getBody(), !busy);
+				CommonUiUtil.setEnabled(form.getBody(), !busy);
 				for (IFormPage page : getPages()) {
 					if (page instanceof WorkbenchPart) {
 						WorkbenchPart part = (WorkbenchPart) page;

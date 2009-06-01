@@ -106,7 +106,6 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 								crucibleReview = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(),
 										addChangeSetsPage.getRepositoryMappings().get(customRepository).getName(),
 										revisions);
-								changesetsAddedToReview = true;
 							}
 						}
 						//add patch
@@ -138,8 +137,6 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			return Status.OK_STATUS;
 		}
 	}
-
-	private boolean changesetsAddedToReview;
 
 	private boolean patchAddedToReview;
 
@@ -206,7 +203,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 	public void addPages() {
 		//do not use page selection if wizard type is already set
 		if (wizardType == Type.UNDEFINED) {
-			typeSelectionPage = new CrucibleTypeSelectionPage(getTaskRepository());
+			typeSelectionPage = new CrucibleTypeSelectionPage();
 			addPage(typeSelectionPage);
 		}
 		if (wizardType == Type.UNDEFINED) {

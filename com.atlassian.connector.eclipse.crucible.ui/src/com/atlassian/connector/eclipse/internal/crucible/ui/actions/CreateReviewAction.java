@@ -18,7 +18,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
@@ -53,7 +53,7 @@ public class CreateReviewAction extends BaseSelectionListenerAction implements I
 		}
 		RepositorySelectionWizard wizard = new RepositorySelectionWizard(logEntries);
 
-		WizardDialog wd = new WizardDialog(TasksUiInternal.getShell(), wizard);
+		WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), wizard);
 		wd.setBlockOnOpen(true);
 		wd.open();
 	}

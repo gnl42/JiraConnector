@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
@@ -50,7 +50,7 @@ public class SummarizeReviewAction extends AbstractReviewAction implements IWork
 			return;
 		}
 
-		CrucibleSummarizeReviewDialog summarizeDialog = new CrucibleSummarizeReviewDialog(TasksUiInternal.getShell(),
+		CrucibleSummarizeReviewDialog summarizeDialog = new CrucibleSummarizeReviewDialog(WorkbenchUtil.getShell(),
 				review, client.getUserName(), getTaskKey(), getTaskId(), getTaskRepository(), client);
 		summarizeDialog.open();
 	}

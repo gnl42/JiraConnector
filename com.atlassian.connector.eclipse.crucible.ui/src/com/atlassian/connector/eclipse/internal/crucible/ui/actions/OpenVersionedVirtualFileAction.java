@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonsUiUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
@@ -67,7 +67,7 @@ public class OpenVersionedVirtualFileAction extends Action {
 	public void run() {
 		CrucibleUiUtil.checkAndRequestReviewActivation(review);
 		try {
-			CommonsUiUtil.run(PlatformUI.getWorkbench().getProgressService(), new ICoreRunnable() {
+			CommonUiUtil.run(PlatformUI.getWorkbench().getProgressService(), new ICoreRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					VersionedVirtualFile newFile = crucibleFile.getCrucibleFileInfo().getFileDescriptor();
 					VersionedVirtualFile oldFile = crucibleFile.getCrucibleFileInfo().getOldFileDescriptor();

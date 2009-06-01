@@ -59,11 +59,12 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonThemes;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.SelectionProviderAdapter;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
-import org.eclipse.mylyn.internal.tasks.ui.util.SelectionProviderAdapter;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
@@ -271,7 +272,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 		selectionColor = new Color(getSite().getShell().getDisplay(), 255, 231, 198);
 
-		EditorUtil.disableScrollingOnFocus(form);
+		CommonFormUtil.disableScrollingOnFocus(form);
 
 		try {
 			setReflow(false);
@@ -463,7 +464,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 
 		Menu menu = editorComposite.getMenu();
 		// preserve context menu
-		EditorUtil.setMenu(editorComposite, null);
+		CommonUiUtil.setMenu(editorComposite, null);
 
 		// remove all of the old widgets so that we can redraw the editor
 		for (Control child : editorComposite.getChildren()) {
@@ -900,7 +901,7 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 		}
 	}
 
-	public void setHighlightedPart(ExpandablePart part) {
+	public void setHighlightedPart(ExpandablePart<?, ?> part) {
 		if (highlightedControl != null) {
 			setControlHighlighted(highlightedControl, false);
 			highlightedControl = null;

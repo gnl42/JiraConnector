@@ -43,7 +43,6 @@ import org.eclipse.team.core.history.IFileHistoryProvider;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
-import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.history.FileRevisionEditorInput;
 import org.eclipse.team.internal.ui.history.FileRevisionTypedElement;
@@ -115,7 +114,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 			if (oldFile != null) {
 				IFileRevision newFile = getFileRevision(resource, newRevisionString, monitor);
 				if (newFile != null) {
+					@SuppressWarnings("restriction")
 					final ITypedElement left = new FileRevisionTypedElement(newFile, getLocalEncoding(resource));
+					@SuppressWarnings("restriction")
 					final ITypedElement right = new FileRevisionTypedElement(oldFile, getLocalEncoding(resource));
 
 					Display.getDefault().asyncExec(new Runnable() {
@@ -194,17 +195,19 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 			try {
 				return file.getCharset();
 			} catch (CoreException e) {
-				TeamUIPlugin.log(e);
+				StatusHandler.log(e.getStatus());
 			}
 		}
 		return null;
 	}
 
+	@SuppressWarnings("restriction")
 	public boolean canHandleEditorInput(IEditorInput editorInput) {
 		// we cannot deal with remote files since they are team provider specific
 		return editorInput instanceof FileEditorInput || editorInput instanceof FileRevisionEditorInput;
 	}
 
+	@SuppressWarnings("restriction")
 	public CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
 		Set<CrucibleFileInfo> activeReviewFiles;
 		try {

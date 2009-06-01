@@ -31,6 +31,8 @@ import java.lang.reflect.Method;
  * 
  * @author Thomas Ehrnhoefer
  */
+//class uses a whole lot of restricted API without us being able to do something against it
+@SuppressWarnings("restriction")
 public class TeamCompareFileRevisionEditorInput extends CompareFileRevisionEditorInput implements
 		IAnnotationCompareInput {
 

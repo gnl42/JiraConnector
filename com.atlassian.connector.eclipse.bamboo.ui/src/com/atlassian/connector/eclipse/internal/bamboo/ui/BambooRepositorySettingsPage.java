@@ -27,6 +27,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonsUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
@@ -324,7 +325,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 				updateUIRestoreState(checkedElements, data[0]);
 			}
 		} catch (CoreException e) {
-			CommonsUiUtil.setMessage(this, e.getStatus());
+			CommonUiUtil.setMessage(this, e.getStatus());
 		} catch (OperationCanceledException e) {
 			// ignore
 		}

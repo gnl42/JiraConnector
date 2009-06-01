@@ -24,7 +24,7 @@ import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -65,7 +65,7 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 	public void run(IAction action) {
 		if (selectionData != null) {
 			if (selectionData.resource != null) {
-				processResource(selectionData.resource, selectionData.lineRange, TasksUiInternal.getShell());
+				processResource(selectionData.resource, selectionData.lineRange, WorkbenchUtil.getShell());
 			}
 
 		}

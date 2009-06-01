@@ -133,14 +133,6 @@ public final class BuildPlanManager {
 			return Status.OK_STATUS;
 		}
 
-		public Map<TaskRepository, Collection<BambooBuild>> getBuilds() {
-			return builds;
-		}
-
-		public IStatus getStatus() {
-			return result;
-		}
-
 		@Override
 		public boolean belongsTo(Object family) {
 			return manualRefresh && family == BambooConstants.FAMILY_REFRESH_OPERATION;

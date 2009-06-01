@@ -27,7 +27,8 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -130,7 +131,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 		selectionColor = new Color(getSite().getShell().getDisplay(), 255, 231, 198);
 
-		EditorUtil.disableScrollingOnFocus(form);
+		CommonFormUtil.disableScrollingOnFocus(form);
 
 		try {
 			setReflow(false);
@@ -301,7 +302,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 		Menu menu = editorComposite.getMenu();
 		// preserve context menu
-		EditorUtil.setMenu(editorComposite, null);
+		CommonUiUtil.setMenu(editorComposite, null);
 
 		// remove all of the old widgets so that we can redraw the editor
 		for (Control child : editorComposite.getChildren()) {

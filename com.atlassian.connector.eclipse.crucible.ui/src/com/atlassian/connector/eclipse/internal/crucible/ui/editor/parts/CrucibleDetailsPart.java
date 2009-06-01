@@ -162,8 +162,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	private Section reviewersSection;
 
-	private Composite reviewersPart;
-
 	private IAction setReviewersAction;
 
 	private boolean newReview;
@@ -389,13 +387,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 		toolkit.paintBordersFor(parentComposite);
 	}
 
-	private void disposeReviewersPart() {
-		if (reviewersPart != null && !reviewersPart.isDisposed()) {
-			EditorUtil.setMenu(reviewersPart, null);
-			reviewersPart.dispose();
-		}
-	}
-
 	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, boolean canEditReviewers) {
 		if (reviewersComp == null || reviewersComp.isDisposed()) {
 			reviewersComp = toolkit.createComposite(parent);
@@ -413,7 +404,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			Set<Reviewer> reviewers = crucibleReview.getReviewers();
 			CrucibleReviewersPart crucibleReviewersPart = new CrucibleReviewersPart(reviewers);
 			crucibleReviewersPart.setMenu(parent.getMenu());
-			reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp, setReviewersAction);
 
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));

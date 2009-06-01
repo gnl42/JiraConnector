@@ -50,8 +50,6 @@ public abstract class ProgressDialog extends TitleAreaDialog {
 
 	private ProgressMonitorPart progressMonitorPart;
 
-	private final SelectionAdapter cancelListener;
-
 	private long activeRunningOperations = 0;
 
 	private final HashMap<Integer, Button> buttons = new HashMap<Integer, Button>();
@@ -60,13 +58,6 @@ public abstract class ProgressDialog extends TitleAreaDialog {
 		super(parentShell);
 		setDialogHelpAvailable(false);
 		setHelpAvailable(false);
-		cancelListener = new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				cancelPressed();
-			}
-		};
-
 	}
 
 	/*
@@ -209,10 +200,9 @@ public abstract class ProgressDialog extends TitleAreaDialog {
 
 	/**
 	 * This implementation of IRunnableContext#run(boolean, boolean, IRunnableWithProgress) blocks until the runnable
-	 * has been run, regardless of the value of <code>fork</code>. It is recommended that <code>fork</code> is set
-	 * to true in most cases. If <code>fork</code> is set to <code>false</code>, the runnable will run in the UI
-	 * thread and it is the runnable's responsibility to call <code>Display.readAndDispatch()</code> to ensure UI
-	 * responsiveness.
+	 * has been run, regardless of the value of <code>fork</code>. It is recommended that <code>fork</code> is set to
+	 * true in most cases. If <code>fork</code> is set to <code>false</code>, the runnable will run in the UI thread and
+	 * it is the runnable's responsibility to call <code>Display.readAndDispatch()</code> to ensure UI responsiveness.
 	 * 
 	 * UI state is saved prior to executing the long-running operation and is restored after the long-running operation
 	 * completes executing. Any attempt to change the UI state of the wizard in the long-running operation will be

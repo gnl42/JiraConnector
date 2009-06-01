@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRevi
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -29,17 +28,14 @@ import org.eclipse.swt.widgets.Label;
  */
 public class CrucibleTypeSelectionPage extends WizardPage {
 
-	private final TaskRepository taskRepository;
-
 	private Button patchReview;
 
 	private Button changesetReview;
 
-	public CrucibleTypeSelectionPage(TaskRepository repository) {
+	public CrucibleTypeSelectionPage() {
 		super("crucibleSelection"); //$NON-NLS-1$
 		setTitle("Select type of review to create");
 		setDescription("Select which kind of review you want to create.");
-		this.taskRepository = repository;
 	}
 
 	public void createControl(Composite parent) {

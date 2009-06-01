@@ -30,7 +30,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -240,7 +240,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	public void selectAndReveal(VersionedComment commentToReveal, boolean reveal) {
 		if (!getSection().isExpanded()) {
-			EditorUtil.toggleExpandableComposite(true, getSection());
+			CommonFormUtil.setExpanded(getSection(), true);
 		}
 
 		for (ExpandablePart<?, ?> part : getChildrenParts()) {
@@ -248,7 +248,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 				if (((VersionedCommentPart) part).represents(commentToReveal)) {
 					part.setExpanded(true);
 					if (reveal) {
-						EditorUtil.ensureVisible(part.getSection());
+						CommonFormUtil.ensureVisible(part.getSection());
 					}
 
 					crucibleEditor.setHighlightedPart(part);

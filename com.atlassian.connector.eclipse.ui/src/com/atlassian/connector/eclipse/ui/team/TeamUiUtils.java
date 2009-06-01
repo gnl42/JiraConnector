@@ -132,25 +132,25 @@ public final class TeamUiUtils {
 		return defaultConnector.getRevisionsForFile(file, monitor);
 	}
 
-	private interface ConnectorOperation<T> {
-		T execute(ITeamResourceConnector connector, IProgressMonitor monitor) throws CoreException;
-	}
+//	private interface ConnectorOperation<T> {
+//		T execute(ITeamResourceConnector connector, IProgressMonitor monitor) throws CoreException;
+//	}
 
-	private static <T> T executeOnConnectors(ConnectorOperation<T> operation, IProgressMonitor monitor)
-			throws CoreException {
-		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
-
-		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
-			if (connector.isEnabled()) {
-				try {
-					return operation.execute(connector, monitor);
-				} catch (CoreException e) {
-					// ignore and try other connector(s)
-				}
-			}
-		}
-		return operation.execute(defaultConnector, monitor);
-	}
+//	private static <T> T executeOnConnectors(ConnectorOperation<T> operation, IProgressMonitor monitor)
+//			throws CoreException {
+//		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+//
+//		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+//			if (connector.isEnabled()) {
+//				try {
+//					return operation.execute(connector, monitor);
+//				} catch (CoreException e) {
+//					// ignore and try other connector(s)
+//				}
+//			}
+//		}
+//		return operation.execute(defaultConnector, monitor);
+//	}
 
 	/**
 	 * @param monitor
@@ -427,10 +427,12 @@ public final class TeamUiUtils {
 				Class<TextMergeViewer> clazz = TextMergeViewer.class;
 				Field declaredField = clazz.getDeclaredField("fLeft");
 				declaredField.setAccessible(true);
+				@SuppressWarnings("restriction")
 				final MergeSourceViewer fLeft = (MergeSourceViewer) declaredField.get(textMergeViewer);
 
 				declaredField = clazz.getDeclaredField("fRight");
 				declaredField.setAccessible(true);
+				@SuppressWarnings("restriction")
 				final MergeSourceViewer fRight = (MergeSourceViewer) declaredField.get(textMergeViewer);
 
 				annotationModel.attachToViewer(fLeft, fRight);

@@ -17,8 +17,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -87,7 +87,7 @@ public abstract class AbstractCrucibleEditorFormPart extends AbstractFormPagePar
 				part.setExpanded(true);
 			}
 			if (expandableSection != null && !expandableSection.isExpanded()) {
-				EditorUtil.toggleExpandableComposite(true, expandableSection);
+				CommonFormUtil.setExpanded(expandableSection, true);
 			}
 		} finally {
 			getReviewEditor().setReflow(true);
