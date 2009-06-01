@@ -3,5 +3,5 @@
 <associateSite label="Mylyn for Eclipse 3.3" url="http://download.eclipse.org/tools/mylyn/update/weekly/e3.3"/>
 <associateSite label="Mylyn  Extras" url="http://download.eclipse.org/tools/mylyn/update/weekly/extras"/>
 <associateSite label="Subclipse" url="http://subclipse.tigris.org/update_1.4.x"/>
-<associateSite label="Subversive" url="http://download.eclipse.org/technology/subversive/0.7/update-site/"/>
+<!--associateSite label="Subversive" url="http://download.eclipse.org/technology/subversive/0.7/update-site/"/-->
 </associateSites>
