@@ -60,11 +60,11 @@ public class ReviewersSelectionTreePart {
 	private class CheckboxFilteredTree extends FilteredTree {
 
 		protected CheckboxFilteredTree(Composite parent) {
-			super(parent, true);
+			super(parent);
 		}
 
 		public CheckboxFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
-			super(parent, treeStyle, filter, true);
+			super(parent, treeStyle, filter);
 		}
 
 		@Override
