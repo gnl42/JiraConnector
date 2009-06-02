@@ -104,7 +104,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 	}
 
 	private void createTable(FormToolkit toolkit, final Composite composite) {
-		Table table = toolkit.createTable(composite, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+		Table table = toolkit.createTable(composite, SWT.MULTI | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		table.setLayout(new GridLayout());
