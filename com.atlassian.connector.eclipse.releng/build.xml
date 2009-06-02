@@ -84,8 +84,8 @@
 	</target>
 
 	<target name="generate-metadata-common" depends="init">
-		<!-- make sure Eclipse 3.4 is available -->
-		<antcall target="init-3.4"/>
+		<!-- make sure Eclipse 3.5 is available -->
+		<antcall target="init-3.5"/>
 
 		<!-- create generic site without associate sites -->
 		<property name="site.common.dir" value="${build.home}/3.3/site"/>
@@ -99,8 +99,8 @@
 	</target>
 		
 	<target name="generate-metadata" depends="init">
-		<!-- make sure Eclipse 3.4 is available -->
-		<antcall target="init-3.4"/>
+		<!-- make sure Eclipse 3.5 is available -->
+		<antcall target="init-3.5"/>
 		
 		<!-- handle Eclipse version specific sites -->
 		<antcall target="for-each-target">
