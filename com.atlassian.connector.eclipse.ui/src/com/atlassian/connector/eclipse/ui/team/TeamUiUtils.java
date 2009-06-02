@@ -50,6 +50,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -75,6 +76,7 @@ public final class TeamUiUtils {
 	private TeamUiUtils() {
 	}
 
+	@Nullable
 	public static IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath,
 			String revisionString, String otherRevisionString, IProgressMonitor monitor) {
 		// TODO if the repo url is null, we should probably use the task repo host and look at all repos
@@ -91,8 +93,11 @@ public final class TeamUiUtils {
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
 				try {
-					return connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
+					IEditorPart part = connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
 							otherRevisionString, monitor);
+					if (part != null) {
+						return part;
+					}
 				} catch (CoreException e) {
 					StatusHandler.log(e.getStatus());
 					//ignore and try with default
@@ -113,6 +118,7 @@ public final class TeamUiUtils {
 		}
 	}
 
+	@Nullable
 	public static SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(file);
 		if (monitor == null) {
@@ -123,8 +129,12 @@ public final class TeamUiUtils {
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled()) {
 				try {
-					return connector.getRevisionsForFile(file, monitor);
+					SortedSet<Long> revisions = connector.getRevisionsForFile(file, monitor);
+					if (revisions != null) {
+						return revisions;
+					}
 				} catch (CoreException e) {
+					StatusHandler.log(e.getStatus());
 					// ignore and try other connector(s)
 				}
 			}
@@ -198,7 +208,11 @@ public final class TeamUiUtils {
 			IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
 			if (connector.isEnabled()) {
 				try {
-					toReturn.putAll(connector.getLatestChangesets(repositoryUrl, limit, subMonitor, status));
+					Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> changesets = connector.getLatestChangesets(
+							repositoryUrl, limit, subMonitor, status);
+					if (changesets != null) {
+						toReturn.putAll(changesets);
+					}
 				} catch (CoreException e) {
 					status.add(e.getStatus());
 				} catch (RuntimeException e) {
@@ -237,8 +251,12 @@ public final class TeamUiUtils {
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled()) {
 				try {
-					return connector.getRevisionsForFile(files, monitor);
+					Map<IFile, SortedSet<Long>> revisions = connector.getRevisionsForFile(files, monitor);
+					if (revisions != null) {
+						return revisions;
+					}
 				} catch (CoreException e) {
+					StatusHandler.log(e.getStatus());
 					// ignore and try other connector(s)
 				}
 			}
@@ -267,6 +285,7 @@ public final class TeamUiUtils {
 						return;
 					}
 				} catch (CoreException e) {
+					StatusHandler.log(e.getStatus());
 					//ignore and try with default
 				}
 			}
@@ -328,6 +347,7 @@ public final class TeamUiUtils {
 		return null;
 	}
 
+	@Nullable
 	public static CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
 		if (activeReview == null) {
 			return null;

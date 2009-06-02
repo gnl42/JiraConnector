@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,19 +40,54 @@ public interface ITeamResourceConnector {
 
 	boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor);
 
+	/**
+	 * 
+	 * @param repoUrl
+	 * @param filePath
+	 * @param otherRevisionFilePath
+	 * @param revisionString
+	 * @param otherRevisionString
+	 * @param monitor
+	 * @return null if operations is not supported/handled, otherwise editor part
+	 * @throws CoreException
+	 */
+	@Nullable
 	IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
 			String otherRevisionString, IProgressMonitor monitor) throws CoreException;
 
 	boolean canHandleEditorInput(IEditorInput editorInput);
 
+	/**
+	 * 
+	 * @param editorInput
+	 * @param activeReview
+	 * @return null if operations is not supported/handled, otherwise crucible file
+	 */
+	@Nullable
 	CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview);
 
 	boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath, String oldRevisionString,
 			String newRevisionString, ICompareAnnotationModel annotationModel, IProgressMonitor monitor)
 			throws CoreException;
 
+	/**
+	 * 
+	 * @param files
+	 * @param monitor
+	 * @return null if operation is not supported/handled, otherwise sorted revisions
+	 * @throws CoreException
+	 */
+	@Nullable
 	SortedSet<Long> getRevisionsForFile(IFile files, IProgressMonitor monitor) throws CoreException;
 
+	/**
+	 * 
+	 * @param files
+	 * @param monitor
+	 * @return null if operation is not supported/handled, otherwise revisions map
+	 * @throws CoreException
+	 */
+	@Nullable
 	Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor) throws CoreException;
 
 	/**
@@ -59,10 +95,19 @@ public interface ITeamResourceConnector {
 	 *            The repository URL to get changesets from, or NULL to retrieve form all available repositories
 	 * @param limit
 	 *            The amount of revisions to retrieve
+	 * @return null if operations is not supported/handled, otherwise latest changesets
 	 */
+	@Nullable
 	Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
 			IProgressMonitor monitor, MultiStatus status) throws CoreException;
 
+	/**
+	 * 
+	 * @param resource
+	 * @return null if operation is not handled/supported, otherwise revision info
+	 * @throws CoreException
+	 */
+	@Nullable
 	RevisionInfo getLocalRevision(IResource resource) throws CoreException;
 
 	/**
