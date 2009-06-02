@@ -99,9 +99,7 @@ public class JiraWebSession {
 			if (httpClient == null) {
 				httpClient = new HttpClient(WebUtil.getConnectionManager());
 			}
-			if (hostConfiguration == null) {
-				hostConfiguration = login(httpClient, monitor);
-			}
+			hostConfiguration = login(httpClient, monitor);
 		} finally {
 			unlock(monitor);
 		}
