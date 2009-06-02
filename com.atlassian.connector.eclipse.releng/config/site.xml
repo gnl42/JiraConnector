@@ -6,9 +6,6 @@
    <feature url="features/com.atlassian.connector.eclipse_@core@.jar" id="com.atlassian.connector.eclipse" version="@core@">
       <category name="Connector"/>
    </feature>
-   <feature url="features/com.atlassian.connector.eclipse.bamboo_@core@.jar" id="com.atlassian.connector.eclipse.bamboo" version="@core@">
-      <category name="Integrations"/>
-   </feature>
    <feature url="features/com.atlassian.connector.eclipse.crucible_@core@.jar" id="com.atlassian.connector.eclipse.crucible" version="@core@">
       <category name="Integrations"/>
    </feature>
@@ -19,6 +16,9 @@
       <category name="Integrations"/>
    </feature>
    <feature url="features/com.atlassian.connector.eclipse.cvs_@core@.jar" id="com.atlassian.connector.eclipse.cvs" version="@core@">
+      <category name="Integrations"/>
+   </feature>
+   <feature url="features/com.atlassian.connector.eclipse.bamboo_@core@.jar" id="com.atlassian.connector.eclipse.bamboo" version="@core@">
       <category name="Integrations"/>
    </feature>
    <category-def name="Connector" label="Atlassian Connector"/>

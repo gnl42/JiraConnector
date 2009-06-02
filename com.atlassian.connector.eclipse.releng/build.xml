@@ -84,8 +84,8 @@
 	</target>
 
 	<target name="generate-metadata-common" depends="init">
-		<!-- make sure Eclipse 3.5 is available -->
-		<antcall target="init-3.5"/>
+		<!-- make sure Eclipse 3.4 is available -->
+		<antcall target="init-3.4"/>
 
 		<!-- create generic site without associate sites -->
 		<property name="site.common.dir" value="${build.home}/3.3/site"/>
@@ -99,8 +99,8 @@
 	</target>
 		
 	<target name="generate-metadata" depends="init">
-		<!-- make sure Eclipse 3.5 is available -->
-		<antcall target="init-3.5"/>
+		<!-- make sure Eclipse 3.4 is available -->
+		<antcall target="init-3.4"/>
 		
 		<!-- handle Eclipse version specific sites -->
 		<antcall target="for-each-target">
@@ -145,14 +145,6 @@
 			<param name="build.target" value="3.4"/>
 			<param name="eclipse.sdk.url" value="${eclipse.url.3.4}"/>
 			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.4}"/>
-		</antcall>
-	</target>
-	
-	<target name="init-3.5">
-		<antcall target="get-build-dependencies-helper">
-			<param name="build.target" value="3.5"/>
-			<param name="eclipse.sdk.url" value="${eclipse.url.3.5}"/>
-			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.5}"/>
 		</antcall>
 	</target>
 
