@@ -101,7 +101,7 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		if (action.isEnabled() && isEnabled()) {
+		if (action.isEnabled()) {
 			selectionData = getData(selection);
 			boolean isEnabled;
 			try {
