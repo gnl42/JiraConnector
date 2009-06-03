@@ -70,7 +70,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	 */
 	public synchronized FishEyeClient getFishEyeClient(TaskRepository taskRepository) {
 		CrucibleCorePlugin.getDefault();
-		if (!CrucibleCorePlugin.getRepositoryConnector().isFishEye(taskRepository)) {
+		if (!CrucibleRepositoryConnector.isFishEye(taskRepository)) {
 			return null;
 		}
 		final FishEyeClient client = FishEyeCorePlugin.getDefault()

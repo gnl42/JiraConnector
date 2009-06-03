@@ -54,8 +54,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
-import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -95,7 +95,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		@Override
 		public void run() {
-			ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(TasksUiInternal.getShell(), crucibleReview,
+			ReviewerSelectionDialog dialog = new ReviewerSelectionDialog(WorkbenchUtil.getShell(), crucibleReview,
 					CrucibleUiUtil.getCachedUsers(crucibleReview));
 			if (dialog.open() == Window.OK) {
 				Set<Reviewer> reviewers = dialog.getSelectedReviewers();

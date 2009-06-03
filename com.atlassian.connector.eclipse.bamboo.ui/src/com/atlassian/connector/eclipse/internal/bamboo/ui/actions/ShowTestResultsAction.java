@@ -61,6 +61,7 @@ import java.io.File;
  * 
  * @author Thomas Ehrnhoefer
  */
+@SuppressWarnings("restriction")
 public class ShowTestResultsAction extends BaseSelectionListenerAction {
 
 	private static boolean isJUnitAvailable = false;
@@ -225,7 +226,6 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 		 * 		JUnitLaunchConfigurationConstants.ID_JUNIT_APPLICATION);
 		 * </pre>
 		 */
-		@SuppressWarnings("restriction")
 		protected ILaunchConfigurationWorkingCopy createLaunchConfiguration(IJavaElement element) throws CoreException {
 			final String testName;
 			final String mainTypeQualifiedName;

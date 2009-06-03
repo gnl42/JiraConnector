@@ -24,7 +24,7 @@ Require-Bundle: com.atlassian.connector.commons,
 Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: com.atlassian.connector.eclipse.internal.crucible.ui;x-internal:=true,
+Export-Package: com.atlassian.connector.eclipse.internal.crucible.ui;x-friends:="com.atlassian.connector.eclipse.fisheye.ui",
  com.atlassian.connector.eclipse.internal.crucible.ui.actions;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.annotations;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.commons;x-internal:=true,

@@ -62,6 +62,7 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 		this.workbenchWindow = window;
 	}
 
+	@SuppressWarnings("restriction")
 	public void run(IAction action) {
 		if (selectionData != null) {
 			if (selectionData.resource != null) {

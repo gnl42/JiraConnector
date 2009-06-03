@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonsUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -312,7 +311,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 
 			// update configuration
 			final BambooClientData[] data = new BambooClientData[1];
-			CommonsUiUtil.run(getContainer(), new ICoreRunnable() {
+			CommonUiUtil.run(getContainer(), new ICoreRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 					final BambooClient client = clientManager.getClient(repository);

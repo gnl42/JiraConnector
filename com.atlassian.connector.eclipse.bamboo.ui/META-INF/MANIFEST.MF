@@ -26,6 +26,7 @@ Bundle-Activator: com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlu
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.bamboo.ui;x-internal:=true,
+ com.atlassian.connector.eclipse.bamboo.ui.preferences;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.ui;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.ui.actions;x-internal:=true,
  com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs;x-internal:=true,

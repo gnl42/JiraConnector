@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.net;bundle-version="[3.2.0,3.3.0)",
  com.atlassian.connector.eclipse.fisheye.core,
  com.atlassian.connector.eclipse.core
-Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-friends:="com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.ui",
+Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-friends:="com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.ui, com.atlassian.connector.eclipse.fisheye.ui",
  com.atlassian.connector.eclipse.internal.crucible.core.client;x-friends:="com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.ui",
  com.atlassian.connector.eclipse.internal.crucible.core.client.model;x-friends:="com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.ui",
  com.atlassian.connector.eclipse.internal.crucible.core.configuration;x-friends:="com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.ui"
