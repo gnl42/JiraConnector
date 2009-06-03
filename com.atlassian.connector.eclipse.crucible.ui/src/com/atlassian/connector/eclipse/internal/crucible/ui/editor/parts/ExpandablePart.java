@@ -441,7 +441,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 						if (prevControl != null) {
 							commentControl.moveBelow(prevControl);
 						} else if (composite.getChildren().length > 1) {
-							commentControl.moveAbove(composite.getChildren()[1]);
+							commentControl.moveAbove(composite);
 						}
 						prevControl = commentControl;
 					} else {
@@ -464,7 +464,7 @@ public abstract class ExpandablePart<T, V extends ExpandablePart<T, V>> {
 					if (prevControl != null) {
 						commentControl.moveBelow(prevControl);
 					} else if (composite.getChildren().length > 1) {
-						commentControl.moveAbove(composite.getChildren()[1]);
+						commentControl.moveAbove(composite);
 					}
 					prevControl = commentControl;
 				}
