@@ -28,7 +28,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -155,7 +155,7 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 		int style = SWT.FLAT | SWT.READ_ONLY | SWT.MULTI | SWT.WRAP;
 
 		final Text text = new Text(composite, style);
-		text.setFont(EditorUtil.TEXT_FONT);
+		text.setFont(JFaceResources.getDefaultFont());
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
 		toolkit.adapt(text, true, true);

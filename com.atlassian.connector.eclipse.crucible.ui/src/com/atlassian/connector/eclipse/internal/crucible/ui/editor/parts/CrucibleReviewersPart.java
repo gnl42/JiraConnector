@@ -19,8 +19,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -178,7 +178,7 @@ public class CrucibleReviewersPart {
 			style |= SWT.MULTI | SWT.WRAP;
 		}
 		Text text = new Text(composite, style | SWT.MULTI);
-		text.setFont(EditorUtil.TEXT_FONT);
+		text.setFont(JFaceResources.getDefaultFont());
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
 

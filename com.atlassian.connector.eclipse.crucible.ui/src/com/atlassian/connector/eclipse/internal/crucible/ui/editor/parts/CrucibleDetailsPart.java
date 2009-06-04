@@ -54,8 +54,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -168,6 +168,8 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 	private Text reviewTitleText;
 
+	private Composite reviewersPart;
+
 	@Override
 	public void initialize(CrucibleReviewEditorPage editor, Review review, boolean isNewReview) {
 		this.crucibleReview = review;
@@ -224,7 +226,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			style |= SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL;
 		}
 		Text text = new Text(parent, style);
-		text.setFont(EditorUtil.TEXT_FONT);
+		text.setFont(JFaceResources.getDefaultFont());
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
 		toolkit.adapt(text, true, true);
@@ -404,10 +406,21 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			Set<Reviewer> reviewers = crucibleReview.getReviewers();
 			CrucibleReviewersPart crucibleReviewersPart = new CrucibleReviewersPart(reviewers);
 			crucibleReviewersPart.setMenu(parent.getMenu());
+			reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp, setReviewersAction);
 
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
+	}
+
+	@Override
+	public void dispose() {
+		if (reviewersPart != null && !reviewersPart.isDisposed()) {
+			CommonUiUtil.setMenu(reviewersPart, null);
+			reviewersPart.dispose();
+		}
+
+		super.dispose();
 	}
 
 	@Override
