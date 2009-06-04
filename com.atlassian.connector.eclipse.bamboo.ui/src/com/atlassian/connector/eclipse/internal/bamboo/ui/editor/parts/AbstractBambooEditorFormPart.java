@@ -19,7 +19,7 @@ import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -117,7 +117,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 			style |= SWT.BORDER;
 		}
 		Text text = new Text(composite, style);
-		text.setFont(EditorUtil.TEXT_FONT);
+		text.setFont(JFaceResources.getDefaultFont());
 		text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
 		text.setText(value);
 		toolkit.adapt(text, true, true);
