@@ -21,27 +21,13 @@
    without losing any functionality to command API  -->
    <extension
          point="org.eclipse.ui.popupMenus">
+      
+		<!-- copying FishEye link to clipboard -->
       <objectContribution
-            objectClass="org.eclipse.core.resources.IResource"
+            objectClass="com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource"
             adaptable="true"
             id="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkObjectContribution">
          <action
-               label="Copy FishEye Link to Clipboard"
-               tooltip="Copy FishEye Link to Clipboard"
-               class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.CopyFishEyeLinkAction"
-               menubarPath="team.main/group10"
-               enablesFor="1"
-               id="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkObjectAction">
-         </action>
-      </objectContribution>
-      
-      <!-- I need the second action which overrides the first in order to have line number of the
-      selected code in the editor if possible --> 
-      <objectContribution
-            objectClass="org.eclipse.ui.IEditorInput"
-            adaptable="true"
-            id="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkObjectContribution">
-         <action overrideActionId="com.atlassian.connector.eclipse.internal.fisheye.ui.CopyFishEyeLinkObjectAction"
                label="Copy FishEye Link to Clipboard"
                tooltip="Copy FishEye Link to Clipboard"
                class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.CopyFishEyeLinkAction"
@@ -51,30 +37,12 @@
          </action>
       </objectContribution>
 
-		<!-- clone of the above stuff - but for opening in FishEye -->
-
+		<!-- opening in FishEye -->
       <objectContribution
-            objectClass="org.eclipse.core.resources.IResource"
+            objectClass="com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource"
             adaptable="true"
             id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectContribution">
          <action
-               label="Open in FishEye"
-               tooltip="Open in FishEye"
-               class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.OpenInFishEyeLinkAction"
-               menubarPath="team.main/group10"
-               enablesFor="1"
-               icon="icons/obj16/fisheye-16.png"
-               id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectAction">
-         </action>
-      </objectContribution>
-      
-      <!-- I need the second action which overrides the first in order to have line number of the
-      selected code in the editor if possible --> 
-      <objectContribution
-            objectClass="org.eclipse.ui.IEditorInput"
-            adaptable="true"
-            id="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectContribution">
-         <action overrideActionId="com.atlassian.connector.eclipse.internal.fisheye.ui.OpenInFishEyeObjectAction"
                label="Open in FishEye"
                tooltip="Open in FishEye"
                class="com.atlassian.connector.eclipse.internal.fisheye.ui.action.OpenInFishEyeLinkAction"
@@ -148,16 +116,17 @@
       </page>
    </extension>
 
-<!-- probably will be needed in the future   
    <extension
          point="org.eclipse.core.runtime.adapters">
+         <!-- I declare that I can adapt from IAdaptable in order actually to make it work in as many contexts as possible -
+         not only for instanceofs IResource, but also for CompilationUnit, IJavaProject, etc. which do adapt to IResource, but 
+         do not implement this interface. It also handles IEditorInput -->
       <factory
-            adaptableType="org.eclipse.core.resources.IResource"
-            class="com.atlassian.connector.eclipse.fisheye.ui.AdapterFactory1">
+            adaptableType="org.eclipse.core.runtime.IAdaptable"
+            class="com.atlassian.connector.eclipse.fisheye.ui.FishEyeResourceAdapterFactory">
          <adapter
                type="com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource">
          </adapter>
       </factory>
    </extension>
--->
 </plugin>

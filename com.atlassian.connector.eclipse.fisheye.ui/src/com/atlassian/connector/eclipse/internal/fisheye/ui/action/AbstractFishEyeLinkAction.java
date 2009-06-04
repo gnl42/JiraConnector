@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
 
+import com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
@@ -77,7 +78,12 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 		LineRange lineRange = null;
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			if (structuredSelection.getFirstElement() instanceof IAdaptable) {
+			if (structuredSelection.getFirstElement() instanceof IFishEyeResource) {
+				IFishEyeResource a = (IFishEyeResource) structuredSelection.getFirstElement();
+				resource = a.getResource();
+				lineRange = a.getLineRange();
+
+			} else if (structuredSelection.getFirstElement() instanceof IAdaptable) {
 				resource = (IResource) ((IAdaptable) structuredSelection.getFirstElement()).getAdapter(IResource.class);
 				lineRange = getJavaEditorSelection(structuredSelection);
 			}
