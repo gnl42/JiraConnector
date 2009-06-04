@@ -375,6 +375,22 @@ public final class TeamUiUtils {
 		}
 	}
 
+	@Nullable
+	public static RepositoryInfo getApplicableRepository(IResource resource) {
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled()) {
+				RepositoryInfo res = connector.getApplicableRepository(resource);
+				if (res != null) {
+					return res;
+				}
+			}
+		}
+		return null;
+
+	}
+
 	public static RevisionInfo getLocalRevision(@NotNull IResource resource) throws CoreException {
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 

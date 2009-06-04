@@ -529,4 +529,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		// @todo wseliga implement it
 		return Collections.emptyList();
 	}
+
+	public RepositoryInfo getApplicableRepository(IResource resource) {
+		// @todo wseliga
+		return null;
+	}
 }

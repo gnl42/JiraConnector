@@ -149,4 +149,9 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 					"Cannot determine SVN information for resource [" + resource + "]", e));
 		}
 	}
+
+	public RepositoryInfo getApplicableRepository(IResource resource) {
+		// @todo wseliga
+		return null;
+	}
 }

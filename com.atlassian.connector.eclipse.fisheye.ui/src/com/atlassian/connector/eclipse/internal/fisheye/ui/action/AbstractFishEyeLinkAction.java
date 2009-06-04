@@ -12,9 +12,12 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui.action;
 
 import com.atlassian.connector.eclipse.fisheye.ui.IFishEyeResource;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceContextData;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
+import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
 import org.eclipse.core.resources.IResource;
@@ -162,18 +165,27 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 			final String url = FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().buildFishEyeUrl(resource,
 					lineRange);
 			processUrl(url);
+		} catch (final NoMatchingFishEyeConfigurationException e) {
+			final RepositoryInfo repoInfo = TeamUiUtils.getApplicableRepository(resource);
+			String scmPathToConfigure = (repoInfo != null) ? repoInfo.getScmPath() : null;
+			handleException(resource, shell, e.getMessage(), new FishEyePreferenceContextData(scmPathToConfigure));
 		} catch (CoreException e) {
-			new ErrorDialogWithHyperlink(shell, FishEyeUiPlugin.PRODUCT_NAME, "Cannot build FishEye URL for "
-					+ resource.getName() + ": " + e.getMessage(), "<a>Configure FishEye Settings</a>", new Runnable() {
-				public void run() {
-					final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell,
-							FishEyePreferencePage.ID, null, null);
-					if (prefDialog != null) {
-						prefDialog.open();
-					}
-				}
-			}).open();
+			handleException(resource, shell, e.getMessage(), null);
 		}
 	}
 
+	private void handleException(IResource resource, final Shell shell, String message,
+			@Nullable final FishEyePreferenceContextData contextData) {
+		new ErrorDialogWithHyperlink(shell, FishEyeUiPlugin.PRODUCT_NAME, "Cannot build FishEye URL for "
+				+ resource.getName() + ": " + message, "<a>Configure FishEye Settings</a>", new Runnable() {
+			public void run() {
+				final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell,
+						FishEyePreferencePage.ID, null, contextData);
+				if (prefDialog != null) {
+					prefDialog.open();
+				}
+			}
+		}).open();
+
+	}
 }

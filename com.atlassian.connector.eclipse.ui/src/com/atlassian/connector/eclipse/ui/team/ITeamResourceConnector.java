@@ -117,4 +117,7 @@ public interface ITeamResourceConnector {
 	@NotNull
 	Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor);
 
+	@Nullable
+	RepositoryInfo getApplicableRepository(IResource resource);
+
 }

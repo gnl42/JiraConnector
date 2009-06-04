@@ -567,6 +567,22 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return id;
 	}
 
+	public RepositoryInfo getApplicableRepository(IResource resource) {
+		final IProject project = resource.getProject();
+		if (project == null) {
+			return null;
+		}
+		if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
+			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
+			final ISVNRepositoryLocation repository = svnResource.getRepository();
+			if (repository != null) {
+				return new RepositoryInfo(repository.getUrl().toString(), repository.getLabel());
+			}
+		}
+		// ignore
+		return null;
+	}
+
 // Code that can work if there is no file in the local workspace 
 //	private RemoteFile getRemoteFile(String repoUrl, String filePath, String revisionString,
 //	ISVNRepositoryLocation location) throws MalformedURLException, ParseException, SVNException {

@@ -148,4 +148,9 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
+	public RepositoryInfo getApplicableRepository(IResource resource) {
+		// @todo wseliga
+		return null;
+	}
+
 }

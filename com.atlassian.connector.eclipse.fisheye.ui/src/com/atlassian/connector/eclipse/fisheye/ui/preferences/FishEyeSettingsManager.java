@@ -136,25 +136,22 @@ public class FishEyeSettingsManager {
 	}
 
 	@NotNull
-	public String buildFishEyeUrl(@NotNull IResource resource, @Nullable LineRange lineRange) throws CoreException {
+	public String buildFishEyeUrl(@NotNull IResource resource, @Nullable LineRange lineRange) throws CoreException,
+			NoMatchingFishEyeConfigurationException {
 		final RevisionInfo revisionInfo = TeamUiUtils.getLocalRevision(resource);
 		if (revisionInfo == null) {
 			throw new CoreException(new Status(IStatus.ERROR, FishEyeCorePlugin.PLUGIN_ID,
 					"Cannot determine locally checked-out revision for resource " + resource.getFullPath()));
 		}
 
+		final String scmPath = revisionInfo.getScmPath();
 		final FishEyeMappingConfiguration cfg = getConfiguration(revisionInfo);
 		if (cfg == null) {
-			throw new CoreException(new Status(IStatus.ERROR, FishEyeCorePlugin.PLUGIN_ID,
-					"Cannot find matching FishEye configuration for SCM path " + revisionInfo.getScmPath()));
+			throw new NoMatchingFishEyeConfigurationException(new Status(IStatus.ERROR, FishEyeCorePlugin.PLUGIN_ID,
+					"Cannot find matching FishEye repository for " + revisionInfo), scmPath);
 		}
 
-		final String scmPath = revisionInfo.getScmPath();
 		final String cfgScmPath = cfg.getScmPath();
-		if (scmPath.startsWith(cfgScmPath) == false) {
-			throw new CoreException(new Status(IStatus.ERROR, FishEyeCorePlugin.PLUGIN_ID,
-					"Cannot find matching FishEye repository for " + revisionInfo));
-		}
 
 		// for binary resources the URL is like: $SERVER_URL/browse/~raw,r=$REVISION/$REPO/$PATH
 

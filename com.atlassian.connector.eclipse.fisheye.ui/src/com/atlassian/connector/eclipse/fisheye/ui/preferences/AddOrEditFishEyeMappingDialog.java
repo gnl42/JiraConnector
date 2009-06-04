@@ -169,18 +169,14 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	private TaskRepository currentTaskRepository;
 
+	private final boolean isAddMode;
+
 	/**
 	 * Creates dialog in "edit" mode - with initial selections
 	 */
 	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeMappingConfiguration initialConfiguration,
 			Collection<TaskRepository> taskRepositories, FishEyeClientManager fishEyeClientManager) {
-		super(parentShell);
-		setTitleImage(FishEyeImages.getImage(FishEyeImages.FISHEYE_WIZ_BAN_ICON));
-		this.fishEyeClientManager = fishEyeClientManager;
-		setShellStyle(getShellStyle() | SWT.RESIZE);
-		cfg = initialConfiguration;
-		this.taskRepositories = new HashSet<TaskRepository>(taskRepositories);
-
+		this(parentShell, initialConfiguration, taskRepositories, fishEyeClientManager, false);
 	}
 
 	/**
@@ -188,7 +184,21 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 	 */
 	public AddOrEditFishEyeMappingDialog(Shell parentShell, Collection<TaskRepository> taskRepositories,
 			FishEyeClientManager fishEyeClientManager) {
-		this(parentShell, null, taskRepositories, fishEyeClientManager);
+		this(parentShell, null, taskRepositories, fishEyeClientManager, true);
+	}
+
+	/**
+	 * Creates dialog in "add" or "edit" mode with initial selection
+	 */
+	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeMappingConfiguration initialConfiguration,
+			Collection<TaskRepository> taskRepositories, FishEyeClientManager fishEyeClientManager, boolean isAddMode) {
+		super(parentShell);
+		setTitleImage(FishEyeImages.getImage(FishEyeImages.FISHEYE_WIZ_BAN_ICON));
+		this.fishEyeClientManager = fishEyeClientManager;
+		setShellStyle(getShellStyle() | SWT.RESIZE);
+		cfg = initialConfiguration;
+		this.taskRepositories = new HashSet<TaskRepository>(taskRepositories);
+		this.isAddMode = isAddMode;
 	}
 
 	public FishEyeMappingConfiguration getCfg() {
@@ -231,7 +241,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	@Override
 	protected Control createPageControls(Composite parent) {
-		getShell().setText((cfg == null ? "Add" : "Edit") + " FishEye Mapping");
+		getShell().setText((isAddMode ? "Add" : "Edit") + " FishEye Mapping");
 		setTitle("SCM to FishEye Mapping");
 		setMessage("Define how locally checked-out projects map to FishEye server and repository");
 		GridLayout layout = new GridLayout(3, false);
