@@ -108,7 +108,7 @@ public interface ITeamResourceConnector {
 	 * @throws CoreException
 	 */
 	@Nullable
-	RevisionInfo getLocalRevision(IResource resource) throws CoreException;
+	RevisionInfo getLocalRevision(@NotNull IResource resource) throws CoreException;
 
 	/**
 	 * @param monitor
@@ -117,7 +117,14 @@ public interface ITeamResourceConnector {
 	@NotNull
 	Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor);
 
+	/**
+	 * 
+	 * @param resource
+	 *            a resource which is managed by this team repository connector
+	 * @return <code>null</code> if this connector does not support given {@link IResource}
+	 * @throws CoreException
+	 */
 	@Nullable
-	RepositoryInfo getApplicableRepository(IResource resource);
+	RepositoryInfo getApplicableRepository(@NotNull IResource resource) throws CoreException;
 
 }

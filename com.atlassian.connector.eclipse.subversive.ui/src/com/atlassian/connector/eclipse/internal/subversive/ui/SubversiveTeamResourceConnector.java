@@ -151,7 +151,19 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public RepositoryInfo getApplicableRepository(IResource resource) {
-		// @todo wseliga
-		return null;
+		final IProject project = resource.getProject();
+		if (project == null) {
+			return null;
+		}
+
+		RepositoryProvider provider = RepositoryProvider.getProvider(project, SVNTeamPlugin.NATURE_ID);
+		if (provider == null) {
+			return null;
+		}
+
+		final IRepositoryLocation repositoryLocation = SVNRemoteStorage.instance().getRepositoryLocation(resource);
+		final String rootUrl = repositoryLocation.getRepositoryRootUrl();
+		final String label = repositoryLocation.getLabel();
+		return new RepositoryInfo(rootUrl, label);
 	}
 }

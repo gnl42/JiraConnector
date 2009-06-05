@@ -376,14 +376,19 @@ public final class TeamUiUtils {
 	}
 
 	@Nullable
-	public static RepositoryInfo getApplicableRepository(IResource resource) {
+	public static RepositoryInfo getApplicableRepository(@NotNull IResource resource) {
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled()) {
-				RepositoryInfo res = connector.getApplicableRepository(resource);
-				if (res != null) {
-					return res;
+				try {
+					RepositoryInfo res = connector.getApplicableRepository(resource);
+					if (res != null) {
+						return res;
+					}
+				} catch (CoreException e) {
+					StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID, e.getMessage(), e));
+					// and try the next connector
 				}
 			}
 		}

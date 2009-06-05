@@ -148,8 +148,16 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	public RepositoryInfo getApplicableRepository(IResource resource) {
-		// @todo wseliga
+	public RepositoryInfo getApplicableRepository(IResource resource) throws CoreException {
+		final IProject project = resource.getProject();
+		if (project == null) {
+			return null;
+		}
+		if (CVSWorkspaceRoot.isSharedWithCVS(project)) {
+			final ICVSFolder folder = (ICVSFolder) CVSWorkspaceRoot.getCVSResourceFor(project);
+			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
+			return folderInfo != null ? new RepositoryInfo(folderInfo.getRoot(), null) : null;
+		}
 		return null;
 	}
 
