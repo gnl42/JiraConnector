@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.subversive.ui;
 
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
@@ -33,10 +34,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.svn.core.SVNTeamPlugin;
+import org.eclipse.team.svn.core.connector.SVNLogEntry;
+import org.eclipse.team.svn.core.connector.SVNLogPath;
 import org.eclipse.team.svn.core.connector.SVNProperty;
+import org.eclipse.team.svn.core.connector.SVNRevision;
+import org.eclipse.team.svn.core.operation.remote.GetLogMessagesOperation;
 import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
+import org.eclipse.team.svn.core.resource.IRepositoryRoot;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.ui.IEditorInput;
@@ -44,9 +50,12 @@ import org.eclipse.ui.IEditorPart;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Connector to handle connecting to a CVS repository
@@ -92,8 +101,54 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
 			int limit, IProgressMonitor monitor, MultiStatus status) {
-		// @todo implement it
-		return Collections.emptyMap();
+
+		IRepositoryLocation[] repos = SVNRemoteStorage.instance().getRepositoryLocations();
+		if (repos == null) {
+			return Collections.emptyMap();
+		}
+
+		monitor.beginTask("Retrieving changeset for SVN (Subversive) repositories", repos.length);
+		Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> map = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
+		for (IRepositoryLocation repo : repos) {
+			//if a repository is given and the repo does not match the given repository, skip it
+			if (repositoryUrl != null && !repositoryUrl.equals(repo.getUrl().toString())) {
+				continue;
+			}
+			IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
+			CustomRepository customRepository = new CustomRepository(repo.getUrl().toString());
+			SortedSet<ICustomChangesetLogEntry> changesets = new TreeSet<ICustomChangesetLogEntry>();
+			IRepositoryRoot rootFolder = repo.getRoot();
+
+			if (limit > 0) { //do not retrieve unlimited revisions
+				subMonitor.beginTask("Retrieving changesets for " + repo.getLabel(), 101);
+				GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(rootFolder);
+				getLogMessagesOp.setLimit(limit);
+				getLogMessagesOp.setEndRevision(SVNRevision.HEAD);
+				getLogMessagesOp.setStartRevision(SVNRevision.fromNumber(0));
+				getLogMessagesOp.setStopOnCopy(false);
+				getLogMessagesOp.setIncludeMerged(true);
+				getLogMessagesOp.run(subMonitor);
+				SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
+				for (SVNLogEntry logEntry : logEntries) {
+					SVNLogPath[] logEntryChangePaths = logEntry.changedPaths;
+					if (logEntryChangePaths == null) {
+						continue;
+					}
+					String[] changed = new String[logEntryChangePaths.length];
+					for (int i = 0; i < logEntryChangePaths.length; i++) {
+						changed[i] = logEntryChangePaths[i].path;
+
+					}
+					ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.message,
+							logEntry.author, Long.toString(logEntry.revision), new Date(logEntry.date), changed,
+							customRepository);
+					changesets.add(customEntry);
+				}
+			}
+			map.put(customRepository, changesets);
+			subMonitor.done();
+		}
+		return map;
 	}
 
 	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
