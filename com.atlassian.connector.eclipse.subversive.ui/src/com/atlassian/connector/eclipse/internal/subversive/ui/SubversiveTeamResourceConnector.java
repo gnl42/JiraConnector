@@ -33,8 +33,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.svn.core.SVNTeamPlugin;
-import org.eclipse.team.svn.core.connector.SVNConnectorException;
 import org.eclipse.team.svn.core.connector.SVNProperty;
+import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
@@ -138,15 +138,22 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			return null;
 		}
 
-		IRepositoryResource svnResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
+		// we use both local and repository resource as I don't know how to fetch SVN URL from local resource
+		// with current Subversive implementation svnResource.getUrl() is immediate - i.e. it does not do anything
+		// remote
 		try {
-			String mimeTypeProp = SVNUtility.getPropertyForNotConnected(resource, SVNProperty.BuiltIn.MIME_TYPE);
-			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
+			final IRepositoryResource svnResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
+			final ILocalResource localResource = SVNRemoteStorage.instance().asLocalResource(resource);
+			if (svnResource == null || localResource == null) {
+				return null;
+			}
 
-			return new RevisionInfo(svnResource.getUrl(), Long.toString(svnResource.getRevision()), isBinary);
-		} catch (SVNConnectorException e) {
+			final String mimeTypeProp = SVNUtility.getPropertyForNotConnected(resource, SVNProperty.BuiltIn.MIME_TYPE);
+			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.startsWith("text"));
+			return new RevisionInfo(svnResource.getUrl(), Long.toString(localResource.getRevision()), isBinary);
+		} catch (RuntimeException e) {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-					"Cannot determine SVN information for resource [" + resource + "]", e));
+					"Cannot determine local revision for [" + resource.getName() + "]", e));
 		}
 	}
 
