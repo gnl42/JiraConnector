@@ -14,15 +14,16 @@ package org.eclipse.mylyn.jira.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.mylyn.jira.tests.core.FilterDefinitionConverterTest;
 import org.eclipse.mylyn.jira.tests.core.JiraClientFactoryTest;
 import org.eclipse.mylyn.jira.tests.core.JiraCustomQueryTest;
-import org.eclipse.mylyn.jira.tests.core.FilterDefinitionConverterTest;
 import org.eclipse.mylyn.jira.tests.core.JiraFilterTest;
 import org.eclipse.mylyn.jira.tests.core.JiraRepositoryConnectorTest;
 import org.eclipse.mylyn.jira.tests.core.JiraStackTraceDuplicateDetectorTest;
 import org.eclipse.mylyn.jira.tests.core.JiraTaskAttachmentHandlerTest;
 import org.eclipse.mylyn.jira.tests.core.JiraTaskDataHandlerTest;
 import org.eclipse.mylyn.jira.tests.core.JiraTaskExternalizationTest;
+import org.eclipse.mylyn.jira.tests.ui.JiraConnectorUiStandaloneTest;
 import org.eclipse.mylyn.jira.tests.ui.JiraConnectorUiTest;
 
 /**
@@ -34,6 +35,7 @@ public class AllJiraTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Tests for org.eclipse.mylyn.jira.tests");
 		suite.addTest(AllJiraHeadlessStandaloneTests.suite());
+		suite.addTestSuite(JiraConnectorUiStandaloneTest.class);
 		suite.addTestSuite(JiraCustomQueryTest.class);
 		suite.addTestSuite(JiraClientFactoryTest.class);
 		suite.addTestSuite(JiraTaskExternalizationTest.class);
