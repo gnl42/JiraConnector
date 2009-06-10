@@ -183,8 +183,8 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			final IRepositoryResource remoteResource = SVNRemoteStorage.instance().asRepositoryResource(file);
 
 			GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(remoteResource, false);
-			getLogMessagesOp.setEndRevision(SVNRevision.HEAD);
-			getLogMessagesOp.setStartRevision(SVNRevision.fromNumber(0));
+			getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
+			getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
 			getLogMessagesOp.setIncludeMerged(true);
 
 			getLogMessagesOp.run(monitor);
@@ -239,8 +239,8 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 				subMonitor.beginTask("Retrieving changesets for " + repo.getLabel(), 101);
 				GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(rootFolder, false);
 				getLogMessagesOp.setLimit(limit);
-				getLogMessagesOp.setEndRevision(SVNRevision.HEAD);
-				getLogMessagesOp.setStartRevision(SVNRevision.fromNumber(0));
+				getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
+				getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
 				getLogMessagesOp.setIncludeMerged(true);
 				getLogMessagesOp.run(subMonitor);
 				SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
@@ -283,8 +283,8 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			try {
 				subMonitor.beginTask("Getting revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
 				GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(local, false);
-				getLogMessagesOp.setEndRevision(SVNRevision.HEAD);
-				getLogMessagesOp.setStartRevision(SVNRevision.fromNumber(0));
+				getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
+				getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
 				getLogMessagesOp.setIncludeMerged(true);
 				getLogMessagesOp.run(subMonitor);
 
