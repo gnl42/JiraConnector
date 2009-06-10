@@ -125,13 +125,14 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		IRepositoryResource oldRemoteFile = getSvnRemoteFile(repoUrl, oldFilePath,
 				SVNRevision.fromString(oldRevisionString), newFilePath, SVNRevision.fromString(newRevisionString),
 				monitor);
-		oldRemoteFile.setPegRevision(oldRemoteFile.getSelectedRevision());
 		IRepositoryResource newRemoteFile = getSvnRemoteFile(repoUrl, newFilePath,
 				SVNRevision.fromString(newRevisionString), oldFilePath, SVNRevision.fromString(oldRevisionString),
 				monitor);
-		newRemoteFile.setPegRevision(newRemoteFile.getSelectedRevision());
 
 		if (oldRemoteFile != null && newRemoteFile != null) {
+			oldRemoteFile.setPegRevision(oldRemoteFile.getSelectedRevision());
+			newRemoteFile.setPegRevision(newRemoteFile.getSelectedRevision());
+
 			final IRepositoryLocation location = oldRemoteFile.getRepositoryLocation();
 			final ISVNConnector proxy = location.acquireSVNProxy();
 			final ArrayList<SVNDiffStatus> statuses = new ArrayList<SVNDiffStatus>();
