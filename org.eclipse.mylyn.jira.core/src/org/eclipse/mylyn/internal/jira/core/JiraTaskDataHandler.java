@@ -14,7 +14,6 @@ package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -74,6 +73,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMetaData;
 import org.eclipse.mylyn.tasks.core.data.TaskCommentMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskOperation;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Mik Kersten
@@ -855,7 +855,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			return;
 		}
 
-		String label = MessageFormat.format(Messages.JiraTaskDataHandler_Leave_as_X, issue.getStatus().getName());
+		JiraStatus status = issue.getStatus();
+		String label;
+		if (status != null) {
+			label = NLS.bind(Messages.JiraTaskDataHandler_Leave_as_X, status.getName());
+		} else {
+			label = Messages.JiraTaskDataHandler_Leave;
+		}
 		TaskAttribute attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_OPERATION + LEAVE_OPERATION);
 		TaskOperation.applyTo(attribute, LEAVE_OPERATION, label);
 		// set as default

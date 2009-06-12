@@ -103,6 +103,8 @@ public class Messages extends NLS {
 
 	public static String JiraTaskDataHandler_Getting_task;
 
+	public static String JiraTaskDataHandler_Leave;
+
 	public static String JiraTaskDataHandler_Leave_as_X;
 
 	public static String JiraTaskDataHandler_Sending_task;
