@@ -73,7 +73,7 @@ public class JiraUtil {
 
 	public static final int DEFAULT_MAX_SEARCH_RESULTS = TaskDataCollector.MAX_HITS;
 
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/general")); //$NON-NLS-1$
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/debug/repository")); //$NON-NLS-1$
 
 	private static final String LINKED_TASKS_AS_SUBTASKS = "jira.linkedTasksAsSubtasks"; //$NON-NLS-1$
 

@@ -93,7 +93,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	private static final String CONTEXT_ATTACHMENT_DESCRIPTION_LEGACY = "mylar/context/zip"; //$NON-NLS-1$
 
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/dataHandler")); //$NON-NLS-1$
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.jira.core/debug/dataHandler")); //$NON-NLS-1$
 
 	private static final String REASSIGN_OPERATION = "reassign"; //$NON-NLS-1$
 

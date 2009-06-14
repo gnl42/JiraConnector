@@ -73,7 +73,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final int MAX_MARK_STALE_QUERY_HITS = 500;
 
-	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.mylyn.internal.jira.ui/connector")); //$NON-NLS-1$
+	private static final boolean TRACE_ENABLED = Boolean.valueOf(Platform.getDebugOption("org.eclipse.jira.core/debug/connector")); //$NON-NLS-1$
 
 	/** Repository address + Issue Prefix + Issue key = the issue's web address */
 	public final static String ISSUE_URL_PREFIX = "/browse/"; //$NON-NLS-1$
