@@ -33,7 +33,6 @@ import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.AnnotationBarHoverManager;
-import org.eclipse.jface.text.source.AnnotationRulerColumn;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationModel;
@@ -278,7 +277,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			Iterator<?> iter = (ruler).getDecoratorIterator();
 			if (iter.hasNext()) {
 				for (Object obj = iter.next(); iter.hasNext(); obj = iter.next()) {
-					if (obj instanceof AnnotationRulerColumn) {
+					if (obj instanceof AnnotationColumn) {
 						hasDecorator = true;
 					}
 				}
