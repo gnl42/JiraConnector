@@ -462,6 +462,8 @@ public final class TeamUiUtils {
 
 	public static Viewer findContentViewer(Viewer contentViewer, ICompareInput input, Composite parent,
 			ICompareAnnotationModel annotationModel) {
+
+		// FIXME: hack
 		if (contentViewer instanceof TextMergeViewer) {
 			TextMergeViewer textMergeViewer = (TextMergeViewer) contentViewer;
 			try {
@@ -482,6 +484,15 @@ public final class TeamUiUtils {
 			} catch (Throwable t) {
 				StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
 						"Could not initialize annotation model for " + input.getName(), t));
+			}
+
+			// FIXME: hack for e3.5
+			try {
+				Field isConfiguredField = TextMergeViewer.class.getDeclaredField("isConfigured");
+				isConfiguredField.setAccessible(true);
+				isConfiguredField.set(contentViewer, true);
+			} catch (Throwable t) {
+				// ignore as it may not exist in other versions
 			}
 		}
 		return contentViewer;
