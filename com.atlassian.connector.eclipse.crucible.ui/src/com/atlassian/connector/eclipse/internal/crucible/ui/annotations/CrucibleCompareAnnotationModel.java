@@ -31,6 +31,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.AnnotationBarHoverManager;
 import org.eclipse.jface.text.source.AnnotationRulerColumn;
 import org.eclipse.jface.text.source.CompositeRuler;
@@ -243,6 +244,24 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			CompositeRuler ruler = (CompositeRuler) declaredMethod2.invoke(sourceViewer);
 			boolean hasDecorator = false;
 			sourceViewer.setAnnotationHover(new CrucibleAnnotationHover(null));
+
+			// FIXME: hack for e3.5
+			try {
+				Field hoverControlCreator = TextViewer.class.getDeclaredField("fHoverControlCreator");
+				hoverControlCreator.setAccessible(true);
+				hoverControlCreator.set(sourceViewer, new CrucibleInformationControlCreator());
+			} catch (Throwable t) {
+				// ignore as it may not exist in other versions
+			}
+
+			// FIXME: hack for e3.5
+			try {
+				Method ensureMethod = sourceViewerClazz.getDeclaredMethod("ensureAnnotationHoverManagerInstalled");
+				ensureMethod.setAccessible(true);
+				ensureMethod.invoke(sourceViewer);
+			} catch (Throwable t) {
+				// ignore as it may not exist in other versions
+			}
 
 			Field hoverManager = SourceViewer.class.getDeclaredField("fVerticalRulerHoveringController");
 			hoverManager.setAccessible(true);
