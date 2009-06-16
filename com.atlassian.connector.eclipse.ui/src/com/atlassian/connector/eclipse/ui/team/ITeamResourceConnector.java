@@ -127,4 +127,11 @@ public interface ITeamResourceConnector {
 	@Nullable
 	RepositoryInfo getApplicableRepository(@NotNull IResource resource) throws CoreException;
 
+	/**
+	 * 
+	 * @return human friendly name of this connector (used for instance in error messages)
+	 */
+	@NotNull
+	String getName();
+
 }

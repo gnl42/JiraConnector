@@ -583,6 +583,10 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
+	public String getName() {
+		return "Subclipse";
+	}
+
 // Code that can work if there is no file in the local workspace 
 //	private RemoteFile getRemoteFile(String repoUrl, String filePath, String revisionString,
 //	ISVNRepositoryLocation location) throws MalformedURLException, ParseException, SVNException {

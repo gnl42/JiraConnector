@@ -20,6 +20,7 @@ import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -42,6 +43,7 @@ import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryRoot;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +70,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 
 	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
 			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor)
-		throws CoreException {
+			throws CoreException {
 		// @todo implement it
 		throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, NLS.bind(
 				"Could not get revisions for {0}.", newFilePath)));
@@ -77,7 +79,8 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(file);
 		// @todo implement it
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID, "Not implemented yet for CVS."));
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
+				"Not implemented yet for CVS."));
 	}
 
 	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
@@ -97,22 +100,25 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return res;
 	}
 
-	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
-			IProgressMonitor monitor, MultiStatus status) {
+	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
+			int limit, IProgressMonitor monitor, MultiStatus status) {
 		// @todo implement it
 		return Collections.emptyMap();
 	}
 
-	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor) throws CoreException {
+	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+			throws CoreException {
 		// @todo implement it
 		Assert.isNotNull(files);
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID, "Not implemented yet for CVS."));
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
+				"Not implemented yet for CVS."));
 	}
 
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
 			String otherRevisionString, final IProgressMonitor monitor) throws CoreException {
 		if (repoUrl == null) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID, "No repository URL given.."));
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianCvsUiPlugin.PLUGIN_ID,
+					"No repository URL given.."));
 		}
 		// @todo implement it
 		return null;
@@ -142,8 +148,10 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 
 			final ICVSFolder folder = (ICVSFolder) CVSWorkspaceRoot.getCVSResourceFor(project);
 			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
-			final String revision = syncInfo != null ? "".equals(syncInfo.getRevision()) ? null : syncInfo.getRevision() : null;
-			return new RevisionInfo(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(), revision, isBinary);
+			final String revision = syncInfo != null ? "".equals(syncInfo.getRevision()) ? null
+					: syncInfo.getRevision() : null;
+			return new RevisionInfo(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(), revision,
+					isBinary);
 		}
 		return null;
 	}
@@ -159,6 +167,10 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 			return folderInfo != null ? new RepositoryInfo(folderInfo.getRoot(), null) : null;
 		}
 		return null;
+	}
+
+	public String getName() {
+		return "CVS (FishEye only)";
 	}
 
 }

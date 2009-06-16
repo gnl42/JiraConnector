@@ -618,4 +618,8 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		}
 		return null;
 	}
+
+	public String getName() {
+		return "Subversive";
+	}
 }

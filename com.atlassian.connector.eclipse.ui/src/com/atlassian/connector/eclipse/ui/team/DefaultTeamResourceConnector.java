@@ -534,4 +534,8 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		// @todo wseliga
 		return null;
 	}
+
+	public String getName() {
+		return "Team API (partial support)";
+	}
 }

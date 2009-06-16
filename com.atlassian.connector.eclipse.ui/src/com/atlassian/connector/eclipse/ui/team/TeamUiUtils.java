@@ -123,6 +123,18 @@ public final class TeamUiUtils {
 		}
 	}
 
+	public static Collection<String> getSupportedTeamConnectors() {
+		Collection<String> res = MiscUtil.buildArrayList();
+		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+			if (connector.isEnabled()) {
+				res.add(connector.getName());
+			}
+		}
+		res.add(defaultConnector.getName());
+		return res;
+	}
+
 	@Nullable
 	public static SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(file);

@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
@@ -44,12 +45,15 @@ public final class TeamMessageUtils {
 
 	}
 
-	private static void internalOpenFileDeletedErrorMessage(String repoUrl, String filePath, String revision) {
-		String message = "Unable to open file.  Please check that:\n\n"
-				+ "- The enclosing project the project is checked out at the latest revision.\n"
+	private static String getErrorHints() {
+		return "- The enclosing project the project is checked out at the latest revision.\n"
 				+ "- The file has not been moved or deleted since the creation of the review\n"
-				+ "- You are using a supported team provider. Supported providers: Subclipse";
+				+ "- You are using a supported team provider. Supported providers: "
+				+ StringUtils.join(TeamUiUtils.getSupportedTeamConnectors(), ", ");
+	}
 
+	private static void internalOpenFileDeletedErrorMessage(String repoUrl, String filePath, String revision) {
+		String message = "Unable to open file.  Please check that:\n\n" + getErrorHints();
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
 
@@ -80,12 +84,7 @@ public final class TeamMessageUtils {
 	}
 
 	private static void internalOpenFileDoesntExistErrorMessage(String repoUrl, String filePath, String revision) {
-		String message = "Unable to open file.  Please check that:\n\n"
-				+ "- The enclosing project the project is checked out at the latest revision.\n"
-				+ "- The file has not been moved or deleted since the creation of the review\n"
-				+ "- You are using a supported team provider. Supported providers: Subclipse";
-
-		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
+		internalOpenFileDeletedErrorMessage(repoUrl, filePath, revision);
 	}
 
 	public static void openUnableToCompareErrorMessage(final String repoUrl, final String filePath,
@@ -114,9 +113,8 @@ public final class TeamMessageUtils {
 	}
 
 	private static void internalOpenUnsupportedTeamProviderErrorMessage(final UnsupportedTeamProviderException exception) {
-
-		String message = NLS.bind("Unsupported team provider ({0}).\n\n"
-				+ "Subclipse is the supported team provider for accessing SVN repositories."
+		String message = NLS.bind("Unsupported team provider ({0}).\n\n" + "Supported team providers are:\n"
+				+ StringUtils.join(TeamUiUtils.getSupportedTeamConnectors(), ", ")
 				+ "\nSee the Atlassian Eclipse Connector web site for future updates.", exception.getMessage());
 
 		MessageDialog.openWarning(null, MESSAGE_DIALOG_TITLE, message);
@@ -124,11 +122,7 @@ public final class TeamMessageUtils {
 
 	private static void internalOpenUnableToCompareErrorMessage(String repoUrl, String filePath, String oldRevision,
 			String newRevision) {
-		String message = "Unable to compare revisions.  Please check that:\n\n"
-				+ "- The enclosing project the project is checked out at the latest revision.\n"
-				+ "- The file has not been moved or deleted since the creation of the review\n"
-				+ "- You are using a supported team provider. Supported providers: Subclipse";
-
+		final String message = "Unable to compare revisions.  Please check that:\n\n" + getErrorHints();
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
 }

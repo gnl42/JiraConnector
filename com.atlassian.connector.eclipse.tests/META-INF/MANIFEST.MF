@@ -16,6 +16,7 @@ Require-Bundle: org.junit,
  com.atlassian.connector.eclipse.bamboo.ui,
  com.atlassian.connector.eclipse.fisheye.core,
  com.atlassian.connector.eclipse.fisheye.tests,
- com.atlassian.connector.eclipse.fisheye.ui
+ com.atlassian.connector.eclipse.fisheye.ui,
+ org.junit4
 Export-Package: com.atlassian.connector.eclipse;x-internal:=true
 Bundle-Vendor: Atlassian
