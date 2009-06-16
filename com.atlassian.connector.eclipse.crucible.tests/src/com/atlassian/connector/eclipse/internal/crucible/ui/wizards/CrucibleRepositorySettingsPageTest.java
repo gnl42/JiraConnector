@@ -11,9 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -22,14 +19,14 @@ import org.eclipse.mylyn.internal.tasks.ui.wizards.NewRepositoryWizard;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class CrucibleRepositorySettingsPageTest {
+import junit.framework.TestCase;
 
-	@Test
+public class CrucibleRepositorySettingsPageTest extends TestCase {
+
 	public void testInvalidUrl() throws Exception {
 		String url = "http://no such host/crucible";
 		int messageType = IMessageProvider.ERROR;
@@ -38,7 +35,6 @@ public class CrucibleRepositorySettingsPageTest {
 		testValidateSettings(url, messageType, message);
 	}
 
-	@Test
 	public void testNotFound() throws Exception {
 		String message = "https://studio.atlassian.com/dupa:HTTP 404 (Not Found)";
 		testValidateSettings("https://studio.atlassian.com/dupa", IMessageProvider.ERROR, message);

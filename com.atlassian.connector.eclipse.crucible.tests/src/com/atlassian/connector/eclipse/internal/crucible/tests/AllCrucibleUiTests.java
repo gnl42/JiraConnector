@@ -7,6 +7,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.RepositoryConnectorU
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.UserContentProviderTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.UserLabelProviderTest;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.UserSorterTest;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySettingsPageTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -37,6 +38,7 @@ public final class AllCrucibleUiTests {
 		suite.addTestSuite(UserSorterTest.class);
 		suite.addTestSuite(ActiveReviewManagerTest.class);
 		suite.addTestSuite(CrucibleClientManagerUiTest.class);
+		suite.addTestSuite(CrucibleRepositorySettingsPageTest.class);
 
 		// $JUnit-END$
 		return suite;

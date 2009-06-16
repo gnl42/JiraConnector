@@ -17,7 +17,6 @@ Require-Bundle: org.junit,
  com.atlassian.connector.eclipse.ui,
  org.eclipse.jface.text,
  com.atlassian.connector.eclipse.core,
- org.junit4,
  org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-internal:=true,
