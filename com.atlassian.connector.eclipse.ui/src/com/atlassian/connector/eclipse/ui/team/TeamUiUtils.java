@@ -497,12 +497,14 @@ public final class TeamUiUtils {
 					getMergeContentProvider.setAccessible(true);
 					IMergeViewerContentProvider cp = (IMergeViewerContentProvider) getMergeContentProvider.invoke(textMergeViewer);
 
+					Method getSourceViewer = MergeSourceViewer.class.getDeclaredMethod("getSourceViewer");
+
 					Method configureSourceViewer = TextMergeViewer.class.getDeclaredMethod("configureSourceViewer",
 							SourceViewer.class, boolean.class);
 					configureSourceViewer.setAccessible(true);
-					configureSourceViewer.invoke(contentViewer, fLeft.getSourceViewer(), cc.isLeftEditable()
+					configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fLeft), cc.isLeftEditable()
 							&& cp.isLeftEditable(textMergeViewer.getInput()));
-					configureSourceViewer.invoke(contentViewer, fRight.getSourceViewer(), cc.isRightEditable()
+					configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fRight), cc.isRightEditable()
 							&& cp.isRightEditable(textMergeViewer.getInput()));
 
 					Field isConfiguredField = TextMergeViewer.class.getDeclaredField("isConfigured");
