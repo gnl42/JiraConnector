@@ -27,6 +27,8 @@ public class Messages extends NLS {
 
 	public static String JiraConnectorUi_Bug;
 
+	public static String JiraConnectorUi_Story;
+
 	public static String JiraConnectorUi_Feature;
 
 	public static String JiraConnectorUi_Improvement;

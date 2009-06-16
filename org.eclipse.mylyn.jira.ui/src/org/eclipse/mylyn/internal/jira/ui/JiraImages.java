@@ -33,6 +33,8 @@ public class JiraImages {
 
 	public static final ImageDescriptor OVERLAY_BUG = create(T_VIEW, "overlay-bug.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor OVERLAY_STORY = create(T_VIEW, "overlay-story.gif"); //$NON-NLS-1$
+
 	public static final ImageDescriptor OVERLAY_FEATURE = create(T_VIEW, "overlay-feature.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor OVERLAY_IMPROVEMENT = create(T_VIEW, "overlay-improvement.gif"); //$NON-NLS-1$

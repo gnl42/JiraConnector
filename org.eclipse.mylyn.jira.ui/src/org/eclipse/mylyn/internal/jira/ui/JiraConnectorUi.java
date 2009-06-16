@@ -60,13 +60,15 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	public static Pattern TASK_PATTERN = Pattern.compile("(^|\\s)(([A-Z]+)-\\d+)"); //$NON-NLS-1$
 
 	public enum JiraTaskKind {
-		BUG, FEATURE, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
+		BUG, FEATURE, STORY, TASK, IMPROVEMENT, CUSTOM_ISSUE, SUB_TASK;
 
 		@Override
 		public String toString() {
 			switch (this) {
 			case BUG:
 				return "Bug"; //$NON-NLS-1$
+			case STORY:
+				return "Story"; //$NON-NLS-1$
 			case FEATURE:
 				return "New Feature"; //$NON-NLS-1$
 			case TASK:
@@ -97,8 +99,10 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 	public List<LegendElement> getLegendElements() {
 		List<LegendElement> legendItems = new ArrayList<LegendElement>();
 		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Bug, JiraImages.OVERLAY_BUG));
+		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Story, JiraImages.OVERLAY_STORY));
 		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Feature, JiraImages.OVERLAY_FEATURE));
 		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Improvement, JiraImages.OVERLAY_IMPROVEMENT));
+		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Bug, JiraImages.OVERLAY_BUG));
 		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Task, JiraImages.OVERLAY_TASK));
 		legendItems.add(LegendElement.createTask(Messages.JiraConnectorUi_Subtask, JiraImages.OVERLAY_SUB_TASK));
 		return legendItems;
@@ -109,6 +113,8 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 		if (JiraCorePlugin.CONNECTOR_KIND.equals(task.getConnectorKind())) {
 			if (JiraTaskKind.BUG.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_BUG;
+			} else if (JiraTaskKind.STORY.toString().equals(task.getTaskKind())) {
+				return JiraImages.OVERLAY_STORY;
 			} else if (JiraTaskKind.FEATURE.toString().equals(task.getTaskKind())) {
 				return JiraImages.OVERLAY_FEATURE;
 			} else if (JiraTaskKind.IMPROVEMENT.toString().equals(task.getTaskKind())) {
