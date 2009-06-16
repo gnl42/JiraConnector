@@ -22,7 +22,16 @@ public class WebServerInfo {
 
 	private boolean insecureRedirect;
 
+	private transient Statistics statistics;
+
 	public WebServerInfo() {
+	}
+
+	public synchronized Statistics getStatistics() {
+		if (statistics == null) {
+			statistics = new Statistics();
+		}
+		return statistics;
 	}
 
 	public String getBaseUrl() {

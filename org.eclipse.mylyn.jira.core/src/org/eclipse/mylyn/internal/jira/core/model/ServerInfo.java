@@ -39,6 +39,11 @@ public class ServerInfo implements Serializable {
 
 	private transient boolean insecureRedirect;
 
+	private transient Statistics statistics;
+
+	public ServerInfo() {
+	}
+
 	public String getBaseUrl() {
 		return this.baseUrl;
 	}
@@ -101,6 +106,13 @@ public class ServerInfo implements Serializable {
 
 	public void setInsecureRedirect(boolean insecureRedirect) {
 		this.insecureRedirect = insecureRedirect;
+	}
+
+	public synchronized Statistics getStatistics() {
+		if (statistics == null) {
+			statistics = new Statistics();
+		}
+		return statistics;
 	}
 
 	@Override

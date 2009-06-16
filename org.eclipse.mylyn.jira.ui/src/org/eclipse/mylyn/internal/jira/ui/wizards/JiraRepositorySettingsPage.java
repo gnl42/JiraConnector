@@ -25,12 +25,14 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.Window;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
@@ -44,6 +46,7 @@ import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -439,6 +442,16 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 			} catch (Exception e) {
 				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
 			}
+
+			MultiStatus status = new MultiStatus(JiraUiPlugin.ID_PLUGIN, 0, NLS.bind("Validation results for {0}", //$NON-NLS-1$
+					repository.getRepositoryLabel()), null);
+			status.addAll(serverInfo.getStatistics().getStatus());
+			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+					"Web base: {0}", serverInfo.getWebBaseUrl()))); //$NON-NLS-1$
+			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+					"Character encoding: {0}", serverInfo.getCharacterEncoding()))); //$NON-NLS-1$
+			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind("Version: {0}", serverInfo.toString()))); //$NON-NLS-1$
+			StatusHandler.log(status);
 		}
 
 	}

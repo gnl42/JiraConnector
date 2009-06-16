@@ -598,16 +598,18 @@ public class JiraWebClient {
 	}
 
 	public WebServerInfo getWebServerInfo(IProgressMonitor monitor) throws JiraException {
-		final WebServerInfo webServerInfo = new WebServerInfo();
+		final WebServerInfo serverInfo = new WebServerInfo();
+		serverInfo.getStatistics().mark();
 		session.doInSession(new JiraWebSessionCallback() {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
-				webServerInfo.setBaseUrl(session.getBaseURL());
-				webServerInfo.setCharacterEncoding(session.getCharacterEncoding());
-				webServerInfo.setInsecureRedirect(session.isInsecureRedirect());
+				serverInfo.setBaseUrl(session.getBaseURL());
+				serverInfo.setCharacterEncoding(session.getCharacterEncoding());
+				serverInfo.setInsecureRedirect(session.isInsecureRedirect());
 			}
 		}, monitor);
-		return webServerInfo;
+		serverInfo.getStatistics().record("Login via web took {0}"); //$NON-NLS-1$
+		return serverInfo;
 	}
 
 	private String getAssigneeParam(JiraClient server, JiraIssue issue, int assigneeType, String user) {

@@ -266,8 +266,7 @@ class JiraSoapConverter {
 		return group;
 	}
 
-	protected static ServerInfo convert(RemoteServerInfo remoteServerInfo) {
-		ServerInfo serverInfo = new ServerInfo();
+	protected static ServerInfo convert(RemoteServerInfo remoteServerInfo, ServerInfo serverInfo) {
 		serverInfo.setBaseUrl(remoteServerInfo.getBaseUrl());
 		serverInfo.setBuildDate(remoteServerInfo.getBuildDate().getTime());
 		serverInfo.setBuildNumber(remoteServerInfo.getBuildNumber());

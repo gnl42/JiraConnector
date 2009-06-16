@@ -14,6 +14,7 @@ package org.eclipse.mylyn.internal.jira.core.service.soap;
 
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -30,6 +31,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
+import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
@@ -58,6 +60,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteField;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteNamedObject;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapService;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.RemoteAuthenticationException;
@@ -169,7 +172,26 @@ public class JiraSoapClient extends AbstractSoapClient {
 	public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
 		ServerInfo serverInfo = call(monitor, new Callable<ServerInfo>() {
 			public ServerInfo call() throws java.rmi.RemoteException, JiraException {
-				return JiraSoapConverter.convert(getSoapService().getServerInfo(loginToken.getCurrentValue()));
+				ServerInfo serverInfo = new ServerInfo();
+
+				// TODO consider logging proxy information
+				serverInfo.getStatistics().mark();
+				try {
+					InetAddress.getByName(WebUtil.getHost(getLocation().getUrl()));
+					serverInfo.getStatistics().record("Resolving name took {0}"); //$NON-NLS-1$
+				} catch (Exception e) {
+					// ignore
+				}
+
+				serverInfo.getStatistics().mark();
+				String session = loginToken.getCurrentValue();
+				serverInfo.getStatistics().record("Login via SOAP took {0}"); //$NON-NLS-1$
+
+				serverInfo.getStatistics().mark();
+				RemoteServerInfo remoteServerInfo = getSoapService().getServerInfo(session);
+				serverInfo.getStatistics().record("Retrieval of server info took {0}"); //$NON-NLS-1$
+
+				return JiraSoapConverter.convert(remoteServerInfo, serverInfo);
 			}
 		});
 		return serverInfo;

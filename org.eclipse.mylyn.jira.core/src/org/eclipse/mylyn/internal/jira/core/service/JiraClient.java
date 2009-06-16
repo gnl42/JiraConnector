@@ -363,6 +363,8 @@ public class JiraClient {
 		serverInfo.setCharacterEncoding(webServerInfo.getCharacterEncoding());
 		serverInfo.setWebBaseUrl(webServerInfo.getBaseUrl());
 
+		serverInfo.getStatistics().getStatus().addAll(webServerInfo.getStatistics().getStatus());
+
 		return serverInfo;
 	}
 
