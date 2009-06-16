@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
 public class CrucibleRepositorySettingsPageTest {
 
 	@Test
-	public void test_invalidUrl() throws Exception {
+	public void testInvalidUrl() throws Exception {
 		String url = "http://no such host/crucible";
 		int messageType = IMessageProvider.ERROR;
 		String message = "Malformed server URL: http://no such host/crucible";
@@ -39,7 +39,7 @@ public class CrucibleRepositorySettingsPageTest {
 	}
 
 	@Test
-	public void test_notFound() throws Exception {
+	public void testNotFound() throws Exception {
 		String message = "https://studio.atlassian.com/dupa:HTTP 404 (Not Found)";
 		testValidateSettings("https://studio.atlassian.com/dupa", IMessageProvider.ERROR, message);
 	}
