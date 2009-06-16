@@ -16,8 +16,11 @@ import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderExce
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
+import org.eclipse.compare.contentmergeviewer.IMergeViewerContentProvider;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
@@ -34,6 +37,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.LineRange;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -53,6 +57,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -481,18 +486,34 @@ public final class TeamUiUtils {
 				annotationModel.attachToViewer(fLeft, fRight);
 				annotationModel.focusOnComment();
 				annotationModel.registerContextMenu();
+
+				// FIXME: hack for e3.5
+				try {
+					Method getCompareConfiguration = ContentMergeViewer.class.getDeclaredMethod("getCompareConfiguration");
+					getCompareConfiguration.setAccessible(true);
+					CompareConfiguration cc = (CompareConfiguration) getCompareConfiguration.invoke(textMergeViewer);
+
+					Method getMergeContentProvider = ContentMergeViewer.class.getDeclaredMethod("getMergeContentProvider");
+					getMergeContentProvider.setAccessible(true);
+					IMergeViewerContentProvider cp = (IMergeViewerContentProvider) getMergeContentProvider.invoke(textMergeViewer);
+
+					Method configureSourceViewer = TextMergeViewer.class.getDeclaredMethod("configureSourceViewer",
+							SourceViewer.class, boolean.class);
+					configureSourceViewer.setAccessible(true);
+					configureSourceViewer.invoke(contentViewer, fLeft.getSourceViewer(), cc.isLeftEditable()
+							&& cp.isLeftEditable(textMergeViewer.getInput()));
+					configureSourceViewer.invoke(contentViewer, fRight.getSourceViewer(), cc.isRightEditable()
+							&& cp.isRightEditable(textMergeViewer.getInput()));
+
+					Field isConfiguredField = TextMergeViewer.class.getDeclaredField("isConfigured");
+					isConfiguredField.setAccessible(true);
+					isConfiguredField.set(contentViewer, true);
+				} catch (Throwable t) {
+					// ignore as it may not exist in other versions
+				}
 			} catch (Throwable t) {
 				StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
 						"Could not initialize annotation model for " + input.getName(), t));
-			}
-
-			// FIXME: hack for e3.5
-			try {
-				Field isConfiguredField = TextMergeViewer.class.getDeclaredField("isConfigured");
-				isConfiguredField.setAccessible(true);
-				isConfiguredField.set(contentViewer, true);
-			} catch (Throwable t) {
-				// ignore as it may not exist in other versions
 			}
 		}
 		return contentViewer;
