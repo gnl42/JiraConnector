@@ -16,10 +16,14 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.Crucible
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.EditorLinkWithReviewSelectionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.notifications.CrucibleNotificationProvider;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -78,6 +82,19 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 
 		plugin.getPreferenceStore().setDefault(CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW,
 				MessageDialogWithToggle.PROMPT);
+
+		// PLE-516 we want to make sure that we init CrucibleEditorTracker only when this bundle is really started
+		// as it otherwise may cause class loading problems (another thread attempts to load classes from not started bundle)
+		// unfortunately this implementation does not guarantee 100%, but it's really unlikely that the problem will occur
+		// i.e. other plugins seem to use such approach and it works for them
+		UIJob job = new UIJob("Initializing Crucible editor annonation support") {
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				crucibleEditorTracker.init();
+				return Status.OK_STATUS;
+			}
+		};
+		job.schedule();
 	}
 
 	/*

@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -24,13 +23,13 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class CrucibleEditorTracker implements IPartListener {
 
 	public CrucibleEditorTracker() {
-		Display.getDefault().asyncExec(new Runnable() {
+	}
 
-			public void run() {
-				CrucibleAnnotationModelManager.attachAllOpenEditors();
-			}
-		});
-
+	/**
+	 * Must be called in UI thread
+	 */
+	public void init() {
+		CrucibleAnnotationModelManager.attachAllOpenEditors();
 	}
 
 	public void dispose() {
@@ -38,13 +37,9 @@ public class CrucibleEditorTracker implements IPartListener {
 	}
 
 	public void partActivated(IWorkbenchPart part) {
-		// ignore
-
 	}
 
 	public void partBroughtToTop(IWorkbenchPart part) {
-		// ignore
-
 	}
 
 	public void partClosed(IWorkbenchPart part) {
