@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class AllEclipseUiTests {
+public final class AllEclipseUiTests {
 
 	private AllEclipseUiTests() {
 	}
