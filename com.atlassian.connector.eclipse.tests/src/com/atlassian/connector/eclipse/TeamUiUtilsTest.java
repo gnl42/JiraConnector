@@ -12,17 +12,15 @@
 package com.atlassian.connector.eclipse;
 
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
-
-import org.junit.Assert;
-import org.junit.matchers.JUnitMatchers;
+import com.spartez.util.junit3.TestUtil;
 
 import junit.framework.TestCase;
 
 public class TeamUiUtilsTest extends TestCase {
 
 	public void testGetSupportedTeamConnectors() {
-		Assert.assertThat(TeamUiUtils.getSupportedTeamConnectors(), JUnitMatchers.hasItems("Subversive", "Subclipse",
-				"Team API (partial support)", "CVS (FishEye only)"));
+		TestUtil.assertHasOnlyElements(TeamUiUtils.getSupportedTeamConnectors(), "Subversive", "Subclipse",
+				"Team API (partial support)", "CVS (FishEye only)");
 	}
 
 }
