@@ -68,6 +68,7 @@ import java.util.SortedSet;
  * 
  * @author Shawn Minto
  */
+@SuppressWarnings("restriction")
 public final class TeamUiUtils {
 
 	public static final String TEAM_PROVIDER_ID_CVS_ECLIPSE = "org.eclipse.team.cvs.core.cvsnature";
@@ -487,49 +488,52 @@ public final class TeamUiUtils {
 				Class<TextMergeViewer> clazz = TextMergeViewer.class;
 				Field declaredField = clazz.getDeclaredField("fLeft");
 				declaredField.setAccessible(true);
-				@SuppressWarnings("restriction")
 				final MergeSourceViewer fLeft = (MergeSourceViewer) declaredField.get(textMergeViewer);
 
 				declaredField = clazz.getDeclaredField("fRight");
 				declaredField.setAccessible(true);
-				@SuppressWarnings("restriction")
 				final MergeSourceViewer fRight = (MergeSourceViewer) declaredField.get(textMergeViewer);
 
 				annotationModel.attachToViewer(fLeft, fRight);
 				annotationModel.focusOnComment();
 				annotationModel.registerContextMenu();
 
-				// FIXME: hack for e3.5
-				try {
-					Method getCompareConfiguration = ContentMergeViewer.class.getDeclaredMethod("getCompareConfiguration");
-					getCompareConfiguration.setAccessible(true);
-					CompareConfiguration cc = (CompareConfiguration) getCompareConfiguration.invoke(textMergeViewer);
-
-					Method getMergeContentProvider = ContentMergeViewer.class.getDeclaredMethod("getMergeContentProvider");
-					getMergeContentProvider.setAccessible(true);
-					IMergeViewerContentProvider cp = (IMergeViewerContentProvider) getMergeContentProvider.invoke(textMergeViewer);
-
-					Method getSourceViewer = MergeSourceViewer.class.getDeclaredMethod("getSourceViewer");
-
-					Method configureSourceViewer = TextMergeViewer.class.getDeclaredMethod("configureSourceViewer",
-							SourceViewer.class, boolean.class);
-					configureSourceViewer.setAccessible(true);
-					configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fLeft), cc.isLeftEditable()
-							&& cp.isLeftEditable(textMergeViewer.getInput()));
-					configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fRight), cc.isRightEditable()
-							&& cp.isRightEditable(textMergeViewer.getInput()));
-
-					Field isConfiguredField = TextMergeViewer.class.getDeclaredField("isConfigured");
-					isConfiguredField.setAccessible(true);
-					isConfiguredField.set(contentViewer, true);
-				} catch (Throwable t) {
-					// ignore as it may not exist in other versions
-				}
+				hackGanimede(contentViewer, textMergeViewer, fLeft, fRight);
 			} catch (Throwable t) {
 				StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
 						"Could not initialize annotation model for " + input.getName(), t));
 			}
 		}
 		return contentViewer;
+	}
+
+	private static void hackGanimede(Viewer contentViewer, TextMergeViewer textMergeViewer,
+			final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
+		// FIXME: hack for e3.5
+		try {
+			Method getCompareConfiguration = ContentMergeViewer.class.getDeclaredMethod("getCompareConfiguration");
+			getCompareConfiguration.setAccessible(true);
+			CompareConfiguration cc = (CompareConfiguration) getCompareConfiguration.invoke(textMergeViewer);
+
+			Method getMergeContentProvider = ContentMergeViewer.class.getDeclaredMethod("getMergeContentProvider");
+			getMergeContentProvider.setAccessible(true);
+			IMergeViewerContentProvider cp = (IMergeViewerContentProvider) getMergeContentProvider.invoke(textMergeViewer);
+
+			Method getSourceViewer = MergeSourceViewer.class.getDeclaredMethod("getSourceViewer");
+
+			Method configureSourceViewer = TextMergeViewer.class.getDeclaredMethod("configureSourceViewer",
+					SourceViewer.class, boolean.class);
+			configureSourceViewer.setAccessible(true);
+			configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fLeft), cc.isLeftEditable()
+					&& cp.isLeftEditable(textMergeViewer.getInput()));
+			configureSourceViewer.invoke(contentViewer, getSourceViewer.invoke(fRight), cc.isRightEditable()
+					&& cp.isRightEditable(textMergeViewer.getInput()));
+
+			Field isConfiguredField = TextMergeViewer.class.getDeclaredField("isConfigured");
+			isConfiguredField.setAccessible(true);
+			isConfiguredField.set(contentViewer, true);
+		} catch (Throwable t) {
+			// ignore as it may not exist in other versions
+		}
 	}
 }
