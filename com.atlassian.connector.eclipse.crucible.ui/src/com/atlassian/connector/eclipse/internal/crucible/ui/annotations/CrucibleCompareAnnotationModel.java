@@ -96,6 +96,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 
 		private final MergeSourceViewer mergeSourceViewer;
 
+		private AddLineCommentToFileAction addLineCommentAction;
+
+		private AddGeneralCommentToFileAction addGeneralCommentAction;
+
 		private CrucibleViewerTextInputListener(MergeSourceViewer sourceViewer,
 				CrucibleAnnotationModel crucibleAnnotationModel, boolean oldFile) {
 			this.sourceViewer = getSourceViewer(sourceViewer);
@@ -122,10 +126,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 					try {
 						Class<SourceViewer> sourceViewerClazz = SourceViewer.class;
 						Field declaredField2 = sourceViewerClazz.getDeclaredField("fVisualAnnotationModel");
+						declaredField2.setAccessible(true);
 						Method declaredMethod = sourceViewerClazz.getDeclaredMethod("createVisualAnnotationModel",
 								IAnnotationModel.class);
 						declaredMethod.setAccessible(true);
-						declaredField2.setAccessible(true);
 						annotationModel = (IAnnotationModel) declaredMethod.invoke(sourceViewer,
 								crucibleAnnotationModel);
 						declaredField2.set(sourceViewer, annotationModel);
@@ -145,7 +149,6 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 								CrucibleUiUtil.highlightAnnotationInRichEditor(offset, crucibleAnnotationModel);
 							}
 						});
-
 					} catch (Throwable t) {
 						t.printStackTrace();
 					}
@@ -275,11 +278,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			sourceViewer.showAnnotationsOverview(true);
 
 			Iterator<?> iter = (ruler).getDecoratorIterator();
-			if (iter.hasNext()) {
-				for (Object obj = iter.next(); iter.hasNext(); obj = iter.next()) {
-					if (obj instanceof AnnotationColumn) {
-						hasDecorator = true;
-					}
+			while (iter.hasNext()) {
+				Object obj = iter.next();
+				if (obj instanceof AnnotationColumn) {
+					hasDecorator = true;
 				}
 			}
 
@@ -310,11 +312,11 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 		}
 
 		public void registerContextMenu() {
-			if (CrucibleUtil.canAddCommentToReview(review)) {
-				AddLineCommentToFileAction addLineCommentAction = new AddLineCommentToFileAction(this,
-						crucibleAnnotationModel.getCrucibleFile());
+			if (CrucibleUtil.canAddCommentToReview(review) && addLineCommentAction == null
+					&& addGeneralCommentAction == null) {
+				addLineCommentAction = new AddLineCommentToFileAction(this, crucibleAnnotationModel.getCrucibleFile());
 				addLineCommentAction.setImageDescriptor(CrucibleImages.ADD_COMMENT);
-				AddGeneralCommentToFileAction addGeneralCommentAction = new AddGeneralCommentToFileAction();
+				addGeneralCommentAction = new AddGeneralCommentToFileAction();
 				addGeneralCommentAction.setCrucibleFile(crucibleAnnotationModel.getCrucibleFile());
 				addGeneralCommentAction.setReview(review);
 
@@ -333,6 +335,10 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 				return new LineRange(selection.getStartLine() + 1, selection.getEndLine() - selection.getStartLine());
 			}
 			return null;
+		}
+
+		public boolean isListenerFor(MergeSourceViewer viewer, CrucibleAnnotationModel annotationModel) {
+			return this.mergeSourceViewer == viewer && this.crucibleAnnotationModel == annotationModel;
 		}
 	}
 
@@ -359,9 +365,20 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	}
 
 	public void attachToViewer(final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
+		if (!isListenerFor(leftViewerListener, fLeft, leftAnnotationModel)) {
+			leftViewerListener = addTextInputListener(fLeft, leftAnnotationModel, false);
+		}
+		if (!isListenerFor(rightViewerListener, fRight, rightAnnotationModel)) {
+			rightViewerListener = addTextInputListener(fRight, rightAnnotationModel, true);
+		}
+	}
 
-		leftViewerListener = addTextInputListener(fLeft, leftAnnotationModel, false);
-		rightViewerListener = addTextInputListener(fRight, rightAnnotationModel, true);
+	private boolean isListenerFor(CrucibleViewerTextInputListener listener, MergeSourceViewer viewer,
+			CrucibleAnnotationModel annotationModel) {
+		if (listener == null) {
+			return false;
+		}
+		return listener.isListenerFor(viewer, annotationModel);
 	}
 
 	private CrucibleViewerTextInputListener addTextInputListener(final MergeSourceViewer sourceViewer,
@@ -418,7 +435,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	}
 
 	public void registerContextMenu() {
-		rightViewerListener.registerContextMenu(); //context menu in old revision disabled - not supported by API
+		rightViewerListener.registerContextMenu();
 		leftViewerListener.registerContextMenu();
 	}
 
