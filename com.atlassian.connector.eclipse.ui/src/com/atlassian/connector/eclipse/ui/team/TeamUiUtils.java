@@ -498,7 +498,7 @@ public final class TeamUiUtils {
 				annotationModel.focusOnComment();
 				annotationModel.registerContextMenu();
 
-				hackGanimede(contentViewer, textMergeViewer, fLeft, fRight);
+				hackGalileo(contentViewer, textMergeViewer, fLeft, fRight);
 			} catch (Throwable t) {
 				StatusHandler.log(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
 						"Could not initialize annotation model for " + input.getName(), t));
@@ -507,7 +507,7 @@ public final class TeamUiUtils {
 		return contentViewer;
 	}
 
-	private static void hackGanimede(Viewer contentViewer, TextMergeViewer textMergeViewer,
+	private static void hackGalileo(Viewer contentViewer, TextMergeViewer textMergeViewer,
 			final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
 		// FIXME: hack for e3.5
 		try {
