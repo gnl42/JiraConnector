@@ -150,7 +150,8 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 							}
 						});
 					} catch (Throwable t) {
-						t.printStackTrace();
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Error attaching Crucible annotation model", t));
 					}
 				}
 			}
@@ -241,10 +242,30 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 				throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException,
 				InvocationTargetException, NoSuchFieldException {
 
+			forceCustomAnnotationHover();
+
 			Method declaredMethod2 = sourceViewerClazz.getDeclaredMethod("getVerticalRuler");
 			declaredMethod2.setAccessible(true);
 			CompositeRuler ruler = (CompositeRuler) declaredMethod2.invoke(sourceViewer);
 			boolean hasDecorator = false;
+
+			Iterator<?> iter = (ruler).getDecoratorIterator();
+			while (iter.hasNext()) {
+				Object obj = iter.next();
+				if (obj instanceof AnnotationColumn) {
+					hasDecorator = true;
+				}
+			}
+
+			if (!hasDecorator) {
+				AnnotationColumn annotationColumn = new AnnotationColumn();
+				annotationColumn.createControl(ruler, ruler.getControl().getParent());
+				ruler.addDecorator(0, annotationColumn);
+			}
+		}
+
+		public void forceCustomAnnotationHover() throws NoSuchFieldException, IllegalAccessException {
+			Class<SourceViewer> sourceViewerClazz = SourceViewer.class;
 			sourceViewer.setAnnotationHover(new CrucibleAnnotationHover(null));
 
 			// FIXME: hack for e3.5
@@ -276,20 +297,6 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 			}
 			sourceViewer.showAnnotations(true);
 			sourceViewer.showAnnotationsOverview(true);
-
-			Iterator<?> iter = (ruler).getDecoratorIterator();
-			while (iter.hasNext()) {
-				Object obj = iter.next();
-				if (obj instanceof AnnotationColumn) {
-					hasDecorator = true;
-				}
-			}
-
-			if (!hasDecorator) {
-				AnnotationColumn annotationColumn = new AnnotationColumn();
-				annotationColumn.createControl(ruler, ruler.getControl().getParent());
-				ruler.addDecorator(0, annotationColumn);
-			}
 		}
 
 		public void focusOnLines(int startLine, int endLine) {
@@ -365,11 +372,46 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	}
 
 	public void attachToViewer(final MergeSourceViewer fLeft, final MergeSourceViewer fRight) {
+		/*
+		 * only create listeners if they are not already existing
+		 */
 		if (!isListenerFor(leftViewerListener, fLeft, leftAnnotationModel)) {
 			leftViewerListener = addTextInputListener(fLeft, leftAnnotationModel, false);
+		} else {
+			/*
+			 * Using asyncExec here because if the underlying slaveDocument (part of the file that
+			 * gets displayed when clicking on a java structure in the compare editor) is changed, but
+			 * the master document is not, we do not get any event afterwards that would give us a place
+			 * to hook our code to override the annotationHover.
+			 * Since all is done in the UI thread, using this asyncExec hack works because the unconfigure and
+			 * configure of the document is finished and our hover-hack stays. 
+			 */
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					try {
+						//if listeners exist, just make sure the hover hack is in there
+						leftViewerListener.forceCustomAnnotationHover();
+					} catch (Exception e) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Error attaching Crucible annotation hover", e));
+					}
+				}
+			});
 		}
 		if (!isListenerFor(rightViewerListener, fRight, rightAnnotationModel)) {
 			rightViewerListener = addTextInputListener(fRight, rightAnnotationModel, true);
+		} else {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					try {
+						//if listeners exist, just make sure the hover hack is in there
+						rightViewerListener.forceCustomAnnotationHover();
+					} catch (Exception e) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Error attaching Crucible annotation hover", e));
+					}
+				}
+			});
 		}
 	}
 
