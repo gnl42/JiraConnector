@@ -1141,7 +1141,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		issue.setProject(new Project(getAttributeValue(taskData, JiraAttribute.PROJECT)));
 
-		boolean subTaskType = hasSubTaskType(getAttribute(taskData, JiraAttribute.TYPE));
+		TaskAttribute typeAttribute = getAttribute(taskData, JiraAttribute.TYPE);
+		boolean subTaskType = (typeAttribute != null) ? hasSubTaskType(typeAttribute) : false;
 		IssueType issueType = new IssueType(getAttributeValue(taskData, JiraAttribute.TYPE), subTaskType);
 		issue.setType(issueType);
 
