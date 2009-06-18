@@ -26,11 +26,15 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -89,6 +93,14 @@ public class OpenVersionedVirtualFileAction extends Action {
 						if (versionedComment != null) {
 							selectAndRevealComment(textEditor, versionedComment, crucibleFile);
 						}
+					} else {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null,
+										"Editor for selected file doesn't support annotations.",
+										MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+							}
+						});
 					}
 				}
 			});
