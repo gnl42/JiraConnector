@@ -7,7 +7,7 @@
 	<xsl:template match="/">
 		<site pack200="true">
 			<description url="http://update.atlassian.com/atlassian-eclipse-plugin">
-				Atlassian Eclipse Connector
+				Atlassian Connector for Eclipse
 		    </description>
 		    <xsl:apply-templates select="site/feature"/>
 		    <xsl:apply-templates select="site/category-def[@name='Connector']"/>

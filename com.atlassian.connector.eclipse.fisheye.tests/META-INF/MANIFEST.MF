@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector Fisheye Tests
+Bundle-Name: Atlassian Connector for Eclipse Fisheye Tests
 Bundle-SymbolicName: com.atlassian.connector.eclipse.fisheye.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian

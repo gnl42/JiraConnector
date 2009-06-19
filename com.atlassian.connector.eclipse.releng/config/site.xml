@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site pack200="true">
    <description url="http://update.atlassian.com/atlassian-eclipse-plugin">
-      Atlassian Eclipse Connector
+      @siteName@
    </description>
    <feature url="features/com.atlassian.connector.eclipse_@core@.jar" id="com.atlassian.connector.eclipse" version="@core@">
       <category name="Connector"/>

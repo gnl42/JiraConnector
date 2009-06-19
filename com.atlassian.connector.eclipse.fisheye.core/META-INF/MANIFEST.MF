@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector FishEye Core
+Bundle-Name: Atlassian Connector for Eclipse FishEye Core
 Bundle-SymbolicName: com.atlassian.connector.eclipse.fisheye.core;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector
+Bundle-Name: Atlassian Connector for Eclipse
 Bundle-SymbolicName: com.atlassian.connector.eclipse.ui;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.ui.AtlassianUiPlugin
@@ -25,7 +25,7 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.atlassian.connector.eclipse.ui;
   x-friends:="com.atlassian.connector.eclipse.crucible.ui,
    com.atlassian.connector.eclipse.subclipse.ui,
-   com.atlassian.connector.eclipse.subversive.ui",
+   com.atlassian.connector.eclipse.subversive.ui, com.atlassian.connector.eclipse.fisheye.ui",
  com.atlassian.connector.eclipse.ui.commons;
    x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.bamboo.ui",
  com.atlassian.connector.eclipse.ui.dialogs;

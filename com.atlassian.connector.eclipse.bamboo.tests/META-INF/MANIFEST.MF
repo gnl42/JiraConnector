@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector Bamboo Tests
+Bundle-Name: Atlassian Connector for Eclipse Bamboo Tests
 Bundle-SymbolicName: com.atlassian.connector.eclipse.bamboo.tests;singleton:=true
 Bundle-Version: 0.0.0
 Bundle-Vendor: Atlassian

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector Subclipse UI
+Bundle-Name: Atlassian Connector for Eclipse Subclipse UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.subclipse.ui;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.subclipse.ui.AtlassianSubclipseUiPlugin

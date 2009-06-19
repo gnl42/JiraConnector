@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector FishEye UI
+Bundle-Name: Atlassian Connector for Eclipse FishEye UI
 Bundle-SymbolicName: com.atlassian.connector.eclipse.fisheye.ui;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Eclipse Connector Crucible Core
+Bundle-Name: Atlassian Connector for Eclipse Crucible Core
 Bundle-SymbolicName: com.atlassian.connector.eclipse.crucible.core;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin

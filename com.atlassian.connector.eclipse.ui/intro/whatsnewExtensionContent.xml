@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <introContent>
-	<extensionContent id="com.atlassian.connector.eclipse" name="Atlassian Eclipse Connector"
+	<extensionContent id="com.atlassian.connector.eclipse" name="Atlassian Connector for Eclipse"
 		style="css/whatsnew.css" alt-style="css/whatsnew.properties" path="whatsnew/@">
 		<group id="content-group" style-id="content-group">
-			<link label="Atlassian Eclipse Connector"
+			<link label="Atlassian Connector for Eclipse"
 				url="http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Eclipse+Connector+1.0+Release+Notes?eclipse-welcome"
 				id="atlassian-eclipse-connector-noteworthy" style-id="content-link">
 				<text>
-					Find out how the latest Atlassian Eclipse Connector can streamline your development activities
+					Find out how the latest Atlassian Connector for Eclipse can streamline your development activities
 				</text>
 			</link>
 		</group>

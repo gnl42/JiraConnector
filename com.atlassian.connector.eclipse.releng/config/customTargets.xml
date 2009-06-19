@@ -169,11 +169,13 @@
 			<arg value="${buildDirectory}" />
 		</exec>
 		-->
+  	    <condition property="build.publish.name.suffix" value="3.3" else="3.4 and 3.5"><equals arg1="${build.target}" arg2="3.3"/></condition>
 		<antcall target="generateUpdateSite">
 			<param name="UpdateSiteLocation" value="${buildDirectory}/site" />
 			<param name="SiteXmlFile" value="site.xml" />
 			<param name="ElementsTarget" value="siteElementsDelegator" />
 			<param name="SiteName" value="standard" />
+			<param name="UpdateSiteName" value="${build.publish.name} ${build.publish.name.suffix}"/>
 		</antcall>
 	</target>
 
@@ -184,10 +186,12 @@
 		<mkdir dir="${UpdateSiteLocation}/features" />
 		<mkdir dir="${UpdateSiteLocation}/plugins" />
 
+		<echo message="filtering build.xml with [${UpdateSiteName}]"/> 
 		<!-- Generate the "site.xml" file in the "updateSite folder -->
 		<copy file="${builder}/${SiteXmlFile}" tofile="${UpdateSiteLocation}/site.xml">
 			<filterset>
 				<filter token="core" value="${com.atlassian.connector.eclipse}" />
+				<filter token="siteName" value="${UpdateSiteName}"/>
 			</filterset>
 		</copy>
 

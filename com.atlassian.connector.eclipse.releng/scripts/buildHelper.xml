@@ -292,6 +292,9 @@
     		<arg value="-DbuildLabel=${build.dist}"/>
     		<arg value="-DforceContextQualifier=${build.forceContextQualifier}"/>
     		<arg value="-DmajorVersion=${version}"/>
+    		<!-- these two properties are passed so that we can use them in customTargets.xml while filtering out site.xml file -->
+    		<arg value="-Dbuild.target=${build.target}"/>
+    		<arg value="-Dbuild.publish.name=${build.publish.name}"/>
     		<arg value="${build.skipFetch}"/>
     		<arg value="${build.extraBuildArgs}"/>
     	</java>

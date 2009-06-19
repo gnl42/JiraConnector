@@ -16,7 +16,7 @@ import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * Provides utility methods for the Atlassian Eclipse COnnector
+ * Provides utility methods for the Atlassian Connector for Eclipse
  * 
  * @author Thomas Ehrnhoefer
  */
