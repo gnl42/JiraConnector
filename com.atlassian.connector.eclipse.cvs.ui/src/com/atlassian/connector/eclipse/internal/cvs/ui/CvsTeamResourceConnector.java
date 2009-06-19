@@ -45,7 +45,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -101,9 +100,10 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor, MultiStatus status) {
+			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
 		// @todo implement it
-		return Collections.emptyMap();
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
+				"Not implemented yet for CVS."));
 	}
 
 	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
