@@ -59,29 +59,29 @@ public final class CrucibleAnnotationModelManager {
 
 	private static final Object CRUCIBLE_ANNOTATION_MODEL_KEY = new Object();
 
-	public static void attach(ITextEditor editor) {
+	public static boolean attach(ITextEditor editor) {
 		IEditorInput editorInput = editor.getEditorInput();
 		CrucibleFile crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
 				CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 
-		attach(editor, crucibleFile, CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
+		return attach(editor, crucibleFile, CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 	}
 
-	public static void attach(ITextEditor editor, CrucibleFile crucibleFile, Review review) {
+	public static boolean attach(ITextEditor editor, CrucibleFile crucibleFile, Review review) {
 		if (!CrucibleUiPlugin.getDefault().getActiveReviewManager().isReviewActive() || crucibleFile == null
 				|| review == null || CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview() != review) {
-			return;
+			return false;
 		}
 
 		IDocumentProvider documentProvider = editor.getDocumentProvider();
 		IEditorInput editorInput = editor.getEditorInput();
 		if (documentProvider == null) {
-			return;
+			return false;
 		}
 		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editorInput);
 		if (!(annotationModel instanceof IAnnotationModelExtension)) {
 			// we need to piggyback on another annotation mode
-			return;
+			return false;
 		}
 		IAnnotationModelExtension annotationModelExtension = (IAnnotationModelExtension) annotationModel;
 
@@ -92,15 +92,18 @@ public final class CrucibleAnnotationModelManager {
 			crucibleAnnotationModel = new CrucibleAnnotationModel(editor, editorInput, document, crucibleFile, review);
 			annotationModelExtension.addAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY, crucibleAnnotationModel);
 
-			addAnnotationHover(editor);
-
+			if (addAnnotationHover(editor)) {
+				return true;
+			}
 		} else if (crucibleAnnotationModel instanceof CrucibleAnnotationModel) {
 			((CrucibleAnnotationModel) crucibleAnnotationModel).updateCrucibleFile(crucibleFile, review);
+			return true;
 		}
 
+		return false;
 	}
 
-	private static void addAnnotationHover(ITextEditor editor) {
+	private static boolean addAnnotationHover(ITextEditor editor) {
 
 		if (editor instanceof AbstractTextEditor) {
 			AbstractTextEditor textEditor = (AbstractTextEditor) editor;
@@ -123,6 +126,8 @@ public final class CrucibleAnnotationModelManager {
 						annotationHover.set(manager, new CrucibleAnnotationHover(hover));
 
 						EDITOR_TO_HOVER_MAP.put(editor, hover);
+
+						return true;
 					}
 				}
 
@@ -132,6 +137,8 @@ public final class CrucibleAnnotationModelManager {
 			}
 
 		}
+
+		return false;
 	}
 
 	private static void removeAnnotationHover(ITextEditor editor) {

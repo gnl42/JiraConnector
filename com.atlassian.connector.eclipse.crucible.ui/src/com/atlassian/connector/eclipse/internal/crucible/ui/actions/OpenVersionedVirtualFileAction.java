@@ -84,16 +84,24 @@ public class OpenVersionedVirtualFileAction extends Action {
 								newFile.getRevision(), oldFile.getRevision(), monitor);
 					}
 
+					if (editor == null) {
+						return;
+					}
+
+					boolean annotationsAdded = false;
+
 					if (editor instanceof ITextEditor) {
 						ITextEditor textEditor = ((ITextEditor) editor);
 						ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
 						if (activeTask != null && activeTask.equals(task)) {
-							CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
+							annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
 						}
 						if (versionedComment != null) {
 							selectAndRevealComment(textEditor, versionedComment, crucibleFile);
 						}
-					} else {
+					}
+
+					if (!annotationsAdded) {
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
 								new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null,
