@@ -186,7 +186,7 @@
 		<mkdir dir="${UpdateSiteLocation}/features" />
 		<mkdir dir="${UpdateSiteLocation}/plugins" />
 
-		<echo message="filtering build.xml with [${UpdateSiteName}]"/> 
+		<echo message="filtering ${builder}/${SiteXmlFile} with [${UpdateSiteName}]"/> 
 		<!-- Generate the "site.xml" file in the "updateSite folder -->
 		<copy file="${builder}/${SiteXmlFile}" tofile="${UpdateSiteLocation}/site.xml">
 			<filterset>
