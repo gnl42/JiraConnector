@@ -95,9 +95,10 @@ public interface ITeamResourceConnector {
 	 *            The repository URL to get changesets from, or NULL to retrieve form all available repositories
 	 * @param limit
 	 *            The amount of revisions to retrieve
-	 * @return null if operations is not supported/handled, otherwise latest changesets
+	 * @return latest changesets
+	 * @throws CoreException
 	 */
-	@Nullable
+	@NotNull
 	Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
 			IProgressMonitor monitor, MultiStatus status) throws CoreException;
 

@@ -87,21 +87,18 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
 			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
 		//TODO
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-				"Connectors other than Subclipse not yet supported."));
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID, "Not implemented yet."));
 	}
 
 	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
 		//TODO
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-				"Connectors other than Subclipse not yet supported."));
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID, "Not implemented yet."));
 	}
 
 	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
 			throws CoreException {
 		//TODO
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-				"Connectors other than Subclipse not yet supported."));
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID, "Not implemented yet."));
 	}
 
 	public boolean openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,
