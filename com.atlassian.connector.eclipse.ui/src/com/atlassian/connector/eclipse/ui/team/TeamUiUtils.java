@@ -214,6 +214,7 @@ public final class TeamUiUtils {
 	 * @param limit
 	 *            The amount of revisions to retrieve
 	 */
+	@NotNull
 	public static Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getAllChangesets(String repositoryUrl,
 			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
 		if (monitor == null) {
