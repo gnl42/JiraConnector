@@ -92,7 +92,7 @@ public class CrucibleAddFilesPage extends WizardPage {
 
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			try {
-				revisions = TeamUiUtils.getRevisionsForFile(files, monitor);
+				revisions = TeamUiUtils.getRevisionsForFiles(files, monitor);
 			} catch (CoreException e) {
 				exception = e;
 			}
