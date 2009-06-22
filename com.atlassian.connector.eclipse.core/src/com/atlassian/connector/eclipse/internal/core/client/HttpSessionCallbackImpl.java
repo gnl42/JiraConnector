@@ -36,13 +36,18 @@ import java.util.Map;
  */
 public class HttpSessionCallbackImpl implements HttpSessionCallback {
 
+	/** synchronized on this HttpSessionCallbackImpl */
 	private final Map<ServerData, HttpClient> httpClients = new HashMap<ServerData, HttpClient>();
 
 	private final Map<String, ServerData> locations = new HashMap<String, ServerData>();
 
+	private final MultiThreadedHttpConnectionManager connectionManager;
+
 	private final IdleConnectionTimeoutThread idleConnectionTimeoutThread = new IdleConnectionTimeoutThread();
 
 	public HttpSessionCallbackImpl() {
+		this.connectionManager = new MultiThreadedHttpConnectionManager();
+		WebUtil.addConnectionManager(connectionManager);
 		idleConnectionTimeoutThread.start();
 	}
 
@@ -81,6 +86,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 			locations.put(location.getUrl(), serverCfg);
 		}
 		setupHttpClient(location, httpClient);
+		idleConnectionTimeoutThread.addConnectionManager(httpClient.getHttpConnectionManager());
 	}
 
 	private void setupHttpClient(AbstractWebLocation location, HttpClient httpClient) {
@@ -88,11 +94,29 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 				new NullProgressMonitor());
 		httpClient.setHostConfiguration(hostConfiguration);
 		httpClient.getParams().setAuthenticationPreemptive(true);
-		idleConnectionTimeoutThread.addConnectionManager(httpClient.getHttpConnectionManager());
+	}
+
+	/**
+	 * Similar to updateHostConfiguration. Only difference is that it doesn't set idle connection timeout.
+	 * 
+	 * @param location
+	 * @param serverCfg
+	 * @return
+	 */
+	public synchronized HttpClient initializeHostConfiguration(AbstractWebLocation location, ServerData serverCfg) {
+		HttpClient httpClient = httpClients.get(serverCfg);
+		if (httpClient == null) {
+			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+			httpClients.put(serverCfg, httpClient);
+			locations.put(location.getUrl(), serverCfg);
+		}
+		setupHttpClient(location, httpClient);
+		return httpClient;
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
+		WebUtil.removeConnectionManager(connectionManager);
 		for (HttpClient httpClient : httpClients.values()) {
 			shutdown(httpClient);
 		}
