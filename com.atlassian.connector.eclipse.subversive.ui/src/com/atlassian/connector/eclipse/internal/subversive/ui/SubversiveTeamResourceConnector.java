@@ -177,32 +177,6 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
 	}
 
-	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
-		Assert.isNotNull(file);
-		try {
-			monitor.beginTask("Getting Revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
-			final IRepositoryResource remoteResource = SVNRemoteStorage.instance().asRepositoryResource(file);
-
-			GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(remoteResource, false);
-			getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
-			getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
-			getLogMessagesOp.setIncludeMerged(true);
-
-			getLogMessagesOp.run(monitor);
-			SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
-			SortedSet<Long> revisions = new TreeSet<Long>();
-			if (logEntries != null) {
-				for (SVNLogEntry logEntry : logEntries) {
-					revisions.add(new Long(logEntry.revision));
-				}
-			}
-			return revisions;
-		} catch (Exception e) {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-					"Error while retrieving Revisions for file " + file.getName() + ".", e));
-		}
-	}
-
 	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
 		IRepositoryLocation[] repositories = SVNRemoteStorage.instance().getRepositoryLocations();
 		if (repositories == null) {
@@ -269,7 +243,33 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		return map;
 	}
 
-	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
+		Assert.isNotNull(file);
+		try {
+			monitor.beginTask("Getting Revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
+			final IRepositoryResource remoteResource = SVNRemoteStorage.instance().asRepositoryResource(file);
+
+			GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(remoteResource, false);
+			getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
+			getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
+			getLogMessagesOp.setIncludeMerged(true);
+
+			getLogMessagesOp.run(monitor);
+			SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
+			SortedSet<Long> revisions = new TreeSet<Long>();
+			if (logEntries != null) {
+				for (SVNLogEntry logEntry : logEntries) {
+					revisions.add(new Long(logEntry.revision));
+				}
+			}
+			return revisions;
+		} catch (Exception e) {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+					"Error while retrieving Revisions for file " + file.getName() + ".", e));
+		}
+	}
+
+	public Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
 			throws CoreException {
 		Assert.isNotNull(files);
 
@@ -278,28 +278,9 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		monitor.beginTask("Getting Revisions", files.size());
 
 		for (IFile file : files) {
-			final IRepositoryResource local = SVNRemoteStorage.instance().asRepositoryResource(file);
-			IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
-
+			final IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
 			try {
-				subMonitor.beginTask("Getting revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
-				GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(local, false);
-				getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
-				getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
-				getLogMessagesOp.setIncludeMerged(true);
-				getLogMessagesOp.run(subMonitor);
-
-				SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
-				SortedSet<Long> revisions = new TreeSet<Long>();
-				if (logEntries != null) {
-					for (SVNLogEntry logEntry : logEntries) {
-						revisions.add(logEntry.revision);
-					}
-				}
-				map.put(file, revisions);
-			} catch (Exception e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-						"Error while retrieving Revisions for file " + file.getName() + ".", e));
+				map.put(file, getRevisionsForFile(file, subMonitor));
 			} finally {
 				subMonitor.done();
 			}
