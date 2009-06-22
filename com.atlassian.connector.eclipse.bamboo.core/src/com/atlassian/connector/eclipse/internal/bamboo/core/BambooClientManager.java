@@ -15,7 +15,7 @@ import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getSe
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
-import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooHttpSessionCallback;
+import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
 import com.atlassian.theplugin.commons.bamboo.BambooServerFacade;
 import com.atlassian.theplugin.commons.bamboo.BambooServerFacadeImpl;
 import com.atlassian.theplugin.commons.remoteapi.ServerData;
@@ -38,11 +38,11 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 
 	private BambooServerFacade crucibleServerFacade;
 
-	private final BambooHttpSessionCallback clientCallback;
+	private final HttpSessionCallbackImpl clientCallback;
 
 	public BambooClientManager(File cacheFile) {
 		super(cacheFile);
-		clientCallback = new BambooHttpSessionCallback();
+		clientCallback = new HttpSessionCallbackImpl();
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	}
 
 	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, ServerData serverCfg) {
-		clientCallback.initialize(location, serverCfg);
+		clientCallback.initializeHostConfiguration(location, serverCfg);
 		return clientCallback;
 	}
 
@@ -129,7 +129,7 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	 * 
 	 * @return
 	 */
-	public BambooHttpSessionCallback getClientCallback() {
+	public HttpSessionCallbackImpl getClientCallback() {
 		return clientCallback;
 	}
 
