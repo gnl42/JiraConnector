@@ -55,7 +55,6 @@ import org.osgi.framework.Bundle;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -95,7 +94,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID, "Not implemented yet."));
 	}
 
-	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+	public Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
 			throws CoreException {
 		//TODO
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID, "Not implemented yet."));

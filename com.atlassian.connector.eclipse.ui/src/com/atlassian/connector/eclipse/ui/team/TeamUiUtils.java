@@ -59,7 +59,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
@@ -259,7 +258,7 @@ public final class TeamUiUtils {
 		return toReturn;
 	}
 
-	public static Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+	public static Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
 			throws CoreException {
 		Assert.isNotNull(files);
 		if (monitor == null) {
@@ -270,7 +269,7 @@ public final class TeamUiUtils {
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled()) {
 				try {
-					Map<IFile, SortedSet<Long>> revisions = connector.getRevisionsForFile(files, monitor);
+					Map<IFile, SortedSet<Long>> revisions = connector.getRevisionsForFiles(files, monitor);
 					if (revisions != null) {
 						return revisions;
 					}
@@ -280,7 +279,7 @@ public final class TeamUiUtils {
 				}
 			}
 		}
-		return defaultConnector.getRevisionsForFile(files, monitor);
+		return defaultConnector.getRevisionsForFiles(files, monitor);
 	}
 
 	public static void openCompareEditor(String repoUrl, String filePath, String otherRevisionFilePath,

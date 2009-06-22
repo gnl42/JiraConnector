@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
@@ -72,13 +71,13 @@ public interface ITeamResourceConnector {
 
 	/**
 	 * 
-	 * @param files
+	 * @param file
 	 * @param monitor
 	 * @return null if operation is not supported/handled, otherwise sorted revisions
 	 * @throws CoreException
 	 */
 	@Nullable
-	SortedSet<Long> getRevisionsForFile(IFile files, IProgressMonitor monitor) throws CoreException;
+	SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * 
@@ -88,7 +87,8 @@ public interface ITeamResourceConnector {
 	 * @throws CoreException
 	 */
 	@Nullable
-	Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor) throws CoreException;
+	Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
+			throws CoreException;
 
 	/**
 	 * @param repositoryUrl
