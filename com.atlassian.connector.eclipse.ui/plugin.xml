@@ -28,8 +28,20 @@
             content="$nl$/intro/whatsnewExtensionContent.xml">
       </configExtension>
    </extension>
+   
+   	<extension point="org.eclipse.mylyn.tasks.core.templates">
+		<repository addAutomatically="true"
+			label="Atlassian Integrations Support" repositoryKind="jira" urlRepository="https://studio.atlassian.com/" />
+	</extension>
+   
    <extension
          point="org.eclipse.mylyn.tasks.bugs.support">
+	    <category
+	          description="Commercial support"
+	          id="org.eclipse.mylyn.tasks.bugs.commercial"
+	          name="Commercial Support"
+	          weight="500">
+	    </category>
       <provider
             categoryId="org.eclipse.mylyn.tasks.bugs.commercial"
             description="Support for Atlassian Integrations"
@@ -52,6 +64,10 @@
                kind="jira"
                url="https://studio.atlassian.com/">
          </repository>
+         <property
+               name="product"
+               value="PLE">
+         </property>         
       </mapping>
       <mapping
             namespace="com.atlassian.connector.commons"
@@ -59,14 +75,6 @@
          <property
                name="product"
                value="ACC">
-         </property>
-      </mapping>
-      <mapping
-            namespace="com.atlassian.connector.eclipse"
-            productId="com.atlassian.connector">
-         <property
-               name="product"
-               value="PLE">
          </property>
       </mapping>
    </extension>
