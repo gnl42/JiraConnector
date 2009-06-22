@@ -106,7 +106,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 				"Not implemented yet for CVS."));
 	}
 
-	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+	public Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
 			throws CoreException {
 		// @todo implement it
 		Assert.isNotNull(files);
