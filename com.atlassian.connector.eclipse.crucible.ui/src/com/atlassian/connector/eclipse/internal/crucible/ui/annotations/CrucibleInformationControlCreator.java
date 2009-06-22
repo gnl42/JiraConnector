@@ -19,6 +19,7 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 /**
@@ -29,10 +30,13 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 public class CrucibleInformationControlCreator implements IInformationControlCreator {
 
 	public IInformationControl createInformationControl(Shell parent) {
+		//make sure edit text context is active (for F2 to work)
+		IContextService contextService = (IContextService) PlatformUI.getWorkbench().getService(IContextService.class);
+		contextService.activateContext("org.eclipse.ui.textEditorScope");
 		//add our own handler as F2 focus handler
-		ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
-		final Command command = service.getCommand(ITextEditorActionDefinitionIds.SHOW_INFORMATION);
-		command.setHandler(new FocusTooltipHandler());
+		ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+		Command showInfoCommand = commandService.getCommand(ITextEditorActionDefinitionIds.SHOW_INFORMATION);
+		showInfoCommand.setHandler(new FocusTooltipHandler());
 		return new CrucibleInformationControl(parent, this);
 	}
 }

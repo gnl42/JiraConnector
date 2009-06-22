@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
@@ -42,7 +43,10 @@ import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.projection.AnnotationBag;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -342,6 +346,12 @@ public class CrucibleAnnotationHover implements IAnnotationHover, IAnnotationHov
 				fInformationPresenter.setMargins(4, 0); // AnnotationBarHoverManager sets (5,0), minus SourceViewer.GAP_SIZE_1
 				fInformationPresenter.setInformationProvider(informationProvider, contentType);
 				fInformationPresenter.showInformation();
+
+				//remove our own handler as F2 focus handler
+				ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().getService(
+						ICommandService.class);
+				Command showInfoCommand = commandService.getCommand(ITextEditorActionDefinitionIds.SHOW_INFORMATION);
+				showInfoCommand.setHandler(null);
 
 				return true;
 			}
