@@ -115,7 +115,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
-		return true;
+		return getLocalResourceFromFilePath(filePath) != null;
 	}
 
 	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
