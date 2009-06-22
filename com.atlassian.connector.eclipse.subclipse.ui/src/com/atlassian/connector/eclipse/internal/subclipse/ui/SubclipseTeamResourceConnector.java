@@ -99,7 +99,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
-		return true;
+		return getLocalResourceFromFilePath(filePath) != null;
 	}
 
 	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
@@ -201,7 +201,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 	}
 
-	public Map<IFile, SortedSet<Long>> getRevisionsForFile(List<IFile> files, IProgressMonitor monitor)
+	public Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
 			throws CoreException {
 		Assert.isNotNull(files);
 
@@ -210,25 +210,11 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		monitor.beginTask("Getting Revisions", files.size());
 
 		for (IFile file : files) {
-			ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(file);
-			IProgressMonitor submonitor = Policy.subMonitorFor(monitor, 1);
+			IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
 			try {
-				submonitor.beginTask("Getting revisions for " + file.getName(), IProgressMonitor.UNKNOWN);
-				SVNRevision revision = SVNRevision.HEAD;
-				GetLogsCommand getLogsCommand = new GetLogsCommand(local.getRemoteResource(revision), revision,
-						new SVNRevision.Number(0), SVNRevision.HEAD, false, 0, null, true);
-				getLogsCommand.run(submonitor);
-				ILogEntry[] logEntries = getLogsCommand.getLogEntries();
-				SortedSet<Long> revisions = new TreeSet<Long>();
-				for (ILogEntry logEntrie : logEntries) {
-					revisions.add(new Long(logEntrie.getRevision().getNumber()));
-				}
-				map.put(file, revisions);
-			} catch (Exception e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-						"Error while retrieving Revisions for file " + file.getName() + ".", e));
+				map.put(file, getRevisionsForFile(file, subMonitor));
 			} finally {
-				submonitor.done();
+				subMonitor.done();
 			}
 		}
 		return map;
