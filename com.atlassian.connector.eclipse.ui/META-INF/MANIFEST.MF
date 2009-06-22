@@ -19,6 +19,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.compare,
  org.eclipse.mylyn.commons.net,
+ org.eclipse.mylyn.tasks.bugs,
  org.jetbrains.annotations;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
