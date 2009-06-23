@@ -502,10 +502,12 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 					}
 
 					ISVNResource projectResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
-					String url = projectResource.getUrl().toString();
+					if (projectResource != null) {
+						SVNUrl url = projectResource.getUrl();
 
-					if (url.endsWith(filePath)) {
-						return resource;
+						if (url != null && url.toString().endsWith(filePath)) {
+							return resource;
+						}
 					}
 				} catch (Exception e) {
 					StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
