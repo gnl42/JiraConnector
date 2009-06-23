@@ -530,9 +530,9 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 				}
 
 				IRepositoryResource projectResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
-				String url = projectResource.getUrl().toString();
 
-				if (url.endsWith(filePath)) {
+				if (projectResource != null && projectResource.getUrl() != null
+						&& projectResource.getUrl().endsWith(filePath)) {
 					return resource;
 				}
 			} catch (Exception e) {
