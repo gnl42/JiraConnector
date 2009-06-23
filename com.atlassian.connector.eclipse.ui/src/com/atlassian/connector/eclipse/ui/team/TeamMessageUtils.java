@@ -89,13 +89,13 @@ public final class TeamMessageUtils {
 	}
 
 	public static void openUnableToCompareErrorMessage(final String repoUrl, final String filePath,
-			final String oldRevision, final String newRevision) {
+			final String oldRevision, final String newRevision, final Throwable e) {
 		if (Display.getCurrent() != null) {
-			internalOpenUnableToCompareErrorMessage(repoUrl, filePath, oldRevision, newRevision);
+			internalOpenUnableToCompareErrorMessage(repoUrl, filePath, oldRevision, newRevision, e);
 		} else {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
-					internalOpenUnableToCompareErrorMessage(repoUrl, filePath, oldRevision, newRevision);
+					internalOpenUnableToCompareErrorMessage(repoUrl, filePath, oldRevision, newRevision, e);
 				}
 			});
 		}
@@ -122,8 +122,17 @@ public final class TeamMessageUtils {
 	}
 
 	private static void internalOpenUnableToCompareErrorMessage(String repoUrl, String filePath, String oldRevision,
-			String newRevision) {
-		final String message = "Unable to compare revisions.  Please check that:\n\n" + getErrorHints();
+			String newRevision, Throwable e) {
+		String message = "Unable to compare revisions. ";
+
+		if (e != null) {
+			message += "Following exception was catched:\n\n";
+			message += e.getMessage();
+			message += "\n\n";
+		}
+
+		message += "Please check that:\n\n" + getErrorHints();
+		message += "\n\nPlease check also Error Log for details.";
 		MessageDialog.openInformation(null, MESSAGE_DIALOG_TITLE, message);
 	}
 }
