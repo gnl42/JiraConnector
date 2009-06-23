@@ -497,7 +497,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 						fileIPath = fileIPath.removeFirstSegments(1);
 						resource = project.findMember(fileIPath);
 					}
-					if (resource == null) {
+					if (resource == null || fileIPath.isEmpty()) {
 						continue;
 					}
 
