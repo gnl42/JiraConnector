@@ -79,7 +79,7 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 	protected void buttonPressed(int buttonId) {
 		super.buttonPressed(buttonId);
 		if (buttonId == IDialogConstants.HELP_ID) {
-			TasksUiUtil.openUrl("http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Eclipse+Connector");
+			TasksUiUtil.openUrl("http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse");
 		}
 	}
 
