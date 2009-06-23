@@ -312,12 +312,12 @@ public final class TeamUiUtils {
 			if (!defaultConnector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
 					newRevisionString, annotationModel, monitor)) {
 				TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString,
-						newRevisionString);
+						newRevisionString, null);
 			}
 		} catch (UnsupportedTeamProviderException e) {
 			TeamMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
 		} catch (CoreException e) {
-			TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString, newRevisionString);
+			TeamMessageUtils.openUnableToCompareErrorMessage(repoUrl, filePath, oldRevisionString, newRevisionString, e);
 		}
 	}
 
