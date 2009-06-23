@@ -148,7 +148,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 							refNewRemoteFile.revision, Depth.INFINITY, ISVNConnector.Options.NONE,
 							new ProgressMonitorWrapper(subMonitor));
 				} else {
-					SVNUtility.diffStatus(proxy, statuses, refOldRemoteFile, refNewRemoteFile, Depth.INFINITY,
+					SVNUtility.diffStatus(proxy, statuses, refNewRemoteFile, refOldRemoteFile, Depth.INFINITY,
 							ISVNConnector.Options.NONE, new ProgressMonitorWrapper(subMonitor));
 				}
 			} catch (Exception e) {
@@ -160,8 +160,8 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			}
 
 			CompareConfiguration cc = new CompareConfiguration();
-			CrucibleSubversiveCompareEditorInput input = new CrucibleSubversiveCompareEditorInput(cc, oldRemoteFile,
-					newRemoteFile, statuses, annotationModel);
+			CrucibleSubversiveCompareEditorInput input = new CrucibleSubversiveCompareEditorInput(cc, newRemoteFile,
+					oldRemoteFile, statuses, annotationModel);
 			try {
 				input.initialize(monitor);
 			} catch (Exception e) {
