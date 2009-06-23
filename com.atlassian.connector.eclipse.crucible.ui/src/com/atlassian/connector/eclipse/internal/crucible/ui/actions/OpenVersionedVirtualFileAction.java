@@ -46,6 +46,48 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 public class OpenVersionedVirtualFileAction extends Action {
 
+	private final class OpenVersionedVirtualFileRunnable implements ICoreRunnable {
+		public void run(IProgressMonitor monitor) throws CoreException {
+			VersionedVirtualFile newFile = crucibleFile.getCrucibleFileInfo().getFileDescriptor();
+			VersionedVirtualFile oldFile = crucibleFile.getCrucibleFileInfo().getOldFileDescriptor();
+			IEditorPart editor = null;
+			if (crucibleFile.isOldFile()) {
+				editor = TeamUiUtils.openFile(oldFile.getRepoUrl(), oldFile.getUrl(), newFile.getUrl(),
+						oldFile.getRevision(), newFile.getRevision(), monitor);
+			} else {
+				editor = TeamUiUtils.openFile(newFile.getRepoUrl(), newFile.getUrl(), oldFile.getUrl(),
+						newFile.getRevision(), oldFile.getRevision(), monitor);
+			}
+
+			if (editor == null) {
+				return;
+			}
+
+			boolean annotationsAdded = false;
+
+			if (editor instanceof ITextEditor) {
+				ITextEditor textEditor = ((ITextEditor) editor);
+				ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
+				if (activeTask != null && activeTask.equals(task)) {
+					annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
+				}
+				if (versionedComment != null) {
+					selectAndRevealComment(textEditor, versionedComment, crucibleFile);
+				}
+			}
+
+			if (!annotationsAdded) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null,
+								"Editor for selected file doesn't support annotations.",
+								MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+					}
+				});
+			}
+		}
+	}
+
 	private final CrucibleFile crucibleFile;
 
 	private VersionedComment versionedComment;
@@ -71,47 +113,7 @@ public class OpenVersionedVirtualFileAction extends Action {
 	public void run() {
 		CrucibleUiUtil.checkAndRequestReviewActivation(review);
 		try {
-			CommonUiUtil.run(PlatformUI.getWorkbench().getProgressService(), new ICoreRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					VersionedVirtualFile newFile = crucibleFile.getCrucibleFileInfo().getFileDescriptor();
-					VersionedVirtualFile oldFile = crucibleFile.getCrucibleFileInfo().getOldFileDescriptor();
-					IEditorPart editor = null;
-					if (crucibleFile.isOldFile()) {
-						editor = TeamUiUtils.openFile(oldFile.getRepoUrl(), oldFile.getUrl(), newFile.getUrl(),
-								oldFile.getRevision(), newFile.getRevision(), monitor);
-					} else {
-						editor = TeamUiUtils.openFile(newFile.getRepoUrl(), newFile.getUrl(), oldFile.getUrl(),
-								newFile.getRevision(), oldFile.getRevision(), monitor);
-					}
-
-					if (editor == null) {
-						return;
-					}
-
-					boolean annotationsAdded = false;
-
-					if (editor instanceof ITextEditor) {
-						ITextEditor textEditor = ((ITextEditor) editor);
-						ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
-						if (activeTask != null && activeTask.equals(task)) {
-							annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
-						}
-						if (versionedComment != null) {
-							selectAndRevealComment(textEditor, versionedComment, crucibleFile);
-						}
-					}
-
-					if (!annotationsAdded) {
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null,
-										"Editor for selected file doesn't support annotations.",
-										MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
-							}
-						});
-					}
-				}
-			});
+			CommonUiUtil.run(PlatformUI.getWorkbench().getProgressService(), new OpenVersionedVirtualFileRunnable());
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, NLS.bind(
 					"Problems encoutered opening editor: {0}", e.getMessage(), e)));

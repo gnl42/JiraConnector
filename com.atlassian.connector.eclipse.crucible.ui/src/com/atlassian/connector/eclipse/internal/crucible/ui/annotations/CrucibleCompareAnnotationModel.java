@@ -88,6 +88,88 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 	}
 
 	private final class CrucibleViewerTextInputListener implements ITextInputListener, ICrucibleCompareSourceViewer {
+		private final class ColoringLineBackgroundListener implements LineBackgroundListener {
+			private final StyledText styledText;
+
+			private ColoringLineBackgroundListener(StyledText styledText) {
+				this.styledText = styledText;
+			}
+
+			public void lineGetBackground(LineBackgroundEvent event) {
+				int documentOffset = 0;
+				documentOffset = getDocumentOffset(event);
+				int lineNr = styledText.getLineAtOffset(event.lineOffset) + 1 + documentOffset;
+				Iterator<CrucibleCommentAnnotation> it = crucibleAnnotationModel.getAnnotationIterator();
+				while (it.hasNext()) {
+					CrucibleCommentAnnotation annotation = it.next();
+					int startLine;
+					int endLine;
+					VersionedComment comment = annotation.getVersionedComment();
+					if (oldFile) {
+						startLine = comment.getFromStartLine();
+						endLine = comment.getFromEndLine();
+					} else {
+						startLine = comment.getToStartLine();
+						endLine = comment.getToEndLine();
+					}
+					if (lineNr >= startLine && lineNr <= endLine) {
+						AnnotationPreference pref = new AnnotationPreferenceLookup().getAnnotationPreference(annotation);
+						if (pref.getHighlightPreferenceValue()) {
+							event.lineBackground = new Color(Display.getDefault(), pref.getColorPreferenceValue());
+						}
+					}
+				}
+			}
+
+			/**
+			 * Galileo hack to deal with slaveDocuments (when clicking on java structure elements). The styledText
+			 * will not contain the whole text anymore, so our line numbering is off
+			 * 
+			 * @param event
+			 * @return
+			 */
+			private int getDocumentOffset(LineBackgroundEvent event) {
+				/* there is no access to DefaultDocumentAdapter and thus the (master or slave) document..
+				 * so we have to assume that on first call this event actually has the full text.
+				 * this text, and the text of the current styled text will be used to calculate the offset 
+				 */
+				if (event.widget instanceof StyledText) {
+					String currentText = ((StyledText) event.widget).getText();
+					if (initialText == null) {
+						initialText = currentText;
+						//since it is initial call, offset should be 0 anyway
+						return 0;
+					}
+					//if text is unchanged, offset it 0
+					if (currentText.equals(initialText)) {
+						return 0;
+					}
+					//current text is different, check if it is contained in initialText
+					if (initialText.contains(currentText)) {
+						//calculate the offset
+						int charoffset = initialText.indexOf(currentText);
+						int lineOffset = 0;
+						String delimiter = ((StyledText) event.widget).getLineDelimiter();
+						for (String line : initialText.split(delimiter)) {
+							if (charoffset > 0) {
+								charoffset -= (line.length() + delimiter.length());
+								lineOffset++;
+							} else {
+								break;
+							}
+						}
+						return lineOffset;
+					} else {
+						//log error since we assume the initial text contains all slaveTexts.
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Could not find text offset for annotation highlighting"
+										+ " - current text not contained in initial text."));
+					}
+				}
+				return 0;
+			}
+		}
+
 		private final SourceViewer sourceViewer;
 
 		private final CrucibleAnnotationModel crucibleAnnotationModel;
@@ -163,82 +245,7 @@ public class CrucibleCompareAnnotationModel implements ICompareAnnotationModel {
 				IllegalAccessException, SecurityException, NoSuchFieldException {
 			//TODO this could use some performance tweaks
 			final StyledText styledText = sourceViewer.getTextWidget();
-			styledText.addLineBackgroundListener(new LineBackgroundListener() {
-				public void lineGetBackground(LineBackgroundEvent event) {
-					int documentOffset = 0;
-					documentOffset = getDocumentOffset(event); 
-					int lineNr = styledText.getLineAtOffset(event.lineOffset) + 1 + documentOffset;
-					Iterator<CrucibleCommentAnnotation> it = crucibleAnnotationModel.getAnnotationIterator();
-					while (it.hasNext()) {
-						CrucibleCommentAnnotation annotation = it.next();
-						int startLine;
-						int endLine;
-						VersionedComment comment = annotation.getVersionedComment();
-						if (oldFile) {
-							startLine = comment.getFromStartLine();
-							endLine = comment.getFromEndLine();
-						} else {
-							startLine = comment.getToStartLine();
-							endLine = comment.getToEndLine();
-						}
-						if (lineNr >= startLine && lineNr <= endLine) {
-							AnnotationPreference pref = new AnnotationPreferenceLookup().getAnnotationPreference(annotation);
-							if (pref.getHighlightPreferenceValue()) {
-								event.lineBackground = new Color(Display.getDefault(), pref.getColorPreferenceValue());
-							}
-						}
-					}
-				}
-
-				/**
-				 * Galileo hack to deal with slaveDocuments (when clicking on java structure elements). The styledText
-				 * will not contain the whole text anymore, so our line numbering is off
-				 * 
-				 * @param event
-				 * @return
-				 */
-				private int getDocumentOffset(LineBackgroundEvent event) {
-					/* there is no access to DefaultDocumentAdapter and thus the (master or slave) document..
-					 * so we have to assume that on first call this event actually has the full text.
-					 * this text, and the text of the current styled text will be used to calculate the offset 
-					 */
-					if (event.widget instanceof StyledText) {
-						String currentText = ((StyledText) event.widget).getText();
-						if (initialText == null) {
-							initialText = currentText;
-							//since it is initial call, offset should be 0 anyway
-							return 0;
-						}
-						//if text is unchanged, offset it 0
-						if (currentText.equals(initialText)) {
-							return 0;
-						}
-						//current text is different, check if it is contained in initialText
-						if (initialText.contains(currentText)) {
-							//calculate the offset
-							int charoffset = initialText.indexOf(currentText);
-							int lineOffset = 0;
-							String delimiter = ((StyledText) event.widget).getLineDelimiter();
-							for (String line : initialText.split(delimiter)) {
-								if (charoffset > 0) {
-									charoffset -= (line.length() + delimiter.length());
-									lineOffset++;
-								} else {
-									break;
-								}
-							}
-							return lineOffset;
-						}
-						//log error since we assume the initial text contains all slaveTexts.
-						else {
-							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-									"Could not find text offset for annotation highlighting"
-											+ " - current text not contained in initial text."));
-						}
-					}
-					return 0;
-				}
-			});
+			styledText.addLineBackgroundListener(new ColoringLineBackgroundListener(styledText));
 		}
 
 		/*
