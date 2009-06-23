@@ -354,7 +354,19 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
 	public boolean canHandleEditorInput(IEditorInput editorInput) {
 		if (editorInput instanceof FileEditorInput) {
-			IFile file = ((FileEditorInput) editorInput).getFile();
+			final IFile file = ((FileEditorInput) editorInput).getFile();
+			final IProject project = file.getProject();
+			if (project == null) {
+				return false;
+			}
+
+			// check if project is associated with Subversive Team provider, 
+			// if we don't test it asRepositoryResource will throw RuntimeException
+			RepositoryProvider provider = RepositoryProvider.getProvider(project, SVNTeamPlugin.NATURE_ID);
+			if (provider == null) {
+				return false;
+			}
+
 			ILocalResource localFile = SVNRemoteStorage.instance().asLocalResource(file);
 			if (localFile != null && localFile.getChangeMask() == ILocalResource.NO_MODIFICATION) {
 				return true;
