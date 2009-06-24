@@ -670,7 +670,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 							availableLogEntries.put(customRepository, retrieved.get(customRepository));
 						}
 					}
-
 				} catch (CoreException e) {
 					status.add(e.getStatus());
 				}

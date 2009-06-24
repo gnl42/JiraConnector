@@ -55,6 +55,7 @@ import org.eclipse.team.svn.core.connector.SVNLogPath;
 import org.eclipse.team.svn.core.connector.SVNProperty;
 import org.eclipse.team.svn.core.connector.SVNRevision;
 import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
+import org.eclipse.team.svn.core.operation.IActionOperation;
 import org.eclipse.team.svn.core.operation.remote.GetLogMessagesOperation;
 import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryFile;
@@ -65,6 +66,8 @@ import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.svnstorage.SVNRepositoryFile;
 import org.eclipse.team.svn.core.utility.ProgressMonitorUtility;
 import org.eclipse.team.svn.core.utility.SVNUtility;
+import org.eclipse.team.svn.ui.SVNTeamUIPlugin;
+import org.eclipse.team.svn.ui.preferences.SVNTeamPreferences;
 import org.eclipse.team.svn.ui.repository.RepositoryFileEditorInput;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -191,7 +194,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor, MultiStatus status) {
+			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
 
 		IRepositoryLocation[] repos = SVNRemoteStorage.instance().getRepositoryLocations();
 		if (repos == null) {
@@ -216,25 +219,31 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 				getLogMessagesOp.setLimit(limit);
 				getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
 				getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
-				getLogMessagesOp.setIncludeMerged(true);
+				getLogMessagesOp.setIncludeMerged(SVNTeamPreferences.getMergeBoolean(SVNTeamUIPlugin.instance()
+						.getPreferenceStore(), SVNTeamPreferences.MERGE_INCLUDE_MERGED_NAME));
 				getLogMessagesOp.run(subMonitor);
-				SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
-				if (logEntries != null) {
-					for (SVNLogEntry logEntry : logEntries) {
-						SVNLogPath[] logEntryChangePaths = logEntry.changedPaths;
-						if (logEntryChangePaths == null) {
-							continue;
-						}
-						String[] changed = new String[logEntryChangePaths.length];
-						for (int i = 0; i < logEntryChangePaths.length; i++) {
-							changed[i] = logEntryChangePaths[i].path;
+				if (getLogMessagesOp.getExecutionState() == IActionOperation.OK) {
+					SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
+					if (logEntries != null) {
+						for (SVNLogEntry logEntry : logEntries) {
+							SVNLogPath[] logEntryChangePaths = logEntry.changedPaths;
+							if (logEntryChangePaths == null) {
+								continue;
+							}
+							String[] changed = new String[logEntryChangePaths.length];
+							for (int i = 0; i < logEntryChangePaths.length; i++) {
+								changed[i] = logEntryChangePaths[i].path;
 
+							}
+							ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.message,
+									logEntry.author, Long.toString(logEntry.revision), new Date(logEntry.date),
+									changed, customRepository);
+							changesets.add(customEntry);
 						}
-						ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.message,
-								logEntry.author, Long.toString(logEntry.revision), new Date(logEntry.date), changed,
-								customRepository);
-						changesets.add(customEntry);
 					}
+				} else {
+					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+							"Could not retrieve changesetes for {0}.", repo.getLabel())));
 				}
 			}
 			map.put(customRepository, changesets);

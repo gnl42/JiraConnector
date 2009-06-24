@@ -251,10 +251,6 @@ public final class TeamUiUtils {
 		}
 		subMonitor.done();
 		monitor.done();
-		//if no changeset was retrieved and errors occurred, return errors
-		if (toReturn.size() == 0 && status.getChildren().length > 0) {
-			throw new CoreException(status);
-		}
 		return toReturn;
 	}
 
