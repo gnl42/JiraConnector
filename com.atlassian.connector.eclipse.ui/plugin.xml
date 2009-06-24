@@ -36,14 +36,11 @@
    
    <extension
          point="org.eclipse.mylyn.tasks.bugs.support">
-	    <category
-	          description="Commercial support"
-	          id="org.eclipse.mylyn.tasks.bugs.commercial"
-	          name="Commercial Support"
-	          weight="500">
-	    </category>
+	    <category description="Community supported open source projects"
+			id="org.eclipse.mylyn.tasks.bugs.openSource" name="Open Source Community"
+			weight="900" />
       <provider
-            categoryId="org.eclipse.mylyn.tasks.bugs.commercial"
+            categoryId="org.eclipse.mylyn.tasks.bugs.openSource"
             description="Support for Atlassian Integrations"
             icon="atlassian_icon-32.png"
             id="com.atlassian.connector.eclipse.ui.atlassian"
