@@ -198,7 +198,7 @@
 		
 		<antcall target="generate-metadata-helper">
 			<param name="dir" value="${to}"/>
-			<param name="name" value="${build.publish.name}"/>
+			<param name="name" value="${build.publish.name} ${build.publish.name.suffix}"/>
 		</antcall>
 	</target>
 
