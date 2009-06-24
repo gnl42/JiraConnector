@@ -149,19 +149,29 @@
 		</antcall>
 	</target>
 
-	<target name="mirror" depends="init">
+	<target name="init-3.5">
+		<antcall target="get-build-dependencies-helper">
+			<param name="build.target" value="3.5"/>
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.5}"/>
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.5}"/>
+		</antcall>
+	</target>
+
+	<target name="mirror">
 		<antcall target="init-3.4"/>
 		
+		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
 		<property name="to" value="${build.home}/mirror/e3.4"/>
 		<mkdir dir="${to}"/>
 
 		<antcall target="mirror-helper">
-			<param name="from" value="http://download.eclipse.org/tools/mylyn/update/e3.4"/>
+			<param name="from" value="${eclipse.org}/tools/mylyn/update/e3.4"/>
 		</antcall>
 		<antcall target="mirror-helper">
-			<param name="from" value="http://download.eclipse.org/tools/mylyn/update/extras"/>
+			<param name="from" value="${eclipse.org}/tools/mylyn/update/extras"/>
 			<param name="featureId" value="org.eclipse.mylyn.jira_feature"/>
 		</antcall>
+		<!--
 		<antcall target="mirror-helper">
 			<param name="from" value="http://subclipse.tigris.org/update_1.4.x"/>
 			<param name="featureId" value="org.tigris.subversion.subclipse.mylyn"/>
@@ -178,6 +188,7 @@
 			<param name="from" value="http://subclipse.tigris.org/update_1.4.x"/>
 			<param name="featureId" value="org.tigris.subversion.clientadapter.svnkit.feature"/>
 		</antcall>
+		-->
 		<antcall target="mirror-helper">
 			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin/e3.4/"/>
 		</antcall>
@@ -190,5 +201,27 @@
 			<param name="name" value="${build.publish.name}"/>
 		</antcall>
 	</target>
-	
+
+	<target name="composite">
+		<antcall target="init-3.5"/>
+		<antcall target="ant-helper">
+			<param name="buildfile" value="${basedir}/build.xml"/>
+			<param name="targets" value="generate-composite-site"/>
+			<param name="extraArgs" value="-Dlocation=file://${build.home}/composite-site"/>
+		</antcall>
+	</target>
+
+	<target name="generate-composite-site">
+		<p2.composite.repository>
+			<repository location="${location}" name="Mirror" />
+			<add>
+				<repository location="http://update.atlassian.com/atlassian-eclipse-plugin/"/>
+				<repository location="http://download.eclipse.org/tools/mylyn/update/e3.4/"/>
+				<repository location="http://download.eclipse.org/tools/mylyn/update/extras/"/>
+				<repository location="http://subclipse.tigris.org/update_1.6.x/"/>
+				<repository location="http://download.eclipse.org/technology/subversive/0.7/update-site/"/>
+			</add>
+		</p2.composite.repository>
+	</target>
+
 </project>

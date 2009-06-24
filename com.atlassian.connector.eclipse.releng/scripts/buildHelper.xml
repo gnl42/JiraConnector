@@ -806,4 +806,30 @@
 		</java>
     </target>
 
+	<target name="ant-helper">
+		<property name="timeout" value="10000000" />
+		<property name="application" value="org.eclipse.ant.core.antRunner" />
+    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.3.5}/eclipse" />
+		<property name="vmargs" value=" -Xms40m -Xmx1024m"/>    	
+		
+    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
+    		classname="org.eclipse.core.launcher.Main">
+	        <classpath>
+	    		<fileset dir="${eclipse.home}/plugins">
+	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
+	          	</fileset>
+	        </classpath>
+		    <jvmarg line="${vmargs}"/>
+		    <arg value="-consolelog"/>
+    		<arg value="-data"/>
+    		<arg value="${build.home}/workspace"/>
+		    <arg value="-application"/>
+    		<arg value="${application}"/>
+    		<arg value="-buildfile"/>
+    		<arg value="${buildfile}"/>
+    		<arg value="${targets}"/>
+    		<arg line="${extraArgs}"/>
+		</java>
+    </target>
+
 </project>
