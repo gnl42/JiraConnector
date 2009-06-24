@@ -148,7 +148,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 							refNewRemoteFile.revision, Depth.INFINITY, ISVNConnector.Options.NONE,
 							new ProgressMonitorWrapper(subMonitor));
 				} else {
-					SVNUtility.diffStatus(proxy, statuses, refNewRemoteFile, refOldRemoteFile, Depth.INFINITY,
+					SVNUtility.diffStatus(proxy, statuses, refOldRemoteFile, refNewRemoteFile, Depth.INFINITY,
 							ISVNConnector.Options.NONE, new ProgressMonitorWrapper(subMonitor));
 				}
 			} catch (Exception e) {
