@@ -140,7 +140,15 @@
 			<fileset dir="${build.home}/3.4/site"/>
 		</scp>
 	</target>
-	
+
+	<target name="init-3.3">
+		<antcall target="get-build-dependencies-helper">
+			<param name="build.target" value="3.3"/>
+			<param name="eclipse.sdk.url" value="${eclipse.url.3.3}"/>
+			<param name="eclipse.sdk.version" value="${eclipse.sdk.3.3}"/>
+		</antcall>
+	</target>
+
 	<target name="init-3.4">
 		<antcall target="get-build-dependencies-helper">
 			<param name="build.target" value="3.4"/>
@@ -158,6 +166,7 @@
 	</target>
 
 	<target name="mirror">
+		<antcall target="init-3.3"/>
 		<antcall target="init-3.4"/>
 		
 		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
@@ -190,7 +199,7 @@
 		</antcall>
 		-->
 		<antcall target="mirror-helper">
-			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin/e3.4/"/>
+			<param name="from" value="http://update.atlassian.com/atlassian-eclipse-plugin"/>
 		</antcall>
 		
 		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml"/>
