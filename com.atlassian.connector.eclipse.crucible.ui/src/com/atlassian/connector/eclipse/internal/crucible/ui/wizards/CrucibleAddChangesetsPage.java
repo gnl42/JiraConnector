@@ -87,7 +87,9 @@ import java.util.TreeSet;
  */
 public class CrucibleAddChangesetsPage extends WizardPage {
 
-	private static final String FAKE_NODE = "...";
+	private static final int LIMIT = 25;
+
+	private static final String EMPTY_NODE = "No changesets available.";
 
 	private class ChangesetLabelProvider extends LabelProvider {
 		@Override
@@ -99,7 +101,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				return CommonImages.getImage(CrucibleImages.REPOSITORY);
 			} else if (element instanceof ICustomChangesetLogEntry) {
 				return CommonImages.getImage(CrucibleImages.CHANGESET);
-			} else if (element == FAKE_NODE) {
+			} else if (element == EMPTY_NODE) {
 				return null;
 			} else if (element instanceof String) {
 				return CommonImages.getImage(CrucibleImages.FILE);
@@ -117,8 +119,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			} else if (element instanceof ICustomChangesetLogEntry) {
 				ICustomChangesetLogEntry logEntry = (ICustomChangesetLogEntry) element;
 				return logEntry.getRevision() + " [" + logEntry.getAuthor() + "] - " + logEntry.getComment();
-			} else if (element == FAKE_NODE) {
-				return FAKE_NODE;
+			} else if (element == EMPTY_NODE) {
+				return EMPTY_NODE;
 			} else if (element instanceof String) {
 				return (String) element;
 			}
@@ -138,7 +140,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				//root, repository URLs
 				if (logEntries.get(parentElement).size() == 0) {
 					//if no retrieved changeset, create fake node for lazy loading
-					return new String[] { FAKE_NODE };
+					return new String[] { EMPTY_NODE };
 				}
 				return logEntries.get(parentElement).toArray();
 			} else if (parentElement instanceof ICustomChangesetLogEntry) {
@@ -470,7 +472,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 		addChangesetMenuItem.setEnabled(false);
 		getNextRevisionsMenuItem = new MenuItem(contextMenuSource, SWT.PUSH);
-		getNextRevisionsMenuItem.setText("Get 10 More Revisions");
+		getNextRevisionsMenuItem.setText(String.format("Get %d More Revisions", LIMIT));
 		getNextRevisionsMenuItem.setEnabled(false);
 		getNextRevisionsMenuItem.addSelectionListener(new SelectionAdapter() {
 			@SuppressWarnings("unchecked")
@@ -491,7 +493,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 						if (customRepository != null && !alreadyDone.contains(customRepository)) {
 							SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(customRepository);
 							int currentNumberOfEntries = logEntries == null ? 0 : logEntries.size();
-							updateChangesets(customRepository.getUrl(), currentNumberOfEntries + 10);
+							updateChangesets(customRepository.getUrl(), currentNumberOfEntries + LIMIT);
 							alreadyDone.add(customRepository);
 						}
 					}
@@ -500,7 +502,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 					for (CustomRepository customRepository : availableLogEntries.keySet()) {
 						SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(customRepository);
 						int currentNumberOfEntries = logEntries == null ? 0 : logEntries.size();
-						updateChangesets(customRepository.getUrl(), currentNumberOfEntries + 10);
+						updateChangesets(customRepository.getUrl(), currentNumberOfEntries + LIMIT);
 					}
 				}
 			}
@@ -531,7 +533,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 					SortedSet<ICustomChangesetLogEntry> logEntries = availableLogEntries.get(object);
 					int currentNumberOfEntries = logEntries == null ? 0 : logEntries.size();
 					if (currentNumberOfEntries == 0) {
-						updateChangesets(((CustomRepository) object).getUrl(), 10);
+						updateChangesets(((CustomRepository) object).getUrl(), LIMIT);
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
 								// expand tree after filling
@@ -677,7 +679,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		};
 		try {
 			setErrorMessage(null);
-			getContainer().run(true, true, runnable);
+			getContainer().run(true, true, runnable); // blocking operation
 		} catch (Exception e) {
 			status.add(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to retrieve revisions", e));
 		}
