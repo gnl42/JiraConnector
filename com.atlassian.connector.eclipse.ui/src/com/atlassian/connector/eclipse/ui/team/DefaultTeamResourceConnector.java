@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -50,6 +49,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.Bundle;
 
 import java.net.URI;
@@ -83,8 +83,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return openFileWithTeamApi(repoUrl, filePath, otherRevisionFilePath, revisionString, monitor);
 	}
 
-	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
+	@NotNull
+	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
+			IProgressMonitor monitor) throws CoreException {
 		//TODO
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID, "Not implemented yet."));
 	}

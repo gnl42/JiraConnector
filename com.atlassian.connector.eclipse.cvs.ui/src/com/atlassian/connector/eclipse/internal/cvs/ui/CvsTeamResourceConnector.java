@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.cvs.ui;
 
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
@@ -28,7 +27,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
@@ -43,6 +41,7 @@ import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryRoot;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -94,13 +93,14 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		for (ICVSRepositoryLocation repo : repositories) {
 			final RepositoryRoot root = repositoryManager.getRepositoryRootFor(repo);
 			final String name = (root != null && root.getName() != null) ? root.getName() : null;
-			res.add(new RepositoryInfo(repo.getLocation(true), name));
+			res.add(new RepositoryInfo(repo.getLocation(true), name, this));
 		}
 		return res;
 	}
 
-	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
+	@NotNull
+	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
+			IProgressMonitor monitor) throws CoreException {
 		// @todo implement it
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
 				"Not implemented yet for CVS."));
@@ -164,7 +164,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		if (CVSWorkspaceRoot.isSharedWithCVS(project)) {
 			final ICVSFolder folder = (ICVSFolder) CVSWorkspaceRoot.getCVSResourceFor(project);
 			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
-			return folderInfo != null ? new RepositoryInfo(folderInfo.getRoot(), null) : null;
+			return folderInfo != null ? new RepositoryInfo(folderInfo.getRoot(), null, this) : null;
 		}
 		return null;
 	}

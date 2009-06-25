@@ -19,8 +19,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
-import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -70,14 +70,14 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 	}
 
 	private class AddFilesAndPatchesToReviewJob extends CrucibleReviewChangeJob {
-		private final Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
+		private final Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
 
 		private final String patchRepository;
 
 		private final String patch;
 
 		public AddFilesAndPatchesToReviewJob(String name, TaskRepository taskRepository,
-				Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries, String patch,
+				Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries, String patch,
 				String patchRepository) {
 			super(name, taskRepository);
 			this.selectedLogEntries = selectedLogEntries;
@@ -94,18 +94,17 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						//add revisions
 						if (selectedLogEntries != null) {
-							for (CustomRepository customRepository : selectedLogEntries.keySet()) {
-								monitor.beginTask("Adding revisions to repository " + customRepository.getUrl(),
-										selectedLogEntries.get(customRepository).size());
+							for (RepositoryInfo repository : selectedLogEntries.keySet()) {
+								monitor.beginTask("Adding revisions to repository " + repository.getScmPath(),
+										selectedLogEntries.get(repository).size());
 								//collect revisions
 								ArrayList<String> revisions = new ArrayList<String>();
-								for (ICustomChangesetLogEntry logEntry : selectedLogEntries.get(customRepository)) {
+								for (ICustomChangesetLogEntry logEntry : selectedLogEntries.get(repository)) {
 									revisions.add(logEntry.getRevision());
 								}
 								//add revisions to review
 								crucibleReview = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(),
-										addChangeSetsPage.getRepositoryMappings().get(customRepository).getName(),
-										revisions);
+										addChangeSetsPage.getRepositoryMappings().get(repository).getName(), revisions);
 							}
 						}
 						//add patch
@@ -154,7 +153,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private final SortedSet<ICustomChangesetLogEntry> preselectedLogEntries;
 
-	private Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd;
+	private Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd;
 
 	private String patchRepositoryToAdd;
 
@@ -428,7 +427,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 	}
 
 	private void addFilesAndPatchToReview(
-			final Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries, final String patch,
+			final Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries, final String patch,
 			final String patchRepository) {
 		if ((selectedLogEntries == null || selectedLogEntries.size() == 0) && patch == null) {
 			return;

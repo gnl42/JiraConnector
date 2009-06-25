@@ -15,7 +15,6 @@ import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSub
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
@@ -38,7 +37,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -53,6 +51,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.jetbrains.annotations.NotNull;
 import org.tigris.subversion.subclipse.core.ISVNLocalFile;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
@@ -149,56 +148,75 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				monitor);
 		List<RepositoryInfo> res = MiscUtil.buildArrayList(repos.length);
 		for (ISVNRepositoryLocation repo : repos) {
-			res.add(new RepositoryInfo(repo.getUrl().toString(), repo.getLabel()));
+			res.add(new RepositoryInfo(repo.getUrl().toString(), repo.getLabel(), this));
 		}
 		return res;
 	}
 
-	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor, MultiStatus status) {
-		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
-				monitor);
-		monitor.beginTask("Retrieving changeset for SVN (subclipse) repositories", repos.length);
-		Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> map = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
-		for (ISVNRepositoryLocation repo : repos) {
-			//if a repository is given and the repo does not match the given repository, skip it
-			if (repositoryUrl != null && !repositoryUrl.equals(repo.getUrl().toString())) {
-				continue;
-			}
-			IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
-			CustomRepository customRepository = new CustomRepository(repo.getUrl().toString());
-			SortedSet<ICustomChangesetLogEntry> changesets = new TreeSet<ICustomChangesetLogEntry>();
-			ISVNRemoteFolder rootFolder = repo.getRootFolder();
+	protected RepositoryInfo getRepository(String url, IProgressMonitor monitor) {
+		ISVNRepositoryLocation location = getRepositoryLocation(url, monitor);
+		if (location != null) {
+			return new RepositoryInfo(location.getUrl().toString(), location.getLabel(), this);
+		}
+		return null;
+	}
 
-			if (limit > 0) { //do not retrieve unlimited revisions
-				subMonitor.beginTask("Retrieving changesets for " + repo.getLabel(), 101);
-				GetLogsCommand getLogsCommand = new GetLogsCommand(rootFolder, SVNRevision.HEAD, SVNRevision.HEAD,
-						new SVNRevision.Number(0), false, limit, null, true);
-				try {
-					getLogsCommand.run(subMonitor);
-					ILogEntry[] logEntries = getLogsCommand.getLogEntries();
-					for (ILogEntry logEntry : logEntries) {
-						LogEntryChangePath[] logEntryChangePaths = logEntry.getLogEntryChangePaths();
-						String[] changed = new String[logEntryChangePaths.length];
-						for (int i = 0; i < logEntryChangePaths.length; i++) {
-							changed[i] = logEntryChangePaths[i].getPath();
-
-						}
-						ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.getComment(),
-								logEntry.getAuthor(), logEntry.getRevision().toString(), logEntry.getDate(), changed,
-								customRepository);
-						changesets.add(customEntry);
-					}
-				} catch (SVNException e) {
-					status.add(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
-							"Could not retrieve changesets from " + customRepository.getUrl(), e));
+	private ISVNRepositoryLocation getRepositoryLocation(@NotNull String url, @NotNull IProgressMonitor monitor) {
+		ISVNRepositoryLocation[] repositories = SVNUIPlugin.getPlugin()
+				.getRepositoryManager()
+				.getKnownRepositoryLocations(monitor);
+		if (repositories != null) {
+			for (ISVNRepositoryLocation repository : repositories) {
+				if (repository.getUrl() != null && repository.getUrl().toString().equals(url)) {
+					return repository;
 				}
 			}
-			map.put(customRepository, changesets);
-			subMonitor.done();
 		}
-		return map;
+		return null;
+	}
 
+	@NotNull
+	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
+			IProgressMonitor monitor) throws CoreException {
+
+		ISVNRepositoryLocation location = getRepositoryLocation(repositoryUrl, monitor);
+		if (location == null) {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not get repository location for {0}", repositoryUrl)));
+		}
+
+		SortedSet<ICustomChangesetLogEntry> changesets = new TreeSet<ICustomChangesetLogEntry>();
+		ISVNRemoteFolder rootFolder = location.getRootFolder();
+
+		if (limit > 0) { //do not retrieve unlimited revisions
+			monitor.beginTask("Retrieving changesets for " + location.getLabel(), 101);
+
+			GetLogsCommand getLogsCommand = new GetLogsCommand(rootFolder, SVNRevision.HEAD, SVNRevision.HEAD,
+					new SVNRevision.Number(0), false, limit, null, true);
+			try {
+				getLogsCommand.run(monitor);
+				ILogEntry[] logEntries = getLogsCommand.getLogEntries();
+				for (ILogEntry logEntry : logEntries) {
+					LogEntryChangePath[] logEntryChangePaths = logEntry.getLogEntryChangePaths();
+					String[] changed = new String[logEntryChangePaths.length];
+					for (int i = 0; i < logEntryChangePaths.length; i++) {
+						changed[i] = logEntryChangePaths[i].getPath();
+
+					}
+					ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.getComment(),
+							logEntry.getAuthor(), logEntry.getRevision().toString(), logEntry.getDate(), changed,
+							getRepository(repositoryUrl, monitor));
+					changesets.add(customEntry);
+				}
+			} catch (SVNException e) {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+						"Could not retrieve changesets for {0}", repositoryUrl), e));
+			}
+		} else {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
+					"Getting all changesets is not supported"));
+		}
+		return changesets;
 	}
 
 	public Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)
@@ -548,7 +566,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			descriptor = registry.findEditor(IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
 		}
 		if (descriptor == null) {
-			id = "org.eclipse.ui.DefaultTextEditor"; //$NON-NLS-1$
+			id = "org.eclipse.ui.DefaultTextEditor";
 		} else {
 			id = descriptor.getId();
 		}
@@ -564,7 +582,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
 			final ISVNRepositoryLocation repository = svnResource.getRepository();
 			if (repository != null) {
-				return new RepositoryInfo(repository.getUrl().toString(), repository.getLabel());
+				return new RepositoryInfo(repository.getUrl().toString(), repository.getLabel(), this);
 			}
 		}
 		// ignore

@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.subversive.ui;
 import com.atlassian.connector.eclipse.internal.subversive.ui.compare.CrucibleSubversiveCompareEditorInput;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
@@ -37,7 +36,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -78,10 +77,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -188,68 +187,82 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
 		List<RepositoryInfo> res = MiscUtil.buildArrayList(repositories.length);
 		for (IRepositoryLocation repo : repositories) {
-			res.add(new RepositoryInfo(repo.getUrl(), repo.getLabel()));
+			res.add(new RepositoryInfo(repo.getUrl(), repo.getLabel(), this));
 		}
 		return res;
 	}
 
-	public Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
-
-		IRepositoryLocation[] repos = SVNRemoteStorage.instance().getRepositoryLocations();
-		if (repos == null) {
-			return Collections.emptyMap();
+	protected RepositoryInfo getRepository(String url, IProgressMonitor monitor) {
+		IRepositoryLocation location = getRepositoryLocation(url);
+		if (location != null) {
+			return new RepositoryInfo(location.getUrl(), location.getLabel(), this);
 		}
+		return null;
+	}
 
-		monitor.beginTask("Retrieving changeset for SVN (Subversive) repositories", repos.length);
-		Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> map = new HashMap<CustomRepository, SortedSet<ICustomChangesetLogEntry>>();
-		for (IRepositoryLocation repo : repos) {
-			//if a repository is given and the repo does not match the given repository, skip it
-			if (repositoryUrl != null && !repositoryUrl.equals(repo.getUrl().toString())) {
-				continue;
-			}
-			IProgressMonitor subMonitor = org.eclipse.mylyn.commons.net.Policy.subMonitorFor(monitor, 1);
-			CustomRepository customRepository = new CustomRepository(repo.getUrl().toString());
-			SortedSet<ICustomChangesetLogEntry> changesets = new TreeSet<ICustomChangesetLogEntry>();
-			IRepositoryRoot rootFolder = repo.getRoot();
-
-			if (limit > 0) { //do not retrieve unlimited revisions
-				subMonitor.beginTask("Retrieving changesets for " + repo.getLabel(), 101);
-				GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(rootFolder, false);
-				getLogMessagesOp.setLimit(limit);
-				getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
-				getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
-				getLogMessagesOp.setIncludeMerged(SVNTeamPreferences.getMergeBoolean(SVNTeamUIPlugin.instance()
-						.getPreferenceStore(), SVNTeamPreferences.MERGE_INCLUDE_MERGED_NAME));
-				getLogMessagesOp.run(subMonitor);
-				if (getLogMessagesOp.getExecutionState() == IActionOperation.OK) {
-					SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
-					if (logEntries != null) {
-						for (SVNLogEntry logEntry : logEntries) {
-							SVNLogPath[] logEntryChangePaths = logEntry.changedPaths;
-							if (logEntryChangePaths == null) {
-								continue;
-							}
-							String[] changed = new String[logEntryChangePaths.length];
-							for (int i = 0; i < logEntryChangePaths.length; i++) {
-								changed[i] = logEntryChangePaths[i].path;
-
-							}
-							ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.message,
-									logEntry.author, Long.toString(logEntry.revision), new Date(logEntry.date),
-									changed, customRepository);
-							changesets.add(customEntry);
-						}
-					}
-				} else {
-					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-							"Could not retrieve changesetes for {0}.", repo.getLabel())));
+	private IRepositoryLocation getRepositoryLocation(String url) {
+		IRepositoryLocation[] repositories = SVNRemoteStorage.instance().getRepositoryLocations();
+		if (repositories != null) {
+			for (IRepositoryLocation repository : repositories) {
+				if (repository.getUrl().equals(url)) {
+					return repository;
 				}
 			}
-			map.put(customRepository, changesets);
-			subMonitor.done();
 		}
-		return map;
+		return null;
+	}
+
+	@NotNull
+	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
+			IProgressMonitor monitor) throws CoreException {
+
+		IRepositoryLocation location = getRepositoryLocation(repositoryUrl);
+		if (location == null) {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not get repository location for {0}", repositoryUrl)));
+		}
+
+		SortedSet<ICustomChangesetLogEntry> changesets = new TreeSet<ICustomChangesetLogEntry>();
+		IRepositoryRoot rootFolder = location.getRoot();
+
+		if (limit > 0) { //do not retrieve unlimited revisions
+			monitor.beginTask("Retrieving changesets for " + location.getLabel(), 101);
+
+			GetLogMessagesOperation getLogMessagesOp = new GetLogMessagesOperation(rootFolder, false);
+			getLogMessagesOp.setLimit(limit);
+			getLogMessagesOp.setEndRevision(SVNRevision.fromNumber(0));
+			getLogMessagesOp.setStartRevision(SVNRevision.HEAD);
+			getLogMessagesOp.setIncludeMerged(SVNTeamPreferences.getMergeBoolean(SVNTeamUIPlugin.instance()
+					.getPreferenceStore(), SVNTeamPreferences.MERGE_INCLUDE_MERGED_NAME));
+			getLogMessagesOp.run(monitor);
+			if (getLogMessagesOp.getExecutionState() == IActionOperation.OK) {
+				SVNLogEntry[] logEntries = getLogMessagesOp.getMessages();
+				if (logEntries != null) {
+					for (SVNLogEntry logEntry : logEntries) {
+						SVNLogPath[] logEntryChangePaths = logEntry.changedPaths;
+						if (logEntryChangePaths == null) {
+							continue;
+						}
+						String[] changed = new String[logEntryChangePaths.length];
+						for (int i = 0; i < logEntryChangePaths.length; i++) {
+							changed[i] = logEntryChangePaths[i].path;
+						}
+						ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.message,
+								logEntry.author, Long.toString(logEntry.revision), new Date(logEntry.date), changed,
+								getRepository(repositoryUrl, new NullProgressMonitor()));
+						changesets.add(customEntry);
+					}
+				}
+			} else {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+						"Could not retrieve changesetes for {0}.", location.getLabel())));
+			}
+		} else {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+					"Getting all changesets is not supported"));
+		}
+
+		return changesets;
 	}
 
 	public SortedSet<Long> getRevisionsForFile(IFile file, IProgressMonitor monitor) throws CoreException {
@@ -491,7 +504,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		final IRepositoryLocation repositoryLocation = SVNRemoteStorage.instance().getRepositoryLocation(resource);
 		final String rootUrl = repositoryLocation.getRepositoryRootUrl();
 		final String label = repositoryLocation.getLabel();
-		return new RepositoryInfo(rootUrl, label);
+		return new RepositoryInfo(rootUrl, label, this);
 	}
 
 	private String getAbsoluteUrl(VersionedVirtualFile fileDescriptor) {
@@ -586,7 +599,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			descriptor = registry.findEditor(IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
 		}
 		if (descriptor == null) {
-			id = "org.eclipse.ui.DefaultTextEditor"; //$NON-NLS-1$
+			id = "org.eclipse.ui.DefaultTextEditor";
 		} else {
 			id = descriptor.getId();
 		}

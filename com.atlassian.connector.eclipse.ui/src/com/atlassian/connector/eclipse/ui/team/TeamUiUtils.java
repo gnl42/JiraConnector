@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
@@ -61,6 +60,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A utility class for doing UI related operations for team items
@@ -214,44 +214,50 @@ public final class TeamUiUtils {
 	 *            The amount of revisions to retrieve
 	 */
 	@NotNull
-	public static Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getAllChangesets(String repositoryUrl,
-			int limit, IProgressMonitor monitor, MultiStatus status) throws CoreException {
+	public static SortedSet<ICustomChangesetLogEntry> getLatestsChangesets(@NotNull String repositoryUrl, int limit,
+			IProgressMonitor monitor) throws CoreException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
+
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
-		Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> toReturn = MiscUtil.buildHashMap();
+
 		monitor.beginTask("Retrieving changesets", teamResourceManager.getTeamConnectors().size() + 1);
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
-			if (connector.isEnabled()) {
-				try {
-					Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> changesets = connector.getLatestChangesets(
-							repositoryUrl, limit, subMonitor, status);
-					if (changesets != null) {
-						toReturn.putAll(changesets);
+			try {
+				if (connector.isEnabled()) {
+					try {
+						SortedSet<ICustomChangesetLogEntry> changesets = connector.getLatestChangesets(repositoryUrl,
+								limit, subMonitor);
+						if (changesets != null) {
+							return changesets;
+						}
+					} catch (RuntimeException e) {
+						throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+								"Exception encountered while building list of the latest changesets", e));
 					}
-				} catch (CoreException e) {
-					status.add(e.getStatus());
-				} catch (RuntimeException e) {
-					status.add(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
-							"Exception encountered while building list of the latest changesets", e));
 				}
+			} finally {
+				subMonitor.done();
 			}
-			subMonitor.done();
 		}
+
 		IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 1);
 		try {
-			toReturn.putAll(defaultConnector.getLatestChangesets(repositoryUrl, limit, subMonitor, status));
-		} catch (CoreException e) {
-			status.add(e.getStatus());
+			SortedSet<ICustomChangesetLogEntry> changesets = defaultConnector.getLatestChangesets(repositoryUrl, limit,
+					subMonitor);
+			if (changesets != null) {
+				return changesets;
+			}
 		} catch (Exception e) {
-			status.add(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
 					"Exception encountered while building list of the latest changesets", e));
 		}
+
 		subMonitor.done();
 		monitor.done();
-		return toReturn;
+		return new TreeSet<ICustomChangesetLogEntry>();
 	}
 
 	public static Map<IFile, SortedSet<Long>> getRevisionsForFiles(Collection<IFile> files, IProgressMonitor monitor)

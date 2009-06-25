@@ -11,13 +11,18 @@
 
 package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.CustomRepository;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.tigris.subversion.subclipse.core.history.ILogEntry;
 import org.tigris.subversion.subclipse.core.history.LogEntryChangePath;
+
+import java.util.Set;
 
 /**
  * Adapter factory for adapting between a CustomChangesetLogEntry and the ILogEntry of subclipse
@@ -42,12 +47,23 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
 				changed[i] = logEntryChangePaths[i].getPath();
 
 			}
-			CustomRepository repository = new CustomRepository(logEntry.getResource()
-					.getRepository()
-					.getUrl()
-					.toString());
-			return new CustomChangeSetLogEntry(logEntry.getComment(), logEntry.getAuthor(), logEntry.getRevision()
-					.toString(), logEntry.getDate(), changed, repository);
+
+			Set<ITeamResourceConnector> connectors = AtlassianUiPlugin.getDefault()
+					.getTeamResourceManager()
+					.getTeamConnectors();
+
+			// Only because I don't want to publish getRepository as a ITeamResourceConnector member
+			for (ITeamResourceConnector connector : connectors) {
+				if (connector instanceof SubclipseTeamResourceConnector) {
+					SubclipseTeamResourceConnector strc = (SubclipseTeamResourceConnector) connector;
+					RepositoryInfo repository = strc.getRepository(logEntry.getResource()
+							.getRepository()
+							.getUrl()
+							.toString(), new NullProgressMonitor());
+					return new CustomChangeSetLogEntry(logEntry.getComment(), logEntry.getAuthor(),
+							logEntry.getRevision().toString(), logEntry.getDate(), changed, repository);
+				}
+			}
 		}
 
 		return null;

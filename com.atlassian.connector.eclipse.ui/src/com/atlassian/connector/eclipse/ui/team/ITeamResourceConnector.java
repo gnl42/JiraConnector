@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.jetbrains.annotations.NotNull;
@@ -92,15 +91,17 @@ public interface ITeamResourceConnector {
 
 	/**
 	 * @param repositoryUrl
-	 *            The repository URL to get changesets from, or NULL to retrieve form all available repositories
+	 *            The repository URL to get changesets from
 	 * @param limit
-	 *            The amount of revisions to retrieve
+	 *            The amount of revisions to retrieve (if 0 download all of them, implementations may not support this
+	 *            operation)
 	 * @return latest changesets
 	 * @throws CoreException
+	 *             on any error
 	 */
 	@NotNull
-	Map<CustomRepository, SortedSet<ICustomChangesetLogEntry>> getLatestChangesets(String repositoryUrl, int limit,
-			IProgressMonitor monitor, MultiStatus status) throws CoreException;
+	SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
+			IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * 
@@ -119,7 +120,6 @@ public interface ITeamResourceConnector {
 	Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor);
 
 	/**
-	 * 
 	 * @param resource
 	 *            a resource which is managed by this team repository connector
 	 * @return <code>null</code> if this connector does not support given {@link IResource}

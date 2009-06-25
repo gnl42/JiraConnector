@@ -30,12 +30,12 @@ public class CustomChangeSetLogEntry implements ICustomChangesetLogEntry {
 
 	private final String[] changedFiles;
 
-	private final CustomRepository repository;
+	private final RepositoryInfo repository;
 
 	private final Date date;
 
 	public CustomChangeSetLogEntry(String comment, String author, String revision, Date date, String[] changedFiles,
-			CustomRepository repository) {
+			RepositoryInfo repository) {
 		super();
 		this.comment = comment;
 		this.author = author;
@@ -61,7 +61,7 @@ public class CustomChangeSetLogEntry implements ICustomChangesetLogEntry {
 		return changedFiles;
 	}
 
-	public CustomRepository getRepository() {
+	public RepositoryInfo getRepository() {
 		return repository;
 	}
 
