@@ -272,6 +272,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 		createRightViewer(composite);
 
+		createRepositoryMappingComp(composite);
+
 		Button updateData = new Button(composite, SWT.PUSH);
 		updateData.setText("Update Repository Data");
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
@@ -282,16 +284,14 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			}
 		});
 
-		createRepositoryMappingComp(composite);
-
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
 	}
 
 	private void createRepositoryMappingComp(Composite composite) {
 		final Composite mappingComposite = new Composite(composite, SWT.NONE);
-		GridDataFactory.fillDefaults().span(3, 1).align(SWT.BEGINNING, SWT.BEGINNING).grab(true, true).applyTo(
-				mappingComposite);
+
+		GridDataFactory.fillDefaults().span(3, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(mappingComposite);
 		mappingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
 		final Table table = new Table(mappingComposite, SWT.BORDER);
