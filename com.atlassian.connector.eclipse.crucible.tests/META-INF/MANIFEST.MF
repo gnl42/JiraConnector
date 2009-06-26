@@ -24,4 +24,5 @@ Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-interna
  com.atlassian.connector.eclipse.internal.crucible.tests;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui;x-internal:=true,
  com.atlassian.connector.eclipse.internal.crucible.ui.commons;x-internal:=true,
- com.atlassian.connector.eclipse.internal.crucible.ui.operations;x-internal:=true
+ com.atlassian.connector.eclipse.internal.crucible.ui.operations;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.crucible.ui.wizards;x-internal:=true
