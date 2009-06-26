@@ -38,6 +38,7 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("restriction")
 public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAction {
 
 	protected static final class ResultBean {
@@ -66,7 +67,6 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 		this.workbenchWindow = window;
 	}
 
-	@SuppressWarnings("restriction")
 	public void run(IAction action) {
 		if (selectionData != null) {
 			if (selectionData.resource != null) {
