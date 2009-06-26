@@ -18,9 +18,12 @@ import com.atlassian.connector.eclipse.internal.bamboo.tests.util.MockBambooRepo
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -214,15 +217,23 @@ public class BuildPlanManagerTest extends TestCase {
 	}
 
 	private void setRefreshIntervalMinutes(int minutes) {
-		BambooCorePlugin.getDefault().getPluginPreferences().setValue(BambooConstants.PREFERENCE_REFRESH_INTERVAL,
-				minutes);
-		BambooCorePlugin.getDefault().savePluginPreferences();
+		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+		preferences.putInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL, minutes);
+		try {
+			preferences.flush();
+		} catch (BackingStoreException e) {
+			// ignore
+		}
 	}
 
 	private void toggleAutoRefresh() {
-		BambooCorePlugin.getDefault().getPluginPreferences().setValue(BambooConstants.PREFERENCE_AUTO_REFRESH,
-				!BambooCorePlugin.isAutoRefresh());
-		BambooCorePlugin.getDefault().savePluginPreferences();
+		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+		preferences.putBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, !BambooCorePlugin.isAutoRefresh());
+		try {
+			preferences.flush();
+		} catch (BackingStoreException e) {
+			// ignore
+		}
 	}
 
 	private void joinJob(Job job) {
