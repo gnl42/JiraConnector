@@ -17,9 +17,13 @@ import com.atlassian.theplugin.commons.util.LoggerImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.File;
 
@@ -51,17 +55,23 @@ public class BambooCorePlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		plugin.getPluginPreferences().setDefault(BambooConstants.PREFERENCE_REFRESH_INTERVAL,
-				BambooConstants.DEFAULT_REFRESH_INTERVAL);
-		plugin.getPluginPreferences().setDefault(BambooConstants.PREFERENCE_AUTO_REFRESH,
-				BambooConstants.DEFAULT_AUTO_REFRESH);
+
+		IEclipsePreferences preferences = new DefaultScope().getNode(BambooCorePlugin.PLUGIN_ID);
+		preferences.putInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL, BambooConstants.DEFAULT_REFRESH_INTERVAL);
+		preferences.putBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, BambooConstants.DEFAULT_AUTO_REFRESH);
+
 		buildPlanManager = new BuildPlanManager();
-		plugin.getPluginPreferences().addPropertyChangeListener(new IPropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent event) {
+		preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
+			public void preferenceChange(PreferenceChangeEvent event) {
 				buildPlanManager.reInitializeScheduler();
 			}
 		});
 
+		try {
+			preferences.flush();
+		} catch (BackingStoreException e) {
+			// TODO: decide if we want to swallow it here 
+		}
 	}
 
 	@Override
@@ -101,21 +111,33 @@ public class BambooCorePlugin extends Plugin {
 	}
 
 	public static int getRefreshIntervalMinutes() {
-		int minutes = plugin.getPluginPreferences().getInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL);
+		int minutes = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID).getInt(
+				BambooConstants.PREFERENCE_REFRESH_INTERVAL, BambooConstants.DEFAULT_REFRESH_INTERVAL);
 		return minutes;
 	}
 
 	public static void setRefreshIntervalMinutes(int minutes) {
-		plugin.getPluginPreferences().setValue(BambooConstants.PREFERENCE_REFRESH_INTERVAL, minutes);
-		plugin.savePluginPreferences();
+		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+		preferences.putInt(BambooConstants.PREFERENCE_REFRESH_INTERVAL, minutes);
+		try {
+			preferences.flush();
+		} catch (BackingStoreException e) {
+			// TODO: 
+		}
 	}
 
 	public static void toggleAutoRefresh() {
-		plugin.getPluginPreferences().setValue(BambooConstants.PREFERENCE_AUTO_REFRESH, !isAutoRefresh());
-		plugin.savePluginPreferences();
+		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+		preferences.putBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, !isAutoRefresh());
+		try {
+			preferences.flush();
+		} catch (BackingStoreException e) {
+			// TODO: decide if we want to swallow it
+		}
 	}
 
 	public static boolean isAutoRefresh() {
-		return plugin.getPluginPreferences().getBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH);
+		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+		return preferences.getBoolean(BambooConstants.PREFERENCE_AUTO_REFRESH, BambooConstants.DEFAULT_AUTO_REFRESH);
 	}
 }
