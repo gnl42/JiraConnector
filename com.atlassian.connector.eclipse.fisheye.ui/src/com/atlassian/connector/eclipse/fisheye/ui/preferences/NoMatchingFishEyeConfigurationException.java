@@ -16,6 +16,11 @@ import org.eclipse.core.runtime.IStatus;
 
 public class NoMatchingFishEyeConfigurationException extends CoreException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -310140741368828761L;
+
 	private final String scmPath;
 
 	public NoMatchingFishEyeConfigurationException(IStatus status, String scmPath) {
