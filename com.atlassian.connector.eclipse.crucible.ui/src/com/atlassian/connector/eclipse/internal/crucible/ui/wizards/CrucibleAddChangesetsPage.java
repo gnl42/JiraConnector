@@ -51,21 +51,16 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.views.navigator.ResourceComparator;
@@ -277,8 +272,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 		createRightViewer(composite);
 
-		createRepositoryMappingComp(composite);
-
 		Button updateData = new Button(composite, SWT.PUSH);
 		updateData.setText("Update Repository Data");
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
@@ -289,19 +282,22 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			}
 		});
 
+		createRepositoryMappingComp(composite);
+
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
 	}
 
 	private void createRepositoryMappingComp(Composite composite) {
 		final Composite mappingComposite = new Composite(composite, SWT.NONE);
-		GridDataFactory.fillDefaults().grab(false, true).applyTo(mappingComposite);
+		GridDataFactory.fillDefaults().span(3, 1).align(SWT.BEGINNING, SWT.BEGINNING).grab(true, true).applyTo(
+				mappingComposite);
 		mappingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
 		final Table table = new Table(mappingComposite, SWT.BORDER);
 		table.setHeaderVisible(true);
 
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(table);
+		GridDataFactory.fillDefaults().hint(1000, 100).grab(true, true).applyTo(table);
 		repositoriesMappingViewer = new TableViewer(table);
 		repositoriesMappingViewer.setContentProvider(new IStructuredContentProvider() {
 			public Object[] getElements(Object inputElement) {
@@ -316,7 +312,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		});
 		final TableViewerColumn column1 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
 		column1.getColumn().setText("Local Repository");
-		column1.getColumn().setWidth(100);
+		column1.getColumn().setWidth(500);
 		column1.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -338,7 +334,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 		final TableViewerColumn column2 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
 		column2.getColumn().setText("Crucible Repository");
-		column2.getColumn().setWidth(100);
+		column2.getColumn().setWidth(200);
 		column2.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -382,37 +378,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				}
 			}
 
-		});
-
-		mappingComposite.addControlListener(new ControlAdapter() {
-			public void controlResized(ControlEvent e) {
-				Rectangle area = mappingComposite.getClientArea();
-				Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-				ScrollBar vBar = table.getVerticalBar();
-				int width = area.width - table.computeTrim(0, 0, 0, 0).width - vBar.getSize().x;
-				if (size.y > area.height + table.getHeaderHeight()) {
-					// Subtract the scrollbar width from the total column width
-					// if a vertical scrollbar will be required
-					Point vBarSize = vBar.getSize();
-					width -= vBarSize.x;
-				}
-				Point oldSize = table.getSize();
-				if (oldSize.x > area.width) {
-					// table is getting smaller so make the columns 
-					// smaller first and then resize the table to
-					// match the client area width
-					column2.getColumn().setWidth(150);
-					column1.getColumn().setWidth(width - column2.getColumn().getWidth());
-					table.setSize(area.width, area.height);
-				} else {
-					// table is getting bigger so make the table 
-					// bigger first and then make the columns wider
-					// to match the client area width
-					table.setSize(area.width, area.height);
-					column2.getColumn().setWidth(150);
-					column1.getColumn().setWidth(width - column2.getColumn().getWidth());
-				}
-			}
 		});
 	}
 
@@ -459,7 +424,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		Tree tree = new Tree(parent, SWT.MULTI | SWT.BORDER);
 		availableTreeViewer = new TreeViewer(tree);
 
-		GridDataFactory.fillDefaults().grab(true, true).span(1, 2).hint(300, 220).applyTo(tree);
+		GridDataFactory.fillDefaults().grab(true, true).hint(300, 220).applyTo(tree);
 		availableTreeViewer.setLabelProvider(new ChangesetLabelProvider());
 		availableTreeViewer.setContentProvider(new ChangesetContentProvider());
 		availableTreeViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
@@ -548,7 +513,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	private void createButtonComp(Composite composite) {
 		Composite buttonComp = new Composite(composite, SWT.NONE);
 		buttonComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
-		GridDataFactory.fillDefaults().grab(false, true).span(1, 2).applyTo(buttonComp);
+		GridDataFactory.fillDefaults().grab(false, true).applyTo(buttonComp);
 
 		addButton = new Button(buttonComp, SWT.PUSH);
 		addButton.setText("Add -->");
@@ -582,7 +547,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		Tree tree = new Tree(composite, SWT.MULTI | SWT.BORDER);
 		selectedTreeViewer = new TreeViewer(tree);
 
-		GridDataFactory.fillDefaults().grab(true, true).hint(300, SWT.DEFAULT).applyTo(tree);
+		GridDataFactory.fillDefaults().grab(true, true).hint(300, 220).applyTo(tree);
+		//GridDataFactory.fillDefaults().grab(true, true).hint(300, SWT.DEFAULT).applyTo(tree);
 		selectedTreeViewer.setLabelProvider(new ChangesetLabelProvider());
 		selectedTreeViewer.setContentProvider(new ChangesetContentProvider());
 		selectedTreeViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));

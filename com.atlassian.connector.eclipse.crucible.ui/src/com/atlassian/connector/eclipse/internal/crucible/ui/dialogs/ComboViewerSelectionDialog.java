@@ -82,7 +82,7 @@ public class ComboViewerSelectionDialog extends Dialog {
 				getButton(IDialogConstants.OK_ID).setEnabled(selection != null);
 			}
 		});
-		GridDataFactory.fillDefaults().hint(50, SWT.DEFAULT).applyTo(comboViewer.getCombo());
+		GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).applyTo(comboViewer.getCombo());
 
 		applyDialogFont(composite);
 		return composite;
