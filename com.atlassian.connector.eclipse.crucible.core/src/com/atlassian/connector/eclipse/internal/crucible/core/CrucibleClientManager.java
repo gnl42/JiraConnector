@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.core;
 import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
 import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
+import com.atlassian.connector.eclipse.internal.core.client.RepositoryClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
@@ -30,6 +31,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Class to manage the clients and data on a per-repository basis
@@ -179,6 +181,20 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	 */
 	public void clear() {
 		clientCallback.clear();
+	}
+
+	/*
+	 * temporary fix for the broken/not-working serialization mechanism 
+	 */
+	@Override
+	protected void updateClientDataMap(Map<String, CrucibleClient> clientByUrl,
+			Map<String, CrucibleClientData> clientDataByUrl) {
+		for (String url : clientByUrl.keySet()) {
+			if (clientDataByUrl.containsKey(url)) {
+				clientDataByUrl.put(url, (clientByUrl.get(url)).getClientData());
+			}
+
+		}
 	}
 
 }

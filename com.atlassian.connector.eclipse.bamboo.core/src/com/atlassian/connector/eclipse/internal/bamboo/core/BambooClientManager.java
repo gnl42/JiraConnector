@@ -16,6 +16,7 @@ import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getSe
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
+import com.atlassian.connector.eclipse.internal.core.client.RepositoryClientManager;
 import com.atlassian.theplugin.commons.bamboo.BambooServerFacade;
 import com.atlassian.theplugin.commons.bamboo.BambooServerFacadeImpl;
 import com.atlassian.theplugin.commons.remoteapi.ServerData;
@@ -27,6 +28,8 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Class to manage the clients and data on a per-repository basis
@@ -133,9 +136,34 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 		return clientCallback;
 	}
 
-	@Override
 	protected BambooClientData getConfiguration(BambooClient client) {
 		return client.getClientData();
+	}
+
+	/*
+	 * temporary fix for the broken/not-working serialization mechanism 
+	 */
+	@Override
+	protected void updateClientDataMap(Map<String, BambooClient> clientByUrl,
+			Map<String, BambooClientData> clientDataByUrl) {
+		for (Entry<String, BambooClient> entry : clientByUrl.entrySet()) {
+			String url = entry.getKey();
+			if (clientDataByUrl.containsKey(url)) {
+				clientDataByUrl.put(url, getConfiguration(entry.getValue()));
+			}
+		}
+	}
+
+	@Override
+	protected void removeClient(TaskRepository repository, Map<String, BambooClient> clientByUrl,
+			Map<String, BambooClientData> clientDataByUrl) {
+		String url = repository.getRepositoryUrl();
+		BambooClient client = clientByUrl.remove(url);
+		if (client != null) {
+			if (clientDataByUrl.containsKey(url)) {
+				clientDataByUrl.put(url, getConfiguration(client));
+			}
+		}
 	}
 
 }

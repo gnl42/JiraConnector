@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.fisheye.core.client;
 
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
-import com.atlassian.connector.eclipse.internal.fisheye.core.ProductClient;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.fisheye.FishEyeServerFacade;
@@ -42,7 +41,7 @@ import java.util.Collection;
  * @author Thomas Ehrnhoefer
  * @author Wojciech Seliga (adaptation for FishEye)
  */
-public class FishEyeClient implements ProductClient<FishEyeClientData> {
+public class FishEyeClient {
 
 	public abstract static class FishEyeRemoteOperation<T> extends RemoteOperation<T, FishEyeServerFacade> {
 

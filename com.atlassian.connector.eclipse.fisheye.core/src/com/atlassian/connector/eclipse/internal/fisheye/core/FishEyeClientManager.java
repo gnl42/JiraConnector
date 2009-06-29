@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.fisheye.core;
 import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
 import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
+import com.atlassian.connector.eclipse.internal.core.client.RepositoryClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 import com.atlassian.theplugin.commons.fisheye.FishEyeServerFacade;
@@ -25,6 +26,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
+import java.util.Map;
 
 public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient, FishEyeClientData> {
 
@@ -129,6 +131,19 @@ public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient,
 	 */
 	public void clear() {
 		clientCallback.clear();
+	}
+
+	/*
+	 * temporary fix for the broken/not-working serialization mechanism 
+	 */
+	@Override
+	protected void updateClientDataMap(Map<String, FishEyeClient> clientByUrl,
+			Map<String, FishEyeClientData> clientDataByUrl) {
+		for (String url : clientByUrl.keySet()) {
+			if (clientDataByUrl.containsKey(url)) {
+				clientDataByUrl.put(url, clientByUrl.get(url).getClientData());
+			}
+		}
 	}
 
 }

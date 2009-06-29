@@ -8,7 +8,9 @@
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
-package com.atlassian.connector.eclipse.internal.bamboo.core;
+package com.atlassian.connector.eclipse.internal.core.client;
+
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
@@ -27,7 +29,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * @author Steffen Pingel
@@ -76,25 +77,17 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 	public synchronized void repositoryAdded(TaskRepository repository) {
 	}
 
-	private void removeClient(TaskRepository repository) {
-		String url = repository.getRepositoryUrl();
-		T client = clientByUrl.remove(url);
-		if (client != null) {
-			if (clientDataByUrl.containsKey(url)) {
-				clientDataByUrl.put(url, getConfiguration(client));
-			}
-		}
+	protected void removeClient(TaskRepository repository, Map<String, T> clientByUrl, Map<String, C> clientDataByUrl) {
+		clientByUrl.remove(repository.getRepositoryUrl());
 	}
 
-	protected abstract C getConfiguration(T client);
-
 	public synchronized void repositoryRemoved(TaskRepository repository) {
-		removeClient(repository);
+		removeClient(repository, clientByUrl, clientDataByUrl);
 		clientDataByUrl.remove(repository.getRepositoryUrl());
 	}
 
 	public synchronized void repositorySettingsChanged(TaskRepository repository) {
-		removeClient(repository);
+		removeClient(repository, clientByUrl, clientDataByUrl);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -115,8 +108,8 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 				}
 			}
 		} catch (Throwable e) {
-			StatusHandler.log(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID,
-					"The respository configuration cache could not be read", e)); //$NON-NLS-1$
+			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
+					"The respository configuration cache could not be read", e));
 		} finally {
 			if (in != null) {
 				try {
@@ -130,7 +123,7 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 	}
 
 	public void writeCache() {
-		updateClientDataMap();
+		updateClientDataMap(clientByUrl, clientDataByUrl);
 		if (cacheFile == null) {
 			return;
 		}
@@ -144,8 +137,8 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 				out.writeObject(clientDataByUrl.get(url));
 			}
 		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID,
-					"The respository configuration cache could not be written", e)); //$NON-NLS-1$
+			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
+					"The respository configuration cache could not be written", e));
 		} finally {
 			if (out != null) {
 				try {
@@ -160,14 +153,7 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 	/*
 	 * temporary fix for the broken/not-working serialization mechanism 
 	 */
-	private void updateClientDataMap() {
-		for (Entry<String, T> entry : clientByUrl.entrySet()) {
-			String url = entry.getKey();
-			if (clientDataByUrl.containsKey(url)) {
-				clientDataByUrl.put(url, getConfiguration(entry.getValue()));
-			}
-		}
-	}
+	protected abstract void updateClientDataMap(Map<String, T> clientByUrl, Map<String, C> clientDataByUrl);
 
 	public TaskRepositoryLocationFactory getTaskRepositoryLocationFactory() {
 		return taskRepositoryLocationFactory;
