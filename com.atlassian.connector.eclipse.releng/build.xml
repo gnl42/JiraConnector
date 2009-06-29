@@ -204,6 +204,8 @@
 		
 		<xslt style="mirror.xsl" in="${to}/site.xml" out="${to}/mirror.xml"/>
 		<move file="${to}/mirror.xml" tofile="${to}/site.xml"/>
+
+		<copy file="associates-e3.4.xml" todir="${to}"/>
 		
 		<antcall target="generate-metadata-helper">
 			<param name="dir" value="${to}"/>
