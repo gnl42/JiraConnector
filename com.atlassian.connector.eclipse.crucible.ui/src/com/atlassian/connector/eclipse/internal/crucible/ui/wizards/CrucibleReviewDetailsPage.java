@@ -106,6 +106,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		} else if (visible) {
 			//preselect
 			preselectDefaultUsers();
+			reviewersSelectionTreePart.updateInput();
 		}
 		super.setVisible(visible);
 	}
@@ -114,7 +115,12 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		Set<CrucibleCachedProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
 		projectsComboViewer.setInput(cachedProjects);
 		if (cachedProjects.size() > 0) {
-			projectsComboViewer.setSelection(new StructuredSelection(projectsComboViewer.getElementAt(0)));
+			if (newReview.getCrucibleProject() == null) {
+				projectsComboViewer.setSelection(new StructuredSelection(projectsComboViewer.getElementAt(0)));
+			} else {
+				projectsComboViewer.setSelection(new StructuredSelection(new CrucibleCachedProject(
+						newReview.getCrucibleProject())));
+			}
 		}
 		Set<CrucibleCachedUser> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
 		moderatorComboViewer.setInput(cachedUsers);
