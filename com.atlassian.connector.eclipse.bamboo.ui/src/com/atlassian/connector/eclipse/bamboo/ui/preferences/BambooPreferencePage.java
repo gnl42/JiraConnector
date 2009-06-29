@@ -2,14 +2,17 @@ package com.atlassian.connector.eclipse.bamboo.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import com.atlassian.connector.eclipse.ui.preferences.PreferencesAdapter;
+import com.atlassian.connector.eclipse.ui.preferences.EclipsePreferencesAdapter;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+@SuppressWarnings("restriction")
 public class BambooPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
 	private static final int MIN_REFRESH_RATE = 1;
@@ -18,13 +21,12 @@ public class BambooPreferencePage extends FieldEditorPreferencePage implements I
 
 	public BambooPreferencePage() {
 		super(GRID);
-		setPreferenceStore(new PreferencesAdapter(BambooCorePlugin.getDefault().getPluginPreferences(),
-				new PreferencesAdapter.SaveHandler() {
-					public void doSave() {
-						BambooCorePlugin.getDefault().savePluginPreferences();
-					}
-				}));
 		setDescription("Atlassian Bamboo Settings");
+	}
+
+	@Override
+	protected IPreferenceStore doGetPreferenceStore() {
+		return new EclipsePreferencesAdapter(new InstanceScope(), BambooCorePlugin.PLUGIN_ID);
 	}
 
 	public void createFieldEditors() {
