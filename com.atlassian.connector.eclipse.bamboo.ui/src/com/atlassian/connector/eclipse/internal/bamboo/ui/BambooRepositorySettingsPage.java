@@ -335,7 +335,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		if (plans != null) {
 			planViewer.setInput(plans);
 			if (!initialized) {
-				// if plans is empty this indicates a loss of configuration, the initialized flag is not set 
+				// if plans are empty this indicates a loss of configuration, the initialized flag is not set 
 				// in this case do nothing to re-trigger initialization after he next refresh  
 				if (plans.size() > 0) {
 					initialized = true;
