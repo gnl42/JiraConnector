@@ -109,7 +109,7 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 			}
 		} catch (Throwable e) {
 			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
-					"The respository configuration cache could not be read", e));
+					"The repository configuration cache could not be read", e));
 		} finally {
 			if (in != null) {
 				try {
@@ -138,7 +138,7 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 			}
 		} catch (IOException e) {
 			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
-					"The respository configuration cache could not be written", e));
+					"The repository configuration cache could not be written", e));
 		} finally {
 			if (out != null) {
 				try {
