@@ -213,6 +213,28 @@
 		</antcall>
 	</target>
 
+	<target name="generate-clover-report" depends="init">
+		<antcall target="for-each-target">
+			<param name="call" value="clover-report-helper"/>
+		</antcall>
+	</target>
+
+
+	<target name="clover-report-helper">
+		
+			<!-- Set up Clover location and instrumentation path -->
+			<taskdef resource="cloverlib.xml" classpath="${basedir}/lib/clover.jar"/>
+		
+			<!-- 
+				Produce coverage analysis docs using Clover 
+			-->
+			<clover-report failonerror="false" initstring="${build.home}/${build.target}/.clover/coverage.db">
+		       <current outfile="${build.home}/${build.target}/coverage-reports">
+		          <format type="html"/>
+		       </current>
+			</clover-report>
+		</target>	
+
 	<target name="composite">
 		<antcall target="init-3.5"/>
 		<antcall target="ant-helper">
@@ -231,6 +253,7 @@
 				<repository location="http://download.eclipse.org/tools/mylyn/update/extras/"/>
 				<repository location="http://subclipse.tigris.org/update_1.6.x/"/>
 				<repository location="http://download.eclipse.org/technology/subversive/0.7/update-site/"/>
+				<!--<repository location="http://update.atlassian.com/eclipse/clover/"/>-->
 			</add>
 		</p2.composite.repository>
 	</target>

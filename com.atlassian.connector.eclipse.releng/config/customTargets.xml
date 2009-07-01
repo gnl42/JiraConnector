@@ -94,8 +94,28 @@
 	<!-- ===================================================================== -->
 	<!-- Steps to do after generating the build scripts. -->
 	<!-- ===================================================================== -->
-	<target name="postGenerate">
+	<target name="postGenerate" depends="postGenerateClover">
 		<antcall target="clean" />
+	</target>
+	<target name="postGenerateClover" if="buildWithClover">
+		<echo message="Cloverizing files"/>
+		<!-- repeat this for as many plugins as you want coverage for -->
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.core/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.tests/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.bamboo.ui/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.core/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.crucible.ui/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.crucible.core/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.crucible.tests/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.cvs.ui/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.ui/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.core/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.fisheye.tests/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.help/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subclipse.ui/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.subversive.ui/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.tests/build.xml"/>
+		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.ui/build.xml"/>
 	</target>
 
 	<!-- ===================================================================== -->
@@ -229,4 +249,15 @@
 			<property name="plugin.destination" value="${UpdateSiteLocation}/plugins" />
 		</ant>
 	</target>
+	
+	<macrodef name="cloverizeBuildXml">
+			<attribute name="file"/>
+			<sequential>
+				<xslt in="@{file}" out="@{file}.out" style="${builder}/buildWithClover.xsl">
+					<param name="initstring" expression="${clover.initstring}"/>
+					<param name="enabled" expression="true"/>
+				</xslt>
+				<move file="@{file}.out" tofile="@{file}"/>
+			</sequential>
+		</macrodef>	
 </project>
