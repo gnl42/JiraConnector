@@ -299,6 +299,7 @@
     		<arg value="-Dbuild.publish.name=${build.publish.name}"/>
     		<!-- this property (when interpolated) is then used by customTargets do dynamically decide whether to cloverize build.xmls or not -->
     		<arg value="${buildWithCloverArg}"/>
+    		<arg value="-Dclover.license.path=${clover.license.path}"/>
     		<arg value="${build.skipFetch}"/>
     		<arg value="${build.extraBuildArgs}"/>
     	</java>
