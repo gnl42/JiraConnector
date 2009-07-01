@@ -229,8 +229,8 @@
 				Produce coverage analysis docs using Clover 
 			-->
 			<clover-report failonerror="false" initstring="${build.home}/${build.target}/.clover/coverage.db">
-		       <current outfile="${build.home}/${build.target}/coverage-reports">
-		          <format type="html"/>
+		       <current outfile="${build.home}/${build.target}/clover.xml">
+		          <format type="xml"/>
 		       </current>
 			</clover-report>
 		</target>	
