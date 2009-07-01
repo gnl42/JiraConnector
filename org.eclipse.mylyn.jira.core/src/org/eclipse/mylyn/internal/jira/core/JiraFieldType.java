@@ -35,6 +35,8 @@ public enum JiraFieldType {
 	// field that has list of links to issues
 	ISSUELINKS("org.mylar.jira.issuelinks", TaskAttribute.TYPE_TASK_DEPENDENCY), //$NON-NLS-1$
 
+	LABELS("com.atlassian.jira.plugin.labels:labels", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
+
 	MULTICHECKBOXES("com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes"), //$NON-NLS-1$
 
 	MULTIGROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker"), //$NON-NLS-1$
