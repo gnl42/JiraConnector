@@ -233,6 +233,11 @@
 		          <format type="xml"/>
 		       </current>
 			</clover-report>
+		<clover-report failonerror="false" initstring="${build.home}/${build.target}/.clover/coverage.db">
+	       <current outfile="${build.home}/${build.target}/clover-html-report">
+	          <format type="html"/>
+	       </current>
+		</clover-report>
 		</target>	
 
 	<target name="composite">
