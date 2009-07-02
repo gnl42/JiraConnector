@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.subversive.ui;
 
+import com.atlassian.connector.eclipse.internal.subversive.core.SubversiveUtil;
 import com.atlassian.connector.eclipse.internal.subversive.ui.compare.CrucibleSubversiveCompareEditorInput;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
@@ -62,7 +63,6 @@ import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.resource.IRepositoryRoot;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
-import org.eclipse.team.svn.core.svnstorage.SVNRepositoryFile;
 import org.eclipse.team.svn.core.utility.ProgressMonitorUtility;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.team.svn.ui.SVNTeamUIPlugin;
@@ -117,17 +117,17 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor) {
-		return getLocalResourceFromFilePath(filePath) != null;
+		return SubversiveUtil.getLocalResourceFromFilePath(filePath) != null;
 	}
 
 	public boolean openCompareEditor(String repoUrl, String newFilePath, String oldFilePath, String oldRevisionString,
 			String newRevisionString, ICompareAnnotationModel annotationModel, final IProgressMonitor monitor)
 			throws CoreException {
 
-		IRepositoryResource oldRemoteFile = getSvnRemoteFile(repoUrl, oldFilePath,
+		IRepositoryResource oldRemoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, oldFilePath,
 				SVNRevision.fromString(oldRevisionString), newFilePath, SVNRevision.fromString(newRevisionString),
 				monitor);
-		IRepositoryResource newRemoteFile = getSvnRemoteFile(repoUrl, newFilePath,
+		IRepositoryResource newRemoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, newFilePath,
 				SVNRevision.fromString(newRevisionString), oldFilePath, SVNRevision.fromString(oldRevisionString),
 				monitor);
 
@@ -193,21 +193,9 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	protected RepositoryInfo getRepository(String url, IProgressMonitor monitor) {
-		IRepositoryLocation location = getRepositoryLocation(url);
+		IRepositoryLocation location = SubversiveUtil.getRepositoryLocation(url);
 		if (location != null) {
 			return new RepositoryInfo(location.getUrl(), location.getLabel(), this);
-		}
-		return null;
-	}
-
-	private IRepositoryLocation getRepositoryLocation(String url) {
-		IRepositoryLocation[] repositories = SVNRemoteStorage.instance().getRepositoryLocations();
-		if (repositories != null) {
-			for (IRepositoryLocation repository : repositories) {
-				if (repository.getUrl().equals(url)) {
-					return repository;
-				}
-			}
 		}
 		return null;
 	}
@@ -216,7 +204,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
 			IProgressMonitor monitor) throws CoreException {
 
-		IRepositoryLocation location = getRepositoryLocation(repositoryUrl);
+		IRepositoryLocation location = SubversiveUtil.getRepositoryLocation(repositoryUrl);
 		if (location == null) {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
 					"Could not get repository location for {0}", repositoryUrl)));
@@ -317,12 +305,12 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 					"No repository URL given.."));
 		}
 
-		IResource localResource = getLocalResourceFromFilePath(filePath);
+		IResource localResource = SubversiveUtil.getLocalResourceFromFilePath(filePath);
 
 		boolean localFileNotFound = localResource == null;
 
 		if (localFileNotFound) {
-			localResource = getLocalResourceFromFilePath(otherRevisionFilePath);
+			localResource = SubversiveUtil.getLocalResourceFromFilePath(otherRevisionFilePath);
 		}
 
 		if (localResource != null) {
@@ -339,7 +327,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 				}
 				return editorPart;
 			} else {
-				final IRepositoryFile remoteFile = getSvnRemoteFile(repoUrl, filePath,
+				final IRepositoryFile remoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, filePath,
 						SVNRevision.fromString(revisionString), otherRevisionFilePath,
 						SVNRevision.fromString(otherRevisionString), monitor);
 
@@ -540,42 +528,6 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	private IResource getLocalResourceFromFilePath(String filePath) {
-		if (filePath == null || filePath.length() <= 0) {
-			return null;
-		}
-		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-			// check if project is associated with Subversive Team provider, 
-			// if we don't test it asRepositoryResource will throw RuntimeException
-			RepositoryProvider provider = RepositoryProvider.getProvider(project, SVNTeamPlugin.NATURE_ID);
-			if (provider == null) {
-				continue;
-			}
-
-			try {
-				IPath fileIPath = new Path(filePath);
-				IResource resource = project.findMember(fileIPath);
-				while (!fileIPath.isEmpty() && resource == null) {
-					fileIPath = fileIPath.removeFirstSegments(1);
-					resource = project.findMember(fileIPath);
-				}
-				if (resource == null) {
-					continue;
-				}
-
-				IRepositoryResource projectResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
-
-				if (projectResource != null && projectResource.getUrl() != null
-						&& projectResource.getUrl().endsWith(filePath)) {
-					return resource;
-				}
-			} catch (Exception e) {
-				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, e.getMessage(), e));
-			}
-		}
-		return null;
-	}
-
 	private IEditorPart openRemoteSvnFile(IRepositoryFile remoteFile, IProgressMonitor monitor) {
 		try {
 			IWorkbench workbench = AtlassianSubversiveUiPlugin.getDefault().getWorkbench();
@@ -604,34 +556,6 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			id = descriptor.getId();
 		}
 		return id;
-	}
-
-	private IRepositoryFile getSvnRemoteFile(String repoUrl, String filePath, SVNRevision fileRevision,
-			String otherPath, SVNRevision otherRevision, final IProgressMonitor monitor) {
-		if (repoUrl == null) {
-			return null;
-		}
-
-		if (filePath.startsWith("/")) {
-			filePath = filePath.substring(1);
-		}
-
-		IResource localResource = getLocalResourceFromFilePath(filePath);
-
-		boolean localFileNotFound = localResource == null;
-
-		if (localFileNotFound) {
-			localResource = getLocalResourceFromFilePath(otherPath);
-			fileRevision = otherRevision;
-		}
-
-		if (localResource != null) {
-			final IRepositoryResource repResource = SVNRemoteStorage.instance().asRepositoryResource(localResource);
-			final IRepositoryFile remoteFile = new SVNRepositoryFile(repResource.getRepositoryLocation(),
-					repResource.getUrl(), fileRevision);
-			return remoteFile;
-		}
-		return null;
 	}
 
 	public String getName() {
