@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.subversive.core;
+package com.atlassian.connector.eclipse.internal.subversive.core;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
