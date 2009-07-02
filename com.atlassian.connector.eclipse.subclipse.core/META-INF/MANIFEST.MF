@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Atlassian Connector for Eclipse Subclipse Core
+Bundle-SymbolicName: com.atlassian.connector.eclipse.subclipse.core;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: com.atlassian.connector.eclipse.internal.subclipse.core.AtlassianSubclipseCorePlugin
+Bundle-Vendor: Atlassian
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime,
+ org.jetbrains.annotations;resolution:=optional
+Export-Package: com.atlassian.connector.eclipse.internal.subclipse.core;x-friends:="com.atlassian.connector.eclipse.subclipse.ui"
+
+
