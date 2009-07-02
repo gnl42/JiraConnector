@@ -18,7 +18,11 @@ import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.svnstorage.SVNRepositoryFile;
 
-public class SubversiveUtil {
+public final class SubversiveUtil {
+	
+	private SubversiveUtil() {
+		// ignore
+	}
 
 	public static IRepositoryLocation getRepositoryLocation(String url) {
 		IRepositoryLocation[] repositories = SVNRemoteStorage.instance().getRepositoryLocations();
