@@ -14,29 +14,35 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.tasks.ui.wizards.NewRepositoryWizard;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.ITasksUiConstants;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
-import org.eclipse.mylyn.tasks.ui.wizards.TaskRepositoryWizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
+
+import java.util.Map;
 
 public class RepositoryConfigurationAction extends Action implements IMenuCreator {
+	private static final String ADD_TASK_REPOSITORY_COMMAND = "org.eclipse.mylyn.tasks.ui.command.addTaskRepository";
+
 	private Menu menu;
 
 	public RepositoryConfigurationAction() {
@@ -51,15 +57,8 @@ public class RepositoryConfigurationAction extends Action implements IMenuCreato
 	@Override
 	public void run() {
 		Display.getDefault().asyncExec(new Runnable() {
-			@SuppressWarnings("restriction")
 			public void run() {
-				NewRepositoryWizard repositoryWizard = new NewRepositoryWizard(BambooCorePlugin.CONNECTOR_KIND);
-
-				WizardDialog repositoryDialog = new TaskRepositoryWizardDialog(null, repositoryWizard);
-				repositoryDialog.create();
-				repositoryDialog.getShell().setText("Add New Bamboo Repository...");
-				repositoryDialog.setBlockOnOpen(true);
-				repositoryDialog.open();
+				openNewRepositoryWizard();
 			}
 		});
 	}
@@ -80,19 +79,41 @@ public class RepositoryConfigurationAction extends Action implements IMenuCreato
 		return menu;
 	}
 
+	private void openNewRepositoryWizard() {
+		final ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().getService(
+				ICommandService.class);
+		final IHandlerService handlerService = (IHandlerService) PlatformUI.getWorkbench().getService(
+				IHandlerService.class);
+
+		final Command addTaskRepositoryCommand = commandService.getCommand(ADD_TASK_REPOSITORY_COMMAND);
+		final Map<String, String> parameters = MiscUtil.buildHashMap();
+		parameters.put("connectorKind", BambooCorePlugin.CONNECTOR_KIND);
+
+		try {
+			addTaskRepositoryCommand.executeWithChecks(new ExecutionEvent(addTaskRepositoryCommand, parameters, null,
+					handlerService.getCurrentState()));
+		} catch (Exception e) {
+			StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
+					"Failed to execute {0} command.", ADD_TASK_REPOSITORY_COMMAND), e));
+		}
+
+		/*
+		NewRepositoryWizard repositoryWizard = new NewRepositoryWizard(BambooCorePlugin.CONNECTOR_KIND);
+
+		WizardDialog repositoryDialog = new TaskRepositoryWizardDialog(null, repositoryWizard);
+		repositoryDialog.create();
+		repositoryDialog.getShell().setText("Add New Bamboo Repository...");
+		repositoryDialog.setBlockOnOpen(true);
+		repositoryDialog.open();
+		*/
+	}
+
 	private void addActions() {
 		// add repository action
 		Action addRepositoryAction = new Action() {
-			@SuppressWarnings("restriction")
 			@Override
 			public void run() {
-				NewRepositoryWizard repositoryWizard = new NewRepositoryWizard(BambooCorePlugin.CONNECTOR_KIND);
-
-				WizardDialog repositoryDialog = new TaskRepositoryWizardDialog(null, repositoryWizard);
-				repositoryDialog.create();
-				repositoryDialog.getShell().setText("Add New Bamboo Repository...");
-				repositoryDialog.setBlockOnOpen(true);
-				repositoryDialog.open();
+				openNewRepositoryWizard();
 			}
 		};
 		ActionContributionItem addRepoACI = new ActionContributionItem(addRepositoryAction);
