@@ -125,11 +125,9 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			throws CoreException {
 
 		IRepositoryResource oldRemoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, oldFilePath,
-				SVNRevision.fromString(oldRevisionString), newFilePath, SVNRevision.fromString(newRevisionString),
-				monitor);
+				SVNRevision.fromString(oldRevisionString), monitor);
 		IRepositoryResource newRemoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, newFilePath,
-				SVNRevision.fromString(newRevisionString), oldFilePath, SVNRevision.fromString(oldRevisionString),
-				monitor);
+				SVNRevision.fromString(newRevisionString), monitor);
 
 		if (oldRemoteFile != null && newRemoteFile != null) {
 			oldRemoteFile.setPegRevision(oldRemoteFile.getSelectedRevision());
@@ -300,66 +298,91 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
 	public IEditorPart openFile(String repoUrl, String filePath, String otherRevisionFilePath, String revisionString,
 			String otherRevisionString, final IProgressMonitor monitor) throws CoreException {
+
 		if (repoUrl == null) {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
 					"No repository URL given.."));
 		}
 
-		IResource localResource = SubversiveUtil.getLocalResourceFromFilePath(filePath);
+		Status status;
+		IEditorPart[] editorWrapper = new IEditorPart[1];
 
-		boolean localFileNotFound = localResource == null;
-
-		if (localFileNotFound) {
-			localResource = SubversiveUtil.getLocalResourceFromFilePath(otherRevisionFilePath);
+		status = openFile(repoUrl, filePath, revisionString, monitor, editorWrapper);
+		if (status.isOK()) {
+			return editorWrapper[0];
 		}
 
-		if (localResource != null) {
-			final SVNRevision svnRevision = SVNRevision.fromString(revisionString);
-			final ILocalResource localFile = SVNRemoteStorage.instance().asLocalResource(localResource);
-
-			if (SVNRevision.fromNumber(localFile.getBaseRevision()).equals(svnRevision)
-					&& localFile.getChangeMask() == ILocalResource.NO_MODIFICATION) {
-				// the file is not dirty and we have the right local copy
-				IEditorPart editorPart = TeamUiUtils.openLocalResource(localResource);
-				if (editorPart == null) {
-					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-							"Could not open editor for {0}.", localFile.getName())));
-				}
-				return editorPart;
-			} else {
-				final IRepositoryFile remoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, filePath,
-						SVNRevision.fromString(revisionString), otherRevisionFilePath,
-						SVNRevision.fromString(otherRevisionString), monitor);
-
-				if (remoteFile != null) {
-					// we need to open the remote resource since the file is either dirty or the wrong revision
-
-					IEditorPart editorPart = null;
-					if (Display.getCurrent() != null) {
-						editorPart = openRemoteSvnFile(remoteFile, monitor);
-					} else {
-						final IEditorPart[] part = new IEditorPart[1];
-						PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-							public void run() {
-								part[0] = openRemoteSvnFile(remoteFile, monitor);
-							}
-						});
-						editorPart = part[0];
-					}
-					if (editorPart == null) {
-						throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
-								NLS.bind("Could not open editor for {0}.", remoteFile.getName())));
-					}
-					return editorPart;
-				} else {
-					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-							"Could not get remote file for {0}.", filePath)));
-				}
+		if (otherRevisionFilePath != null && otherRevisionString != null && !"".equals(otherRevisionString)) {
+			status = openFile(repoUrl, otherRevisionFilePath, otherRevisionString, monitor, editorWrapper);
+			if (status.isOK()) {
+				return editorWrapper[0];
 			}
-		} else {
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-					"Could not find local resource for {0}.", filePath)));
 		}
+
+		throw new CoreException(status);
+	}
+
+	public Status openFile(final String repoUrl, final String filePath, final String fileRevision,
+			final IProgressMonitor monitor, final IEditorPart[] editorWrapper) throws CoreException {
+
+		Assert.isNotNull(repoUrl);
+		Assert.isNotNull(editorWrapper);
+		Assert.isTrue(editorWrapper.length >= 1);
+
+		IResource localResource = SubversiveUtil.getLocalResourceFromFilePath(filePath);
+		if (localResource == null) {
+			return new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not find local resource for {0}.", filePath));
+		}
+
+		SVNRevision svnRevision;
+		try {
+			svnRevision = SVNRevision.fromString(fileRevision);
+		} catch (IllegalArgumentException e) {
+			return new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+					"Invalid revision {0} for {1}", fileRevision, filePath));
+		}
+
+		// check local file first
+		final ILocalResource localFile = SVNRemoteStorage.instance().asLocalResource(localResource);
+		if (SVNRevision.fromNumber(localFile.getBaseRevision()).equals(svnRevision)
+				&& localFile.getChangeMask() == ILocalResource.NO_MODIFICATION) {
+			// the file is not dirty and we have the right local copy
+			editorWrapper[0] = TeamUiUtils.openLocalResource(localResource);
+			if (editorWrapper[0] != null) {
+				return new Status(IStatus.OK, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+						"Open file succeeded for {0}", filePath));
+			}
+
+			return new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not open editor for {0}.", localFile.getName()));
+		}
+
+		// fallback to remote
+		final IRepositoryFile remoteFile = SubversiveUtil.getSvnRemoteFile(repoUrl, filePath, svnRevision, monitor);
+		if (remoteFile == null) {
+			return new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not get remote file for {0}.", filePath));
+		}
+
+		// we need to open the remote resource since the file is either dirty or the wrong revision
+		if (Display.getCurrent() != null) {
+			editorWrapper[0] = openRemoteSvnFile(remoteFile, monitor);
+		} else {
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				public void run() {
+					editorWrapper[0] = openRemoteSvnFile(remoteFile, monitor);
+				}
+			});
+		}
+
+		if (editorWrapper[0] != null) {
+			return new Status(IStatus.OK, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+					"Open file succeeded for {0}", filePath));
+		}
+
+		return new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+				"Could not open editor for {0}.", remoteFile.getName()));
 	}
 
 	public boolean canHandleEditorInput(IEditorInput editorInput) {

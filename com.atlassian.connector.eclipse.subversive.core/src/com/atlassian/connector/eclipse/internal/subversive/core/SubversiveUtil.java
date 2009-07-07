@@ -73,7 +73,7 @@ public final class SubversiveUtil {
 	}
 
 	public static IRepositoryFile getSvnRemoteFile(String repoUrl, String filePath, SVNRevision fileRevision,
-			String otherPath, SVNRevision otherRevision, final IProgressMonitor monitor) {
+			final IProgressMonitor monitor) {
 		if (repoUrl == null) {
 			return null;
 		}
@@ -83,13 +83,6 @@ public final class SubversiveUtil {
 		}
 
 		IResource localResource = getLocalResourceFromFilePath(filePath);
-
-		boolean localFileNotFound = localResource == null;
-
-		if (localFileNotFound) {
-			localResource = getLocalResourceFromFilePath(otherPath);
-			fileRevision = otherRevision;
-		}
 
 		if (localResource != null) {
 			final IRepositoryResource repResource = SVNRemoteStorage.instance().asRepositoryResource(localResource);
