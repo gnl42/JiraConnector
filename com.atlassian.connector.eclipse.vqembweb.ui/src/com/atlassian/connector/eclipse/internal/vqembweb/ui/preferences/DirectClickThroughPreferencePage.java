@@ -100,7 +100,7 @@ public class DirectClickThroughPreferencePage extends PreferencePage implements
 							PORT_RANGE_MIN, PORT_RANGE_MAX);
 				}
 			} catch (NumberFormatException e) {
-				errorMessage = "Port number must be a valid short number";
+				errorMessage = "Port must be a number";
 			}
 		}
 
