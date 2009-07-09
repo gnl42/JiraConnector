@@ -5,3 +5,7 @@ Bundle-SymbolicName: com.atlassian.connector.eclipse.vqembweb.core
 Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.core.runtime,
+ com.atlassian.connector.commons,
+ com.atlassian.connector.eclipse.core
+Export-Package: org.veryquick.embweb;x-friends:="com.atlassian.connector.eclipse.vqembweb.ui"
