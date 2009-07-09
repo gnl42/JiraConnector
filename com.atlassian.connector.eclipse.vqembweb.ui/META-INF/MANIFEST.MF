@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse Embedded Server UI
-Bundle-SymbolicName: com.atlassian.connector.eclipse.vqembweb.ui
+Bundle-SymbolicName: com.atlassian.connector.eclipse.vqembweb.ui;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: com.atlassian.connector.eclipse.internal.vqembweb.ui.AtlassianVqembwebUiPlugin
 Bundle-Vendor: Atlassian

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
+            class="com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences.DirectClickThroughPreferencePage"
+            id="com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences.DirectClickThroughPreferencePage"
+            name="Direct Click Through">
+      </page>
+   </extension>
+</plugin>
