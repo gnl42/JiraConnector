@@ -32,6 +32,8 @@ plugin@com.atlassian.connector.eclipse.subversive.core=SVN,trunk,https://studio.
 plugin@com.atlassian.connector.eclipse.tests=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.tests
 plugin@com.atlassian.connector.eclipse.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.ui
 plugin@com.atlassian.connector.eclipse.help=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.help
+plugin@com.atlassian.connector.eclipse.vqembweb.core=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.vqembweb.core
+plugin@com.atlassian.connector.eclipse.vqembweb.ui=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.eclipse.vqembweb.ui
 
 plugin@com.atlassian.connector.commons=SVN,tags,https://studio.atlassian.com/svn/ACC,,atlassian-connector-commons-2.5.0
 plugin@com.atlassian.connector.commons.tests.dependencies=SVN,trunk,https://studio.atlassian.com/svn/PLE,,com.atlassian.connector.commons.tests.dependencies

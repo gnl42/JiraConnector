@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>PL-31 test</title>
+	<script type="text/javascript">
+
+		function getElementsByClass(searchClass, node, tag) {
+			var classElements = new Array();
+
+			if (node == null)
+				node = document;
+
+			if (tag == null)
+				tag = '*';
+
+			var els = node.getElementsByTagName(tag);
+			var elsLen = els.length;
+			var pattern = new RegExp("(^|\\s)" + searchClass + "(\\s|$)");
+
+			for (var i = 0,j = 0; i < elsLen; i++) {
+				if (pattern.test(els[i].className)) {
+					classElements[j] = els[i];
+					classElements[j].src = classElements[j].src + '&opera=' + uniquePageId;
+					alert(classElements[j].src);
+					j++;
+				}
+			}
+			return classElements;
+		}
+
+	</script>
+</head>
+<body>
+<p>
+	Open <b>file</b> in IDE. Test.<br/>
+	plugin.xml
+	<img src="http://localhost:51235/icon" alt="" title="Open file in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/file?file=plugin.xml&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	plugin.iml
+	<img src="http://localhost:51235/icon" alt="" title="Open file in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/file?file=plugin.iml&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	pom.xml
+	<img src="http://localhost:51235/icon" alt="" title="Open file in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/file?file=pom.xml&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	CompletionActionStates.java
+	<img src="http://localhost:51235/icon" alt="" title="Open file in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/file?file=CompletionActionStates.java&path=src/org/dubik/codecompletionlive/completions&line=10&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	ThePluginApplicationComponent.java
+	<img src="http://localhost:51235/icon" alt="" title="Open file in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/file?file=ThePluginApplicationComponent.java&path=src/main/java/com/atlassian/theplugin/idea&line=10&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	Test.java
+	<img src="http://localhost:51235/icon" alt="" title="Open file in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/file?file=Test.java&path=src/main/java/com/atlassian/connector&line=10&vcs_root=https://studio.atlassian.com/svn/PL/trunk/atlassian-intellij-connector/&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+</p>
+
+<hr>
+
+<p>
+	Open <b>issue</b> in IDE. Test.<br/>
+	PL-31
+	<img src="http://localhost:51235/icon" alt="" title="Open issue in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/issue?issue_key=PL-31&server_url=https://studio.atlassian.com/&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	PL-1392
+	<img src="http://localhost:51235/icon" alt="" title="Open issue in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/issue?issue_key=PL-1392&server_url=https://studio.atlassian.com&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	ACC-1
+	<img src="http://localhost:51235/icon" alt="" title="Open issue in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/issue?issue_key=ACC-1&server_url=https://localhost:8443&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+</p>
+
+<hr>
+
+<p>
+	Open <b>review</b> in IDE. Test.<br/>
+	CR-PL-66 (file and versioned comment defined: should open file, place cursor on the comment and select comment in the tree)
+	<img src="http://localhost:51235/icon" alt="" title="Open review in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/review?review_key=CR-PL-66&server_url=https://svn.atlassian.com/atlaseye&file_path=src/main/java/com/atlassian/theplugin/util/CodeNavigationUtil.java&comment_id=CMT:9831&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	CR-PL-66 (file defined: should open file and select file in the tree)
+	<img src="http://localhost:51235/icon" alt="" title="Open review in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/review?review_key=CR-PL-66&server_url=https://svn.atlassian.com/atlaseye&file_path=src/main/java/com/atlassian/theplugin/util/CodeNavigationUtil.java&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	CR-PL-66 (file defined, general comment defined: should open file and select general comment in the tree)
+	<img src="http://localhost:51235/icon" alt="" title="Open review in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/review?review_key=CR-PL-66&server_url=https://svn.atlassian.com/atlaseye&file_path=src/main/java/com/atlassian/theplugin/util/CodeNavigationUtil.java&comment_id=CMT:9899&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+	CR-PL-66 (general comment defined: should select general comment in the tree)
+	<img src="http://localhost:51235/icon" alt="" title="Open review in IDE" onerror="this.width=1"
+		 onclick="this.src='http://localhost:51235/review?review_key=CR-PL-66&server_url=https://svn.atlassian.com/atlaseye&comment_id=CMT:9899&id=' + Math.floor(Math.random()*1000)"
+		 style="cursor: pointer"><br/>
+
+</p>
+
+</body>
+</html>
