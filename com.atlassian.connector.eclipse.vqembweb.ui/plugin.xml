@@ -2,6 +2,13 @@
 <?eclipse version="3.4"?>
 <plugin>
 	<extension
+            point="org.eclipse.core.runtime.preferences">
+         <initializer
+               class="com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences.DirectClickThroughPreferenceInitializer">
+         </initializer>
+    </extension>
+      
+	<extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"

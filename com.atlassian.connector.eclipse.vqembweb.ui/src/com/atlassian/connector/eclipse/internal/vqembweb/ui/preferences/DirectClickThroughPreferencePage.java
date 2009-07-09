@@ -1,5 +1,6 @@
 package com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -18,6 +19,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import com.atlassian.connector.eclipse.internal.vqembweb.ui.AtlassianVqembwebUiPlugin;
+import com.atlassian.connector.eclipse.internal.vqembweb.ui.IDirectClickThroughPreferenceConstants;
+
 public class DirectClickThroughPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
 
@@ -32,6 +36,11 @@ public class DirectClickThroughPreferencePage extends PreferencePage implements
 				+ "You can browse your FishEye, Crucible, Bamboo or JIRA and navigate to your IDE\n"
 				+ "with one click and open selected item automatically. This feature opens a locally\n"
 				+ "available TCP/IP port, only localhost can access it.");
+	}
+	
+	@Override
+	protected IPreferenceStore doGetPreferenceStore() {
+		return AtlassianVqembwebUiPlugin.getDefault().getPreferenceStore();
 	}
 	
 	@Override
@@ -55,7 +64,8 @@ public class DirectClickThroughPreferencePage extends PreferencePage implements
 		
 		enableClickThrough = new Button(group, SWT.CHECK);
 		enableClickThrough.setText("Enable Direct Click Through");
-		//enableClickThrough.setSelection(getPreferenceStore().getBoolean(""));
+		enableClickThrough.setSelection(getPreferenceStore().getBoolean(
+				IDirectClickThroughPreferenceConstants.ENABLED));
 		enableClickThrough.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
 				updateConfigurationGroupEnablements();
@@ -78,7 +88,7 @@ public class DirectClickThroughPreferencePage extends PreferencePage implements
 		GridData gridData = new GridData();
 		gridData.widthHint = 50;
 		port.setLayoutData(gridData);
-		port.setText("3434");
+		port.setText(getPreferenceStore().getString(IDirectClickThroughPreferenceConstants.PORT_NUMBER));
 		port.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				updateConfigurationGroupEnablements();
