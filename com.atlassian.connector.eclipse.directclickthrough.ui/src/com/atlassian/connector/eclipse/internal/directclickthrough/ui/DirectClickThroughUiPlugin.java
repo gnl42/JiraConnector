@@ -39,25 +39,6 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		
-		if (getPreferenceStore().getBoolean(IDirectClickThroughPreferenceConstants.ENABLED)) {
-			Job serverJob = new Job("Start Embedded Web Server") {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						Hashtable<String, Object> params = new Hashtable<String, Object>();
-						params.put("http.port", getPreferenceStore().getInt(IDirectClickThroughPreferenceConstants.PORT_NUMBER));
-						params.put("http.host", InetAddress.getByName(null).toString());
-						JettyConfigurator.startServer(PLUGIN_ID, params); 
-					} catch (Exception e) {
-						StatusHandler.log(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
-								"Unable to run embedded web server, Direct Click Through will not be available", e));
-					}
-					return null;
-				}
-			};
-			serverJob.schedule();
-		}
 	}
 
 	/*

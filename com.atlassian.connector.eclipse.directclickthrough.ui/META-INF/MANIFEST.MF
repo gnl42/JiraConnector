@@ -11,6 +11,8 @@ Require-Bundle: org.eclipse.ui,
  org.jetbrains.annotations;resolution:=optional,
  org.eclipse.mylyn.commons.core,
  org.eclipse.equinox.http.jetty,
- org.eclipse.equinox.http.registry,
- javax.servlet
+ org.eclipse.equinox.http.registry
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: javax.servlet;bundle-version="[2.5.0,2.6.0)",
+ javax.servlet.http;bundle-version="[2.5.0,2.6.0)"
+ 

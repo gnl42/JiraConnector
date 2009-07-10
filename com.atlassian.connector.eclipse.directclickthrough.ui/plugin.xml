@@ -13,17 +13,22 @@
       <page
             category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
             class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferencePage"
-            id="com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences.DirectClickThroughPreferencePage"
+            id="com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferencePage"
             name="Direct Click Through">
       </page>
    </extension>
-   
  <extension
+       point="org.eclipse.ui.startup">
+    <startup
+          class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughStartup"></startup>
+ </extension>
+   
+ <!--extension
        point="org.eclipse.equinox.http.registry.servlets">
     <servlet
           alias="/"
-          class="com.atlassian.connector.eclipse.directclickthrough.ui.Servlet1"
+          class="com.atlassian.connector.eclipse.internal.directclickthrough.servlet.DirectClickThroughServlet"
           load-on-startup="false">
     </servlet>
- </extension>
+ </extension-->
 </plugin>
