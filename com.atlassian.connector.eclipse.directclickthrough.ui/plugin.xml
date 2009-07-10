@@ -17,4 +17,13 @@
             name="Direct Click Through">
       </page>
    </extension>
+   
+ <extension
+       point="org.eclipse.equinox.http.registry.servlets">
+    <servlet
+          alias="/"
+          class="com.atlassian.connector.eclipse.directclickthrough.ui.Servlet1"
+          load-on-startup="false">
+    </servlet>
+ </extension>
 </plugin>

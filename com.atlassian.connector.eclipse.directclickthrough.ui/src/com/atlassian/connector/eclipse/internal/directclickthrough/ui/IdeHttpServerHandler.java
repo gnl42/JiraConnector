@@ -17,24 +17,17 @@ package com.atlassian.connector.eclipse.internal.directclickthrough.ui;
 
 import java.util.Map;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.veryquick.embweb.HttpRequestHandler;
-import org.veryquick.embweb.Response;
-
-import com.atlassian.theplugin.commons.util.StringUtil;
-
 /**
  * @author Jacek Jaroczynski
  */
-class IdeHttpServerHandler implements HttpRequestHandler {
+class IdeHttpServerHandler {
 	private final byte[] icon;
 
 	public IdeHttpServerHandler(final byte[] iconArray) {
 		this.icon = iconArray;
 	}
 
+	/*
 	public Response handleRequest(final Type type, final String url, final Map<String, String> parameters) {
 
 		final String method = StringUtil.removeTrailingSlashes(url);
@@ -60,7 +53,7 @@ class IdeHttpServerHandler implements HttpRequestHandler {
 
 		return response;
 	}
-
+	 */
 	private void handleOpenReviewRequest(final Map<String, String> parameters) {
 		/*final String reviewKey = parameters.get("review_key");
 		final String serverUrl = parameters.get("server_url");
@@ -220,11 +213,13 @@ class IdeHttpServerHandler implements HttpRequestHandler {
 		WindowManager.getInstance().getFrame(project).requestFocusInWindow();
 	}*/
 
+	/*
 	private void writeIcon(final Response response) {
 		response.setContentType("image/png");
 		response.setBinaryContent(icon);
 		response.setOk();
 	}
+	*/
 
 	/*
 	private static class FileListPopupStep extends BaseListPopupStep<PsiFile> {
