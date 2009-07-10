@@ -1,6 +1,14 @@
 package com.atlassian.connector.eclipse.internal.directclickthrough.ui;
 
+import java.net.InetAddress;
+import java.util.Hashtable;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.http.jetty.JettyConfigurator;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -36,7 +44,6 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		/*
 		if (getPreferenceStore().getBoolean(IDirectClickThroughPreferenceConstants.ENABLED)) {
 			Job serverJob = new Job("Start Embedded Web Server") {
 				@Override
@@ -54,7 +61,7 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 				}
 			};
 			serverJob.schedule();
-		}*/
+		}
 	}
 
 	/*

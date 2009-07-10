@@ -20,7 +20,7 @@
  <extension
        point="org.eclipse.ui.startup">
     <startup
-          class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin.EarlyStartup"></startup>
+          class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin$EarlyStartup"></startup>
  </extension>
    
  <!--extension
