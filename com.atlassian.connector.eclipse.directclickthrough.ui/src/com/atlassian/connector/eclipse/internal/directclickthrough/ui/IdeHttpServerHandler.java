@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.atlassian.connector.eclipse.internal.vqembweb.ui;
+package com.atlassian.connector.eclipse.internal.directclickthrough.ui;
 
 import java.util.Map;
 

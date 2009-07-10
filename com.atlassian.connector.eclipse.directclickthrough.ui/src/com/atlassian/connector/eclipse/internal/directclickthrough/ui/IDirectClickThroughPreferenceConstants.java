@@ -1,4 +1,4 @@
-package com.atlassian.connector.eclipse.internal.vqembweb.ui;
+package com.atlassian.connector.eclipse.internal.directclickthrough.ui;
 
 public interface IDirectClickThroughPreferenceConstants {
 

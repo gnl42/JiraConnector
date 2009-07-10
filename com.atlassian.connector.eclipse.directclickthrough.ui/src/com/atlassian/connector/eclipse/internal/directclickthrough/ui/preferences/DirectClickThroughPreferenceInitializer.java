@@ -1,11 +1,11 @@
-package com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences;
+package com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.osgi.service.prefs.Preferences;
 
-import com.atlassian.connector.eclipse.internal.vqembweb.ui.AtlassianVqembwebUiPlugin;
-import com.atlassian.connector.eclipse.internal.vqembweb.ui.IDirectClickThroughPreferenceConstants;
+import com.atlassian.connector.eclipse.internal.directclickthrough.ui.AtlassianVqembwebUiPlugin;
+import com.atlassian.connector.eclipse.internal.directclickthrough.ui.IDirectClickThroughPreferenceConstants;
 
 public class DirectClickThroughPreferenceInitializer extends
 		AbstractPreferenceInitializer {

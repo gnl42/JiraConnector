@@ -1,13 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Atlassian Connector for Eclipse Embedded Server UI
-Bundle-SymbolicName: com.atlassian.connector.eclipse.vqembweb.ui;singleton:=true
+Bundle-Name: Atlassian Connector for Eclipse Direct Click Through UI
+Bundle-SymbolicName: com.atlassian.connector.eclipse.directclickthrough.ui;singleton:=true
 Bundle-Version: 1.1.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.internal.vqembweb.ui.AtlassianVqembwebUiPlugin
+Bundle-Activator: com.atlassian.connector.eclipse.internal.directclickthrough.ui.AtlassianVqembwebUiPlugin
 Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- com.atlassian.connector.eclipse.vqembweb.core,
  com.atlassian.connector.commons,
  org.jetbrains.annotations;resolution:=optional,
  org.eclipse.mylyn.commons.core

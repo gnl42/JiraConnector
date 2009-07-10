@@ -4,7 +4,7 @@
 	<extension
             point="org.eclipse.core.runtime.preferences">
          <initializer
-               class="com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences.DirectClickThroughPreferenceInitializer">
+               class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferenceInitializer">
          </initializer>
     </extension>
       
@@ -12,7 +12,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="com.atlassian.connector.eclipse.ui.preferences.AtlassianPreferencePage"
-            class="com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences.DirectClickThroughPreferencePage"
+            class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferencePage"
             id="com.atlassian.connector.eclipse.internal.vqembweb.ui.preferences.DirectClickThroughPreferencePage"
             name="Direct Click Through">
       </page>
