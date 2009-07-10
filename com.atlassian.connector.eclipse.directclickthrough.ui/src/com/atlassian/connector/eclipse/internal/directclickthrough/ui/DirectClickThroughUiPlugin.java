@@ -6,18 +6,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class AtlassianVqembwebUiPlugin extends AbstractUIPlugin {
+public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.vqembweb.ui";
 
 	// The shared instance
-	private static AtlassianVqembwebUiPlugin plugin;
+	private static DirectClickThroughUiPlugin plugin;
 	
 	/**
 	 * The constructor
 	 */
-	public AtlassianVqembwebUiPlugin() {
+	public DirectClickThroughUiPlugin() {
 	}
 
 	/*
@@ -43,7 +43,7 @@ public class AtlassianVqembwebUiPlugin extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static AtlassianVqembwebUiPlugin getDefault() {
+	public static DirectClickThroughUiPlugin getDefault() {
 		return plugin;
 	}
 

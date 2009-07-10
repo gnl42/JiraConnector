@@ -54,7 +54,7 @@ class IdeHttpServerHandler implements HttpRequestHandler {
 			handleOpenReviewRequest(parameters);
 		} else {
 			response.setNoContent();
-			StatusHandler.log(new Status(IStatus.WARNING, AtlassianVqembwebUiPlugin.PLUGIN_ID, 
+			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, 
 					"Unknown command received: [" + method + "]"));
 		}
 

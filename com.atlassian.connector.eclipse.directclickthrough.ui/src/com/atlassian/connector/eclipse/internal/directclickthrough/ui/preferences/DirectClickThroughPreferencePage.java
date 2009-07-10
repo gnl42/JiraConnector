@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.atlassian.connector.eclipse.internal.directclickthrough.ui.AtlassianVqembwebUiPlugin;
+import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin;
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.IDirectClickThroughPreferenceConstants;
 
 public class DirectClickThroughPreferencePage extends PreferencePage implements
@@ -40,7 +40,7 @@ public class DirectClickThroughPreferencePage extends PreferencePage implements
 	
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
-		return AtlassianVqembwebUiPlugin.getDefault().getPreferenceStore();
+		return DirectClickThroughUiPlugin.getDefault().getPreferenceStore();
 	}
 	
 	@Override
