@@ -86,15 +86,15 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 					connector.setPort(getPreferenceStore().getInt(IDirectClickThroughPreferenceConstants.PORT_NUMBER));
 					embeddedServer.addConnector(connector);
 					
-					Context context = new Context(embeddedServer, "/", Context.SESSIONS);
+					Context context = new Context(embeddedServer, "/", Context.NO_SESSIONS | Context.NO_SECURITY);
 					context.addServlet(new ServletHolder(new DirectClickThroughServlet()), "/*");
 					
 					embeddedServer.start();
+					return new Status(IStatus.OK, DirectClickThroughUiPlugin.PLUGIN_ID, "Started embedded Direct Click Through server");
 				} catch (Exception e) {
-					StatusHandler.log(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
-							"Unable to run embedded web server, Direct Click Through will not be available", e));
+					return new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
+							"Unable to run embedded web server, Direct Click Through will not be available", e);
 				}
-				return new Status(IStatus.OK, DirectClickThroughUiPlugin.PLUGIN_ID, "Started Embedded Direct Click Through server");
 			}
 		};
 		serverJob.schedule();

@@ -1,6 +1,10 @@
 package com.atlassian.connector.eclipse.internal.directclickthrough.servlet;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,10 +15,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 
+import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughImages;
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin;
 
 @SuppressWarnings("serial")
@@ -26,7 +28,7 @@ public class DirectClickThroughServlet extends HttpServlet {
 	
 		final String path = req.getPathInfo();
 
-		if ("icon".equals(path)) {
+		if ("/icon".equals(path)) {
 			writeIcon(resp);
 		} else if ("file".equals(path)) {
 			writeIcon(resp);
@@ -39,7 +41,8 @@ public class DirectClickThroughServlet extends HttpServlet {
 			//FIXME: handleOpenReviewRequest(req.getParameterMap());
 		} else {
 			resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, NLS.bind("Unknown command received: [{0}]", path)));
+			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, 
+					NLS.bind("Direct Click Through server received unknown command: [{0}]", path)));
 		}
 	}
 
@@ -204,11 +207,19 @@ public class DirectClickThroughServlet extends HttpServlet {
 	*/
 
 	private void writeIcon(final HttpServletResponse response) throws IOException {
-		Image eclipse = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_DEC_FIELD_ERROR);
-		
-		response.setContentType("image/png");
-		response.getOutputStream().write(new byte[] {});
-		response.setStatus(HttpServletResponse.SC_OK);
+		InputStream icon = new BufferedInputStream(
+			new URL(DirectClickThroughImages.BASE_URL, DirectClickThroughImages.PATH_ECLIPSE).openStream());
+		try {
+			response.setContentType("image/gif");
+			response.setStatus(HttpServletResponse.SC_OK);
+			
+			OutputStream output = response.getOutputStream();
+			for(int b=icon.read(); b!=-1; b=icon.read()) {
+				output.write(b);
+			}
+		} finally {
+			try { icon.close(); } catch(Exception e) { /* ignore */ }
+		}
 	}
 
 	/*
