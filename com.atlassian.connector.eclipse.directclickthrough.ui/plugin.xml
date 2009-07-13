@@ -16,19 +16,11 @@
             id="com.atlassian.connector.eclipse.internal.directclickthrough.ui.preferences.DirectClickThroughPreferencePage"
             name="Direct Click Through">
       </page>
-   </extension>
- <extension
+    </extension>
+    
+	<extension
        point="org.eclipse.ui.startup">
-    <startup
-          class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin$EarlyStartup"></startup>
- </extension>
-   
- <!--extension
-       point="org.eclipse.equinox.http.registry.servlets">
-    <servlet
-          alias="/"
-          class="com.atlassian.connector.eclipse.internal.directclickthrough.servlet.DirectClickThroughServlet"
-          load-on-startup="false">
-    </servlet>
- </extension-->
+    	<startup
+        	class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin$EarlyStartup"/>
+ 	</extension>
 </plugin>
