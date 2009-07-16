@@ -54,14 +54,10 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 		
 		getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
-				if(!IDirectClickThroughPreferenceConstants.ENABLED.equals(event.getProperty())) { 
-					return;
-				}
-				boolean enabled = Boolean.parseBoolean((String) event.getNewValue());
-				if (enabled) {
+				stopEmbeddedServer();
+				
+				if (getPreferenceStore().getBoolean(IDirectClickThroughPreferenceConstants.ENABLED)) {
 					startEmbeddedServer();
-				} else {
-					stopEmbeddedServer();
 				}
 			}
 		});
