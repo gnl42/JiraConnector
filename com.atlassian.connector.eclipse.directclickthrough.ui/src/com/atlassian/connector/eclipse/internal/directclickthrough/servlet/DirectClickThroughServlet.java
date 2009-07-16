@@ -47,6 +47,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughImages;
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -77,7 +78,7 @@ public class DirectClickThroughServlet extends HttpServlet {
 			handleOpenIssueRequest(req);
 		} else if ("/review".equals(path)) {
 			writeIcon(resp);
-			//FIXME: handleOpenReviewRequest(req.getParameterMap());
+			handleOpenReviewRequest(req);
 		} else {
 			resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, 
@@ -249,36 +250,23 @@ public class DirectClickThroughServlet extends HttpServlet {
 		}
 	}
 
-	/*
-	private void handleOpenReviewRequest(final Map<String, String> parameters) {
-		final String reviewKey = parameters.get("review_key");
-		final String serverUrl = parameters.get("server_url");
-		final String filePath = parameters.get("file_path");
-		final String commentId = parameters.get("comment_id");
-		if (reviewKey != null && serverUrl != null) {
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
+	@SuppressWarnings("restriction")
+	private void handleOpenReviewRequest(final HttpServletRequest req) {
+		final String reviewKey = req.getParameter("review_key");
+		final String serverUrl = req.getParameter("server_url");
 
-					// try to open received reviewKey in all open projects
-					for (final Project project : ProjectManager.getInstance().getOpenProjects()) {
+		if (reviewKey == null || serverUrl == null) {
+			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open issue: review_key or server_url parameter is null"));
+		}
 
-						bringIdeaToFront(project);
-
-						ProgressManager.getInstance().run(new FindAndOpenReviewTask(
-								project, "Looking for Review " + reviewKey, false, reviewKey, serverUrl, filePath, commentId));
-					}
-				}
-			});
-		} else {
-			PluginUtil.getLogger().warn("Cannot open review: review_key or server_url parameter is null");
+		try {
+			new OpenRepositoryTaskJob(CrucibleCorePlugin.CONNECTOR_KIND, serverUrl, reviewKey, null, null).schedule();
+		} catch(NoClassDefFoundError e) {
+			StatusHandler.log(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
+					"Direct Click Through failed to open review because Atlassian Crucible & FishEye Integration is missing"));
 		}
 	}
 
-		private static boolean isDefined(final String param) {
-		return param != null && param.length() > 0;
-	}
-	*/
-	
 	@SuppressWarnings("restriction")
 	private void handleOpenIssueRequest(final HttpServletRequest req) {
 		final String issueKey = req.getParameter("issue_key");
@@ -288,7 +276,12 @@ public class DirectClickThroughServlet extends HttpServlet {
 			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open issue: issue_key or server_url parameter is null"));
 		}
 
-		new OpenRepositoryTaskJob(JiraCorePlugin.CONNECTOR_KIND, serverUrl, issueKey, null, null).schedule();
+		try {
+			new OpenRepositoryTaskJob(JiraCorePlugin.CONNECTOR_KIND, serverUrl, issueKey, null, null).schedule();
+		} catch (NoClassDefFoundError e) {
+			StatusHandler.log(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
+				"Direct Click Through failed to open issue because Mylyn JIRA Connector is missing"));
+		}
 	}
 
 	private static void bringEclipseToFront() {
@@ -341,201 +334,4 @@ public class DirectClickThroughServlet extends HttpServlet {
 			try { icon.close(); } catch(Exception e) { /* ignore */ }
 		}
 	}
-
-	/*
-	private static class FileListPopupStep extends BaseListPopupStep<PsiFile> {
-		private String line;
-		private Project project;
-
-		public FileListPopupStep(final String title, final List<PsiFile> psiFiles, final String line, final Project project) {
-			super(title, psiFiles);
-			this.line = line;
-			this.project = project;
-		}
-
-		public PopupStep onChosen(final PsiFile selectedValue, final boolean finalChoice) {
-			openFile(project, selectedValue, line);
-			return null;
-		}
-
-		@NotNull
-		public String getTextFor(final PsiFile value) {
-			String display = value.getName();
-			final VirtualFile virtualFile = value.getVirtualFile();
-
-			if (virtualFile != null) {
-				display += " (" + virtualFile.getPath() + ")";
-			}
-			return display;
-		}
-
-		public Icon getIconFor(final PsiFile value) {
-			final VirtualFile virtualFile = value.getVirtualFile();
-
-			if (virtualFile != null) {
-				return virtualFile.getIcon();
-			}
-
-			return null;
-		}
-	}
-
-	private static class FindAndOpenReviewTask extends Task.Modal {
-		private Project project;
-		private String reviewKey;
-		private String serverUrl;
-		private String filePath;
-		private String commentId;
-
-		private ReviewAdapter review;
-
-
-		public FindAndOpenReviewTask(final Project project, final String title, final boolean cancellable,
-				final String reviewKey, final String serverUrl, final String filePath, final String commentId) {
-
-			super(project, title, cancellable);
-
-			this.project = project;
-			this.reviewKey = reviewKey;
-			this.serverUrl = serverUrl;
-			this.filePath = filePath;
-			this.commentId = commentId;
-		}
-
-		public void run(final ProgressIndicator indicator) {
-			indicator.setIndeterminate(true);
-
-			// open review
-			review = IdeaHelper.getReviewListToolWindowPanel(project).openReviewWithDetails(reviewKey, serverUrl);
-
-
-			if (review != null && (isDefined(filePath) || isDefined(commentId))) {
-				try {
-					// get details for review (files and comments)
-					CrucibleServerFacadeImpl.getInstance().getDetailsForReview(review);
-				} catch (RemoteApiException e) {
-					PluginUtil.getLogger().warn("Error when retrieving review details", e);
-					return;
-				} catch (ServerPasswordNotProvidedException e) {
-					PluginUtil.getLogger().warn("Missing password exception caught when retrieving review details", e);
-					return;
-				}
-
-				CrucibleFileInfo file = null;
-
-				// find file
-				if (isDefined(filePath)) {
-					final Set<CrucibleFileInfo> files;
-					try {
-						files = review.getFiles();
-					} catch (ValueNotYetInitialized e) {
-						PluginUtil.getLogger().warn("Files collection not available for review", e);
-						return;
-					}
-
-					for (final CrucibleFileInfo f : files) {
-						if (f.getFileDescriptor().getUrl().endsWith(filePath)) {
-							file = f;
-							break;
-						}
-					}
-				}
-
-				// find comment
-				VersionedComment versionedComment = null;
-				Comment versionedCommentReply = null;
-				Comment generalComment = null;
-
-				if (isDefined(commentId)) {
-
-					// try to find general comment with specified ID
-					final List<GeneralComment> generalComments;
-					try {
-						generalComments = review.getGeneralComments();
-					} catch (ValueNotYetInitialized e) {
-						PluginUtil.getLogger().warn("General comments collection not available for review", e);
-						return;
-					}
-
-					for (GeneralComment comment : generalComments) {
-						if (comment.getPermId().getId().equals(commentId)) {
-							generalComment = comment;
-							break;
-						}
-						boolean commentFound = false;
-						for (Comment reply : comment.getReplies()) {
-							if (reply.getPermId().getId().equals(commentId)) {
-								commentFound = true;
-								generalComment = reply;
-								break;
-							}
-						}
-						if (commentFound) {
-							break;
-						}
-					}
-
-					// try to find versioned comment with specified ID if general comment not found
-					if (file != null && generalComment == null) {
-						final List<VersionedComment> versionedComments = file.getVersionedComments();
-						for (VersionedComment comment : versionedComments) {
-							if (comment.getPermId().getId().equals(commentId)) {
-								versionedComment = comment;
-								break;
-							}
-							boolean commentFound = false;
-							for (Comment reply : comment.getReplies()) {
-								if (reply.getPermId().getId().equals(commentId)) {
-									commentFound = true;
-									versionedComment = comment;
-									versionedCommentReply = reply;
-									break;
-								}
-							}
-							if (commentFound) {
-								break;
-							}
-						}
-					}
-				}
-
-				if (generalComment != null) {
-					// select comment in the tree
-					CrucibleHelper.selectGeneralComment(project, review, generalComment);
-				}
-
-				if (file != null) {
-					if (versionedComment == null) {
-						// simply open file (versioned comment not found)
-						CrucibleHelper.showVirtualFileWithComments(project, review, file);
-
-						// select file in the tree if general comment not selected
-						if (generalComment == null) {
-							CrucibleHelper.selectFile(project, review, file);
-						}
-					} else {
-						// open file and focus on comment
-						CrucibleHelper.openFileOnComment(project, review, file, versionedComment);
-
-						// select comment in the tree
-						if (versionedCommentReply != null) {
-							CrucibleHelper.selectVersionedComment(project, review, file, versionedCommentReply);
-						} else {
-							CrucibleHelper.selectVersionedComment(project, review, file, versionedComment);
-						}
-					}
-				}
-
-
-			}
-		}
-
-		public void onSuccess() {
-			if (review == null) {
-				Messages.showInfoMessage("Cannot find review " + reviewKey, PluginUtil.PRODUCT_NAME);
-			} else {
-				bringIdeaToFront(project);
-			}
-		}
-	}*/
 }
