@@ -34,13 +34,10 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.mylyn.internal.tasks.ui.TaskSearchPage;
-import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.tasks.core.ITask;
-import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
+import org.eclipse.mylyn.internal.tasks.ui.OpenRepositoryTaskJob;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.search.internal.ui.SearchDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
@@ -282,24 +279,16 @@ public class DirectClickThroughServlet extends HttpServlet {
 	}
 	*/
 	
+	@SuppressWarnings("restriction")
 	private void handleOpenIssueRequest(final HttpServletRequest req) {
 		final String issueKey = req.getParameter("issue_key");
 		final String serverUrl = req.getParameter("server_url");
 		
-		if (issueKey != null && serverUrl != null) {
-			ITask task = TasksUiPlugin.getTaskList().getTaskByKey(serverUrl, issueKey);
-			if (task != null) {
-				TasksUiUtil.openTask(task);
-			} else {
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						new SearchDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), TaskSearchPage.ID).open();
-					}
-				});
-			}
-		} else {
+		if (issueKey == null || serverUrl == null) {
 			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open issue: issue_key or server_url parameter is null"));
 		}
+
+		new OpenRepositoryTaskJob(JiraCorePlugin.CONNECTOR_KIND, serverUrl, issueKey, null, null).schedule();
 	}
 
 	private static void bringEclipseToFront() {
