@@ -263,15 +263,23 @@ public class DirectClickThroughServlet extends HttpServlet {
 		}
 
 		try {
-			IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
-			AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(CrucibleCorePlugin.CONNECTOR_KIND);
-			String taskUrl = connector.getTaskUrl(repositoryUrl, taskId);
-
-			new OpenRepositoryTaskJob(CrucibleCorePlugin.CONNECTOR_KIND, repositoryUrl, taskId, taskUrl, null).schedule();
-		} catch(NoClassDefFoundError e) {
-			StatusHandler.log(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
-					"Direct Click Through failed to open review because Atlassian Crucible & FishEye Integration is missing"));
+			Class.forName("com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin");
+		} catch (ClassNotFoundException e) {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					new MessageDialog(WorkbenchUtil.getShell(), "Unable to handle request", null,
+							"Direct Click Through failed to open issue because Atlassian Crucible & FishEye Integration is missing",
+			    			MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+				}
+			});
+			return;
 		}
+
+		IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+		AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(CrucibleCorePlugin.CONNECTOR_KIND);
+		String taskUrl = connector == null ? null : connector.getTaskUrl(repositoryUrl, taskId);
+
+		new OpenRepositoryTaskJob(CrucibleCorePlugin.CONNECTOR_KIND, repositoryUrl, taskId, taskUrl, null).schedule();
 	}
 
 	@SuppressWarnings("restriction")
@@ -284,15 +292,23 @@ public class DirectClickThroughServlet extends HttpServlet {
 		}
 
 		try {
-			IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
-			AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(JiraCorePlugin.CONNECTOR_KIND);
-			String taskUrl = connector.getTaskUrl(repositoryUrl, taskId);
-
-			new OpenRepositoryTaskJob(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl, taskId, taskUrl, null).schedule();
-		} catch (NoClassDefFoundError e) {
-			StatusHandler.log(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
-				"Direct Click Through failed to open issue because Mylyn JIRA Connector is missing"));
+			Class.forName("org.eclipse.mylyn.internal.jira.core.JiraCorePlugin");
+		} catch (ClassNotFoundException e) {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					new MessageDialog(WorkbenchUtil.getShell(), "Unable to handle request", null,
+							"Direct Click Through failed to open issue because Mylyn JIRA Connector is missing",
+			    			MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+				}
+			});
+			return;
 		}
+		
+		IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+		AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(JiraCorePlugin.CONNECTOR_KIND);
+		String taskUrl = connector == null ? null : connector.getTaskUrl(repositoryUrl, taskId);
+
+		new OpenRepositoryTaskJob(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl, taskId, taskUrl, null).schedule();
 	}
 
 	private static void bringEclipseToFront() {
