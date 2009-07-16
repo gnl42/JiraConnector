@@ -37,6 +37,9 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.ui.OpenRepositoryTaskJob;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
+import org.eclipse.mylyn.tasks.core.IRepositoryManager;
+import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -252,15 +255,19 @@ public class DirectClickThroughServlet extends HttpServlet {
 
 	@SuppressWarnings("restriction")
 	private void handleOpenReviewRequest(final HttpServletRequest req) {
-		final String reviewKey = req.getParameter("review_key");
-		final String serverUrl = req.getParameter("server_url");
+		final String taskId = req.getParameter("review_key");
+		final String repositoryUrl = req.getParameter("server_url");
 
-		if (reviewKey == null || serverUrl == null) {
+		if (taskId == null || repositoryUrl == null) {
 			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open issue: review_key or server_url parameter is null"));
 		}
 
 		try {
-			new OpenRepositoryTaskJob(CrucibleCorePlugin.CONNECTOR_KIND, serverUrl, reviewKey, null, null).schedule();
+			IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+			AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(CrucibleCorePlugin.CONNECTOR_KIND);
+			String taskUrl = connector.getTaskUrl(repositoryUrl, taskId);
+
+			new OpenRepositoryTaskJob(CrucibleCorePlugin.CONNECTOR_KIND, repositoryUrl, taskId, taskUrl, null).schedule();
 		} catch(NoClassDefFoundError e) {
 			StatusHandler.log(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
 					"Direct Click Through failed to open review because Atlassian Crucible & FishEye Integration is missing"));
@@ -269,15 +276,19 @@ public class DirectClickThroughServlet extends HttpServlet {
 
 	@SuppressWarnings("restriction")
 	private void handleOpenIssueRequest(final HttpServletRequest req) {
-		final String issueKey = req.getParameter("issue_key");
-		final String serverUrl = req.getParameter("server_url");
+		final String taskId = req.getParameter("issue_key");
+		final String repositoryUrl = req.getParameter("server_url");
 		
-		if (issueKey == null || serverUrl == null) {
+		if (taskId == null || repositoryUrl == null) {
 			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open issue: issue_key or server_url parameter is null"));
 		}
 
 		try {
-			new OpenRepositoryTaskJob(JiraCorePlugin.CONNECTOR_KIND, serverUrl, issueKey, null, null).schedule();
+			IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+			AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(JiraCorePlugin.CONNECTOR_KIND);
+			String taskUrl = connector.getTaskUrl(repositoryUrl, taskId);
+
+			new OpenRepositoryTaskJob(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl, taskId, taskUrl, null).schedule();
 		} catch (NoClassDefFoundError e) {
 			StatusHandler.log(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
 				"Direct Click Through failed to open issue because Mylyn JIRA Connector is missing"));
@@ -288,35 +299,18 @@ public class DirectClickThroughServlet extends HttpServlet {
 		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 			public void run() {
 				for (Shell shell : PlatformUI.getWorkbench().getDisplay().getShells()) {
-					shell.setVisible(true);
-					shell.setActive();
-					shell.setFocus();
-					shell.setMinimized(false);
-					shell.forceActive();
-					shell.forceFocus();
+					// get the top parent shell
+					if (shell.getParent() == null) { 
+						shell.setVisible(true);
+						shell.setActive();
+						shell.setFocus();
+						shell.setMinimized(false);
+						shell.forceActive();
+						shell.forceFocus();
+					}
 				}
 			}
 		});
-		/*
-		WindowManager.getInstance().getFrame(project).setVisible(true);
-
-		String osName = System.getProperty("os.name");
-		osName = osName.toLowerCase();
-
-		if (osName.contains("windows") || osName.contains("mac os x")) {
-			WindowManager.getInstance().getFrame(project).setAlwaysOnTop(true);
-			WindowManager.getInstance().getFrame(project).setAlwaysOnTop(false);
-
-		} else { //for linux
-			WindowManager.getInstance().getFrame(project).toFront();
-		}
-
-		// how to set focus???
-		WindowManager.getInstance().getFrame(project).setFocusable(true);
-		WindowManager.getInstance().getFrame(project).setFocusableWindowState(true);
-		WindowManager.getInstance().getFrame(project).requestFocus();
-		WindowManager.getInstance().getFrame(project).requestFocusInWindow();
-		*/
 	}
 
 	private void writeIcon(final HttpServletResponse response) throws IOException {

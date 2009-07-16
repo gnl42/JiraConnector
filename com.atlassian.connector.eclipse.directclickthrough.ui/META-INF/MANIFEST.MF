@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.mylyn.jira.core;resolution:=optional,
- com.atlassian.connector.eclipse.crucible.core;resolution:=optional
+ com.atlassian.connector.eclipse.crucible.core;resolution:=optional,
+ org.eclipse.mylyn.tasks.core
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.servlet,
  javax.servlet.http,
