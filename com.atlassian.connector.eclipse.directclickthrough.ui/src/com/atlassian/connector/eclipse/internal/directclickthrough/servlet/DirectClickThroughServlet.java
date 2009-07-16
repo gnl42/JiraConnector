@@ -5,19 +5,56 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.internal.tasks.ui.TaskSearchPage;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.search.internal.ui.SearchDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ListDialog;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughImages;
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin;
+import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.theplugin.commons.util.MiscUtil;
+import com.atlassian.theplugin.commons.util.StringUtil;
 
 @SuppressWarnings("serial")
 public class DirectClickThroughServlet extends HttpServlet {
@@ -27,22 +64,191 @@ public class DirectClickThroughServlet extends HttpServlet {
 			throws ServletException, IOException {
 	
 		final String path = req.getPathInfo();
-
+		
 		if ("/icon".equals(path)) {
 			writeIcon(resp);
-		} else if ("file".equals(path)) {
+			return;
+		} 
+		
+		bringEclipseToFront();
+		
+		if ("/file".equals(path)) {
 			writeIcon(resp);
-			//FIXME: handleOpenFileRequest(req.getParameterMap());
-		} else if ("issue".equals(path)) {
+			handleOpenFileRequest(req);
+		} else if ("/issue".equals(path)) {
 			writeIcon(resp);
-			//FIXME: handleOpenIssueRequest(req.getParameterMap());
-		} else if ("review".equals(path)) {
+			handleOpenIssueRequest(req);
+		} else if ("/review".equals(path)) {
 			writeIcon(resp);
 			//FIXME: handleOpenReviewRequest(req.getParameterMap());
 		} else {
 			resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, 
 					NLS.bind("Direct Click Through server received unknown command: [{0}]", path)));
+		}
+	}
+
+	private void handleOpenFileRequest(final HttpServletRequest req) {
+		final String file = StringUtil.removePrefixSlashes(req.getParameter("file"));
+		final String path = StringUtil.removeSuffixSlashes(req.getParameter("path"));
+		final String vcsRoot = StringUtil.removeSuffixSlashes(req.getParameter("vcs_root"));
+		final String line = req.getParameter("line");
+		if (file != null) {
+			openRequestedFile(path, file, vcsRoot, line);
+		}
+	}
+
+	@SuppressWarnings("restriction")
+	private void openRequestedFile(final String path, final String file, final String vcsRoot, final String line) {
+		final List<IResource> resources = MiscUtil.buildArrayList();
+		final int[] matchLevel = new int[] {0};
+		
+		Job searchAndOpenJob = new Job("Search and open files requested using Direct Click Through") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				monitor.beginTask("Searching for files", IProgressMonitor.UNKNOWN);
+				try {
+					ResourcesPlugin.getWorkspace().getRoot().accept(new IResourceVisitor() {
+						private int matchingLastSegments(IPath firstPath, IPath secondPath) {
+							int firstPathLen = firstPath.segmentCount();
+							int secondPathLen = secondPath.segmentCount();
+							int max = Math.min(firstPathLen, secondPathLen);
+							int count = 0;
+							for (int i = 1; i <= max; i++) {
+								if (!firstPath.segment(firstPathLen - i).equals(secondPath.segment(secondPathLen - i))) {
+									return count;
+								}
+								count++;
+							}
+							return count;
+						}
+						
+						public boolean visit(IResource resource) throws CoreException {
+							if (!(resource instanceof IFile)) {
+								return true; // skip it if it's not a file, but check its members
+							}
+							
+				            int matchCount = matchingLastSegments(new Path(path == null ? file : path + "/" + file), resource.getLocation());
+				            if (matchCount > 0) {
+				            	if (matchCount > matchLevel[0]) {
+				            		resources.clear();
+				            		matchLevel[0] = matchCount;
+				            	}
+				            	if (matchCount == matchLevel[0]) {
+				            		resources.add(resource);
+				            	}
+				            }
+				            
+							return true; // visit also members of this resource
+						}
+					});
+				} catch (CoreException e) {
+					return new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, "Direct Click Through server failed to find matching files", e);
+				} finally {
+					monitor.done();
+				}
+				return new Status(IStatus.OK, DirectClickThroughUiPlugin.PLUGIN_ID, "Search finished");
+			}
+		};
+		
+		searchAndOpenJob.addJobChangeListener(new JobChangeAdapter() {
+			public void done(IJobChangeEvent event) {
+				if (!event.getResult().isOK()) {
+					return;
+				}
+		        if (resources.size() > 0) {
+		        	if (resources.size() == 1) {
+		        		openFile(resources.iterator().next(), line);
+		        	} else {
+		        		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+							public void run() {
+								final ListDialog ld = new ListDialog(WorkbenchUtil.getShell());
+				    			ld.setAddCancelButton(true);
+				    			ld.setContentProvider(new ArrayContentProvider());
+				    			ld.setInput(resources.toArray(new IResource[resources.size()]));
+				    			ld.setTitle("Select File to Open");
+				    			ld.setLabelProvider(new LabelProvider() {
+				    				@Override
+				    				public String getText(Object element) {
+				    					if (element instanceof IResource) {
+				    						return ((IResource) element).getFullPath().toString();
+				    					}
+				    					return super.getText(element);
+				    				}
+				    			});
+				    			ld.setMessage("Direct Click Through request matches multiple files.\n"
+				    					+ "Please select apropriate file that will be open in editor.");
+
+				    			if (ld.open() == Window.OK) {
+				    				final Object[] result = ld.getResult();
+				    				if (result != null && result.length > 0) {
+				    					for(Object selected : result) {
+				    						if (selected instanceof IResource) {
+				    							openFile((IResource) selected, line);
+				    						}
+				    					}
+				    				}
+				    			}
+							}
+						});
+		        	}
+		        } else {
+			        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							new MessageDialog(WorkbenchUtil.getShell(), "Unable to open file", null,
+					        		"Unable to open file requested using Direct Click Through. Either file is missing or all projects are closed.",
+					    			MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+						}
+					});
+		        }
+			}
+		});
+		
+		searchAndOpenJob.schedule();
+    }
+
+	private void openFile(final IResource resource, final String line) {
+    	Assert.isNotNull(resource);
+
+    	final IEditorPart editor = TeamUiUtils.openLocalResource(resource);
+    	
+    	if (line != null && line.length() > 0 && editor instanceof ITextEditor) {
+			try {
+				final int l = Integer.parseInt(line);
+				if (Display.getCurrent() != null) {
+					gotoLine((ITextEditor) editor, l);
+				} else {
+					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							gotoLine((ITextEditor) editor, l);
+						}
+					});
+				}
+			} catch (NumberFormatException e) {
+				StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID,
+						NLS.bind("Wrong line number format when requesting to open file in the IDE [{0}]", line), e));
+			}
+			
+    	}
+	}
+
+	/**
+	 * Jumps to the given line.
+	 *
+	 * @param line the line to jump to
+	 */
+	private void gotoLine(ITextEditor editor, int line) {
+		IDocumentProvider provider= editor.getDocumentProvider();
+		IDocument document= provider.getDocument(editor.getEditorInput());
+		try {
+
+			int start= document.getLineOffset(line);
+			editor.selectAndReveal(start, 0);
+
+			IWorkbenchPage page= editor.getSite().getPage();
+			page.activate(editor);
+		} catch (BadLocationException x) {
+			// ignore
 		}
 	}
 
@@ -71,120 +277,45 @@ public class DirectClickThroughServlet extends HttpServlet {
 		}
 	}
 
-	private void handleOpenFileRequest(final Map<String, String> parameters) {
-		final String file = StringUtil.removePrefixSlashes(parameters.get("file"));
-		final String path = StringUtil.removeSuffixSlashes(parameters.get("path"));
-		final String vcsRoot = StringUtil.removeSuffixSlashes(parameters.get("vcs_root"));
-		final String line = parameters.get("line");
-		if (file != null) {
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-                    openRequestedFile(path, file, vcsRoot, line);
-				}
-			});
-		}
-	}
-
-    private void openRequestedFile(String path, String file, String vcsRoot, String line) {
-        boolean found = false;
-        // try to open requested file in all open projects
-        for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-            String filePath = (path == null ? file : path + "/" + file);
-            // find file by name (and path if provided)
-            Collection<PsiFile> psiFiles = CodeNavigationUtil.findPsiFiles(project, filePath);
-
-            // narrow found list of files by VCS
-            if (psiFiles != null && psiFiles.size() > 0 && isDefined(vcsRoot)) {
-                Collection<PsiFile> pf = CodeNavigationUtil.findPsiFilesWithVcsUrl(psiFiles, vcsRoot, project);
-                // if VCS narrowed to empty list then return without narrowing
-                // VCS could not match because of different configuration in IDE and web client (JIRA, FishEye, etc)
-                if (pf != null && pf.size() > 0) {
-                    psiFiles = pf;
-                }
-            }
-            // open file or show popup if more than one file found
-            if (psiFiles != null && psiFiles.size() > 0) {
-                found = true;
-                if (psiFiles.size() == 1) {
-                    openFile(project, psiFiles.iterator().next(), line);
-                } else if (psiFiles.size() > 1) {
-                    ListPopup popup = JBPopupFactory.getInstance().createListPopup(new FileListPopupStep(
-                            "Select File to Open", new ArrayList<PsiFile>(psiFiles), line, project));
-                    popup.showCenteredInCurrentWindow(project);
-                }
-            }
-            bringIdeaToFront(project);
-        }
-        // message box showed only if the file was not found at all (in all project)
-        if (!found) {
-            String msg = "";
-            if (ProjectManager.getInstance().getOpenProjects().length > 0) {
-                msg = "Project does not contain requested file" + file;
-            } else {
-                msg = "Please open a project in order to indicate search path for file " + file;
-            }
-            Messages.showInfoMessage(msg, PluginUtil.PRODUCT_NAME);
-        }
-    }
-
-    private static void openFile(final Project project, final PsiFile psiFile, final String line) {
-		if (psiFile != null) {
-			psiFile.navigate(true);	// open file
-
-			final VirtualFile virtualFile = psiFile.getVirtualFile();
-
-			if (virtualFile != null && line != null && line.length() > 0) {	//place cursor in specified line
-				try {
-					Integer iLine = Integer.valueOf(line);
-					if (iLine != null) {
-						OpenFileDescriptor display = new OpenFileDescriptor(project, virtualFile, iLine, 0);
-						if (display.canNavigateToSource()) {
-							display.navigate(false);
-						}
-					}
-				} catch (NumberFormatException e) {
-					PluginUtil.getLogger().warn(
-							"Wrong line number format when requesting to open file in the IDE ["
-									+ line + "]", e);
-				}
-			}
-		}
-	}
-
-	private static boolean isDefined(final String param) {
+		private static boolean isDefined(final String param) {
 		return param != null && param.length() > 0;
 	}
-
-	private void handleOpenIssueRequest(final Map<String, String> parameters) {
-		final String issueKey = parameters.get("issue_key");
-		final String serverUrl = parameters.get("server_url");
+	*/
+	
+	private void handleOpenIssueRequest(final HttpServletRequest req) {
+		final String issueKey = req.getParameter("issue_key");
+		final String serverUrl = req.getParameter("server_url");
+		
 		if (issueKey != null && serverUrl != null) {
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					boolean found = false;
-					// try to open received issueKey in all open projects
-					for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-
-						if (IdeaHelper.getIssueListToolWindowPanel(project).openIssue(issueKey, serverUrl)) {
-							found = true;
-						}
-
-						bringIdeaToFront(project);
+			ITask task = TasksUiPlugin.getTaskList().getTaskByKey(serverUrl, issueKey);
+			if (task != null) {
+				TasksUiUtil.openTask(task);
+			} else {
+				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						new SearchDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), TaskSearchPage.ID).open();
 					}
-
-					if (!found) {
-						Messages.showInfoMessage("Cannot find issue " + issueKey, PluginUtil.PRODUCT_NAME);
-					}
-				}
-			});
+				});
+			}
 		} else {
-			PluginUtil.getLogger().warn("Cannot open issue: issue_key or server_url parameter is null");
+			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open issue: issue_key or server_url parameter is null"));
 		}
 	}
-	*/
 
-	/*
-	private static void bringIdeaToFront(final Project project) {
+	private static void bringEclipseToFront() {
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				for (Shell shell : PlatformUI.getWorkbench().getDisplay().getShells()) {
+					shell.setVisible(true);
+					shell.setActive();
+					shell.setFocus();
+					shell.setMinimized(false);
+					shell.forceActive();
+					shell.forceFocus();
+				}
+			}
+		});
+		/*
 		WindowManager.getInstance().getFrame(project).setVisible(true);
 
 		String osName = System.getProperty("os.name");
@@ -203,8 +334,8 @@ public class DirectClickThroughServlet extends HttpServlet {
 		WindowManager.getInstance().getFrame(project).setFocusableWindowState(true);
 		WindowManager.getInstance().getFrame(project).requestFocus();
 		WindowManager.getInstance().getFrame(project).requestFocusInWindow();
+		*/
 	}
-	*/
 
 	private void writeIcon(final HttpServletResponse response) throws IOException {
 		InputStream icon = new BufferedInputStream(

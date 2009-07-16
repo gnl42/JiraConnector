@@ -7,10 +7,17 @@ Bundle-Activator: com.atlassian.connector.eclipse.internal.directclickthrough.ui
 Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.core.resources,
  com.atlassian.connector.commons,
  org.jetbrains.annotations;resolution:=optional,
  org.eclipse.mylyn.commons.core,
- org.eclipse.equinox.http.jetty;bundle-version="2.0.0"
+ org.eclipse.mylyn.commons.ui,
+ com.atlassian.connector.eclipse.ui,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.jface.text,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.tasks.ui,
+ org.eclipse.search
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.servlet,
  javax.servlet.http,
