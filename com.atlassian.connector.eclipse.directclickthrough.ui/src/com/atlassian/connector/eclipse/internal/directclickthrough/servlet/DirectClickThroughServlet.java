@@ -256,6 +256,10 @@ public class DirectClickThroughServlet extends HttpServlet {
 	private void handleOpenReviewRequest(final HttpServletRequest req) {
 		final String taskId = req.getParameter("review_key");
 		final String repositoryUrl = req.getParameter("server_url");
+		// TODO: add support for those two
+		//final String filePath = req.getParameter("file_path");
+		//final String commentId = req.getParameter("comment_id");
+
 
 		if (taskId == null || repositoryUrl == null) {
 			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open issue: review_key or server_url parameter is null"));
