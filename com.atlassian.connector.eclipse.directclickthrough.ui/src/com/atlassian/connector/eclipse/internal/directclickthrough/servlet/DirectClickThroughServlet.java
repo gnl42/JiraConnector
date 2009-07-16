@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.List;
 
@@ -34,7 +35,6 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.ui.OpenRepositoryTaskJob;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
@@ -50,7 +50,6 @@ import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughImages;
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -263,23 +262,26 @@ public class DirectClickThroughServlet extends HttpServlet {
 		}
 
 		try {
-			Class.forName("com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin");
-		} catch (ClassNotFoundException e) {
+			Class<?> cls = Class.forName("com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin");
+			
+			Field connectorKindField = cls.getDeclaredField("CONNECTOR_KIND");
+			
+			String connectorKind = (String) connectorKindField.get(null);
+			
+			IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+			AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(connectorKind);
+			String taskUrl = connector == null ? null : connector.getTaskUrl(repositoryUrl, taskId);
+
+			new OpenRepositoryTaskJob(connectorKind, repositoryUrl, taskId, taskUrl, null).schedule();
+		} catch (Exception e) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					new MessageDialog(WorkbenchUtil.getShell(), "Unable to handle request", null,
-							"Direct Click Through failed to open issue because Atlassian Crucible & FishEye Integration is missing",
+							"Direct Click Through failed to open issue because Atlassian Crucible & FishEye Integration is missing.",
 			    			MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
 				}
 			});
-			return;
 		}
-
-		IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
-		AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(CrucibleCorePlugin.CONNECTOR_KIND);
-		String taskUrl = connector == null ? null : connector.getTaskUrl(repositoryUrl, taskId);
-
-		new OpenRepositoryTaskJob(CrucibleCorePlugin.CONNECTOR_KIND, repositoryUrl, taskId, taskUrl, null).schedule();
 	}
 
 	@SuppressWarnings("restriction")
@@ -292,23 +294,27 @@ public class DirectClickThroughServlet extends HttpServlet {
 		}
 
 		try {
-			Class.forName("org.eclipse.mylyn.internal.jira.core.JiraCorePlugin");
-		} catch (ClassNotFoundException e) {
+			Class<?> cls = Class.forName("org.eclipse.mylyn.internal.jira.core.JiraCorePlugin");
+			
+			Field connectorKindField = cls.getDeclaredField("CONNECTOR_KIND");
+			
+			String connectorKind = (String) connectorKindField.get(null);
+			
+			IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+			AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(connectorKind);
+			String taskUrl = connector == null ? null : connector.getTaskUrl(repositoryUrl, taskId);
+
+			new OpenRepositoryTaskJob(connectorKind, repositoryUrl, taskId, taskUrl, null).schedule();
+		} catch (Exception e) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					new MessageDialog(WorkbenchUtil.getShell(), "Unable to handle request", null,
-							"Direct Click Through failed to open issue because Mylyn JIRA Connector is missing",
+							"Direct Click Through failed to open issue because Mylyn JIRA Connector is missing.",
 			    			MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
 				}
 			});
-			return;
 		}
-		
-		IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
-		AbstractRepositoryConnector connector = repositoryManager.getRepositoryConnector(JiraCorePlugin.CONNECTOR_KIND);
-		String taskUrl = connector == null ? null : connector.getTaskUrl(repositoryUrl, taskId);
 
-		new OpenRepositoryTaskJob(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl, taskId, taskUrl, null).schedule();
 	}
 
 	private static void bringEclipseToFront() {
