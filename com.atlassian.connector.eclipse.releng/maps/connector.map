@@ -47,3 +47,5 @@ plugin@org.jdom_jaxen=GET,https://studio.atlassian.com/svn/PLE/trunk/bundles/org
 plugin@org.jetbrains.annotations=GET,https://studio.atlassian.com/svn/PLE/trunk/bundles/org.jetbrains.annotations_7.0.2.v20081216-1400.jar
 
 plugin@org.mortbay.jetty.server,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.mortbay.jetty.server_6.1.15.v200905151201.jar
+plugin@org.mortbay.jetty.util,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.mortbay.jetty.util_6.1.15.v200905182336.jar
+plugin@javax.servlet,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.servlet_2.5.0.v200806031605.jar
