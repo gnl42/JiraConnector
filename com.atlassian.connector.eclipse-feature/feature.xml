@@ -33,8 +33,6 @@
          name="Bamboo Integration"/>
 
    <requires>
-      <import plugin="org.eclipse.equinox.http.jetty"/>
-      <import plugin="org.eclipse.equinox.http.registry"/>
       <import plugin="javax.servlet"/>
       <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="equivalent"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="equivalent"/>
@@ -42,6 +40,7 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="com.atlassian.connector.commons"/>
       <import plugin="org.eclipse.mylyn.commons.core"/>
+      <import plugin="org.mortbay.jetty.server"/>
    </requires>
 
    <plugin
