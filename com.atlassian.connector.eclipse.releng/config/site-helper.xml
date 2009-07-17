@@ -32,6 +32,12 @@
 			<include name="org.apache.commons.logging*.jar"/>
 		</fileset>
 
+		<!-- org.mortbay.jetty -->
+		<fileset dir="${buildDirectory}/plugins" id="org.mortbay.jetty">
+			<include name="org.mortbay.jetty*.jar"/>
+			<include name="javax.servlet*.jar"/>
+		</fileset>
+		
 		<!-- axis -->
 		<fileset dir="${buildDirectory}/plugins" id="org.apache.axis">
 			<include name="javax.activation*.jar"/>
@@ -70,6 +76,7 @@
 		<copy todir="${buildDirectory}/site/plugins">
 			<fileset refid="org.apache.commons.httpclient" />
 			<fileset refid="com.thoughtworks.xstream" />
+			<fileset refid="org.mortbay.jetty" />
 		</copy>
 	</target>
 	
