@@ -116,9 +116,9 @@ public class FilterDefinitionConverter {
 
 	private static final String VERSION_NONE = "-1"; //$NON-NLS-1$
 
-	private static final String VERSION_RELEASED = "-2"; //$NON-NLS-1$
+	private static final String VERSION_RELEASED = "-3"; //$NON-NLS-1$
 
-	private static final String VERSION_UNRELEASED = "-3"; //$NON-NLS-1$
+	private static final String VERSION_UNRELEASED = "-2"; //$NON-NLS-1$
 
 	private static final String UNRESOLVED = "-1"; //$NON-NLS-1$
 
@@ -522,8 +522,12 @@ public class FilterDefinitionConverter {
 		if (filter instanceof DateRangeFilter) {
 			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
-			addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate())); //$NON-NLS-1$
-			addParameter(sb, type + ":before", df.format(rangeFilter.getToDate())); //$NON-NLS-1$
+			if (rangeFilter.getFromDate() != null) {
+				addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate())); //$NON-NLS-1$
+			}
+			if (rangeFilter.getToDate() != null) {
+				addParameter(sb, type + ":before", df.format(rangeFilter.getToDate())); //$NON-NLS-1$
+			}
 		} else if (filter instanceof RelativeDateRangeFilter) {
 			RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) filter;
 			if (rangeFilter.previousMilliseconds() != 0L) {
