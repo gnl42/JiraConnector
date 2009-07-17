@@ -23,6 +23,9 @@ import com.atlassian.theplugin.commons.remoteapi.ServerData;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
@@ -182,5 +185,36 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 	@Override
 	protected ObjectOutput createObjectOutput(File cacheFile) throws IOException {
 		return new ObjectOutputStream(new FileOutputStream(cacheFile));
+	}
+
+	@Override
+	protected void readCache() {
+		if (getCacheFile() == null || !getCacheFile().exists()) {
+			return;
+		}
+
+		ObjectInput in = null;
+		try {
+			in = createObjectInput(getCacheFile());
+			int size = in.readInt();
+			for (int i = 0; i < size; i++) {
+				String url = (String) in.readObject();
+				BambooClientData data = (BambooClientData) in.readObject();
+				if (url != null && data != null) {
+					getClientDataByUrl().put(url, data);
+				}
+			}
+		} catch (Throwable e) {
+			StatusHandler.log(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID,
+					"The repository configuration cache could not be read", e));
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+		}
 	}
 }

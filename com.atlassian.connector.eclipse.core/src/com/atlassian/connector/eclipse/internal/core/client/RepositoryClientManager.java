@@ -53,10 +53,10 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 		Assert.isNotNull(taskRepository);
 		T client = clientByUrl.get(taskRepository.getRepositoryUrl());
 		if (client == null) {
-			C data = clientDataByUrl.get(taskRepository.getRepositoryUrl());
+			C data = getClientDataByUrl().get(taskRepository.getRepositoryUrl());
 			if (data == null) {
 				data = createRepositoryConfiguration();
-				clientDataByUrl.put(taskRepository.getRepositoryUrl(), data);
+				getClientDataByUrl().put(taskRepository.getRepositoryUrl(), data);
 			}
 
 			client = createClient(taskRepository, data);
@@ -81,63 +81,33 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 	}
 
 	public synchronized void repositoryRemoved(TaskRepository repository) {
-		removeClient(repository, clientByUrl, clientDataByUrl);
-		clientDataByUrl.remove(repository.getRepositoryUrl());
+		removeClient(repository, clientByUrl, getClientDataByUrl());
+		getClientDataByUrl().remove(repository.getRepositoryUrl());
 	}
 
 	public synchronized void repositorySettingsChanged(TaskRepository repository) {
-		removeClient(repository, clientByUrl, clientDataByUrl);
+		removeClient(repository, clientByUrl, getClientDataByUrl());
 	}
 
-	@SuppressWarnings("unchecked")
-	public void readCache() {
-		if (cacheFile == null || !cacheFile.exists()) {
-			return;
-		}
-
-		ObjectInput in = null;
-		try {
-			in = createObjectInput(cacheFile);
-			int size = in.readInt();
-			for (int i = 0; i < size; i++) {
-				String url = (String) in.readObject();
-				C data = (C) in.readObject();
-				if (url != null && data != null) {
-					clientDataByUrl.put(url, data);
-				}
-			}
-		} catch (Throwable e) {
-			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
-					"The repository configuration cache could not be read", e));
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
-
-	}
+	protected abstract void readCache();
 
 	protected abstract ObjectInput createObjectInput(File cacheFile) throws FileNotFoundException, IOException;
 
 	protected abstract ObjectOutput createObjectOutput(File cacheFile) throws IOException;
 
 	public void writeCache() {
-		updateClientDataMap(clientByUrl, clientDataByUrl);
-		if (cacheFile == null) {
+		updateClientDataMap(clientByUrl, getClientDataByUrl());
+		if (getCacheFile() == null) {
 			return;
 		}
 
 		ObjectOutput out = null;
 		try {
-			out = createObjectOutput(cacheFile);
-			out.writeInt(clientDataByUrl.size());
-			for (String url : clientDataByUrl.keySet()) {
+			out = createObjectOutput(getCacheFile());
+			out.writeInt(getClientDataByUrl().size());
+			for (String url : getClientDataByUrl().keySet()) {
 				out.writeObject(url);
-				out.writeObject(clientDataByUrl.get(url));
+				out.writeObject(getClientDataByUrl().get(url));
 			}
 		} catch (IOException e) {
 			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
@@ -168,6 +138,14 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 
 	public void repositoryUrlChanged(TaskRepository repository, String oldUrl) {
 		// ignore
+	}
+
+	protected File getCacheFile() {
+		return cacheFile;
+	}
+
+	protected Map<String, C> getClientDataByUrl() {
+		return clientDataByUrl;
 	}
 
 }
