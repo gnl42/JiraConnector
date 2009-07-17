@@ -21,11 +21,10 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,9 +95,9 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 			return;
 		}
 
-		ObjectInputStream in = null;
+		ObjectInput in = null;
 		try {
-			in = new ObjectInputStream(new FileInputStream(cacheFile));
+			in = createObjectInput(cacheFile);
 			int size = in.readInt();
 			for (int i = 0; i < size; i++) {
 				String url = (String) in.readObject();
@@ -122,15 +121,19 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 
 	}
 
+	protected abstract ObjectInput createObjectInput(File cacheFile) throws FileNotFoundException, IOException;
+
+	protected abstract ObjectOutput createObjectOutput(File cacheFile) throws IOException;
+
 	public void writeCache() {
 		updateClientDataMap(clientByUrl, clientDataByUrl);
 		if (cacheFile == null) {
 			return;
 		}
 
-		ObjectOutputStream out = null;
+		ObjectOutput out = null;
 		try {
-			out = new ObjectOutputStream(new FileOutputStream(cacheFile));
+			out = createObjectOutput(cacheFile);
 			out.writeInt(clientDataByUrl.size());
 			for (String url : clientDataByUrl.keySet()) {
 				out.writeObject(url);

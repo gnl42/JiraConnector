@@ -28,6 +28,14 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -166,4 +174,13 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 		}
 	}
 
+	@Override
+	protected ObjectInput createObjectInput(File cacheFile) throws FileNotFoundException, IOException {
+		return new ObjectInputStream(new FileInputStream(cacheFile));
+	}
+
+	@Override
+	protected ObjectOutput createObjectOutput(File cacheFile) throws IOException {
+		return new ObjectOutputStream(new FileOutputStream(cacheFile));
+	}
 }
