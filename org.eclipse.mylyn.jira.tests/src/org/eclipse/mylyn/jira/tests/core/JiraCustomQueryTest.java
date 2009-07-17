@@ -284,4 +284,84 @@ public class JiraCustomQueryTest extends TestCase {
 		} catch (InvalidJiraQueryException e) {
 		}
 	}
+
+	public void testJiraCustomQueryIncompleteDateFilter() {
+		String repositoryUrl = "http://host.net/";
+
+		FilterDefinition filter = new FilterDefinition();
+		filter.setProjectFilter(new ProjectFilter(projects));
+
+		filter.setCreatedDateFilter(new DateRangeFilter(new Date(10), null));
+		filter.setUpdatedDateFilter(new DateRangeFilter(null, new Date(22)));
+		filter.setDueDateFilter(new DateRangeFilter(null, null));
+
+		TaskRepository taskRepository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, repositoryUrl);
+		taskRepository.setCharacterEncoding("ASCII");
+		IRepositoryQuery customQuery = JiraTestUtil.createQuery(taskRepository, filter);
+		String queryUrl = customQuery.getUrl();
+
+		MockJiraClient client = new MockJiraClient("");
+
+		JiraClientCache cache = new JiraClientCache(client) {
+			@Override
+			public Project getProjectById(String id) {
+				for (Project prj : projects) {
+					if (prj.getId().equals(id)) {
+						return prj;
+					}
+				}
+				return null;
+			}
+
+			@Override
+			public Project[] getProjects() {
+				return projects;
+			}
+
+			@Override
+			public IssueType getIssueTypeById(String id) {
+				IssueType issueType = new IssueType();
+				issueType.setId(id);
+				return issueType;
+			};
+
+			@Override
+			public JiraStatus getStatusById(String id) {
+				JiraStatus status = new JiraStatus();
+				status.setId(id);
+				return status;
+			};
+
+			@Override
+			public Resolution getResolutionById(String id) {
+				Resolution resolution = new Resolution();
+				resolution.setId(id);
+				return resolution;
+			};
+		};
+		client.setCache(cache);
+
+		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+		FilterDefinition filter2 = converter.toFilter(client, queryUrl, true);
+
+		ProjectFilter projectFilter2 = filter2.getProjectFilter();
+		assertEquals(2, projects.length);
+		assertEquals(projects[0].getId(), projectFilter2.getProjects()[0].getId());
+		assertEquals(projects[1].getId(), projectFilter2.getProjects()[1].getId());
+
+		DateFilter createdDateFilter2 = filter.getCreatedDateFilter();
+		assertTrue(createdDateFilter2 instanceof DateRangeFilter);
+		assertEquals(10, ((DateRangeFilter) createdDateFilter2).getFromDate().getTime());
+		assertNull(((DateRangeFilter) createdDateFilter2).getToDate());
+
+		DateFilter updatedDateFilter2 = filter.getUpdatedDateFilter();
+		assertTrue(updatedDateFilter2 instanceof DateRangeFilter);
+		assertNull(((DateRangeFilter) updatedDateFilter2).getFromDate());
+		assertEquals(22, ((DateRangeFilter) updatedDateFilter2).getToDate().getTime());
+
+		DateFilter dueDateFilter2 = filter.getDueDateFilter();
+		assertTrue(dueDateFilter2 instanceof DateRangeFilter);
+		assertNull(((DateRangeFilter) dueDateFilter2).getFromDate());
+		assertNull(((DateRangeFilter) dueDateFilter2).getToDate());
+	}
 }

@@ -1305,10 +1305,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	private DateRangeFilter getRangeFilter(DatePicker startDatePicker, DatePicker endDatePicker) {
 		Calendar startDate = startDatePicker.getDate();
 		Calendar endDate = endDatePicker.getDate();
-		if (startDate != null && endDate != null) {
-			return new DateRangeFilter(startDate.getTime(), endDate.getTime());
-		}
-		return null;
+		return new DateRangeFilter(startDate == null ? null : startDate.getTime(), endDate == null ? null
+				: endDate.getTime());
 	}
 
 	private void initializeContentProviders() {
@@ -1602,13 +1600,22 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	private void setDateRange(DateFilter dateFilter, DatePicker startDatePicker, DatePicker endDatePicker) {
 		if (dateFilter instanceof DateRangeFilter) {
 			DateRangeFilter rangeFilter = (DateRangeFilter) dateFilter;
-			Calendar c1 = Calendar.getInstance();
-			c1.setTime(rangeFilter.getFromDate());
-			startDatePicker.setDate(c1);
 
-			Calendar c2 = Calendar.getInstance();
-			c2.setTime(rangeFilter.getToDate());
-			endDatePicker.setDate(c2);
+			if (rangeFilter.getFromDate() != null) {
+				Calendar c1 = Calendar.getInstance();
+				c1.setTime(rangeFilter.getFromDate());
+				startDatePicker.setDate(c1);
+			} else {
+				startDatePicker.setDate(null);
+			}
+
+			if (rangeFilter.getToDate() != null) {
+				Calendar c2 = Calendar.getInstance();
+				c2.setTime(rangeFilter.getToDate());
+				endDatePicker.setDate(c2);
+			} else {
+				endDatePicker.setDate(null);
+			}
 		}
 	}
 
