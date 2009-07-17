@@ -81,6 +81,9 @@ public class DirectClickThroughServlet extends HttpServlet {
 		} else if ("/review".equals(path)) {
 			writeIcon(resp);
 			handleOpenReviewRequest(req);
+		} else if ("/build".equals(req)) {
+			writeIcon(resp);
+			handleOpenBuildRequest(req);
 		} else {
 			resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, 
@@ -252,6 +255,49 @@ public class DirectClickThroughServlet extends HttpServlet {
 		}
 	}
 
+	private void handleOpenBuildRequest(final HttpServletRequest req) {
+		final String buildKey = req.getParameter("build_key");
+		final String buildNumber = req.getParameter("build_number");
+		final String serverUrl = req.getParameter("server_url");
+
+		if (buildKey != null && buildKey.length() > 0
+				&& serverUrl != null && serverUrl.length() > 0
+				&& buildNumber != null && buildNumber.length() > 0) {
+			
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
+					new MessageDialog(WorkbenchUtil.getShell(), "Unable to handle request", null,
+							"Direct Click Through doesn't support opening Bamboo builds currently.",
+			    			MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+				}
+			});
+			
+			/*
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					boolean found = false;
+					// try to open received build in all open projects
+					for (Project project : ProjectManager.getInstance().getOpenProjects()) {
+
+						final BambooToolWindowPanel panel = IdeaHelper.getBambooToolWindowPanel(project);
+						if (panel != null) {
+							bringIdeaToFront(project);
+							panel.openBuild(buildKey, buildNumberIntFinal, serverUrl);
+						}
+
+					}
+
+//					if (!found) {
+//						Messages.showInfoMessage("Cannot find build " + buildKey + "-" + buildNumberIntFinal,
+//								PluginUtil.PRODUCT_NAME);
+//					}
+				}
+			});*/
+		} else {
+			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open build: build_key or build_number or server_url parameter is null"));
+		}
+	}
+	
 	@SuppressWarnings("restriction")
 	private void handleOpenReviewRequest(final HttpServletRequest req) {
 		final String taskId = req.getParameter("review_key");
