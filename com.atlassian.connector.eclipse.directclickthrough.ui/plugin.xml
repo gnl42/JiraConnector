@@ -19,8 +19,10 @@
     </extension>
     
 	<extension
-       point="org.eclipse.ui.startup">
+		name="Atlassian Connector For Eclipse Direct Click Through Support"
+       	point="org.eclipse.ui.startup">
     	<startup
         	class="com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin$EarlyStartup"/>
  	</extension>
+ 	
 </plugin>
