@@ -46,7 +46,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * From the wiki:
- * 
  * <ul>
  * <li>Cascading Select - Multiple select lists where the options for the second select list dynamically updates based
  * on the value of the first</li>
@@ -63,17 +62,12 @@ import org.xml.sax.helpers.DefaultHandler;
  * <li>User Picker - Choose a user from the user base via a popup picker window.</li>
  * <li>Version Picker - Select list with the all versions related to the current project of the issue</li>
  * </ul>
- * 
  * The processing of custom fields might need to be done using extension points to handle custom UI
- * 
  * <p>
  * TODO need a way to convert from custom values into typed values
- * 
  * <p>
  * com.atlassian.jira.plugin.system.customfieldtypes:textfield
- * com.atlassian.jira.plugin.system.customfieldtypes:textarea
- * 
- * com.atlassian.jira.plugin.system.customfieldtypes:select
+ * com.atlassian.jira.plugin.system.customfieldtypes:textarea com.atlassian.jira.plugin.system.customfieldtypes:select
  * com.atlassian.jira.plugin.system.customfieldtypes:multiselect
  * com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect
  * com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes
@@ -87,10 +81,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * com.atlassian.jira.plugin.system.customfieldtypes:float com.atlassian.jira.plugin.system.customfieldtypes:project
  * com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons com.atlassian.jira.plugin.system.customfieldtypes:url
  * com.atlassian.jira.plugin.system.customfieldtypes:readonlyfield
- * 
  * <p>
  * TODO probably need to filter out the following field types (and maybe others from JIRA Toolkit)
- * 
  * <p>
  * com.atlassian.jira.toolkit:assigneedomain com.atlassian.jira.toolkit:attachments com.atlassian.jira.toolkit:comments
  * com.atlassian.jira.toolkit:dayslastcommented com.atlassian.jira.toolkit:lastusercommented
@@ -99,13 +91,10 @@ import org.xml.sax.helpers.DefaultHandler;
  * com.atlassian.jira.toolkit:reporterdomain com.atlassian.jira.toolkit:resolveddate
  * com.atlassian.jira.toolkit:supporttools com.atlassian.jira.toolkit:userproperty
  * com.atlassian.jira.toolkit:velocitymessage com.atlassian.jira.toolkit:velocityviewmessage
- * com.atlassian.jira.toolkit:viewmessage
- * 
- * com.atlassian.jira.ext.charting:firstresponsedate
+ * com.atlassian.jira.toolkit:viewmessage com.atlassian.jira.ext.charting:firstresponsedate
  * 
  * @see http://www.atlassian.com/software/jira/docs/latest/customfields/overview.html
  * @see http://confluence.atlassian.com/display/JIRAEXT/JIRA+Toolkit
- * 
  * @author Brock Janiczak
  * @author Steffen Pingel
  * @author Eugene Kuleshov
@@ -394,6 +383,7 @@ public class JiraRssHandler extends DefaultHandler {
 			} else if (PARENT.equals(localName)) {
 				currentIssue.setParentId(attributes.getValue(ID_ATTR));
 			} else if (TYPE.equals(localName)) {
+				// FIXME bug 280834: handle case where cache is outdated
 				currentIssue.setType(client.getCache().getIssueTypeById(attributes.getValue(ID_ATTR)));
 			} else if (PRIORITY.equals(localName)) {
 				currentIssue.setPriority(client.getCache().getPriorityById(attributes.getValue(ID_ATTR)));
@@ -838,12 +828,10 @@ public class JiraRssHandler extends DefaultHandler {
 	/**
 	 * Strips HTML tags from <code>text</code>. The RSS Feed enhances the output of certain fields such as description,
 	 * environment and comments with HTML tags:
-	 * 
 	 * <ul>
 	 * <li>for each line breaks a <code><br/>\n</code> or <code>\n<br/>\n</code> tag is added
 	 * <li>links are wrapped in <code><a></code> tags
 	 * </ul>
-	 * 
 	 * <p>
 	 * This method strips all HTML tags and not just the tags mentioned above. The implementation should be refactored
 	 * to ignore tags that were not added by the RSS feed.
@@ -869,7 +857,6 @@ public class JiraRssHandler extends DefaultHandler {
 	/**
 	 * Returns true if <code>unescaped</code> has HTML markup that can not be properly reverted to the original
 	 * representation.
-	 * 
 	 * <p>
 	 * Public for testing.
 	 */
