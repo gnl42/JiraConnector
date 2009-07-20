@@ -32,6 +32,7 @@
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.test-feature,com.atlassian.connector.eclipse.test-feature"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.tests,com.atlassian.connector.eclipse.tests"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.ui,com.atlassian.connector.eclipse.ui"/>
+<project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.atlassian.connector.eclipse.help,com.atlassian.connector.eclipse.help"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/com.thoughtworks.xstream,com.thoughtworks.xstream"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/org.jdom_jaxen,org.jdom_jaxen"/>
 <project reference="0.9.3,https://studio.atlassian.com/svn/PLE/trunk/org.jetbrains.annotations,org.jetbrains.annotations"/>
