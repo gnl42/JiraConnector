@@ -33,9 +33,25 @@
          name="Bamboo Integration"/>
 
    <requires>
-      <import plugin="com.atlassian.connector.eclipse.directclickthrough.ui"/>
       <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="equivalent"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="equivalent"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="com.atlassian.connector.commons"/>
+      <import plugin="org.eclipse.mylyn.commons.core"/>
+      <import plugin="org.eclipse.mylyn.commons.ui"/>
+      <import plugin="com.atlassian.connector.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui"/>
+      <import plugin="org.eclipse.mylyn.tasks.core"/>
+      <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
+      <import plugin="org.mortbay.jetty.server" version="6.1.15" match="compatible"/>
+      <import plugin="org.mortbay.jetty.util" version="6.1.15" match="compatible"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.apache.jasper"/>
+      <import plugin="javax.servlet.jsp"/>
    </requires>
 
    <plugin
@@ -46,21 +62,21 @@
          unpack="false"/>
 
    <plugin
+         id="javax.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
          id="org.mortbay.jetty.server"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-	<plugin
-         id="org.mortbay.jetty.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
    <plugin
-         id="javax.servlet"
+         id="org.mortbay.jetty.util"
          download-size="0"
          install-size="0"
          version="0.0.0"
