@@ -64,6 +64,7 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.0.0" match="compatible"/>
       <import plugin="com.atlassian.connector.eclipse.monitor.ui" version="3.0.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.ui"/>
    </requires>
 
    <plugin
