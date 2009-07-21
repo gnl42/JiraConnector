@@ -61,6 +61,34 @@
          version="0.0.0"
          unpack="false"/>
 
+	<plugin
+         id="com.atlassian.connector.eclipse.monitor.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+    
+    <plugin
+         id="com.atlassian.connector.eclipse.monitor.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="com.atlassian.connector.eclipse.monitor.usage"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+    
+    <plugin
+         id="com.atlassian.connector.eclipse.monitor.reports"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+    
    <plugin
          id="javax.servlet"
          download-size="0"
