@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mylyn Monitor Tests
-Bundle-SymbolicName: org.eclipse.mylyn.monitor.tests
+Bundle-SymbolicName: com.atlassian.connector.eclipse.monitor.tests
 Bundle-Version: 0.0.0
 Bundle-Activator: org.eclipse.mylyn.monitor.tests.MonitorTestsPlugin
 Bundle-Vendor: Eclipse Mylyn
@@ -16,9 +16,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.context.ui,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.ui.ide,
- org.eclipse.mylyn.monitor.usage,
- org.eclipse.mylyn.monitor.ui,
- org.eclipse.mylyn.monitor.core,
+ com.atlassian.connector.eclipse.monitor.usage,
+ com.atlassian.connector.eclipse.monitor.ui,
+ com.atlassian.connector.eclipse.monitor.core,
  org.eclipse.mylyn.commons.core
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: mylyn-monitor-tests.jar
