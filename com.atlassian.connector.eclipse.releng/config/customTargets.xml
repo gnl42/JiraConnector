@@ -122,7 +122,6 @@
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.ui/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.core/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.ui/build.xml"/>
-		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.reports/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.tests/build.xml"/>
 		<cloverizeBuildXml file="${buildDirectory}/plugins/com.atlassian.connector.eclipse.monitor.usage/build.xml"/>
 	</target>

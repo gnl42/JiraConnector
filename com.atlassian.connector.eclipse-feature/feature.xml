@@ -47,11 +47,6 @@
       <import plugin="javax.servlet" version="2.5.0" match="compatible"/>
       <import plugin="org.mortbay.jetty.server" version="6.1.15" match="compatible"/>
       <import plugin="org.mortbay.jetty.util" version="6.1.15" match="compatible"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.apache.jasper"/>
-      <import plugin="javax.servlet.jsp"/>
-      <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="equivalent"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="equivalent"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.0.0" match="compatible"/>
@@ -64,7 +59,11 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.mylyn.commons.net" version="3.0.0" match="compatible"/>
       <import plugin="com.atlassian.connector.eclipse.monitor.ui" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.context.ui"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.apache.jasper"/>
+      <import plugin="javax.servlet.jsp"/>
+      <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="equivalent"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="equivalent"/>
    </requires>
 
    <plugin
@@ -90,13 +89,6 @@
 
    <plugin
          id="com.atlassian.connector.eclipse.monitor.usage"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.atlassian.connector.eclipse.monitor.reports"
          download-size="0"
          install-size="0"
          version="0.0.0"
