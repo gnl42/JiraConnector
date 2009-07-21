@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session version="1.0">
+<refactoring comment="Copy 1 elements(s) to 'icons'&#13;&#10;- Original project: 'org.eclipse.mylar.monitor.usage'&#13;&#10;- Destination element: 'icons'&#13;&#10;- Original element: 'wizard-feedback.gif'" description="Copy file" destination="icons" element1="icons/etool16/wizard-feedback.gif" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" log="icons/etool16/wizard-feedback.gif&#9;true&#9;false" policy="org.eclipse.jdt.ui.copyResources" stamp="1162411316113" units="0" version="1.0"/>
+</session>

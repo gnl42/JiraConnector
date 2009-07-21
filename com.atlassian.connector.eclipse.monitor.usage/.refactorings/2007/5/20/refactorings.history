@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<session version="1.0">
+<refactoring comment="Rename resource '/org.eclipse.mylar.monitor.usage/icons/wizban/new_statcon_wiz.gif' to 'banner-usage'&#13;&#10;- Original project: 'org.eclipse.mylar.monitor.usage'&#13;&#10;- Original element: 'new_statcon_wiz.gif'" description="Rename resource 'new_statcon_wiz.gif'" flags="7" id="org.eclipse.jdt.ui.rename.resource" input="icons/wizban/new_statcon_wiz.gif" name="banner-usage" stamp="1179469139239" version="1.0"/>
+<refactoring comment="Rename resource '/org.eclipse.mylar.monitor.usage/icons/wizban/banner-usage' to 'banner-usage.gif'&#13;&#10;- Original project: 'org.eclipse.mylar.monitor.usage'&#13;&#10;- Original element: 'banner-usage'" description="Rename resource 'banner-usage'" flags="7" id="org.eclipse.jdt.ui.rename.resource" input="icons/wizban/banner-usage" name="banner-usage.gif" stamp="1179469144484" version="1.0"/>
+</session>

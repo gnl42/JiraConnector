@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable 'monitor' in 'org.eclipse.mylar.internal.monitor.usage.MonitorFileRolloverJob.run(...)' to 'progressMonitor'&#13;&#10;- Original project: 'org.eclipse.mylar.monitor.usage'&#13;&#10;- Original element: 'org.eclipse.mylar.internal.monitor.usage.MonitorFileRolloverJob.run(IProgressMonitor).monitor'&#13;&#10;- Renamed element: 'org.eclipse.mylar.internal.monitor.usage.MonitorFileRolloverJob.run(IProgressMonitor).progressMonitor'&#13;&#10;- Update references to refactored element" description="Rename local variable 'monitor'" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;org.eclipse.mylar.internal.monitor.usage{MonitorFileRolloverJob.java" name="progressMonitor" references="true" selection="3558 7" stamp="1175189975812" version="1.0"/>
+</session>
