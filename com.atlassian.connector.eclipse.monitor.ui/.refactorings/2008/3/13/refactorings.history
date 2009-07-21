@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract method &apos;private void init()&apos; from &apos;org.eclipse.mylyn.monitor.ui.MonitorUiPlugin.start().new Runnable() {...}.run()&apos; to &apos;org.eclipse.mylyn.monitor.ui.MonitorUiPlugin&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.monitor.ui&apos;&#x0A;- Method name: &apos;init&apos;&#x0A;- Destination type: &apos;org.eclipse.mylyn.monitor.ui.MonitorUiPlugin&apos;&#x0A;- Declared visibility: &apos;private&apos;" comments="false" description="Extract method &apos;init&apos;" destination="1" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;org.eclipse.mylyn.monitor.ui{MonitorUiPlugin.java" name="init" replace="false" selection="5591 941" stamp="1206856240399" version="1.0" visibility="2"/>
+</session>

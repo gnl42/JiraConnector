@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session version="1.0">
+<refactoring comment="Rename method 'org.eclipse.mylyn.monitor.ui.MonitorUiPlugin.MonitorUiExtensionPointReader.readActivityTimer(...)' to 'readActivityMonitor'&#13;&#10;- Original project: 'org.eclipse.mylyn.monitor.ui'&#13;&#10;- Original element: 'org.eclipse.mylyn.monitor.ui.MonitorUiPlugin.MonitorUiExtensionPointReader.readActivityTimer(...)'&#13;&#10;- Renamed element: 'org.eclipse.mylyn.monitor.ui.MonitorUiPlugin.MonitorUiExtensionPointReader.readActivityMonitor(...)'&#13;&#10;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method 'readActivityTimer'" flags="589826" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;org.eclipse.mylyn.monitor.ui{MonitorUiPlugin.java[MonitorUiPlugin[MonitorUiExtensionPointReader~readActivityTimer~QIConfigurationElement;" name="readActivityMonitor" references="true" stamp="1187823732968" version="1.0"/>
+</session>

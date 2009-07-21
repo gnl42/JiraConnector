@@ -1,0 +1,8 @@
+1144122119515	Rename method 'org.eclipse.mylar.internal.monitor.monitors.SelectionMonitor.isObfuscatingStrings()' to 'isObfuscatingEnabled'
+1144169154406	Rename field 'org.eclipse.mylar.internal.monitor.monitors.SelectionMonitor.ENCRYPTION_SHA' to 'ENCRYPTION_ALGORITHM'
+1144169088611	Extract constant 'org.eclipse.mylar.internal.monitor.monitors.SelectionMonitor.ENCRYPTION_SHA' from expression '"SHA"'
+1144122418425	Move org.eclipse.mylar.internal.monitor.MylarMonitorPlugin.PREF_MONITORING_OBFUSCATE to org.eclipse.mylar.internal.monitor.MylarMonitorPreferenceConstants
+1144122362054	Move org.eclipse.mylar.internal.monitor.MylarMonitorPlugin.PREF_MONITORING_ENABLED to org.eclipse.mylar.internal.monitor.MylarMonitorPreferenceConstants
+1144122341874	Move org.eclipse.mylar.internal.monitor.MylarMonitorPlugin.PREF_NUM_USER_EVENTS to org.eclipse.mylar.internal.monitor.MylarMonitorPreferenceConstants
+1144122334073	Move org.eclipse.mylar.internal.monitor.MylarMonitorPlugin.PREF_PREVIOUS_TRANSMIT_DATE to org.eclipse.mylar.internal.monitor.MylarMonitorPreferenceConstants
+1144122124402	Rename method 'org.eclipse.mylar.internal.monitor.monitors.SelectionMonitor.isObfuscatingEnabled()' to 'isObfuscationEnabled'

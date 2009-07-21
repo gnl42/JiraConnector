@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;npe&apos; in &apos;org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor.AbstractCommandMonitor()&apos; to &apos;e&apos;&#x0D;&#x0A;- Original project: &apos;org.eclipse.mylyn.monitor.ui&apos;&#x0D;&#x0A;- Original element: &apos;org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor.AbstractCommandMonitor().npe&apos;&#x0D;&#x0A;- Renamed element: &apos;org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor.AbstractCommandMonitor().e&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;npe&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;org.eclipse.mylyn.monitor.ui{AbstractCommandMonitor.java[AbstractCommandMonitor~AbstractCommandMonitor@npe!1458!1481!1479!1481!QNullPointerException;" name="e" references="true" stamp="1201739435864" version="1.0"/>
+</session>

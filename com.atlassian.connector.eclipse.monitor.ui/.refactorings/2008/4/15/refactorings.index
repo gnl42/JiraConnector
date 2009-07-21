@@ -1,0 +1,4 @@
+1207944765667	Move compilation unit
+1207945036344	Move member 'getSelectionMonitors'
+1207945046844	Move member 'addInteractionListener'
+1207945055156	Move member 'removeInteractionListener'

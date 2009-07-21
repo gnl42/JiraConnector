@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 1 element(s) from project &apos;org.eclipse.mylyn.monitor.ui&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.monitor.ui&apos;&#x0A;- Original element: &apos;ActivityContextManager.java.rej&apos;" description="Delete element" element1="src/org/eclipse/mylyn/internal/monitor/ui/ActivityContextManager.java.rej" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="1" stamp="1225925539397" subPackages="false" version="1.0"/>
+</session>

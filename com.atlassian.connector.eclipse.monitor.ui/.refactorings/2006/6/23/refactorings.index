@@ -1,0 +1,4 @@
+1149460439167	Rename field 'PREFERENCE_LISTENER'
+1149464237218	Extract constant 'DELIM_PATH'
+1149463242438	Rename type 'ObfuscationUtil'
+1149460844260	Rename type 'ElementObfuscator'

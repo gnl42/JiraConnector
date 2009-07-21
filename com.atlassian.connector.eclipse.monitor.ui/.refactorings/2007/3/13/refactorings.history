@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<session version="1.0">
+<refactoring comment="Rename method 'org.eclipse.mylar.monitor.ui.workbench.MenuCommandMonitor.obfuscateValueIfContainsPath(...)' to 'obfuscateItemText'&#13;&#10;- Original project: 'org.eclipse.mylar.monitor.ui'&#13;&#10;- Original element: 'org.eclipse.mylar.monitor.ui.workbench.MenuCommandMonitor.obfuscateValueIfContainsPath(...)'&#13;&#10;- Renamed element: 'org.eclipse.mylar.monitor.ui.workbench.MenuCommandMonitor.obfuscateItemText(...)'&#13;&#10;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method 'obfuscateValueIfContainsPath'" flags="589826" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;org.eclipse.mylar.monitor.ui.workbench{MenuCommandMonitor.java[MenuCommandMonitor~obfuscateValueIfContainsPath~QString;" name="obfuscateItemText" references="true" stamp="1175115605642" version="1.0"/>
+</session>
