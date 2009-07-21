@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 1 element(s) from project &apos;org.eclipse.mylyn.monitor.tests&apos;&#x0D;&#x0A;- Original project: &apos;org.eclipse.mylyn.monitor.tests&apos;&#x0D;&#x0A;- Original element: &apos;org.eclipse.mylyn.monitor.tests.ActiveTimerTest.java&apos;" description="Delete element" element1="/src&lt;org.eclipse.mylyn.monitor.tests{ActiveTimerTest.java" elements="1" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1212608821547" subPackages="false" version="1.0"/>
+</session>
