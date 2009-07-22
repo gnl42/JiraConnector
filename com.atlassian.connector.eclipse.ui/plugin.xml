@@ -75,5 +75,29 @@
          </property>
       </mapping>
    </extension>
-
+   
+   <!-- Usage Data -->
+	<extension
+         point="com.atlassian.connector.eclipse.monitor.usage.study">
+         <scripts
+         	url="http://my.server"
+         	upload="upload.cgi"
+         	userId="getUID.cgi"
+         	questionnaire="questionnaire.cgi"/>
+         <!--ui
+         	title="Mylyn User Study Example"
+         	daysBetweenUpload="6"
+         	questionnairePage="org.eclipse.mylyn.examples.monitor.study.QuestionnaireWizardPage"
+         	consentForm="doc/study-ethics.html"/-->
+   </extension>
+   
+   <extension point="org.eclipse.ui.newWizards">
+      <wizard
+            class="org.eclipse.mylyn.internal.monitor.usage.wizards.UsageSubmissionWizard"
+            icon="icons/eview16/wizard-feedback.gif"
+            id="org.eclipse.mylyn.monitor.ui.ui.uploadStatistics.StatisticsUploadWizard"
+            name="Usage Data Submission for Atlassian Connector for Eclipse">
+      </wizard>
+   </extension>
+   
 </plugin>
