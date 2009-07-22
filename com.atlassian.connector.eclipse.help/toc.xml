@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="Atlassian Connector for Eclipse" topic="html/main.html">
-	<topic label="Support"  href="html/support.html"> 
+<toc label="Atlassian Connector for Eclipse" link_to="../com.tasktop.help.ui/toc-connectors.xml#additions">
+	<topic label="Atlassian Connector for Eclipse" href="html/main.html"> 
+		<topic label="Support"  href="html/support.html"> 
+		</topic>
 	</topic>
 </toc>
