@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="study" name="UI Usage Monitor" schema="schema/study.exsd"/>
+   <extension-point id="study" name="%extension-point.name" schema="schema/study.exsd"/>
 
    <extension
-         name="UI Usage Monitoring Startup"
+         name="%startupAndShutdown.name"
          point="org.eclipse.ui.startup">
       <startup
             class="org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin$UiUsageMonitorStartup">
@@ -13,10 +13,10 @@
     
    <extension point="org.eclipse.ui.preferencePages">
       <page 
-         name="Usage Data"
+         name="%preferencePage.name"
          class="org.eclipse.mylyn.internal.monitor.usage.preferences.UsageDataPreferencePage"
          id="org.eclipse.mylyn.monitor.ui.ui.preferences"
-		 category="org.eclipse.mylyn.tasks.ui.preferences">
+		 category="%preferencePage.category">
          <keywordReference id="org.eclipse.mylyn.monitor.ui.keywords"/>
       </page> 
    </extension>
@@ -24,7 +24,7 @@
    <extension
    		point="org.eclipse.ui.keywords">
       <keyword
-            label="mylyn UI Usage Monitor Data"
+            label="%keyword.label"
             id="org.eclipse.mylyn.monitor.ui.keywords"/>
    </extension>
  
@@ -36,14 +36,14 @@
             hasPages="true"
             icon="icons/eview16/editor-usage.gif"
             id="org.eclipse.mylyn.sandbox.wizard.usageSummary"
-            name="UI Usage Report"/>
+            name="%wizard.name"/>
    	</extension>
    
    	<extension point="org.eclipse.ui.editors">
         <editor
            icon="icons/eview16/editor-usage.gif"
            class="org.eclipse.mylyn.internal.monitor.usage.editors.UsageSummaryReportEditorPart"
-           name="UI Usage Report"
+           name="%editor.name"
            id="org.eclipse.mylyn.monitor.usage.summary.editor"/>
   	</extension>
 </plugin>
