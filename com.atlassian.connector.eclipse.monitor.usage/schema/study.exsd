@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.mylar.monitor.ui">
+<schema targetNamespace="org.eclipse.mylyn.monitor.ui">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.mylar.monitor.ui" id="study" name="Mylar Monitor Study"/>
+         <meta.schema plugin="org.eclipse.mylyn.monitor.ui" id="study" name="Mylyn Monitor Study"/>
       </appInfo>
       <documentation>
          Provides a mechanism to connect a user study plug-in with the Mylyn Monitors usage monitoring facilities.  For more information please see: http://wiki.eclipse.org/index.php/Mylyn_Integrator_Reference#Monitor_API
