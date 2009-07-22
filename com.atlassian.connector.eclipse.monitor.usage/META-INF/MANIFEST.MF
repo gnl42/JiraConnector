@@ -19,8 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.commons.core;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.commons.net;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.context.core;bundle-version="[3.0.0,4.0.0)",
- com.atlassian.connector.eclipse.monitor.core;bundle-version="[3.0.0,4.0.0)",
- com.atlassian.connector.eclipse.monitor.ui;bundle-version="[3.0.0,4.0.0)"
+ org.eclipse.mylyn.monitor.core;bundle-version="[3.0.0,4.0.0)",
+ org.eclipse.mylyn.monitor.ui;bundle-version="[3.0.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse Mylyn
 Export-Package: 
