@@ -77,11 +77,11 @@ import org.osgi.framework.BundleContext;
  */
 public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
-	public static final String PREF_USER_ID = "org.eclipse.mylyn.user.id";
+	public static final String PREF_USER_ID = "org.eclipse.mylyn.user.id"; //$NON-NLS-1$
 
-	public static String VERSION = "1.0";
+	public static String VERSION = "1.0"; //$NON-NLS-1$
 
-	public static String UPLOAD_FILE_LABEL = "USAGE";
+	public static String UPLOAD_FILE_LABEL = "USAGE"; //$NON-NLS-1$
 
 	private static final long HOUR = 3600 * 1000;
 
@@ -89,31 +89,31 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	private static final long DELAY_ON_USER_REQUEST = 5 * DAY;
 
-	public static final String DEFAULT_TITLE = "Mylyn Feedback";
+	public static final String DEFAULT_TITLE = Messages.UiUsageMonitorPlugin_3;
 
-	public static final String DEFAULT_DESCRIPTION = "Fill out the following form to help us improve Mylyn based on your input.\n";
+	public static final String DEFAULT_DESCRIPTION = Messages.UiUsageMonitorPlugin_4;
 
 	public static final long DEFAULT_DELAY_BETWEEN_TRANSMITS = 21 * 24 * HOUR;
 
-	public static final String DEFAULT_ETHICS_FORM = "doc/study-ethics.html";
+	public static final String DEFAULT_ETHICS_FORM = "doc/study-ethics.html"; //$NON-NLS-1$
 
-	public static final String DEFAULT_VERSION = "";
+	public static final String DEFAULT_VERSION = ""; //$NON-NLS-1$
 
-	public static final String DEFAULT_UPLOAD_SERVER = "http://mylyn.eclipse.org/monitor/upload";
+	public static final String DEFAULT_UPLOAD_SERVER = "http://mylyn.eclipse.org/monitor/upload"; //$NON-NLS-1$
 
-	public static final String DEFAULT_UPLOAD_SERVLET_ID = "/GetUserIDServlet";
+	public static final String DEFAULT_UPLOAD_SERVLET_ID = "/GetUserIDServlet"; //$NON-NLS-1$
 
-	public static final String DEFAULT_UPLOAD_SERVLET = "/MylarUsageUploadServlet";
+	public static final String DEFAULT_UPLOAD_SERVLET = "/MylarUsageUploadServlet"; //$NON-NLS-1$
 
-	public static final String DEFAULT_ACCEPTED_URL_LIST = "";
+	public static final String DEFAULT_ACCEPTED_URL_LIST = ""; //$NON-NLS-1$
 
-	public static final String DEFAULT_CONTACT_CONSENT_FIELD = "false";
+	public static final String DEFAULT_CONTACT_CONSENT_FIELD = "false"; //$NON-NLS-1$
 
-	public static final String ID_UI_PLUGIN = "org.eclipse.mylyn.ui";
+	public static final String ID_UI_PLUGIN = "org.eclipse.mylyn.ui"; //$NON-NLS-1$
 
-	public static final String MONITOR_LOG_NAME = "monitor-log";
+	public static final String MONITOR_LOG_NAME = Messages.UiUsageMonitorPlugin_13;
 
-	public static final String ID_PLUGIN = "org.eclipse.mylyn.monitor.usage";
+	public static final String ID_PLUGIN = "org.eclipse.mylyn.monitor.usage"; //$NON-NLS-1$
 
 	private InteractionEventLogger interactionLogger;
 
@@ -308,7 +308,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 					}
 				} catch (Throwable t) {
 					StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-							"Monitor failed to start", t));
+							Messages.UiUsageMonitorPlugin_15, t));
 				}
 			}
 		});
@@ -369,7 +369,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			preferences.removePropertyChangeListener(preferenceMonitor);
 		} else {
 			StatusHandler.log(new Status(IStatus.WARNING, UiUsageMonitorPlugin.ID_PLUGIN,
-					"UI Usage Monitor not started", new Exception()));
+					Messages.UiUsageMonitorPlugin_16, new Exception()));
 		}
 	}
 
@@ -452,14 +452,14 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	 * Parallels TasksUiPlugin.getDefaultDataDirectory()
 	 */
 	public File getMonitorLogFile() {
-		File rootDir = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + "/.metadata/.mylyn");
+		File rootDir = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + "/.metadata/.mylyn"); //$NON-NLS-1$
 		File file = new File(rootDir, MONITOR_LOG_NAME + InteractionContextManager.CONTEXT_FILE_EXTENSION_OLD);
 		if (!file.exists() || !file.canWrite()) {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						"Could not create monitor file", e));
+						Messages.UiUsageMonitorPlugin_18, e));
 			}
 		}
 		return file;
@@ -508,7 +508,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (resourceBundle == null) {
-				resourceBundle = ResourceBundle.getBundle("org.eclipse.mylyn.monitor.ui.MonitorPluginResources");
+				resourceBundle = ResourceBundle.getBundle("org.eclipse.mylyn.monitor.ui.MonitorPluginResources"); //$NON-NLS-1$
 			}
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
@@ -544,14 +544,14 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		if (currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
 				&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)) {
 
-			String ending = getUserPromptDelay() == 1 ? "" : "s";
+			String ending = getUserPromptDelay() == 1 ? "" : "s"; //$NON-NLS-1$ //$NON-NLS-2$
 			MessageDialog message = new MessageDialog(
 					Display.getDefault().getActiveShell(),
-					"Send Usage Feedback",
+					Messages.UiUsageMonitorPlugin_22,
 					null,
-					"To help improve the Eclipse and Mylyn user experience please consider uploading your UI usage statistics.",
-					MessageDialog.QUESTION, new String[] { "Open UI Usage Report",
-							"Remind me in " + getUserPromptDelay() + " day" + ending, "Don't ask again" }, 0);
+					Messages.UiUsageMonitorPlugin_23,
+					MessageDialog.QUESTION, new String[] { Messages.UiUsageMonitorPlugin_24,
+							Messages.UiUsageMonitorPlugin_25 + getUserPromptDelay() + Messages.UiUsageMonitorPlugin_26 + ending, Messages.UiUsageMonitorPlugin_27 }, 0);
 			int result = 0;
 			if ((result = message.open()) == 0) {
 				// time must be stored right away into preferences, to prevent
@@ -566,11 +566,11 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 								MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)) {
 					MessageDialog consentMessage = new MessageDialog(
 							Display.getDefault().getActiveShell(),
-							"Consent",
+							Messages.UiUsageMonitorPlugin_28,
 							null,
-							"All data that is submitted to mylyn.eclipse.org will be publicly available under the "
-									+ "Eclipse Public License (EPL).  By submitting your data, you are agreeing that it can be publicly "
-									+ "available. Please press cancel on the submission dialog box if you do not wish to share your data.",
+							Messages.UiUsageMonitorPlugin_29
+									+ Messages.UiUsageMonitorPlugin_30
+									+ Messages.UiUsageMonitorPlugin_31,
 							MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0);
 					consentMessage.open();
 					plugin.getPreferenceStore().setValue(
@@ -644,39 +644,39 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	class MonitorUsageExtensionPointReader {
 
-		public static final String EXTENSION_ID_STUDY = "org.eclipse.mylyn.monitor.ui.study";
+		public static final String EXTENSION_ID_STUDY = "org.eclipse.mylyn.monitor.ui.study"; //$NON-NLS-1$
 
-		public static final String ELEMENT_SCRIPTS = "scripts";
+		public static final String ELEMENT_SCRIPTS = "scripts"; //$NON-NLS-1$
 
-		public static final String ELEMENT_SCRIPTS_VERSION = "version";
+		public static final String ELEMENT_SCRIPTS_VERSION = "version"; //$NON-NLS-1$
 
-		public static final String ELEMENT_SCRIPTS_SERVER_URL = "url";
+		public static final String ELEMENT_SCRIPTS_SERVER_URL = "url"; //$NON-NLS-1$
 
-		public static final String ELEMENT_SCRIPTS_UPLOAD_USAGE = "upload";
+		public static final String ELEMENT_SCRIPTS_UPLOAD_USAGE = "upload"; //$NON-NLS-1$
 
-		public static final String ELEMENT_SCRIPTS_GET_USER_ID = "userId";
+		public static final String ELEMENT_SCRIPTS_GET_USER_ID = "userId"; //$NON-NLS-1$
 
-		public static final String ELEMENT_SCRIPTS_UPLOAD_QUESTIONNAIRE = "questionnaire";
+		public static final String ELEMENT_SCRIPTS_UPLOAD_QUESTIONNAIRE = "questionnaire"; //$NON-NLS-1$
 
-		public static final String ELEMENT_UI = "ui";
+		public static final String ELEMENT_UI = "ui"; //$NON-NLS-1$
 
-		public static final String ELEMENT_UI_TITLE = "title";
+		public static final String ELEMENT_UI_TITLE = "title"; //$NON-NLS-1$
 
-		public static final String ELEMENT_UI_DESCRIPTION = "description";
+		public static final String ELEMENT_UI_DESCRIPTION = "description"; //$NON-NLS-1$
 
-		public static final String ELEMENT_UI_UPLOAD_PROMPT = "daysBetweenUpload";
+		public static final String ELEMENT_UI_UPLOAD_PROMPT = "daysBetweenUpload"; //$NON-NLS-1$
 
-		public static final String ELEMENT_UI_QUESTIONNAIRE_PAGE = "questionnairePage";
+		public static final String ELEMENT_UI_QUESTIONNAIRE_PAGE = "questionnairePage"; //$NON-NLS-1$
 
-		public static final String ELEMENT_UI_BACKGROUND_PAGE = "backgroundPage";
+		public static final String ELEMENT_UI_BACKGROUND_PAGE = "backgroundPage"; //$NON-NLS-1$
 
-		public static final String ELEMENT_UI_CONSENT_FORM = "consentForm";
+		public static final String ELEMENT_UI_CONSENT_FORM = "consentForm"; //$NON-NLS-1$
 
-		public static final String ELEMENT_UI_CONTACT_CONSENT_FIELD = "useContactField";
+		public static final String ELEMENT_UI_CONTACT_CONSENT_FIELD = "useContactField"; //$NON-NLS-1$
 
-		public static final String ELEMENT_MONITORS = "monitors";
+		public static final String ELEMENT_MONITORS = "monitors"; //$NON-NLS-1$
 
-		public static final String ELEMENT_MONITORS_BROWSER_URL = "browserUrlFilter";
+		public static final String ELEMENT_MONITORS_BROWSER_URL = "browserUrlFilter"; //$NON-NLS-1$
 
 		private boolean extensionsRead = false;
 
@@ -708,7 +708,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				}
 			} catch (Throwable t) {
 				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						"Could not read monitor extension", t));
+						Messages.UiUsageMonitorPlugin_49, t));
 			}
 		}
 
@@ -737,7 +737,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				}
 			} catch (Throwable e) {
 				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						"Could not load questionaire", e));
+						Messages.UiUsageMonitorPlugin_50, e));
 				UiUsageMonitorPlugin.getDefault().setQuestionnaireEnabled(false);
 			}
 
@@ -754,11 +754,11 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				}
 			} catch (Throwable e) {
 				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						"Could not load background page", e));
+						Messages.UiUsageMonitorPlugin_51, e));
 				UiUsageMonitorPlugin.getDefault().setBackgroundEnabled(false);
 			}
 
-			studyParameters.setFormsConsent("/" + element.getAttribute(ELEMENT_UI_CONSENT_FORM));
+			studyParameters.setFormsConsent("/" + element.getAttribute(ELEMENT_UI_CONSENT_FORM)); //$NON-NLS-1$
 
 		}
 
@@ -786,8 +786,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public String getCustomizedByMessage() {
 		String customizedBy = UiUsageMonitorPlugin.getDefault().getCustomizingPlugin();
-		String message = "NOTE: You have previously downloaded the Mylyn monitor and a user study plug-in with id: "
-				+ customizedBy + "\n" + "If you are not familiar with this plug-in do not upload data.";
+		String message = Messages.UiUsageMonitorPlugin_53
+				+ customizedBy + Messages.UiUsageMonitorPlugin_54 + Messages.UiUsageMonitorPlugin_55;
 		return message;
 	}
 
@@ -804,7 +804,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	public boolean usingContactField() {
-		if (studyParameters.getUseContactField().equals("true")) {
+		if (studyParameters.getUseContactField().equals("true")) { //$NON-NLS-1$
 			return true;
 		} else {
 			return false;

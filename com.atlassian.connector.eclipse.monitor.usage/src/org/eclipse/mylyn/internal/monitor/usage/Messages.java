@@ -16,6 +16,50 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.mylyn.internal.monitor.usage.messages"; //$NON-NLS-1$
 
+	public static String UiUsageMonitorPlugin_13;
+
+	public static String UiUsageMonitorPlugin_15;
+
+	public static String UiUsageMonitorPlugin_16;
+
+	public static String UiUsageMonitorPlugin_18;
+
+	public static String UiUsageMonitorPlugin_22;
+
+	public static String UiUsageMonitorPlugin_23;
+
+	public static String UiUsageMonitorPlugin_24;
+
+	public static String UiUsageMonitorPlugin_25;
+
+	public static String UiUsageMonitorPlugin_26;
+
+	public static String UiUsageMonitorPlugin_27;
+
+	public static String UiUsageMonitorPlugin_28;
+
+	public static String UiUsageMonitorPlugin_29;
+
+	public static String UiUsageMonitorPlugin_3;
+
+	public static String UiUsageMonitorPlugin_30;
+
+	public static String UiUsageMonitorPlugin_31;
+
+	public static String UiUsageMonitorPlugin_4;
+
+	public static String UiUsageMonitorPlugin_49;
+
+	public static String UiUsageMonitorPlugin_50;
+
+	public static String UiUsageMonitorPlugin_51;
+
+	public static String UiUsageMonitorPlugin_53;
+
+	public static String UiUsageMonitorPlugin_54;
+
+	public static String UiUsageMonitorPlugin_55;
+
 	public static String UsageDataPreferencePage_0;
 
 	public static String UsageDataPreferencePage_1;
