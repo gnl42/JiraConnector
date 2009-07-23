@@ -2,3 +2,23 @@
 1248257950609	Delete element
 1248259816554	Move elements
 1248265240244	Delete element
+1248265633087	Rename field 'UiUsageMonitorPlugin_3'
+1248265645908	Rename field 'UiUsageMonitorPlugin_4'
+1248271900961	Rename compilation unit 'Reader.java'
+1248272495499	Rename method 'initExtensions'
+1248274012991	Rename method 'readScripts'
+1248274716013	Rename method 'getMonitorParameters'
+1248274723566	Rename method 'getFormParameters'
+1248276704117	Encapsulate field 'newUidUrl'
+1248277306019	Delete element
+1248277938764	Rename field 'UsageSubmissionWizard_23'
+1248277980248	Rename field 'UsageSubmissionWizard_22'
+1248278007760	Rename field 'UsageSubmissionWizard_28'
+1248278769235	Move compilation unit
+1248335277463	Convert member type 'TableLabelProvider' to top level
+1248339903738	Rename field 'UsageSubmissionWizard_11'
+1248339918104	Rename field 'UsageSubmissionWizard_12'
+1248341462748	Rename field 'UsageSubmissionWizard_8'
+1248341555169	Rename field 'UsageSubmissionWizard_9'
+1248341576278	Rename field 'UsageSubmissionWizard_10'
+1248342747737	Rename field 'UsageSubmissionWizard_15'

@@ -12,6 +12,8 @@
 
 package org.eclipse.mylyn.internal.monitor.usage;
 
+import java.util.Collection;
+
 import org.eclipse.mylyn.monitor.usage.AbstractStudyBackgroundPage;
 import org.eclipse.mylyn.monitor.usage.AbstractStudyQuestionnairePage;
 
@@ -39,17 +41,11 @@ public class StudyParameters {
 
 	private String version = UiUsageMonitorPlugin.DEFAULT_VERSION;
 
-	private String servletUrl = UiUsageMonitorPlugin.DEFAULT_UPLOAD_SERVER;
+	private Collection<UsageCollector> usageCollectors;
 
-	public String getServletUrl() {
-		return servletUrl;
-	}
+	private Collection<MonitorParameters> monitors;
 
-	public void setServletUrl(String servletServerUrl) {
-		if (servletUrl != null) {
-			this.servletUrl = servletServerUrl;
-		}
-	}
+	private Collection<FormParameters> forms;
 
 	public String getFormsConsent() {
 		return formsConsent;
@@ -137,5 +133,21 @@ public class StudyParameters {
 		if (useContactField != null) {
 			this.useContactField = useContactField;
 		}
+	}
+
+	public void setUsageCollectors(Collection<UsageCollector> usageCollectors) {
+		this.usageCollectors = usageCollectors;
+	}
+
+	public void setMonitors(Collection<MonitorParameters> monitors) {
+		this.monitors = monitors;
+	}
+
+	public void setForms(Collection<FormParameters> forms) {
+		this.forms = forms;
+	}
+
+	public Collection<UsageCollector> getUsageCollectors() {
+		return usageCollectors;
 	}
 }

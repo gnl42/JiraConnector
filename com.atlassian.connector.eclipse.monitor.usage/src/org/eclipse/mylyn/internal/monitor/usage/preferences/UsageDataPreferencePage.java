@@ -12,8 +12,13 @@
 
 package org.eclipse.mylyn.internal.monitor.usage.preferences;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.internal.monitor.usage.InteractionEventObfuscator;
 import org.eclipse.mylyn.internal.monitor.usage.Messages;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorPreferenceConstants;
@@ -40,10 +45,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 public class UsageDataPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	private static final String DESCRIPTION = Messages.UsageDataPreferencePage_0
-			+ Messages.UsageDataPreferencePage_1
-			+ Messages.UsageDataPreferencePage_2
-			+ Messages.UsageDataPreferencePage_3;
+	private static final String DESCRIPTION = Messages.UsageDataPreferencePage_0 + Messages.UsageDataPreferencePage_1
+			+ Messages.UsageDataPreferencePage_2 + Messages.UsageDataPreferencePage_3;
 
 	private static final long DAYS_IN_MS = 1000 * 60 * 60 * 24;
 
@@ -55,9 +58,9 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 	private Text logFileText;
 
-	private Text uploadUrl;
-
 	private Text submissionTime;
+
+	private TableViewer usageScripts;
 
 	public UsageDataPreferencePage() {
 		super();
@@ -146,13 +149,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		group.setLayout(new GridLayout(2, false));
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		Label label = new Label(group, SWT.NULL);
-		label.setText(Messages.UsageDataPreferencePage_11);
-		uploadUrl = new Text(group, SWT.BORDER);
-		uploadUrl.setEditable(false);
-		uploadUrl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		uploadUrl.setText(UiUsageMonitorPlugin.getDefault().getStudyParameters().getServletUrl());
-
 		Label events = new Label(group, SWT.NULL);
 		events.setText(Messages.UsageDataPreferencePage_12);
 		Label logged = new Label(group, SWT.NULL);
@@ -195,6 +191,44 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		Label label2 = new Label(enableSubmissionComposite, SWT.NONE);
 		label2.setText(Messages.UsageDataPreferencePage_16);
 
+		usageScripts = new TableViewer(group, SWT.BORDER);
+		GridDataFactory.fillDefaults().span(2, 1).align(SWT.FILL, SWT.FILL).grab(true, true).hint(500, 100).applyTo(
+				usageScripts.getControl());
+
+		TableViewerColumn destinationColumn = new TableViewerColumn(usageScripts, SWT.NONE);
+		destinationColumn.getColumn().setText("Destination URL");
+		destinationColumn.getColumn().setWidth(300);
+		destinationColumn.getColumn().setResizable(true);
+		destinationColumn.getColumn().setMoveable(true);
+
+		TableViewerColumn filterColumn = new TableViewerColumn(usageScripts, SWT.NONE);
+		filterColumn.getColumn().setText("Filters");
+		filterColumn.getColumn().setWidth(300);
+		filterColumn.getColumn().setResizable(true);
+		filterColumn.getColumn().setMoveable(true);
+
+		usageScripts.setContentProvider(new IStructuredContentProvider() {
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+
+			public void dispose() {
+			}
+
+			public Object[] getElements(Object inputElement) {
+				if (inputElement instanceof Object[]) {
+					return (Object[]) inputElement;
+				}
+				return new Object[0];
+			}
+		});
+
+		usageScripts.setLabelProvider(new TableLabelProvider());
+
+		usageScripts.getTable().setHeaderVisible(true);
+		usageScripts.getTable().setLinesVisible(true);
+
+		usageScripts.setInput(UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors().toArray());
 	}
 
 	@Override

@@ -22,14 +22,8 @@ import java.util.ResourceBundle;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
@@ -56,8 +50,6 @@ import org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor;
 import org.eclipse.mylyn.monitor.ui.IActionExecutionListener;
 import org.eclipse.mylyn.monitor.ui.IMonitorLifecycleListener;
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
-import org.eclipse.mylyn.monitor.usage.AbstractStudyBackgroundPage;
-import org.eclipse.mylyn.monitor.usage.AbstractStudyQuestionnairePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
@@ -89,9 +81,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	private static final long DELAY_ON_USER_REQUEST = 5 * DAY;
 
-	public static final String DEFAULT_TITLE = Messages.UiUsageMonitorPlugin_3;
+	public static final String DEFAULT_TITLE = Messages.UiUsageMonitorPlugin_title;
 
-	public static final String DEFAULT_DESCRIPTION = Messages.UiUsageMonitorPlugin_4;
+	public static final String DEFAULT_DESCRIPTION = Messages.UiUsageMonitorPlugin_description;
 
 	public static final long DEFAULT_DELAY_BETWEEN_TRANSMITS = 21 * 24 * HOUR;
 
@@ -99,11 +91,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public static final String DEFAULT_VERSION = ""; //$NON-NLS-1$
 
-	public static final String DEFAULT_UPLOAD_SERVER = "http://mylyn.eclipse.org/monitor/upload"; //$NON-NLS-1$
-
 	public static final String DEFAULT_UPLOAD_SERVLET_ID = "/GetUserIDServlet"; //$NON-NLS-1$
-
-	public static final String DEFAULT_UPLOAD_SERVLET = "/MylarUsageUploadServlet"; //$NON-NLS-1$
 
 	public static final String DEFAULT_ACCEPTED_URL_LIST = ""; //$NON-NLS-1$
 
@@ -117,7 +105,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	private InteractionEventLogger interactionLogger;
 
-	private String customizingPlugin = null;
+	private final String customizingPlugin = null;
 
 	private PreferenceChangeMonitor preferenceMonitor;
 
@@ -247,36 +235,13 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	}
 
-	private void initDefaultPrefs() {
-		getPreferenceStore().setDefault(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE, true);
-
-		if (!getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED)) {
-			getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED, true);
-			getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, true);
-		}
-
-		if (!getPreferenceStore().contains(
-				MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED)) {
-			getPreferenceStore().setValue(
-					MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED, true);
-			getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, true);
-
-		}
-
-		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_STARTED, false);
-	}
-
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		initDefaultPrefs();
 		final IWorkbench workbench = PlatformUI.getWorkbench();
 		workbench.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				try {
-					// ------- moved from synch start
-					new MonitorUsageExtensionPointReader().initExtensions();
-
 					if (preferenceMonitor == null) {
 						preferenceMonitor = new PreferenceChangeMonitor();
 					}
@@ -291,7 +256,12 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 					// browserMonitor = new BrowserMonitor();
 					// setAcceptedUrlMatchList(studyParameters.getAcceptedUrlList());
 
-					studyParameters.setServletUrl(DEFAULT_UPLOAD_SERVER + DEFAULT_UPLOAD_SERVLET);
+					// ------- moved from synch start
+					MonitorUsageExtensionPointReader extensionReader = new MonitorUsageExtensionPointReader();
+
+					studyParameters.setUsageCollectors(extensionReader.getUsageCollectors());
+					studyParameters.setMonitors(extensionReader.getMonitors());
+					studyParameters.setForms(extensionReader.getForms());
 					// ------- moved from synch start
 
 					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
@@ -545,13 +515,12 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)) {
 
 			String ending = getUserPromptDelay() == 1 ? "" : "s"; //$NON-NLS-1$ //$NON-NLS-2$
-			MessageDialog message = new MessageDialog(
-					Display.getDefault().getActiveShell(),
-					Messages.UiUsageMonitorPlugin_22,
-					null,
-					Messages.UiUsageMonitorPlugin_23,
-					MessageDialog.QUESTION, new String[] { Messages.UiUsageMonitorPlugin_24,
-							Messages.UiUsageMonitorPlugin_25 + getUserPromptDelay() + Messages.UiUsageMonitorPlugin_26 + ending, Messages.UiUsageMonitorPlugin_27 }, 0);
+			MessageDialog message = new MessageDialog(Display.getDefault().getActiveShell(),
+					Messages.UiUsageMonitorPlugin_22, null, Messages.UiUsageMonitorPlugin_23, MessageDialog.QUESTION,
+					new String[] {
+							Messages.UiUsageMonitorPlugin_24,
+							Messages.UiUsageMonitorPlugin_25 + getUserPromptDelay() + Messages.UiUsageMonitorPlugin_26
+									+ ending, Messages.UiUsageMonitorPlugin_27 }, 0);
 			int result = 0;
 			if ((result = message.open()) == 0) {
 				// time must be stored right away into preferences, to prevent
@@ -564,13 +533,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 						MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)
 						|| !plugin.getPreferenceStore().getBoolean(
 								MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)) {
-					MessageDialog consentMessage = new MessageDialog(
-							Display.getDefault().getActiveShell(),
-							Messages.UiUsageMonitorPlugin_28,
-							null,
-							Messages.UiUsageMonitorPlugin_29
-									+ Messages.UiUsageMonitorPlugin_30
-									+ Messages.UiUsageMonitorPlugin_31,
+					MessageDialog consentMessage = new MessageDialog(Display.getDefault().getActiveShell(),
+							Messages.UiUsageMonitorPlugin_28, null, Messages.UiUsageMonitorPlugin_29
+									+ Messages.UiUsageMonitorPlugin_30 + Messages.UiUsageMonitorPlugin_31,
 							MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0);
 					consentMessage.open();
 					plugin.getPreferenceStore().setValue(
@@ -642,136 +607,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		this.questionnaireEnabled = questionnaireEnabled;
 	}
 
-	class MonitorUsageExtensionPointReader {
-
-		public static final String EXTENSION_ID_STUDY = "org.eclipse.mylyn.monitor.ui.study"; //$NON-NLS-1$
-
-		public static final String ELEMENT_SCRIPTS = "scripts"; //$NON-NLS-1$
-
-		public static final String ELEMENT_SCRIPTS_VERSION = "version"; //$NON-NLS-1$
-
-		public static final String ELEMENT_SCRIPTS_SERVER_URL = "url"; //$NON-NLS-1$
-
-		public static final String ELEMENT_SCRIPTS_UPLOAD_USAGE = "upload"; //$NON-NLS-1$
-
-		public static final String ELEMENT_SCRIPTS_GET_USER_ID = "userId"; //$NON-NLS-1$
-
-		public static final String ELEMENT_SCRIPTS_UPLOAD_QUESTIONNAIRE = "questionnaire"; //$NON-NLS-1$
-
-		public static final String ELEMENT_UI = "ui"; //$NON-NLS-1$
-
-		public static final String ELEMENT_UI_TITLE = "title"; //$NON-NLS-1$
-
-		public static final String ELEMENT_UI_DESCRIPTION = "description"; //$NON-NLS-1$
-
-		public static final String ELEMENT_UI_UPLOAD_PROMPT = "daysBetweenUpload"; //$NON-NLS-1$
-
-		public static final String ELEMENT_UI_QUESTIONNAIRE_PAGE = "questionnairePage"; //$NON-NLS-1$
-
-		public static final String ELEMENT_UI_BACKGROUND_PAGE = "backgroundPage"; //$NON-NLS-1$
-
-		public static final String ELEMENT_UI_CONSENT_FORM = "consentForm"; //$NON-NLS-1$
-
-		public static final String ELEMENT_UI_CONTACT_CONSENT_FIELD = "useContactField"; //$NON-NLS-1$
-
-		public static final String ELEMENT_MONITORS = "monitors"; //$NON-NLS-1$
-
-		public static final String ELEMENT_MONITORS_BROWSER_URL = "browserUrlFilter"; //$NON-NLS-1$
-
-		private boolean extensionsRead = false;
-
-		// private MonitorUsageExtensionPointReader thisReader = new
-		// MonitorUsageExtensionPointReader();
-
-		public void initExtensions() {
-			try {
-				if (!extensionsRead) {
-					IExtensionRegistry registry = Platform.getExtensionRegistry();
-					IExtensionPoint extensionPoint = registry.getExtensionPoint(EXTENSION_ID_STUDY);
-					if (extensionPoint != null) {
-						IExtension[] extensions = extensionPoint.getExtensions();
-						for (IExtension extension : extensions) {
-							IConfigurationElement[] elements = extension.getConfigurationElements();
-							for (IConfigurationElement element : elements) {
-								if (element.getName().compareTo(ELEMENT_SCRIPTS) == 0) {
-									readScripts(element);
-								} else if (element.getName().compareTo(ELEMENT_UI) == 0) {
-									readForms(element);
-								} else if (element.getName().compareTo(ELEMENT_MONITORS) == 0) {
-									readMonitors(element);
-								}
-							}
-							customizingPlugin = extension.getContributor().getName();
-						}
-						extensionsRead = true;
-					}
-				}
-			} catch (Throwable t) {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						Messages.UiUsageMonitorPlugin_49, t));
-			}
-		}
-
-		private void readScripts(IConfigurationElement element) {
-			studyParameters.setVersion(element.getAttribute(ELEMENT_SCRIPTS_VERSION));
-		}
-
-		private void readForms(IConfigurationElement element) throws CoreException {
-			studyParameters.setTitle(element.getAttribute(ELEMENT_UI_TITLE));
-			studyParameters.setDescription(element.getAttribute(ELEMENT_UI_DESCRIPTION));
-			if (element.getAttribute(ELEMENT_UI_UPLOAD_PROMPT) != null) {
-				Integer uploadInt = new Integer(element.getAttribute(ELEMENT_UI_UPLOAD_PROMPT));
-				studyParameters.setTransmitPromptPeriod(HOUR * 24 * uploadInt);
-			}
-			studyParameters.setUseContactField(element.getAttribute(ELEMENT_UI_CONTACT_CONSENT_FIELD));
-
-			try {
-				if (element.getAttribute(ELEMENT_UI_QUESTIONNAIRE_PAGE) != null) {
-					Object questionnaireObject = element.createExecutableExtension(ELEMENT_UI_QUESTIONNAIRE_PAGE);
-					if (questionnaireObject instanceof AbstractStudyQuestionnairePage) {
-						AbstractStudyQuestionnairePage page = (AbstractStudyQuestionnairePage) questionnaireObject;
-						studyParameters.setQuestionnairePage(page);
-					}
-				} else {
-					UiUsageMonitorPlugin.getDefault().setQuestionnaireEnabled(false);
-				}
-			} catch (Throwable e) {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						Messages.UiUsageMonitorPlugin_50, e));
-				UiUsageMonitorPlugin.getDefault().setQuestionnaireEnabled(false);
-			}
-
-			try {
-				if (element.getAttribute(ELEMENT_UI_BACKGROUND_PAGE) != null) {
-					Object backgroundObject = element.createExecutableExtension(ELEMENT_UI_BACKGROUND_PAGE);
-					if (backgroundObject instanceof AbstractStudyBackgroundPage) {
-						AbstractStudyBackgroundPage page = (AbstractStudyBackgroundPage) backgroundObject;
-						studyParameters.setBackgroundPage(page);
-						UiUsageMonitorPlugin.getDefault().setBackgroundEnabled(true);
-					}
-				} else {
-					UiUsageMonitorPlugin.getDefault().setBackgroundEnabled(false);
-				}
-			} catch (Throwable e) {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						Messages.UiUsageMonitorPlugin_51, e));
-				UiUsageMonitorPlugin.getDefault().setBackgroundEnabled(false);
-			}
-
-			studyParameters.setFormsConsent("/" + element.getAttribute(ELEMENT_UI_CONSENT_FORM)); //$NON-NLS-1$
-
-		}
-
-		private void readMonitors(IConfigurationElement element) throws CoreException {
-			// TODO: This should parse a list of filters but right now it takes
-			// the
-			// entire string as a single filter.
-			// ArrayList<String> urlList = new ArrayList<String>();
-			String urlList = element.getAttribute(ELEMENT_MONITORS_BROWSER_URL);
-			studyParameters.setAcceptedUrlList(urlList);
-		}
-	}
-
 	public StudyParameters getStudyParameters() {
 		return studyParameters;
 	}
@@ -786,8 +621,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public String getCustomizedByMessage() {
 		String customizedBy = UiUsageMonitorPlugin.getDefault().getCustomizingPlugin();
-		String message = Messages.UiUsageMonitorPlugin_53
-				+ customizedBy + Messages.UiUsageMonitorPlugin_54 + Messages.UiUsageMonitorPlugin_55;
+		String message = Messages.UiUsageMonitorPlugin_53 + customizedBy + Messages.UiUsageMonitorPlugin_54
+				+ Messages.UiUsageMonitorPlugin_55;
 		return message;
 	}
 

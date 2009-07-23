@@ -11,10 +11,16 @@
 
 package org.eclipse.mylyn.internal.monitor.usage.wizards;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
+import org.eclipse.mylyn.internal.monitor.usage.preferences.TableLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -32,19 +38,15 @@ public class UsageUploadWizardPage extends WizardPage {
 
 	// private static final int MAX_NUM_LINES = 1000;
 
-	/** A text box to hold the address of the server */
-	private Text serverAddrText;
-
 	/** A text box to hold the location of the usage statistics file */
 	private Text usageFileText;
 
 	// /** A text box to hold the location of the log file */
 	// private Text logFileText;
 
-	/** A text file to show the id of the user */
-	private Text idText;
-
 	private final UsageSubmissionWizard wizard;
+
+	private TableViewer usageScripts;
 
 	/**
 	 * Constructor
@@ -92,20 +94,53 @@ public class UsageUploadWizardPage extends WizardPage {
 		}
 
 		label = new Label(topContainer, SWT.NULL);
-		label.setText("Upload URL:");
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
+		label.setText("Usage Data will be send to following recipients. Filter column tells which events will the recipient receive.");
 
-		serverAddrText = new Text(topContainer, SWT.BORDER | SWT.SINGLE);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		serverAddrText.setLayoutData(gd);
-		serverAddrText.setEditable(false);
-		serverAddrText.setText(UiUsageMonitorPlugin.getDefault().getStudyParameters().getServletUrl());
+		usageScripts = new TableViewer(topContainer, SWT.BORDER);
+		GridDataFactory.fillDefaults().span(2, 1).align(SWT.FILL, SWT.FILL).grab(true, true).hint(500, 100).applyTo(
+				usageScripts.getControl());
+
+		TableViewerColumn destinationColumn = new TableViewerColumn(usageScripts, SWT.NONE);
+		destinationColumn.getColumn().setText("Destination URL");
+		destinationColumn.getColumn().setWidth(300);
+		destinationColumn.getColumn().setResizable(true);
+		destinationColumn.getColumn().setMoveable(true);
+
+		TableViewerColumn filterColumn = new TableViewerColumn(usageScripts, SWT.NONE);
+		filterColumn.getColumn().setText("Filters");
+		filterColumn.getColumn().setWidth(300);
+		filterColumn.getColumn().setResizable(true);
+		filterColumn.getColumn().setMoveable(true);
+
+		usageScripts.setContentProvider(new IStructuredContentProvider() {
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+
+			public void dispose() {
+			}
+
+			public Object[] getElements(Object inputElement) {
+				if (inputElement instanceof Object[]) {
+					return (Object[]) inputElement;
+				}
+				return new Object[0];
+			}
+		});
+
+		usageScripts.setLabelProvider(new TableLabelProvider());
+
+		usageScripts.getTable().setHeaderVisible(true);
+		usageScripts.getTable().setLinesVisible(true);
+
+		usageScripts.setInput(UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors().toArray());
 
 		label = new Label(topContainer, SWT.NULL);
 		label.setText("Usage file location:");
 
 		usageFileText = new Text(topContainer, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		usageFileText.setLayoutData(gd);
+		usageFileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		usageFileText.setEditable(false);
 
 		usageFileText.setText(wizard.getMonitorFileName());
@@ -115,9 +150,6 @@ public class UsageUploadWizardPage extends WizardPage {
 		bottomContainer.setLayout(bottomContainerLayout);
 		bottomContainerLayout.numColumns = 2;
 
-		Label submissionLabel = new Label(bottomContainer, SWT.NONE);
-		submissionLabel.setText("Only events from org.eclipse.* packages will be submitted to Eclipse.org");
-
 		setControl(container);
 	}
 
@@ -126,9 +158,4 @@ public class UsageUploadWizardPage extends WizardPage {
 		return null;
 	}
 
-	public void updateUid() {
-		if (idText != null && !idText.isDisposed()) {
-			idText.setText(wizard.getUid() + "");
-		}
-	}
 }

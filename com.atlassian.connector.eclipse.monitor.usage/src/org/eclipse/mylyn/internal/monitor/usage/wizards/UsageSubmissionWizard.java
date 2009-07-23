@@ -11,22 +11,18 @@
 
 package org.eclipse.mylyn.internal.monitor.usage.wizards;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
@@ -37,8 +33,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -47,9 +41,11 @@ import org.eclipse.mylyn.internal.monitor.usage.InteractionEventLogger;
 import org.eclipse.mylyn.internal.monitor.usage.Messages;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorFileRolloverJob;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
+import org.eclipse.mylyn.internal.monitor.usage.UsageCollector;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.mylyn.monitor.usage.AbstractStudyBackgroundPage;
 import org.eclipse.mylyn.monitor.usage.AbstractStudyQuestionnairePage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -82,9 +78,6 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 	private boolean displayBackgroundPage = false;
 
 	private boolean displayFileSelectionPage = false;
-
-	/** The id of the user */
-	private int uid;
 
 	private final File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
 
@@ -125,11 +118,6 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 	private void init(boolean performUpload) {
 		this.performUpload = performUpload;
 		setNeedsProgressMonitor(true);
-		uid = UiUsageMonitorPlugin.getDefault().getPreferenceStore().getInt(UiUsageMonitorPlugin.PREF_USER_ID);
-		if (uid == 0 || uid == -1) {
-			uid = this.getNewUid();
-			UiUsageMonitorPlugin.getDefault().getPreferenceStore().setValue(UiUsageMonitorPlugin.PREF_USER_ID, uid);
-		}
 		uploadPage = new UsageUploadWizardPage(this);
 		fileSelectionPage = new UsageFileSelectionWizardPage(Messages.UsageSubmissionWizard_7);
 		if (UiUsageMonitorPlugin.getDefault().isBackgroundEnabled()) {
@@ -179,19 +167,19 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 		// }
 		// };
 
-		Job j = new Job(Messages.UsageSubmissionWizard_8) {
+		Job j = new Job(Messages.UsageSubmissionWizard_upload_user_stats) {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					monitor.beginTask(Messages.UsageSubmissionWizard_9, 3);
+					monitor.beginTask(Messages.UsageSubmissionWizard_uploading_usage_stats, 3);
 					performUpload(monitor);
 					monitor.done();
 					// op.run(monitor);
 					return Status.OK_STATUS;
 				} catch (Exception e) {
 					Status status = new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, IStatus.ERROR,
-							Messages.UsageSubmissionWizard_10, e);
+							Messages.UsageSubmissionWizard_error_uploading, e);
 					StatusHandler.log(status);
 					return status;
 				}
@@ -204,6 +192,9 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 	}
 
 	public void performUpload(IProgressMonitor monitor) {
+		/*
+		FIXME: decide if we want to enable it?
+		 
 		if (UiUsageMonitorPlugin.getDefault().isBackgroundEnabled() && performUpload && backgroundFile != null) {
 			upload(backgroundFile, BACKGROUND, monitor);
 
@@ -226,27 +217,37 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 			if (questionnaireFile.exists()) {
 				questionnaireFile.delete();
 			}
-		}
-		File zipFile = zipFilesForUpload();
-		if (zipFile == null) {
-			return;
+		}*/
+
+		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
+			File zipFile = zipFilesForUpload(collector);
+			if (zipFile == null) {
+				return;
+			}
+
+			if (!upload(collector, zipFile, STATS, monitor)) {
+				failed = true;
+			}
+
+			if (zipFile.exists()) {
+				zipFile.delete();
+			}
 		}
 
-		upload(zipFile, STATS, monitor);
-
-		if (zipFile.exists()) {
-			zipFile.delete();
-		}
-
-		if (!failed) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				if (failed) {
 					// popup a dialog telling the user that the upload was good
-					MessageDialog.openInformation(Display.getCurrent().getActiveShell(), Messages.UsageSubmissionWizard_11,
-							Messages.UsageSubmissionWizard_12);
+					MessageDialog.openError(Display.getCurrent().getActiveShell(),
+							Messages.UsageSubmissionWizard_error_uploading,
+							Messages.UsageSubmissionWizard_some_uploads_failed);
+				} else {
+					// popup a dialog telling the user that the upload was good
+					MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
+							Messages.UsageSubmissionWizard_successful_upload, Messages.UsageSubmissionWizard_thank_you);
 				}
-			});
-		}
+			}
+		});
 
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
 		UiUsageMonitorPlugin.setPerformingUpload(false);
@@ -306,85 +307,55 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 	 * 
 	 * @param f
 	 *            The file to upload
+	 * @return true on success
 	 */
-	private void upload(File f, String type, IProgressMonitor monitor) {
-		if (failed) {
-			return;
-		}
-
+	private boolean upload(UsageCollector collector, File f, String type, IProgressMonitor monitor) {
 		int status = 0;
 
 		try {
-			String servletUrl = UiUsageMonitorPlugin.getDefault().getStudyParameters().getServletUrl();
-			final PostMethod filePost = new PostMethod(servletUrl);
+			final PostMethod filePost = new PostMethod(collector.getUploadUrl());
+			try {
+				Part[] parts = { new FilePart("temp.txt", f) }; //$NON-NLS-1$
 
-			Part[] parts = { new FilePart("temp.txt", f) }; //$NON-NLS-1$
+				filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));
 
-			filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));
+				final HttpClient client = new HttpClient();
 
-			final HttpClient client = new HttpClient();
-
-			status = client.executeMethod(filePost);
-			filePost.releaseConnection();
-
+				status = client.executeMethod(filePost);
+			} finally {
+				filePost.releaseConnection();
+			}
 		} catch (final Exception e) {
 			// there was a problem with the file upload so throw up an error
 			// dialog to inform the user and log the exception
-			failed = true;
 			if (e instanceof NoRouteToHostException || e instanceof UnknownHostException) {
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						MessageDialog.openError(null, Messages.UsageSubmissionWizard_14, Messages.UsageSubmissionWizard_15
-								+ Messages.UsageSubmissionWizard_16 + Messages.UsageSubmissionWizard_17);
-					}
-				});
+				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+						Messages.UsageSubmissionWizard_no_network, e));
 			} else {
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						MessageDialog.openError(null, Messages.UsageSubmissionWizard_18, Messages.UsageSubmissionWizard_19
-								+ Messages.UsageSubmissionWizard_20 + e.getClass().getCanonicalName());
-					}
-				});
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageSubmissionWizard_21, e));
+				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+						Messages.UsageSubmissionWizard_19, e));
 			}
+			return false;
 		}
 
 		monitor.worked(1);
 
-		final String filedesc = f.getName();
-
-		final int httpResponseStatus = status;
-
 		if (status == 401) {
-			// The uid was incorrect so inform the user
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					MessageDialog.openError(null, Messages.UsageSubmissionWizard_22, Messages.UsageSubmissionWizard_23 + filedesc
-							+ Messages.UsageSubmissionWizard_24 + Messages.UsageSubmissionWizard_25 + uid + Messages.UsageSubmissionWizard_26);
-				}
-			});
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, NLS.bind(
+					Messages.UsageSubmissionWizard_invalid_uid, f.getName(), "")));
 		} else if (status == 407) {
-			failed = true;
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					MessageDialog.openError(null, Messages.UsageSubmissionWizard_27,
-							Messages.UsageSubmissionWizard_28);
-				}
-			});
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+					Messages.UsageSubmissionWizard_proxy_authentication));
 		} else if (status != 200) {
-			failed = true;
 			// there was a problem with the file upload so throw up an error
 			// dialog to inform the user
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					MessageDialog.openError(null, Messages.UsageSubmissionWizard_29, Messages.UsageSubmissionWizard_30 + filedesc
-							+ Messages.UsageSubmissionWizard_31 + Messages.UsageSubmissionWizard_32 + httpResponseStatus + Messages.UsageSubmissionWizard_33 + Messages.UsageSubmissionWizard_34);
-				}
-			});
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, NLS.bind(
+					Messages.UsageSubmissionWizard_30, f.getName(), status)));
 		} else {
 			// the file was uploaded successfully
+			return true;
 		}
-
+		return false;
 	}
 
 	public String getMonitorFileName() {
@@ -392,256 +363,12 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 	}
 
 	/** The status from the http request */
-	private int status;
+	//private int status;
 
 	/** the response for the http request */
-	private String resp;
+	//private String resp;
 
-	public int getExistingUid(String firstName, String lastName, String emailAddress, boolean anonymous) {
-		if (failed) {
-			return -1;
-		}
-		try {
-
-			// TODO, do this method properly
-			// create a new post method
-			String url = UiUsageMonitorPlugin.getDefault().getStudyParameters().getServletUrl()
-					+ UiUsageMonitorPlugin.getDefault().getStudyParameters().getServletUrl();
-			final GetMethod getUidMethod = new GetMethod(url);
-
-			NameValuePair first = new NameValuePair("firstName", firstName); //$NON-NLS-1$
-			NameValuePair last = new NameValuePair("lastName", lastName); //$NON-NLS-1$
-			NameValuePair email = new NameValuePair("email", emailAddress); //$NON-NLS-1$
-			NameValuePair job = new NameValuePair("jobFunction", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			NameValuePair size = new NameValuePair("companySize", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			NameValuePair buisness = new NameValuePair("companyBuisness", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			NameValuePair contact = new NameValuePair("contact", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			NameValuePair anon = null;
-			if (anonymous) {
-				anon = new NameValuePair("anonymous", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-			} else {
-				anon = new NameValuePair("anonymous", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-
-			if (UiUsageMonitorPlugin.getDefault().usingContactField()) {
-				getUidMethod.setQueryString(new NameValuePair[] { first, last, email, job, size, buisness, anon,
-						contact });
-			} else {
-				getUidMethod.setQueryString(new NameValuePair[] { first, last, email, job, size, buisness, anon });
-			}
-
-			// create a new client and upload the file
-			final HttpClient client = new HttpClient();
-			UiUsageMonitorPlugin.getDefault().configureProxy(client, url);
-
-			ProgressMonitorDialog pmd = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
-			pmd.run(false, false, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					monitor.beginTask(Messages.UsageSubmissionWizard_50, 1);
-
-					try {
-						status = client.executeMethod(getUidMethod);
-
-						resp = getData(getUidMethod.getResponseBodyAsStream());
-
-						// release the connection to the server
-						getUidMethod.releaseConnection();
-					} catch (final Exception e) {
-						// there was a problem with the file upload so throw up
-						// an error
-						// dialog to inform the user and log the exception
-						failed = true;
-						if (e instanceof NoRouteToHostException || e instanceof UnknownHostException) {
-							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-								public void run() {
-									MessageDialog.openError(null, Messages.UsageSubmissionWizard_51,
-											Messages.UsageSubmissionWizard_52
-													+ Messages.UsageSubmissionWizard_53);
-								}
-							});
-						} else {
-							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-								public void run() {
-									MessageDialog.openError(null, Messages.UsageSubmissionWizard_54,
-											Messages.UsageSubmissionWizard_55
-													+ e.getClass().getCanonicalName() + e.getMessage());
-								}
-							});
-							StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-									Messages.UsageSubmissionWizard_56, e));
-						}
-					}
-					monitor.worked(1);
-					monitor.done();
-				}
-			});
-
-			if (status != 200) {
-				// there was a problem with the file upload so throw up an error
-				// dialog to inform the user
-
-				failed = true;
-
-				// there was a problem with the file upload so throw up an error
-				// dialog to inform the user
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						MessageDialog.openError(null, Messages.UsageSubmissionWizard_57,
-								Messages.UsageSubmissionWizard_58 + Messages.UsageSubmissionWizard_59 + status + Messages.UsageSubmissionWizard_60
-										+ Messages.UsageSubmissionWizard_61);
-					}
-				});
-			} else {
-				resp = resp.substring(resp.indexOf(Messages.UsageSubmissionWizard_62) + 1).trim();
-				uid = Integer.parseInt(resp);
-				UiUsageMonitorPlugin.getDefault().getPreferenceStore().setValue(UiUsageMonitorPlugin.PREF_USER_ID, uid);
-				return uid;
-			}
-
-		} catch (final Exception e) {
-			// there was a problem with the file upload so throw up an error
-			// dialog to inform the user and log the exception
-			failed = true;
-			if (e instanceof NoRouteToHostException || e instanceof UnknownHostException) {
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						MessageDialog.openError(null, Messages.UsageSubmissionWizard_63, Messages.UsageSubmissionWizard_64
-								+ Messages.UsageSubmissionWizard_65);
-					}
-				});
-			} else {
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						MessageDialog.openError(null, Messages.UsageSubmissionWizard_66, Messages.UsageSubmissionWizard_67
-								+ e.getClass().getCanonicalName());
-					}
-				});
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageSubmissionWizard_68, e));
-			}
-		}
-		return -1;
-	}
-
-	public int getNewUid() {
-		final PostMethod filePost = new PostMethod(UiUsageMonitorPlugin.DEFAULT_UPLOAD_SERVER
-				+ UiUsageMonitorPlugin.DEFAULT_UPLOAD_SERVLET_ID);
-
-		filePost.addParameter(new NameValuePair("MylarUserID", "")); //$NON-NLS-1$ //$NON-NLS-2$
-		final HttpClient client = new HttpClient();
-		int status = 0;
-
-		try {
-			status = client.executeMethod(filePost);
-
-			if (status == HTTP_SERVLET_RESPONSE_SC_OK) {
-				InputStream inputStream = filePost.getResponseBodyAsStream();
-				byte[] buffer = new byte[SIZE_OF_INT];
-				int numBytesRead = inputStream.read(buffer);
-				int uid = new Integer(new String(buffer, 0, numBytesRead)).intValue();
-				filePost.releaseConnection();
-
-				return uid;
-			} else {
-				return -1;
-			}
-
-		} catch (final Exception e) {
-			// there was a problem with the file upload so throw up an error
-			// dialog to inform the user and log the exception
-			return -1;
-
-		}
-	}
-
-	public int getNewUid(String firstName, String lastName, String emailAddress, boolean anonymous, String jobFunction,
-			String companySize, String companyFunction, boolean contactEmail) {
-		if (failed) {
-			return -1;
-		}
-		try {
-			addBackgroundPage();
-
-			final PostMethod filePost = new PostMethod(UiUsageMonitorPlugin.DEFAULT_UPLOAD_SERVER
-					+ UiUsageMonitorPlugin.DEFAULT_UPLOAD_SERVLET_ID);
-			filePost.addParameter(new NameValuePair("MylarUserID", "")); //$NON-NLS-1$ //$NON-NLS-2$
-			final HttpClient client = new HttpClient();
-			int status = 0;
-
-			try {
-				status = client.executeMethod(filePost);
-
-				if (status == 202) {
-					InputStream inputStream = filePost.getResponseBodyAsStream();
-					byte[] buffer = new byte[8];
-					int numBytesRead = inputStream.read(buffer);
-					int uid = new Integer(new String(buffer, 0, numBytesRead)).intValue();
-					filePost.releaseConnection();
-
-					return uid;
-				} else {
-					return -1;
-				}
-
-			} catch (final Exception e) {
-				// there was a problem with the file upload so throw up an error
-				// dialog to inform the user and log the exception
-			}
-
-			// NameValuePair first = new NameValuePair("firstName", firstName);
-			// NameValuePair last = new NameValuePair("lastName", lastName);
-			// NameValuePair email = new NameValuePair("email", emailAddress);
-			// NameValuePair job = new NameValuePair("jobFunction",
-			// jobFunction);
-			// NameValuePair size = new NameValuePair("companySize",
-			// companySize);
-			// NameValuePair buisness = new NameValuePair("companyBuisness",
-			// companyFunction);
-			// NameValuePair contact = null;
-			// if (contactEmail) {
-			// contact = new NameValuePair("contact", "true");
-			// } else {
-			// contact = new NameValuePair("contact", "false");
-			// }
-			// NameValuePair anon = null;
-			// if (anonymous) {
-			// anon = new NameValuePair("anonymous", "true");
-			// } else {
-			// anon = new NameValuePair("anonymous", "false");
-			// }
-
-			if (status != 200) {
-				// there was a problem with the file upload so throw up an error
-				// dialog to inform the user
-
-				failed = true;
-
-				// there was a problem with the file upload so throw up an error
-				// dialog to inform the user
-				MessageDialog.openError(null, Messages.UsageSubmissionWizard_73, Messages.UsageSubmissionWizard_74
-						+ Messages.UsageSubmissionWizard_75 + status + Messages.UsageSubmissionWizard_76 + Messages.UsageSubmissionWizard_77);
-			} else {
-				resp = resp.substring(resp.indexOf(Messages.UsageSubmissionWizard_78) + 1).trim();
-				uid = Integer.parseInt(resp);
-				UiUsageMonitorPlugin.getDefault().getPreferenceStore().setValue(UiUsageMonitorPlugin.PREF_USER_ID, uid);
-				return uid;
-			}
-
-		} catch (Exception e) {
-			// there was a problem with the file upload so throw up an error
-			// dialog to inform the user and log the exception
-			failed = true;
-			if (e instanceof NoRouteToHostException || e instanceof UnknownHostException) {
-				MessageDialog.openError(null, Messages.UsageSubmissionWizard_79, Messages.UsageSubmissionWizard_80
-						+ Messages.UsageSubmissionWizard_81);
-			} else {
-				MessageDialog.openError(null, Messages.UsageSubmissionWizard_82, Messages.UsageSubmissionWizard_83
-						+ e.getClass().getCanonicalName());
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageSubmissionWizard_84, e));
-			}
-		}
-		return -1;
-	}
-
+	/*
 	private String getData(InputStream i) {
 		String s = ""; //$NON-NLS-1$
 		String data = ""; //$NON-NLS-1$
@@ -651,30 +378,35 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 				data += s;
 			}
 		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageSubmissionWizard_87, e));
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+					Messages.UsageSubmissionWizard_error_uploading, e));
 		}
 		return data;
 	}
-
-	public int getUid() {
-		return uid;
-	}
+	*/
 
 	public boolean failed() {
 		return failed;
 	}
 
-	private File processMonitorFile(File monitorFile) {
-		File processedFile = new File("processed-" + UiUsageMonitorPlugin.MONITOR_LOG_NAME + processedFileCount++ //$NON-NLS-1$
-				+ ".xml"); //$NON-NLS-1$
+	private File processMonitorFile(File monitorFile, Collection<String> eventFilters) {
+		File processedFile = new File(String.format(
+				"processed-%s%d.xml", UiUsageMonitorPlugin.MONITOR_LOG_NAME, processedFileCount++)); //$NON-NLS-1$
 		InteractionEventLogger logger = new InteractionEventLogger(processedFile);
 		logger.startMonitoring();
 		List<InteractionEvent> eventList = logger.getHistoryFromFile(monitorFile);
 
+		boolean filtersEmpty = eventFilters.size() == 0;
 		if (eventList.size() > 0) {
 			for (InteractionEvent event : eventList) {
-				if (event.getOriginId().startsWith(ORG_ECLIPSE_PREFIX)) {
+				if (filtersEmpty) {
 					logger.interactionObserved(event);
+				} else {
+					for (String prefix : eventFilters) {
+						if (event.getOriginId().startsWith(prefix)) {
+							logger.interactionObserved(event);
+						}
+					}
 				}
 			}
 		}
@@ -696,46 +428,50 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 		}
 	}
 
-	private File zipFilesForUpload() {
+	private File zipFilesForUpload(UsageCollector collector) {
 		UiUsageMonitorPlugin.setPerformingUpload(true);
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
+		try {
+			List<File> files = new ArrayList<File>();
+			File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
+			File fileToUpload = this.processMonitorFile(monitorFile, collector.getEventFilters());
+			files.add(fileToUpload);
 
-		List<File> files = new ArrayList<File>();
-		File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
-		File fileToUpload = this.processMonitorFile(monitorFile);
-		files.add(fileToUpload);
+			// check if backup/archive files were also selected and add them
+			if (displayFileSelectionPage && backupFilesToUpload.size() > 0) {
+				for (String currFilePath : backupFilesToUpload) {
+					File file = new File(MonitorFileRolloverJob.getZippedMonitorFileDirPath(), currFilePath);
+					if (file.exists()) {
+						List<File> unzippedFiles;
+						try {
+							unzippedFiles = ZipFileUtil.unzipFiles(file, System.getProperty("java.io.tmpdir"),
+									new NullProgressMonitor());
 
-		if (displayFileSelectionPage && backupFilesToUpload.size() > 0) {
-			for (String currFilePath : backupFilesToUpload) {
-				File file = new File(MonitorFileRolloverJob.getZippedMonitorFileDirPath(), currFilePath);
-				if (file.exists()) {
-					List<File> unzippedFiles;
-					try {
-						unzippedFiles = ZipFileUtil.unzipFiles(file, System.getProperty("java.io.tmpdir"), //$NON-NLS-1$
-								new NullProgressMonitor());
-
-						if (unzippedFiles.size() > 0) {
-							for (File f : unzippedFiles) {
-								files.add(this.processMonitorFile(f));
-								this.addToSubmittedLogFile(currFilePath);
+							if (unzippedFiles.size() > 0) {
+								for (File f : unzippedFiles) {
+									files.add(this.processMonitorFile(f, collector.getEventFilters()));
+									this.addToSubmittedLogFile(currFilePath);
+								}
 							}
+						} catch (IOException e) {
+							StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+									Messages.UsageSubmissionWizard_error_uploading, e));
 						}
-					} catch (IOException e) {
-						StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-								Messages.UsageSubmissionWizard_93, e));
 					}
 				}
 			}
-		}
 
-		UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
-		try {
-			File zipFile = File.createTempFile(uid + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-			ZipFileUtil.createZipFile(zipFile, files);
-			return zipFile;
-		} catch (Exception e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageSubmissionWizard_96, e));
-			return null;
+			try {
+				File zipFile = File.createTempFile(UUID.randomUUID() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+				ZipFileUtil.createZipFile(zipFile, files);
+				return zipFile;
+			} catch (Exception e) {
+				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+						Messages.UsageSubmissionWizard_error_uploading, e));
+				return null;
+			}
+		} finally {
+			UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.mylyn.monitor.ui">
+<schema targetNamespace="org.eclipse.mylyn.monitor.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.mylyn.monitor.ui" id="study" name="Mylyn Monitor Study"/>
@@ -13,7 +13,7 @@
    <element name="study">
       <complexType>
          <sequence>
-            <element ref="scripts"/>
+            <element ref="usageCollector"/>
             <element ref="ui"/>
             <element ref="monitors"/>
          </sequence>
@@ -44,23 +44,9 @@
       </complexType>
    </element>
 
-   <element name="scripts">
+   <element name="usageCollector">
       <complexType>
-         <attribute name="url" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="upload" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="userId" type="string">
+         <attribute name="uploadUrl" type="string" use="required">
             <annotation>
                <documentation>
                   
@@ -81,7 +67,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="version" type="string">
+         <attribute name="eventFilters" type="string">
             <annotation>
                <documentation>
                   
@@ -184,31 +170,7 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="apiInfo"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>

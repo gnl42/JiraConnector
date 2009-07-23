@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.monitor.usage.Messages;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorFileRolloverJob;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
 import org.eclipse.swt.SWT;
@@ -37,18 +38,18 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class UsageFileSelectionWizardPage extends WizardPage {
 
-	private final static String PAGE_TITLE = "Select any archived Mylyn usage files you wish to upload";
+	private final static String PAGE_TITLE = Messages.UsageFileSelectionWizardPage_0;
 
-	private static final String DESCRIPTION = "Please select the archived usage files you want to upload to eclipse.org";
+	private static final String DESCRIPTION = Messages.UsageFileSelectionWizardPage_1;
 
 	private Table zippedFilesTable;
 
-	public static final String SUBMISSION_LOG_FILE_NAME = "submittedUsageLogs.txt";
+	public static final String SUBMISSION_LOG_FILE_NAME = "submittedUsageLogs.txt"; //$NON-NLS-1$
 
 	protected UsageFileSelectionWizardPage(String pageName) {
-		super("org.eclipse.mylyn.monitor.usage.fileSelectionPage", PAGE_TITLE,
+		super("org.eclipse.mylyn.monitor.usage.fileSelectionPage", PAGE_TITLE, //$NON-NLS-1$
 				AbstractUIPlugin.imageDescriptorFromPlugin(UiUsageMonitorPlugin.ID_PLUGIN,
-						"icons/wizban/banner-submission.gif"));
+						"icons/wizban/banner-submission.gif")); //$NON-NLS-1$
 		setDescription(DESCRIPTION);
 	}
 
@@ -73,7 +74,7 @@ public class UsageFileSelectionWizardPage extends WizardPage {
 				int bytesRead = 0;
 				byte[] buffer = new byte[1000];
 
-				String fileContents = "";
+				String fileContents = ""; //$NON-NLS-1$
 
 				if (submissionLogFile.exists()) {
 					while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -144,7 +145,7 @@ public class UsageFileSelectionWizardPage extends WizardPage {
 		} catch (RuntimeException e) {
 			// FIXME what exception is caught here?
 			StatusHandler.fail(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-					"Could not create import wizard page", e));
+					Messages.UsageFileSelectionWizardPage_6, e));
 		}
 	}
 
@@ -157,7 +158,7 @@ public class UsageFileSelectionWizardPage extends WizardPage {
 				list.add(selectedItem.getText());
 			}
 		} else {
-			list.add("<unspecified>");
+			list.add(Messages.UsageFileSelectionWizardPage_7);
 		}
 		return list;
 	}

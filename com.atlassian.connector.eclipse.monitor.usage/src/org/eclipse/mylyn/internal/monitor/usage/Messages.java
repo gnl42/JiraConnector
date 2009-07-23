@@ -16,6 +16,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.mylyn.internal.monitor.usage.messages"; //$NON-NLS-1$
 
+	public static String UsageSubmissionWizard_some_uploads_failed;
+
 	public static String UiUsageMonitorPlugin_13;
 
 	public static String UiUsageMonitorPlugin_15;
@@ -40,13 +42,13 @@ public class Messages extends NLS {
 
 	public static String UiUsageMonitorPlugin_29;
 
-	public static String UiUsageMonitorPlugin_3;
+	public static String UiUsageMonitorPlugin_title;
 
 	public static String UiUsageMonitorPlugin_30;
 
 	public static String UiUsageMonitorPlugin_31;
 
-	public static String UiUsageMonitorPlugin_4;
+	public static String UiUsageMonitorPlugin_description;
 
 	public static String UiUsageMonitorPlugin_49;
 
@@ -86,33 +88,33 @@ public class Messages extends NLS {
 
 	public static String UsageDataPreferencePage_9;
 
+	public static String UsageFileSelectionWizardPage_0;
+
+	public static String UsageFileSelectionWizardPage_1;
+
+	public static String UsageFileSelectionWizardPage_6;
+
+	public static String UsageFileSelectionWizardPage_7;
+
 	public static String UsageSubmissionWizard_0;
 
-	public static String UsageSubmissionWizard_10;
+	public static String UsageSubmissionWizard_successful_upload;
 
-	public static String UsageSubmissionWizard_11;
+	public static String UsageSubmissionWizard_thank_you;
 
-	public static String UsageSubmissionWizard_12;
-
-	public static String UsageSubmissionWizard_14;
-
-	public static String UsageSubmissionWizard_15;
+	public static String UsageSubmissionWizard_no_network;
 
 	public static String UsageSubmissionWizard_16;
 
 	public static String UsageSubmissionWizard_17;
 
-	public static String UsageSubmissionWizard_18;
-
 	public static String UsageSubmissionWizard_19;
 
 	public static String UsageSubmissionWizard_20;
 
-	public static String UsageSubmissionWizard_21;
+	public static String UsageSubmissionWizard_error_uploading;
 
-	public static String UsageSubmissionWizard_22;
-
-	public static String UsageSubmissionWizard_23;
+	public static String UsageSubmissionWizard_invalid_uid;
 
 	public static String UsageSubmissionWizard_24;
 
@@ -120,11 +122,7 @@ public class Messages extends NLS {
 
 	public static String UsageSubmissionWizard_26;
 
-	public static String UsageSubmissionWizard_27;
-
-	public static String UsageSubmissionWizard_28;
-
-	public static String UsageSubmissionWizard_29;
+	public static String UsageSubmissionWizard_proxy_authentication;
 
 	public static String UsageSubmissionWizard_30;
 
@@ -138,13 +136,9 @@ public class Messages extends NLS {
 
 	public static String UsageSubmissionWizard_50;
 
-	public static String UsageSubmissionWizard_51;
-
 	public static String UsageSubmissionWizard_52;
 
 	public static String UsageSubmissionWizard_53;
-
-	public static String UsageSubmissionWizard_54;
 
 	public static String UsageSubmissionWizard_55;
 
@@ -162,17 +156,11 @@ public class Messages extends NLS {
 
 	public static String UsageSubmissionWizard_62;
 
-	public static String UsageSubmissionWizard_63;
-
 	public static String UsageSubmissionWizard_64;
 
 	public static String UsageSubmissionWizard_65;
 
-	public static String UsageSubmissionWizard_66;
-
 	public static String UsageSubmissionWizard_67;
-
-	public static String UsageSubmissionWizard_68;
 
 	public static String UsageSubmissionWizard_7;
 
@@ -190,29 +178,20 @@ public class Messages extends NLS {
 
 	public static String UsageSubmissionWizard_79;
 
-	public static String UsageSubmissionWizard_8;
+	public static String UsageSubmissionWizard_upload_user_stats;
 
 	public static String UsageSubmissionWizard_80;
 
 	public static String UsageSubmissionWizard_81;
 
-	public static String UsageSubmissionWizard_82;
-
 	public static String UsageSubmissionWizard_83;
 
-	public static String UsageSubmissionWizard_84;
-
-	public static String UsageSubmissionWizard_87;
-
-	public static String UsageSubmissionWizard_9;
+	public static String UsageSubmissionWizard_uploading_usage_stats;
 
 	public static String UsageSubmissionWizard_90;
 
 	public static String UsageSubmissionWizard_91;
 
-	public static String UsageSubmissionWizard_93;
-
-	public static String UsageSubmissionWizard_96;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
