@@ -79,11 +79,8 @@
    <!-- Usage Data -->
 	<extension
          point="com.atlassian.connector.eclipse.monitor.usage.study">
-         <scripts
-         	url="http://my.server"
-         	upload="upload.cgi"
-         	userId="getUID.cgi"
-         	questionnaire="questionnaire.cgi"/>
+         <usageCollector
+         	uploadUrl="http://localhost:8080/uploadServlet"/>
          <!--ui
          	title="Mylyn User Study Example"
          	daysBetweenUpload="6"
