@@ -80,7 +80,7 @@
 	<extension
          point="com.atlassian.connector.eclipse.monitor.usage.study">
          <usageCollector
-         	uploadUrl="http://localhost:8080/uploadServlet"/>
+         	uploadUrl="http://localhost:8080/uploadServlet" eventFilters="com.atlassian,org.eclipse.mylyn"/>
          <!--ui
          	title="Mylyn User Study Example"
          	daysBetweenUpload="6"
