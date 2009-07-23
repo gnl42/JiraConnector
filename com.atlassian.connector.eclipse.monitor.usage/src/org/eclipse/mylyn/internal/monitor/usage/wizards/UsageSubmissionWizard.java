@@ -67,8 +67,6 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 
 	public static final String BACKGROUND = "background"; //$NON-NLS-1$
 
-	private static final String ORG_ECLIPSE_PREFIX = "org.eclipse."; //$NON-NLS-1$
-
 	public static final int HTTP_SERVLET_RESPONSE_SC_OK = 200;
 
 	public static final int SIZE_OF_INT = 8;
@@ -168,7 +166,6 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 		// };
 
 		Job j = new Job(Messages.UsageSubmissionWizard_upload_user_stats) {
-
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
@@ -192,6 +189,7 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 	}
 
 	public void performUpload(IProgressMonitor monitor) {
+		failed = false;
 		/*
 		FIXME: decide if we want to enable it?
 		 
@@ -237,7 +235,7 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				if (failed) {
-					// popup a dialog telling the user that the upload was good
+					// popup a dialog telling the user that the upload failed
 					MessageDialog.openError(Display.getCurrent().getActiveShell(),
 							Messages.UsageSubmissionWizard_error_uploading,
 							Messages.UsageSubmissionWizard_some_uploads_failed);
