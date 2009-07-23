@@ -174,7 +174,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		});
 		submissionTime = new Text(enableSubmissionComposite, SWT.BORDER | SWT.RIGHT);
 		GridData gridData = new GridData();
-		gridData.widthHint = 15;
+		gridData.widthHint = 30;
 		submissionTime.setLayoutData(gridData);
 		long submissionFreq = UiUsageMonitorPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS;
 		if (UiUsageMonitorPlugin.getPrefs().contains(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY)) {
@@ -183,6 +183,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		}
 		long submissionFreqInDays = submissionFreq / DAYS_IN_MS;
 		submissionTime.setText("" + submissionFreqInDays); //$NON-NLS-1$
+		submissionTime.setTextLimit(2);
 		submissionTime.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 
