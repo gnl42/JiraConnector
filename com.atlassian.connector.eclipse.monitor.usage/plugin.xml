@@ -44,7 +44,7 @@
            icon="icons/eview16/editor-usage.gif"
            class="org.eclipse.mylyn.internal.monitor.usage.editors.UsageSummaryReportEditorPart"
            name="%editor.name"
-           id="org.eclipse.mylyn.monitor.usage.summary.editor"/>
+           id="com.atlassian.connector.eclipse.monitor.usage.summary.editor"/>
   	</extension>
     <extension
           point="org.eclipse.core.runtime.preferences">

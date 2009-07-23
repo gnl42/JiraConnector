@@ -422,7 +422,7 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 			fileWriter.close();
 		} catch (IOException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-					Messages.UsageSubmissionWizard_91, e));
+					Messages.UsageSubmissionWizard_error_uploading, e));
 		}
 	}
 
@@ -453,7 +453,7 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 							}
 						} catch (IOException e) {
 							StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-									Messages.UsageSubmissionWizard_error_uploading, e));
+									Messages.UsageSubmissionWizard_error_unzipping, e));
 						}
 					}
 				}

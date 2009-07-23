@@ -16,11 +16,14 @@ import java.util.Collection;
 
 public final class UsageCollector {
 
+	private final String bundle;
+
 	private final String uploadUrl;
 
 	private final Collection<String> eventFilters;
 
-	UsageCollector(final String uploadUrl, final Collection<String> eventFilters) {
+	UsageCollector(final String bundle, final String uploadUrl, final Collection<String> eventFilters) {
+		this.bundle = bundle;
 		this.uploadUrl = uploadUrl;
 		this.eventFilters = new ArrayList<String>();
 		this.eventFilters.addAll(eventFilters);
@@ -32,6 +35,10 @@ public final class UsageCollector {
 
 	public Collection<String> getEventFilters() {
 		return eventFilters;
+	}
+
+	public String getBundle() {
+		return bundle;
 	}
 
 }

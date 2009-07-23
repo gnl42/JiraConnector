@@ -223,8 +223,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			}
 			Date currentTime = new Date();
 
-			if (currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
-					&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)) {
+			// FIXME: this
+			if (true /*currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
+						&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)*/) {
 
 				MessageDialog message = new MessageDialog(Display.getDefault().getActiveShell(),
 						Messages.UiUsageMonitorPlugin_send_usage_feedback, null, NLS.bind(

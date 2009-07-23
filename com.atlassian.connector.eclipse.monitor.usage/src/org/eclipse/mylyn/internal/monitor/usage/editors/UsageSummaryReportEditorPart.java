@@ -60,7 +60,7 @@ import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
  */
 public class UsageSummaryReportEditorPart extends UsageEditorPart {
 
-	public static final String ID = "org.eclipse.mylyn.monitor.usage.summary.editor";
+	public static final String ID = "com.atlassian.connector.eclipse.monitor.usage.summary.editor";
 
 	private static final long MAX_FILE_LENGTH = 1024 * 1024;
 
