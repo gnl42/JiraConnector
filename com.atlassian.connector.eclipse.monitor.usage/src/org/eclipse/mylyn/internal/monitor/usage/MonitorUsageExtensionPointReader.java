@@ -113,7 +113,7 @@ class MonitorUsageExtensionPointReader {
 			filters.addAll(Arrays.asList(eventFilters.split(",")));
 		}
 
-		usageCollectors.add(new UsageCollector(uploadUrl, filters));
+		usageCollectors.add(new UsageCollector(element.getContributor().getName(), uploadUrl, filters));
 	}
 
 	private void readForms(IConfigurationElement element) throws CoreException {

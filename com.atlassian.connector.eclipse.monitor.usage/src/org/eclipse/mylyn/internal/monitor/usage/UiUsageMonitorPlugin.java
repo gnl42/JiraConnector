@@ -22,10 +22,14 @@ import java.util.ResourceBundle;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -42,7 +46,6 @@ import org.eclipse.mylyn.internal.monitor.ui.KeybindingCommandMonitor;
 import org.eclipse.mylyn.internal.monitor.ui.MenuCommandMonitor;
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.internal.monitor.ui.PerspectiveChangeMonitor;
-import org.eclipse.mylyn.internal.monitor.ui.PreferenceChangeMonitor;
 import org.eclipse.mylyn.internal.monitor.ui.WindowChangeMonitor;
 import org.eclipse.mylyn.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard;
 import org.eclipse.mylyn.monitor.core.IInteractionEventListener;
@@ -50,6 +53,7 @@ import org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor;
 import org.eclipse.mylyn.monitor.ui.IActionExecutionListener;
 import org.eclipse.mylyn.monitor.ui.IMonitorLifecycleListener;
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
@@ -60,7 +64,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.update.internal.ui.security.Authentication;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -85,7 +91,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public static final String DEFAULT_DESCRIPTION = Messages.UiUsageMonitorPlugin_description;
 
-	public static final long DEFAULT_DELAY_BETWEEN_TRANSMITS = 21 * 24 * HOUR;
+	public static final long DEFAULT_DELAY_BETWEEN_TRANSMITS = 7 * 24 * HOUR;
 
 	public static final String DEFAULT_ETHICS_FORM = "doc/study-ethics.html"; //$NON-NLS-1$
 
@@ -103,11 +109,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public static final String ID_PLUGIN = "org.eclipse.mylyn.monitor.usage"; //$NON-NLS-1$
 
+	protected static final long TWELFE_HOURS_IN_MS = 12 * 60 * 60 * 1000;
+
 	private InteractionEventLogger interactionLogger;
-
-	private final String customizingPlugin = null;
-
-	private PreferenceChangeMonitor preferenceMonitor;
 
 	private PerspectiveChangeMonitor perspectiveMonitor;
 
@@ -199,7 +203,90 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		}
 	};
 
+	private class StatisticsUploadJob extends UIJob {
+
+		public StatisticsUploadJob() {
+			super("Upload Statistics Job");
+		}
+
+		@Override
+		public IStatus runInUIThread(IProgressMonitor monitor) {
+			UiUsageMonitorPlugin plugin = UiUsageMonitorPlugin.getDefault();
+
+			if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE)) {
+				lastTransmit = new Date(plugin.getPreferenceStore().getLong(
+						MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE));
+			} else {
+				lastTransmit = new Date();
+				plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
+						lastTransmit.getTime());
+			}
+			Date currentTime = new Date();
+
+			if (currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
+					&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)) {
+
+				MessageDialog message = new MessageDialog(Display.getDefault().getActiveShell(),
+						Messages.UiUsageMonitorPlugin_send_usage_feedback, null, NLS.bind(
+								Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeautres()),
+						MessageDialog.QUESTION, new String[] { Messages.UiUsageMonitorPlugin_open_usage_report,
+								NLS.bind(Messages.UiUsageMonitorPlugin_remind_me, getUserPromptDelay()),
+								Messages.UiUsageMonitorPlugin_dont_ask_again }, 0);
+
+				int result = 0;
+				if ((result = message.open()) == 0) {
+					// time must be stored right away into preferences, to prevent
+					// other threads
+					lastTransmit.setTime(new Date().getTime());
+					plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
+							currentTime.getTime());
+
+					if (!plugin.getPreferenceStore().contains(
+							MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)
+							|| !plugin.getPreferenceStore().getBoolean(
+									MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)) {
+						MessageDialog consentMessage = new MessageDialog(Display.getDefault().getActiveShell(),
+								Messages.UiUsageMonitorPlugin_consent, null,
+								Messages.UiUsageMonitorPlugin_consent_details, MessageDialog.INFORMATION,
+								new String[] { IDialogConstants.OK_LABEL }, 0);
+						consentMessage.open();
+						plugin.getPreferenceStore().setValue(
+								MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED, true);
+					}
+
+					NewUsageSummaryEditorWizard wizard = new NewUsageSummaryEditorWizard();
+					wizard.init(PlatformUI.getWorkbench(), null);
+					// Instantiates the wizard container with the wizard and
+					// opens it
+					WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
+					dialog.create();
+					dialog.open();
+					/*
+					 * the UI usage report is loaded asynchronously so there's no
+					 * synchronous way to know if it failed if (wizard.failed()) {
+					 * lastTransmit.setTime(currentTime.getTime() + DELAY_ON_FAILURE -
+					 * studyParameters.getTransmitPromptPeriod());
+					 * plugin.getPreferenceStore().setValue(MylynMonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
+					 * currentTime.getTime()); }
+					 */
+
+				} else {
+					if (result == 1) {
+						userCancelSubmitFeedback(currentTime, true);
+					} else {
+						plugin.getPreferenceStore().setValue(
+								MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, false);
+					}
+				}
+				message.close();
+			}
+			return Status.OK_STATUS;
+		}
+	}
+
 	private LogMoveUtility logMoveUtility;
+
+	private StatisticsUploadJob scheduledStatisticsUploadJob;
 
 	/**
 	 * NOTE: this needs to be a separate class in order to avoid loading ..mylyn.context.core on eager startup
@@ -242,10 +329,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		workbench.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				try {
-					if (preferenceMonitor == null) {
-						preferenceMonitor = new PreferenceChangeMonitor();
-					}
-
 					interactionLogger = new InteractionEventLogger(getMonitorLogFile());
 					perspectiveMonitor = new PerspectiveChangeMonitor();
 					activityMonitor = new ActivityChangeMonitor();
@@ -324,23 +407,11 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		if (!MonitorUiPlugin.getDefault().suppressConfigurationWizards()) {
 			checkForFirstMonitorUse();
 		}
+
+		// schedul statistics upload
+		startUploadStatisticsJob();
+
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_STARTED, true);
-	}
-
-	public void addMonitoredPreferences(Preferences preferences) {
-		if (preferenceMonitor == null) {
-			preferenceMonitor = new PreferenceChangeMonitor();
-		}
-		preferences.addPropertyChangeListener(preferenceMonitor);
-	}
-
-	public void removeMonitoredPreferences(Preferences preferences) {
-		if (preferenceMonitor != null) {
-			preferences.removePropertyChangeListener(preferenceMonitor);
-		} else {
-			StatusHandler.log(new Status(IStatus.WARNING, UiUsageMonitorPlugin.ID_PLUGIN,
-					Messages.UiUsageMonitorPlugin_16, new Exception()));
-		}
 	}
 
 	public boolean isObfuscationEnabled() {
@@ -382,6 +453,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 		// uninstallBrowserMonitor(workbench);
 		interactionLogger.stopMonitoring();
+
+		// stop statistics upload
+		stopUploadStatisticsJob();
 
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_STARTED, false);
 	}
@@ -478,7 +552,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (resourceBundle == null) {
-				resourceBundle = ResourceBundle.getBundle("org.eclipse.mylyn.monitor.ui.MonitorPluginResources"); //$NON-NLS-1$
+				resourceBundle = ResourceBundle.getBundle("org.eclipse.mylyn.monitor.ui.MonitorPluginResources");
 			}
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
@@ -488,86 +562,53 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	// TODO: remove
 	private void checkForFirstMonitorUse() {
+		if (getStudyParameters().getUsageCollectors().size() == 0) {
+			return;
+		}
 
+		if (!plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)
+				|| plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)) {
+			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false");
+
+			boolean agreement = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
+					Messages.UiUsageMonitorPlugin_send_usage_feedback, NLS.bind(
+							Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeautres()));
+
+			if (agreement) {
+				plugin.getPreferenceStore()
+						.setValue(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED, true);
+				plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, true);
+			}
+		}
 	}
 
-	// NOTE: not currently used
-	synchronized void checkForStatisticsUpload() {
-		if (!isMonitoringEnabled()) {
-			return;
-		}
-		if (plugin == null || plugin.getPreferenceStore() == null) {
-			return;
-		}
-
-		if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE)) {
-
-			lastTransmit = new Date(plugin.getPreferenceStore().getLong(
-					MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE));
-		} else {
-			lastTransmit = new Date();
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-					lastTransmit.getTime());
-		}
-		Date currentTime = new Date();
-
-		if (currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
-				&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)) {
-
-			String ending = getUserPromptDelay() == 1 ? "" : "s"; //$NON-NLS-1$ //$NON-NLS-2$
-			MessageDialog message = new MessageDialog(Display.getDefault().getActiveShell(),
-					Messages.UiUsageMonitorPlugin_22, null, Messages.UiUsageMonitorPlugin_23, MessageDialog.QUESTION,
-					new String[] {
-							Messages.UiUsageMonitorPlugin_24,
-							Messages.UiUsageMonitorPlugin_25 + getUserPromptDelay() + Messages.UiUsageMonitorPlugin_26
-									+ ending, Messages.UiUsageMonitorPlugin_27 }, 0);
-			int result = 0;
-			if ((result = message.open()) == 0) {
-				// time must be stored right away into preferences, to prevent
-				// other threads
-				lastTransmit.setTime(new Date().getTime());
-				plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-						currentTime.getTime());
-
-				if (!plugin.getPreferenceStore().contains(
-						MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)
-						|| !plugin.getPreferenceStore().getBoolean(
-								MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)) {
-					MessageDialog consentMessage = new MessageDialog(Display.getDefault().getActiveShell(),
-							Messages.UiUsageMonitorPlugin_28, null, Messages.UiUsageMonitorPlugin_29
-									+ Messages.UiUsageMonitorPlugin_30 + Messages.UiUsageMonitorPlugin_31,
-							MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0);
-					consentMessage.open();
-					plugin.getPreferenceStore().setValue(
-							MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED, true);
-				}
-
-				NewUsageSummaryEditorWizard wizard = new NewUsageSummaryEditorWizard();
-				wizard.init(PlatformUI.getWorkbench(), null);
-				// Instantiates the wizard container with the wizard and
-				// opens it
-				WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
-				dialog.create();
-				dialog.open();
-				/*
-				 * the UI usage report is loaded asynchronously so there's no
-				 * synchronous way to know if it failed if (wizard.failed()) {
-				 * lastTransmit.setTime(currentTime.getTime() + DELAY_ON_FAILURE -
-				 * studyParameters.getTransmitPromptPeriod());
-				 * plugin.getPreferenceStore().setValue(MylynMonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-				 * currentTime.getTime()); }
-				 */
-
-			} else {
-				if (result == 1) {
-					userCancelSubmitFeedback(currentTime, true);
-				} else {
-					plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION,
-							false);
-				}
+	private String getUsageCollectorFeautres() {
+		StringBuilder sb = new StringBuilder();
+		for (UsageCollector collector : getStudyParameters().getUsageCollectors()) {
+			Bundle bnd = Platform.getBundle(collector.getBundle());
+			if (bnd != null) {
+				sb.append(bnd.getHeaders().get("Bundle-Name"));
+				sb.append('\n');
 			}
-			message.close();
 		}
+		return sb.toString();
+	}
+
+	public Job startUploadStatisticsJob() {
+		scheduledStatisticsUploadJob = new StatisticsUploadJob();
+		scheduledStatisticsUploadJob.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				scheduledStatisticsUploadJob.schedule(TWELFE_HOURS_IN_MS);
+			}
+		});
+		scheduledStatisticsUploadJob.schedule(); // schedule it now
+		return scheduledStatisticsUploadJob;
+	}
+
+	public Job stopUploadStatisticsJob() {
+		scheduledStatisticsUploadJob.cancel();
+		return scheduledStatisticsUploadJob;
 	}
 
 	public void incrementObservedEvents(int increment) {
@@ -611,19 +652,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		return studyParameters;
 	}
 
-	public String getCustomizingPlugin() {
-		return customizingPlugin;
-	}
-
 	public boolean isMonitoringEnabled() {
 		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED);
-	}
-
-	public String getCustomizedByMessage() {
-		String customizedBy = UiUsageMonitorPlugin.getDefault().getCustomizingPlugin();
-		String message = Messages.UiUsageMonitorPlugin_53 + customizedBy + Messages.UiUsageMonitorPlugin_54
-				+ Messages.UiUsageMonitorPlugin_55;
-		return message;
 	}
 
 	public boolean isBackgroundEnabled() {
@@ -634,12 +664,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		this.backgroundEnabled = backgroundEnabled;
 	}
 
-	public String getExtensionVersion() {
-		return studyParameters.getVersion();
-	}
-
 	public boolean usingContactField() {
-		if (studyParameters.getUseContactField().equals("true")) { //$NON-NLS-1$
+		if (studyParameters.getUseContactField().equals("true")) {
 			return true;
 		} else {
 			return false;

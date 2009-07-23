@@ -26,21 +26,21 @@ public class Messages extends NLS {
 
 	public static String UiUsageMonitorPlugin_18;
 
-	public static String UiUsageMonitorPlugin_22;
+	public static String UiUsageMonitorPlugin_send_usage_feedback;
 
-	public static String UiUsageMonitorPlugin_23;
+	public static String UiUsageMonitorPlugin_please_consider_uploading;
 
-	public static String UiUsageMonitorPlugin_24;
+	public static String UiUsageMonitorPlugin_open_usage_report;
 
-	public static String UiUsageMonitorPlugin_25;
+	public static String UiUsageMonitorPlugin_remind_me;
 
 	public static String UiUsageMonitorPlugin_26;
 
-	public static String UiUsageMonitorPlugin_27;
+	public static String UiUsageMonitorPlugin_dont_ask_again;
 
-	public static String UiUsageMonitorPlugin_28;
+	public static String UiUsageMonitorPlugin_consent;
 
-	public static String UiUsageMonitorPlugin_29;
+	public static String UiUsageMonitorPlugin_consent_details;
 
 	public static String UiUsageMonitorPlugin_title;
 

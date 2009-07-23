@@ -12,7 +12,6 @@
 package org.eclipse.mylyn.internal.monitor.usage.wizards;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -55,15 +54,9 @@ public class UsageUploadWizardPage extends WizardPage {
 		super("Usage Data Submission Wizard");
 
 		setTitle("Usage Data Submission");
-		if (UiUsageMonitorPlugin.getDefault().getCustomizingPlugin() != null) {
-			String customizedTitle = UiUsageMonitorPlugin.getDefault().getStudyParameters().getTitle();
-			if (!customizedTitle.equals("")) {
-				setTitle(customizedTitle + ": Usage Data Upload");
-			}
-		}
-
 		setDescription("The usage file listed below will be uploaded along with the archived files you selected (there may not have been any to select from).\n"
 				+ "Information about program elements that you worked with is obfuscated to ensure privacy.");
+
 		// setDescription(
 		// "The files listed below will be uploaded. Information about program
 		// elements that you "
@@ -86,14 +79,7 @@ public class UsageUploadWizardPage extends WizardPage {
 		topContainerLayout.numColumns = 2;
 		topContainerLayout.verticalSpacing = 9;
 
-		Label label;
-		if (UiUsageMonitorPlugin.getDefault().getCustomizingPlugin() != null) {
-			label = new Label(parent, SWT.NULL);
-			label.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-			label.setText(UiUsageMonitorPlugin.getDefault().getCustomizedByMessage());
-		}
-
-		label = new Label(topContainer, SWT.NULL);
+		Label label = new Label(topContainer, SWT.NULL);
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
 		label.setText("Usage Data will be send to following recipients. Filter column tells which events will the recipient receive.");
 

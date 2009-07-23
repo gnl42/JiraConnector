@@ -14,7 +14,6 @@ package org.eclipse.mylyn.internal.monitor.usage.preferences;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -73,12 +72,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
-
-		if (UiUsageMonitorPlugin.getDefault().getCustomizingPlugin() != null) {
-			Label label = new Label(parent, SWT.NULL);
-			label.setText(UiUsageMonitorPlugin.getDefault().getCustomizedByMessage());
-			label.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT));
-		}
 
 		createLogFileSection(container);
 		createUsageSection(container);

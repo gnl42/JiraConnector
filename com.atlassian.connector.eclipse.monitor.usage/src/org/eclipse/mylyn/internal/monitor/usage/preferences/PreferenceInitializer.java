@@ -25,8 +25,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE, true);
 
 		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED)) {
-			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED, true);
-			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, true);
+			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED, false);
+			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, false);
 		}
 
 		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED)) {
