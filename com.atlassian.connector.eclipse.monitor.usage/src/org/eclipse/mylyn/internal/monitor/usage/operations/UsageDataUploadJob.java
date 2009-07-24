@@ -118,20 +118,16 @@ public final class UsageDataUploadJob extends Job {
 			}
 		}
 
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				if (failed) {
+		if (failed) {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				public void run() {
 					// popup a dialog telling the user that the upload failed
 					MessageDialog.openError(Display.getCurrent().getActiveShell(),
 							Messages.UsageSubmissionWizard_error_uploading,
 							Messages.UsageSubmissionWizard_some_uploads_failed);
-				} else {
-					// popup a dialog telling the user that the upload was good
-					MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
-							Messages.UsageSubmissionWizard_successful_upload, Messages.UsageSubmissionWizard_thank_you);
 				}
-			}
-		});
+			});
+		}
 
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
 		UiUsageMonitorPlugin.setPerformingUpload(false);
