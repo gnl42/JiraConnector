@@ -222,10 +222,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			}
 			Date currentTime = new Date();
 
-			// FIXME: this
-			if (true /*currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
-						&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
-						&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME) */) {
+			if (currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
+					&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
+					&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)) {
 
 				// time must be stored right away into preferences, to prevent
 				// other threads
