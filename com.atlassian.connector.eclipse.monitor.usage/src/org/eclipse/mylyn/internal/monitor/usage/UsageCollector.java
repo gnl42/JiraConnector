@@ -22,11 +22,15 @@ public final class UsageCollector {
 
 	private final Collection<String> eventFilters;
 
-	UsageCollector(final String bundle, final String uploadUrl, final Collection<String> eventFilters) {
+	private final String detailsUrl;
+
+	UsageCollector(final String bundle, final String uploadUrl, final String detailsUrl,
+			final Collection<String> eventFilters) {
 		this.bundle = bundle;
 		this.uploadUrl = uploadUrl;
 		this.eventFilters = new ArrayList<String>();
 		this.eventFilters.addAll(eventFilters);
+		this.detailsUrl = detailsUrl;
 	}
 
 	public String getUploadUrl() {
@@ -39,6 +43,10 @@ public final class UsageCollector {
 
 	public String getBundle() {
 		return bundle;
+	}
+
+	public String getDetailsUrl() {
+		return detailsUrl;
 	}
 
 }

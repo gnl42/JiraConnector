@@ -12,22 +12,15 @@
 package org.eclipse.mylyn.internal.monitor.usage.editors;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.monitor.usage.InteractionEventSummarySorter;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
 import org.eclipse.mylyn.internal.monitor.usage.wizards.UsageSubmissionWizard;
@@ -39,21 +32,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.browser.IWebBrowser;
-import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.browser.WebBrowserPreference;
-import org.eclipse.ui.internal.browser.WorkbenchBrowserSupport;
 
 /**
  * @author Meghan Allen
@@ -63,8 +50,6 @@ public class UsageSummaryReportEditorPart extends UsageEditorPart {
 	public static final String ID = "com.atlassian.connector.eclipse.monitor.usage.summary.editor";
 
 	private static final long MAX_FILE_LENGTH = 1024 * 1024;
-
-	private static final String URL_USAGE_PAGE = "http://mylyn.eclipse.org/monitor/upload/usageSummary.html";
 
 	private static final String DATE_FORMAT_STRING = "MMMMM d, h:mm a";
 
@@ -123,7 +108,7 @@ public class UsageSummaryReportEditorPart extends UsageEditorPart {
 		buttonContainerLayout.numColumns = 3;
 		buttonContainer.setLayout(buttonContainerLayout);
 
-		Button submitData = toolkit.createButton(buttonContainer, "Submit to Eclipse.org", SWT.PUSH | SWT.CENTER);
+		Button submitData = toolkit.createButton(buttonContainer, "Submit", SWT.PUSH | SWT.CENTER);
 		submitData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -139,56 +124,10 @@ public class UsageSummaryReportEditorPart extends UsageEditorPart {
 			}
 		});
 
-		Button viewStats = toolkit.createButton(buttonContainer, "View Community Statistics", SWT.PUSH | SWT.CENTER);
-		viewStats.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				viewStats();
-			}
-		});
 		Composite labelContainer = toolkit.createComposite(topContainer);
 		GridLayout labelContainerLayout = new GridLayout();
 		labelContainerLayout.numColumns = 1;
 		labelContainer.setLayout(labelContainerLayout);
-		Label submissionLabel = new Label(labelContainer, SWT.NONE);
-		submissionLabel.setText("Only usage of org.eclipse.* IDs will be submitted to Eclipse.org");
-	}
-
-	/**
-	 * TODO: move to Mylyn Web UI stuff
-	 */
-	private void viewStats() {
-		try {
-			if (WebBrowserPreference.getBrowserChoice() == WebBrowserPreference.EXTERNAL) {
-				try {
-					IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
-					support.getExternalBrowser().openURL(new URL(URL_USAGE_PAGE));
-				} catch (Exception e) {
-					StatusHandler.fail(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-							"Could not open task url", e));
-				}
-			} else {
-				IWebBrowser browser = null;
-				int flags = 0;
-				if (WorkbenchBrowserSupport.getInstance().isInternalWebBrowserAvailable()) {
-					flags = IWorkbenchBrowserSupport.AS_EDITOR | IWorkbenchBrowserSupport.LOCATION_BAR
-							| IWorkbenchBrowserSupport.NAVIGATION_BAR;
-
-				} else {
-					flags = IWorkbenchBrowserSupport.AS_EXTERNAL | IWorkbenchBrowserSupport.LOCATION_BAR
-							| IWorkbenchBrowserSupport.NAVIGATION_BAR;
-				}
-
-				String generatedId = "org.eclipse.mylyn.web.browser-" + Calendar.getInstance().getTimeInMillis();
-				browser = WorkbenchBrowserSupport.getInstance().createBrowser(flags, generatedId, null, null);
-				browser.openURL(new URL(URL_USAGE_PAGE));
-			}
-		} catch (PartInitException e) {
-			MessageDialog.openError(Display.getDefault().getActiveShell(), "Browser init error",
-					"Browser could not be initiated");
-		} catch (MalformedURLException e) {
-			MessageDialog.openError(Display.getDefault().getActiveShell(), "URL not found", "URL Could not be opened");
-		}
 	}
 
 	/**
@@ -219,13 +158,12 @@ public class UsageSummaryReportEditorPart extends UsageEditorPart {
 	}
 
 	private void submitData() {
-
 		UsageSubmissionWizard submissionWizard = new UsageSubmissionWizard();
-
+		submissionWizard.init(PlatformUI.getWorkbench(), null);
 		WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 				submissionWizard);
+		dialog.create();
 		dialog.open();
-
 	}
 
 	private void createTable(Composite parent, FormToolkit toolkit) {

@@ -12,19 +12,18 @@
 
 package org.eclipse.mylyn.internal.monitor.usage.preferences;
 
-import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.internal.monitor.usage.InteractionEventObfuscator;
 import org.eclipse.mylyn.internal.monitor.usage.Messages;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorPreferenceConstants;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
+import org.eclipse.mylyn.internal.monitor.usage.UsageCollector;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -34,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -59,8 +59,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 	private Text submissionTime;
 
-	private TableViewer usageScripts;
-
 	public UsageDataPreferencePage() {
 		super();
 		setPreferenceStore(UiUsageMonitorPlugin.getPrefs());
@@ -75,8 +73,35 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 		createLogFileSection(container);
 		createUsageSection(container);
+		createCollectorsSection(container);
 		updateEnablement();
 		return container;
+	}
+
+	private void createCollectorsSection(Composite parent) {
+		final Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
+		group.setText("Usage Data Collectors");
+		group.setLayout(new GridLayout(1, false));
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		Label info = new Label(group, SWT.NULL);
+		info.setText("Usage Data collected will be sent to following recipients:");
+
+		Link details;
+		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
+			final String detailsUrl = collector.getDetailsUrl();
+
+			details = new Link(group, SWT.NULL);
+			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle())
+					.getHeaders()
+					.get("Bundle-Name")));
+			details.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					WorkbenchUtil.openUrl(detailsUrl);
+				}
+			});
+		}
 	}
 
 	public void init(IWorkbench workbench) {
@@ -184,45 +209,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		});
 		Label label2 = new Label(enableSubmissionComposite, SWT.NONE);
 		label2.setText(Messages.UsageDataPreferencePage_16);
-
-		usageScripts = new TableViewer(group, SWT.BORDER);
-		GridDataFactory.fillDefaults().span(2, 1).align(SWT.FILL, SWT.FILL).grab(true, true).hint(500, 100).applyTo(
-				usageScripts.getControl());
-
-		TableViewerColumn destinationColumn = new TableViewerColumn(usageScripts, SWT.NONE);
-		destinationColumn.getColumn().setText("Destination URL");
-		destinationColumn.getColumn().setWidth(300);
-		destinationColumn.getColumn().setResizable(true);
-		destinationColumn.getColumn().setMoveable(true);
-
-		TableViewerColumn filterColumn = new TableViewerColumn(usageScripts, SWT.NONE);
-		filterColumn.getColumn().setText("Filters");
-		filterColumn.getColumn().setWidth(300);
-		filterColumn.getColumn().setResizable(true);
-		filterColumn.getColumn().setMoveable(true);
-
-		usageScripts.setContentProvider(new IStructuredContentProvider() {
-
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			}
-
-			public void dispose() {
-			}
-
-			public Object[] getElements(Object inputElement) {
-				if (inputElement instanceof Object[]) {
-					return (Object[]) inputElement;
-				}
-				return new Object[0];
-			}
-		});
-
-		usageScripts.setLabelProvider(new TableLabelProvider());
-
-		usageScripts.getTable().setHeaderVisible(true);
-		usageScripts.getTable().setLinesVisible(true);
-
-		usageScripts.setInput(UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors().toArray());
 	}
 
 	@Override

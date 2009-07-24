@@ -39,6 +39,8 @@ class MonitorUsageExtensionPointReader {
 
 	public static final String ELEMENT_COLLECTOR_QUESTIONNAIRE = "questionnaire"; //$NON-NLS-1$
 
+	public static final String ELEMENT_COLLECTOR_DETAILS_URL = "detailsUrl"; //$NON-NLS-1$
+
 	public static final String ELEMENT_UI = "ui"; //$NON-NLS-1$
 
 	public static final String ELEMENT_UI_TITLE = "title"; //$NON-NLS-1$
@@ -106,6 +108,7 @@ class MonitorUsageExtensionPointReader {
 
 	private void readUsageCollector(IConfigurationElement element) {
 		String uploadUrl = element.getAttribute(ELEMENT_COLLECTOR_UPLOAD_URL);
+		String detailsUrl = element.getAttribute(ELEMENT_COLLECTOR_DETAILS_URL);
 		String eventFilters = element.getAttribute(ELEMENT_COLLECTOR_EVENT_FILTERS);
 		Collection<String> filters = new ArrayList<String>();
 
@@ -113,7 +116,7 @@ class MonitorUsageExtensionPointReader {
 			filters.addAll(Arrays.asList(eventFilters.split(",")));
 		}
 
-		usageCollectors.add(new UsageCollector(element.getContributor().getName(), uploadUrl, filters));
+		usageCollectors.add(new UsageCollector(element.getContributor().getName(), uploadUrl, detailsUrl, filters));
 	}
 
 	private void readForms(IConfigurationElement element) throws CoreException {

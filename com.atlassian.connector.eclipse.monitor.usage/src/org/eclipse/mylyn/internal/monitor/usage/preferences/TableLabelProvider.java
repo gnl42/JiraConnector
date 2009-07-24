@@ -31,6 +31,8 @@ public final class TableLabelProvider extends LabelProvider implements ITableLab
 				return "Send everything";
 			}
 			return row.getEventFilters().toString();
+		case 2:
+			return row.getDetailsUrl();
 		default:
 			return "???";
 		}

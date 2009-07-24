@@ -47,8 +47,6 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 
 	private boolean displayBackgroundPage = false;
 
-	private final boolean displayFileSelectionPage = false;
-
 	private final File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
 
 	private UsageUploadWizardPage uploadPage;

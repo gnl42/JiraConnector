@@ -11,20 +11,21 @@
 
 package org.eclipse.mylyn.internal.monitor.usage.wizards;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
-import org.eclipse.mylyn.internal.monitor.usage.preferences.TableLabelProvider;
+import org.eclipse.mylyn.internal.monitor.usage.UsageCollector;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -44,8 +45,6 @@ public class UsageUploadWizardPage extends WizardPage {
 	// private Text logFileText;
 
 	private final UsageSubmissionWizard wizard;
-
-	private TableViewer usageScripts;
 
 	/**
 	 * Constructor
@@ -67,6 +66,7 @@ public class UsageUploadWizardPage extends WizardPage {
 	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
@@ -81,46 +81,24 @@ public class UsageUploadWizardPage extends WizardPage {
 
 		Label label = new Label(topContainer, SWT.NULL);
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
-		label.setText("Usage Data will be send to following recipients. Filter column tells which events will the recipient receive.");
+		label.setText("Usage Data will be send to following recipients:");
 
-		usageScripts = new TableViewer(topContainer, SWT.BORDER);
-		GridDataFactory.fillDefaults().span(2, 1).align(SWT.FILL, SWT.FILL).grab(true, true).hint(500, 100).applyTo(
-				usageScripts.getControl());
+		Link details;
+		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
+			final String detailsUrl = collector.getDetailsUrl();
 
-		TableViewerColumn destinationColumn = new TableViewerColumn(usageScripts, SWT.NONE);
-		destinationColumn.getColumn().setText("Destination URL");
-		destinationColumn.getColumn().setWidth(300);
-		destinationColumn.getColumn().setResizable(true);
-		destinationColumn.getColumn().setMoveable(true);
-
-		TableViewerColumn filterColumn = new TableViewerColumn(usageScripts, SWT.NONE);
-		filterColumn.getColumn().setText("Filters");
-		filterColumn.getColumn().setWidth(300);
-		filterColumn.getColumn().setResizable(true);
-		filterColumn.getColumn().setMoveable(true);
-
-		usageScripts.setContentProvider(new IStructuredContentProvider() {
-
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			}
-
-			public void dispose() {
-			}
-
-			public Object[] getElements(Object inputElement) {
-				if (inputElement instanceof Object[]) {
-					return (Object[]) inputElement;
+			details = new Link(topContainer, SWT.NULL);
+			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle())
+					.getHeaders()
+					.get("Bundle-Name")));
+			details.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					WorkbenchUtil.openUrl(detailsUrl);
 				}
-				return new Object[0];
-			}
-		});
-
-		usageScripts.setLabelProvider(new TableLabelProvider());
-
-		usageScripts.getTable().setHeaderVisible(true);
-		usageScripts.getTable().setLinesVisible(true);
-
-		usageScripts.setInput(UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors().toArray());
+			});
+			GridDataFactory.fillDefaults().span(2, 1).applyTo(details);
+		}
 
 		label = new Label(topContainer, SWT.NULL);
 		label.setText("Usage file location:");

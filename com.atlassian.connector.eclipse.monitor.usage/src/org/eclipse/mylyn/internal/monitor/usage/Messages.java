@@ -84,6 +84,8 @@ public class Messages extends NLS {
 
 	public static String UsageDataPreferencePage_9;
 
+	public static String UsageDataUploadJob_cant_read_files;
+
 	public static String UsageFileSelectionWizardPage_0;
 
 	public static String UsageFileSelectionWizardPage_1;

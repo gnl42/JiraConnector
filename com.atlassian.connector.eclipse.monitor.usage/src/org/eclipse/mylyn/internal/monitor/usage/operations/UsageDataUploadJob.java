@@ -150,7 +150,7 @@ public final class UsageDataUploadJob extends Job {
 					if (backupFile.exists()) {
 						List<File> unzippedFiles;
 						try {
-							unzippedFiles = ZipFileUtil.unzipFiles(backupFile, System.getProperty("java.io.tmpdir"),
+							unzippedFiles = ZipFileUtil.unzipFiles(backupFile, System.getProperty("java.io.tmpdir"), //$NON-NLS-1$
 									new NullProgressMonitor());
 
 							if (unzippedFiles.size() > 0) {
@@ -260,7 +260,7 @@ public final class UsageDataUploadJob extends Job {
 
 		if (status == 401) {
 			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, NLS.bind(
-					Messages.UsageSubmissionWizard_invalid_uid, f.getName(), "")));
+					Messages.UsageSubmissionWizard_invalid_uid, f.getName(), ""))); //$NON-NLS-1$
 		} else if (status == 407) {
 			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
 					Messages.UsageSubmissionWizard_proxy_authentication));
@@ -279,7 +279,6 @@ public final class UsageDataUploadJob extends Job {
 	private static List<File> getBackupFiles() {
 		ArrayList<File> backupFiles = new ArrayList<File>();
 		try {
-
 			String destination = MonitorFileRolloverJob.getZippedMonitorFileDirPath();
 
 			File backupFolder = new File(destination);
@@ -302,7 +301,6 @@ public final class UsageDataUploadJob extends Job {
 				if (submissionLogFile.exists()) {
 					while ((bytesRead = inputStream.read(buffer)) != -1) {
 						fileContents += new String(buffer, 0, bytesRead);
-
 					}
 				}
 				for (File file : files) {
@@ -311,17 +309,14 @@ public final class UsageDataUploadJob extends Job {
 						backupFiles.add(file);
 					}
 				}
-
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageDataUploadJob_cant_read_files,
+					e));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageDataUploadJob_cant_read_files,
+					e));
 		}
 		return backupFiles;
 	}
-
 }
