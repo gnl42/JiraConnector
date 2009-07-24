@@ -58,7 +58,7 @@ public class Messages extends NLS {
 
 	public static String UiUsageMonitorPlugin_55;
 
-	public static String UsageDataPreferencePage_0;
+	public static String UsageDataPreferencePage_description;
 
 	public static String UsageDataPreferencePage_1;
 

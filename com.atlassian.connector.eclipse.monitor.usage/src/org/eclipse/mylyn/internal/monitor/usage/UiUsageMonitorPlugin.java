@@ -14,7 +14,6 @@ package org.eclipse.mylyn.internal.monitor.usage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -22,7 +21,6 @@ import java.util.ResourceBundle;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
@@ -33,7 +31,6 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
@@ -46,7 +43,7 @@ import org.eclipse.mylyn.internal.monitor.ui.MenuCommandMonitor;
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.internal.monitor.ui.PerspectiveChangeMonitor;
 import org.eclipse.mylyn.internal.monitor.ui.WindowChangeMonitor;
-import org.eclipse.mylyn.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard;
+import org.eclipse.mylyn.internal.monitor.usage.operations.UsageDataUploadJob;
 import org.eclipse.mylyn.monitor.core.IInteractionEventListener;
 import org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor;
 import org.eclipse.mylyn.monitor.ui.IActionExecutionListener;
@@ -63,7 +60,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.progress.UIJob;
 import org.eclipse.update.internal.ui.security.Authentication;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -129,8 +125,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	private final List<AbstractCommandMonitor> commandMonitors = new ArrayList<AbstractCommandMonitor>();
 
 	private ResourceBundle resourceBundle;
-
-	private static Date lastTransmit = null;
 
 	private final Authentication uploadAuthentication = null;
 
@@ -202,59 +196,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		}
 	};
 
-	private class StatisticsUploadJob extends UIJob {
-
-		public StatisticsUploadJob() {
-			super("Upload Statistics Job");
-		}
-
-		@Override
-		public IStatus runInUIThread(IProgressMonitor monitor) {
-			UiUsageMonitorPlugin plugin = UiUsageMonitorPlugin.getDefault();
-
-			if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE)) {
-				lastTransmit = new Date(plugin.getPreferenceStore().getLong(
-						MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE));
-			} else {
-				lastTransmit = new Date();
-				plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-						lastTransmit.getTime());
-			}
-			Date currentTime = new Date();
-
-			if (currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
-					&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
-					&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)) {
-
-				// time must be stored right away into preferences, to prevent
-				// other threads
-				lastTransmit.setTime(new Date().getTime());
-				plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-						currentTime.getTime());
-
-				NewUsageSummaryEditorWizard wizard = new NewUsageSummaryEditorWizard();
-				wizard.init(PlatformUI.getWorkbench(), null);
-				// Instantiates the wizard container with the wizard and
-				// opens it
-				WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
-				dialog.create();
-				dialog.open();
-				/*
-				 * the UI usage report is loaded asynchronously so there's no
-				 * synchronous way to know if it failed if (wizard.failed()) {
-				 * lastTransmit.setTime(currentTime.getTime() + DELAY_ON_FAILURE -
-				 * studyParameters.getTransmitPromptPeriod());
-				 * plugin.getPreferenceStore().setValue(MylynMonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-				 * currentTime.getTime()); }
-				 */
-			}
-			return Status.OK_STATUS;
-		}
-	}
-
 	private LogMoveUtility logMoveUtility;
 
-	private StatisticsUploadJob scheduledStatisticsUploadJob;
+	private UsageDataUploadJob scheduledStatisticsUploadJob;
 
 	/**
 	 * NOTE: this needs to be a separate class in order to avoid loading ..mylyn.context.core on eager startup
@@ -317,15 +261,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
 						startMonitoring();
-					}
-
-					if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE)) {
-						lastTransmit = new Date(plugin.getPreferenceStore().getLong(
-								MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE));
-					} else {
-						lastTransmit = new Date();
-						plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-								lastTransmit.getTime());
 					}
 				} catch (Throwable t) {
 					StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
@@ -477,24 +412,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		return file;
 	}
 
-	private long getUserPromptDelay() {
-		return DELAY_ON_USER_REQUEST / DAY;
-	}
-
-	public void userCancelSubmitFeedback(Date currentTime, boolean wait3Hours) {
-		if (wait3Hours) {
-			lastTransmit.setTime(currentTime.getTime() + DELAY_ON_USER_REQUEST
-					- studyParameters.getTransmitPromptPeriod());
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-					lastTransmit.getTime());
-		} else {
-			long day = HOUR * 24;
-			lastTransmit.setTime(currentTime.getTime() + day - studyParameters.getTransmitPromptPeriod());
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-					lastTransmit.getTime());
-		}
-	}
-
 	/**
 	 * Returns the shared instance.
 	 */
@@ -566,7 +483,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	public Job startUploadStatisticsJob() {
-		scheduledStatisticsUploadJob = new StatisticsUploadJob();
+		scheduledStatisticsUploadJob = new UsageDataUploadJob(false);
 		scheduledStatisticsUploadJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {

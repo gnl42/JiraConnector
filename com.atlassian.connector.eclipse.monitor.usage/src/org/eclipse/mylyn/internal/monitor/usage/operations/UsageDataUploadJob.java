@@ -20,6 +20,7 @@ import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,8 @@ import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 import org.eclipse.mylyn.internal.monitor.usage.InteractionEventLogger;
 import org.eclipse.mylyn.internal.monitor.usage.Messages;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorFileRolloverJob;
+import org.eclipse.mylyn.internal.monitor.usage.MonitorPreferenceConstants;
+import org.eclipse.mylyn.internal.monitor.usage.StudyParameters;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
 import org.eclipse.mylyn.internal.monitor.usage.UsageCollector;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
@@ -53,17 +56,24 @@ public final class UsageDataUploadJob extends Job {
 
 	private boolean failed = false;
 
+	private final boolean ifTimeElapsed;
+
 	private static int processedFileCount = 1;
 
-	public UsageDataUploadJob() {
+	public UsageDataUploadJob(boolean ignoreLastTransmit) {
 		super(Messages.UsageSubmissionWizard_upload_user_stats);
+		this.ifTimeElapsed = ignoreLastTransmit;
 	}
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
 			monitor.beginTask(Messages.UsageSubmissionWizard_uploading_usage_stats, 3);
-			performUpload(monitor);
+			if (ifTimeElapsed) {
+				performUpload(monitor);
+			} else {
+				checkLastTransmitTimeAndRun(monitor);
+			}
 			monitor.done();
 			return Status.OK_STATUS;
 		} catch (Exception e) {
@@ -71,6 +81,36 @@ public final class UsageDataUploadJob extends Job {
 					Messages.UsageSubmissionWizard_error_uploading, e);
 			StatusHandler.log(status);
 			return status;
+		}
+	}
+
+	private void checkLastTransmitTimeAndRun(IProgressMonitor monitor) {
+		final UiUsageMonitorPlugin plugin = UiUsageMonitorPlugin.getDefault();
+		final StudyParameters studyParameters = plugin.getStudyParameters();
+		Date lastTransmit;
+
+		if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE)) {
+			lastTransmit = new Date(plugin.getPreferenceStore().getLong(
+					MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE));
+		} else {
+			lastTransmit = new Date();
+			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
+					lastTransmit.getTime());
+		}
+
+		final Date currentTime = new Date();
+
+		if (currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
+				&& plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
+				&& plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)) {
+
+			// time must be stored right away into preferences, to prevent
+			// other threads
+			lastTransmit.setTime(new Date().getTime());
+			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
+					currentTime.getTime());
+
+			performUpload(monitor);
 		}
 	}
 
@@ -311,11 +351,11 @@ public final class UsageDataUploadJob extends Job {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageDataUploadJob_cant_read_files,
-					e));
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+					Messages.UsageDataUploadJob_cant_read_files, e));
 		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, Messages.UsageDataUploadJob_cant_read_files,
-					e));
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+					Messages.UsageDataUploadJob_cant_read_files, e));
 		}
 		return backupFiles;
 	}

@@ -44,8 +44,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 public class UsageDataPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	private static final String DESCRIPTION = Messages.UsageDataPreferencePage_0 + Messages.UsageDataPreferencePage_1
-			+ Messages.UsageDataPreferencePage_2 + Messages.UsageDataPreferencePage_3;
+	private static final String DESCRIPTION = Messages.UsageDataPreferencePage_description;
 
 	private static final long DAYS_IN_MS = 1000 * 60 * 60 * 24;
 

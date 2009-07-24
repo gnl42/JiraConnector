@@ -12,7 +12,6 @@
 package org.eclipse.mylyn.internal.monitor.usage.wizards;
 
 import java.io.File;
-import java.util.Date;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -98,32 +97,27 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 
 	}
 
-	private File questionnaireFile = null;
+	//private File questionnaireFile = null;
 
-	private File backgroundFile = null;
+	//private File backgroundFile = null;
 
 	@Override
 	public boolean performFinish() {
 		if (!performUpload) {
 			return true;
 		}
-		if (UiUsageMonitorPlugin.getDefault().isQuestionnaireEnabled() && performUpload && questionnairePage != null) {
+
+		/*if (UiUsageMonitorPlugin.getDefault().isQuestionnaireEnabled() && performUpload && questionnairePage != null) {
 			questionnaireFile = questionnairePage.createFeedbackFile();
 		}
 		if (UiUsageMonitorPlugin.getDefault().isBackgroundEnabled() && performUpload && displayBackgroundPage
 				&& backgroundPage != null) {
 			backgroundFile = backgroundPage.createFeedbackFile();
-		}
+		}*/
 
-		Job j = new UsageDataUploadJob();
+		Job j = new UsageDataUploadJob(true);
 		j.setPriority(Job.DECORATE);
 		j.schedule();
-		return true;
-	}
-
-	@Override
-	public boolean performCancel() {
-		UiUsageMonitorPlugin.getDefault().userCancelSubmitFeedback(new Date(), true);
 		return true;
 	}
 
