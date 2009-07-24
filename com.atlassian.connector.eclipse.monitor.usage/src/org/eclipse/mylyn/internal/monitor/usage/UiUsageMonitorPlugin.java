@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -225,61 +224,30 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 			// FIXME: this
 			if (true /*currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
-						&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)*/) {
+						&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
+						&& getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME) */) {
 
-				MessageDialog message = new MessageDialog(Display.getDefault().getActiveShell(),
-						Messages.UiUsageMonitorPlugin_send_usage_feedback, null, NLS.bind(
-								Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeautres()),
-						MessageDialog.QUESTION, new String[] { Messages.UiUsageMonitorPlugin_open_usage_report,
-								NLS.bind(Messages.UiUsageMonitorPlugin_remind_me, getUserPromptDelay()),
-								Messages.UiUsageMonitorPlugin_dont_ask_again }, 0);
+				// time must be stored right away into preferences, to prevent
+				// other threads
+				lastTransmit.setTime(new Date().getTime());
+				plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
+						currentTime.getTime());
 
-				int result = 0;
-				if ((result = message.open()) == 0) {
-					// time must be stored right away into preferences, to prevent
-					// other threads
-					lastTransmit.setTime(new Date().getTime());
-					plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-							currentTime.getTime());
-
-					if (!plugin.getPreferenceStore().contains(
-							MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)
-							|| !plugin.getPreferenceStore().getBoolean(
-									MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED)) {
-						MessageDialog consentMessage = new MessageDialog(Display.getDefault().getActiveShell(),
-								Messages.UiUsageMonitorPlugin_consent, null,
-								Messages.UiUsageMonitorPlugin_consent_details, MessageDialog.INFORMATION,
-								new String[] { IDialogConstants.OK_LABEL }, 0);
-						consentMessage.open();
-						plugin.getPreferenceStore().setValue(
-								MonitorPreferenceConstants.PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED, true);
-					}
-
-					NewUsageSummaryEditorWizard wizard = new NewUsageSummaryEditorWizard();
-					wizard.init(PlatformUI.getWorkbench(), null);
-					// Instantiates the wizard container with the wizard and
-					// opens it
-					WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
-					dialog.create();
-					dialog.open();
-					/*
-					 * the UI usage report is loaded asynchronously so there's no
-					 * synchronous way to know if it failed if (wizard.failed()) {
-					 * lastTransmit.setTime(currentTime.getTime() + DELAY_ON_FAILURE -
-					 * studyParameters.getTransmitPromptPeriod());
-					 * plugin.getPreferenceStore().setValue(MylynMonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-					 * currentTime.getTime()); }
-					 */
-
-				} else {
-					if (result == 1) {
-						userCancelSubmitFeedback(currentTime, true);
-					} else {
-						plugin.getPreferenceStore().setValue(
-								MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, false);
-					}
-				}
-				message.close();
+				NewUsageSummaryEditorWizard wizard = new NewUsageSummaryEditorWizard();
+				wizard.init(PlatformUI.getWorkbench(), null);
+				// Instantiates the wizard container with the wizard and
+				// opens it
+				WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
+				dialog.create();
+				dialog.open();
+				/*
+				 * the UI usage report is loaded asynchronously so there's no
+				 * synchronous way to know if it failed if (wizard.failed()) {
+				 * lastTransmit.setTime(currentTime.getTime() + DELAY_ON_FAILURE -
+				 * studyParameters.getTransmitPromptPeriod());
+				 * plugin.getPreferenceStore().setValue(MylynMonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
+				 * currentTime.getTime()); }
+				 */
 			}
 			return Status.OK_STATUS;
 		}
@@ -406,10 +374,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		}
 
 		if (!MonitorUiPlugin.getDefault().suppressConfigurationWizards()) {
-			checkForFirstMonitorUse();
+			askUserForPermissionToMonitor();
 		}
 
-		// schedul statistics upload
+		// schedule statistics upload
 		startUploadStatisticsJob();
 
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_STARTED, true);
@@ -561,8 +529,11 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		return resourceBundle;
 	}
 
-	// TODO: remove
-	private void checkForFirstMonitorUse() {
+	/**
+	 * One time action (after this plugin was installed) to ask user if we can monitor him/her. User can decide later on
+	 * to disable or enable this.
+	 */
+	private void askUserForPermissionToMonitor() {
 		if (getStudyParameters().getUsageCollectors().size() == 0) {
 			return;
 		}

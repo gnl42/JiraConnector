@@ -34,3 +34,10 @@
 1248352561100	Rename method 'initializeScheduler'
 1248353039417	Rename method 'reInitializeUploadStatisticsJob'
 1248353058877	Rename method 'initializeUploadStatisticsJob'
+1248424024333	Rename method 'checkForFirstMonitorUse'
+1248426448672	Convert anonymous class to nested
+1248426470988	Convert member type 'UsageDataUploadJob' to top level
+1248426524528	Move compilation unit
+1248427703534	Rename local variable 'currFilePath'
+1248427788196	Rename local variable 'f'
+1248428482448	Delete element

@@ -28,8 +28,6 @@ public class MonitorPreferenceConstants {
 
 	public static final String PREF_MONITORING_SUBMIT_FREQUENCY = "org.eclipse.mylyn.monitor.submission.frequency";
 
-	public static final String PREF_MONITORING_MYLYN_ECLIPSE_ORG_CONSENT_VIEWED = "org.eclipse.mylyn.monitor.mylyn.eclipse.org.consent.viewed";
-
 	public static final String PREF_MONITORING_STARTED = "org.eclipse.mylyn.monitor.monitoring.started";
 
 	public static final String PREF_MONITORING_INITIALLY_ENABLED = "org.eclipse.mylyn.monitor.initially.enabled";
