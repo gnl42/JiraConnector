@@ -60,8 +60,6 @@ public class Messages extends NLS {
 
 	public static String UsageDataPreferencePage_description;
 
-	public static String UsageDataPreferencePage_1;
-
 	public static String UsageDataPreferencePage_10;
 
 	public static String UsageDataPreferencePage_11;
@@ -71,10 +69,6 @@ public class Messages extends NLS {
 	public static String UsageDataPreferencePage_14;
 
 	public static String UsageDataPreferencePage_16;
-
-	public static String UsageDataPreferencePage_2;
-
-	public static String UsageDataPreferencePage_3;
 
 	public static String UsageDataPreferencePage_4;
 
