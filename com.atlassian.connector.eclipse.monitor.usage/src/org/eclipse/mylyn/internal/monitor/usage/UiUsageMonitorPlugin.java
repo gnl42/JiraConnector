@@ -78,10 +78,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	private static final long HOUR = 3600 * 1000;
 
-	private static final long DAY = HOUR * 24;
-
-	private static final long DELAY_ON_USER_REQUEST = 5 * DAY;
-
 	public static final String DEFAULT_TITLE = Messages.UiUsageMonitorPlugin_title;
 
 	public static final String DEFAULT_DESCRIPTION = Messages.UiUsageMonitorPlugin_description;
