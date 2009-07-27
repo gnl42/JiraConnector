@@ -11,35 +11,38 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet implementation class UploadServlet
  */
 public class UploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static Log log = LogFactory.getLog(UploadServlet.class);
 
     /**
      * Default constructor. 
      */
     public UploadServlet() {
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (ServletFileUpload.isMultipartContent(request)) {
+		if (!ServletFileUpload.isMultipartContent(request)) {
+			log.warn("Multipart content is required");
+			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			return;
 		}
 		
@@ -51,7 +54,7 @@ public class UploadServlet extends HttpServlet {
 			if (files != null) {
 				for (Object fileObj : files) {
 					FileItem file = (FileItem) fileObj;
-					// FIXME: do nothing
+					log.debug(String.format("Parsing %s", file.getName()));
 				}
 			}
 		} catch(FileUploadException e) {

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: activation-1.1.jar commons-fileupload-1.2.1.jar commons-io
+ -1.4.jar commons-logging-1.1.1.jar jms-1.1.jar log4j-1.2.15.jar mail-
+ 1.4.jar servlet-api-2.5.jar
+
