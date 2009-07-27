@@ -3,6 +3,7 @@
     <wb-module deploy-name="com.atlassian.connector.eclipse.monitor.server">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/java"/>
         <property name="context-root" value="com.atlassian.connector.eclipse.monitor.server"/>
         <property name="java-output-path"/>
     </wb-module>
