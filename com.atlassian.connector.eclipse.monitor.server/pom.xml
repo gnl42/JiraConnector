@@ -17,6 +17,11 @@ mvn -Declipse.workspace=/Users/pniewiadomski/Development/workspace-3.5/ eclipse:
 			<version>2.5</version>
 		</dependency>
 		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
@@ -32,8 +37,10 @@ mvn -Declipse.workspace=/Users/pniewiadomski/Development/workspace-3.5/ eclipse:
 			 	<artifactId>maven-eclipse-plugin</artifactId>
 			 	<configuration>
 			 		<downloadSources>true</downloadSources>
-			 		<wtpversion>1.5</wtpversion>
 			 		<wtpmanifest>true</wtpmanifest>
+			 		<wtpapplicationxml>true</wtpapplicationxml>
+                    <wtpversion>2.0</wtpversion>
+                    <manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
 			 		<additionalProjectnatures>
 			 			<projectnature>org.eclipse.jem.workbench.JavaEMFNature</projectnature>
 			 			<projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
