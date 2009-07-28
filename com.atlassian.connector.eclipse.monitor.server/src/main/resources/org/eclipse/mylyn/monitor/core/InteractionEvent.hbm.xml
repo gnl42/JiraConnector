@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.eclipse.mylyn.monitor.core.InteractionEvent"
+		table="interaction_events">
+
+		<composite-id>
+			<key-property name="kind" access="field">
+				<column name="kind" not-null="true" />
+			</key-property>
+			<key-property name="structureKind" access="field">
+				<column name="structure_kind" not-null="false" />
+			</key-property>
+			<key-property name="structureHandle" access="field">
+				<column name="structure_handle" not-null="true" />
+			</key-property>
+			<key-property name="originId" access="field">
+				<column name="origin_id" not-null="true" />
+			</key-property>
+			<key-property name="navigation" access="field">
+				<column name="navigation" not-null="false" />
+			</key-property>
+			<key-property name="delta" access="field">
+				<column name="delta" not-null="true" />
+			</key-property>
+			<key-property name="interestContribution" access="field">
+				<column name="interest_contribution" not-null="true" />
+			</key-property>
+			<key-property name="date" access="field">
+				<column name="date" not-null="true" />
+			</key-property>
+			<key-property name="endDate" access="field">
+				<column name="end_date" not-null="true" />
+			</key-property>
+		</composite-id>
+	</class>
+</hibernate-mapping>
