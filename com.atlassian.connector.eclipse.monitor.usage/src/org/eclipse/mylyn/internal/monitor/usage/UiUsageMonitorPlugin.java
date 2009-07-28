@@ -555,4 +555,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			return false;
 		}
 	}
+
+	public String getUserId() {
+		return getPreferenceStore().getString(MonitorPreferenceConstants.PREF_MONITORING_USER_ID);
+	}
 }

@@ -11,6 +11,8 @@
 
 package org.eclipse.mylyn.internal.monitor.usage.preferences;
 
+import java.util.UUID;
+
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorPreferenceConstants;
@@ -32,6 +34,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED)) {
 			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED, true);
 			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, true);
+		}
+
+		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_USER_ID)) {
+			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_USER_ID, UUID.randomUUID().toString());
 		}
 
 		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_STARTED, false);

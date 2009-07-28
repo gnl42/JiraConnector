@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -208,7 +207,7 @@ public final class UsageDataUploadJob extends Job {
 			}
 
 			try {
-				File zipFile = File.createTempFile(UUID.randomUUID() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+				File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
 				ZipFileUtil.createZipFile(zipFile, files);
 				return zipFile;
 			} catch (Exception e) {
