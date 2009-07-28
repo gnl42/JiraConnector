@@ -244,8 +244,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		}
 
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY, transmitFrequency);
-
-		UiUsageMonitorPlugin.getDefault().getStudyParameters().setTransmitPromptPeriod(transmitFrequency);
 		return true;
 	}
 

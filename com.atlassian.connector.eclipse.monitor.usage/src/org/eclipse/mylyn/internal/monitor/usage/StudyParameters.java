@@ -31,8 +31,6 @@ public class StudyParameters {
 
 	private AbstractStudyBackgroundPage backgroundPage = null;
 
-	private long transmitPromptPeriod = UiUsageMonitorPlugin.DEFAULT_DELAY_BETWEEN_TRANSMITS;
-
 	private String acceptedUrlList = UiUsageMonitorPlugin.DEFAULT_ACCEPTED_URL_LIST;
 
 	private String useContactField = UiUsageMonitorPlugin.DEFAULT_CONTACT_CONSENT_FIELD;
@@ -55,14 +53,6 @@ public class StudyParameters {
 		if (formsConsent != null) {
 			this.formsConsent = formsConsent;
 		}
-	}
-
-	public long getTransmitPromptPeriod() {
-		return transmitPromptPeriod;
-	}
-
-	public void setTransmitPromptPeriod(long transmitPromptPeriod) {
-		this.transmitPromptPeriod = transmitPromptPeriod;
 	}
 
 	public String getDescription() {

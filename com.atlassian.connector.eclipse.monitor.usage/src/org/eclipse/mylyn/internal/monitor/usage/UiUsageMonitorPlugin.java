@@ -100,7 +100,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public static final String ID_PLUGIN = "org.eclipse.mylyn.monitor.usage"; //$NON-NLS-1$
 
-	protected static final long TWELFE_HOURS_IN_MS = 12 * 60 * 60 * 1000;
+	protected static final long ONE_HOUR_IN_MS = 1 * 60 * 60 * 1000;
 
 	private InteractionEventLogger interactionLogger;
 
@@ -452,11 +452,11 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 		if (!plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)
 				|| plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)) {
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false");
+			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, false);
 
 			boolean agreement = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
 					Messages.UiUsageMonitorPlugin_send_usage_feedback, NLS.bind(
-							Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeautres()));
+							Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeatures()));
 
 			if (agreement) {
 				plugin.getPreferenceStore()
@@ -466,7 +466,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		}
 	}
 
-	private String getUsageCollectorFeautres() {
+	private String getUsageCollectorFeatures() {
 		StringBuilder sb = new StringBuilder();
 		for (UsageCollector collector : getStudyParameters().getUsageCollectors()) {
 			Bundle bnd = Platform.getBundle(collector.getBundle());
@@ -483,7 +483,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		scheduledStatisticsUploadJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
-				scheduledStatisticsUploadJob.schedule(TWELFE_HOURS_IN_MS);
+				scheduledStatisticsUploadJob.schedule(ONE_HOUR_IN_MS);
 			}
 		});
 		scheduledStatisticsUploadJob.schedule(); // schedule it now
@@ -558,5 +558,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public String getUserId() {
 		return getPreferenceStore().getString(MonitorPreferenceConstants.PREF_MONITORING_USER_ID);
+	}
+
+	public long getTransmitPromptPeriod() {
+		return getPreferenceStore().getLong(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY);
 	}
 }

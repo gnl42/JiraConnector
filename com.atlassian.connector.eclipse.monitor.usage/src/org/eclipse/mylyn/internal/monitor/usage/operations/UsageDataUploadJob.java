@@ -40,7 +40,6 @@ import org.eclipse.mylyn.internal.monitor.usage.InteractionEventLogger;
 import org.eclipse.mylyn.internal.monitor.usage.Messages;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorFileRolloverJob;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorPreferenceConstants;
-import org.eclipse.mylyn.internal.monitor.usage.StudyParameters;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
 import org.eclipse.mylyn.internal.monitor.usage.UsageCollector;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
@@ -85,9 +84,8 @@ public final class UsageDataUploadJob extends Job {
 
 	private void checkLastTransmitTimeAndRun(IProgressMonitor monitor) {
 		final UiUsageMonitorPlugin plugin = UiUsageMonitorPlugin.getDefault();
-		final StudyParameters studyParameters = plugin.getStudyParameters();
-		Date lastTransmit;
 
+		Date lastTransmit;
 		if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE)) {
 			lastTransmit = new Date(plugin.getPreferenceStore().getLong(
 					MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE));
@@ -99,7 +97,7 @@ public final class UsageDataUploadJob extends Job {
 
 		final Date currentTime = new Date();
 
-		if (currentTime.getTime() > lastTransmit.getTime() + studyParameters.getTransmitPromptPeriod()
+		if (currentTime.getTime() > lastTransmit.getTime() + plugin.getTransmitPromptPeriod()
 				&& plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
 				&& plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)) {
 
