@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.UserTransaction;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -20,7 +18,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
+import org.eclipse.mylyn.monitor.core.UserInteractionEvent;
+import org.hibernate.Transaction;
+import org.hibernate.classic.Session;
 
+import com.atlassian.connector.eclipse.monitor.server.HibernateUtil;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
 import com.thoughtworks.xstream.core.BaseException;
@@ -101,15 +103,23 @@ public class UploadServlet extends HttpServlet {
 			ZipInputStream zip = new ZipInputStream(file.getInputStream());
 			ZipEntry ze;
 			
+			int firstDot = file.getName().indexOf(".");
+			if (firstDot == -1 || firstDot == 0) {
+				log.warn("Silently ignoring upload because file name doesn't have '.'");
+			}
+			
+			final String uid = file.getName().substring(0, firstDot - 1);
+			
 			while((ze = zip.getNextEntry()) != null) {
 				if (ze.isDirectory()) continue;
+				if (!ze.getName().endsWith(".xml")) continue;
 				
 				// don't know how to force XStream to deserialize collection here, using this loop fallback
 				while(true) {
 					try {
 						Object o = xs.fromXML(zip);
 						if (o != null && o instanceof InteractionEvent) {
-							storeInteractionEvent((InteractionEvent) o);
+							storeInteractionEvent(new UserInteractionEvent((InteractionEvent) o, uid));
 						}
 					} catch(BaseException e) {
 						// deserialization failed - either bad data or end of stream, we don't care
@@ -118,32 +128,28 @@ public class UploadServlet extends HttpServlet {
 				}
 			}
 		} else {
-			// don't know how to force XStream to deserialize collection here, using this loop fallback
-			while(true) {
+			log.warn(String.format("Silently ignoring upload from someone (not a ZIP file): %s", file.getName()));
+		}
+	}
+	
+	private void storeInteractionEvent(UserInteractionEvent uie) {
+		Session session = null;
+		Transaction tx = null;
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			session.persist(uie);
+			tx.commit();
+		} catch (Exception e) {
+			log.error("Exception while storing UserInteractionEvent", e);
+		} finally {
+			if (session != null) {
 				try {
-					Object o = xs.fromXML(file.getInputStream());
-					if (o != null && o instanceof InteractionEvent) {
-						storeInteractionEvent((InteractionEvent) o);
-					}
-				} catch(BaseException e) {
-					// deserialization failed - either bad data or end of stream, we don't care
-					break;
+					session.close();
+				} catch(Exception e) {
+					// ignore
 				}
 			}
 		}
 	}
-	
-	private void storeInteractionEvent(InteractionEvent ie) {
-		try {
-			UserTransaction tx = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
-			tx.begin();
-			
-			tx.commit();
-		} catch(RuntimeException e) {
-			log.error("Exception while storing InteractionEvent", e);
-		} catch (Exception e) {
-			log.error("Exception while storing InteractionEvent", e);
-		}
-	}
-
 }

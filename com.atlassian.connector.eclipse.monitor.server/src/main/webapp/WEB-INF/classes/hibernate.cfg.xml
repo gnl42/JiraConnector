@@ -22,7 +22,7 @@
         <property name="cache.use_query_cache">false</property>
         <property name="cache.use_minimal_puts">false</property>
         <property name="max_fetch_depth">3</property>
-    
+        
         <!-- Print SQL to stdout. -->
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
@@ -34,13 +34,8 @@
         <property name="current_session_context_class">thread</property>
 
         <!-- Hibernate XML mapping files -->
-        <mapping resource="org/eclipse/mylyn/monitor/core/InteractionEvent.hbm.xml"/>
+        <mapping resource="org/eclipse/mylyn/monitor/core/package.hbm.xml"/>
     
-        <!-- Hibernate Annotations (and package-info.java)
-        <mapping package="org.mypackage"/>
-        <mapping class="org.MyClass/>
-        -->
-
     </session-factory>
 
 </hibernate-configuration>

@@ -155,7 +155,7 @@ public class InteractionEvent implements Serializable {
 	private final String navigation;
 
 	private final String delta;
-
+	
 	private final float interestContribution;
 
 	/**
