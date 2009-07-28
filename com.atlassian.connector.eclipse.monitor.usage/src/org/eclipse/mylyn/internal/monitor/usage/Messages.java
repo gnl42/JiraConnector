@@ -96,7 +96,7 @@ public class Messages extends NLS {
 
 	public static String UsageSubmissionWizard_no_network;
 
-	public static String UsageSubmissionWizard_19;
+	public static String UsageSubmissionWizard_unknown_exception;
 
 	public static String UsageSubmissionWizard_error_uploading;
 

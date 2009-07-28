@@ -273,7 +273,7 @@ public final class UsageDataUploadJob extends Job {
 		try {
 			final PostMethod filePost = new PostMethod(collector.getUploadUrl());
 			try {
-				Part[] parts = { new FilePart("temp.txt", f) }; //$NON-NLS-1$
+				Part[] parts = { new FilePart("temp.txt", f, "application/zip", FilePart.DEFAULT_CHARSET) }; //$NON-NLS-1$
 
 				filePost.setRequestEntity(new MultipartRequestEntity(parts, filePost.getParams()));
 
@@ -291,7 +291,7 @@ public final class UsageDataUploadJob extends Job {
 						Messages.UsageSubmissionWizard_no_network, e));
 			} else {
 				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						Messages.UsageSubmissionWizard_19, e));
+						Messages.UsageSubmissionWizard_unknown_exception, e));
 			}
 			return false;
 		}
