@@ -98,8 +98,7 @@ public final class UsageDataUploadJob extends Job {
 		final Date currentTime = new Date();
 
 		if (currentTime.getTime() > lastTransmit.getTime() + plugin.getTransmitPromptPeriod()
-				&& plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
-				&& plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)) {
+				&& plugin.isSubmissionEnabled() && !plugin.isFirstTime()) {
 
 			// time must be stored right away into preferences, to prevent
 			// other threads

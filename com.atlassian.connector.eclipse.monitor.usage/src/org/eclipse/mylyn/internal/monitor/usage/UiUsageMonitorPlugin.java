@@ -563,4 +563,12 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	public long getTransmitPromptPeriod() {
 		return getPreferenceStore().getLong(MonitorPreferenceConstants.PREF_MONITORING_SUBMIT_FREQUENCY);
 	}
+
+	public boolean isFirstTime() {
+		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME);
+	}
+
+	public boolean isSubmissionEnabled() {
+		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION);
+	}
 }
