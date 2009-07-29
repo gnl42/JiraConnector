@@ -11,6 +11,7 @@
         <property name="connection.url">jdbc:hsqldb:mem:usage</property>
         <property name="connection.username">sa</property>
         <property name="connection.password"></property>
+        <property name="connection.autocommit">false</property> 
 
         <!-- Use the C3P0 connection pool. -->
         <property name="c3p0.min_size">3</property>

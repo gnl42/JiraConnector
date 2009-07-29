@@ -65,35 +65,50 @@ public class UploadServlet extends HttpServlet {
 		}
 		
 		if (files != null) {
+			loadFiles(files);
+		}
+	}
+	
+	private void loadFiles(final List<?> files) {
+		final Session[] session = new Session[1];
+		
+		try {
+			session[0] = HibernateUtil.getSessionFactory().openSession();
+		
 			for (Object fileObj : files) {
 				UsageDataUtil.processFile((FileItem) fileObj, new UsageDataUtil.UserInteractionEventCallback() {
 					public boolean visit(UserInteractionEvent uie) {
-						storeInteractionEvent(uie);
+						// put as much data as we can into db, don't care if something is dropped
+						Transaction tx = null;
+						try {
+							tx = session[0].beginTransaction();
+							session[0].persist(uie);
+							tx.commit();
+						} catch(Exception e) {
+							if (tx != null) {
+								try {
+									tx.rollback();
+								} catch(Exception e1) {
+									// ignore
+								}
+							}
+							log.warn("Failed to store UserInteractionEvent", e);
+						}
 						return true;
 					}
 				});
 			}
-		}
-	}
-	
-	private void storeInteractionEvent(UserInteractionEvent uie) {
-		Session session = null;
-		Transaction tx = null;
-		try {
-			session = HibernateUtil.getSessionFactory().openSession();
-			tx = session.beginTransaction();
-			session.persist(uie);
-			tx.commit();
 		} catch (Exception e) {
 			log.error("Exception while storing UserInteractionEvent", e);
 		} finally {
-			if (session != null) {
+			if (session[0] != null) {
 				try {
-					session.close();
+					session[0].close();
 				} catch(Exception e) {
 					// ignore
 				}
 			}
-		}
+		}		
 	}
+	
 }

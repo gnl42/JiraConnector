@@ -4,11 +4,16 @@
    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.eclipse.mylyn.monitor.core">
-	<class name="InteractionEvent"
-		table="interaction_events">
+	<typedef name="KindAsString" class="com.atlassian.connector.eclipse.monitor.server.hibernate.GenericEnumUserType">
+		<param name="enumClass">org.eclipse.mylyn.monitor.core.InteractionEvent$Kind</param>
+		<param name="identifierMethod">toString</param>
+		<param name="valueOfMethod">fromString</param>
+	</typedef>
+
+	<class name="InteractionEvent" table="interaction_events">
 
 		<composite-id>
-			<key-property name="kind" access="field">
+			<key-property name="kind" access="field" type="KindAsString">
 				<column name="kind" not-null="true" />
 			</key-property>
 			<key-property name="structureKind" access="field">
@@ -37,12 +42,11 @@
 			</key-property>
 		</composite-id>
 	</class>
-	
-	<class name="UserInteractionEvent"
-		table="user_interaction_events" >
+
+	<class name="UserInteractionEvent" table="user_interaction_events">
 
 		<composite-id>
-			<key-property name="kind" access="field">
+			<key-property name="kind" access="field" type="KindAsString">
 				<column name="kind" not-null="true" />
 			</key-property>
 			<key-property name="structureKind" access="field">
