@@ -5,9 +5,12 @@
 <hibernate-configuration>
     <session-factory>
     
-        <property name="connection.datasource">java:/comp/env/eclipseusageDS</property>
-        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-        
+        <!-- Settings for a local HSQL (testing) database. -->
+        <property name="dialect">org.hibernate.dialect.HSQLDialect</property>
+        <property name="connection.driver_class">org.hsqldb.jdbcDriver</property>
+        <property name="connection.url">jdbc:hsqldb:mem:usage</property>
+        <property name="connection.username">sa</property>
+        <property name="connection.password"></property>
 
         <!-- Use the C3P0 connection pool. -->
         <property name="c3p0.min_size">3</property>
