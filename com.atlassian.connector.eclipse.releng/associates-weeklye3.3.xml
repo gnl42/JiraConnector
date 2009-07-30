@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<associateSites>
+<!-- 
+<associateSite label="Mylyn for Eclipse 3.3" url="http://download.eclipse.org/tools/mylyn/update/weekly/e3.3"/>
+<associateSite label="Mylyn Extras" url="http://download.eclipse.org/tools/mylyn/update/weekly/extras"/>
+ -->
+<associateSite label="Mylyn for Eclipse 3.3" url="http://download.eclipse.org/tools/mylyn/update/e3.3"/>
+<associateSite label="Mylyn Extras" url="http://download.eclipse.org/tools/mylyn/update/extras"/>
+<associateSite label="Subclipse" url="http://subclipse.tigris.org/update_1.6.x"/>
+<associateSite label="Subversive" url="http://download.eclipse.org/technology/subversive/0.7/update-site/"/>
+</associateSites>
