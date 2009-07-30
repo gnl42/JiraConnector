@@ -324,16 +324,14 @@ public final class UsageDataUploadJob extends Job {
 		return false;
 	}
 
-	private static List<File> getBackupFiles() {
+	public static List<File> getBackupFiles() {
 		ArrayList<File> backupFiles = new ArrayList<File>();
 		try {
-			String destination = MonitorFileRolloverJob.getZippedMonitorFileDirPath();
-
-			File backupFolder = new File(destination);
+			final File backupFolder = MonitorFileRolloverJob.getZippedMonitorFileDirPath();
 
 			if (backupFolder.exists()) {
 				File[] files = backupFolder.listFiles();
-				File submissionLogFile = new File(destination, SUBMISSION_LOG_FILE_NAME);
+				File submissionLogFile = new File(backupFolder, SUBMISSION_LOG_FILE_NAME);
 
 				if (!submissionLogFile.exists()) {
 					submissionLogFile.createNewFile();

@@ -11,12 +11,17 @@
 
 package org.eclipse.mylyn.internal.monitor.usage.wizards;
 
+import java.io.File;
+import java.util.List;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.mylyn.internal.monitor.usage.Messages;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
 import org.eclipse.mylyn.internal.monitor.usage.UsageCollector;
+import org.eclipse.mylyn.internal.monitor.usage.operations.UsageDataUploadJob;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -50,16 +55,11 @@ public class UsageUploadWizardPage extends WizardPage {
 	 * Constructor
 	 */
 	public UsageUploadWizardPage(UsageSubmissionWizard wizard) {
-		super("Usage Data Submission Wizard");
+		super(Messages.UsageUploadWizardPage_page_title);
 
-		setTitle("Usage Data Submission");
-		setDescription("The usage file listed below will be uploaded along with the archived files you selected (there may not have been any to select from).\n"
-				+ "Information about program elements that you worked with is obfuscated to ensure privacy.");
+		setTitle(Messages.UsageUploadWizardPage_title);
+		setDescription(Messages.UsageUploadWizardPage_description);
 
-		// setDescription(
-		// "The files listed below will be uploaded. Information about program
-		// elements that you "
-		// + "worked with is obfuscated to ensure privacy.");
 		this.wizard = wizard;
 	}
 
@@ -81,16 +81,16 @@ public class UsageUploadWizardPage extends WizardPage {
 
 		Label label = new Label(topContainer, SWT.NULL);
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
-		label.setText("Usage Data will be send to following recipients:");
+		label.setText(Messages.UsageUploadWizardPage_recipients);
 
 		Link details;
 		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
 			final String detailsUrl = collector.getDetailsUrl();
 
 			details = new Link(topContainer, SWT.NULL);
-			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle())
+			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
 					.getHeaders()
-					.get("Bundle-Name")));
+					.get("Bundle-Name"))); //$NON-NLS-1$
 			details.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -101,13 +101,27 @@ public class UsageUploadWizardPage extends WizardPage {
 		}
 
 		label = new Label(topContainer, SWT.NULL);
-		label.setText("Usage file location:");
+		label.setText(Messages.UsageUploadWizardPage_usage_file_location);
 
 		usageFileText = new Text(topContainer, SWT.BORDER | SWT.SINGLE);
 		usageFileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		usageFileText.setEditable(false);
 
 		usageFileText.setText(wizard.getMonitorFileName());
+
+		final List<File> backupFiles = UsageDataUploadJob.getBackupFiles();
+		if (backupFiles != null && backupFiles.size() > 0) {
+			for (File backupFile : backupFiles) {
+				label = new Label(topContainer, SWT.NULL);
+				label.setText(Messages.UsageUploadWizardPage_archive_file);
+
+				Text backupFileText = new Text(topContainer, SWT.BORDER | SWT.SINGLE);
+				backupFileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				backupFileText.setEditable(false);
+
+				backupFileText.setText(backupFile.toString());
+			}
+		}
 
 		Composite bottomContainer = new Composite(container, SWT.NULL);
 		GridLayout bottomContainerLayout = new GridLayout();

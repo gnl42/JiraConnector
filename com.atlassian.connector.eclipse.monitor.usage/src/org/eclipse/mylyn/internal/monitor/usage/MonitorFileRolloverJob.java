@@ -42,18 +42,17 @@ import org.eclipse.ui.PlatformUI;
  * org.eclipse.mylyn.internal.tasks.ui.util.TaskDataExportJob). Overwrites destination if exists!
  * 
  * @author Meghan Allen
- * 
  */
 public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 
-	private static final String JOB_LABEL = "Mylyn Monitor Log Rollover";
+	private static final String JOB_LABEL = Messages.MonitorFileRolloverJob_title;
 
 	// XXX: needs to be the same as NAME_DATA_DIR in org.eclipse.mylyn.tasks.ui.TasksUIPlugin
-	private static final String NAME_DATA_DIR = ".mylyn";
+	private static final String NAME_DATA_DIR = ".mylyn"; //$NON-NLS-1$
 
-	private static final String DIRECTORY_MONITOR_BACKUP = "monitor";
+	private static final String DIRECTORY_MONITOR_BACKUP = "monitor"; //$NON-NLS-1$
 
-	private static final String ZIP_EXTENSION = ".zip";
+	private static final String ZIP_EXTENSION = ".zip"; //$NON-NLS-1$
 
 	private List<IUsageCollector> collectors = null;
 
@@ -63,7 +62,7 @@ public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 
 	private boolean forceSyncForTesting = false;
 
-	public static final String BACKUP_FILE_SUFFIX = "monitor-log";
+	public static final String BACKUP_FILE_SUFFIX = "monitor-log"; //$NON-NLS-1$
 
 	public MonitorFileRolloverJob(List<IUsageCollector> collectors) {
 		super(JOB_LABEL);
@@ -72,7 +71,7 @@ public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 
 	@SuppressWarnings("deprecation")
 	private String getYear(InteractionEvent event) {
-		return "" + (event.getDate().getYear() + 1900);
+		return "" + (event.getDate().getYear() + 1900); //$NON-NLS-1$
 	}
 
 	public void forceSyncForTesting(boolean forceSync) {
@@ -82,38 +81,38 @@ public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 	private String getMonth(int month) {
 		switch (month) {
 		case 0:
-			return "01";
+			return "01"; //$NON-NLS-1$
 		case 1:
-			return "02";
+			return "02"; //$NON-NLS-1$
 		case 2:
-			return "03";
+			return "03"; //$NON-NLS-1$
 		case 3:
-			return "04";
+			return "04"; //$NON-NLS-1$
 		case 4:
-			return "05";
+			return "05"; //$NON-NLS-1$
 		case 5:
-			return "06";
+			return "06"; //$NON-NLS-1$
 		case 6:
-			return "07";
+			return "07"; //$NON-NLS-1$
 		case 7:
-			return "08";
+			return "08"; //$NON-NLS-1$
 		case 8:
-			return "09";
+			return "09"; //$NON-NLS-1$
 		case 9:
-			return "10";
+			return "10"; //$NON-NLS-1$
 		case 10:
-			return "11";
+			return "11"; //$NON-NLS-1$
 		case 11:
-			return "12";
+			return "12"; //$NON-NLS-1$
 		default:
-			return "";
+			return ""; //$NON-NLS-1$
 
 		}
 	}
 
-	public static String getZippedMonitorFileDirPath() {
-		return ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + File.separatorChar + NAME_DATA_DIR
-				+ File.separatorChar + DIRECTORY_MONITOR_BACKUP;
+	public static File getZippedMonitorFileDirPath() {
+		return new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + File.separatorChar
+				+ NAME_DATA_DIR + File.separatorChar + DIRECTORY_MONITOR_BACKUP);
 	}
 
 	@Override
@@ -126,79 +125,18 @@ public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 		InteractionEventLogger logger = UiUsageMonitorPlugin.getDefault().getInteractionLogger();
 
 		logger.stopMonitoring();
+		try {
+			List<InteractionEvent> events = logger.getHistoryFromFile(monitorFile);
+			progressMonitor.worked(1);
 
-		List<InteractionEvent> events = logger.getHistoryFromFile(monitorFile);
-		progressMonitor.worked(1);
-
-		int nowMonth = Calendar.getInstance().get(Calendar.MONTH);
-		if (events.size() > 0 && events.get(0).getDate().getMonth() != nowMonth) {
-			int currMonth = events.get(0).getDate().getMonth();
-
-			String fileName = getYear(events.get(0)) + "-" + getMonth(currMonth) + "-" + BACKUP_FILE_SUFFIX;
-
-			File dir = new File(getZippedMonitorFileDirPath());
-
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-			try {
-				File currBackupZipFile = new File(dir, fileName + ZIP_EXTENSION);
-				if (!currBackupZipFile.exists()) {
-					currBackupZipFile.createNewFile();
-				}
-				ZipOutputStream zipFileStream;
-
-				zipFileStream = new ZipOutputStream(new FileOutputStream(currBackupZipFile));
-				zipFileStream.putNextEntry(new ZipEntry(UiUsageMonitorPlugin.getDefault().getMonitorLogFile().getName()));
-
-				for (InteractionEvent event : events) {
-					int monthOfCurrEvent = event.getDate().getMonth();
-					if (monthOfCurrEvent == currMonth) {
-						// put in curr zip
-						String xml = logger.writeLegacyEvent(event);
-
-						zipFileStream.write(xml.getBytes());
-
-					} else if (monthOfCurrEvent != nowMonth) {
-						// we are finished backing up currMonth, but now need to
-						// start backing up monthOfCurrEvent
-						progressMonitor.worked(1);
-						zipFileStream.closeEntry();
-						zipFileStream.close();
-
-						fileName = getYear(event) + "-" + getMonth(monthOfCurrEvent) + "-" + BACKUP_FILE_SUFFIX;
-						currBackupZipFile = new File(dir, fileName + ZIP_EXTENSION);
-						if (!currBackupZipFile.exists()) {
-
-							currBackupZipFile.createNewFile();
-
-						}
-						zipFileStream = new ZipOutputStream(new FileOutputStream(currBackupZipFile));
-						zipFileStream.putNextEntry(new ZipEntry(UiUsageMonitorPlugin.getDefault()
-								.getMonitorLogFile()
-								.getName()));
-						currMonth = monthOfCurrEvent;
-						String xml = logger.writeLegacyEvent(event);
-						zipFileStream.write(xml.getBytes());
-					} else if (monthOfCurrEvent == nowMonth) {
-						// if these events are from the current event, just put
-						// them back in the current log (first clear the log,
-						// since we are putting them all back)
-
-						logger.clearInteractionHistory(false);
-						logger.interactionObserved(event);
-					}
-				}
-				zipFileStream.closeEntry();
-				zipFileStream.close();
-			} catch (IOException e) {
-				StatusHandler.fail(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						"Mylyn monitor log rollover failed", e));
+			if (events.size() > 0 && events.get(0).getDate().getMonth() != Calendar.getInstance().get(Calendar.MONTH)) {
+				processEvents(events, logger, progressMonitor);
 			}
 
+			progressMonitor.worked(1);
+		} finally {
+			logger.startMonitoring();
 		}
-		progressMonitor.worked(1);
-		logger.startMonitoring();
 
 		generator = new ReportGenerator(UiUsageMonitorPlugin.getDefault().getInteractionLogger(), collectors, this,
 				forceSyncForTesting);
@@ -220,8 +158,8 @@ public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 						.getActiveWorkbenchWindow()
 						.getActivePage();
 				if (page == null) {
-					return new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, IStatus.OK, "Mylyn Usage Summary",
-							null);
+					return new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, IStatus.OK,
+							Messages.MonitorFileRolloverJob_usage_summary, null);
 				}
 				if (input != null) {
 					page.openEditor(input, UsageSummaryReportEditorPart.ID);
@@ -229,12 +167,82 @@ public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 
 			} catch (PartInitException e) {
 				StatusHandler.fail(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						"Could not show usage summary", e));
+						Messages.MonitorFileRolloverJob_cant_show_summary, e));
 			}
 
 		}
 
 		return Status.OK_STATUS;
+	}
+
+	@SuppressWarnings("deprecation")
+	private void processEvents(List<InteractionEvent> events, InteractionEventLogger logger,
+			IProgressMonitor progressMonitor) {
+
+		int nowMonth = Calendar.getInstance().get(Calendar.MONTH);
+		int currMonth = events.get(0).getDate().getMonth();
+
+		String fileName = getYear(events.get(0)) + "-" + getMonth(currMonth) + "-" + BACKUP_FILE_SUFFIX; //$NON-NLS-1$ //$NON-NLS-2$
+
+		File dir = getZippedMonitorFileDirPath();
+
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		try {
+			File currBackupZipFile = new File(dir, fileName + ZIP_EXTENSION);
+			if (!currBackupZipFile.exists()) {
+				currBackupZipFile.createNewFile();
+			}
+			ZipOutputStream zipFileStream;
+
+			zipFileStream = new ZipOutputStream(new FileOutputStream(currBackupZipFile));
+			zipFileStream.putNextEntry(new ZipEntry(UiUsageMonitorPlugin.getDefault().getMonitorLogFile().getName()));
+
+			for (InteractionEvent event : events) {
+				int monthOfCurrEvent = event.getDate().getMonth();
+				if (monthOfCurrEvent == currMonth) {
+					// put in curr zip
+					String xml = logger.writeLegacyEvent(event);
+
+					zipFileStream.write(xml.getBytes());
+
+				} else if (monthOfCurrEvent != nowMonth) {
+					// we are finished backing up currMonth, but now need to
+					// start backing up monthOfCurrEvent
+					progressMonitor.worked(1);
+					zipFileStream.closeEntry();
+					zipFileStream.close();
+
+					fileName = getYear(event) + "-" + getMonth(monthOfCurrEvent) + "-" + BACKUP_FILE_SUFFIX; //$NON-NLS-1$ //$NON-NLS-2$
+					currBackupZipFile = new File(dir, fileName + ZIP_EXTENSION);
+					if (!currBackupZipFile.exists()) {
+
+						currBackupZipFile.createNewFile();
+
+					}
+					zipFileStream = new ZipOutputStream(new FileOutputStream(currBackupZipFile));
+					zipFileStream.putNextEntry(new ZipEntry(UiUsageMonitorPlugin.getDefault()
+							.getMonitorLogFile()
+							.getName()));
+					currMonth = monthOfCurrEvent;
+					String xml = logger.writeLegacyEvent(event);
+					zipFileStream.write(xml.getBytes());
+				} else if (monthOfCurrEvent == nowMonth) {
+					// if these events are from the current event, just put
+					// them back in the current log (first clear the log,
+					// since we are putting them all back)
+
+					logger.clearInteractionHistory(false);
+					logger.interactionObserved(event);
+				}
+			}
+			zipFileStream.closeEntry();
+			zipFileStream.close();
+		} catch (IOException e) {
+			StatusHandler.fail(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+					Messages.MonitorFileRolloverJob_rollover_failed, e));
+		}
 	}
 
 	public void aboutToRun(IJobChangeEvent event) {
@@ -265,7 +273,7 @@ public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 
 				} catch (PartInitException e) {
 					StatusHandler.fail(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-							"Could not show usage summary", e));
+							Messages.MonitorFileRolloverJob_cant_show_summary, e));
 				}
 			}
 		});

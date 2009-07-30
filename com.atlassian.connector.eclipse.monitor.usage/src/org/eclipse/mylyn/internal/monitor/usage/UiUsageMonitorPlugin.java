@@ -96,7 +96,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public static final String ID_UI_PLUGIN = "org.eclipse.mylyn.ui"; //$NON-NLS-1$
 
-	public static final String MONITOR_LOG_NAME = Messages.UiUsageMonitorPlugin_13;
+	public static final String MONITOR_LOG_NAME = Messages.UiUsageMonitorPlugin_log_filename;
 
 	public static final String ID_PLUGIN = "org.eclipse.mylyn.monitor.usage"; //$NON-NLS-1$
 
@@ -322,6 +322,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			return;
 		}
 
+		// stop statistics upload
+		stopUploadStatisticsJob();
+
 		for (Object listener : lifecycleListeners.getListeners()) {
 			((IMonitorLifecycleListener) listener).stopMonitoring();
 		}
@@ -347,14 +350,15 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 		MonitorUiPlugin.getDefault().removeWindowPerspectiveListener(perspectiveMonitor);
 		workbench.getActivitySupport().getActivityManager().removeActivityManagerListener(activityMonitor);
-		workbench.getDisplay().removeFilter(SWT.Selection, menuMonitor);
+
+		if (!workbench.getDisplay().isDisposed()) {
+			workbench.getDisplay().removeFilter(SWT.Selection, menuMonitor);
+		}
+
 		workbench.removeWindowListener(windowMonitor);
 
 		// uninstallBrowserMonitor(workbench);
 		interactionLogger.stopMonitoring();
-
-		// stop statistics upload
-		stopUploadStatisticsJob();
 
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_STARTED, false);
 	}
@@ -372,6 +376,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
+			stopMonitoring();
+		}
+
 		super.stop(context);
 		plugin = null;
 		resourceBundle = null;
@@ -391,18 +399,22 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		return commandMonitors;
 	}
 
+	public File getLogFilesRootDir() {
+		return new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + "/.metadata/.mylyn"); //$NON-NLS-1$
+	}
+
 	/**
 	 * Parallels TasksUiPlugin.getDefaultDataDirectory()
 	 */
 	public File getMonitorLogFile() {
-		File rootDir = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + "/.metadata/.mylyn"); //$NON-NLS-1$
+		File rootDir = getLogFilesRootDir();
 		File file = new File(rootDir, MONITOR_LOG_NAME + InteractionContextManager.CONTEXT_FILE_EXTENSION_OLD);
 		if (!file.exists() || !file.canWrite()) {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						Messages.UiUsageMonitorPlugin_18, e));
+						Messages.UiUsageMonitorPlugin_cant_create_log_file, e));
 			}
 		}
 		return file;

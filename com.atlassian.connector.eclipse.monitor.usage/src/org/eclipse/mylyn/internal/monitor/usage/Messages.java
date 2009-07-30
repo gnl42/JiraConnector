@@ -16,17 +16,25 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.mylyn.internal.monitor.usage.messages"; //$NON-NLS-1$
 
+	public static String MonitorFileRolloverJob_title;
+
+	public static String MonitorFileRolloverJob_usage_summary;
+
+	public static String MonitorFileRolloverJob_rollover_failed;
+
+	public static String MonitorFileRolloverJob_cant_show_summary;
+
 	public static String UsageSubmissionWizard_error_unzipping;
 
 	public static String UsageSubmissionWizard_some_uploads_failed;
 
-	public static String UiUsageMonitorPlugin_13;
+	public static String UiUsageMonitorPlugin_log_filename;
 
 	public static String UiUsageMonitorPlugin_15;
 
 	public static String UiUsageMonitorPlugin_16;
 
-	public static String UiUsageMonitorPlugin_18;
+	public static String UiUsageMonitorPlugin_cant_create_log_file;
 
 	public static String UiUsageMonitorPlugin_send_usage_feedback;
 
@@ -157,6 +165,30 @@ public class Messages extends NLS {
 	public static String UsageSubmissionWizard_uploading_usage_stats;
 
 	public static String UsageSubmissionWizard_90;
+
+	public static String UsageSummaryEditorWizardPage_title;
+
+	public static String UsageSummaryEditorWizardPage_description;
+
+	public static String UsageSummaryEditorWizardPage_this_will_run_in_background;
+
+	public static String UsageSummaryEditorWizardPage_show_usage_for;
+
+	public static String UsageSummaryEditorWizardPage_use_of_perspectives;
+
+	public static String UsageSummaryEditorWizardPage_use_of_views;
+
+	public static String UsageUploadWizardPage_page_title;
+
+	public static String UsageUploadWizardPage_title;
+
+	public static String UsageUploadWizardPage_description;
+
+	public static String UsageUploadWizardPage_recipients;
+
+	public static String UsageUploadWizardPage_usage_file_location;
+
+	public static String UsageUploadWizardPage_archive_file;
 
 	static {
 		// initialize resource bundle
