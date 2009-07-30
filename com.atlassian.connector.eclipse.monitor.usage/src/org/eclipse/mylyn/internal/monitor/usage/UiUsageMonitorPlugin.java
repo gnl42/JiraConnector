@@ -100,7 +100,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public static final String ID_PLUGIN = "org.eclipse.mylyn.monitor.usage"; //$NON-NLS-1$
 
-	protected static final long ONE_HOUR_IN_MS = 1 * 60 * 60 * 1000;
+	private static final long SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
+
+	private static final long TEN_MINUTES_IN_MS = 10 * 60 * 1000;
 
 	private InteractionEventLogger interactionLogger;
 
@@ -495,10 +497,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		scheduledStatisticsUploadJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
-				scheduledStatisticsUploadJob.schedule(ONE_HOUR_IN_MS);
+				scheduledStatisticsUploadJob.schedule(SIX_HOURS_IN_MS);
 			}
 		});
-		scheduledStatisticsUploadJob.schedule(); // schedule it now
+		scheduledStatisticsUploadJob.schedule(TEN_MINUTES_IN_MS); // schedule it in 10 minutes (all startup jobs were executed)
 		return scheduledStatisticsUploadJob;
 	}
 
