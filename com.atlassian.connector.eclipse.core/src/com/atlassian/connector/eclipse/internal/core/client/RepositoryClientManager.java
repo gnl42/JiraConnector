@@ -21,10 +21,14 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,11 +93,44 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
 		removeClient(repository, clientByUrl, getClientDataByUrl());
 	}
 
-	protected abstract void readCache();
+	protected ObjectInput createObjectInput(File cacheFile) throws FileNotFoundException, IOException {
+		return new ObjectInputStream(new FileInputStream(cacheFile));
+	}
 
-	protected abstract ObjectInput createObjectInput(File cacheFile) throws FileNotFoundException, IOException;
+	protected ObjectOutput createObjectOutput(File cacheFile) throws IOException {
+		return new ObjectOutputStream(new FileOutputStream(cacheFile));
+	}
 
-	protected abstract ObjectOutput createObjectOutput(File cacheFile) throws IOException;
+	@SuppressWarnings("unchecked")
+	protected void readCache() {
+		if (getCacheFile() == null || !getCacheFile().exists()) {
+			return;
+		}
+
+		ObjectInput in = null;
+		try {
+			in = createObjectInput(getCacheFile());
+			int size = in.readInt();
+			for (int i = 0; i < size; i++) {
+				String url = (String) in.readObject();
+				C data = (C) in.readObject();
+				if (url != null && data != null) {
+					getClientDataByUrl().put(url, data);
+				}
+			}
+		} catch (Throwable e) {
+			StatusHandler.log(new Status(IStatus.WARNING, AtlassianCorePlugin.PLUGIN_ID,
+					"The repository configuration cache could not be read", e));
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+		}
+	}
 
 	public void writeCache() {
 		updateClientDataMap(clientByUrl, getClientDataByUrl());

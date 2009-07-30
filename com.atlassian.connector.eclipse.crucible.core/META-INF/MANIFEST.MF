@@ -18,4 +18,4 @@ Export-Package: com.atlassian.connector.eclipse.internal.crucible.core;x-friends
  com.atlassian.connector.eclipse.internal.crucible.core.client.model;x-friends:="com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.ui",
  com.atlassian.connector.eclipse.internal.crucible.core.configuration;x-friends:="com.atlassian.connector.eclipse.crucible.tests,com.atlassian.connector.eclipse.crucible.ui"
 Bundle-Vendor: Atlassian
-
+Eclipse-RegisterBuddy: com.atlassian.connector.eclipse.core
