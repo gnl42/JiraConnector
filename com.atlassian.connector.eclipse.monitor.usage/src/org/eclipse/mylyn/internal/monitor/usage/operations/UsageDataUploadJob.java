@@ -56,6 +56,8 @@ public final class UsageDataUploadJob extends Job {
 
 	private final boolean ifTimeElapsed;
 
+	private boolean failedAgain;
+
 	private static int processedFileCount = 1;
 
 	public UsageDataUploadJob(boolean ignoreLastTransmit) {
@@ -155,14 +157,24 @@ public final class UsageDataUploadJob extends Job {
 		}
 
 		if (failed) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					// popup a dialog telling the user that the upload failed
-					MessageDialog.openError(Display.getCurrent().getActiveShell(),
-							Messages.UsageSubmissionWizard_error_uploading,
-							Messages.UsageSubmissionWizard_some_uploads_failed);
-				}
-			});
+			/*
+			 * If this job was re-scheduled (check UiUsageMonitorPlugin#scheduledStatisticsUploadJob)
+			 * we use the same instance again and again. We don't want to annoy people every time upload
+			 * fails so let's show an error dialog box for the first time and then just shut up. 
+			 */
+			if (!failedAgain) {
+				failedAgain = true;
+				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						// popup a dialog telling the user that the upload failed
+						MessageDialog.openError(Display.getCurrent().getActiveShell(),
+								Messages.UsageSubmissionWizard_error_uploading,
+								Messages.UsageSubmissionWizard_some_uploads_failed);
+					}
+				});
+			}
+		} else {
+			failedAgain = false;
 		}
 
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
