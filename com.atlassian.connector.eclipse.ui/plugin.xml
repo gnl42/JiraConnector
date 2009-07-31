@@ -106,4 +106,10 @@
             name="Usage Data Report for Atlassian Connector for Eclipse">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="com.atlassian.connector.eclipse.ui.AtlassianUiPlugin$AtlassianUiPluginEarlyStartup">
+      </startup>
+   </extension>
 </plugin>

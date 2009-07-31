@@ -19,6 +19,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.compare,
  org.eclipse.mylyn.commons.net,
+ org.eclipse.mylyn.monitor.ui,
+ org.eclipse.mylyn.monitor.core,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.tasks.ui,
  org.jetbrains.annotations;resolution:=optional,
  com.atlassian.connector.eclipse.monitor.usage
 Bundle-ActivationPolicy: lazy
