@@ -493,6 +493,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 		plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, agreement);
 		plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, agreement);
+
+		if (agreement) {
+			startMonitoring();
+		}
 	}
 
 	private String getUsageCollectorFeatures() {
