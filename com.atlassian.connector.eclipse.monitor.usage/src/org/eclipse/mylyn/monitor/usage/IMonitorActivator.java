@@ -9,18 +9,12 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.mylyn.internal.monitor.usage;
+package org.eclipse.mylyn.monitor.usage;
 
-import java.util.ArrayList;
-import java.util.Collection;
+public interface IMonitorActivator {
 
-public class MonitorParameters {
+	void start();
 
-	private final Collection<String> urls = new ArrayList<String>();
-
-	public void setAcceptedUrlList(Collection<String> urls) {
-		this.urls.clear();
-		this.urls.addAll(urls);
-	}
+	void stop();
 
 }

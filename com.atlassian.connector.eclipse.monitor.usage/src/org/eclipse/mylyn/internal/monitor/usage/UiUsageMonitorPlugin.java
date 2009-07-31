@@ -14,6 +14,7 @@ package org.eclipse.mylyn.internal.monitor.usage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -49,6 +50,7 @@ import org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor;
 import org.eclipse.mylyn.monitor.ui.IActionExecutionListener;
 import org.eclipse.mylyn.monitor.ui.IMonitorLifecycleListener;
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
+import org.eclipse.mylyn.monitor.usage.IMonitorActivator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
@@ -198,6 +200,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	private UsageDataUploadJob scheduledStatisticsUploadJob;
 
+	private final List<IMonitorActivator> monitorActivators = new ArrayList<IMonitorActivator>();
+
 	/**
 	 * NOTE: this needs to be a separate class in order to avoid loading ..mylyn.context.core on eager startup
 	 */
@@ -253,16 +257,20 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 					MonitorUsageExtensionPointReader extensionReader = new MonitorUsageExtensionPointReader();
 
 					studyParameters.setUsageCollectors(extensionReader.getUsageCollectors());
-					studyParameters.setMonitors(extensionReader.getMonitors());
 					studyParameters.setForms(extensionReader.getForms());
 					// ------- moved from synch start
+
+					Collection<IMonitorActivator> monitors = extensionReader.getMonitors();
+					if (monitors != null) {
+						monitorActivators.addAll(monitors);
+					}
 
 					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
 						startMonitoring();
 					}
 				} catch (Throwable t) {
 					StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-							Messages.UiUsageMonitorPlugin_15, t));
+							Messages.UiUsageMonitorPlugin_failed_to_start, t));
 				}
 			}
 		});
@@ -305,6 +313,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			((IMonitorLifecycleListener) listener).startMonitoring();
 		}
 
+		for (IMonitorActivator activator : monitorActivators) {
+			activator.start();
+		}
+
 		if (!MonitorUiPlugin.getDefault().suppressConfigurationWizards()) {
 			askUserForPermissionToMonitor();
 		}
@@ -326,6 +338,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 		// stop statistics upload
 		stopUploadStatisticsJob();
+
+		for (IMonitorActivator activator : monitorActivators) {
+			activator.stop();
+		}
 
 		for (Object listener : lifecycleListeners.getListeners()) {
 			((IMonitorLifecycleListener) listener).stopMonitoring();
@@ -585,4 +601,5 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	public boolean isSubmissionEnabled() {
 		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION);
 	}
+
 }

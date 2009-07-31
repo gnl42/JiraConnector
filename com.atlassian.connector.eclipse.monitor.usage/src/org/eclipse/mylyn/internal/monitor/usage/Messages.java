@@ -30,7 +30,7 @@ public class Messages extends NLS {
 
 	public static String UiUsageMonitorPlugin_log_filename;
 
-	public static String UiUsageMonitorPlugin_15;
+	public static String UiUsageMonitorPlugin_failed_to_start;
 
 	public static String UiUsageMonitorPlugin_16;
 

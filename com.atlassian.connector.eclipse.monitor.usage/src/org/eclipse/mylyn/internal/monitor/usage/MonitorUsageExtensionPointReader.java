@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.monitor.usage.AbstractStudyBackgroundPage;
 import org.eclipse.mylyn.monitor.usage.AbstractStudyQuestionnairePage;
+import org.eclipse.mylyn.monitor.usage.IMonitorActivator;
 
 class MonitorUsageExtensionPointReader {
 
@@ -57,11 +58,11 @@ class MonitorUsageExtensionPointReader {
 
 	public static final String ELEMENT_UI_CONTACT_CONSENT_FIELD = "useContactField"; //$NON-NLS-1$
 
-	public static final String ELEMENT_MONITORS = "monitors"; //$NON-NLS-1$
+	public static final String ELEMENT_MONITOR = "monitor"; //$NON-NLS-1$
 
-	public static final String ELEMENT_MONITORS_BROWSER_URL = "browserUrlFilter"; //$NON-NLS-1$
+	private static final String ELEMENT_COLLECTOR_EVENT_FILTERS = "eventFilters"; //$NON-NLS-1$
 
-	private static final String ELEMENT_COLLECTOR_EVENT_FILTERS = "eventFilters";
+	private static final String ELEMENT_MONITOR_ACTIVATOR = "activator"; //$NON-NLS-1$
 
 	private boolean extensionsRead = false;
 
@@ -69,7 +70,7 @@ class MonitorUsageExtensionPointReader {
 
 	private final Collection<FormParameters> forms = new ArrayList<FormParameters>();
 
-	private Collection<MonitorParameters> monitors;
+	private Collection<IMonitorActivator> monitors;
 
 	public Collection<UsageCollector> getUsageCollectors() {
 		if (!extensionsRead) {
@@ -92,8 +93,8 @@ class MonitorUsageExtensionPointReader {
 								readUsageCollector(element);
 							} else if (element.getName().compareTo(ELEMENT_UI) == 0) {
 								readForms(element);
-							} else if (element.getName().compareTo(ELEMENT_MONITORS) == 0) {
-								readMonitors(element);
+							} else if (element.getName().compareTo(ELEMENT_MONITOR) == 0) {
+								readMonitor(element);
 							}
 						}
 					}
@@ -171,20 +172,16 @@ class MonitorUsageExtensionPointReader {
 		forms.add(form);
 	}
 
-	private void readMonitors(IConfigurationElement element) throws CoreException {
-		MonitorParameters monitor = new MonitorParameters();
-		// TODO: This should parse a list of filters but right now it takes
-		// the
-		// entire string as a single filter.
-		// ArrayList<String> urlList = new ArrayList<String>();
-		Collection<String> urls = new ArrayList<String>();
-		urls.add(element.getAttribute(ELEMENT_MONITORS_BROWSER_URL));
-		monitor.setAcceptedUrlList(urls);
-
-		monitors.add(monitor);
+	private void readMonitor(IConfigurationElement element) throws CoreException {
+		if (element.getAttribute(ELEMENT_MONITOR_ACTIVATOR) != null) {
+			Object activator = element.createExecutableExtension(ELEMENT_MONITOR_ACTIVATOR);
+			if (activator instanceof IMonitorActivator) {
+				monitors.add((IMonitorActivator) activator);
+			}
+		}
 	}
 
-	public Collection<MonitorParameters> getMonitors() {
+	public Collection<IMonitorActivator> getMonitors() {
 		return monitors;
 	}
 

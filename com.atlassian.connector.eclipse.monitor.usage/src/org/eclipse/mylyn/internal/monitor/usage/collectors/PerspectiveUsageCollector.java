@@ -32,9 +32,7 @@ import org.eclipse.mylyn.monitor.core.InteractionEvent;
 
 /**
  * @author Mik Kersten
- * @author Leah Findlater
- * 
- *         TODO: put unclassified events in dummy perspective
+ * @author Leah Findlater TODO: put unclassified events in dummy perspective
  */
 public class PerspectiveUsageCollector implements IUsageCollector {
 

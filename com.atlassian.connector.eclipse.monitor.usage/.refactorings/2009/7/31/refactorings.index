@@ -20,3 +20,11 @@
 1248951027588	Rename field 'UsageUploadWizardPage_6'
 1248951358673	Rename field 'UsageUploadWizardPage_3'
 1248952136467	Rename field 'ONE_HOUR_IN_MS'
+1249040381515	Rename field 'UiUsageMonitorPlugin_15'
+1249041564313	Move compilation unit
+1249043565521	Rename method 'readMonitors'
+1249043861270	Delete element
+1249043955684	Rename type 'IMonitor'
+1249044030809	Rename field 'ELEMENT_MONITORS'
+1249045141413	Rename field 'additionalMonitors'
+1249045279589	Delete element

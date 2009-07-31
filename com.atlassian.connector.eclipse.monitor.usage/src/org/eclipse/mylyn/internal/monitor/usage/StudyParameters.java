@@ -41,8 +41,6 @@ public class StudyParameters {
 
 	private Collection<UsageCollector> usageCollectors;
 
-	private Collection<MonitorParameters> monitors;
-
 	private Collection<FormParameters> forms;
 
 	public String getFormsConsent() {
@@ -127,10 +125,6 @@ public class StudyParameters {
 
 	public void setUsageCollectors(Collection<UsageCollector> usageCollectors) {
 		this.usageCollectors = usageCollectors;
-	}
-
-	public void setMonitors(Collection<MonitorParameters> monitors) {
-		this.monitors = monitors;
 	}
 
 	public void setForms(Collection<FormParameters> forms) {
