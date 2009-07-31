@@ -34,8 +34,5 @@ public class MonitorPreferenceConstants {
 
 	public static final String PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED = "org.eclipse.mylyn.monitor.submission.initially.enabled";
 
-	public static final String PREF_MONITORING_FIRST_TIME = "org.eclipse.mylyn.monitor.ui.first.time";
-
 	public static final String PREF_MONITORING_USER_ID = "org.eclipse.mylyn.monitor.ui.user_id";
-
 }

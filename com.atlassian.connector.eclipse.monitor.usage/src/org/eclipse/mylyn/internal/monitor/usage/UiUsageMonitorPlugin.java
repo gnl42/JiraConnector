@@ -480,20 +480,19 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			return;
 		}
 
-		if (!plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)
-				|| plugin.getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)) {
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, false);
-
-			boolean agreement = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
-					Messages.UiUsageMonitorPlugin_send_usage_feedback, NLS.bind(
-							Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeatures()));
-
-			if (agreement) {
-				plugin.getPreferenceStore()
-						.setValue(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED, true);
-				plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, true);
-			}
+		// already configured so don't bother asking
+		if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE)
+				|| plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
+				|| plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
+			return;
 		}
+
+		boolean agreement = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
+				Messages.UiUsageMonitorPlugin_send_usage_feedback, NLS.bind(
+						Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeatures()));
+
+		plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, agreement);
+		plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, agreement);
 	}
 
 	private String getUsageCollectorFeatures() {
@@ -595,7 +594,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	public boolean isFirstTime() {
-		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME);
+		return !(getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLED) || getPreferenceStore().contains(
+				MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE));
 	}
 
 	public boolean isSubmissionEnabled() {
