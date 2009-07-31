@@ -267,6 +267,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
 						startMonitoring();
+					} else {
+						if (!MonitorUiPlugin.getDefault().suppressConfigurationWizards()) {
+							askUserForPermissionToMonitor();
+						}
 					}
 				} catch (Throwable t) {
 					StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
@@ -315,10 +319,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 		for (IMonitorActivator activator : monitorActivators) {
 			activator.start();
-		}
-
-		if (!MonitorUiPlugin.getDefault().suppressConfigurationWizards()) {
-			askUserForPermissionToMonitor();
 		}
 
 		// schedule statistics upload
