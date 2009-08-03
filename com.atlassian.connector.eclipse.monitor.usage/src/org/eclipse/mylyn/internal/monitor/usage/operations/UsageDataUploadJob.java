@@ -99,7 +99,6 @@ public final class UsageDataUploadJob extends Job {
 
 			// time must be stored right away into preferences, to prevent
 			// other threads
-			lastTransmit.setTime(new Date().getTime());
 			plugin.setPreviousTransmitDate(currentTime);
 
 			performUpload(monitor);
