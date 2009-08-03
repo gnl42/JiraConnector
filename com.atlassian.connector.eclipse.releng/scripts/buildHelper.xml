@@ -638,7 +638,6 @@
     		<arg value="-Darch=${build.arch}"/>
     		<arg value="-Declipse-home=${eclipse.home}"/>    		
     		<arg value="-Dlibrary-file=${library}"/>
-    		<arg value="-pdelaunch"/>
     		<arg value="-DextraVMargs= 
     	    -ea
     		-Xmx384m
