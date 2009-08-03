@@ -39,7 +39,6 @@ import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 import org.eclipse.mylyn.internal.monitor.usage.InteractionEventLogger;
 import org.eclipse.mylyn.internal.monitor.usage.Messages;
 import org.eclipse.mylyn.internal.monitor.usage.MonitorFileRolloverJob;
-import org.eclipse.mylyn.internal.monitor.usage.MonitorPreferenceConstants;
 import org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin;
 import org.eclipse.mylyn.internal.monitor.usage.UsageCollector;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
@@ -87,14 +86,10 @@ public final class UsageDataUploadJob extends Job {
 	private void checkLastTransmitTimeAndRun(IProgressMonitor monitor) {
 		final UiUsageMonitorPlugin plugin = UiUsageMonitorPlugin.getDefault();
 
-		Date lastTransmit;
-		if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE)) {
-			lastTransmit = new Date(plugin.getPreferenceStore().getLong(
-					MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE));
-		} else {
+		Date lastTransmit = plugin.getPreviousTransmitDate();
+		if (lastTransmit == null) {
 			lastTransmit = new Date();
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-					lastTransmit.getTime());
+			plugin.setPreviousTransmitDate(lastTransmit);
 		}
 
 		final Date currentTime = new Date();
@@ -105,8 +100,7 @@ public final class UsageDataUploadJob extends Job {
 			// time must be stored right away into preferences, to prevent
 			// other threads
 			lastTransmit.setTime(new Date().getTime());
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE,
-					currentTime.getTime());
+			plugin.setPreviousTransmitDate(currentTime);
 
 			performUpload(monitor);
 		}
@@ -198,7 +192,7 @@ public final class UsageDataUploadJob extends Job {
 					if (backupFile.exists()) {
 						List<File> unzippedFiles;
 						try {
-							unzippedFiles = ZipFileUtil.unzipFiles(backupFile, System.getProperty("java.io.tmpdir"), //$NON-NLS-1$
+							unzippedFiles = ZipFileUtil.unzipFiles(backupFile, System.getProperty("java.io.tmpdir"),
 									new NullProgressMonitor());
 
 							if (unzippedFiles.size() > 0) {
@@ -234,7 +228,7 @@ public final class UsageDataUploadJob extends Job {
 				SUBMISSION_LOG_FILE_NAME);
 		try {
 			FileWriter fileWriter = new FileWriter(submissionLogFile, true);
-			fileWriter.append(file.getAbsolutePath() + "\n"); //$NON-NLS-1$
+			fileWriter.append(file.getAbsolutePath() + "\n");
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
@@ -308,7 +302,7 @@ public final class UsageDataUploadJob extends Job {
 
 		if (status == 401) {
 			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN, NLS.bind(
-					Messages.UsageSubmissionWizard_invalid_uid, f.getName(), ""))); //$NON-NLS-1$
+					Messages.UsageSubmissionWizard_invalid_uid, f.getName(), "")));
 		} else if (status == 407) {
 			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
 					Messages.UsageSubmissionWizard_proxy_authentication));

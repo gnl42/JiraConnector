@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -31,6 +32,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.WebLocation;
@@ -480,19 +482,30 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			return;
 		}
 
+		final IPreferenceStore store = plugin.getPreferenceStore();
+
 		// already configured so don't bother asking
 		if (!isFirstTime()) {
 			return;
 		} else {
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, false);
+			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false"); // must not use boolean here, it will not be stored
 		}
 
 		boolean agreement = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
 				Messages.UiUsageMonitorPlugin_send_usage_feedback, NLS.bind(
 						Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeatures()));
 
-		plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, agreement);
-		plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, agreement);
+		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, Boolean.toString(agreement));
+		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, Boolean.toString(agreement));
+
+		// force saving, in case workbench crashes
+		if (store instanceof IPersistentPreferenceStore) {
+			try {
+				((IPersistentPreferenceStore) store).save();
+			} catch (IOException e) {
+				// ignore it here
+			}
+		}
 
 		if (agreement) {
 			startMonitoring();
@@ -606,4 +619,25 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION);
 	}
 
+	/**
+	 * @return null if it's not set, or Date
+	 */
+	public Date getPreviousTransmitDate() {
+		if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE)) {
+			return new Date(plugin.getPreferenceStore().getLong(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE));
+		}
+		return null;
+	}
+
+	public void setPreviousTransmitDate(final Date lastTransmit) {
+		IPreferenceStore store = getPreferenceStore();
+		store.setValue(MonitorPreferenceConstants.PREF_PREVIOUS_TRANSMIT_DATE, lastTransmit.getTime());
+		if (store instanceof IPersistentPreferenceStore) {
+			try {
+				((IPersistentPreferenceStore) store).save();
+			} catch (IOException e) {
+				// ignore
+			}
+		}
+	}
 }
