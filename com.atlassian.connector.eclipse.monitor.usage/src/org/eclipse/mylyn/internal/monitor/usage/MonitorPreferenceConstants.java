@@ -16,6 +16,10 @@ package org.eclipse.mylyn.internal.monitor.usage;
  */
 public class MonitorPreferenceConstants {
 
+	public static final boolean PREF_MONITORING_INITIALLY_ENABLED = false;
+
+	public static final boolean PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED = false;
+
 	public static final String PREF_PREVIOUS_TRANSMIT_DATE = "org.eclipse.mylyn.monitor.ui.upload.previousTransmit";
 
 	public static final String PREF_NUM_USER_EVENTS = "org.eclipse.mylyn.monitor.ui.events.observed";
@@ -29,10 +33,6 @@ public class MonitorPreferenceConstants {
 	public static final String PREF_MONITORING_SUBMIT_FREQUENCY = "org.eclipse.mylyn.monitor.submission.frequency";
 
 	public static final String PREF_MONITORING_STARTED = "org.eclipse.mylyn.monitor.monitoring.started";
-
-	public static final String PREF_MONITORING_INITIALLY_ENABLED = "org.eclipse.mylyn.monitor.initially.enabled";
-
-	public static final String PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED = "org.eclipse.mylyn.monitor.submission.initially.enabled";
 
 	public static final String PREF_MONITORING_USER_ID = "org.eclipse.mylyn.monitor.ui.user_id";
 

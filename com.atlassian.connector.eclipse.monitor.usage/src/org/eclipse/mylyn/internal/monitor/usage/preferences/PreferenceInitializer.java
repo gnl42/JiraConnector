@@ -26,17 +26,16 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE, true);
 
-		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED)) {
-			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED, false);
-			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, false);
-		}
+		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
+				MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED);
 
-		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED)) {
-			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED, true);
-			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, true);
-		}
+		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION,
+				MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED);
 
-		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_USER_ID)) {
+		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, true);
+
+		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_USER_ID)
+				|| "".equals(store.getString(MonitorPreferenceConstants.PREF_MONITORING_USER_ID))) {
 			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_USER_ID, UUID.randomUUID().toString());
 		}
 
