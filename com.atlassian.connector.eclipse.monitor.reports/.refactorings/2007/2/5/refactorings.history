@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<session version="1.0">
-<refactoring comment="Copy 1 elements(s) to 'org.eclipse.mylar.monitor.core'&#13;&#10;- Original project: 'org.eclipse.mylar.monitor.reports'&#13;&#10;- Destination element: 'org.eclipse.mylar.monitor.core'&#13;&#10;- Original element: 'META-INF'" description="Copy folder" destination="=org.eclipse.mylar.monitor.core" element1="META-INF" files="0" flags="589830" folders="1" id="org.eclipse.jdt.ui.copy" log="META-INF&#9;true&#9;false" policy="org.eclipse.jdt.ui.copyResources" stamp="1170470320260" units="0" version="1.0"/>
-</session>

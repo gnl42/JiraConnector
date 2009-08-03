@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring description="Rename type 'org.eclipse.mylar.internal.monitor.reports.ui.actions.UserAnalysisAction' to 'MylarUserAnalysisAction'" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="=org.eclipse.mylar.monitor.reports/src&lt;org.eclipse.mylar.internal.monitor.reports.ui.actions{UserAnalysisAction.java[UserAnalysisAction" matchStrategy="1" name="MylarUserAnalysisAction" qualified="false" references="true" similarDeclarations="true" stamp="1144635309963" textual="false" version="1.0"/>
-<refactoring description="Rename type 'org.eclipse.mylar.internal.monitor.reports.ui.actions.UsageSummaryAction' to 'EclipseUsageSummaryAction'" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="=org.eclipse.mylar.monitor.reports/src&lt;org.eclipse.mylar.internal.monitor.reports.ui.actions{UsageSummaryAction.java[UsageSummaryAction" matchStrategy="1" name="EclipseUsageSummaryAction" qualified="false" references="true" similarDeclarations="true" stamp="1144635333196" textual="false" version="1.0"/>
-</session>
