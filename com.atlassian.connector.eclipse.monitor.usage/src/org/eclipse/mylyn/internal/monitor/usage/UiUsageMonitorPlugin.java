@@ -14,6 +14,7 @@ package org.eclipse.mylyn.internal.monitor.usage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -270,7 +271,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
 						startMonitoring();
 					} else {
-						if (!MonitorUiPlugin.getDefault().suppressConfigurationWizards()) {
+						if (!suppressConfigurationWizards()) {
 							askUserForPermissionToMonitor();
 						}
 					}
@@ -280,6 +281,14 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				}
 			}
 		});
+	}
+
+	protected boolean suppressConfigurationWizards() {
+		if (MonitorUiPlugin.getDefault().suppressConfigurationWizards()) {
+			return true;
+		}
+		final List<String> commandLineArgs = Arrays.asList(Platform.getCommandLineArgs());
+		return commandLineArgs.contains("-testPluginName");
 	}
 
 	public void startMonitoring() {
