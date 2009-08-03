@@ -484,7 +484,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		if (!isFirstTime()) {
 			return;
 		} else {
-			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, true);
+			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, false);
 		}
 
 		boolean agreement = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
