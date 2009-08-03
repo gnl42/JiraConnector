@@ -481,10 +481,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		}
 
 		// already configured so don't bother asking
-		if (plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE)
-				|| plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION)
-				|| plugin.getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
+		if (!isFirstTime()) {
 			return;
+		} else {
+			plugin.getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, true);
 		}
 
 		boolean agreement = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
@@ -598,8 +598,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	public boolean isFirstTime() {
-		return !(getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_ENABLED) || getPreferenceStore().contains(
-				MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE));
+		return !getPreferenceStore().contains(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME)
+				|| getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME);
 	}
 
 	public boolean isSubmissionEnabled() {
