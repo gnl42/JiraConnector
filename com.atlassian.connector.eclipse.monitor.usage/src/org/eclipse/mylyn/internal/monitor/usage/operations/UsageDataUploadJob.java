@@ -135,7 +135,7 @@ public final class UsageDataUploadJob extends Job {
 		}*/
 
 		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
-			File zipFile = zipFilesForUpload(collector);
+			File zipFile = zipFilesForUpload(collector, monitor);
 			if (zipFile == null) {
 				return;
 			}
@@ -175,13 +175,20 @@ public final class UsageDataUploadJob extends Job {
 		return;
 	}
 
-	private File zipFilesForUpload(UsageCollector collector) {
+	private File zipFilesForUpload(UsageCollector collector, IProgressMonitor monitor) {
 		UiUsageMonitorPlugin.setPerformingUpload(true);
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
 		try {
 			List<File> files = new ArrayList<File>();
 			File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
-			File fileToUpload = this.processMonitorFile(monitorFile, collector.getEventFilters());
+			File fileToUpload;
+			try {
+				fileToUpload = this.processMonitorFile(monitorFile, collector.getEventFilters());
+			} catch (IOException e1) {
+				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+						Messages.UsageSubmissionWizard_error_uploading, e1));
+				return null;
+			}
 			files.add(fileToUpload);
 
 			// check if backup/archive files were also selected and add them
@@ -210,7 +217,7 @@ public final class UsageDataUploadJob extends Job {
 
 			try {
 				File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-				ZipFileUtil.createZipFile(zipFile, files);
+				ZipFileUtil.createZipFile(zipFile, files, monitor);
 				return zipFile;
 			} catch (Exception e) {
 				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
@@ -236,9 +243,9 @@ public final class UsageDataUploadJob extends Job {
 		}
 	}
 
-	private File processMonitorFile(File monitorFile, Collection<String> eventFilters) {
-		File processedFile = new File(String.format(
-				"processed-%s%d.xml", UiUsageMonitorPlugin.MONITOR_LOG_NAME, processedFileCount++)); //$NON-NLS-1$
+	private File processMonitorFile(File monitorFile, Collection<String> eventFilters) throws IOException {
+		File processedFile = File.createTempFile(String.format("processed-%s%d.",
+				UiUsageMonitorPlugin.MONITOR_LOG_NAME, processedFileCount++), ".xml");
 		InteractionEventLogger logger = new InteractionEventLogger(processedFile);
 		logger.startMonitoring();
 		List<InteractionEvent> eventList = logger.getHistoryFromFile(monitorFile);
