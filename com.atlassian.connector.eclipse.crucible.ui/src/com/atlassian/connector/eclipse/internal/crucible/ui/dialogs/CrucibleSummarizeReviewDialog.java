@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewersPart;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
@@ -74,7 +74,8 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 			try {
 				if (!discardDrafts) {
 					//post all drafts
-					RemoteOperation<Object> publishDraftsOp = new RemoteOperation<Object>(monitor, getTaskRepository()) {
+					CrucibleRemoteOperation<Object> publishDraftsOp = new CrucibleRemoteOperation<Object>(monitor,
+							getTaskRepository()) {
 						@Override
 						public Object run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 								throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -86,7 +87,8 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 					updatedReview = client.getReview(getTaskRepository(), getTaskId(), true, monitor);
 				}
 				//summarize
-				RemoteOperation<Object> summarizeOp = new RemoteOperation<Object>(monitor, getTaskRepository()) {
+				CrucibleRemoteOperation<Object> summarizeOp = new CrucibleRemoteOperation<Object>(monitor,
+						getTaskRepository()) {
 					@Override
 					public Object run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {

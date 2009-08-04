@@ -43,14 +43,6 @@ import java.util.Collection;
  */
 public class FishEyeClient {
 
-	public abstract static class FishEyeRemoteOperation<T> extends RemoteOperation<T, FishEyeServerFacade> {
-
-		public FishEyeRemoteOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
-			super(monitor, taskRepository);
-		}
-
-	}
-
 	private final FishEyeClientData clientData;
 
 	private AbstractWebLocation location;

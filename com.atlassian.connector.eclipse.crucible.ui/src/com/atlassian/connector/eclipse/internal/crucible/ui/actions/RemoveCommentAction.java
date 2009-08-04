@@ -26,7 +26,7 @@ public class RemoveCommentAction extends AbstractBackgroundJobReviewAction {
 
 	public RemoveCommentAction(final Review review, final Comment comment, Shell shell) {
 		super("Remove Comment", review, comment, shell, "Removing a comment from review " + review.getPermId().getId(),
-				CrucibleImages.COMMENT_DELETE, new CrucibleRemoteOperation() {
+				CrucibleImages.COMMENT_DELETE, new RemoteOperation() {
 					public void run(CrucibleServerFacade server, ServerData serverCfg) throws CrucibleLoginException,
 							RemoteApiException, ServerPasswordNotProvidedException {
 						server.removeComment(serverCfg, review.getPermId(), comment);

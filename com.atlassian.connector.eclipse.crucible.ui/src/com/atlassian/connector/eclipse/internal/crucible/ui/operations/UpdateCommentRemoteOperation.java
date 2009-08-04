@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
@@ -23,7 +23,7 @@ import com.atlassian.theplugin.commons.remoteapi.ServerData;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
-public final class UpdateCommentRemoteOperation extends CrucibleClient.RemoteOperation<Comment> {
+public final class UpdateCommentRemoteOperation extends CrucibleRemoteOperation<Comment> {
 
 	private final Review review;
 

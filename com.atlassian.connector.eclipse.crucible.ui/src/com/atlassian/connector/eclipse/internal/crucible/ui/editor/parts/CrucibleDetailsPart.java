@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -119,7 +119,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 						final MultiStatus status = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.ERROR,
 								"Failed to set reviewers", null);
-						client.execute(new RemoteOperation<Object>(monitor, repository) {
+						client.execute(new CrucibleRemoteOperation<Object>(monitor, repository) {
 							@Override
 							public Object run(CrucibleServerFacade server, ServerData serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,

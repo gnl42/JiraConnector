@@ -15,7 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient.RemoteOperation;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
@@ -88,7 +88,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		@Override
 		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 			try {
-				crucibleReview = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+				crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 					@Override
 					public Review run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -363,7 +363,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 						@Override
 						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 							try {
-								crucibleReview = client.execute(new RemoteOperation<Review>(monitor,
+								crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor,
 										getTaskRepository()) {
 									@Override
 									public Review run(CrucibleServerFacade server, ServerData serverCfg,
@@ -395,7 +395,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 							protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
 									throws CoreException {
 								try {
-									crucibleReview = client.execute(new RemoteOperation<Review>(monitor,
+									crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor,
 											getTaskRepository()) {
 										@Override
 										public Review run(CrucibleServerFacade server, ServerData serverCfg,
@@ -453,7 +453,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 				try {
-					crucibleReview = client.execute(new RemoteOperation<Review>(monitor, getTaskRepository()) {
+					crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 						@Override
 						public Review run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 								throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {

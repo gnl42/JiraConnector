@@ -27,6 +27,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
@@ -72,6 +73,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			BambooClient client = null;
 			try {
 				client = clientManager.createTempClient(taskRepository, new BambooClientData());
+
+				monitor = Policy.backgroundMonitorFor(monitor);
 				client.validate(monitor, taskRepository);
 			} finally {
 				if (client != null) {

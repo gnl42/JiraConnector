@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.fisheye.core.client;
+package com.atlassian.connector.eclipse.internal.core.client;
 
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
@@ -19,26 +19,26 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
-public abstract class RemoteOperation<T, S> {
+public abstract class RemoteOperation<T, C> {
 
 	private final IProgressMonitor fMonitor;
 
 	private final TaskRepository taskRepository;
 
 	public RemoteOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
-		this.taskRepository = taskRepository;
 		this.fMonitor = Policy.monitorFor(monitor);
-	}
-
-	public TaskRepository getTaskRepository() {
-		return taskRepository;
+		this.taskRepository = taskRepository;
 	}
 
 	public IProgressMonitor getMonitor() {
 		return fMonitor;
 	}
 
-	public abstract T run(S server, ServerData serverData, IProgressMonitor monitor) throws RemoteApiException,
+	public abstract T run(C server, ServerData serverCfg, IProgressMonitor monitor) throws RemoteApiException,
 			ServerPasswordNotProvidedException;
+
+	public TaskRepository getTaskRepository() {
+		return taskRepository;
+	}
 
 }

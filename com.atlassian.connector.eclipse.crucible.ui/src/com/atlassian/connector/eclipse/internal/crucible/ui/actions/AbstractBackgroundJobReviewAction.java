@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
@@ -46,15 +47,15 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 
 	private final String jobMessage;
 
-	private final CrucibleRemoteOperation remoteOperation;
+	private final RemoteOperation remoteOperation;
 
-	protected interface CrucibleRemoteOperation {
+	protected interface RemoteOperation {
 		void run(CrucibleServerFacade crucibleServerFacade, ServerData crucibleServerCfg)
 				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
 	}
 
 	public AbstractBackgroundJobReviewAction(String text, Review review, Comment comment, Shell shell,
-			String jobMessage, ImageDescriptor imageDescriptor, CrucibleRemoteOperation remoteOperation) {
+			String jobMessage, ImageDescriptor imageDescriptor, RemoteOperation remoteOperation) {
 		super(text);
 		this.review = review;
 		this.comment = comment;
@@ -110,8 +111,7 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			try {
-				crucibleClient.execute(new CrucibleClient.RemoteOperation<Void>(monitor, getTaskRepository()) {
-
+				crucibleClient.execute(new CrucibleRemoteOperation<Void>(monitor, getTaskRepository()) {
 					@Override
 					public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {

@@ -37,7 +37,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
@@ -70,30 +69,6 @@ public class CrucibleClient {
 
 	private final ReviewCache cachedReviewManager;
 
-	public abstract static class RemoteOperation<T> {
-
-		private final IProgressMonitor fMonitor;
-
-		private final TaskRepository taskRepository;
-
-		public RemoteOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
-			this.taskRepository = taskRepository;
-			this.fMonitor = Policy.monitorFor(monitor);
-		}
-
-		public TaskRepository getTaskRepository() {
-			return taskRepository;
-		}
-
-		public IProgressMonitor getMonitor() {
-			return fMonitor;
-		}
-
-		public abstract T run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
-				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
-
-	}
-
 	public CrucibleClient(AbstractWebLocation location, ServerData serverCfg, CrucibleServerFacade crucibleServer,
 			CrucibleClientData data, ReviewCache cachedReviewManager) {
 		this.location = location;
@@ -111,7 +86,7 @@ public class CrucibleClient {
 		this.crucibleServerCfg = crucibleServerCfg;
 	}
 
-	public <T> T execute(RemoteOperation<T> op) throws CoreException {
+	public <T> T execute(CrucibleRemoteOperation<T> op) throws CoreException {
 		IProgressMonitor monitor = op.getMonitor();
 		TaskRepository taskRepository = op.getTaskRepository();
 		try {
@@ -143,7 +118,8 @@ public class CrucibleClient {
 		}
 	}
 
-	private <T> T executeRetry(RemoteOperation<T> op, IProgressMonitor monitor, Exception e) throws CoreException {
+	private <T> T executeRetry(CrucibleRemoteOperation<T> op, IProgressMonitor monitor, Exception e)
+			throws CoreException {
 		try {
 			location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
 		} catch (UnsupportedRequestException ex) {
@@ -170,7 +146,7 @@ public class CrucibleClient {
 	}
 
 	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
-		execute(new RemoteOperation<Void>(monitor, taskRepository) {
+		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -183,7 +159,7 @@ public class CrucibleClient {
 	public TaskData getTaskData(TaskRepository taskRepository, final String taskId, IProgressMonitor monitor)
 			throws CoreException {
 
-		return execute(new RemoteOperation<TaskData>(monitor, taskRepository) {
+		return execute(new CrucibleRemoteOperation<TaskData>(monitor, taskRepository) {
 			@Override
 			public TaskData run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -215,7 +191,7 @@ public class CrucibleClient {
 
 	public void performQuery(TaskRepository taskRepository, final IRepositoryQuery query,
 			final TaskDataCollector resultCollector, IProgressMonitor monitor) throws CoreException {
-		execute(new RemoteOperation<Void>(monitor, taskRepository) {
+		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -322,7 +298,7 @@ public class CrucibleClient {
 	}
 
 	public void updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
-		execute(new RemoteOperation<Void>(monitor, taskRepository) {
+		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
 			public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {

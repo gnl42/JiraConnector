@@ -17,6 +17,7 @@ import static org.easymock.EasyMock.replay;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -591,7 +592,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		@Override
-		public <T> T execute(RemoteOperation<T> op) throws CoreException {
+		public <T> T execute(CrucibleRemoteOperation<T> op) throws CoreException {
 			try {
 				return op.run(facade, serverCfg, op.getMonitor());
 			} catch (CrucibleLoginException e) {

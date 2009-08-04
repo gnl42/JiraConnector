@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -41,7 +42,7 @@ import java.util.HashMap;
  * 
  * @author Shawn Minto
  */
-public final class AddCommentRemoteOperation extends CrucibleClient.RemoteOperation<Comment> {
+public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Comment> {
 
 	private HashMap<String, CustomField> customFields = null;
 
