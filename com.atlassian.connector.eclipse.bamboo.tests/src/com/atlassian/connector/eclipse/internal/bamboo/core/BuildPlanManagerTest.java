@@ -76,7 +76,7 @@ public class BuildPlanManagerTest extends TestCase {
 		TasksUi.getRepositoryManager().addRepository(repo2);
 		Set<TaskRepository> repositories = TasksUi.getRepositoryManager().getRepositories(
 				BambooCorePlugin.CONNECTOR_KIND);
-		assertTrue(2 == repositories.size());
+		assertEquals(2, repositories.size());
 
 		MockBambooClient client2 = new MockBambooClient();
 		Collection<BambooBuild> expectedBuilds2 = createBuilds("repoRemoved");
@@ -86,7 +86,7 @@ public class BuildPlanManagerTest extends TestCase {
 
 		Map<TaskRepository, Collection<BambooBuild>> subscribedBuilds = buildPlanManager.getSubscribedBuilds();
 
-		assertTrue(2 == subscribedBuilds.size());
+		assertEquals(2, subscribedBuilds.size());
 
 		TasksUiPlugin.getRepositoryManager().removeRepository(repo2,
 				TasksUiPlugin.getDefault().getRepositoriesFilePath());
@@ -94,14 +94,14 @@ public class BuildPlanManagerTest extends TestCase {
 
 		subscribedBuilds = buildPlanManager.getSubscribedBuilds();
 
-		assertTrue(1 == subscribedBuilds.size());
+		assertEquals(1, subscribedBuilds.size());
 	}
 
 	public void testGetSubscribedBuilds() {
 		BuildPlanManager buildPlanManager = addSubscribedBuilds();
 		Map<TaskRepository, Collection<BambooBuild>> subscribedBuilds = buildPlanManager.getSubscribedBuilds();
 
-		assertTrue(1 == subscribedBuilds.size());
+		assertEquals(1, subscribedBuilds.size());
 
 		Collection<BambooBuild> builds = subscribedBuilds.get(subscribedBuilds.keySet().iterator().next());
 
@@ -113,18 +113,18 @@ public class BuildPlanManagerTest extends TestCase {
 		BuildPlanManager buildPlanManager = addSubscribedBuilds();
 		BambooBuild[] subscribedBuilds = buildPlanManager.getSubscribedBuilds(repository);
 
-		assertTrue(nrOfBuilds == subscribedBuilds.length);
+		assertEquals(nrOfBuilds, subscribedBuilds.length);
 	}
 
 	public void testBuildSubscriptionsChanged() {
 		BuildPlanManager buildPlanManager = addSubscribedBuilds();
 		Map<TaskRepository, Collection<BambooBuild>> subscribedBuilds = buildPlanManager.getSubscribedBuilds();
 
-		assertTrue(1 == subscribedBuilds.size());
+		assertEquals(1, subscribedBuilds.size());
 
 		Collection<BambooBuild> builds = subscribedBuilds.get(subscribedBuilds.keySet().iterator().next());
 
-		assertTrue(nrOfBuilds == builds.size());
+		assertEquals(nrOfBuilds, builds.size());
 
 		MockBambooClient client = (MockBambooClient) bambooClientManager.getClient(repository);
 
@@ -135,11 +135,11 @@ public class BuildPlanManagerTest extends TestCase {
 
 		subscribedBuilds = buildPlanManager.getSubscribedBuilds();
 
-		assertTrue(1 == subscribedBuilds.size());
+		assertEquals(1, subscribedBuilds.size());
 
 		builds = subscribedBuilds.get(subscribedBuilds.keySet().iterator().next());
 
-		assertTrue(nrOfBuilds == builds.size());
+		assertEquals(nrOfBuilds, builds.size());
 
 		for (BambooBuild build : expectedBuilds) {
 			assertTrue("Expected build " + build.getPlanKey() + "-" + build.getNumber()
@@ -152,7 +152,7 @@ public class BuildPlanManagerTest extends TestCase {
 		BuildPlanManager buildPlanManager = new BuildPlanManager();
 		buildPlanManager.initializeScheduler(TasksUi.getRepositoryManager());
 		Map<TaskRepository, Collection<BambooBuild>> subscribedBuilds = buildPlanManager.getSubscribedBuilds();
-		assertTrue(0 == subscribedBuilds.size());
+		assertEquals(0, subscribedBuilds.size());
 
 		//create builds and set response to client, DO NOT MANUALLY CALL REFRESH
 		MockBambooClient client = new MockBambooClient();
@@ -168,7 +168,7 @@ public class BuildPlanManagerTest extends TestCase {
 
 		//get builds -> should be updated
 		subscribedBuilds = buildPlanManager.getSubscribedBuilds();
-		assertTrue(1 == subscribedBuilds.size());
+		assertEquals(1, subscribedBuilds.size());
 		Collection<BambooBuild> builds = subscribedBuilds.get(subscribedBuilds.keySet().iterator().next());
 		assertTrue(nrOfBuilds == builds.size());
 		for (BambooBuild build : expectedBuilds) {

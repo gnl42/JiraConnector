@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.commons;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
-import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,8 +30,8 @@ public class UserContentProviderTest extends TestCase {
 		String userName1 = "username";
 		String userName2 = "username2";
 		String displayName1 = "displayName";
-		User user1 = new UserBean(userName1, displayName1);
-		User user2 = new UserBean(userName2);
+		User user1 = new User(userName1, displayName1);
+		User user2 = new User(userName2);
 
 		CrucibleCachedUser cachedUser1 = new CrucibleCachedUser(user1);
 		CrucibleCachedUser cachedUser2 = new CrucibleCachedUser(user2);

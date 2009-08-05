@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.core.client.model;
 
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewAdapter;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.ReviewDifferenceProducer;
 
@@ -63,12 +62,10 @@ public class CrucibleCachedReview {
 	}
 
 	synchronized boolean addReview(Review review) {
-		ReviewDifferenceProducer differencer = new ReviewDifferenceProducer(new ReviewAdapter(lastReadReview, null),
-				new ReviewAdapter(review, null));
+		ReviewDifferenceProducer differencer = new ReviewDifferenceProducer(lastReadReview, review);
 
 		if (serverReview != null) {
-			ReviewDifferenceProducer serverDifferencer = new ReviewDifferenceProducer(new ReviewAdapter(serverReview,
-					null), new ReviewAdapter(review, null));
+			ReviewDifferenceProducer serverDifferencer = new ReviewDifferenceProducer(serverReview, review);
 			List<CrucibleNotification> serverDiffs = serverDifferencer.getDiff();
 			if ((serverDiffs == null || serverDiffs.size() == 0) && serverDifferencer.isShortEqual()
 					&& serverDifferencer.isFilesEqual() && serverDifferencer.getCommentChangesCount() == 0) {

@@ -11,17 +11,16 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core.client;
 
+import com.atlassian.connector.commons.api.BambooServerFacade2;
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
-import com.atlassian.connector.eclipse.internal.core.client.RemoteOperation;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
-import com.atlassian.theplugin.commons.bamboo.BambooServerFacade;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,11 +48,11 @@ public class BambooClient {
 
 	private final AbstractWebLocation location;
 
-	private ServerData serverCfg;
+	private ConnectionCfg serverCfg;
 
-	private final BambooServerFacade server;
+	private final BambooServerFacade2 server;
 
-	public BambooClient(AbstractWebLocation location, ServerData serverCfg, BambooServerFacade server,
+	public BambooClient(AbstractWebLocation location, ConnectionCfg serverCfg, BambooServerFacade2 server,
 			BambooClientData data) {
 		this.location = location;
 		this.clientData = data;
@@ -61,26 +60,27 @@ public class BambooClient {
 		this.server = server;
 	}
 
-	public ServerData getServerCfg() {
+	public ConnectionCfg getServerCfg() {
 		return serverCfg;
 	}
 
 	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
 		execute(new BambooRemoteOperation<Object>(monitor, taskRepository) {
+
 			@Override
-			public Object run(BambooServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
-					throws CrucibleLoginException, RemoteApiException {
+			public Object run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+					throws RemoteApiException, ServerPasswordNotProvidedException {
 				server.testServerConnection(serverCfg);
 				return null;
 			}
 		}, true);
 	}
 
-	private <T> T execute(RemoteOperation<T, BambooServerFacade> op) throws CoreException {
+	private <T> T execute(BambooRemoteOperation<T> op) throws CoreException {
 		return execute(op, true);
 	}
 
-	private <T> T execute(RemoteOperation<T, BambooServerFacade> op, boolean promptForCredentials) throws CoreException {
+	private <T> T execute(BambooRemoteOperation<T> op, boolean promptForCredentials) throws CoreException {
 		IProgressMonitor monitor = op.getMonitor();
 		TaskRepository taskRepository = op.getTaskRepository();
 
@@ -118,8 +118,7 @@ public class BambooClient {
 		if (credentials != null) {
 			String newUserName = taskrepository.getCredentials(AuthenticationType.REPOSITORY).getUserName();
 			String newPassword = taskrepository.getCredentials(AuthenticationType.REPOSITORY).getPassword();
-			serverCfg = new ServerData(serverCfg.getName(), serverCfg.getServerId(), newUserName, newPassword,
-					serverCfg.getUrl());
+			serverCfg = new ConnectionCfg(serverCfg.getId(), newUserName, newPassword, serverCfg.getUrl());
 		}
 	}
 
@@ -133,9 +132,9 @@ public class BambooClient {
 
 	public BambooClientData updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository)
 			throws CoreException {
-		this.clientData = execute(new RemoteOperation<BambooClientData, BambooServerFacade>(monitor, taskRepository) {
+		this.clientData = execute(new BambooRemoteOperation<BambooClientData>(monitor, taskRepository) {
 			@Override
-			public BambooClientData run(BambooServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public BambooClientData run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving plans");
 				BambooClientData newClientData = new BambooClientData();
@@ -149,10 +148,10 @@ public class BambooClient {
 
 	public Collection<BambooBuild> getBuilds(IProgressMonitor monitor, final TaskRepository taskRepository,
 			boolean promptForCredentials) throws CoreException {
-		return execute(new RemoteOperation<Collection<BambooBuild>, BambooServerFacade>(monitor, taskRepository) {
+		return execute(new BambooRemoteOperation<Collection<BambooBuild>>(monitor, taskRepository) {
 			@Override
-			public Collection<BambooBuild> run(BambooServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
-					throws RemoteApiException, ServerPasswordNotProvidedException {
+			public Collection<BambooBuild> run(BambooServerFacade2 server, ConnectionCfg serverCfg,
+					IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving builds");
 				return server.getSubscribedPlansResults(serverCfg, BambooUtil.getSubscribedPlans(taskRepository),
 						false, 0);
@@ -162,9 +161,9 @@ public class BambooClient {
 
 	public BuildDetails getBuildDetails(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
 			throws CoreException {
-		return execute(new RemoteOperation<BuildDetails, BambooServerFacade>(monitor, taskRepository) {
+		return execute(new BambooRemoteOperation<BuildDetails>(monitor, taskRepository) {
 			@Override
-			public BuildDetails run(BambooServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public BuildDetails run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving build details");
 				BuildDetails buildDetails = server.getBuildDetails(serverCfg, build.getPlanKey(), build.getNumber());
@@ -176,9 +175,9 @@ public class BambooClient {
 
 	public String getBuildLogs(IProgressMonitor monitor, TaskRepository taskRepository, final BambooBuild build)
 			throws CoreException {
-		return execute(new RemoteOperation<String, BambooServerFacade>(monitor, taskRepository) {
+		return execute(new BambooRemoteOperation<String>(monitor, taskRepository) {
 			@Override
-			public String run(BambooServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public String run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving build details");
 				return server.getBuildLogs(serverCfg, build.getPlanKey(), build.getNumber());
@@ -191,7 +190,7 @@ public class BambooClient {
 			final String label) throws CoreException {
 		execute(new BambooRemoteOperation<Object>(monitor, repository) {
 			@Override
-			public Object run(BambooServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public Object run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Adding label to build");
 				server.addLabelToBuild(serverCfg, build.getPlanKey(), build.getNumber(), label);
@@ -204,7 +203,7 @@ public class BambooClient {
 			final String comment) throws CoreException {
 		execute(new BambooRemoteOperation<Object>(monitor, repository) {
 			@Override
-			public Object run(BambooServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public Object run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Adding comment to build");
 				server.addCommentToBuild(serverCfg, build.getPlanKey(), build.getNumber(), comment);
@@ -217,7 +216,7 @@ public class BambooClient {
 			throws CoreException {
 		execute(new BambooRemoteOperation<Object>(monitor, repository) {
 			@Override
-			public Object run(BambooServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public Object run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Run Build");
 				server.executeBuild(serverCfg, build.getPlanKey());

@@ -13,8 +13,8 @@ package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -43,7 +43,7 @@ public class CrucibleClientManagerTest extends TestCase {
 		CrucibleRepositoryConnector repoConnector = new CrucibleRepositoryConnector();
 		CrucibleClientManager clientManager = repoConnector.getClientManager();
 		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
-		ServerData serverCfg = getServerData(location, repo, false);
+		ConnectionCfg serverCfg = getServerData(location, repo, false);
 
 		clientManager.getClient(repo);
 		HttpClient httpClient1 = null;
@@ -75,7 +75,7 @@ public class CrucibleClientManagerTest extends TestCase {
 		CrucibleRepositoryConnector repoConnector = new CrucibleRepositoryConnector();
 		CrucibleClientManager clientManager = repoConnector.getClientManager();
 		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
-		ServerData serverCfg = getServerData(location, repo, false);
+		ConnectionCfg serverCfg = getServerData(location, repo, false);
 
 		clientManager.getClient(repo);
 		HttpClient httpClient1 = null;

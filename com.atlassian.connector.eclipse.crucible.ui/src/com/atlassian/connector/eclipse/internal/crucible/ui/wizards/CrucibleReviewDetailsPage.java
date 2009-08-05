@@ -19,7 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProj
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 
 import org.eclipse.core.runtime.Assert;
@@ -59,7 +59,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	private final TaskRepository repository;
 
-	private final ReviewBean newReview;
+	private final Review newReview;
 
 	private ComboViewer authorComboViewer;
 
@@ -87,7 +87,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		setTitle("New Crucible Review");
 		setDescription(ENTER_THE_DETAILS_OF_THE_REVIEW);
 		this.repository = repository;
-		newReview = new ReviewBean(repository.getUrl());
+		newReview = new Review(repository.getUrl());
 		this.wizard = wizard;
 	}
 
@@ -331,7 +331,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		newReview.setCreator(CrucibleUiUtil.getCurrentCachedUser(repository).createUserFromCachedUser());
 	}
 
-	public ReviewBean getReview() {
+	public Review getReview() {
 		return newReview;
 	}
 

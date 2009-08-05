@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.core.client.model;
 
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
-import com.atlassian.theplugin.commons.crucible.api.model.RepositoryBean;
 
 import java.io.Serializable;
 
@@ -55,11 +54,7 @@ public class CrucibleCachedRepository implements Serializable {
 	}
 
 	public Repository createRepositoryFromCached() {
-		RepositoryBean repo = new RepositoryBean();
-		repo.setEnabled(enabled);
-		repo.setName(name);
-		repo.setType(type);
-		return repo;
+		return new Repository(name, type, enabled);
 	}
 
 	@Override

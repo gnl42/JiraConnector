@@ -15,10 +15,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.model.Cruci
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewerBean;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -122,9 +120,11 @@ public class ReviewersSelectionTreePart {
 		tree.getViewer().addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
-					selectedReviewers.add(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
+					selectedReviewers.add(CrucibleUiUtil.createReviewerFromCachedUser(review,
+							(CrucibleCachedUser) event.getElement()));
 				} else {
-					selectedReviewers.remove(createReviewerFromCachedUser((CrucibleCachedUser) event.getElement()));
+					selectedReviewers.remove(CrucibleUiUtil.createReviewerFromCachedUser(review,
+							(CrucibleCachedUser) event.getElement()));
 				}
 				if (externalListener != null) {
 					externalListener.checkStateChanged(event);
@@ -148,26 +148,6 @@ public class ReviewersSelectionTreePart {
 			users[i++] = new CrucibleCachedUser(reviewer);
 		}
 		return users;
-	}
-
-	private ReviewerBean createReviewerFromCachedUser(CrucibleCachedUser user) {
-		ReviewerBean reviewer = new ReviewerBean();
-		reviewer.setDisplayName(user.getDisplayName());
-		reviewer.setUserName(user.getUserName());
-		boolean completed = false;
-		try {
-			for (Reviewer r : review.getReviewers()) {
-				if (r.getUserName().equals(reviewer.getUserName())) {
-					completed = r.isCompleted();
-					selectedReviewers.add(reviewer);
-					break;
-				}
-			}
-		} catch (ValueNotYetInitialized e) {
-			// ignore
-		}
-		reviewer.setCompleted(completed);
-		return reviewer;
 	}
 
 	public Set<Reviewer> getSelectedReviewers() {

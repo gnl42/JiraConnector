@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.core.client;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
@@ -37,9 +37,9 @@ import java.util.Map;
 public class HttpSessionCallbackImpl implements HttpSessionCallback {
 
 	/** synchronized on this HttpSessionCallbackImpl */
-	private final Map<ServerData, HttpClient> httpClients = new HashMap<ServerData, HttpClient>();
+	private final Map<ConnectionCfg, HttpClient> httpClients = new HashMap<ConnectionCfg, HttpClient>();
 
-	private final Map<String, ServerData> locations = new HashMap<String, ServerData>();
+	private final Map<String, ConnectionCfg> locations = new HashMap<String, ConnectionCfg>();
 
 	private final MultiThreadedHttpConnectionManager connectionManager;
 
@@ -51,7 +51,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 		idleConnectionTimeoutThread.start();
 	}
 
-	public synchronized HttpClient getHttpClient(ServerData server) throws HttpProxySettingsException {
+	public synchronized HttpClient getHttpClient(ConnectionCfg server) throws HttpProxySettingsException {
 		HttpClient httpClient = httpClients.get(server);
 
 		// TODO handle the case where we dont have a client initialized
@@ -64,7 +64,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 		// nothing to do here
 	}
 
-	public synchronized void removeClient(ServerData server) {
+	public synchronized void removeClient(ConnectionCfg server) {
 		HttpClient client = httpClients.remove(server);
 		if (client != null) {
 			shutdown(client);
@@ -72,13 +72,13 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 	}
 
 	public synchronized void removeClient(AbstractWebLocation location) {
-		ServerData server = locations.remove(location.getUrl());
+		ConnectionCfg server = locations.remove(location.getUrl());
 		if (server != null) {
 			removeClient(server);
 		}
 	}
 
-	public synchronized void updateHostConfiguration(AbstractWebLocation location, ServerData serverCfg) {
+	public synchronized void updateHostConfiguration(AbstractWebLocation location, ConnectionCfg serverCfg) {
 		HttpClient httpClient = httpClients.get(serverCfg);
 		if (httpClient == null) {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
@@ -103,7 +103,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 	 * @param serverCfg
 	 * @return
 	 */
-	public synchronized HttpClient initializeHostConfiguration(AbstractWebLocation location, ServerData serverCfg) {
+	public synchronized HttpClient initializeHostConfiguration(AbstractWebLocation location, ConnectionCfg serverCfg) {
 		HttpClient httpClient = httpClients.get(serverCfg);
 		if (httpClient == null) {
 			httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());

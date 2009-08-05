@@ -11,11 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.tests.util;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooClientManager;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
 import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
@@ -53,7 +53,7 @@ public class MockBambooClientManager extends BambooClientManager {
 	}
 
 	@Override
-	public void deleteTempClient(ServerData client) {
+	public void deleteTempClient(ConnectionCfg client) {
 	}
 
 	@Override

@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
@@ -23,7 +25,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ReviewerSelectionDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
@@ -32,7 +33,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -121,7 +121,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 								"Failed to set reviewers", null);
 						client.execute(new CrucibleRemoteOperation<Object>(monitor, repository) {
 							@Override
-							public Object run(CrucibleServerFacade server, ServerData serverCfg,
+							public Object run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
 								try {

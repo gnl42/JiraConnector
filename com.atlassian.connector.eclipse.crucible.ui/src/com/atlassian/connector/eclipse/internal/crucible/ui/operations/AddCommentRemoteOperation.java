@@ -11,25 +11,24 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
-import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.source.LineRange;
@@ -100,7 +99,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 	}
 
 	@Override
-	public Comment run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+	public Comment run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 			throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 
 		if (reviewItem != null) {
@@ -112,10 +111,10 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.getCustomFields().putAll(customFields);
 
 			if (parentComment != null && newComment.isReply()) {
-				return server.addVersionedCommentReply(serverCfg, new PermIdBean(permId), parentComment.getPermId(),
+				return server.addVersionedCommentReply(serverCfg, new PermId(permId), parentComment.getPermId(),
 						newComment);
 			} else {
-				return server.addVersionedComment(serverCfg, new PermIdBean(permId), riId, newComment);
+				return server.addVersionedComment(serverCfg, new PermId(permId), riId, newComment);
 			}
 		} else {
 			GeneralCommentBean newComment = createNewGeneralComment();
@@ -125,10 +124,10 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId());
 
 			if (parentComment != null && newComment.isReply()) {
-				return server.addGeneralCommentReply(serverCfg, new PermIdBean(permId), parentComment.getPermId(),
+				return server.addGeneralCommentReply(serverCfg, new PermId(permId), parentComment.getPermId(),
 						newComment);
 			} else {
-				return server.addGeneralComment(serverCfg, new PermIdBean(permId), newComment);
+				return server.addGeneralComment(serverCfg, new PermId(permId), newComment);
 			}
 		}
 	}
@@ -141,7 +140,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 		} else {
 			newComment.setReply(false);
 		}
-		newComment.setAuthor(new UserBean(client.getUserName()));
+		newComment.setAuthor(new User(client.getUserName()));
 		return newComment;
 	}
 
@@ -165,7 +164,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.setToLineInfo(false);
 		}
 
-		newComment.setAuthor(new UserBean(client.getUserName()));
+		newComment.setAuthor(new User(client.getUserName()));
 		newComment.setDraft(isDraft);
 		newComment.setMessage(message);
 		if (parentComment != null && parentComment instanceof VersionedComment) {

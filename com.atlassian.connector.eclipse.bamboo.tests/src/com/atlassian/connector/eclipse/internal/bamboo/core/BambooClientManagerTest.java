@@ -13,8 +13,8 @@ package com.atlassian.connector.eclipse.internal.bamboo.core;
 
 import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
@@ -30,7 +30,7 @@ public class BambooClientManagerTest extends TestCase {
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
 				false);
 		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();
-		ServerData serverConfiguration = getServerData(bambooClientManager.getTaskRepositoryLocationFactory()
+		ConnectionCfg serverConfiguration = getServerData(bambooClientManager.getTaskRepositoryLocationFactory()
 				.createWebLocation(repository), repository, false);
 		bambooClientManager.getClient(repository);
 		HttpClient httpClient = null;
@@ -56,7 +56,7 @@ public class BambooClientManagerTest extends TestCase {
 		repository.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("username", "password"),
 				false);
 		BambooClientManager bambooClientManager = new BambooRepositoryConnector().getClientManager();
-		ServerData serverConfiguration = getServerData(bambooClientManager.getTaskRepositoryLocationFactory()
+		ConnectionCfg serverConfiguration = getServerData(bambooClientManager.getTaskRepositoryLocationFactory()
 				.createWebLocation(repository), repository, false);
 		bambooClientManager.getClient(repository);
 		HttpClient httpClient = null;

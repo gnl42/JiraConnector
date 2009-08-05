@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.core.client.RemoteOperation;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
-public abstract class CrucibleRemoteOperation<T> extends RemoteOperation<T, CrucibleServerFacade> {
+public abstract class CrucibleRemoteOperation<T> extends RemoteOperation<T, CrucibleServerFacade2> {
 
 	public CrucibleRemoteOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
 		super(monitor, taskRepository);

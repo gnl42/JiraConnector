@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
@@ -21,14 +23,12 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -90,7 +90,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 			try {
 				crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 					@Override
-					public Review run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						//add revisions
 						if (selectedLogEntries != null) {
@@ -366,7 +366,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 								crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor,
 										getTaskRepository()) {
 									@Override
-									public Review run(CrucibleServerFacade server, ServerData serverCfg,
+									public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 											IProgressMonitor monitor) throws CrucibleLoginException,
 											RemoteApiException, ServerPasswordNotProvidedException {
 										return server.submitReview(serverCfg, crucibleReview.getPermId());
@@ -398,7 +398,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 									crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor,
 											getTaskRepository()) {
 										@Override
-										public Review run(CrucibleServerFacade server, ServerData serverCfg,
+										public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 												IProgressMonitor monitor) throws CrucibleLoginException,
 												RemoteApiException, ServerPasswordNotProvidedException {
 											return server.approveReview(serverCfg, crucibleReview.getPermId());
@@ -455,8 +455,9 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 				try {
 					crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 						@Override
-						public Review run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
-								throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+						public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
+								IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
+								ServerPasswordNotProvidedException {
 							Review tempReview = server.createReview(serverCfg, detailsPage.getReview());
 							detailsPage.getReview().setPermId(tempReview.getPermId());
 							server.setReviewers(serverCfg, tempReview.getPermId(),

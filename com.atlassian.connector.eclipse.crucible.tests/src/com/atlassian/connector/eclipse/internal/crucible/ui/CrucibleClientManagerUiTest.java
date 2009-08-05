@@ -13,12 +13,12 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import static com.atlassian.connector.eclipse.internal.core.ServerDataUtil.getServerData;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -59,7 +59,7 @@ public class CrucibleClientManagerUiTest extends TestCase {
 		CrucibleRepositoryConnector repoConnector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClientManager clientManager = repoConnector.getClientManager();
 		AbstractWebLocation location = clientManager.getTaskRepositoryLocationFactory().createWebLocation(repo);
-		ServerData serverCfg = getServerData(location, repo, false);
+		ConnectionCfg serverCfg = getServerData(location, repo, false);
 
 		boolean assertion = false;
 		HttpClient httpClient1 = null;

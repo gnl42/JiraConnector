@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.core.client;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.Policy;
@@ -34,7 +34,7 @@ public abstract class RemoteOperation<T, C> {
 		return fMonitor;
 	}
 
-	public abstract T run(C server, ServerData serverCfg, IProgressMonitor monitor) throws RemoteApiException,
+	public abstract T run(C server, ConnectionCfg serverCfg, IProgressMonitor monitor) throws RemoteApiException,
 			ServerPasswordNotProvidedException;
 
 	public TaskRepository getTaskRepository() {

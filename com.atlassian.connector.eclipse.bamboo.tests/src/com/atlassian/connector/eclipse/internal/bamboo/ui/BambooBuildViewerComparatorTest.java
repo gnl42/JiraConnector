@@ -11,11 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildViewerComparator.SortOrder;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BambooBuildInfo;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import java.util.Date;
 
@@ -28,7 +28,7 @@ public class BambooBuildViewerComparatorTest extends TestCase {
 		assertTrue(new BambooBuildViewerComparator().isSorterProperty(null, null));
 	}
 
-	private BambooBuild createBambooBuild(String planName, ServerData serverData, BuildStatus buildStatus) {
+	private BambooBuild createBambooBuild(String planName, ConnectionCfg serverData, BuildStatus buildStatus) {
 		return new BambooBuildInfo.Builder("pkey", planName, serverData, null, 1, buildStatus).pollingTime(new Date())
 				.build();
 
@@ -36,7 +36,7 @@ public class BambooBuildViewerComparatorTest extends TestCase {
 
 	public void testCompareViewerObjectObject() {
 		//create builds with the minimal set of elements
-		ServerData sd = new ServerData("myserver", "myid", "user", "pass", "http://atlassian.com");
+		final ConnectionCfg sd = new ConnectionCfg("myserver", "http://atlassian.com", "user", "pass");
 		BambooBuild build1 = createBambooBuild("plan1", sd, BuildStatus.SUCCESS);
 		BambooBuild build2 = createBambooBuild("plan2", sd, BuildStatus.SUCCESS);
 		BambooBuild build3 = createBambooBuild("plan2", sd, BuildStatus.SUCCESS);

@@ -350,7 +350,7 @@ public class BambooView extends ViewPart {
 					} catch (UnsupportedOperationException e) {
 						return ("N/A");
 					}
-					return DateUtil.getRelativeBuildTime(build.getCompletionDate());
+					return DateUtil.getRelativePastDate(build.getCompletionDate());
 				}
 				return super.getText(element);
 			}

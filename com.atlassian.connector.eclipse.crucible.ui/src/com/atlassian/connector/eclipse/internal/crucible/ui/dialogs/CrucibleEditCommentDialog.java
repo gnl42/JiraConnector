@@ -25,7 +25,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldValue;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -180,7 +180,7 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 		commentBean.setMessage(newComment);
 		commentBean.getCustomFields().clear();
 		commentBean.getCustomFields().putAll(customFieldSelections);
-		commentBean.setAuthor(new UserBean(client.getUserName()));
+		commentBean.setAuthor(new User(client.getUserName()));
 		commentBean.setDefectRaised(defect);
 		if (commentBean.isDraft() && shouldPostIfDraft) {
 			commentBean.setDraft(false);

@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.tests.util;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import java.util.Date;
 import java.util.Set;
@@ -123,7 +123,7 @@ public class MockBambooBuild implements BambooBuild {
 		return false;
 	}
 
-	public ServerData getServer() {
+	public ConnectionCfg getServer() {
 		return null;
 	}
 

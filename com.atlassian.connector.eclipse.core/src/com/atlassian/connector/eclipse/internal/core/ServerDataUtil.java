@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.core;
 
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
+import com.atlassian.connector.commons.api.ConnectionCfg;
 
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
@@ -26,7 +26,7 @@ public final class ServerDataUtil {
 	/**
 	 * public for testing
 	 */
-	public static ServerData getServerData(AbstractWebLocation location, TaskRepository taskRepository,
+	public static ConnectionCfg getServerData(AbstractWebLocation location, TaskRepository taskRepository,
 			boolean isTemporary) {
 
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
@@ -37,7 +37,7 @@ public final class ServerDataUtil {
 			password = credentials.getPassword();
 		}
 
-		return new ServerData(taskRepository.getRepositoryLabel(), isTemporary ? null : "temporary", username,
-				password, location.getUrl());
+		return new ConnectionCfg(taskRepository.getRepositoryLabel() + (isTemporary ? "-temporary" : ""),
+				location.getUrl(), username, password);
 	}
 }

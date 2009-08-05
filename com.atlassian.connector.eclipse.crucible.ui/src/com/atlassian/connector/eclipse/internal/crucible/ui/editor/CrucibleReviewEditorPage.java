@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
@@ -27,13 +29,11 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.Crucibl
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.CrucibleReviewFilesPart;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ExpandablePart;
 import com.atlassian.connector.eclipse.ui.forms.IReflowRespectingPart;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
-import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -41,7 +41,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.crucible.api.model.notification.CrucibleNotification;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -605,11 +604,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 						client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override
-							public Review run(CrucibleServerFacade server, ServerData serverCfg,
+							public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
 								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-								return server.submitReview(serverCfg, new PermIdBean(permId));
+								return server.submitReview(serverCfg, new PermId(permId));
 							}
 						});
 						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
@@ -635,11 +634,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 						client.execute(new CrucibleRemoteOperation<Object>(monitor, getTaskRepository()) {
 							@Override
-							public Object run(CrucibleServerFacade server, ServerData serverCfg,
+							public Object run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
 								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-								server.completeReview(serverCfg, new PermIdBean(permId), false);
+								server.completeReview(serverCfg, new PermId(permId), false);
 								return null;
 							}
 						});
@@ -666,11 +665,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 						client.execute(new CrucibleRemoteOperation<Object>(monitor, getTaskRepository()) {
 							@Override
-							public Object run(CrucibleServerFacade server, ServerData serverCfg,
+							public Object run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
 								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-								server.completeReview(serverCfg, new PermIdBean(permId), true);
+								server.completeReview(serverCfg, new PermId(permId), true);
 								return null;
 							}
 						});
@@ -697,11 +696,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 						client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override
-							public Review run(CrucibleServerFacade server, ServerData serverCfg,
+							public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
 								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-								return server.recoverReview(serverCfg, new PermIdBean(permId));
+								return server.recoverReview(serverCfg, new PermId(permId));
 							}
 						});
 						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
@@ -728,10 +727,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						final String currentUser = CrucibleUiUtil.getCurrentUserName(review);
 						client.execute(new CrucibleRemoteOperation<Object>(monitor, getTaskRepository()) {
 							@Override
-							public Object run(CrucibleServerFacade server, ServerData serverCfg,
+							public Object run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
-								PermId permId = new PermIdBean(CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId()));
+								PermId permId = new PermId(CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId()));
 								server.addReviewers(serverCfg, permId, Collections.singleton(currentUser));
 								return review;
 							}
@@ -763,10 +762,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 						review = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override
-							public Review run(CrucibleServerFacade server, ServerData serverCfg,
+							public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
-								PermId permId = new PermIdBean(CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId()));
+								PermId permId = new PermId(CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId()));
 								return server.approveReview(serverCfg, permId);
 							}
 						});
@@ -806,11 +805,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 							client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 								@Override
-								public Review run(CrucibleServerFacade server, ServerData serverCfg,
+								public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 										IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 										ServerPasswordNotProvidedException {
 									String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-									return server.abandonReview(serverCfg, new PermIdBean(permId));
+									return server.abandonReview(serverCfg, new PermId(permId));
 								}
 							});
 							review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);
@@ -837,11 +836,11 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 					protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
 						client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 							@Override
-							public Review run(CrucibleServerFacade server, ServerData serverCfg,
+							public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 									IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
 									ServerPasswordNotProvidedException {
 								String permId = CrucibleUtil.getPermIdFromTaskId(getTask().getTaskId());
-								return server.reopenReview(serverCfg, new PermIdBean(permId));
+								return server.reopenReview(serverCfg, new PermId(permId));
 							}
 						});
 						review = client.getReview(getTaskRepository(), getTask().getTaskId(), true, monitor);

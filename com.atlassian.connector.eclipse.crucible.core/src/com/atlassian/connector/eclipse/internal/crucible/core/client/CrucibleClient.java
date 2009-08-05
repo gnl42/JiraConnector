@@ -11,16 +11,17 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapper;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
-import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
+import com.atlassian.theplugin.commons.crucible.api.model.PermId;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -28,7 +29,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiLoginException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -63,13 +63,13 @@ public class CrucibleClient {
 
 	private AbstractWebLocation location;
 
-	private ServerData crucibleServerCfg;
+	private ConnectionCfg crucibleServerCfg;
 
-	private final CrucibleServerFacade crucibleServer;
+	private final CrucibleServerFacade2 crucibleServer;
 
 	private final ReviewCache cachedReviewManager;
 
-	public CrucibleClient(AbstractWebLocation location, ServerData serverCfg, CrucibleServerFacade crucibleServer,
+	public CrucibleClient(AbstractWebLocation location, ConnectionCfg serverCfg, CrucibleServerFacade2 crucibleServer,
 			CrucibleClientData data, ReviewCache cachedReviewManager) {
 		this.location = location;
 		this.clientData = data;
@@ -78,11 +78,11 @@ public class CrucibleClient {
 		this.cachedReviewManager = cachedReviewManager;
 	}
 
-	public ServerData getServerData() {
+	public ConnectionCfg getServerData() {
 		return crucibleServerCfg;
 	}
 
-	public void setCrucibleServerCfg(ServerData crucibleServerCfg) {
+	public void setCrucibleServerCfg(ConnectionCfg crucibleServerCfg) {
 		this.crucibleServerCfg = crucibleServerCfg;
 	}
 
@@ -141,14 +141,15 @@ public class CrucibleClient {
 	private void updateServer() {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
-			crucibleServerCfg = crucibleServerCfg.withCredentials(credentials.getUserName(), credentials.getPassword());
+			crucibleServerCfg = new ConnectionCfg(crucibleServerCfg.getId(), crucibleServerCfg.getUrl(),
+					credentials.getUserName(), credentials.getPassword());
 		}
 	}
 
 	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
 		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
-			public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 				server.testServerConnection(serverCfg);
 				return null;
@@ -161,10 +162,10 @@ public class CrucibleClient {
 
 		return execute(new CrucibleRemoteOperation<TaskData>(monitor, taskRepository) {
 			@Override
-			public TaskData run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public TaskData run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 				String permId = CrucibleUtil.getPermIdFromTaskId(taskId);
-				Review review = server.getReview(serverCfg, new PermIdBean(permId));
+				Review review = server.getReview(serverCfg, new PermId(permId));
 
 				int metricsVersion = review.getMetricsVersion();
 				if (cachedReviewManager != null && !cachedReviewManager.hasMetrics(metricsVersion)) {
@@ -193,7 +194,7 @@ public class CrucibleClient {
 			final TaskDataCollector resultCollector, IProgressMonitor monitor) throws CoreException {
 		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
-			public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 				TaskRepository taskRepository = getTaskRepository();
 				if (!CrucibleUtil.isFilterDefinition(query)) {
@@ -300,7 +301,7 @@ public class CrucibleClient {
 	public void updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
 		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
-			public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving Crucible projects");
 				List<CrucibleProject> projects = server.getProjects(serverCfg);

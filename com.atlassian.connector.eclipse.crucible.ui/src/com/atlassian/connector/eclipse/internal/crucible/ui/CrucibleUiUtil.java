@@ -27,7 +27,6 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
@@ -68,8 +67,8 @@ public final class CrucibleUiUtil {
 	}
 
 	public static TaskRepository getCrucibleTaskRepository(Review review) {
-		if (review != null && review instanceof ReviewBean) {
-			String repositoryUrl = ((ReviewBean) review).getServerUrl();
+		if (review != null) {
+			String repositoryUrl = review.getServerUrl();
 			if (repositoryUrl != null) {
 				return getCrucibleTaskRepository(repositoryUrl);
 			}
@@ -126,6 +125,24 @@ public final class CrucibleUiUtil {
 	public static CrucibleCachedUser getCurrentCachedUser(Review review) {
 		TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
 		return getCachedUser(getCurrentUserName(repository), repository);
+	}
+
+	private static boolean hasReviewerCompleted(Review review, String username) {
+		try {
+			for (Reviewer r : review.getReviewers()) {
+				if (r.getUserName().equals(username)) {
+					return r.isCompleted();
+				}
+			}
+		} catch (ValueNotYetInitialized e) {
+			// ignore
+		}
+		return false;
+	}
+
+	public static Reviewer createReviewerFromCachedUser(Review review, CrucibleCachedUser user) {
+		boolean completed = hasReviewerCompleted(review, user.getUserName());
+		return new Reviewer(user.getUserName(), user.getDisplayName(), completed);
 	}
 
 	public static String getCurrentUserName(TaskRepository repository) {

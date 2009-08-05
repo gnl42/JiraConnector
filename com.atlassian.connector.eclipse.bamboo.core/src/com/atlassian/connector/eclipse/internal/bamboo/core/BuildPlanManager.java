@@ -216,11 +216,17 @@ public final class BuildPlanManager {
 					break;
 				}
 			}
+
 			//process failed build retrieval
 			if (newBuild.getErrorMessage() != null && newBuild.getStatus() == BuildStatus.UNKNOWN) {
+				final TaskRepository bambooRepo = repositoryManager.getRepository(BambooCorePlugin.CONNECTOR_KIND,
+						newBuild.getServerUrl());
+
+				final String repoName = bambooRepo != null ? bambooRepo.getRepositoryLabel() : newBuild.getServer()
+						.getUrl();
+
 				//log error
-				errorLog.add(newBuild.getPlanKey() + " - " + newBuild.getErrorMessage() + "["
-						+ newBuild.getServer().getName() + "]");
+				errorLog.add(newBuild.getPlanKey() + " - " + newBuild.getErrorMessage() + "[" + repoName + "]");
 				//of there is an old build, used cached information for the failed new build retrieval
 				if (correspondingOldBuild != null) {
 					if (!cachedToAdd.containsKey(correspondingOldBuild.getPlanKey())) {

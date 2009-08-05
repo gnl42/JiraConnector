@@ -11,14 +11,14 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.swt.widgets.Shell;
 
@@ -28,7 +28,7 @@ public class PostDraftCommentAction extends AbstractBackgroundJobReviewAction {
 		super("Publish Comment", review, comment, shell, "Publishing selected comment for review "
 				+ review.getPermId().getId(), CrucibleImages.COMMENT_POST, new RemoteOperation() {
 
-			public void run(CrucibleServerFacade server, ServerData serverCfg) throws CrucibleLoginException,
+			public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg) throws CrucibleLoginException,
 					RemoteApiException, ServerPasswordNotProvidedException {
 				server.publishComment(serverCfg, review.getPermId(), comment.getPermId());
 			}

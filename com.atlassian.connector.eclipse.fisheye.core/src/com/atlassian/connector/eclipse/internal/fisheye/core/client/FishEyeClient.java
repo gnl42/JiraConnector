@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.fisheye.core.client;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.fisheye.FishEyeServerFacade2;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
-import com.atlassian.theplugin.commons.fisheye.FishEyeServerFacade;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiLoginException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,11 +47,11 @@ public class FishEyeClient {
 
 	private AbstractWebLocation location;
 
-	private ServerData serverData;
+	private ConnectionCfg serverData;
 
-	private final FishEyeServerFacade fishEyeServer;
+	private final FishEyeServerFacade2 fishEyeServer;
 
-	public FishEyeClient(AbstractWebLocation location, ServerData serverData, FishEyeServerFacade fishEyeServer,
+	public FishEyeClient(AbstractWebLocation location, ConnectionCfg serverData, FishEyeServerFacade2 fishEyeServer,
 			FishEyeClientData data) {
 		this.location = location;
 		this.clientData = data;
@@ -59,11 +59,11 @@ public class FishEyeClient {
 		this.fishEyeServer = fishEyeServer;
 	}
 
-	public ServerData getServerData() {
+	public ConnectionCfg getServerData() {
 		return serverData;
 	}
 
-	public void setCrucibleServerCfg(ServerData crucibleServerCfg) {
+	public void setCrucibleServerCfg(ConnectionCfg crucibleServerCfg) {
 		this.serverData = crucibleServerCfg;
 	}
 
@@ -123,14 +123,15 @@ public class FishEyeClient {
 	private void updateServer() {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
-			serverData = serverData.withCredentials(credentials.getUserName(), credentials.getPassword());
+			serverData = new ConnectionCfg(serverData.getId(), serverData.getUrl(), credentials.getUserName(),
+					credentials.getPassword());
 		}
 	}
 
 	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
 		execute(new FishEyeRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
-			public Void run(FishEyeServerFacade server, ServerData aServerData, IProgressMonitor monitor)
+			public Void run(FishEyeServerFacade2 server, ConnectionCfg aServerData, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				server.testServerConnection(aServerData);
 				return null;
@@ -149,7 +150,7 @@ public class FishEyeClient {
 	public void updateRepositoryData(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
 		execute(new FishEyeRemoteOperation<Void>(monitor, taskRepository) {
 			@Override
-			public Void run(FishEyeServerFacade server, ServerData aServerData, IProgressMonitor monitor)
+			public Void run(FishEyeServerFacade2 server, ConnectionCfg aServerData, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 
 				monitor.subTask("Retrieving FishEye repositories");

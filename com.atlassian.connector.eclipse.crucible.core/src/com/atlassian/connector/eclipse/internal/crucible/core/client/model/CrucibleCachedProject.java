@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.core.client.model;
 
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
-import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProjectBean;
 
 import java.io.Serializable;
 
@@ -53,11 +52,8 @@ public class CrucibleCachedProject implements Serializable {
 		return name;
 	}
 
-	public CrucibleProjectBean createProjectBeanFromCachedProject() {
-		CrucibleProjectBean project = new CrucibleProjectBean();
-		project.setId(id);
-		project.setName(name);
-		project.setKey(key);
+	public CrucibleProject createProjectBeanFromCachedProject() {
+		CrucibleProject project = new CrucibleProject(id, name, key);
 		return project;
 	}
 

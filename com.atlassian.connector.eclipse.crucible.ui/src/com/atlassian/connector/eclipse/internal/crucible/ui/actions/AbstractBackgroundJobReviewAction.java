@@ -11,18 +11,18 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.theplugin.commons.crucible.CrucibleServerFacade;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.ServerData;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,7 +50,7 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 	private final RemoteOperation remoteOperation;
 
 	protected interface RemoteOperation {
-		void run(CrucibleServerFacade crucibleServerFacade, ServerData crucibleServerCfg)
+		void run(CrucibleServerFacade2 crucibleServerFacade, ConnectionCfg crucibleServerCfg)
 				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
 	}
 
@@ -113,7 +113,7 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 			try {
 				crucibleClient.execute(new CrucibleRemoteOperation<Void>(monitor, getTaskRepository()) {
 					@Override
-					public Void run(CrucibleServerFacade server, ServerData serverCfg, IProgressMonitor monitor)
+					public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						remoteOperation.run(server, serverCfg);
 						return null;

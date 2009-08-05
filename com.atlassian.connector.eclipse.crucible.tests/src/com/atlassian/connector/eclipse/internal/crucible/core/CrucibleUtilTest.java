@@ -19,14 +19,11 @@ import com.atlassian.theplugin.commons.crucible.api.model.CustomFilterBean;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralCommentBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PermId;
-import com.atlassian.theplugin.commons.crucible.api.model.PermIdBean;
 import com.atlassian.theplugin.commons.crucible.api.model.PredefinedFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewerBean;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
-import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
 
 import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
@@ -403,16 +400,16 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testGetTaskIdFromReview() {
-		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
+		Review review = new Review("http://crucible.atlassian.com/cru/");
 		String permId = "CR-5";
 		String expected = "CR%2D_5";
-		PermId id = new PermIdBean(permId);
+		PermId id = new PermId(permId);
 		review.setPermId(id);
 		assertEquals(expected, CrucibleUtil.getTaskIdFromReview(review));
 	}
 
 	public void testIsPartialReview() {
-		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
+		Review review = new Review("http://crucible.atlassian.com/cru/");
 		assertTrue(CrucibleUtil.isPartialReview(review));
 		Set<CrucibleFileInfo> files = new LinkedHashSet<CrucibleFileInfo>();
 		review.setFiles(files);
@@ -420,58 +417,54 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testCreateHash() {
-		Review review1 = new ReviewBean("http://crucible.atlassian.com/cru/");
+		Review review1 = new Review("http://crucible.atlassian.com/cru/");
 		Set<CrucibleAction> actions = new LinkedHashSet<CrucibleAction>();
 		actions.add(CrucibleAction.ABANDON);
 		actions.add(CrucibleAction.APPROVE);
 		review1.setActions(actions);
 		review1.setAllowReviewerToJoin(true);
-		review1.setAuthor(new UserBean("aut"));
+		review1.setAuthor(new User("aut"));
 		review1.setCloseDate(new Date(1L));
 		review1.setCreateDate(new Date(1L));
-		review1.setCreator(new UserBean("cre"));
+		review1.setCreator(new User("cre"));
 		review1.setProjectKey("pro");
 		review1.setDescription("des");
 		Set<CrucibleFileInfo> files = new LinkedHashSet<CrucibleFileInfo>();
 		review1.setFiles(files);
 		review1.setMetricsVersion(5);
-		review1.setModerator(new UserBean("mod"));
+		review1.setModerator(new User("mod"));
 		review1.setName("nam");
-		review1.setPermId(new PermIdBean("per"));
+		review1.setPermId(new PermId("per"));
 		review1.setProjectKey("prj");
 		review1.setRepoName("rep");
 		Set<Reviewer> reviewers = new LinkedHashSet<Reviewer>();
-		ReviewerBean reviewer = new ReviewerBean();
-		reviewer.setUserName("use");
-		reviewer.setCompleted(false);
+		Reviewer reviewer = new Reviewer("use", false);
 		reviewers.add(reviewer);
 		review1.setReviewers(reviewers);
 		review1.setState(State.CLOSED);
 
-		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
+		Review review = new Review("http://crucible.atlassian.com/cru/");
 		actions = new LinkedHashSet<CrucibleAction>();
 		actions.add(CrucibleAction.ABANDON);
 		actions.add(CrucibleAction.APPROVE);
 		review.setActions(actions);
 		review.setAllowReviewerToJoin(true);
-		review.setAuthor(new UserBean("aut"));
+		review.setAuthor(new User("aut"));
 		review.setCloseDate(new Date(1L));
 		review.setCreateDate(new Date(1L));
-		review.setCreator(new UserBean("cre"));
+		review.setCreator(new User("cre"));
 		review.setProjectKey("pro");
 		review.setDescription("des");
 		files = new LinkedHashSet<CrucibleFileInfo>();
 		review.setFiles(files);
 		review.setMetricsVersion(5);
-		review.setModerator(new UserBean("mod"));
+		review.setModerator(new User("mod"));
 		review.setName("nam");
-		review.setPermId(new PermIdBean("per"));
+		review.setPermId(new PermId("per"));
 		review.setProjectKey("prj");
 		review.setRepoName("rep");
 		reviewers = new LinkedHashSet<Reviewer>();
-		reviewer = new ReviewerBean();
-		reviewer.setUserName("use");
-		reviewer.setCompleted(false);
+		reviewer = new Reviewer("use", false);
 		reviewers.add(reviewer);
 		review.setReviewers(reviewers);
 		review.setState(State.CLOSED);
@@ -512,13 +505,13 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.createHash(review) == CrucibleUtil.createHash(review1));
 
 		//test for unequal reviews
-		review1.setAuthor(new UserBean("new"));
+		review1.setAuthor(new User("new"));
 		assertTrue(CrucibleUtil.createHash(review) != CrucibleUtil.createHash(review1));
 	}
 
 	public void testCanAddCommentToReview() {
 
-		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
+		Review review = new Review("http://crucible.atlassian.com/cru/");
 		assertFalse(CrucibleUtil.canAddCommentToReview(review));
 
 		Set<CrucibleAction> actions = new LinkedHashSet<CrucibleAction>();
@@ -534,7 +527,7 @@ public class CrucibleUtilTest extends TestCase {
 	}
 
 	public void testIsReviewComplete() {
-		Review review = new ReviewBean("http://crucible.atlassian.com/cru/");
+		Review review = new Review("http://crucible.atlassian.com/cru/");
 		review.setState(State.ABANDONED);
 		assertTrue(CrucibleUtil.isCompleted(review));
 
@@ -568,28 +561,29 @@ public class CrucibleUtilTest extends TestCase {
 		String username = "username";
 		String username2 = "username2";
 
-		Review review = new ReviewBean(repositoryUrl);
+		Review review = new Review(repositoryUrl);
 
 		Set<Reviewer> reviewers = new HashSet<Reviewer>();
 		review.setReviewers(reviewers);
 
 		assertFalse(CrucibleUtil.isUserCompleted(username, review));
 
-		ReviewerBean reviewer = new ReviewerBean();
-		reviewer.setUserName(username);
+		Reviewer reviewer = new Reviewer(username, false);
 		reviewers.add(reviewer);
 		review.setReviewers(reviewers);
 
 		assertFalse(CrucibleUtil.isUserCompleted(username, review));
 
-		reviewer.setCompleted(true);
+		reviewer = new Reviewer(username, true);
+		reviewers.clear();
+		reviewers.add(reviewer);
+		review.setReviewers(reviewers);
 
 		assertTrue(CrucibleUtil.isUserCompleted(username, review));
 
 		assertFalse(CrucibleUtil.isUserCompleted(username2, review));
 
-		ReviewerBean reviewer2 = new ReviewerBean();
-		reviewer2.setUserName(username2);
+		Reviewer reviewer2 = new Reviewer(username2, false);
 		reviewers.add(reviewer);
 		reviewers.add(reviewer2);
 		review.setReviewers(reviewers);
@@ -601,7 +595,7 @@ public class CrucibleUtilTest extends TestCase {
 
 	public void testVersionedCommentDeepEquals() {
 		VersionedCommentBean c1 = new VersionedCommentBean();
-		c1.setAuthor(new UserBean("sminto"));
+		c1.setAuthor(new User("sminto"));
 		c1.setCreateDate(new Date(2L));
 		c1.setDraft(true);
 		c1.setMessage("testing message");
@@ -609,7 +603,7 @@ public class CrucibleUtilTest extends TestCase {
 		c1.setToEndLine(12);
 
 		VersionedCommentBean c2 = new VersionedCommentBean();
-		c2.setAuthor(new UserBean("sminto"));
+		c2.setAuthor(new User("sminto"));
 		c2.setCreateDate(new Date(2L));
 		c2.setDraft(true);
 		c2.setMessage("testing message");
@@ -619,7 +613,7 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
 
 		VersionedCommentBean r1 = new VersionedCommentBean();
-		r1.setAuthor(new UserBean("sminto"));
+		r1.setAuthor(new User("sminto"));
 		r1.setCreateDate(new Date(2L));
 		r1.setDraft(true);
 		r1.setMessage("testing message");
@@ -628,7 +622,7 @@ public class CrucibleUtilTest extends TestCase {
 		r1.setReply(true);
 
 		VersionedCommentBean r2 = new VersionedCommentBean();
-		r2.setAuthor(new UserBean("sminto"));
+		r2.setAuthor(new User("sminto"));
 		r2.setCreateDate(new Date(2L));
 		r2.setDraft(true);
 		r2.setMessage("testing message");
@@ -651,13 +645,13 @@ public class CrucibleUtilTest extends TestCase {
 
 	public void testGeneralCommentDeepEquals() {
 		GeneralCommentBean c1 = new GeneralCommentBean();
-		c1.setAuthor(new UserBean("sminto"));
+		c1.setAuthor(new User("sminto"));
 		c1.setCreateDate(new Date(2L));
 		c1.setDraft(true);
 		c1.setMessage("testing message");
 
 		GeneralCommentBean c2 = new GeneralCommentBean();
-		c2.setAuthor(new UserBean("sminto"));
+		c2.setAuthor(new User("sminto"));
 		c2.setCreateDate(new Date(2L));
 		c2.setDraft(true);
 		c2.setMessage("testing message");
@@ -665,14 +659,14 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.areGeneralCommentsDeepEquals(c1, c2));
 
 		GeneralCommentBean r1 = new GeneralCommentBean();
-		r1.setAuthor(new UserBean("sminto"));
+		r1.setAuthor(new User("sminto"));
 		r1.setCreateDate(new Date(2L));
 		r1.setDraft(true);
 		r1.setMessage("testing message");
 		r1.setReply(true);
 
 		GeneralCommentBean r2 = new GeneralCommentBean();
-		r2.setAuthor(new UserBean("sminto"));
+		r2.setAuthor(new User("sminto"));
 		r2.setCreateDate(new Date(2L));
 		r2.setDraft(true);
 		r2.setMessage("testing message");
@@ -699,7 +693,7 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
 
 		VersionedCommentBean c1 = new VersionedCommentBean();
-		c1.setAuthor(new UserBean("sminto"));
+		c1.setAuthor(new User("sminto"));
 		c1.setCreateDate(new Date(2L));
 		c1.setDraft(true);
 		c1.setMessage("testing message");
@@ -707,7 +701,7 @@ public class CrucibleUtilTest extends TestCase {
 		c1.setToEndLine(12);
 
 		VersionedCommentBean c2 = new VersionedCommentBean();
-		c2.setAuthor(new UserBean("sminto"));
+		c2.setAuthor(new User("sminto"));
 		c2.setCreateDate(new Date(2L));
 		c2.setDraft(true);
 		c2.setMessage("testing message");
@@ -720,7 +714,7 @@ public class CrucibleUtilTest extends TestCase {
 		assertTrue(CrucibleUtil.areCrucibleFilesDeepEqual(f1, f2));
 
 		VersionedCommentBean r1 = new VersionedCommentBean();
-		r1.setAuthor(new UserBean("sminto"));
+		r1.setAuthor(new User("sminto"));
 		r1.setCreateDate(new Date(2L));
 		r1.setDraft(true);
 		r1.setMessage("testing message");
@@ -729,7 +723,7 @@ public class CrucibleUtilTest extends TestCase {
 		r1.setReply(true);
 
 		VersionedCommentBean r2 = new VersionedCommentBean();
-		r2.setAuthor(new UserBean("sminto"));
+		r2.setAuthor(new User("sminto"));
 		r2.setCreateDate(new Date(2L));
 		r2.setDraft(true);
 		r2.setMessage("testing message");

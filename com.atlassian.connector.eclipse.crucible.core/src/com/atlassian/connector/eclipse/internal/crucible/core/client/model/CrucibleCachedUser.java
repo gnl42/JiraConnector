@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.core.client.model;
 
 import com.atlassian.theplugin.commons.crucible.api.model.User;
-import com.atlassian.theplugin.commons.crucible.api.model.UserBean;
 
 import java.io.Serializable;
 
@@ -47,7 +46,7 @@ public class CrucibleCachedUser implements Serializable {
 	}
 
 	public User createUserFromCachedUser() {
-		return new UserBean(userName, displayName);
+		return new User(userName, displayName);
 	}
 
 	@Override

@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core.client;
 
+import com.atlassian.connector.commons.api.BambooServerFacade2;
 import com.atlassian.connector.eclipse.internal.core.client.RemoteOperation;
-import com.atlassian.theplugin.commons.bamboo.BambooServerFacade;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
-public abstract class BambooRemoteOperation<T> extends RemoteOperation<T, BambooServerFacade> {
+public abstract class BambooRemoteOperation<T> extends RemoteOperation<T, BambooServerFacade2> {
 
 	public BambooRemoteOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
 		super(monitor, taskRepository);

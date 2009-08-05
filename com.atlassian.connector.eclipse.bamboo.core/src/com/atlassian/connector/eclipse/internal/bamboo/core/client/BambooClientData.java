@@ -48,8 +48,7 @@ public class BambooClientData implements Serializable {
 		Iterator<BambooPlan> plansIterator = plans.iterator();
 		for (int i = 0; i < plans.size(); i++) {
 			BambooPlan plan = plansIterator.next();
-			cachedPlans.add(new BambooCachedPlan(plan.getPlanName(), plan.getPlanKey(), plan.isFavourite(),
-					plan.isEnabled()));
+			cachedPlans.add(new BambooCachedPlan(plan.getName(), plan.getKey(), plan.isFavourite(), plan.isEnabled()));
 		}
 	}
 }

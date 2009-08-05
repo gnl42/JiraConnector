@@ -14,10 +14,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
-import com.atlassian.theplugin.commons.crucible.api.model.ReviewerBean;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -50,29 +48,10 @@ public class ReviewerSelectionDialog extends Dialog {
 		selectedReviewers = new HashSet<Reviewer>();
 		allReviewers = new HashSet<Reviewer>();
 		for (CrucibleCachedUser user : CrucibleUiUtil.getCachedUsers(review)) {
-			ReviewerBean reviewer = createReviewerFromCachedUser(user);
+			Reviewer reviewer = CrucibleUiUtil.createReviewerFromCachedUser(review, user);
+			selectedReviewers.add(reviewer);
 			allReviewers.add(reviewer);
 		}
-	}
-
-	private ReviewerBean createReviewerFromCachedUser(CrucibleCachedUser user) {
-		ReviewerBean reviewer = new ReviewerBean();
-		reviewer.setDisplayName(user.getDisplayName());
-		reviewer.setUserName(user.getUserName());
-		boolean completed = false;
-		try {
-			for (Reviewer r : review.getReviewers()) {
-				if (r.getUserName().equals(reviewer.getUserName())) {
-					completed = r.isCompleted();
-					selectedReviewers.add(reviewer);
-					break;
-				}
-			}
-		} catch (ValueNotYetInitialized e) {
-			// ignore
-		}
-		reviewer.setCompleted(completed);
-		return reviewer;
 	}
 
 	@Override
