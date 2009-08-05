@@ -41,9 +41,7 @@ import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.mylyn.monitor.core.InteractionEvent.Kind;
 
 /**
- * @author Mik Kersten
- * 
- *         TODO: use buffered output stream for better performance?
+ * @author Mik Kersten TODO: use buffered output stream for better performance?
  */
 public class InteractionEventLogger extends AbstractMonitorLog implements IInteractionEventListener {
 
@@ -69,7 +67,8 @@ public class InteractionEventLogger extends AbstractMonitorLog implements IInter
 			String obfuscatedHandle = handleObfuscator.obfuscateHandle(event.getStructureKind(),
 					event.getStructureHandle());
 			event = new InteractionEvent(event.getKind(), event.getStructureKind(), obfuscatedHandle,
-					event.getOriginId(), event.getNavigation(), event.getDelta(), event.getInterestContribution());
+					event.getOriginId(), event.getNavigation(), event.getDelta(), event.getInterestContribution(),
+					event.getDate(), event.getEndDate());
 		}
 		try {
 			if (started) {
