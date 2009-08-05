@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.atlassian.connector.eclipse.monitor.server.model">
+
+	<class name="DailyStatistic" table="daily_statistics">
+		<id name="day" type="date"/>
+		<property name="uploadRequests"></property>
+		<property name="entriesSucceeded"></property>
+		<property name="entriesFailed"></property>
+		<property name="entriesConflicting"></property>
+	</class>
+</hibernate-mapping>

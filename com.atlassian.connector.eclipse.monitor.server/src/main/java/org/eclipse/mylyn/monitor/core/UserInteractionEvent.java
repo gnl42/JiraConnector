@@ -1,19 +1,24 @@
 package org.eclipse.mylyn.monitor.core;
 
+import java.util.Date;
+
 @SuppressWarnings("serial")
 public class UserInteractionEvent extends InteractionEvent {
 
 	private final String uid;
 
 	public UserInteractionEvent(Kind kind, String structureKind, String handle,
-			String originId, String uid) {
-		super(kind, structureKind, handle, originId);
+			String originId, String navigatedRelation, String delta,
+			float interestContribution, Date startDate, Date endDate, String uid) {
+		super(kind, structureKind, handle, originId, navigatedRelation, delta,
+				interestContribution, startDate, endDate);
 		this.uid = uid;
 	}
 
 	public UserInteractionEvent(InteractionEvent ie, String uid) {
 		this(ie.getKind(), ie.getStructureKind(), ie.getStructureHandle(), ie
-				.getOriginId(), uid);
+				.getOriginId(), ie.getNavigation(), ie.getDelta(), ie
+				.getInterestContribution(), ie.getDate(), ie.getEndDate(), uid);
 	}
 
 	public String getUid() {

@@ -4,20 +4,25 @@
    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.eclipse.mylyn.monitor.core">
-	<typedef name="KindAsString" class="com.atlassian.connector.eclipse.monitor.server.hibernate.GenericEnumUserType">
+	<typedef name="KindAsString"
+		class="com.atlassian.connector.eclipse.monitor.server.hibernate.GenericEnumUserType">
 		<param name="enumClass">org.eclipse.mylyn.monitor.core.InteractionEvent$Kind</param>
 		<param name="identifierMethod">toString</param>
 		<param name="valueOfMethod">fromString</param>
 	</typedef>
 
-	<class name="InteractionEvent" table="interaction_events">
-
+	<!--
+		mutable="false" - you won't be able to update or modify entries, we
+		don't care, we only store, and that gives us performance boost
+	-->
+	<class name="UserInteractionEvent" table="user_interaction_events"
+		mutable="false">
 		<composite-id>
 			<key-property name="kind" access="field" type="KindAsString">
 				<column name="kind" not-null="true" />
 			</key-property>
 			<key-property name="structureKind" access="field">
-				<column name="structure_kind" not-null="false" />
+				<column name="structure_kind" not-null="true" />
 			</key-property>
 			<key-property name="structureHandle" access="field">
 				<column name="structure_handle" not-null="true" />
@@ -26,40 +31,7 @@
 				<column name="origin_id" not-null="true" />
 			</key-property>
 			<key-property name="navigation" access="field">
-				<column name="navigation" not-null="false" />
-			</key-property>
-			<key-property name="delta" access="field">
-				<column name="delta" not-null="true" />
-			</key-property>
-			<key-property name="interestContribution" access="field">
-				<column name="interest_contribution" not-null="true" />
-			</key-property>
-			<key-property name="date" access="field">
-				<column name="date" not-null="true" />
-			</key-property>
-			<key-property name="endDate" access="field">
-				<column name="end_date" not-null="true" />
-			</key-property>
-		</composite-id>
-	</class>
-
-	<class name="UserInteractionEvent" table="user_interaction_events">
-
-		<composite-id>
-			<key-property name="kind" access="field" type="KindAsString">
-				<column name="kind" not-null="true" />
-			</key-property>
-			<key-property name="structureKind" access="field">
-				<column name="structure_kind" not-null="false" />
-			</key-property>
-			<key-property name="structureHandle" access="field">
-				<column name="structure_handle" not-null="true" />
-			</key-property>
-			<key-property name="originId" access="field">
-				<column name="origin_id" not-null="true" />
-			</key-property>
-			<key-property name="navigation" access="field">
-				<column name="navigation" not-null="false" />
+				<column name="navigation" not-null="true" />
 			</key-property>
 			<key-property name="delta" access="field">
 				<column name="delta" not-null="true" />

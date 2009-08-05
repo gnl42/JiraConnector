@@ -34,7 +34,7 @@
 
         <!-- Hibernate XML mapping files -->
         <mapping resource="org/eclipse/mylyn/monitor/core/package.hbm.xml"/>
-    
+        <mapping resource="com/atlassian/connector/eclipse/monitor/server/model/package.hbm.xml"/>
     </session-factory>
 
 </hibernate-configuration>

@@ -11,10 +11,10 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.mylyn.monitor.core.UserInteractionEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
@@ -27,7 +27,7 @@ public class UsageDataUtil {
 	}
 
 	public static final XStream xs;
-	private static Log log = LogFactory.getLog(UploadServlet.class);
+	private static final Logger log = LoggerFactory.getLogger(UploadServlet.class);
 
 	static {
 		xs = new XStream();
@@ -66,6 +66,8 @@ public class UsageDataUtil {
 			final String uid = file.getName().substring(0, firstDot);
 			
 			while((ze = zip.getNextEntry()) != null) {
+				log.debug(String.format("Processing %s", ze.getName()));
+				
 				if (ze.isDirectory()) continue;
 				if (!ze.getName().endsWith(".xml")) continue;
 				
