@@ -14,9 +14,6 @@ package com.atlassian.connector.eclipse.internal.monitor.usage;
 
 import java.util.Collection;
 
-import com.atlassian.connector.eclipse.monitor.usage.AbstractStudyBackgroundPage;
-import com.atlassian.connector.eclipse.monitor.usage.AbstractStudyQuestionnairePage;
-
 /**
  * @author Mik Kersten
  * @author Leah Findlater
@@ -27,10 +24,6 @@ public class StudyParameters {
 
 	private String description = UiUsageMonitorPlugin.DEFAULT_DESCRIPTION;
 
-	private AbstractStudyQuestionnairePage questionnairePage = null;
-
-	private AbstractStudyBackgroundPage backgroundPage = null;
-
 	private String acceptedUrlList = UiUsageMonitorPlugin.DEFAULT_ACCEPTED_URL_LIST;
 
 	private String useContactField = UiUsageMonitorPlugin.DEFAULT_CONTACT_CONSENT_FIELD;
@@ -40,8 +33,6 @@ public class StudyParameters {
 	private String version = UiUsageMonitorPlugin.DEFAULT_VERSION;
 
 	private Collection<UsageCollector> usageCollectors;
-
-	private Collection<FormParameters> forms;
 
 	public String getFormsConsent() {
 		return formsConsent;
@@ -60,26 +51,6 @@ public class StudyParameters {
 	public void setDescription(String description) {
 		if (description != null) {
 			this.description = description;
-		}
-	}
-
-	public AbstractStudyQuestionnairePage getQuestionnairePage() {
-		return questionnairePage;
-	}
-
-	public void setQuestionnairePage(AbstractStudyQuestionnairePage questionnairePage) {
-		if (questionnairePage != null) {
-			this.questionnairePage = questionnairePage;
-		}
-	}
-
-	public AbstractStudyBackgroundPage getBackgroundPage() {
-		return backgroundPage;
-	}
-
-	public void setBackgroundPage(AbstractStudyBackgroundPage backgroundPage) {
-		if (backgroundPage != null) {
-			this.backgroundPage = backgroundPage;
 		}
 	}
 
@@ -125,10 +96,6 @@ public class StudyParameters {
 
 	public void setUsageCollectors(Collection<UsageCollector> usageCollectors) {
 		this.usageCollectors = usageCollectors;
-	}
-
-	public void setForms(Collection<FormParameters> forms) {
-		this.forms = forms;
 	}
 
 	public Collection<UsageCollector> getUsageCollectors() {

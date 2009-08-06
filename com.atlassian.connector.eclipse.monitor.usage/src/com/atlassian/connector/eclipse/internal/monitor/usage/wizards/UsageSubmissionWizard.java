@@ -23,8 +23,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
-import com.atlassian.connector.eclipse.monitor.usage.AbstractStudyBackgroundPage;
-import com.atlassian.connector.eclipse.monitor.usage.AbstractStudyQuestionnairePage;
 
 /**
  * A wizard for uploading the Mylyn statistics to a website
@@ -45,30 +43,14 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 
 	private final boolean failed = false;
 
-	private boolean displayBackgroundPage = false;
-
 	private final File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
 
 	private UsageUploadWizardPage uploadPage;
 
-	// private GetNewUserIdPage getUidPage;
-
-	private AbstractStudyQuestionnairePage questionnairePage;
-
-	private AbstractStudyBackgroundPage backgroundPage;
-
-	private boolean performUpload = true;
-
 	public UsageSubmissionWizard() {
 		super();
 		setTitles();
-		init(true);
-	}
-
-	public UsageSubmissionWizard(boolean performUpload) {
-		super();
-		setTitles();
-		init(performUpload);
+		init();
 	}
 
 	private void setTitles() {
@@ -77,25 +59,11 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 		super.setWindowTitle(Messages.UsageSubmissionWizard_0);
 	}
 
-	private void init(boolean performUpload) {
-		this.performUpload = performUpload;
+	private void init() {
 		setNeedsProgressMonitor(true);
 		uploadPage = new UsageUploadWizardPage(this);
 
-		if (UiUsageMonitorPlugin.getDefault().isBackgroundEnabled()) {
-			AbstractStudyBackgroundPage page = UiUsageMonitorPlugin.getDefault()
-					.getStudyParameters()
-					.getBackgroundPage();
-			backgroundPage = page;
-		}
-		if (UiUsageMonitorPlugin.getDefault().isQuestionnaireEnabled() && performUpload) {
-			AbstractStudyQuestionnairePage page = UiUsageMonitorPlugin.getDefault()
-					.getStudyParameters()
-					.getQuestionnairePage();
-			questionnairePage = page;
-		}
 		super.setForcePreviousAndNextButtons(true);
-
 	}
 
 	//private File questionnaireFile = null;
@@ -104,18 +72,6 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
-		if (!performUpload) {
-			return true;
-		}
-
-		/*if (UiUsageMonitorPlugin.getDefault().isQuestionnaireEnabled() && performUpload && questionnairePage != null) {
-			questionnaireFile = questionnairePage.createFeedbackFile();
-		}
-		if (UiUsageMonitorPlugin.getDefault().isBackgroundEnabled() && performUpload && displayBackgroundPage
-				&& backgroundPage != null) {
-			backgroundFile = backgroundPage.createFeedbackFile();
-		}*/
-
 		Job j = new UsageDataUploadJob(true);
 		j.setPriority(Job.DECORATE);
 		j.schedule();
@@ -124,11 +80,7 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean canFinish() {
-		if (!performUpload) {
-			return true;// getUidPage.isPageComplete();
-		} else {
-			return this.getContainer().getCurrentPage() == uploadPage || !performUpload;
-		}
+		return this.getContainer().getCurrentPage() == uploadPage;
 	}
 
 	public UsageUploadWizardPage getUploadPage() {
@@ -145,19 +97,7 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 
 	@Override
 	public void addPages() {
-		if (UiUsageMonitorPlugin.getDefault().isQuestionnaireEnabled() && performUpload && questionnairePage != null) {
-			addPage(questionnairePage);
-		}
-		if (performUpload) {
-			addPage(uploadPage);
-		}
-	}
-
-	public void addBackgroundPage() {
-		if (UiUsageMonitorPlugin.getDefault().isBackgroundEnabled() && backgroundPage != null) {
-			addPage(backgroundPage);
-			displayBackgroundPage = true;
-		}
+		addPage(uploadPage);
 	}
 
 	public String getMonitorFileName() {

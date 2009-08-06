@@ -25,8 +25,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 
-import com.atlassian.connector.eclipse.monitor.usage.AbstractStudyBackgroundPage;
-import com.atlassian.connector.eclipse.monitor.usage.AbstractStudyQuestionnairePage;
 import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
 class MonitorUsageExtensionPointReader {
@@ -69,8 +67,6 @@ class MonitorUsageExtensionPointReader {
 
 	private final Collection<UsageCollector> usageCollectors = new ArrayList<UsageCollector>();
 
-	private final Collection<FormParameters> forms = new ArrayList<FormParameters>();
-
 	private Collection<IMonitorActivator> monitors;
 
 	public Collection<UsageCollector> getUsageCollectors() {
@@ -92,8 +88,6 @@ class MonitorUsageExtensionPointReader {
 						for (IConfigurationElement element : elements) {
 							if (element.getName().compareTo(ELEMENT_COLLECTOR) == 0) {
 								readUsageCollector(element);
-							} else if (element.getName().compareTo(ELEMENT_UI) == 0) {
-								readForms(element);
 							} else if (element.getName().compareTo(ELEMENT_MONITOR) == 0) {
 								readMonitor(element);
 							}
@@ -121,58 +115,6 @@ class MonitorUsageExtensionPointReader {
 		usageCollectors.add(new UsageCollector(element.getContributor().getName(), uploadUrl, detailsUrl, filters));
 	}
 
-	private void readForms(IConfigurationElement element) throws CoreException {
-		FormParameters form = new FormParameters();
-
-		form.setCustomizingPlugin(element.getContributor().getName());
-		form.setTitle(element.getAttribute(ELEMENT_UI_TITLE));
-		form.setDescription(element.getAttribute(ELEMENT_UI_DESCRIPTION));
-
-		if (element.getAttribute(ELEMENT_UI_UPLOAD_PROMPT) != null) {
-			Integer uploadInt = new Integer(element.getAttribute(ELEMENT_UI_UPLOAD_PROMPT));
-			form.setTransmitPromptPeriod(HOUR * 24 * uploadInt);
-		}
-
-		form.setUseContactField(Boolean.parseBoolean(element.getAttribute(ELEMENT_UI_CONTACT_CONSENT_FIELD)));
-
-		try {
-			if (element.getAttribute(ELEMENT_UI_QUESTIONNAIRE_PAGE) != null) {
-				Object questionnaireObject = element.createExecutableExtension(ELEMENT_UI_QUESTIONNAIRE_PAGE);
-				if (questionnaireObject instanceof AbstractStudyQuestionnairePage) {
-					AbstractStudyQuestionnairePage page = (AbstractStudyQuestionnairePage) questionnaireObject;
-					form.setQuestionnairePage(page);
-				}
-			} else {
-				UiUsageMonitorPlugin.getDefault().setQuestionnaireEnabled(false);
-			}
-		} catch (Throwable e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-					Messages.UiUsageMonitorPlugin_50, e));
-			UiUsageMonitorPlugin.getDefault().setQuestionnaireEnabled(false);
-		}
-
-		try {
-			if (element.getAttribute(ELEMENT_UI_BACKGROUND_PAGE) != null) {
-				Object backgroundObject = element.createExecutableExtension(ELEMENT_UI_BACKGROUND_PAGE);
-				if (backgroundObject instanceof AbstractStudyBackgroundPage) {
-					AbstractStudyBackgroundPage page = (AbstractStudyBackgroundPage) backgroundObject;
-					form.setBackgroundPage(page);
-					UiUsageMonitorPlugin.getDefault().setBackgroundEnabled(true);
-				}
-			} else {
-				UiUsageMonitorPlugin.getDefault().setBackgroundEnabled(false);
-			}
-		} catch (Throwable e) {
-			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-					Messages.UiUsageMonitorPlugin_51, e));
-			UiUsageMonitorPlugin.getDefault().setBackgroundEnabled(false);
-		}
-
-		form.setFormsConsent("/" + element.getAttribute(ELEMENT_UI_CONSENT_FORM)); //$NON-NLS-1$
-
-		forms.add(form);
-	}
-
 	private void readMonitor(IConfigurationElement element) throws CoreException {
 		if (element.getAttribute(ELEMENT_MONITOR_ACTIVATOR) != null) {
 			Object activator = element.createExecutableExtension(ELEMENT_MONITOR_ACTIVATOR);
@@ -184,9 +126,5 @@ class MonitorUsageExtensionPointReader {
 
 	public Collection<IMonitorActivator> getMonitors() {
 		return monitors;
-	}
-
-	public Collection<FormParameters> getForms() {
-		return forms;
 	}
 }

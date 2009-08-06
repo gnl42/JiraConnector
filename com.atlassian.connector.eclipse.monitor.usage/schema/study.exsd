@@ -14,7 +14,6 @@
       <complexType>
          <sequence>
             <element ref="usageCollector"/>
-            <element ref="ui"/>
             <element ref="monitors"/>
          </sequence>
          <attribute name="point" type="string" use="required">
@@ -75,69 +74,6 @@
             </annotation>
          </attribute>
          <attribute name="detailsUrl" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="ui">
-      <complexType>
-         <attribute name="title" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="description" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="daysBetweenUpload" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="questionnairePage" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="java" basedOn="com.atlassian.connector.eclipse.monitor.usage.AbstractStudyQuestionnairePage:"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="backgroundPage" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="java"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="consentForm" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="resource"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="useContactField" type="boolean">
             <annotation>
                <documentation>
                   

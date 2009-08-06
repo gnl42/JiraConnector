@@ -262,7 +262,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 					MonitorUsageExtensionPointReader extensionReader = new MonitorUsageExtensionPointReader();
 
 					studyParameters.setUsageCollectors(extensionReader.getUsageCollectors());
-					studyParameters.setForms(extensionReader.getForms());
 					// ------- moved from synch start
 
 					Collection<IMonitorActivator> monitors = extensionReader.getMonitors();
