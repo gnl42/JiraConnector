@@ -81,7 +81,7 @@
          point="com.atlassian.connector.eclipse.monitor.usage.study">
          <usageCollector
          	uploadUrl="http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload" eventFilters="com.atlassian,org.eclipse.mylyn"
-         	detailsUrl="http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+IntelliJ+Connector"/>
+         	detailsUrl="http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector"/>
          <!--ui
          	title="Mylyn User Study Example"
          	daysBetweenUpload="6"
