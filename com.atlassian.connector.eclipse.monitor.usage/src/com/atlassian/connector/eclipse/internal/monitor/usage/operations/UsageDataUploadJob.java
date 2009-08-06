@@ -33,13 +33,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
@@ -52,11 +49,7 @@ public final class UsageDataUploadJob extends Job {
 
 	public static final String SUBMISSION_LOG_FILE_NAME = "submittedUsageLogs.txt"; //$NON-NLS-1$
 
-	private boolean failed = false;
-
 	private final boolean ifTimeElapsed;
-
-	private boolean failedAgain;
 
 	private static int processedFileCount = 1;
 
@@ -107,68 +100,17 @@ public final class UsageDataUploadJob extends Job {
 	}
 
 	private void performUpload(IProgressMonitor monitor) {
-		failed = false;
-		/*
-		FIXME: decide if we want to enable it?
-		 
-		if (UiUsageMonitorPlugin.getDefault().isBackgroundEnabled() && performUpload && backgroundFile != null) {
-			upload(backgroundFile, BACKGROUND, monitor);
-
-			if (failed) {
-				failed = false;
-			}
-
-			if (backgroundFile.exists()) {
-				backgroundFile.delete();
-			}
-		}
-
-		if (UiUsageMonitorPlugin.getDefault().isQuestionnaireEnabled() && performUpload && questionnaireFile != null) {
-			upload(questionnaireFile, QUESTIONAIRE, monitor);
-
-			if (failed) {
-				failed = false;
-			}
-
-			if (questionnaireFile.exists()) {
-				questionnaireFile.delete();
-			}
-		}*/
-
 		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
 			File zipFile = zipFilesForUpload(collector, monitor);
 			if (zipFile == null) {
 				return;
 			}
 
-			if (!upload(collector, zipFile, STATS, monitor)) {
-				failed = true;
-			}
+			upload(collector, zipFile, STATS, monitor);
 
 			if (zipFile.exists()) {
 				zipFile.delete();
 			}
-		}
-
-		if (failed) {
-			/*
-			 * If this job was re-scheduled (check UiUsageMonitorPlugin#scheduledStatisticsUploadJob)
-			 * we use the same instance again and again. We don't want to annoy people every time upload
-			 * fails so let's show an error dialog box for the first time and then just shut up. 
-			 */
-			if (!failedAgain) {
-				failedAgain = true;
-				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-					public void run() {
-						// popup a dialog telling the user that the upload failed
-						MessageDialog.openError(Display.getCurrent().getActiveShell(),
-								Messages.UsageSubmissionWizard_error_uploading,
-								Messages.UsageSubmissionWizard_some_uploads_failed);
-					}
-				});
-			}
-		} else {
-			failedAgain = false;
 		}
 
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
