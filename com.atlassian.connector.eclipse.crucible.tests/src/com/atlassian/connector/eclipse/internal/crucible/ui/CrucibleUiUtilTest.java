@@ -397,8 +397,8 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		assertEquals(2, usersReceivedSet.size());
 
-		CrucibleCachedProject cachedProjectA = new CrucibleCachedProject("AaA", "AA", "a");
-		CrucibleCachedProject cachedProjectB = new CrucibleCachedProject("BbB", "BB", "b");
+		CrucibleCachedProject cachedProjectA = new CrucibleCachedProject("a", "AaA", "AA");
+		CrucibleCachedProject cachedProjectB = new CrucibleCachedProject("b", "BbB", "BB");
 		assertTrue(usersReceivedSet.contains(cachedProjectA));
 		assertTrue(usersReceivedSet.contains(cachedProjectB));
 	}
