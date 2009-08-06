@@ -15,9 +15,9 @@
       <page 
          name="%preferencePage.name"
          class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.UsageDataPreferencePage"
-         id="org.eclipse.mylyn.monitor.ui.ui.preferences"
+         id="com.atlassian.connector.eclipse.monitor.usage.preferences"
 		 category="%preferencePage.category">
-         <keywordReference id="org.eclipse.mylyn.monitor.ui.keywords"/>
+         <keywordReference id="com.atlassian.connector.eclipse.monitor.usage.keywords"/>
       </page> 
    </extension>
    
@@ -25,7 +25,7 @@
    		point="org.eclipse.ui.keywords">
       <keyword
             label="%keyword.label"
-            id="org.eclipse.mylyn.monitor.ui.keywords"/>
+            id="com.atlassian.connector.eclipse.monitor.usage.keywords"/>
    </extension>
  
 	<extension point="org.eclipse.ui.newWizards">
@@ -35,7 +35,7 @@
             class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard"
             hasPages="true"
             icon="icons/eview16/editor-usage.gif"
-            id="org.eclipse.mylyn.sandbox.wizard.usageSummary"
+            id="com.atlassian.connector.eclipse.monitor.usage.wizard.usageSummary"
             name="%wizard.name"/>
    	</extension>
    
@@ -46,6 +46,7 @@
            name="%editor.name"
            id="com.atlassian.connector.eclipse.monitor.usage.summary.editor"/>
   	</extension>
+  	
     <extension
           point="org.eclipse.core.runtime.preferences">
        <initializer
