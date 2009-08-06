@@ -16,6 +16,9 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 
+/**
+ * @author Steffen Pingel
+ */
 public class WorkLogTableLabelProvider extends ColumnLabelProvider {
 
 	private final JiraTimeFormat format;
