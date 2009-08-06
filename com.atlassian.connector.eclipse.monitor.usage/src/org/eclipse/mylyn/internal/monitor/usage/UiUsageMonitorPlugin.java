@@ -35,6 +35,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.mylyn.commons.core.CoreUtil;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
@@ -271,7 +272,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
 						startMonitoring();
 					} else {
-						if (!suppressConfigurationWizards()) {
+						if (!suppressConfigurationWizards() && !CoreUtil.TEST_MODE) {
 							askUserForPermissionToMonitor();
 						}
 					}
