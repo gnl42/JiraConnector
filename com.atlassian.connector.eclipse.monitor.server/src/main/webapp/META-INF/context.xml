@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<Context path="/" debug="1" reloadable="true"
-	docBase='${catalina.home}/server/webapps/ROOT'>
-	<ResourceLink global='jdbc/eclipseusageDS' name='jdbc/eclipseusageDS'
-		type="javax.sql.Datasource" />
-</Context>
