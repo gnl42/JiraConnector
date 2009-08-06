@@ -7,14 +7,14 @@
          name="%startupAndShutdown.name"
          point="org.eclipse.ui.startup">
       <startup
-            class="org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin$UiUsageMonitorStartup">
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin$UiUsageMonitorStartup">
       </startup>
    </extension>   
     
    <extension point="org.eclipse.ui.preferencePages">
       <page 
          name="%preferencePage.name"
-         class="org.eclipse.mylyn.internal.monitor.usage.preferences.UsageDataPreferencePage"
+         class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.UsageDataPreferencePage"
          id="org.eclipse.mylyn.monitor.ui.ui.preferences"
 		 category="%preferencePage.category">
          <keywordReference id="org.eclipse.mylyn.monitor.ui.keywords"/>
@@ -32,7 +32,7 @@
     	<wizard
             canFinishEarly="false" 
             category="org.eclipse.mylyn.ui.wizards.new"
-            class="org.eclipse.mylyn.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard"
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard"
             hasPages="true"
             icon="icons/eview16/editor-usage.gif"
             id="org.eclipse.mylyn.sandbox.wizard.usageSummary"
@@ -42,14 +42,14 @@
    	<extension point="org.eclipse.ui.editors">
         <editor
            icon="icons/eview16/editor-usage.gif"
-           class="org.eclipse.mylyn.internal.monitor.usage.editors.UsageSummaryReportEditorPart"
+           class="com.atlassian.connector.eclipse.internal.monitor.usage.editors.UsageSummaryReportEditorPart"
            name="%editor.name"
            id="com.atlassian.connector.eclipse.monitor.usage.summary.editor"/>
   	</extension>
     <extension
           point="org.eclipse.core.runtime.preferences">
        <initializer
-             class="org.eclipse.mylyn.internal.monitor.usage.preferences.PreferenceInitializer">
+             class="com.atlassian.connector.eclipse.internal.monitor.usage.preferences.PreferenceInitializer">
        </initializer>
     </extension>
 </plugin>

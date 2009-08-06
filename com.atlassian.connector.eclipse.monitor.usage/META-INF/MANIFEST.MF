@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: com.atlassian.connector.eclipse.monitor.usage;singleton:=true
 Bundle-Version: 3.2.1.qualifier
-Bundle-Activator: org.eclipse.mylyn.internal.monitor.usage.UiUsageMonitorPlugin
+Bundle-Activator: com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -25,10 +25,10 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %Bundle-Vendor
 Export-Package: 
- org.eclipse.mylyn.internal.monitor.usage;x-internal:=true,
- org.eclipse.mylyn.internal.monitor.usage.collectors;x-internal:=true,
- org.eclipse.mylyn.internal.monitor.usage.editors;x-internal:=true,
- org.eclipse.mylyn.internal.monitor.usage.preferences;x-internal:=true,
- org.eclipse.mylyn.internal.monitor.usage.wizards;x-internal:=true,
- org.eclipse.mylyn.monitor.usage
+ com.atlassian.connector.eclipse.internal.monitor.usage;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.monitor.usage.collectors;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.monitor.usage.editors;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.monitor.usage.preferences;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.monitor.usage.wizards;x-internal:=true,
+ com.atlassian.connector.eclipse.monitor.usage
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
