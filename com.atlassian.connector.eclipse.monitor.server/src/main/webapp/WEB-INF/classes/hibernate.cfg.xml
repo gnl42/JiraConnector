@@ -5,7 +5,7 @@
 <hibernate-configuration>
     <session-factory>
     
-        <property name="connection.datasource">java:/comp/env/eclipseusageDS</property>
+        <property name="connection.datasource">java:/comp/env/jdbc/eclipseusageDS</property>
         <property name="connection.autocommit">false</property> 
         
         <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
