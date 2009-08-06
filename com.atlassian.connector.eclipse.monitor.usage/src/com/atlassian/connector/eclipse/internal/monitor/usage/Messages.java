@@ -28,8 +28,6 @@ public class Messages extends NLS {
 
 	public static String UsageSubmissionWizard_some_uploads_failed;
 
-	public static String UiUsageMonitorPlugin_log_filename;
-
 	public static String UiUsageMonitorPlugin_failed_to_start;
 
 	public static String UiUsageMonitorPlugin_16;

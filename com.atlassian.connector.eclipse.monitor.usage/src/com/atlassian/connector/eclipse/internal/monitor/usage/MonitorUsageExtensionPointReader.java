@@ -29,8 +29,6 @@ import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
 class MonitorUsageExtensionPointReader {
 
-	private static final long HOUR = 3600 * 1000;
-
 	public static final String EXTENSION_ID_STUDY = "com.atlassian.connector.eclipse.monitor.usage.study"; //$NON-NLS-1$
 
 	public static final String ELEMENT_COLLECTOR = "usageCollector"; //$NON-NLS-1$

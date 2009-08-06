@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.mylyn.monitor.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="com.atlassian.connector.eclipse.monitor.usage" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.mylyn.monitor.ui" id="study" name="Mylyn Monitor Study"/>
+         <meta.schema plugin="com.atlassian.connector.eclipse.monitor.usage" id="study" name="Usage Feedback"/>
       </appInfo>
       <documentation>
          Provides a mechanism to connect a user study plug-in with the Mylyn Monitors usage monitoring facilities.  For more information please see: http://wiki.eclipse.org/index.php/Mylyn_Integrator_Reference#Monitor_API
@@ -112,8 +112,5 @@
          See the org.eclipse.mylyn.examples.monitor.study plug-in for a reference implementation.
       </documentation>
    </annotation>
-
-
-
 
 </schema>

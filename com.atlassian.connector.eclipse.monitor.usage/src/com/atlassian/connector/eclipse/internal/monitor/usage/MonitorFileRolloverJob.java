@@ -48,8 +48,7 @@ public class MonitorFileRolloverJob extends Job implements IJobChangeListener {
 
 	private static final String JOB_LABEL = Messages.MonitorFileRolloverJob_title;
 
-	// XXX: needs to be the same as NAME_DATA_DIR in org.eclipse.mylyn.tasks.ui.TasksUIPlugin
-	private static final String NAME_DATA_DIR = ".mylyn"; //$NON-NLS-1$
+	private static final String NAME_DATA_DIR = ".atlassian-connector-for-eclipse"; //$NON-NLS-1$
 
 	private static final String DIRECTORY_MONITOR_BACKUP = "monitor"; //$NON-NLS-1$
 

@@ -77,29 +77,11 @@ import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
  */
 public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
-	public static final String PREF_USER_ID = "org.eclipse.mylyn.user.id"; //$NON-NLS-1$
-
 	private static final long HOUR = 3600 * 1000;
-
-	public static final String DEFAULT_TITLE = Messages.UiUsageMonitorPlugin_title;
-
-	public static final String DEFAULT_DESCRIPTION = Messages.UiUsageMonitorPlugin_description;
 
 	public static final long DEFAULT_DELAY_BETWEEN_TRANSMITS = 7 * 24 * HOUR;
 
-	public static final String DEFAULT_ETHICS_FORM = "doc/study-ethics.html"; //$NON-NLS-1$
-
-	public static final String DEFAULT_VERSION = ""; //$NON-NLS-1$
-
-	public static final String DEFAULT_UPLOAD_SERVLET_ID = "/GetUserIDServlet"; //$NON-NLS-1$
-
-	public static final String DEFAULT_ACCEPTED_URL_LIST = ""; //$NON-NLS-1$
-
-	public static final String DEFAULT_CONTACT_CONSENT_FIELD = "false"; //$NON-NLS-1$
-
-	public static final String ID_UI_PLUGIN = "org.eclipse.mylyn.ui"; //$NON-NLS-1$
-
-	public static final String MONITOR_LOG_NAME = Messages.UiUsageMonitorPlugin_log_filename;
+	public static final String MONITOR_LOG_NAME = "monitor-log";
 
 	public static final String ID_PLUGIN = "com.atlassian.connector.eclipse.monitor.usage"; //$NON-NLS-1$
 
@@ -426,7 +408,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	public File getLogFilesRootDir() {
-		return new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + "/.metadata/.mylyn"); //$NON-NLS-1$
+		return new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+				+ "/.metadata/.atlassian-connector-for-eclipse"); //$NON-NLS-1$
 	}
 
 	/**
