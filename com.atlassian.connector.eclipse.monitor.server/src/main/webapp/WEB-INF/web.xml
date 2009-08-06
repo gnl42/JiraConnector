@@ -14,7 +14,7 @@
 			com.atlassian.connector.eclipse.monitor.server.servlet.UploadServlet</servlet-class>
 		<init-param>
 			<param-name>descriptionUrl</param-name>
-			<param-value>http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+IntelliJ+Connector</param-value>
+			<param-value>http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector</param-value>
 		</init-param>
 	</servlet>
 
