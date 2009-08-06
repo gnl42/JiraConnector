@@ -31,7 +31,11 @@ public class WorkLogTableLabelProvider extends ColumnLabelProvider {
 			return attachment.getAuthor();
 		case 1:
 			// XXX use EditorUtil
-			return attachment.getCreated().toString();
+			if (attachment.getStartDate() != null) {
+				return attachment.getStartDate().toString();
+			} else {
+				return ""; //$NON-NLS-1$
+			}
 		case 2:
 			return format.format(attachment.getTimeSpent());
 		case 3:
