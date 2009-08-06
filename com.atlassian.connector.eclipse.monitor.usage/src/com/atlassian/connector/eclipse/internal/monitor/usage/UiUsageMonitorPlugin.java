@@ -79,10 +79,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public static final String PREF_USER_ID = "org.eclipse.mylyn.user.id"; //$NON-NLS-1$
 
-	public static String VERSION = "1.0"; //$NON-NLS-1$
-
-	public static String UPLOAD_FILE_LABEL = "USAGE"; //$NON-NLS-1$
-
 	private static final long HOUR = 3600 * 1000;
 
 	public static final String DEFAULT_TITLE = Messages.UiUsageMonitorPlugin_title;
@@ -602,14 +598,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public void setBackgroundEnabled(boolean backgroundEnabled) {
 		this.backgroundEnabled = backgroundEnabled;
-	}
-
-	public boolean usingContactField() {
-		if (studyParameters.getUseContactField().equals("true")) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	public String getUserId() {

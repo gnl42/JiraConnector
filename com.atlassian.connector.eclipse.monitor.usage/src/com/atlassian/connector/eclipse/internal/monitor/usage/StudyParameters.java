@@ -20,79 +20,7 @@ import java.util.Collection;
  */
 public class StudyParameters {
 
-	private String title = UiUsageMonitorPlugin.DEFAULT_TITLE;
-
-	private String description = UiUsageMonitorPlugin.DEFAULT_DESCRIPTION;
-
-	private String acceptedUrlList = UiUsageMonitorPlugin.DEFAULT_ACCEPTED_URL_LIST;
-
-	private String useContactField = UiUsageMonitorPlugin.DEFAULT_CONTACT_CONSENT_FIELD;
-
-	private String formsConsent = UiUsageMonitorPlugin.DEFAULT_ETHICS_FORM;
-
-	private String version = UiUsageMonitorPlugin.DEFAULT_VERSION;
-
 	private Collection<UsageCollector> usageCollectors;
-
-	public String getFormsConsent() {
-		return formsConsent;
-	}
-
-	public void setFormsConsent(String formsConsent) {
-		if (formsConsent != null) {
-			this.formsConsent = formsConsent;
-		}
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		if (description != null) {
-			this.description = description;
-		}
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		if (title != null) {
-			this.title = title;
-		}
-	}
-
-	public String getAcceptedUrlList() {
-		return this.acceptedUrlList;
-	}
-
-	public void setAcceptedUrlList(String acceptedUrlList) {
-		if (acceptedUrlList != null) {
-			this.acceptedUrlList = acceptedUrlList;
-		}
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		if (version != null) {
-			this.version = version;
-		}
-	}
-
-	public String getUseContactField() {
-		return useContactField;
-	}
-
-	public void setUseContactField(String useContactField) {
-		if (useContactField != null) {
-			this.useContactField = useContactField;
-		}
-	}
 
 	public void setUsageCollectors(Collection<UsageCollector> usageCollectors) {
 		this.usageCollectors = usageCollectors;
