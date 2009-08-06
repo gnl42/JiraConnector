@@ -91,7 +91,7 @@
    
    <extension point="org.eclipse.ui.newWizards">
       <wizard
-            class="org.eclipse.mylyn.internal.monitor.usage.wizards.UsageSubmissionWizard"
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard"
             icon="icons/eview16/wizard-feedback.gif"
             id="com.atlassian.connector.eclipse.ui.UsageSubmissionWizard"
             name="Usage Data Submission for Atlassian Connector for Eclipse">
@@ -100,7 +100,7 @@
    
    <extension point="org.eclipse.ui.newWizards">
       <wizard
-            class="org.eclipse.mylyn.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard"
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard"
             icon="icons/eview16/wizard-feedback.gif"
             id="com.atlassian.connector.eclipse.ui.NewUsageSummaryEditorWizard"
             name="Usage Data Report for Atlassian Connector for Eclipse">
