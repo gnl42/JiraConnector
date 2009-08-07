@@ -36,7 +36,7 @@ public class MockBambooClient extends BambooClient {
 	private final Map<TaskRepository, Object> responses = new HashMap<TaskRepository, Object>();
 
 	public MockBambooClient() {
-		super(null, null, null, null);
+		super(null, null, null, null, null);
 	}
 
 	@Override

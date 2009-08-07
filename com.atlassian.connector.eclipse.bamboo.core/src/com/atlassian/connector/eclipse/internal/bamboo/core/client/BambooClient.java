@@ -13,25 +13,18 @@ package com.atlassian.connector.eclipse.internal.bamboo.core.client;
 
 import com.atlassian.connector.commons.api.BambooServerFacade2;
 import com.atlassian.connector.commons.api.ConnectionCfg;
-import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
+import com.atlassian.connector.eclipse.internal.core.client.AbstractConnectorClient;
+import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
-import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
-import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
-import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
-import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.util.Collection;
@@ -42,84 +35,14 @@ import java.util.Collection;
  * @author Shawn Minto
  * @author Wojciech Seliga
  */
-public class BambooClient {
+public class BambooClient extends AbstractConnectorClient<BambooServerFacade2> {
 
 	private BambooClientData clientData;
 
-	private final AbstractWebLocation location;
-
-	private ConnectionCfg serverCfg;
-
-	private final BambooServerFacade2 server;
-
 	public BambooClient(AbstractWebLocation location, ConnectionCfg serverCfg, BambooServerFacade2 server,
-			BambooClientData data) {
-		this.location = location;
+			BambooClientData data, HttpSessionCallbackImpl callback) {
+		super(location, serverCfg, server, callback);
 		this.clientData = data;
-		this.serverCfg = serverCfg;
-		this.server = server;
-	}
-
-	public ConnectionCfg getServerCfg() {
-		return serverCfg;
-	}
-
-	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
-		execute(new BambooRemoteOperation<Object>(monitor, taskRepository) {
-
-			@Override
-			public Object run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
-					throws RemoteApiException, ServerPasswordNotProvidedException {
-				server.testServerConnection(serverCfg);
-				return null;
-			}
-		}, true);
-	}
-
-	private <T> T execute(BambooRemoteOperation<T> op) throws CoreException {
-		return execute(op, true);
-	}
-
-	private <T> T execute(BambooRemoteOperation<T> op, boolean promptForCredentials) throws CoreException {
-		IProgressMonitor monitor = op.getMonitor();
-		TaskRepository taskRepository = op.getTaskRepository();
-
-		try {
-			if (taskRepository.getCredentials(AuthenticationType.REPOSITORY).getPassword().length() < 1
-					&& promptForCredentials) {
-				try {
-					location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-				} catch (UnsupportedRequestException e) {
-					// ignore
-				}
-			}
-
-			monitor.beginTask("Connecting to Bamboo", IProgressMonitor.UNKNOWN);
-			updateServer(taskRepository);
-			return op.run(server, serverCfg, op.getMonitor());
-		} catch (CrucibleLoginException e) {
-			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
-		} catch (RemoteApiException e) {
-			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, e.getMessage(), e));
-		} catch (ServerPasswordNotProvidedException e) {
-			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
-		} catch (OperationCanceledException e) {
-			throw new CoreException(new Status(IStatus.CANCEL, BambooCorePlugin.PLUGIN_ID,
-					RepositoryStatus.OPERATION_CANCELLED, "Operation Canceled", e));
-		} finally {
-			monitor.done();
-		}
-	}
-
-	private void updateServer(TaskRepository taskrepository) {
-		AuthenticationCredentials credentials = taskrepository.getCredentials(AuthenticationType.REPOSITORY);
-		if (credentials != null) {
-			String newUserName = taskrepository.getCredentials(AuthenticationType.REPOSITORY).getUserName();
-			String newPassword = taskrepository.getCredentials(AuthenticationType.REPOSITORY).getPassword();
-			serverCfg = new ConnectionCfg(serverCfg.getId(), newUserName, newPassword, serverCfg.getUrl());
-		}
 	}
 
 	public boolean hasRepositoryData() {
@@ -134,11 +57,11 @@ public class BambooClient {
 			throws CoreException {
 		this.clientData = execute(new BambooRemoteOperation<BambooClientData>(monitor, taskRepository) {
 			@Override
-			public BambooClientData run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+			public BambooClientData run(BambooServerFacade2 server, ConnectionCfg connectionCfg, IProgressMonitor monitor)
 					throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving plans");
 				BambooClientData newClientData = new BambooClientData();
-				Collection<BambooPlan> projects = server.getPlanList(serverCfg);
+				Collection<BambooPlan> projects = server.getPlanList(connectionCfg);
 				newClientData.setPlans(projects);
 				return newClientData;
 			}

@@ -16,11 +16,10 @@ import static org.easymock.EasyMock.replay;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
+import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
+import com.atlassian.connector.eclipse.internal.core.client.RemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.ReviewCache;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.configuration.ConfigurationFactory;
@@ -49,7 +48,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.source.LineRange;
-import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import java.lang.reflect.Field;
@@ -573,23 +571,18 @@ public class AddCommentRemoteOperationTest extends TestCase {
 
 	private class MockCrucibleClient extends CrucibleClient {
 
-		private ConnectionCfg serverCfg;
+		private final ConnectionCfg serverCfg;
 
-		private CrucibleServerFacade2 facade;
-
-		public MockCrucibleClient(AbstractWebLocation location, ConnectionCfg serverCfg,
-				CrucibleServerFacade2 crucibleServer, CrucibleClientData data, ReviewCache cachedReviewManager) {
-			super(location, serverCfg, crucibleServer, data, cachedReviewManager);
-		}
+		private final CrucibleServerFacade2 facade;
 
 		public MockCrucibleClient(CrucibleServerFacade2 facade, ConnectionCfg serverCfg) {
-			super(null, serverCfg, facade, null, null);
+			super(null, serverCfg, facade, null, null, new HttpSessionCallbackImpl());
 			this.serverCfg = serverCfg;
 			this.facade = facade;
 		}
 
 		@Override
-		public <T> T execute(CrucibleRemoteOperation<T> op) throws CoreException {
+		public <T> T execute(RemoteOperation<T, CrucibleServerFacade2> op) throws CoreException {
 			try {
 				return op.run(facade, serverCfg, op.getMonitor());
 			} catch (CrucibleLoginException e) {

@@ -13,6 +13,8 @@ package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
+import com.atlassian.connector.eclipse.internal.core.client.AbstractConnectorClient;
+import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleTaskMapper;
@@ -28,25 +30,17 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
-import com.atlassian.theplugin.commons.remoteapi.RemoteApiLoginException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
-import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
-import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -57,104 +51,20 @@ import java.util.List;
  * @author Thomas Ehrnhoefer
  * @author Wojciech Seliga
  */
-public class CrucibleClient {
+public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade2> {
 
 	private final CrucibleClientData clientData;
 
-	private AbstractWebLocation location;
-
-	private ConnectionCfg crucibleServerCfg;
-
-	private final CrucibleServerFacade2 crucibleServer;
+	private final ConnectionCfg crucibleServerCfg;
 
 	private final ReviewCache cachedReviewManager;
 
 	public CrucibleClient(AbstractWebLocation location, ConnectionCfg serverCfg, CrucibleServerFacade2 crucibleServer,
-			CrucibleClientData data, ReviewCache cachedReviewManager) {
-		this.location = location;
+			CrucibleClientData data, ReviewCache cachedReviewManager, HttpSessionCallbackImpl callback) {
+		super(location, serverCfg, crucibleServer, callback);
 		this.clientData = data;
 		this.crucibleServerCfg = serverCfg;
-		this.crucibleServer = crucibleServer;
 		this.cachedReviewManager = cachedReviewManager;
-	}
-
-	public ConnectionCfg getServerData() {
-		return crucibleServerCfg;
-	}
-
-	public void setCrucibleServerCfg(ConnectionCfg crucibleServerCfg) {
-		this.crucibleServerCfg = crucibleServerCfg;
-	}
-
-	public <T> T execute(CrucibleRemoteOperation<T> op) throws CoreException {
-		IProgressMonitor monitor = op.getMonitor();
-		TaskRepository taskRepository = op.getTaskRepository();
-		try {
-
-			if (taskRepository.getCredentials(AuthenticationType.REPOSITORY).getPassword().length() < 1) {
-				try {
-					location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-				} catch (UnsupportedRequestException e) {
-					// ignore
-				}
-			}
-
-			monitor.beginTask("Connecting to Crucible", IProgressMonitor.UNKNOWN);
-			updateServer();
-			return op.run(crucibleServer, crucibleServerCfg, op.getMonitor());
-		} catch (CrucibleLoginException e) {
-			return executeRetry(op, monitor, e);
-		} catch (RemoteApiLoginException e) {
-			if (e.getCause() instanceof IOException) {
-				throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
-			}
-			return executeRetry(op, monitor, e);
-		} catch (ServerPasswordNotProvidedException e) {
-			return executeRetry(op, monitor, e);
-		} catch (RemoteApiException e) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID, e.getMessage(), e));
-		} finally {
-			monitor.done();
-		}
-	}
-
-	private <T> T executeRetry(CrucibleRemoteOperation<T> op, IProgressMonitor monitor, Exception e)
-			throws CoreException {
-		try {
-			location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-		} catch (UnsupportedRequestException ex) {
-			throw new CoreException(new Status(IStatus.ERROR, CrucibleCorePlugin.PLUGIN_ID,
-					RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
-		}
-		return execute(op);
-	}
-
-	public String getUserName() {
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		if (credentials != null) {
-			return credentials.getUserName();
-		} else {
-			return null;
-		}
-	}
-
-	private void updateServer() {
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		if (credentials != null) {
-			crucibleServerCfg = new ConnectionCfg(crucibleServerCfg.getId(), crucibleServerCfg.getUrl(),
-					credentials.getUserName(), credentials.getPassword());
-		}
-	}
-
-	public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
-		execute(new CrucibleRemoteOperation<Void>(monitor, taskRepository) {
-			@Override
-			public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
-					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-				server.testServerConnection(serverCfg);
-				return null;
-			}
-		});
 	}
 
 	public TaskData getTaskData(TaskRepository taskRepository, final String taskId, IProgressMonitor monitor)
@@ -228,12 +138,12 @@ public class CrucibleClient {
 			Review review) throws RemoteApiException, ServerPasswordNotProvidedException {
 		String taskId = CrucibleUtil.getTaskIdFromReview(review);
 		if (CrucibleUtil.isPartialReview(review)) {
-			review = crucibleServer.getReview(crucibleServerCfg, review.getPermId());
+			review = facade.getReview(crucibleServerCfg, review.getPermId());
 		}
 
 		int metricsVersion = review.getMetricsVersion();
 		if (cachedReviewManager != null && !cachedReviewManager.hasMetrics(metricsVersion)) {
-			cachedReviewManager.setMetrics(metricsVersion, crucibleServer.getMetrics(crucibleServerCfg, metricsVersion));
+			cachedReviewManager.setMetrics(metricsVersion, facade.getMetrics(crucibleServerCfg, metricsVersion));
 		}
 
 		boolean hasChanged = cacheReview(taskId, review);
@@ -328,11 +238,6 @@ public class CrucibleClient {
 			return cachedReviewManager.updateCachedReview(location.getUrl(), taskId, review);
 		}
 		return false;
-	}
-
-	// needed so that the ui location can replace the default one
-	public void updateLocation(AbstractWebLocation newLocation) {
-		this.location = newLocation;
 	}
 
 }

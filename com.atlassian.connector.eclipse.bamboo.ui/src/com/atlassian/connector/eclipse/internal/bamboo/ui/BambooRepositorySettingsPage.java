@@ -78,7 +78,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 				client.validate(monitor, taskRepository);
 			} finally {
 				if (client != null) {
-					clientManager.deleteTempClient(client.getServerCfg());
+					clientManager.deleteTempClient(client.getServerData());
 				}
 			}
 		}

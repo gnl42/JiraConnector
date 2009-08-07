@@ -97,20 +97,20 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
 		ConnectionCfg serverCfg = getServerData(location, taskRepository, false);
-		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
+		HttpSessionCallbackImpl callback = getHttpSessionCallback(location, serverCfg);
 		CrucibleServerFacade2 crucibleServer = getCrucibleServer(callback);
 
-		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager);
+		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager, callback);
 	}
 
 	public CrucibleClient createTempClient(TaskRepository taskRepository, CrucibleClientData data) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
 		ConnectionCfg serverCfg = getServerData(location, taskRepository, true);
-		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
+		HttpSessionCallbackImpl callback = getHttpSessionCallback(location, serverCfg);
 		CrucibleServerFacade2 crucibleServer = getCrucibleServer(callback);
 
-		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager);
+		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager, callback);
 	}
 
 	public FishEyeClient createTempFishEyeClient(TaskRepository taskRepository, FishEyeClientData data) {
@@ -143,7 +143,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 
 	}
 
-	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
+	private HttpSessionCallbackImpl getHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
 		updateHttpSessionCallback(location, serverCfg);
 		return clientCallback;
 	}
