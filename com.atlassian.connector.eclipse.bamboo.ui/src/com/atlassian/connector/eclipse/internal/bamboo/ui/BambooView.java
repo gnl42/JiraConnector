@@ -411,7 +411,7 @@ public class BambooView extends ViewPart {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							try {
-								getSite().getPage().showView(ITasksUiConstants.ID_VIEW_TASKS);
+								getSite().getPage().showView(ITasksUiConstants.ID_VIEW_REPOSITORIES);
 							} catch (PartInitException e) {
 								StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 										"Failed to show Task Repositories View"));
