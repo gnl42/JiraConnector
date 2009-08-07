@@ -24,6 +24,7 @@ Export-Package: com.atlassian.connector.eclipse.internal.core;
    com.atlassian.connector.eclipse.crucible.core,
    com.atlassian.connector.eclipse.crucible.ui,
    com.atlassian.connector.eclipse.fisheye.core,
+   com.atlassian.connector.eclipse.fisheye.ui,
    com.atlassian.connector.eclipse.ui"
 Bundle-Activator: com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin
 Bundle-ClassPath: .

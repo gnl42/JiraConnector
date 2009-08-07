@@ -8,13 +8,14 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskMapping;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
+import org.eclipse.mylyn.tasks.ui.TaskRepositoryLocationUiFactory;
 import org.eclipse.mylyn.tasks.ui.wizards.ITaskRepositoryPage;
 
 public class FishEyeRepositoryConnectorUi extends AbstractRepositoryConnectorUi {
 
 	public FishEyeRepositoryConnectorUi() {
-//		FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager().setTaskRepositoryLocationFactory(
-//				new TaskRepositoryLocationUiFactory());
+		FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager().setTaskRepositoryLocationFactory(
+				new TaskRepositoryLocationUiFactory());
 	}
 
 	@Override

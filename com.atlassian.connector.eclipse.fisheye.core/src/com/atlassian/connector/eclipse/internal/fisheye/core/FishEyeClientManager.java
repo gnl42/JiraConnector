@@ -66,10 +66,10 @@ public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient,
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
 		ConnectionCfg serverCfg = getServerData(location, taskRepository, isTemporary);
-		HttpSessionCallback callback = getHttpSessionCallback(location, serverCfg);
+		HttpSessionCallbackImpl callback = getHttpSessionCallback(location, serverCfg);
 		FishEyeServerFacade2 fishEyeServer = getFishEyeServerFacade(callback);
 
-		return new FishEyeClient(location, serverCfg, fishEyeServer, data);
+		return new FishEyeClient(location, serverCfg, fishEyeServer, data, callback);
 	}
 
 	private synchronized FishEyeServerFacade2 getFishEyeServerFacade(HttpSessionCallback callback) {
@@ -93,7 +93,7 @@ public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient,
 
 	}
 
-	private HttpSessionCallback getHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
+	private HttpSessionCallbackImpl getHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
 		updateHttpSessionCallback(location, serverCfg);
 		return clientCallback;
 	}
