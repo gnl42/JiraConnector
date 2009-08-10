@@ -11,10 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedRepository;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
+import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -51,7 +51,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 
 	private String selectedRepository;
 
-	private Set<CrucibleCachedRepository> cachedRepositories;
+	private Set<Repository> cachedRepositories;
 
 	private ComboViewer comboViewer;
 
@@ -100,7 +100,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 				if (comboViewer.getSelection() instanceof IStructuredSelection) {
 					Object selected = ((IStructuredSelection) comboViewer.getSelection()).getFirstElement();
 					if (cachedRepositories.contains(selected)) {
-						selectedRepository = ((CrucibleCachedRepository) selected).getName();
+						selectedRepository = ((Repository) selected).getName();
 					}
 				}
 				validatePage();

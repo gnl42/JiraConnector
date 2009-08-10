@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedRepository;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
+import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -39,16 +39,15 @@ import java.util.Set;
  */
 public class ComboViewerSelectionDialog extends Dialog {
 
-	private CrucibleCachedRepository selection;
+	private Repository selection;
 
 	private final String title;
 
 	private final String labelText;
 
-	private final Set<CrucibleCachedRepository> inputObjects;
+	private final Set<Repository> inputObjects;
 
-	public ComboViewerSelectionDialog(Shell parentShell, String shellTitle, String labelText,
-			Set<CrucibleCachedRepository> input) {
+	public ComboViewerSelectionDialog(Shell parentShell, String shellTitle, String labelText, Set<Repository> input) {
 		super(parentShell);
 		this.title = shellTitle;
 		this.labelText = labelText;
@@ -76,7 +75,7 @@ public class ComboViewerSelectionDialog extends Dialog {
 				if (comboViewer.getSelection() instanceof IStructuredSelection) {
 					Object selected = ((IStructuredSelection) comboViewer.getSelection()).getFirstElement();
 					if (inputObjects.contains(selected)) {
-						selection = (CrucibleCachedRepository) selected;
+						selection = (Repository) selected;
 					}
 				}
 				getButton(IDialogConstants.OK_ID).setEnabled(selection != null);
@@ -96,7 +95,7 @@ public class ComboViewerSelectionDialog extends Dialog {
 		return control;
 	}
 
-	public CrucibleCachedRepository getSelection() {
+	public Repository getSelection() {
 		return selection;
 	}
 

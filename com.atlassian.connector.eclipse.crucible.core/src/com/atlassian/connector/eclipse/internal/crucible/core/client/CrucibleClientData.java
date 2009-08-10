@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedRepository;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -36,7 +35,7 @@ public class CrucibleClientData implements Serializable {
 
 	private Set<CrucibleProject> cachedProjects;
 
-	private Set<CrucibleCachedRepository> cachedRepositories;
+	private Set<Repository> cachedRepositories;
 
 	public CrucibleClientData() {
 
@@ -47,10 +46,8 @@ public class CrucibleClientData implements Serializable {
 	}
 
 	public void setRepositories(List<Repository> repositories) {
-		cachedRepositories = new HashSet<CrucibleCachedRepository>();
-		for (Repository repository : repositories) {
-			cachedRepositories.add(new CrucibleCachedRepository(repository));
-		}
+		cachedRepositories = new HashSet<Repository>();
+		cachedRepositories.addAll(repositories);
 	}
 
 	public void setUsers(List<User> users) {
@@ -79,11 +76,11 @@ public class CrucibleClientData implements Serializable {
 		}
 	}
 
-	public Set<CrucibleCachedRepository> getCachedRepositories() {
+	public Set<Repository> getCachedRepositories() {
 		if (cachedRepositories != null) {
 			return Collections.unmodifiableSet(cachedRepositories);
 		} else {
-			return Collections.unmodifiableSet(new HashSet<CrucibleCachedRepository>());
+			return Collections.unmodifiableSet(new HashSet<Repository>());
 		}
 	}
 

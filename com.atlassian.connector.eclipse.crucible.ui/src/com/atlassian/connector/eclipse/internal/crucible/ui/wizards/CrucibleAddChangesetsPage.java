@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedRepository;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -19,6 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ComboViewerS
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -217,9 +217,9 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private final TaskRepository taskRepository;
 
-	private Set<CrucibleCachedRepository> cachedRepositories;
+	private Set<Repository> cachedRepositories;
 
-	private final Map<RepositoryInfo, CrucibleCachedRepository> repositoryMappings;
+	private final Map<RepositoryInfo, Repository> repositoryMappings;
 
 	private final Map<RepositoryInfo, ComboViewer> mappingCombos;
 
@@ -246,7 +246,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		setDescription("Select the changesets that should be included in the review.");
 		this.availableLogEntries = new HashMap<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>>();
 		this.selectedLogEntries = new HashMap<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>>();
-		this.repositoryMappings = new HashMap<RepositoryInfo, CrucibleCachedRepository>();
+		this.repositoryMappings = new HashMap<RepositoryInfo, Repository>();
 		this.mappingCombos = new HashMap<RepositoryInfo, ComboViewer>();
 		this.taskRepository = repository;
 		if (logEntries.size() > 0) {
@@ -393,7 +393,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 					cachedRepositories);
 			int returnCode = dialog.open();
 			if (returnCode == IDialogConstants.OK_ID) {
-				CrucibleCachedRepository crucibleRepository = dialog.getSelection();
+				Repository crucibleRepository = dialog.getSelection();
 				repositoryMappings.put(repository, crucibleRepository);
 				repositoriesMappingViewer.setInput(repositoryMappings);
 			}
@@ -797,7 +797,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		return selectedLogEntries;
 	}
 
-	public Map<RepositoryInfo, CrucibleCachedRepository> getRepositoryMappings() {
+	public Map<RepositoryInfo, Repository> getRepositoryMappings() {
 		return repositoryMappings;
 	}
 }
