@@ -80,21 +80,21 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 	private void createCollectorsSection(Composite parent) {
 		final Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
-		group.setText("Usage Data Collectors");
+		group.setText(Messages.UsageDataPreferencePage_collectors);
 		group.setLayout(new GridLayout(1, false));
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		Label info = new Label(group, SWT.NULL);
-		info.setText("Usage Data collected will be sent to following recipients:");
+		info.setText(Messages.UsageDataPreferencePage_sent_to_following_recipients);
 
 		Link details;
 		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
 			final String detailsUrl = collector.getDetailsUrl();
 
 			details = new Link(group, SWT.NULL);
-			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle())
+			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
 					.getHeaders()
-					.get("Bundle-Name")));
+					.get("Bundle-Name"))); //$NON-NLS-1$
 			details.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -127,12 +127,12 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 	private void createLogFileSection(Composite parent) {
 		final Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
-		group.setText(Messages.UsageDataPreferencePage_4);
+		group.setText(Messages.UsageDataPreferencePage_monitoring);
 		group.setLayout(new GridLayout(2, false));
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		enableMonitoring = new Button(group, SWT.CHECK);
-		enableMonitoring.setText(Messages.UsageDataPreferencePage_5);
+		enableMonitoring.setText(Messages.UsageDataPreferencePage_enable_logging_to);
 		enableMonitoring.setSelection(getPreferenceStore().getBoolean(
 				MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
 		enableMonitoring.addSelectionListener(new SelectionListener() {
@@ -154,21 +154,22 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		logFileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		enableObfuscation = new Button(group, SWT.CHECK);
-		enableObfuscation.setText(Messages.UsageDataPreferencePage_8);
+		enableObfuscation.setText(Messages.UsageDataPreferencePage_obfuscate_elements);
 		enableObfuscation.setSelection(getPreferenceStore().getBoolean(
 				MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE));
 		Label obfuscationLablel = new Label(group, SWT.NULL);
-		obfuscationLablel.setText(InteractionEventObfuscator.ENCRYPTION_ALGORITHM + Messages.UsageDataPreferencePage_9);
+		obfuscationLablel.setText(InteractionEventObfuscator.ENCRYPTION_ALGORITHM
+				+ Messages.UsageDataPreferencePage_message_digest);
 	}
 
 	private void createUsageSection(Composite parent) {
 		Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
-		group.setText(Messages.UsageDataPreferencePage_10);
+		group.setText(Messages.UsageDataPreferencePage_usage_feedback);
 		group.setLayout(new GridLayout(2, false));
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		Label events = new Label(group, SWT.NULL);
-		events.setText(Messages.UsageDataPreferencePage_12);
+		events.setText(Messages.UsageDataPreferencePage_events_since_upload);
 		Label logged = new Label(group, SWT.NULL);
 		logged.setText("" + getPreferenceStore().getInt(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS)); //$NON-NLS-1$
 
@@ -179,7 +180,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		enableSubmissionComposite.setLayout(submissionGridLayout);
 		enableSubmission = new Button(enableSubmissionComposite, SWT.CHECK);
 
-		enableSubmission.setText(Messages.UsageDataPreferencePage_14);
+		enableSubmission.setText(Messages.UsageDataPreferencePage_enable_submission_every);
 		enableSubmission.setSelection(getPreferenceStore().getBoolean(
 				MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION));
 		enableSubmission.addSelectionListener(new SelectionListener() {

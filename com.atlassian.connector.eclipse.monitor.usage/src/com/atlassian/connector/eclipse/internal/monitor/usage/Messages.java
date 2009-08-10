@@ -64,25 +64,29 @@ public class Messages extends NLS {
 
 	public static String UiUsageMonitorPlugin_55;
 
+	public static String UsageDataPreferencePage_collectors;
+
 	public static String UsageDataPreferencePage_description;
 
-	public static String UsageDataPreferencePage_10;
+	public static String UsageDataPreferencePage_usage_feedback;
+
+	public static String UsageDataPreferencePage_sent_to_following_recipients;
 
 	public static String UsageDataPreferencePage_11;
 
-	public static String UsageDataPreferencePage_12;
+	public static String UsageDataPreferencePage_events_since_upload;
 
-	public static String UsageDataPreferencePage_14;
+	public static String UsageDataPreferencePage_enable_submission_every;
 
 	public static String UsageDataPreferencePage_16;
 
-	public static String UsageDataPreferencePage_4;
+	public static String UsageDataPreferencePage_monitoring;
 
-	public static String UsageDataPreferencePage_5;
+	public static String UsageDataPreferencePage_enable_logging_to;
 
-	public static String UsageDataPreferencePage_8;
+	public static String UsageDataPreferencePage_obfuscate_elements;
 
-	public static String UsageDataPreferencePage_9;
+	public static String UsageDataPreferencePage_message_digest;
 
 	public static String UsageDataUploadJob_cant_read_files;
 
