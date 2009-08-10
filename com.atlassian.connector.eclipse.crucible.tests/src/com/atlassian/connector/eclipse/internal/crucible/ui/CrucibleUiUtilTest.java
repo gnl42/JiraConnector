@@ -15,7 +15,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
@@ -392,12 +391,12 @@ public class CrucibleUiUtilTest extends TestCase {
 		projects.add(projectB);
 		clientData.setProjects(projects);
 
-		Set<CrucibleCachedProject> usersReceivedSet = CrucibleUiUtil.getCachedProjects(repository);
+		Set<CrucibleProject> usersReceivedSet = CrucibleUiUtil.getCachedProjects(repository);
 
 		assertEquals(2, usersReceivedSet.size());
 
-		CrucibleCachedProject cachedProjectA = new CrucibleCachedProject("a", "AaA", "AA");
-		CrucibleCachedProject cachedProjectB = new CrucibleCachedProject("b", "BbB", "BB");
+		CrucibleProject cachedProjectA = new CrucibleProject("a", "AA", "AaA");
+		CrucibleProject cachedProjectB = new CrucibleProject("b", "BB", "BbB");
 		assertTrue(usersReceivedSet.contains(cachedProjectA));
 		assertTrue(usersReceivedSet.contains(cachedProjectB));
 	}

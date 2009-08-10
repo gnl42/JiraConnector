@@ -15,11 +15,11 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepository
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserSorter;
 import com.atlassian.connector.eclipse.ui.commons.TreeContentProvider;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFilter;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -64,7 +64,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 	private static final User USER_ANY = new User("ANY_USER", ANY);
 
-	private static final CrucibleCachedProject PROJECT_ANY = new CrucibleCachedProject(ANY, ANY, "ANY_PROJECT");
+	private static final CrucibleProject PROJECT_ANY = new CrucibleProject(ANY, "ANY_PROJECT", ANY);
 
 	private Button allRolesButton;
 
@@ -130,8 +130,8 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		projectCombo.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof CrucibleCachedProject) {
-					return ((CrucibleCachedProject) element).getName();
+				if (element instanceof CrucibleProject) {
+					return ((CrucibleProject) element).getName();
 				}
 				return super.getText(element);
 			}
@@ -265,8 +265,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		Set<User> users = new HashSet<User>(getClient().getClientData().getCachedUsers());
 		users.add(USER_ANY);
 
-		Set<CrucibleCachedProject> projects = new HashSet<CrucibleCachedProject>(getClient().getClientData()
-				.getCachedProjects());
+		Set<CrucibleProject> projects = new HashSet<CrucibleProject>(getClient().getClientData().getCachedProjects());
 		projects.add(PROJECT_ANY);
 
 		// TODO add the ANY values and set selections to be what they were before if they exist
@@ -314,7 +313,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		}
 
 		String project = query.getAttribute(CustomFilter.PROJECT);
-		CrucibleCachedProject cachedProject = getCachedProject(project);
+		CrucibleProject cachedProject = getCachedProject(project);
 		if (cachedProject != null) {
 			projectCombo.setSelection(new StructuredSelection(cachedProject));
 		}
@@ -388,14 +387,14 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		return null;
 	}
 
-	private CrucibleCachedProject getCachedProject(String projectKey) {
+	private CrucibleProject getCachedProject(String projectKey) {
 		if (projectKey == null || projectKey.length() == 0) {
 			return PROJECT_ANY;
 		}
 
 		CrucibleClientData clientData = getClient().getClientData();
 		if (clientData != null && clientData.getCachedProjects() != null) {
-			for (CrucibleCachedProject project : clientData.getCachedProjects()) {
+			for (CrucibleProject project : clientData.getCachedProjects()) {
 				if (project.getKey().equals(projectKey)) {
 					return project;
 				}
@@ -472,11 +471,11 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		ISelection selection = projectCombo.getSelection();
 		if (selection instanceof StructuredSelection) {
 			Object obj = ((StructuredSelection) selection).getFirstElement();
-			if (obj instanceof CrucibleCachedProject) {
+			if (obj instanceof CrucibleProject) {
 				if (obj == PROJECT_ANY) {
 					return "";
 				} else {
-					return ((CrucibleCachedProject) obj).getKey();
+					return ((CrucibleProject) obj).getKey();
 				}
 			}
 		}

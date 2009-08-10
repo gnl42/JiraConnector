@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepository
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedRepository;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
@@ -25,6 +24,7 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -258,12 +258,12 @@ public final class CrucibleUiUtil {
 		return repositories;
 	}
 
-	public static Set<CrucibleCachedProject> getCachedProjects(TaskRepository repository) {
+	public static Set<CrucibleProject> getCachedProjects(TaskRepository repository) {
 		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
 		CrucibleClientData clientData = client.getClientData();
-		Set<CrucibleCachedProject> projects;
+		Set<CrucibleProject> projects;
 		if (clientData == null) {
-			projects = new HashSet<CrucibleCachedProject>();
+			projects = new HashSet<CrucibleProject>();
 		} else {
 			projects = clientData.getCachedProjects();
 		}

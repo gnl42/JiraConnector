@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -112,14 +112,13 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	}
 
 	private void preselectDefaultUsers() {
-		Set<CrucibleCachedProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
+		Set<CrucibleProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
 		projectsComboViewer.setInput(cachedProjects);
 		if (cachedProjects.size() > 0) {
 			if (newReview.getCrucibleProject() == null) {
 				projectsComboViewer.setSelection(new StructuredSelection(projectsComboViewer.getElementAt(0)));
 			} else {
-				projectsComboViewer.setSelection(new StructuredSelection(new CrucibleCachedProject(
-						newReview.getCrucibleProject())));
+				projectsComboViewer.setSelection(new StructuredSelection(newReview.getCrucibleProject()));
 			}
 		}
 		Set<User> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
@@ -140,8 +139,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 				moderatorComboViewer.setSelection(new StructuredSelection(newReview.getModerator()));
 			}
 			if (newReview.getCrucibleProject() != null) {
-				projectsComboViewer.setSelection(new StructuredSelection(new CrucibleCachedProject(
-						newReview.getCrucibleProject())));
+				projectsComboViewer.setSelection(new StructuredSelection(newReview.getCrucibleProject()));
 			}
 		}
 	}
@@ -165,13 +163,13 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		projectsComboViewer.setLabelProvider(new CrucibleProjectsLabelProvider());
 		projectsComboViewer.setContentProvider(new CrucibleProjectsContentProvider());
 		projectsComboViewer.setSorter(new ViewerSorter());
-		Set<CrucibleCachedProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
+		Set<CrucibleProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
 		projectsComboViewer.setInput(cachedProjects);
 		projectsComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
 				if (firstElement != null) {
-					newReview.setProject(((CrucibleCachedProject) firstElement).createProjectBeanFromCachedProject());
+					newReview.setProject((CrucibleProject) firstElement);
 					newReview.setProjectKey(newReview.getCrucibleProject().getKey());
 					getWizard().getContainer().updateButtons();
 				}
