@@ -408,8 +408,14 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	public File getLogFilesRootDir() {
-		return new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+		File rootDir = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
 				+ "/.metadata/.atlassian-connector-for-eclipse"); //$NON-NLS-1$
+
+		if (!rootDir.exists()) {
+			rootDir.mkdirs();
+		}
+
+		return rootDir;
 	}
 
 	/**
