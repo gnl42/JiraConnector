@@ -11,11 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -41,13 +41,13 @@ public class ReviewerSelectionDialog extends Dialog {
 
 	private ReviewersSelectionTreePart reviewersSelectionTreePart;
 
-	public ReviewerSelectionDialog(Shell shell, Review review, Set<CrucibleCachedUser> users) {
+	public ReviewerSelectionDialog(Shell shell, Review review, Set<User> users) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.review = review;
 		selectedReviewers = new HashSet<Reviewer>();
 		allReviewers = new HashSet<Reviewer>();
-		for (CrucibleCachedUser user : CrucibleUiUtil.getCachedUsers(review)) {
+		for (User user : CrucibleUiUtil.getCachedUsers(review)) {
 			Reviewer reviewer = CrucibleUiUtil.createReviewerFromCachedUser(review, user);
 			selectedReviewers.add(reviewer);
 			allReviewers.add(reviewer);

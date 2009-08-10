@@ -13,10 +13,10 @@ package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedRepository;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -33,7 +33,7 @@ public class CrucibleClientData implements Serializable {
 
 	private static final long serialVersionUID = 5078330984585994532L;
 
-	private Set<CrucibleCachedUser> cachedUsers;
+	private Set<User> cachedUsers;
 
 	private Set<CrucibleCachedProject> cachedProjects;
 
@@ -55,11 +55,8 @@ public class CrucibleClientData implements Serializable {
 	}
 
 	public void setUsers(List<User> users) {
-		cachedUsers = new HashSet<CrucibleCachedUser>();
-		for (User user : users) {
-			cachedUsers.add(new CrucibleCachedUser(user));
-		}
-
+		cachedUsers = MiscUtil.buildHashSet();
+		cachedUsers.addAll(users);
 	}
 
 	public void setProjects(List<CrucibleProject> projects) {
@@ -77,11 +74,11 @@ public class CrucibleClientData implements Serializable {
 		}
 	}
 
-	public Set<CrucibleCachedUser> getCachedUsers() {
+	public Set<User> getCachedUsers() {
 		if (cachedUsers != null) {
 			return Collections.unmodifiableSet(cachedUsers);
 		} else {
-			return Collections.unmodifiableSet(new HashSet<CrucibleCachedUser>());
+			return Collections.unmodifiableSet(new HashSet<User>());
 		}
 	}
 

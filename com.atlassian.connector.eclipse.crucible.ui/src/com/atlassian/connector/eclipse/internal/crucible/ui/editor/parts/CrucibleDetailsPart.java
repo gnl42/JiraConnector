@@ -16,7 +16,6 @@ import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -246,7 +245,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			createLabelControl(toolkit, parent, labelString);
 		}
 
-		Set<CrucibleCachedUser> users = CrucibleUiUtil.getCachedUsers(crucibleReview);
+		Set<User> users = CrucibleUiUtil.getCachedUsers(crucibleReview);
 
 		Control control;
 		if (readOnly) {
@@ -269,7 +268,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 				public void selectionChanged(SelectionChangedEvent event) {
 					ISelection selection = event.getSelection();
 					if (selection instanceof IStructuredSelection) {
-						CrucibleCachedUser user = ((CrucibleCachedUser) ((IStructuredSelection) selection).getFirstElement());
+						User user = ((User) ((IStructuredSelection) selection).getFirstElement());
 						if (user.getUserName().equals(selectedUser.getUserName())) {
 							changedAttributes.remove(reviewAttributeType);
 						} else {
@@ -280,7 +279,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 				}
 			});
 
-			comboViewer.setSelection(new StructuredSelection(new CrucibleCachedUser(selectedUser)));
+			comboViewer.setSelection(new StructuredSelection(selectedUser));
 			control = combo;
 		}
 		control.setFont(JFaceResources.getDefaultFont());

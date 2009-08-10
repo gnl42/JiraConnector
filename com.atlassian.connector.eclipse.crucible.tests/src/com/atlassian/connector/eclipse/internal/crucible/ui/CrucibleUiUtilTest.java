@@ -16,7 +16,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
@@ -242,12 +241,12 @@ public class CrucibleUiUtilTest extends TestCase {
 		users.add(new User("uC", "userC"));
 		clientData.setUsers(users);
 
-		Set<CrucibleCachedUser> usersReceivedSet = CrucibleUiUtil.getCachedUsers(review);
+		Set<User> usersReceivedSet = CrucibleUiUtil.getCachedUsers(review);
 
 		Set<User> usersExpectedSet = new HashSet<User>(users);
 		assertEquals(usersExpectedSet.size(), usersReceivedSet.size());
 
-		for (CrucibleCachedUser cachedUser : usersReceivedSet) {
+		for (User cachedUser : usersReceivedSet) {
 			for (User user : users) {
 				if (user.getUserName().equals(cachedUser.getUserName())) {
 					assertEquals(user.getDisplayName(), cachedUser.getDisplayName());
@@ -289,17 +288,17 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repo);
 		CrucibleClientData clientData = client.getClientData();
-		User userA = new User("a", "userA");
+		User userA = new User("userA", "a");
 		User userB = new User("user", "u");
 		List<User> users = new ArrayList<User>();
 		users.add(userA);
 		users.add(userB);
 		clientData.setUsers(users);
 
-		assertFalse(new CrucibleCachedUser("userA", "a").equals(CrucibleUiUtil.getCurrentCachedUser(repo)));
-		assertFalse(new CrucibleCachedUser(userA).equals(CrucibleUiUtil.getCurrentCachedUser(repo)));
-		assertEquals(new CrucibleCachedUser("u", "user"), CrucibleUiUtil.getCurrentCachedUser(repo));
-		assertEquals(new CrucibleCachedUser(userB), CrucibleUiUtil.getCurrentCachedUser(repo));
+		assertFalse(new User("userA", "a").equals(CrucibleUiUtil.getCurrentCachedUser(repo)));
+		assertFalse(userA.equals(CrucibleUiUtil.getCurrentCachedUser(repo)));
+		assertEquals(new User("user", "u"), CrucibleUiUtil.getCurrentCachedUser(repo));
+		assertEquals(userB, CrucibleUiUtil.getCurrentCachedUser(repo));
 	}
 
 	public void testGetCurrentCachedUserReview() {
@@ -308,17 +307,17 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repo);
 		CrucibleClientData clientData = client.getClientData();
-		User userA = new User("a", "userA");
+		User userA = new User("userA", "a");
 		User userB = new User("user", "u");
 		List<User> users = new ArrayList<User>();
 		users.add(userA);
 		users.add(userB);
 		clientData.setUsers(users);
 
-		assertFalse(new CrucibleCachedUser("userA", "a").equals(CrucibleUiUtil.getCurrentCachedUser(review)));
-		assertFalse(new CrucibleCachedUser(userA).equals(CrucibleUiUtil.getCurrentCachedUser(review)));
-		assertEquals(new CrucibleCachedUser("u", "user"), CrucibleUiUtil.getCurrentCachedUser(review));
-		assertEquals(new CrucibleCachedUser(userB), CrucibleUiUtil.getCurrentCachedUser(review));
+		assertFalse(new User("userA", "a").equals(CrucibleUiUtil.getCurrentCachedUser(review)));
+		assertFalse(userA.equals(CrucibleUiUtil.getCurrentCachedUser(review)));
+		assertEquals(new User("user", "u"), CrucibleUiUtil.getCurrentCachedUser(review));
+		assertEquals(userB, CrucibleUiUtil.getCurrentCachedUser(review));
 	}
 
 	public void testGetCachedUser() {
@@ -326,17 +325,17 @@ public class CrucibleUiUtilTest extends TestCase {
 		createMockReview(repo);
 		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repo);
 		CrucibleClientData clientData = client.getClientData();
-		User userA = new User("a", "userA");
-		User userB = new User("b", "userB");
+		User userA = new User("userA", "a");
+		User userB = new User("userB", "b");
 		List<User> users = new ArrayList<User>();
 		users.add(userA);
 		users.add(userB);
 		clientData.setUsers(users);
 
-		assertEquals(new CrucibleCachedUser("userA", "a"), CrucibleUiUtil.getCachedUser("a", repo));
-		assertEquals(new CrucibleCachedUser(userA), CrucibleUiUtil.getCachedUser("a", repo));
-		assertEquals(new CrucibleCachedUser("userB", "b"), CrucibleUiUtil.getCachedUser("b", repo));
-		assertEquals(new CrucibleCachedUser(userB), CrucibleUiUtil.getCachedUser("b", repo));
+		assertEquals(new User("userA", "a"), CrucibleUiUtil.getCachedUser("userA", repo));
+		assertEquals(userA, CrucibleUiUtil.getCachedUser("userA", repo));
+		assertEquals(new User("userB", "b"), CrucibleUiUtil.getCachedUser("userB", repo));
+		assertEquals(userB, CrucibleUiUtil.getCachedUser("userB", repo));
 	}
 
 	public void testGetCachedUsersRepository() {
@@ -352,17 +351,17 @@ public class CrucibleUiUtilTest extends TestCase {
 		assertNotNull(clientData);
 
 		List<User> users = new ArrayList<User>();
-		users.add(new User("uA", "userA"));
-		users.add(new User("uB", "userB"));
-		users.add(new User("uC", "userC"));
+		users.add(new User("userA", "uA"));
+		users.add(new User("userB", "uB"));
+		users.add(new User("userC", "uC"));
 		clientData.setUsers(users);
 
-		Set<CrucibleCachedUser> usersReceivedSet = CrucibleUiUtil.getCachedUsers(repository);
+		Set<User> usersReceivedSet = CrucibleUiUtil.getCachedUsers(repository);
 
 		Set<User> usersExpectedSet = new HashSet<User>(users);
 		assertEquals(usersExpectedSet.size(), usersReceivedSet.size());
 
-		for (CrucibleCachedUser cachedUser : usersReceivedSet) {
+		for (User cachedUser : usersReceivedSet) {
 			for (User user : users) {
 				if (user.getUserName().equals(cachedUser.getUserName())) {
 					assertEquals(user.getDisplayName(), cachedUser.getDisplayName());

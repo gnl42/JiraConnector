@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.commons;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import junit.framework.TestCase;
@@ -36,14 +35,11 @@ public class UserLabelProviderTest extends TestCase {
 
 		assertEquals(userName2, labelProvider.getText(user2));
 
-		CrucibleCachedUser cachedUser1 = new CrucibleCachedUser(user1);
-		CrucibleCachedUser cachedUser2 = new CrucibleCachedUser(user2);
+		assertNull(labelProvider.getImage(user1));
 
-		assertNull(labelProvider.getImage(cachedUser1));
+		assertEquals(displayName1, labelProvider.getText(user1));
 
-		assertEquals(displayName1, labelProvider.getText(cachedUser1));
-
-		assertEquals(userName2, labelProvider.getText(cachedUser2));
+		assertEquals(userName2, labelProvider.getText(user2));
 	}
 
 }

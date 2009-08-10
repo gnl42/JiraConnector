@@ -11,12 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -115,16 +115,15 @@ public class ReviewersSelectionTreePart {
 
 		tree.getViewer().setSorter(new ViewerSorter());
 
-		tree.getViewer().setCheckedElements(getCachedUsersFromReviewers(selectedReviewers));
+		tree.getViewer().setCheckedElements(selectedReviewers.toArray(new Reviewer[selectedReviewers.size()]));
 
 		tree.getViewer().addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
-					selectedReviewers.add(CrucibleUiUtil.createReviewerFromCachedUser(review,
-							(CrucibleCachedUser) event.getElement()));
+					selectedReviewers.add(CrucibleUiUtil.createReviewerFromCachedUser(review, (User) event.getElement()));
 				} else {
 					selectedReviewers.remove(CrucibleUiUtil.createReviewerFromCachedUser(review,
-							(CrucibleCachedUser) event.getElement()));
+							(User) event.getElement()));
 				}
 				if (externalListener != null) {
 					externalListener.checkStateChanged(event);
@@ -139,15 +138,6 @@ public class ReviewersSelectionTreePart {
 
 	public void updateInput() {
 		tree.getViewer().setInput(CrucibleUiUtil.getCachedUsers(review));
-	}
-
-	private CrucibleCachedUser[] getCachedUsersFromReviewers(Set<Reviewer> reviewers) {
-		CrucibleCachedUser[] users = new CrucibleCachedUser[reviewers.size()];
-		int i = 0;
-		for (Reviewer reviewer : reviewers) {
-			users[i++] = new CrucibleCachedUser(reviewer);
-		}
-		return users;
 	}
 
 	public Set<Reviewer> getSelectedReviewers() {

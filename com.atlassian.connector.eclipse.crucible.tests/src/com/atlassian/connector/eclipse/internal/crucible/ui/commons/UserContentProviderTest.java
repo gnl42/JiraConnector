@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.commons;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import java.util.HashSet;
@@ -33,16 +32,13 @@ public class UserContentProviderTest extends TestCase {
 		User user1 = new User(userName1, displayName1);
 		User user2 = new User(userName2);
 
-		CrucibleCachedUser cachedUser1 = new CrucibleCachedUser(user1);
-		CrucibleCachedUser cachedUser2 = new CrucibleCachedUser(user2);
+		Set<User> cachedUsers = new HashSet<User>();
+		cachedUsers.add(user1);
+		cachedUsers.add(user2);
 
-		Set<CrucibleCachedUser> cachedUsers = new HashSet<CrucibleCachedUser>();
-		cachedUsers.add(cachedUser1);
-		cachedUsers.add(cachedUser2);
-
-		assertFalse(contentProvider.hasChildren(cachedUser1));
-		assertEquals(0, contentProvider.getChildren(cachedUser1).length);
-		assertNull(contentProvider.getParent(cachedUser1));
+		assertFalse(contentProvider.hasChildren(user1));
+		assertEquals(0, contentProvider.getChildren(user1).length);
+		assertNull(contentProvider.getParent(user1));
 
 		Object[] elements = contentProvider.getElements(cachedUsers);
 		assertNotNull(elements);

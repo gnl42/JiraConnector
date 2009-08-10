@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.commons;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import junit.framework.TestCase;
@@ -35,11 +34,8 @@ public class UserSorterTest extends TestCase {
 		assertTrue(0 > sorter.compare(null, user1, user2));
 		assertTrue(0 < sorter.compare(null, user2, user1));
 
-		CrucibleCachedUser cachedUser1 = new CrucibleCachedUser(user1);
-		CrucibleCachedUser cachedUser2 = new CrucibleCachedUser(user2);
-
-		assertTrue(0 > sorter.compare(null, cachedUser1, cachedUser2));
-		assertTrue(0 < sorter.compare(null, cachedUser2, cachedUser1));
+		assertTrue(0 > sorter.compare(null, user1, user2));
+		assertTrue(0 < sorter.compare(null, user2, user1));
 	}
 
 }

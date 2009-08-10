@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsLabelProvider;
@@ -21,6 +20,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUser
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
+import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.Dialog;
@@ -122,23 +122,22 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 						newReview.getCrucibleProject())));
 			}
 		}
-		Set<CrucibleCachedUser> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
+		Set<User> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
 		moderatorComboViewer.setInput(cachedUsers);
 		authorComboViewer.setInput(cachedUsers);
-		CrucibleCachedUser currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
+		User currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
 		if (currentUser != null) {
 			if (newReview.getAuthor() == null) {
-				newReview.setAuthor(currentUser.createUserFromCachedUser());
+				newReview.setAuthor(currentUser);
 				authorComboViewer.setSelection(new StructuredSelection(currentUser));
 			} else {
-				authorComboViewer.setSelection(new StructuredSelection(new CrucibleCachedUser(newReview.getAuthor())));
+				authorComboViewer.setSelection(new StructuredSelection(newReview.getAuthor()));
 			}
 			if (newReview.getModerator() == null) {
-				newReview.setModerator(currentUser.createUserFromCachedUser());
+				newReview.setModerator(currentUser);
 				moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
 			} else {
-				moderatorComboViewer.setSelection(new StructuredSelection(new CrucibleCachedUser(
-						newReview.getModerator())));
+				moderatorComboViewer.setSelection(new StructuredSelection(newReview.getModerator()));
 			}
 			if (newReview.getCrucibleProject() != null) {
 				projectsComboViewer.setSelection(new StructuredSelection(new CrucibleCachedProject(
@@ -185,9 +184,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		moderatorComboViewer.setLabelProvider(new CrucibleUserLabelProvider());
 		moderatorComboViewer.setContentProvider(new CrucibleUserContentProvider());
 		moderatorComboViewer.setSorter(new ViewerSorter());
-		Set<CrucibleCachedUser> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
+		Set<User> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
 		moderatorComboViewer.setInput(cachedUsers);
-		CrucibleCachedUser currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
+		User currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
 		if (currentUser != null) {
 			moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
 		}
@@ -195,7 +194,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
 				if (firstElement != null) {
-					newReview.setModerator(((CrucibleCachedUser) firstElement).createUserFromCachedUser());
+					newReview.setModerator((User) firstElement);
 					getWizard().getContainer().updateButtons();
 				}
 			}
@@ -215,7 +214,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
 				if (firstElement != null) {
-					newReview.setAuthor(((CrucibleCachedUser) firstElement).createUserFromCachedUser());
+					newReview.setAuthor((User) firstElement);
 					getWizard().getContainer().updateButtons();
 				}
 			}
@@ -328,7 +327,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		newReview.setDescription(objectivesText.getText());
 		newReview.setReviewers(reviewersSelectionTreePart.getSelectedReviewers());
 		newReview.setAllowReviewerToJoin(anyoneCanJoin.getEnabled());
-		newReview.setCreator(CrucibleUiUtil.getCurrentCachedUser(repository).createUserFromCachedUser());
+		newReview.setCreator(CrucibleUiUtil.getCurrentCachedUser(repository));
 	}
 
 	public Review getReview() {

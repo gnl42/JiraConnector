@@ -18,7 +18,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedProject;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedRepository;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
@@ -118,11 +117,11 @@ public final class CrucibleUiUtil {
 		return getCurrentUserName(CrucibleUiUtil.getCrucibleTaskRepository(review));
 	}
 
-	public static CrucibleCachedUser getCurrentCachedUser(TaskRepository repository) {
+	public static User getCurrentCachedUser(TaskRepository repository) {
 		return getCachedUser(getCurrentUserName(repository), repository);
 	}
 
-	public static CrucibleCachedUser getCurrentCachedUser(Review review) {
+	public static User getCurrentCachedUser(Review review) {
 		TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
 		return getCachedUser(getCurrentUserName(repository), repository);
 	}
@@ -140,7 +139,7 @@ public final class CrucibleUiUtil {
 		return false;
 	}
 
-	public static Reviewer createReviewerFromCachedUser(Review review, CrucibleCachedUser user) {
+	public static Reviewer createReviewerFromCachedUser(Review review, User user) {
 		boolean completed = hasReviewerCompleted(review, user.getUserName());
 		return new Reviewer(user.getUserName(), user.getDisplayName(), completed);
 	}
@@ -155,8 +154,8 @@ public final class CrucibleUiUtil {
 		return repository.getUserName();
 	}
 
-	public static CrucibleCachedUser getCachedUser(String userName, TaskRepository repository) {
-		for (CrucibleCachedUser user : getCachedUsers(repository)) {
+	public static User getCachedUser(String userName, TaskRepository repository) {
+		for (User user : getCachedUsers(repository)) {
 			if (userName.equals(user.getUserName())) {
 				return user;
 			}
@@ -231,16 +230,16 @@ public final class CrucibleUiUtil {
 		}
 	}
 
-	public static Set<CrucibleCachedUser> getCachedUsers(Review review) {
+	public static Set<User> getCachedUsers(Review review) {
 		return getCachedUsers(getCrucibleTaskRepository(review));
 	}
 
-	public static Set<CrucibleCachedUser> getCachedUsers(TaskRepository repository) {
+	public static Set<User> getCachedUsers(TaskRepository repository) {
 		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
 		CrucibleClientData clientData = client.getClientData();
-		Set<CrucibleCachedUser> users;
+		Set<User> users;
 		if (clientData == null) {
-			users = new HashSet<CrucibleCachedUser>();
+			users = new HashSet<User>();
 		} else {
 			users = clientData.getCachedUsers();
 		}

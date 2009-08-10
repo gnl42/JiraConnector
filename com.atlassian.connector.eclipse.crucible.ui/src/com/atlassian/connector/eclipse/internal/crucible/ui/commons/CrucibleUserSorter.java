@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.commons;
 
-import com.atlassian.connector.eclipse.internal.crucible.core.client.model.CrucibleCachedUser;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import org.eclipse.jface.viewers.Viewer;
@@ -28,12 +27,8 @@ public class CrucibleUserSorter extends ViewerSorter {
 	public int compare(Viewer viewer, Object e1, Object e2) {
 		String displayName1 = null;
 		String displayName2 = null;
-		if (e1 instanceof CrucibleCachedUser && e2 instanceof CrucibleCachedUser) {
-			CrucibleCachedUser u1 = (CrucibleCachedUser) e1;
-			CrucibleCachedUser u2 = (CrucibleCachedUser) e2;
-			displayName1 = u1.getDisplayName();
-			displayName2 = u2.getDisplayName();
-		} else if (e1 instanceof User && e2 instanceof User) {
+
+		if (e1 instanceof User && e2 instanceof User) {
 			displayName1 = ((User) e1).getDisplayName();
 			displayName2 = ((User) e2).getDisplayName();
 		}
