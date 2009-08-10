@@ -16,7 +16,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientData;
-import com.atlassian.connector.eclipse.internal.bamboo.core.client.model.BambooCachedPlan;
+import com.atlassian.theplugin.commons.bamboo.BambooPlan;
 import com.atlassian.theplugin.commons.cfg.SubscribedPlan;
 
 import org.eclipse.core.runtime.CoreException;
@@ -132,8 +132,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 		Object[] items = planViewer.getCheckedElements();
 		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
 		for (Object item : items) {
-			if (item instanceof BambooCachedPlan) {
-				plans.add(new SubscribedPlan(((BambooCachedPlan) item).getKey()));
+			if (item instanceof BambooPlan) {
+				plans.add(new SubscribedPlan(((BambooPlan) item).getKey()));
 			}
 		}
 		BambooUtil.setSubcribedPlans(this.repository, plans);
@@ -202,8 +202,8 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			public void widgetSelected(SelectionEvent event) {
 				Object input = planViewer.getInput();
 				if (input instanceof Collection<?>) {
-					List<BambooCachedPlan> favorites = new ArrayList<BambooCachedPlan>();
-					for (BambooCachedPlan plan : (Collection<BambooCachedPlan>) input) {
+					List<BambooPlan> favorites = new ArrayList<BambooPlan>();
+					for (BambooPlan plan : (Collection<BambooPlan>) input) {
 						if (plan.isFavourite()) {
 							favorites.add(plan);
 						}
@@ -256,10 +256,10 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 //		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
 //		BambooClient client = clientManager.getClient(repository);
 //		BambooClientData data = client.getClientData();
-//		for (BambooCachedPlan cachedPlan : data.getPlans()) {
+//		for (BambooPlan cachedPlan : data.getPlans()) {
 //			cachedPlan.setSubscribed(false);
 //			for (Object obj : planViewer.getCheckedElements()) {
-//				BambooCachedPlan checkedPlan = (BambooCachedPlan) obj;
+//				BambooPlan checkedPlan = (BambooPlan) obj;
 //				if (checkedPlan.equals(cachedPlan)) {
 //					cachedPlan.setSubscribed(true);
 //				}
@@ -334,7 +334,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 	}
 
 	private void updateUIRestoreState(Object[] checkedElements, final BambooClientData data) {
-		Collection<BambooCachedPlan> plans = data.getPlans();
+		Collection<BambooPlan> plans = data.getPlans();
 		if (plans != null) {
 			planViewer.setInput(plans);
 			if (!initialized) {
@@ -346,14 +346,14 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 						// restore selection from repository
 						Set<SubscribedPlan> subscribedPlans = new HashSet<SubscribedPlan>(
 								BambooUtil.getSubscribedPlans(getRepository()));
-						for (BambooCachedPlan plan : plans) {
+						for (BambooPlan plan : plans) {
 							if (subscribedPlans.contains(new SubscribedPlan(plan.getKey()))) {
 								planViewer.setChecked(plan, true);
 							}
 						}
 					} else {
 						// new repository: select favorite plan by default
-						for (BambooCachedPlan plan : plans) {
+						for (BambooPlan plan : plans) {
 							if (plan.isFavourite()) {
 								planViewer.setChecked(plan, true);
 							}
@@ -361,7 +361,7 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 					}
 				}
 			} else {
-//				for (BambooCachedPlan plan : plans) {
+//				for (BambooPlan plan : plans) {
 //					if (plan.isSubscribed()) {
 //						planViewer.setChecked(plan, true);
 //					}
