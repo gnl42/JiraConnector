@@ -9,3 +9,6 @@
 1249898457482	Rename field 'UsageDataPreferencePage_4'
 1249898512335	Rename field 'UsageDataPreferencePage_0'
 1249898533471	Rename field 'UsageDataPreferencePage_1'
+1249980044300	Encapsulate field 'icon'
+1249983214181	Rename type 'AksForPermissionDialog'
+1249988405359	Rename field 'UiUsageMonitorPlugin_please_consider_uploading'

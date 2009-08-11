@@ -23,7 +23,9 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
@@ -38,6 +40,8 @@ class MonitorUsageExtensionPointReader {
 	public static final String ELEMENT_COLLECTOR_QUESTIONNAIRE = "questionnaire"; //$NON-NLS-1$
 
 	public static final String ELEMENT_COLLECTOR_DETAILS_URL = "detailsUrl"; //$NON-NLS-1$
+
+	public static final String ELEMENT_COLLECTOR_ICON = "icon"; //$NON-NLS-1$
 
 	public static final String ELEMENT_UI = "ui"; //$NON-NLS-1$
 
@@ -104,13 +108,20 @@ class MonitorUsageExtensionPointReader {
 		String uploadUrl = element.getAttribute(ELEMENT_COLLECTOR_UPLOAD_URL);
 		String detailsUrl = element.getAttribute(ELEMENT_COLLECTOR_DETAILS_URL);
 		String eventFilters = element.getAttribute(ELEMENT_COLLECTOR_EVENT_FILTERS);
+		String iconPath = element.getAttribute(ELEMENT_COLLECTOR_ICON);
+		ImageDescriptor icon = null;
+
 		Collection<String> filters = new ArrayList<String>();
 
 		if (eventFilters != null) {
 			filters.addAll(Arrays.asList(eventFilters.split(",")));
 		}
 
-		usageCollectors.add(new UsageCollector(element.getContributor().getName(), uploadUrl, detailsUrl, filters));
+		if (iconPath != null) {
+			icon = AbstractUIPlugin.imageDescriptorFromPlugin(element.getContributor().getName(), iconPath);
+		}
+
+		usageCollectors.add(new UsageCollector(element.getContributor().getName(), uploadUrl, detailsUrl, filters, icon));
 	}
 
 	private void readMonitor(IConfigurationElement element) throws CoreException {

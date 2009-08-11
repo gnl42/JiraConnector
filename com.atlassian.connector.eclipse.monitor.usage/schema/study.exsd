@@ -80,6 +80,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -112,5 +119,8 @@
          See the org.eclipse.mylyn.examples.monitor.study plug-in for a reference implementation.
       </documentation>
    </annotation>
+
+
+
 
 </schema>

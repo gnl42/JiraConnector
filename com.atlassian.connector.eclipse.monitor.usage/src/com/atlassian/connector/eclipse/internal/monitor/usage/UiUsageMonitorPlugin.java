@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.mylyn.commons.core.CoreUtil;
@@ -53,7 +53,6 @@ import org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor;
 import org.eclipse.mylyn.monitor.ui.IActionExecutionListener;
 import org.eclipse.mylyn.monitor.ui.IMonitorLifecycleListener;
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
@@ -68,6 +67,7 @@ import org.eclipse.update.internal.ui.security.Authentication;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.AskForPermissionDialog;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
 import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
@@ -477,18 +477,16 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			return;
 		}
 
-		final IPreferenceStore store = plugin.getPreferenceStore();
-
 		// already configured so don't bother asking
 		if (!isFirstTime()) {
 			return;
-		} else {
-			store.setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false"); // must not use boolean here, it will not be stored
 		}
 
-		boolean agreement = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
-				Messages.UiUsageMonitorPlugin_send_usage_feedback, NLS.bind(
-						Messages.UiUsageMonitorPlugin_please_consider_uploading, getUsageCollectorFeatures()));
+		final IPreferenceStore store = getPreferenceStore();
+
+		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false"); // must not use boolean here, it will not be stored
+
+		boolean agreement = new AskForPermissionDialog(Display.getDefault().getActiveShell()).open() == IDialogConstants.YES_ID;
 
 		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, Boolean.toString(agreement));
 		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, Boolean.toString(agreement));
@@ -505,18 +503,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		if (agreement) {
 			startMonitoring();
 		}
-	}
-
-	private String getUsageCollectorFeatures() {
-		StringBuilder sb = new StringBuilder();
-		for (UsageCollector collector : getStudyParameters().getUsageCollectors()) {
-			Bundle bnd = Platform.getBundle(collector.getBundle());
-			if (bnd != null) {
-				sb.append(bnd.getHeaders().get("Bundle-Name"));
-				sb.append('\n');
-			}
-		}
-		return sb.toString();
 	}
 
 	public Job startUploadStatisticsJob() {

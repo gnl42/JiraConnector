@@ -14,6 +14,8 @@ package com.atlassian.connector.eclipse.internal.monitor.usage;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+
 public final class UsageCollector {
 
 	private final String bundle;
@@ -24,13 +26,16 @@ public final class UsageCollector {
 
 	private final String detailsUrl;
 
+	private final ImageDescriptor icon;
+
 	UsageCollector(final String bundle, final String uploadUrl, final String detailsUrl,
-			final Collection<String> eventFilters) {
+			final Collection<String> eventFilters, ImageDescriptor icon) {
 		this.bundle = bundle;
 		this.uploadUrl = uploadUrl;
 		this.eventFilters = new ArrayList<String>();
 		this.eventFilters.addAll(eventFilters);
 		this.detailsUrl = detailsUrl;
+		this.icon = icon;
 	}
 
 	public String getUploadUrl() {
@@ -47,6 +52,10 @@ public final class UsageCollector {
 
 	public String getDetailsUrl() {
 		return detailsUrl;
+	}
+
+	public ImageDescriptor getIcon() {
+		return icon;
 	}
 
 }
