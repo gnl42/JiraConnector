@@ -36,7 +36,7 @@ public class Messages extends NLS {
 
 	public static String UiUsageMonitorPlugin_cant_create_log_file;
 
-	public static String UiUsageMonitorPlugin_send_usage_feedback;
+	public static String UiUsageMonitorPlugin_send_usage_data;
 
 	public static String AskForPermissionDialog_please_consider_uploading;
 

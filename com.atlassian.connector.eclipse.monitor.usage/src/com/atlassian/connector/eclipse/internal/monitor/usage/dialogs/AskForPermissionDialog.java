@@ -56,7 +56,7 @@ public class AskForPermissionDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		getShell().setText(Messages.UiUsageMonitorPlugin_send_usage_feedback);
+		getShell().setText(Messages.UiUsageMonitorPlugin_send_usage_data);
 
 		Composite composite = new Composite((Composite) super.createDialogArea(parent), SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
