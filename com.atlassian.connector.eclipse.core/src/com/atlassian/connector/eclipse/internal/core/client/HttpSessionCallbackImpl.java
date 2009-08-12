@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.core.client;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.theplugin.commons.exception.HttpProxySettingsException;
 import com.atlassian.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
@@ -20,6 +21,7 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -36,6 +38,8 @@ import java.util.Map;
  */
 public class HttpSessionCallbackImpl implements HttpSessionCallback {
 
+	private final String userAgent;
+
 	/** synchronized on this HttpSessionCallbackImpl */
 	private final Map<ConnectionCfg, HttpClient> httpClients = new HashMap<ConnectionCfg, HttpClient>();
 
@@ -49,6 +53,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 		this.connectionManager = new MultiThreadedHttpConnectionManager();
 		WebUtil.addConnectionManager(connectionManager);
 		idleConnectionTimeoutThread.start();
+		userAgent = "Atlassian Connector for Eclipse, version " + AtlassianCorePlugin.getDefault().getVersion();
 	}
 
 	public synchronized HttpClient getHttpClient(ConnectionCfg server) throws HttpProxySettingsException {
@@ -57,6 +62,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 		// TODO handle the case where we dont have a client initialized
 		assert (httpClient != null);
 
+		httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
 		return httpClient;
 	}
 

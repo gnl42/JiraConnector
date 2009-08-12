@@ -37,9 +37,12 @@ public class AtlassianCorePlugin extends Plugin {
 	 * The constructor
 	 */
 	public AtlassianCorePlugin() {
-
 		// make sure that we 
 		LoggerImpl.setInstance(new AtlassianLogger());
+	}
+
+	public String getVersion() {
+		return getBundle().getVersion().toString();
 	}
 
 	/*
