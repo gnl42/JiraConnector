@@ -115,6 +115,9 @@ public class InteractionEventLogger extends AbstractMonitorLog implements IInter
 
 	public synchronized void clearInteractionHistory(boolean startMonitoring) throws IOException {
 		stopMonitoring();
+		if (UiUsageMonitorPlugin.getDefault() != null) {
+			UiUsageMonitorPlugin.getDefault().setObservedEvents(0);
+		}
 		outputStream = new FileOutputStream(outputFile, false);
 		outputStream.flush();
 		outputStream.close();

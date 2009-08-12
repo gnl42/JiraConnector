@@ -64,7 +64,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.update.internal.ui.security.Authentication;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.AskForPermissionDialog;
@@ -612,5 +611,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				// ignore
 			}
 		}
+	}
+
+	public void setObservedEvents(int number) {
+		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS, number);
 	}
 }
