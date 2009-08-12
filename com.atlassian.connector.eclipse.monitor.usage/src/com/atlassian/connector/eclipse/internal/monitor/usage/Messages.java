@@ -100,7 +100,7 @@ public class Messages extends NLS {
 
 	public static String UsageFileSelectionWizardPage_7;
 
-	public static String UsageSubmissionWizard_0;
+	public static String UsageSubmissionWizard_title;
 
 	public static String UsageSubmissionWizard_successful_upload;
 

@@ -56,7 +56,7 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 	private void setTitles() {
 		super.setDefaultPageImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(UiUsageMonitorPlugin.ID_PLUGIN,
 				"icons/wizban/banner-user.gif")); //$NON-NLS-1$
-		super.setWindowTitle(Messages.UsageSubmissionWizard_0);
+		super.setWindowTitle(Messages.UsageSubmissionWizard_title);
 	}
 
 	private void init() {
