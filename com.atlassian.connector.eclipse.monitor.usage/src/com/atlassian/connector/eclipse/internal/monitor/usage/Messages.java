@@ -158,7 +158,7 @@ public class Messages extends NLS {
 
 	public static String UsageSubmissionWizard_78;
 
-	public static String UsageSubmissionWizard_upload_user_stats;
+	public static String UsageSubmissionWizard_upload_usage_data;
 
 	public static String UsageSubmissionWizard_80;
 

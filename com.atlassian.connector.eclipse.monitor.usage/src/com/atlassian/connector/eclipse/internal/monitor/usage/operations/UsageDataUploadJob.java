@@ -53,7 +53,7 @@ public final class UsageDataUploadJob extends Job {
 	private static int processedFileCount = 1;
 
 	public UsageDataUploadJob(boolean ignoreLastTransmit) {
-		super(Messages.UsageSubmissionWizard_upload_user_stats);
+		super(Messages.UsageSubmissionWizard_upload_usage_data);
 		this.ifTimeElapsed = ignoreLastTransmit;
 	}
 
