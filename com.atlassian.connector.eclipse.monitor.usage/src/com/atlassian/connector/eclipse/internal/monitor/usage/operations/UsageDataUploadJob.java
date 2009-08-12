@@ -45,7 +45,6 @@ import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlug
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
 
 public final class UsageDataUploadJob extends Job {
-	public static final String STATS = "usage"; //$NON-NLS-1$
 
 	public static final String SUBMISSION_LOG_FILE_NAME = "submittedUsageLogs.txt"; //$NON-NLS-1$
 
@@ -100,75 +99,86 @@ public final class UsageDataUploadJob extends Job {
 	}
 
 	private void performUpload(IProgressMonitor monitor) {
-		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
-			File zipFile = zipFilesForUpload(collector, monitor);
-			if (zipFile == null) {
-				return;
-			}
 
-			upload(collector, zipFile, STATS, monitor);
+		UiUsageMonitorPlugin.setPerformingUpload(true);
+		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
+		boolean failed = false;
+		try {
+			for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
+				File zipFile = zipFilesForUpload(collector, monitor);
+				if (zipFile == null) {
+					return;
+				}
 
-			if (zipFile.exists()) {
-				zipFile.delete();
+				if (!upload(collector, zipFile, monitor)) {
+					failed = true;
+				}
+
+				if (zipFile.exists()) {
+					zipFile.delete();
+				}
 			}
+		} finally {
+			if (!failed) {
+				// clear the log on success (so we don't send duplicates)
+				try {
+					UiUsageMonitorPlugin.getDefault().getInteractionLogger().clearInteractionHistory();
+				} catch (IOException e) {
+					StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+							"Failed to clear the Usage Data log", e));
+				}
+			}
+			UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
+			UiUsageMonitorPlugin.setPerformingUpload(false);
 		}
-
-		UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
-		UiUsageMonitorPlugin.setPerformingUpload(false);
 		return;
 	}
 
 	private File zipFilesForUpload(UsageCollector collector, IProgressMonitor monitor) {
-		UiUsageMonitorPlugin.setPerformingUpload(true);
-		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
+		List<File> files = new ArrayList<File>();
+		File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
+		File fileToUpload;
 		try {
-			List<File> files = new ArrayList<File>();
-			File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
-			File fileToUpload;
-			try {
-				fileToUpload = this.processMonitorFile(monitorFile, collector.getEventFilters());
-			} catch (IOException e1) {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						Messages.UsageSubmissionWizard_error_uploading, e1));
-				return null;
-			}
-			files.add(fileToUpload);
+			fileToUpload = this.processMonitorFile(monitorFile, collector.getEventFilters());
+		} catch (IOException e1) {
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+					Messages.UsageSubmissionWizard_error_uploading, e1));
+			return null;
+		}
+		files.add(fileToUpload);
 
-			// check if backup/archive files were also selected and add them
-			List<File> backupFilesToUpload = getBackupFiles();
-			if (backupFilesToUpload.size() > 0) {
-				for (File backupFile : backupFilesToUpload) {
-					if (backupFile.exists()) {
-						List<File> unzippedFiles;
-						try {
-							unzippedFiles = ZipFileUtil.unzipFiles(backupFile, System.getProperty("java.io.tmpdir"),
-									new NullProgressMonitor());
+		// check if backup/archive files were also selected and add them
+		List<File> backupFilesToUpload = getBackupFiles();
+		if (backupFilesToUpload.size() > 0) {
+			for (File backupFile : backupFilesToUpload) {
+				if (backupFile.exists()) {
+					List<File> unzippedFiles;
+					try {
+						unzippedFiles = ZipFileUtil.unzipFiles(backupFile, System.getProperty("java.io.tmpdir"),
+								new NullProgressMonitor());
 
-							if (unzippedFiles.size() > 0) {
-								for (File unzippedFile : unzippedFiles) {
-									files.add(this.processMonitorFile(unzippedFile, collector.getEventFilters()));
-									this.addToSubmittedLogFile(backupFile);
-								}
+						if (unzippedFiles.size() > 0) {
+							for (File unzippedFile : unzippedFiles) {
+								files.add(this.processMonitorFile(unzippedFile, collector.getEventFilters()));
+								this.addToSubmittedLogFile(backupFile);
 							}
-						} catch (IOException e) {
-							StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-									Messages.UsageSubmissionWizard_error_unzipping, e));
 						}
+					} catch (IOException e) {
+						StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+								Messages.UsageSubmissionWizard_error_unzipping, e));
 					}
 				}
 			}
+		}
 
-			try {
-				File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-				ZipFileUtil.createZipFile(zipFile, files, monitor);
-				return zipFile;
-			} catch (Exception e) {
-				StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
-						Messages.UsageSubmissionWizard_error_uploading, e));
-				return null;
-			}
-		} finally {
-			UiUsageMonitorPlugin.getDefault().getInteractionLogger().startMonitoring();
+		try {
+			File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+			ZipFileUtil.createZipFile(zipFile, files, monitor);
+			return zipFile;
+		} catch (Exception e) {
+			StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
+					Messages.UsageSubmissionWizard_error_uploading, e));
+			return null;
 		}
 	}
 
@@ -218,7 +228,7 @@ public final class UsageDataUploadJob extends Job {
 	 *            The file to upload
 	 * @return true on success
 	 */
-	private boolean upload(UsageCollector collector, File f, String type, IProgressMonitor monitor) {
+	private boolean upload(UsageCollector collector, File f, IProgressMonitor monitor) {
 		int status = 0;
 
 		try {
