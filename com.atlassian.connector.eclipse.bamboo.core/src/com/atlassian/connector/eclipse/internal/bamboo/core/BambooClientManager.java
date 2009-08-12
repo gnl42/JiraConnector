@@ -20,7 +20,6 @@ import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClientD
 import com.atlassian.connector.eclipse.internal.core.client.HttpSessionCallbackImpl;
 import com.atlassian.connector.eclipse.internal.core.client.RepositoryClientManager;
 import com.atlassian.theplugin.commons.bamboo.BambooServerFacadeImpl;
-import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -39,7 +38,7 @@ import java.util.Map.Entry;
  */
 public class BambooClientManager extends RepositoryClientManager<BambooClient, BambooClientData> {
 
-	private BambooServerFacade2 crucibleServerFacade;
+	private BambooServerFacade2 bambooServerFacade;
 
 	private final HttpSessionCallbackImpl clientCallback;
 
@@ -64,32 +63,28 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 
 	@Override
 	protected BambooClient createClient(TaskRepository taskRepository, BambooClientData data) {
+		return createClient(taskRepository, data, false);
+	}
+
+	private BambooClient createClient(TaskRepository taskRepository, BambooClientData data, boolean isTemporary) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
-		ConnectionCfg serverCfg = getServerData(location, taskRepository, false);
-		HttpSessionCallbackImpl callback = getHttpSessionCallback(location, serverCfg);
-		BambooServerFacade2 bambooFacade = getBambooFacade(callback);
+		ConnectionCfg serverCfg = getServerData(location, taskRepository, isTemporary);
+		configureHttpSessionCallback(location, serverCfg);
+		BambooServerFacade2 facade = getBambooFacade();
 
-		return new BambooClient(location, serverCfg, bambooFacade, data, callback);
+		return new BambooClient(location, serverCfg, facade, data, clientCallback);
+	}
+
+	private synchronized BambooServerFacade2 getBambooFacade() {
+		if (bambooServerFacade == null) {
+			bambooServerFacade = new BambooServerFacadeImpl(LoggerImpl.getInstance(), clientCallback);
+		}
+		return bambooServerFacade;
 	}
 
 	public BambooClient createTempClient(TaskRepository taskRepository, BambooClientData data) {
-		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
-
-		ConnectionCfg serverCfg = getServerData(location, taskRepository, true);
-		HttpSessionCallbackImpl callback = getHttpSessionCallback(location, serverCfg);
-		BambooServerFacade2 crucibleServer = getBambooFacade(callback);
-
-		BambooClient tempClient = new BambooClient(location, serverCfg, crucibleServer, data, callback);
-		return tempClient;
-	}
-
-	private synchronized BambooServerFacade2 getBambooFacade(HttpSessionCallback callback) {
-		if (crucibleServerFacade == null) {
-			crucibleServerFacade = BambooServerFacadeImpl.getInstance(LoggerImpl.getInstance());
-			crucibleServerFacade.setCallback(callback);
-		}
-		return crucibleServerFacade;
+		return createClient(taskRepository, data, true);
 	}
 
 	public void deleteTempClient(ConnectionCfg serverData) {
@@ -107,9 +102,8 @@ public class BambooClientManager extends RepositoryClientManager<BambooClient, B
 		BambooCorePlugin.getBuildPlanManager().repositoryRemoved(repository);
 	}
 
-	private HttpSessionCallbackImpl getHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
+	private void configureHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
 		clientCallback.initializeHostConfiguration(location, serverCfg);
-		return clientCallback;
 	}
 
 	@Override

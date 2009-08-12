@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.core.client.RepositoryClientMana
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 import com.atlassian.theplugin.commons.fisheye.FishEyeServerFacadeImpl;
-import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -31,7 +30,7 @@ import java.util.Map;
 public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient, FishEyeClientData> {
 
 	/** follows ACC approach for channeling all calls through a singleton */
-	private FishEyeServerFacade2 crucibleServerFacade;
+	private FishEyeServerFacade2 fishEyeServerFacade;
 
 	private final HttpSessionCallbackImpl clientCallback;
 
@@ -42,7 +41,6 @@ public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient,
 
 	@Override
 	public synchronized FishEyeClient getClient(TaskRepository taskRepository) {
-
 		FishEyeClient client = super.getClient(taskRepository);
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 		client.updateLocation(location);
@@ -66,18 +64,17 @@ public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient,
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 
 		ConnectionCfg serverCfg = getServerData(location, taskRepository, isTemporary);
-		HttpSessionCallbackImpl callback = getHttpSessionCallback(location, serverCfg);
-		FishEyeServerFacade2 fishEyeServer = getFishEyeServerFacade(callback);
+		updateHttpSessionCallback(location, serverCfg);
+		FishEyeServerFacade2 fishEyeServer = getFishEyeServerFacade();
 
-		return new FishEyeClient(location, serverCfg, fishEyeServer, data, callback);
+		return new FishEyeClient(location, serverCfg, fishEyeServer, data, clientCallback);
 	}
 
-	private synchronized FishEyeServerFacade2 getFishEyeServerFacade(HttpSessionCallback callback) {
-		if (crucibleServerFacade == null) {
-			crucibleServerFacade = FishEyeServerFacadeImpl.getInstance();
-			crucibleServerFacade.setCallback(callback);
+	private synchronized FishEyeServerFacade2 getFishEyeServerFacade() {
+		if (fishEyeServerFacade == null) {
+			fishEyeServerFacade = new FishEyeServerFacadeImpl(clientCallback);
 		}
-		return crucibleServerFacade;
+		return fishEyeServerFacade;
 	}
 
 	public void deleteTempClient(ConnectionCfg serverData) {
@@ -91,11 +88,6 @@ public class FishEyeClientManager extends RepositoryClientManager<FishEyeClient,
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 		clientCallback.removeClient(location);
 
-	}
-
-	private HttpSessionCallbackImpl getHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
-		updateHttpSessionCallback(location, serverCfg);
-		return clientCallback;
 	}
 
 	private void updateHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {

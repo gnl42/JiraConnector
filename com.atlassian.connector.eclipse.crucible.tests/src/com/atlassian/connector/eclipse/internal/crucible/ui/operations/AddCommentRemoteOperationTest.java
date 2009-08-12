@@ -29,6 +29,7 @@ import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleSession;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleUserCacheImpl;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomFieldBean;
 import com.atlassian.theplugin.commons.crucible.api.model.GeneralComment;
@@ -79,7 +80,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 
 		crucibleSessionMock = createMock(CrucibleSession.class);
 
-		facade = CrucibleServerFacadeImpl.getInstance();
+		facade = new CrucibleServerFacadeImpl(new CrucibleUserCacheImpl(), new HttpSessionCallbackImpl());
 
 		try {
 			Field f = CrucibleServerFacadeImpl.class.getDeclaredField("sessions");

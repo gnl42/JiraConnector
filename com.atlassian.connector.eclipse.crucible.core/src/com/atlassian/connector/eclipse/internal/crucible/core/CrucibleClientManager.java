@@ -24,6 +24,7 @@ import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 import com.atlassian.theplugin.commons.crucible.CrucibleServerFacadeImpl;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleUserCacheImpl;
 import com.atlassian.theplugin.commons.remoteapi.rest.HttpSessionCallback;
 
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -55,13 +56,11 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 
 	@Override
 	public synchronized CrucibleClient getClient(TaskRepository taskRepository) {
-
 		CrucibleClient client = super.getClient(taskRepository);
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 		client.updateLocation(location);
 		ConnectionCfg serverCfg = getServerData(location, taskRepository, false);
 		updateHttpSessionCallback(location, serverCfg);
-
 		return client;
 	}
 
@@ -94,23 +93,19 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 
 	@Override
 	protected CrucibleClient createClient(TaskRepository taskRepository, CrucibleClientData data) {
-		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
-
-		ConnectionCfg serverCfg = getServerData(location, taskRepository, false);
-		HttpSessionCallbackImpl callback = getHttpSessionCallback(location, serverCfg);
-		CrucibleServerFacade2 crucibleServer = getCrucibleServer(callback);
-
-		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager, callback);
+		return createClient(taskRepository, data, false);
 	}
 
 	public CrucibleClient createTempClient(TaskRepository taskRepository, CrucibleClientData data) {
+		return createClient(taskRepository, data, true);
+	}
+
+	private CrucibleClient createClient(TaskRepository taskRepository, CrucibleClientData data, boolean isTemporary) {
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
-
-		ConnectionCfg serverCfg = getServerData(location, taskRepository, true);
-		HttpSessionCallbackImpl callback = getHttpSessionCallback(location, serverCfg);
-		CrucibleServerFacade2 crucibleServer = getCrucibleServer(callback);
-
-		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager, callback);
+		ConnectionCfg serverCfg = getServerData(location, taskRepository, isTemporary);
+		updateHttpSessionCallback(location, serverCfg);
+		CrucibleServerFacade2 crucibleServer = getCrucibleServer(clientCallback);
+		return new CrucibleClient(location, serverCfg, crucibleServer, data, cachedReviewManager, clientCallback);
 	}
 
 	public FishEyeClient createTempFishEyeClient(TaskRepository taskRepository, FishEyeClientData data) {
@@ -124,8 +119,7 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 
 	private synchronized CrucibleServerFacade2 getCrucibleServer(HttpSessionCallback callback) {
 		if (crucibleServerFacade == null) {
-			crucibleServerFacade = CrucibleServerFacadeImpl.getInstance();
-			crucibleServerFacade.setCallback(callback);
+			crucibleServerFacade = new CrucibleServerFacadeImpl(new CrucibleUserCacheImpl(), callback);
 		}
 		return crucibleServerFacade;
 	}
@@ -141,11 +135,6 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 		AbstractWebLocation location = getTaskRepositoryLocationFactory().createWebLocation(taskRepository);
 		clientCallback.removeClient(location);
 
-	}
-
-	private HttpSessionCallbackImpl getHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
-		updateHttpSessionCallback(location, serverCfg);
-		return clientCallback;
 	}
 
 	private void updateHttpSessionCallback(AbstractWebLocation location, ConnectionCfg serverCfg) {
