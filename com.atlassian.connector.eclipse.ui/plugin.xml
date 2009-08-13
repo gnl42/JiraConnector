@@ -99,15 +99,6 @@
       </wizard>
    </extension>
    
-   <!--extension point="org.eclipse.ui.newWizards">
-      <wizard
-            class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard"
-            icon="icons/eview16/wizard-feedback.gif"
-            id="com.atlassian.connector.eclipse.ui.NewUsageSummaryEditorWizard"
-            name="Usage Data Report for Atlassian Connector for Eclipse">
-      </wizard>
-   </extension-->
-   
    <extension
          point="org.eclipse.ui.startup">
       <startup
