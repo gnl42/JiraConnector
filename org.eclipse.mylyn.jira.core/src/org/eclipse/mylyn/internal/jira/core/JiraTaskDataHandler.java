@@ -14,6 +14,7 @@ package org.eclipse.mylyn.internal.jira.core;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1332,7 +1333,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						try {
 							Long.parseLong(value);
 						} catch (NumberFormatException e) {
-							attribute.setValue(String.valueOf(format.parse(value)));
+							try {
+								attribute.setValue(String.valueOf(format.parse(value)));
+							} catch (ParseException e1) {
+								attribute.setValue(""); //$NON-NLS-1$
+							}
 						}
 					}
 				}

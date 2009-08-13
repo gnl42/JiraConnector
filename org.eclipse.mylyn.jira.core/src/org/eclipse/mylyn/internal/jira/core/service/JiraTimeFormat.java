@@ -7,27 +7,24 @@
  *
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
- *     Eugene Kuleshov - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.text.FieldPosition;
 import java.text.Format;
+import java.text.ParseException;
 import java.text.ParsePosition;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.Assert;
 
 /**
- * JIRA time format to convert Long value in seconds to JIRA time format:
+ * JIRA time format to convert Long value in seconds to JIRA time format: <blockquote> The format of this is '*w *d *h
+ * *m' (representing weeks, days, hours and minutes - where * can be any number) Examples: 4d, 5h 30m, 60m and 3w. Note:
+ * The conversion rates are 1w = 7d and 1d = 24h </blockquote>
  * 
- * <blockquote> The format of this is '*w *d *h *m' (representing weeks, days, hours and minutes - where * can be any
- * number) Examples: 4d, 5h 30m, 60m and 3w. Note: The conversion rates are 1w = 7d and 1d = 24h </blockquote>
- * 
- * @author Eugene Kuleshov
  * @author Steffen Pingel
+ * @author Thomas Ehrnhoefer
  */
 public class JiraTimeFormat extends Format {
 
@@ -99,36 +96,67 @@ public class JiraTimeFormat extends Format {
 	 * 
 	 * @param source
 	 *            the time string to parse; must not be <code>null</code>
+	 * @throws ParseException
+	 *             if the string could not be parsed.
 	 */
-	public long parse(String source) {
+	public long parse(String source) throws ParseException {
 		Assert.isNotNull(source);
-		return (Long) parseObject(source, new ParsePosition(0));
+		Object parsedObject = parseObject(source, new ParsePosition(0));
+		if (parsedObject == null) {
+			throw new ParseException("Invalid string", 0); //$NON-NLS-1$
+		}
+		return (Long) parsedObject;
 	}
 
 	@Override
 	public Object parseObject(String source, ParsePosition pos) {
-		Pattern pattern = Pattern.compile("(\\d+w)?\\s?(\\d+d)?\\s?(\\d+h)?\\s?(\\d+m)?"); //$NON-NLS-1$
-		Matcher matcher = pattern.matcher(source);
+		// special case 0 where no letter is needed after a digit
+		if (source.trim().equals("0")) { //$NON-NLS-1$
+			pos.setIndex(source.length() + 1);
+			return new Long(0);
+		}
+
+		StringBuffer buffer = new StringBuffer(source.length());
+		char[] charArray = source.toCharArray();
 		long value = 0;
-		if (matcher.find()) {
-			for (int i = 1; i <= matcher.groupCount(); i++) {
-				String group = matcher.group(i);
-				if (group != null) {
-					if (group.endsWith("m")) { //$NON-NLS-1$
-						value += Long.parseLong(group.substring(0, group.length() - 1)) * 60;
-					} else if (group.endsWith("h")) { //$NON-NLS-1$
-						value += Long.parseLong(group.substring(0, group.length() - 1)) * 60 * 60;
-					} else if (group.endsWith("d")) { //$NON-NLS-1$
-						value += Long.parseLong(group.substring(0, group.length() - 1)) * 60 * 60 * workHoursPerDay;
-					} else if (group.endsWith("w")) { //$NON-NLS-1$
-						value += Long.parseLong(group.substring(0, group.length() - 1)) * 60 * 60 * workHoursPerDay
-								* workDaysPerWeek;
-					}
+		boolean processed = false;
+		for (int i = 0; i < charArray.length; i++) {
+			char c = charArray[i];
+
+			if (Character.isDigit(c)) {
+				buffer.append(c);
+			} else if (buffer.length() != 0) {
+				// if not a digit but digits in buffer, non digit has to be either w,d,h,m
+				int count = Integer.parseInt(buffer.toString());
+				if (c == 'w') {
+					value += count * 60 * 60 * workHoursPerDay * workDaysPerWeek;
+				} else if (c == 'd') {
+					value += count * 60 * 60 * workHoursPerDay;
+				} else if (c == 'h') {
+					value += count * 60 * 60;
+				} else if (c == 'm') {
+					value += count * 60;
+				} else {
+					// if character after digits it not a valid day identifier, abort
+					pos.setErrorIndex(i);
+					return null;
 				}
+				processed = true;
+				buffer.setLength(0);
+			} else if (!Character.isWhitespace(c)) {
+				// if character is no digit, no space and no digits where found so far, abort
+				pos.setErrorIndex(i);
+				return null;
 			}
 		}
+
+		// if there are unprocessed digits left, it is an invalid format
+		if (!processed || buffer.length() != 0) {
+			pos.setErrorIndex(0);
+			return null;
+		}
+
 		pos.setIndex(source.length() + 1);
 		return Long.valueOf(value);
 	}
-
 }

@@ -11,6 +11,8 @@
 
 package org.eclipse.mylyn.jira.tests.core;
 
+import java.text.ParseException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
@@ -44,8 +46,26 @@ public class JiraTimeFormatTest extends TestCase {
 	public void testParse() throws Exception {
 		JiraTimeFormat f = new JiraTimeFormat();
 
-		assertEquals(0L, f.parse(""));
+		try {
+			assertEquals(0L, f.parse(""));
+			fail("Parsing should have failed");
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+		}
+		try {
+			assertEquals(0L, f.parse("1"));
+			fail("Parsing should have failed");
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+		}
+		try {
+			assertEquals(0L, f.parse("0g"));
+			fail("Parsing should have failed");
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+		}
 		assertEquals(0L, f.parse("0m"));
+		assertEquals(0L, f.parse("0"));
 		assertEquals(60L, f.parse("1m"));
 		assertEquals(60L * 30, f.parse("30m"));
 	}
@@ -53,17 +73,105 @@ public class JiraTimeFormatTest extends TestCase {
 	public void testParseObject() throws Exception {
 		JiraTimeFormat f = new JiraTimeFormat();
 
-		assertEquals(0L, f.parseObject(""));
+		//valid formats
+		assertEquals(0L, f.parseObject("0"));
 		assertEquals(0L, f.parseObject("0m"));
 		assertEquals(60L, f.parseObject("1m"));
 		assertEquals(60L * 30, f.parseObject("30m"));
 		assertEquals(60L * 60, f.parseObject("60m"));
 		assertEquals(60L * 60, f.parseObject("1h"));
 		assertEquals(60L * 90, f.parseObject("1h 30m"));
+		assertEquals(60L * 90, f.parseObject("1h   30m"));
+		assertEquals(120L, f.parseObject("1m1m"));
+		assertEquals(120L, f.parseObject("1m 1m"));
 		assertEquals(60L * 60 * 25, f.parseObject("1d 1h"));
 		assertEquals(60L * 60 * 25 + 60, f.parseObject("1d 1h 1m"));
+		assertEquals(60L * 60 * 25 + 60, f.parseObject("1d   1h      1m"));
+		assertEquals(60L * 60 * 25 + 60, f.parseObject("1d1h1m"));
 		assertEquals(60L * 60 * 24 * 7, f.parseObject("1w"));
 		assertEquals(60L * (60 * 24 * 7 + 60 * 24 + 61), f.parseObject("1w 1d 1h 1m"));
-	}
+		assertEquals(60L * 60 * 25 + 60, f.parseObject("1m 1d 1h")); //only allow w d h m ordering
+		assertEquals(60L * (60 * 24 * 7 + 60 * 24 + 61), f.parseObject("1h 1w 1m 1d")); //only allow w d h m ordering
 
+		//invalid formats
+		try {
+			assertEquals(null, f.parseObject(""));
+			fail("Parsing should have failed");
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(0, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("0g"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(1, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("1mm"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(2, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("0 1m"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(1, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("1 1m"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(1, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("0h 1"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(0, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("1h 1"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(0, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("1mq"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(2, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("1q"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(1, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("1w foo 1h"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(3, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("foo1m"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(0, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("foo 1m"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(0, ((ParseException) e).getErrorOffset());
+		}
+		try {
+			assertEquals(null, f.parseObject("12d foo bar 5m"));
+		} catch (Exception e) {
+			assertTrue(e instanceof ParseException);
+			assertEquals(4, ((ParseException) e).getErrorOffset());
+		}
+	}
 }

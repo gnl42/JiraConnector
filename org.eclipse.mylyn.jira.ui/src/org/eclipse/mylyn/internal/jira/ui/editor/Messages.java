@@ -42,6 +42,8 @@ public class Messages extends NLS {
 
 	public static String WorkLogPart_Time_Spent_Explanation_Tooltip;
 
+	public static String JiraEditorUtil_Time_Spent_Error_Decorator_Hover;
+
 	public static String WorkLogPart_Work_Description;
 
 	public static String WorkLogPart_Work_Log;

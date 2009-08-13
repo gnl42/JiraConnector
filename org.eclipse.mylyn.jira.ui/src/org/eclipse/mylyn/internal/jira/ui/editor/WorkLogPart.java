@@ -11,6 +11,7 @@
 
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -99,6 +100,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
 	private JiraWorkLog newWorkLog;
 
+	private Section newWorkLogSection;
+
 	public WorkLogPart() {
 		setPartName(Messages.WorkLogPart_Work_Log);
 	}
@@ -151,9 +154,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 			workLogList.add(log);
 		}
 		attachmentsViewer.setContentProvider(new ArrayContentProvider());
-		attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider(new JiraTimeFormat(
-				JiraUtil.getWorkDaysPerWeek(getTaskEditorPage().getTaskRepository()),
-				JiraUtil.getWorkHoursPerDay(getTaskEditorPage().getTaskRepository()))));
+		attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider(getJiraTimeFormat()));
 		attachmentsViewer.addOpenListener(new IOpenListener() {
 			public void open(OpenEvent event) {
 				TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(),
@@ -210,7 +211,19 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 			Label label = toolkit.createLabel(composite, Messages.WorkLogPart_No_work_logged);
 			getTaskEditorPage().registerDefaultDropListener(label);
 		}
-		Section newWorkLogSection = createNewWorkLogSection(toolkit, composite);
+		newWorkLogSection = createNewWorkLogSection(toolkit, composite);
+		newWorkLogSection.addExpansionListener(new ExpansionAdapter() {
+			private boolean firstTime = true;
+
+			@Override
+			public void expansionStateChanged(ExpansionEvent e) {
+				if (firstTime) {
+					firstTime = false;
+				} else {
+					setTimeSpendDecorator();
+				}
+			}
+		});
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(newWorkLogSection);
 		section.setClient(composite);
 
@@ -258,8 +271,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 	}
 
 	private JiraTimeFormat getJiraTimeFormat() {
-		return new JiraTimeFormat(JiraUtil.getWorkDaysPerWeek(getTaskEditorPage().getTaskRepository()),
-				JiraUtil.getWorkHoursPerDay(getTaskEditorPage().getTaskRepository()));
+		return JiraUtil.getTimeFormat(getTaskEditorPage().getTaskRepository());
 	}
 
 	private Section createNewWorkLogSection(FormToolkit toolkit, Composite parent) {
@@ -293,7 +305,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 		timeSpentText = toolkit.createText(newWorkLogComposite, getJiraTimeFormat().format(new Long(newWorkDoneAmount)));
 		timeSpentText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				newWorkDoneAmount = getJiraTimeFormat().parse(timeSpentText.getText());
+				setTimeSpendDecorator();
+
 				addWorkLogToModel();
 			}
 		});
@@ -419,5 +432,14 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 					String.valueOf(includeWorklog));
 			getModel().attributeChanged(attribute);
 		}
+	}
+
+	private void setTimeSpendDecorator() {
+		try {
+			newWorkDoneAmount = getJiraTimeFormat().parse(timeSpentText.getText());
+		} catch (ParseException e) {
+			//ignore
+		}
+		JiraEditorUtil.setTimeSpentDecorator(timeSpentText, false, getTaskEditorPage().getTaskRepository());
 	}
 }

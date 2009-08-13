@@ -11,6 +11,8 @@
 
 package org.eclipse.mylyn.internal.jira.ui.editor;
 
+import java.text.ParseException;
+
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
@@ -68,8 +70,12 @@ public class TimeSpanAttributeEditor extends AbstractAttributeEditor {
 	}
 
 	public void setValue(String text) {
-		getAttributeMapper().setLongValue(getTaskAttribute(), format.parse(text));
-		attributeChanged();
+		try {
+			getAttributeMapper().setLongValue(getTaskAttribute(), format.parse(text));
+			attributeChanged();
+		} catch (ParseException e) {
+			//ignore
+		}
+		JiraEditorUtil.setTimeSpentDecorator(this.text, true, getModel().getTaskRepository());
 	}
-
 }
