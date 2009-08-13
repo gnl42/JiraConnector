@@ -28,7 +28,7 @@
             id="com.atlassian.connector.eclipse.monitor.usage.keywords"/>
    </extension>
  
-	<extension point="org.eclipse.ui.newWizards">
+	<!--extension point="org.eclipse.ui.newWizards">
     	<wizard
             canFinishEarly="false" 
             category="org.eclipse.mylyn.ui.wizards.new"
@@ -37,7 +37,7 @@
             icon="icons/eview16/editor-usage.gif"
             id="com.atlassian.connector.eclipse.monitor.usage.wizard.usageSummary"
             name="%wizard.name"/>
-   	</extension>
+   	</extension-->
    
    	<extension point="org.eclipse.ui.editors">
         <editor
