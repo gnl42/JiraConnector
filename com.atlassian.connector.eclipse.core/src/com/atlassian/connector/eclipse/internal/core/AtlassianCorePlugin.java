@@ -45,8 +45,8 @@ public class AtlassianCorePlugin extends Plugin {
 	}
 
 	public String getVersion() {
-		String version = getBundle().getHeaders().get(Constants.BUNDLE_VERSION).toString();
-		return version == null ? "0.0.0" : version;
+		Object version = getBundle().getHeaders().get(Constants.BUNDLE_VERSION);
+		return version == null ? "0.0.0" : version.toString();
 	}
 
 	/*
