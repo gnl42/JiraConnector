@@ -453,7 +453,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 			} else if (cause instanceof ConnectException) {
 				return Messages.JiraSoapClient_Unable_to_connect_to_server;
 			} else if (cause instanceof SAXException) {
-				if (REMOTE_ERROR_BAD_ENVELOPE_TAG.equals(cause.getMessage())
+				if (REMOTE_ERROR_BAD_ENVELOPE_TAG.equalsIgnoreCase(cause.getMessage())
 						|| REMOTE_ERROR_BAD_ID.equals(cause.getMessage())
 						|| REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG.equals(cause.getMessage())) {
 					return ERROR_RPC_NOT_ENABLED;

@@ -194,4 +194,6 @@ public class Messages extends NLS {
 	public static String JiraRepositorySettingsPage_working_days_per_week;
 
 	public static String JiraRepositorySettingsPage_working_hours_per_day;
+
+	public static String JiraRepositorySettingsPage_Validate_server_settings;
 }

@@ -111,7 +111,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
 	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
 		super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings,
-				Messages.JiraRepositorySettingsPage_EXAMPLE_HTTP_DEVELOPER_ALTASSIAN_COM_JIRA, taskRepository);
+				Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
 		setNeedsProxy(true);
 		setNeedsHttpAuth(true);
 	}
