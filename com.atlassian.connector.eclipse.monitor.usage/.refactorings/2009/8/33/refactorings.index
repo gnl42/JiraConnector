@@ -15,3 +15,5 @@
 1250080160541	Rename field 'UiUsageMonitorPlugin_send_usage_feedback'
 1250080350080	Rename field 'UsageSubmissionWizard_0'
 1250080522036	Rename field 'UsageSubmissionWizard_upload_user_stats'
+1250154650593	Rename field 'UiUsageMonitorPlugin_send_usage_data'
+1250154668348	Rename field 'AskForPermissionDialog_send_usage_data'

@@ -13,7 +13,10 @@
 package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -32,20 +35,20 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventObfuscator;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
+import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
 
 /**
  * @author Mik Kersten
  * @author Ken Sueda
  */
 public class UsageDataPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-
-	private static final String DESCRIPTION = Messages.UsageDataPreferencePage_description;
 
 	private static final long DAYS_IN_MS = 1000 * 60 * 60 * 24;
 
@@ -62,7 +65,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	public UsageDataPreferencePage() {
 		super();
 		setPreferenceStore(UiUsageMonitorPlugin.getPrefs());
-		setDescription(DESCRIPTION);
 	}
 
 	@Override
@@ -70,6 +72,18 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
+
+		Link description = new Link(container, SWT.WRAP);
+		GridDataFactory.defaultsFor(description).hint(500, 50).applyTo(description);
+		description.setText(Messages.UsageDataPreferencePage_description);
+		description.setToolTipText("Show Usage Data Submission wizard");
+		description.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				WizardDialog wizard = new WizardDialog(getShell(), new UsageSubmissionWizard());
+				wizard.open();
+			}
+		});
 
 		createLogFileSection(container);
 		createUsageSection(container);
@@ -87,18 +101,23 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		Label info = new Label(group, SWT.NULL);
 		info.setText(Messages.UsageDataPreferencePage_sent_to_following_recipients);
 
-		Link details;
 		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
+			Composite uc = new Composite(group, SWT.NONE);
+			uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(uc);
+
+			new Label(uc, SWT.NONE).setImage(UiUsageMonitorPlugin.getDefault().getCollectorLogo(collector));
+
 			final String detailsUrl = collector.getDetailsUrl();
 
-			details = new Link(group, SWT.NULL);
+			Link details = new Link(uc, SWT.NULL);
 			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
 					.getHeaders()
 					.get("Bundle-Name"))); //$NON-NLS-1$
 			details.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					WorkbenchUtil.openUrl(detailsUrl);
+					WorkbenchUtil.openUrl(detailsUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
 				}
 			});
 		}

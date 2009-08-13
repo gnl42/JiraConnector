@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
@@ -84,24 +86,28 @@ public class UsageUploadWizardPage extends WizardPage {
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
 		label.setText(Messages.UsageUploadWizardPage_recipients);
 
-		Link details;
 		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
+			Composite uc = new Composite(topContainer, SWT.NONE);
+			uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+			GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(uc);
+
+			new Label(uc, SWT.NONE).setImage(UiUsageMonitorPlugin.getDefault().getCollectorLogo(collector));
+
 			final String detailsUrl = collector.getDetailsUrl();
 
-			details = new Link(topContainer, SWT.NULL);
+			Link details = new Link(uc, SWT.NULL);
 			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
 					.getHeaders()
 					.get("Bundle-Name"))); //$NON-NLS-1$
 			details.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					WorkbenchUtil.openUrl(detailsUrl);
+					WorkbenchUtil.openUrl(detailsUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
 				}
 			});
-			GridDataFactory.fillDefaults().span(2, 1).applyTo(details);
 		}
 
-		label = new Label(topContainer, SWT.NULL);
+		label = new Label(topContainer, SWT.NULL | SWT.BEGINNING);
 		label.setText(Messages.UsageUploadWizardPage_usage_file_location);
 
 		usageFileText = new Text(topContainer, SWT.BORDER | SWT.SINGLE);

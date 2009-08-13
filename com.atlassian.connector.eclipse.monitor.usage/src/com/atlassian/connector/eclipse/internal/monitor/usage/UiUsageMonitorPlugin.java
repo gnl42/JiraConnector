@@ -35,6 +35,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.mylyn.commons.core.CoreUtil;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.WebLocation;
@@ -56,6 +57,7 @@ import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWindowListener;
@@ -119,6 +121,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	private final StudyParameters studyParameters = new StudyParameters();
 
 	private final ListenerList lifecycleListeners = new ListenerList();
+
+	private ImageRegistry customLogosRegistry;
 
 	public static class UiUsageMonitorStartup implements IStartup {
 
@@ -387,6 +391,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			stopMonitoring();
 		}
 
+		if (customLogosRegistry != null) {
+			customLogosRegistry.dispose();
+		}
+
 		super.stop(context);
 		plugin = null;
 		resourceBundle = null;
@@ -616,4 +624,18 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	public void setObservedEvents(int number) {
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS, number);
 	}
+
+	public Image getCollectorLogo(UsageCollector data) {
+		if (customLogosRegistry == null) {
+			customLogosRegistry = new ImageRegistry(getWorkbench().getDisplay());
+		}
+
+		Image image = customLogosRegistry.get(data.getUploadUrl());
+		if (image == null && data.getIcon() != null) {
+			customLogosRegistry.put(data.getUploadUrl(), data.getIcon());
+			image = customLogosRegistry.get(data.getUploadUrl());
+		}
+		return image;
+	}
+
 }

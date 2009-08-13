@@ -13,11 +13,16 @@ package com.atlassian.connector.eclipse.internal.monitor.usage.wizards;
 
 import java.io.File;
 
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
@@ -74,6 +79,21 @@ public class UsageSubmissionWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		Job j = new UsageDataUploadJob(true);
 		j.setPriority(Job.DECORATE);
+		j.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				if (!event.getResult().isOK()) {
+					return;
+				}
+
+				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+					public void run() {
+						MessageDialog.openInformation(WorkbenchUtil.getShell(), "Usage Data Submission",
+								"Usage Data was uploaded. Thank you for participating!");
+					}
+				});
+			}
+		});
 		j.schedule();
 		return true;
 	}

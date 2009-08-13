@@ -16,12 +16,10 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -35,28 +33,13 @@ import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
 
 public class AskForPermissionDialog extends Dialog {
 
-	private ImageRegistry imageRegistry;
-
 	public AskForPermissionDialog(Shell parentShell) {
 		super(parentShell);
 	}
 
-	public Image getImage(UsageCollector data) {
-		if (imageRegistry == null) {
-			imageRegistry = new ImageRegistry(getShell().getDisplay());
-		}
-
-		Image image = imageRegistry.get(data.getUploadUrl());
-		if (image == null && data.getIcon() != null) {
-			imageRegistry.put(data.getUploadUrl(), data.getIcon());
-			image = imageRegistry.get(data.getUploadUrl());
-		}
-		return image;
-	}
-
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		getShell().setText(Messages.UiUsageMonitorPlugin_send_usage_data);
+		getShell().setText(Messages.AskForPermissionDialog_title);
 
 		Composite composite = new Composite((Composite) super.createDialogArea(parent), SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
@@ -73,7 +56,7 @@ public class AskForPermissionDialog extends Dialog {
 			uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(uc);
 
-			new Label(uc, SWT.NONE).setImage(getImage(collector));
+			new Label(uc, SWT.NONE).setImage(UiUsageMonitorPlugin.getDefault().getCollectorLogo(collector));
 
 			final String detailsUrl = collector.getDetailsUrl();
 
@@ -91,15 +74,16 @@ public class AskForPermissionDialog extends Dialog {
 
 		new Label(composite, SWT.WRAP).setText(Messages.AskForPermissionDialog_to_see_what_will_be_tracked);
 
+		new Label(composite, SWT.WRAP).setText(Messages.AskForPermissionDialog_allow_collecting_and_uploading);
+
 		applyDialogFont(composite);
 		return composite;
 	}
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		// create OK and Cancel buttons by default
-		createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
 		createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, false);
+		createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
 	}
 
 	@Override
