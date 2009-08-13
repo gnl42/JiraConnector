@@ -16,6 +16,7 @@ import com.atlassian.theplugin.commons.util.LoggerImpl;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -44,7 +45,8 @@ public class AtlassianCorePlugin extends Plugin {
 	}
 
 	public String getVersion() {
-		return getBundle().getVersion().toString();
+		String version = getBundle().getHeaders().get(Constants.BUNDLE_VERSION).toString();
+		return version == null ? "0.0.0" : version;
 	}
 
 	/*
