@@ -19,9 +19,9 @@ public class DirectClickThroughPreferencePage extends FieldEditorPreferencePage 
 	public DirectClickThroughPreferencePage() {
 		super(GRID);
 		setTitle("Direct Click Through Preferences");
-		setDescription("Direct Click Through allows you to easily open selected items in your IDE.\n"
-				+ "You can browse your FishEye, Crucible, Bamboo or JIRA and navigate to your IDE\n"
-				+ "with one click and open selected item automatically. This feature opens a locally\n"
+		setDescription("Direct Click Through allows you to easily open selected items in your IDE. "
+				+ "You can browse your FishEye, Crucible, Bamboo or JIRA and navigate to your IDE "
+				+ "with one click and open selected item automatically. This feature opens a locally "
 				+ "available TCP/IP port, only localhost can access it.");
 	}
 	
