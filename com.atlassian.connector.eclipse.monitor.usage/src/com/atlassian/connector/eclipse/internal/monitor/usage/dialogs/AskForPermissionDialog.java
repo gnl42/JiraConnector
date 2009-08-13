@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
+import org.osgi.framework.Constants;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
@@ -63,7 +64,7 @@ public class AskForPermissionDialog extends Dialog {
 			Link details = new Link(uc, SWT.NULL);
 			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
 					.getHeaders()
-					.get("Bundle-Name"))); //$NON-NLS-1$
+					.get(Constants.BUNDLE_NAME)));
 			details.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {

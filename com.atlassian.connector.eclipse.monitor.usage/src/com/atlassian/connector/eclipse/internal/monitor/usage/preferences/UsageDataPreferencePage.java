@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
+import org.osgi.framework.Constants;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventObfuscator;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
@@ -113,7 +114,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 			Link details = new Link(uc, SWT.NULL);
 			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
 					.getHeaders()
-					.get("Bundle-Name"))); //$NON-NLS-1$
+					.get(Constants.BUNDLE_NAME)));
 			details.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
