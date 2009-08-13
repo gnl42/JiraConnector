@@ -11,10 +11,10 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.IStatus;
@@ -267,7 +267,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().setMappings(mapping);
 			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().save();
 		} catch (IOException e) {
-			ErrorDialog.openError(getShell(), AtlassianUiPlugin.PRODUCT_NAME,
+			ErrorDialog.openError(getShell(), AtlassianCorePlugin.PRODUCT_NAME,
 					"Error while saving FishEye mapping configuration", new Status(IStatus.ERROR,
 							FishEyeUiPlugin.PLUGIN_ID, e.getMessage(), e));
 			return false;

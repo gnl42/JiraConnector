@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.ui.team;
 
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
 
 import org.apache.commons.lang.StringUtils;
@@ -116,7 +116,7 @@ public final class TeamMessageUtils {
 	private static void internalOpenUnsupportedTeamProviderErrorMessage(final UnsupportedTeamProviderException exception) {
 		String message = NLS.bind("Unsupported team provider ({0}).\n\n" + "Supported team providers are:\n"
 				+ StringUtils.join(TeamUiUtils.getSupportedTeamConnectors(), ", ") + "\nSee the "
-				+ AtlassianUiPlugin.PRODUCT_NAME + " web site for future updates.", exception.getMessage());
+				+ AtlassianCorePlugin.PRODUCT_NAME + " web site for future updates.", exception.getMessage());
 
 		MessageDialog.openWarning(null, MESSAGE_DIALOG_TITLE, message);
 	}

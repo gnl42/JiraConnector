@@ -31,8 +31,6 @@ public class AtlassianUiPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.ui";
 
-	public static final String PRODUCT_NAME = "Atlassian Connector for Eclipse";
-
 	// The shared instance
 	private static AtlassianUiPlugin plugin;
 

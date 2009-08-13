@@ -53,7 +53,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
 		this.connectionManager = new MultiThreadedHttpConnectionManager();
 		WebUtil.addConnectionManager(connectionManager);
 		idleConnectionTimeoutThread.start();
-		userAgent = "Atlassian Connector for Eclipse, version " + AtlassianCorePlugin.getDefault().getVersion();
+		userAgent = AtlassianCorePlugin.PRODUCT_NAME + "/" + AtlassianCorePlugin.getDefault().getVersion();
 	}
 
 	public synchronized HttpClient getHttpClient(ConnectionCfg server) throws HttpProxySettingsException {

@@ -30,6 +30,8 @@ public class AtlassianCorePlugin extends Plugin {
 
 	public static final boolean TRACE_COMMONS = "true".equalsIgnoreCase(Platform.getDebugOption(TRACE_COMMONS_PROPERTY_NAME));
 
+	public static final String PRODUCT_NAME = "Atlassian Connector for Eclipse";
+
 	// The shared instance
 	private static AtlassianCorePlugin plugin;
 
