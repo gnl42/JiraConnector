@@ -109,27 +109,27 @@ public final class CrucibleUiUtil {
 	}
 
 	public static boolean hasCurrentUserCompletedReview(Review review) {
-		String currentUser = getCurrentUserName(review);
+		String currentUser = getCurrentUsername(review);
 		return CrucibleUtil.isUserCompleted(currentUser, review);
 	}
 
-	public static String getCurrentUserName(Review review) {
-		return getCurrentUserName(CrucibleUiUtil.getCrucibleTaskRepository(review));
+	public static String getCurrentUsername(Review review) {
+		return getCurrentUsername(CrucibleUiUtil.getCrucibleTaskRepository(review));
 	}
 
 	public static User getCurrentCachedUser(TaskRepository repository) {
-		return getCachedUser(getCurrentUserName(repository), repository);
+		return getCachedUser(getCurrentUsername(repository), repository);
 	}
 
 	public static User getCurrentCachedUser(Review review) {
 		TaskRepository repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
-		return getCachedUser(getCurrentUserName(repository), repository);
+		return getCachedUser(getCurrentUsername(repository), repository);
 	}
 
 	private static boolean hasReviewerCompleted(Review review, String username) {
 		try {
 			for (Reviewer r : review.getReviewers()) {
-				if (r.getUserName().equals(username)) {
+				if (r.getUsername().equals(username)) {
 					return r.isCompleted();
 				}
 			}
@@ -140,11 +140,11 @@ public final class CrucibleUiUtil {
 	}
 
 	public static Reviewer createReviewerFromCachedUser(Review review, User user) {
-		boolean completed = hasReviewerCompleted(review, user.getUserName());
-		return new Reviewer(user.getUserName(), user.getDisplayName(), completed);
+		boolean completed = hasReviewerCompleted(review, user.getUsername());
+		return new Reviewer(user.getUsername(), user.getDisplayName(), completed);
 	}
 
-	public static String getCurrentUserName(TaskRepository repository) {
+	public static String getCurrentUsername(TaskRepository repository) {
 		/*
 		String currentUser = CrucibleCorePlugin.getRepositoryConnector()
 				.getClientManager()
@@ -156,7 +156,7 @@ public final class CrucibleUiUtil {
 
 	public static User getCachedUser(String userName, TaskRepository repository) {
 		for (User user : getCachedUsers(repository)) {
-			if (userName.equals(user.getUserName())) {
+			if (userName.equals(user.getUsername())) {
 				return user;
 			}
 		}
@@ -166,7 +166,7 @@ public final class CrucibleUiUtil {
 	public static boolean isUserReviewer(String userName, Review review) {
 		try {
 			for (Reviewer reviewer : review.getReviewers()) {
-				if (reviewer.getUserName().equals(userName)) {
+				if (reviewer.getUsername().equals(userName)) {
 					return true;
 				}
 			}
@@ -177,7 +177,7 @@ public final class CrucibleUiUtil {
 	}
 
 	public static boolean isCurrentUserReviewer(Review review) {
-		return isUserReviewer(CrucibleUiUtil.getCurrentUserName(review), review);
+		return isUserReviewer(CrucibleUiUtil.getCurrentUsername(review), review);
 	}
 
 	public static boolean isFilePartOfActiveReview(CrucibleFile crucibleFile) {
@@ -272,13 +272,13 @@ public final class CrucibleUiUtil {
 
 	public static boolean canModifyComment(Review review, Comment comment) {
 		return CrucibleUtil.canAddCommentToReview(review)
-				&& comment.getAuthor().getUserName().equals(CrucibleUiUtil.getCurrentUserName(review));
+				&& comment.getAuthor().getUsername().equals(CrucibleUiUtil.getCurrentUsername(review));
 	}
 
-	public static Set<String> getUserNamesFromUsers(Collection<? extends User> users) {
+	public static Set<String> getUsernamesFromUsers(Collection<? extends User> users) {
 		final Set<String> userNames = new HashSet<String>();
 		for (User user : users) {
-			userNames.add(user.getUserName());
+			userNames.add(user.getUsername());
 		}
 		return userNames;
 	}

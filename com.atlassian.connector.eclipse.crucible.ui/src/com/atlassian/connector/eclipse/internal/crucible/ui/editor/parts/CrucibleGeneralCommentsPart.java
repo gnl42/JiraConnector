@@ -207,7 +207,7 @@ public class CrucibleGeneralCommentsPart extends AbstractCrucibleEditorFormPart 
 					newParts.add(commentPart);
 					Control commentControl = commentPart.createControl(parentComposite, toolkit);
 
-					if (shouldHighlight && !comment.getAuthor().getUserName().equals(crucibleEditor.getUserName())) {
+					if (shouldHighlight && !comment.getAuthor().getUsername().equals(crucibleEditor.getUsername())) {
 						commentPart.setIncomming(true);
 						commentPart.decorate();
 					}

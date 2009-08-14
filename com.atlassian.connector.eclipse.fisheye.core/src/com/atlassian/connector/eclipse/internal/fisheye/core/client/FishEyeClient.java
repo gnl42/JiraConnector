@@ -45,7 +45,7 @@ public class FishEyeClient extends AbstractConnectorClient<FishEyeServerFacade2>
 
 	@Override
 	@Nullable
-	public String getUserName() {
+	public String getUsername() {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
 			return credentials.getUserName();

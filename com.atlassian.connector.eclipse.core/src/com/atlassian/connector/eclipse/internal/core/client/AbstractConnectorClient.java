@@ -50,7 +50,7 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade> {
 		this.callback = callback;
 	}
 
-	public String getUserName() {
+	public String getUsername() {
 		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
 		if (credentials != null) {
 			return credentials.getUserName();

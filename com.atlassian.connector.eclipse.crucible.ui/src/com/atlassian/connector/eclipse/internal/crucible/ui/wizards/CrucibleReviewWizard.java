@@ -461,7 +461,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 							Review tempReview = server.createReview(serverCfg, detailsPage.getReview());
 							detailsPage.getReview().setPermId(tempReview.getPermId());
 							server.setReviewers(serverCfg, tempReview.getPermId(),
-									CrucibleUiUtil.getUserNamesFromUsers(detailsPage.getReviewers()));
+									CrucibleUiUtil.getUsernamesFromUsers(detailsPage.getReviewers()));
 							return tempReview;
 						}
 					});

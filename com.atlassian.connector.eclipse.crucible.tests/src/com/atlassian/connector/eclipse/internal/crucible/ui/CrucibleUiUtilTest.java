@@ -247,9 +247,9 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		for (User cachedUser : usersReceivedSet) {
 			for (User user : users) {
-				if (user.getUserName().equals(cachedUser.getUserName())) {
+				if (user.getUsername().equals(cachedUser.getUsername())) {
 					assertEquals(user.getDisplayName(), cachedUser.getDisplayName());
-					assertTrue("Expected user " + user.getUserName() + " not found in set",
+					assertTrue("Expected user " + user.getUsername() + " not found in set",
 							usersExpectedSet.remove(user));
 				}
 			}
@@ -269,16 +269,16 @@ public class CrucibleUiUtilTest extends TestCase {
 		return repo;
 	}
 
-	public void testGetCurrentUserNameReview() {
+	public void testGetCurrentUsernameReview() {
 		Review review = createMockReview(createMockRepository());
 
-		assertEquals("user", CrucibleUiUtil.getCurrentUserName(review));
+		assertEquals("user", CrucibleUiUtil.getCurrentUsername(review));
 	}
 
-	public void testGetCurrentUserNameRepository() {
+	public void testGetCurrentUsernameRepository() {
 		TaskRepository repository = createMockRepository();
 
-		assertEquals("user", CrucibleUiUtil.getCurrentUserName(repository));
+		assertEquals("user", CrucibleUiUtil.getCurrentUsername(repository));
 	}
 
 	public void testGetCurrentCachedUserRepository() {
@@ -362,9 +362,9 @@ public class CrucibleUiUtilTest extends TestCase {
 
 		for (User cachedUser : usersReceivedSet) {
 			for (User user : users) {
-				if (user.getUserName().equals(cachedUser.getUserName())) {
+				if (user.getUsername().equals(cachedUser.getUsername())) {
 					assertEquals(user.getDisplayName(), cachedUser.getDisplayName());
-					assertTrue("Expected user " + user.getUserName() + " not found in set",
+					assertTrue("Expected user " + user.getUsername() + " not found in set",
 							usersExpectedSet.remove(user));
 				}
 			}
@@ -401,7 +401,7 @@ public class CrucibleUiUtilTest extends TestCase {
 		assertTrue(usersReceivedSet.contains(cachedProjectB));
 	}
 
-	public void testGetUserNamesFromUsers() {
+	public void testGetUsernamesFromUsers() {
 		List<User> users = new ArrayList<User>();
 		users.add(new User("uA", "userA"));
 		users.add(new User("uB", "userB"));
@@ -409,7 +409,7 @@ public class CrucibleUiUtilTest extends TestCase {
 		users.add(new User("uC", "userC"));
 		users.add(new User("uD", "userD"));
 
-		Set<String> userNames = CrucibleUiUtil.getUserNamesFromUsers(users);
+		Set<String> userNames = CrucibleUiUtil.getUsernamesFromUsers(users);
 		assertEquals(4, userNames.size());
 		assertTrue(userNames.contains("uA"));
 		assertTrue(userNames.contains("uB"));

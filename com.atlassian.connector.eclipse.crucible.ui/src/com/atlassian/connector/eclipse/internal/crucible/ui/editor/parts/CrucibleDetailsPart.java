@@ -98,7 +98,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 					CrucibleUiUtil.getCachedUsers(crucibleReview));
 			if (dialog.open() == Window.OK) {
 				Set<Reviewer> reviewers = dialog.getSelectedReviewers();
-				final Set<String> reviewerUserNames = CrucibleUiUtil.getUserNamesFromUsers(reviewers);
+				final Set<String> reviewerUserNames = CrucibleUiUtil.getUsernamesFromUsers(reviewers);
 
 				boolean unchanged;
 				try {
@@ -269,7 +269,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 					ISelection selection = event.getSelection();
 					if (selection instanceof IStructuredSelection) {
 						User user = ((User) ((IStructuredSelection) selection).getFirstElement());
-						if (user.getUserName().equals(selectedUser.getUserName())) {
+						if (user.getUsername().equals(selectedUser.getUsername())) {
 							changedAttributes.remove(reviewAttributeType);
 						} else {
 							changedAttributes.put(reviewAttributeType, user);

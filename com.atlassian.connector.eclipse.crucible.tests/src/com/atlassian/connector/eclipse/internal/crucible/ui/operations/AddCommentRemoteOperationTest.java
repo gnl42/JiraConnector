@@ -86,7 +86,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 			Field f = CrucibleServerFacadeImpl.class.getDeclaredField("sessions");
 			f.setAccessible(true);
 
-			((Map<String, CrucibleSession>) f.get(facade)).put(VALID_URL + VALID_LOGIN.getUserName() + VALID_PASSWORD,
+			((Map<String, CrucibleSession>) f.get(facade)).put(VALID_URL + VALID_LOGIN.getUsername() + VALID_PASSWORD,
 					crucibleSessionMock);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -598,7 +598,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 		}
 
 		@Override
-		public String getUserName() {
+		public String getUsername() {
 			return "user";
 		}
 	}
@@ -615,7 +615,7 @@ public class AddCommentRemoteOperationTest extends TestCase {
 
 	private ConnectionCfg prepareServerBean() {
 		repository = new TaskRepository(CrucibleCorePlugin.CONNECTOR_KIND, VALID_URL);
-		return new ConnectionCfg("myname", VALID_URL, VALID_LOGIN.getUserName(), VALID_PASSWORD);
+		return new ConnectionCfg("myname", VALID_URL, VALID_LOGIN.getUsername(), VALID_PASSWORD);
 	}
 
 }

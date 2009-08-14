@@ -258,6 +258,6 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 	@Override
 	protected boolean shouldHighlight(VersionedComment comment, CrucibleReviewEditorPage crucibleEditor2) {
-		return !comment.getAuthor().getUserName().equals(crucibleEditor.getUserName());
+		return !comment.getAuthor().getUsername().equals(crucibleEditor.getUsername());
 	}
 }

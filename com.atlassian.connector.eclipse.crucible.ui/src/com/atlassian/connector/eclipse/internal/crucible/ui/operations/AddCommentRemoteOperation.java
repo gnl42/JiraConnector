@@ -140,7 +140,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 		} else {
 			newComment.setReply(false);
 		}
-		newComment.setAuthor(new User(client.getUserName()));
+		newComment.setAuthor(new User(client.getUsername()));
 		return newComment;
 	}
 
@@ -164,7 +164,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.setToLineInfo(false);
 		}
 
-		newComment.setAuthor(new User(client.getUserName()));
+		newComment.setAuthor(new User(client.getUsername()));
 		newComment.setDraft(isDraft);
 		newComment.setMessage(message);
 		if (parentComment != null && parentComment instanceof VersionedComment) {

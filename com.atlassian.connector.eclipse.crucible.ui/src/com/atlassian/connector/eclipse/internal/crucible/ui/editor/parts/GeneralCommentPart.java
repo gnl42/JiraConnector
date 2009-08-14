@@ -162,6 +162,6 @@ public class GeneralCommentPart extends CommentPart<GeneralComment, GeneralComme
 
 	@Override
 	protected boolean shouldHighlight(GeneralComment comment, CrucibleReviewEditorPage crucibleEditor2) {
-		return !comment.getAuthor().getUserName().equals(crucibleEditor.getUserName());
+		return !comment.getAuthor().getUsername().equals(crucibleEditor.getUsername());
 	}
 }

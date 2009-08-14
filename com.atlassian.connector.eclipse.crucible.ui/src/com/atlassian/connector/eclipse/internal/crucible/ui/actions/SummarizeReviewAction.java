@@ -51,7 +51,7 @@ public class SummarizeReviewAction extends AbstractReviewAction implements IWork
 		}
 
 		CrucibleSummarizeReviewDialog summarizeDialog = new CrucibleSummarizeReviewDialog(WorkbenchUtil.getShell(),
-				review, client.getUserName(), getTaskKey(), getTaskId(), getTaskRepository(), client);
+				review, client.getUsername(), getTaskKey(), getTaskId(), getTaskRepository(), client);
 		summarizeDialog.open();
 	}
 

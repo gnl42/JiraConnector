@@ -280,7 +280,7 @@ public class CrucibleSummarizeReviewDialog extends ProgressDialog {
 	private Reviewer getReviewer(User author) {
 		try {
 			for (Reviewer reviewer : review.getReviewers()) {
-				if (reviewer.getUserName().equals(author.getUserName())) {
+				if (reviewer.getUsername().equals(author.getUsername())) {
 					return reviewer;
 				}
 			}

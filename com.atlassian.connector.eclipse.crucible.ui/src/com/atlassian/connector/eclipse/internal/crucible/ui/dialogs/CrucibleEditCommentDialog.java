@@ -180,7 +180,7 @@ public class CrucibleEditCommentDialog extends ProgressDialog {
 		commentBean.setMessage(newComment);
 		commentBean.getCustomFields().clear();
 		commentBean.getCustomFields().putAll(customFieldSelections);
-		commentBean.setAuthor(new User(client.getUserName()));
+		commentBean.setAuthor(new User(client.getUsername()));
 		commentBean.setDefectRaised(defect);
 		if (commentBean.isDraft() && shouldPostIfDraft) {
 			commentBean.setDraft(false);

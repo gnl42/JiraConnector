@@ -378,7 +378,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		CrucibleClientData clientData = getClient().getClientData();
 		if (clientData != null && clientData.getCachedUsers() != null) {
 			for (User user : clientData.getCachedUsers()) {
-				if (user.getUserName().equals(username)) {
+				if (user.getUsername().equals(username)) {
 					return user;
 				}
 			}
@@ -460,7 +460,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 				if (obj == USER_ANY) {
 					return "";
 				} else {
-					return ((User) obj).getUserName();
+					return ((User) obj).getUsername();
 				}
 			}
 		}
@@ -494,7 +494,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 				if (obj == USER_ANY) {
 					return "";
 				} else {
-					return ((User) obj).getUserName();
+					return ((User) obj).getUsername();
 				}
 			}
 		}
@@ -509,7 +509,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 				if (obj == USER_ANY) {
 					return "";
 				} else {
-					return ((User) obj).getUserName();
+					return ((User) obj).getUsername();
 				}
 			}
 		}
@@ -524,7 +524,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 				if (obj == USER_ANY) {
 					return "";
 				} else {
-					return ((User) obj).getUserName();
+					return ((User) obj).getUsername();
 				}
 			}
 		}

@@ -155,11 +155,11 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		String summary = review.getName();
 		String key = review.getPermId().getId();
 		String id = CrucibleUtil.getTaskIdFromReview(review);
-		String owner = review.getAuthor().getUserName();
+		String owner = review.getAuthor().getUsername();
 		Date creationDate = review.getCreateDate();
 		Date closeDate = review.getCloseDate();
 
-		if (CrucibleUtil.isCompleted(review) || CrucibleUtil.isUserCompleted(getUserName(), review)) {
+		if (CrucibleUtil.isCompleted(review) || CrucibleUtil.isUserCompleted(getUsername(), review)) {
 			if (closeDate == null) {
 				closeDate = new Date();
 			}

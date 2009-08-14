@@ -303,11 +303,11 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	private boolean hasValidReviewers() {
 		setErrorMessage(null);
 		for (Reviewer reviewer : reviewersSelectionTreePart.getSelectedReviewers()) {
-			if (newReview.getAuthor().getUserName().equals(reviewer.getUserName())) {
+			if (newReview.getAuthor().getUsername().equals(reviewer.getUsername())) {
 				setErrorMessage("The author might not be a reviewer as well.");
 				return false;
 			}
-			if (newReview.getModerator().getUserName().equals(reviewer.getUserName())) {
+			if (newReview.getModerator().getUsername().equals(reviewer.getUsername())) {
 				setErrorMessage("The moderator might not be a reviewer as well.");
 				return false;
 			}

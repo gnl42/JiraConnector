@@ -251,11 +251,11 @@ public final class CrucibleUtil {
 			int result = 1;
 
 			result = prime * result + (review.isAllowReviewerToJoin() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
-			result = prime * result + ((review.getAuthor() == null) ? 0 : review.getAuthor().getUserName().hashCode());
+			result = prime * result + ((review.getAuthor() == null) ? 0 : review.getAuthor().getUsername().hashCode());
 			result = prime * result + ((review.getCloseDate() == null) ? 0 : review.getCloseDate().hashCode());
 			result = prime * result + ((review.getCreateDate() == null) ? 0 : review.getCreateDate().hashCode());
 			result = prime * result
-					+ ((review.getCreator() == null) ? 0 : review.getCreator().getUserName().hashCode());
+					+ ((review.getCreator() == null) ? 0 : review.getCreator().getUsername().hashCode());
 			result = prime * result
 					+ ((review.getCrucibleProject() == null) ? 0 : review.getCrucibleProject().getId().hashCode());
 			result = prime * result + ((review.getDescription() == null) ? 0 : review.getDescription().hashCode());
@@ -276,7 +276,7 @@ public final class CrucibleUtil {
 			result = prime * result + miniResult;
 
 			result = prime * result
-					+ ((review.getModerator() == null) ? 0 : review.getModerator().getUserName().hashCode());
+					+ ((review.getModerator() == null) ? 0 : review.getModerator().getUsername().hashCode());
 			result = prime * result + ((review.getName() == null) ? 0 : review.getName().hashCode());
 			result = prime * result
 					+ ((review.getParentReview() == null) ? 0 : review.getParentReview().getId().hashCode());
@@ -286,7 +286,7 @@ public final class CrucibleUtil {
 
 			miniResult = 0;
 			for (Reviewer reviewer : review.getReviewers()) {
-				miniResult += (reviewer.getUserName().hashCode());
+				miniResult += (reviewer.getUsername().hashCode());
 				miniResult += (reviewer.isCompleted() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
 			}
 			result = prime * result + miniResult;
@@ -307,7 +307,7 @@ public final class CrucibleUtil {
 
 		result += (comment.isDraft() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
 		result += ((comment.getMessage() == null) ? 0 : comment.getMessage().hashCode());
-		result += ((comment.getAuthor() == null) ? 0 : comment.getAuthor().getUserName().hashCode());
+		result += ((comment.getAuthor() == null) ? 0 : comment.getAuthor().getUsername().hashCode());
 		result += ((comment.getCreateDate() == null) ? 0 : comment.getCreateDate().hashCode());
 		result += ((comment.getPermId() == null) ? 0 : comment.getPermId().getId().hashCode());
 
@@ -331,7 +331,7 @@ public final class CrucibleUtil {
 		result += comment.getToStartLine();
 		result += (comment.isDraft() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
 		result += ((comment.getMessage() == null) ? 0 : comment.getMessage().hashCode());
-		result += ((comment.getAuthor() == null) ? 0 : comment.getAuthor().getUserName().hashCode());
+		result += ((comment.getAuthor() == null) ? 0 : comment.getAuthor().getUsername().hashCode());
 		result += ((comment.getCreateDate() == null) ? 0 : comment.getCreateDate().hashCode());
 		result += ((comment.getPermId() == null) ? 0 : comment.getPermId().getId().hashCode());
 
@@ -366,7 +366,7 @@ public final class CrucibleUtil {
 	public static boolean isUserCompleted(String userName, Review review) {
 		try {
 			for (Reviewer reviewer : review.getReviewers()) {
-				if (reviewer.getUserName().equals(userName)) {
+				if (reviewer.getUsername().equals(userName)) {
 					return reviewer.isCompleted();
 				}
 			}
