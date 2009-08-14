@@ -36,7 +36,7 @@ import org.osgi.framework.BundleContext;
 public class BambooUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.crucible.ui";
+	public static final String PLUGIN_ID = "com.atlassian.connector.eclipse.bamboo.ui";
 
 	// The shared instance
 	private static BambooUiPlugin plugin;
