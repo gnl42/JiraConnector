@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskMapping;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
@@ -189,6 +190,8 @@ public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
 						}
 					});
 				} else {
+					StatusHandler.log(status);
+
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							MessageDialog.openError(null, getText(), "Retrieving build details for "
