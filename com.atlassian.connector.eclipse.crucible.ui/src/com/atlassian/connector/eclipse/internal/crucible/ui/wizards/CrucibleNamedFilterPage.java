@@ -124,6 +124,10 @@ public class CrucibleNamedFilterPage extends AbstractRepositoryQueryPage2 implem
 
 			public void selectionChanged(SelectionChangedEvent event) {
 				updateQueryPage();
+				StructuredSelection selection = (StructuredSelection) filterList.getSelection();
+				if (!selection.isEmpty() && selection.getFirstElement() instanceof PredefinedFilter) {
+					setQueryTitle(((PredefinedFilter) selection.getFirstElement()).getFilterName());
+				}
 			}
 
 		});
