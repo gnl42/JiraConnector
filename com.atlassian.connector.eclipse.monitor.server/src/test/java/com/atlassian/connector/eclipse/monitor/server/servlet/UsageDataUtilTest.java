@@ -20,7 +20,7 @@ public class UsageDataUtilTest {
 	private final String zipName = "c29dfb31-108f-4d4b-a861-86cabef65054.707263666982297556.zip";
 	private FileItem zipItem;
 	
-	private final String xmlName = "processed-monitor-log1.xml";
+	private final String xmlName = "processed-monitor-log1.txt";
 	
 	@Before
 	public void setUp() throws IOException {
