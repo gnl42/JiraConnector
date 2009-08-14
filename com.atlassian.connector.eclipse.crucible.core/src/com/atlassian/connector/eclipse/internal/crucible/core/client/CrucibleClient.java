@@ -55,15 +55,12 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 
 	private final CrucibleClientData clientData;
 
-	private final ConnectionCfg crucibleServerCfg;
-
 	private final ReviewCache cachedReviewManager;
 
 	public CrucibleClient(AbstractWebLocation location, ConnectionCfg serverCfg, CrucibleServerFacade2 crucibleServer,
 			CrucibleClientData data, ReviewCache cachedReviewManager, HttpSessionCallbackImpl callback) {
 		super(location, serverCfg, crucibleServer, callback);
 		this.clientData = data;
-		this.crucibleServerCfg = serverCfg;
 		this.cachedReviewManager = cachedReviewManager;
 	}
 
@@ -114,7 +111,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 						List<Review> reviewsForFilter = server.getReviewsForFilter(serverCfg, filter);
 						for (Review review : reviewsForFilter) {
 
-							collectTaskDataForReview(taskRepository, resultCollector, review);
+							collectTaskDataForReview(server, serverCfg, taskRepository, resultCollector, review);
 						}
 					} else {
 						throw new RemoteApiException("No predefined filter exists for string: " + filterId);
@@ -125,7 +122,7 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 					List<Review> reviewsForFilter = server.getReviewsForCustomFilter(serverCfg, customFilter);
 					for (Review review : reviewsForFilter) {
 
-						collectTaskDataForReview(taskRepository, resultCollector, review);
+						collectTaskDataForReview(server, serverCfg, taskRepository, resultCollector, review);
 					}
 				}
 				return null;
@@ -134,16 +131,17 @@ public class CrucibleClient extends AbstractConnectorClient<CrucibleServerFacade
 		});
 	}
 
-	private void collectTaskDataForReview(final TaskRepository taskRepository, final TaskDataCollector resultCollector,
-			Review review) throws RemoteApiException, ServerPasswordNotProvidedException {
+	private void collectTaskDataForReview(CrucibleServerFacade2 crucibleFacade, ConnectionCfg conCfg,
+			final TaskRepository taskRepository, final TaskDataCollector resultCollector, Review review)
+			throws RemoteApiException, ServerPasswordNotProvidedException {
 		String taskId = CrucibleUtil.getTaskIdFromReview(review);
 		if (CrucibleUtil.isPartialReview(review)) {
-			review = facade.getReview(crucibleServerCfg, review.getPermId());
+			review = crucibleFacade.getReview(conCfg, review.getPermId());
 		}
 
 		int metricsVersion = review.getMetricsVersion();
 		if (cachedReviewManager != null && !cachedReviewManager.hasMetrics(metricsVersion)) {
-			cachedReviewManager.setMetrics(metricsVersion, facade.getMetrics(crucibleServerCfg, metricsVersion));
+			cachedReviewManager.setMetrics(metricsVersion, facade.getMetrics(conCfg, metricsVersion));
 		}
 
 		boolean hasChanged = cacheReview(taskId, review);
