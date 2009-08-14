@@ -159,7 +159,7 @@ public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
 				IStatus status = job.getStatus();
 				RetrieveFullBuildInfoJob infoJob = (RetrieveFullBuildInfoJob) event.getJob();
 
-				if (status.isOK()) {
+				if (infoJob.getBuildDetails() != null || infoJob.getBuildLog() != null) {
 					final String description = createBuildDescription(build, infoJob.getBuildLog(),
 							infoJob.getBuildDetails());
 
