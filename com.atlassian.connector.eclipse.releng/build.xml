@@ -136,8 +136,21 @@
 		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.3" keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 			<fileset dir="${build.home}/3.3/site"/>
 		</scp>
+  	    <!-- copy zipped site also -->
+  	    <scp remoteTofile="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.3-site.zip"
+  	    	localFile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip"
+  	    	keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
+  	    </scp>
+		
+		<!-- e3.4 -->
 		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.4" keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 			<fileset dir="${build.home}/3.4/site"/>
+		</scp>
+		
+		<!-- copy zipped site also -->
+		<scp remoteTofile="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.4-site.zip"
+		   	localFile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip"
+		   	keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 		</scp>
 	</target>
 
