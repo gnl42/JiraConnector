@@ -81,7 +81,7 @@ public class DirectClickThroughServlet extends HttpServlet {
 		} else if ("/review".equals(path)) {
 			writeIcon(resp);
 			handleOpenReviewRequest(req);
-		} else if ("/build".equals(req)) {
+		} else if ("/build".equals(path)) {
 			writeIcon(resp);
 			handleOpenBuildRequest(req);
 		} else {
