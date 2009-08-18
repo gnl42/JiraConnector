@@ -129,9 +129,11 @@
 		<fail message="Required property build.publish.password is not set" unless="build.publish.password"/>
 		<fail message="Required property build.publish.location is not set" unless="build.publish.location"/>
 		
-		<property file="${build.home}/finalFeaturesVersions.properties" />
+		<property file="${build.home}/3.3/finalFeaturesVersions.properties" />
 
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
+		
+		<!-- e3.3 -->
 		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}" keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 			<fileset dir="${build.home}/site"/>
 		</scp>
@@ -140,7 +142,7 @@
 		</scp>
   	    <!-- copy zipped site also -->
   	    <scp remoteTofile="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.3-site.zip"
-  	    	localFile="${build.home}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip"
+  	    	localFile="${build.home}/3.3/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip"
   	    	keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
   	    </scp>
 		
@@ -151,7 +153,7 @@
 		
 		<!-- copy zipped site also -->
 		<scp remoteTofile="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.4-site.zip"
-		   	localFile="${build.home}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip"
+		   	localFile="${build.home}/3.4/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip"
 		   	keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 		</scp>
 	</target>
