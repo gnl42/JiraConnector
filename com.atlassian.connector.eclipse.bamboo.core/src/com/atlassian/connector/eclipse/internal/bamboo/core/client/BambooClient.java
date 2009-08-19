@@ -57,8 +57,8 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2> {
 			throws CoreException {
 		this.clientData = execute(new BambooRemoteOperation<BambooClientData>(monitor, taskRepository) {
 			@Override
-			public BambooClientData run(BambooServerFacade2 server, ConnectionCfg connectionCfg, IProgressMonitor monitor)
-					throws RemoteApiException, ServerPasswordNotProvidedException {
+			public BambooClientData run(BambooServerFacade2 server, ConnectionCfg connectionCfg,
+					IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving plans");
 				BambooClientData newClientData = new BambooClientData();
 				Collection<BambooPlan> projects = server.getPlanList(connectionCfg);
@@ -148,4 +148,15 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2> {
 		});
 	}
 
+	public BambooBuild getBuildForPlanAndNumber(IProgressMonitor monitor, final TaskRepository repository,
+			final String planKey, final int buildNumber, final int timezoneOffset) throws CoreException {
+		return execute(new BambooRemoteOperation<BambooBuild>(monitor, repository) {
+			@Override
+			public BambooBuild run(BambooServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+					throws RemoteApiException, ServerPasswordNotProvidedException {
+				monitor.subTask("Retrieving build details");
+				return server.getBuildForPlanAndNumber(serverCfg, planKey, buildNumber, timezoneOffset);
+			}
+		});
+	}
 }
