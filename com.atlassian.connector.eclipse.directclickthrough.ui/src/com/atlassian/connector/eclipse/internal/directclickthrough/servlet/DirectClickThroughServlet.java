@@ -4,8 +4,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -36,9 +38,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.internal.tasks.ui.Messages;
 import org.eclipse.mylyn.internal.tasks.ui.OpenRepositoryTaskJob;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
@@ -258,44 +262,62 @@ public class DirectClickThroughServlet extends HttpServlet {
 	private void handleOpenBuildRequest(final HttpServletRequest req) {
 		final String buildKey = req.getParameter("build_key");
 		final String buildNumber = req.getParameter("build_number");
-		final String serverUrl = req.getParameter("server_url");
+		final String repositoryUrl = req.getParameter("server_url");
 
-		if (buildKey != null && buildKey.length() > 0
-				&& serverUrl != null && serverUrl.length() > 0
-				&& buildNumber != null && buildNumber.length() > 0) {
+		// FIXME: not used
+		final String testPackage = req.getParameter("test_package");
+		final String testClass = req.getParameter("test_class");
+		final String testMethod = req.getParameter("test_method");
+		
+		if (buildKey == null || buildKey.length() == 0
+				|| repositoryUrl == null || repositoryUrl.length() == 0
+				|| buildNumber == null || buildNumber.length() == 0) {
+			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open build: build_key or build_number or server_url parameter is null"));
+		}
 			
+		try {
+			Class<?> corePluginClass = Class.forName("com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin");
+			
+			String connectorKind = (String) corePluginClass.getDeclaredField("CONNECTOR_KIND").get(null);
+			
+			IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+			
+			TaskRepository taskRepository = repositoryManager.getRepository(connectorKind, repositoryUrl);
+			
+			if (taskRepository == null) {
+				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+					@SuppressWarnings("restriction")
+					public void run() {
+						MessageDialog.openError(null, Messages.OpenRepositoryTaskJob_Repository_Not_Found,
+								MessageFormat.format(
+										Messages.OpenRepositoryTaskJob_Could_not_find_repository_configuration_for_X,
+										repositoryUrl)
+										+ "\n" + //$NON-NLS-1$
+										MessageFormat.format(Messages.OpenRepositoryTaskJob_Please_set_up_repository_via_X,
+												Messages.TasksUiPlugin_Task_Repositories));
+					}
+
+				});
+				return;
+			}
+			
+			Class<?> openBuildJobClass = Class.forName("com.atlassian.connector.eclipse.internal.bamboo.ui.operations.OpenBambooBuildJob");
+			
+			Constructor<?> openBuildJobConstructor = openBuildJobClass.getConstructor(String.class, int.class, TaskRepository.class);
+
+			Job openBambooBuildJob = (Job) openBuildJobConstructor.newInstance(buildKey, Integer.valueOf(buildNumber), taskRepository);
+
+			openBambooBuildJob.schedule();
+		} catch (Exception e) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					new MessageDialog(WorkbenchUtil.getShell(), "Unable to handle request", null,
-							"Direct Click Through doesn't support opening Bamboo builds currently.",
+							"Direct Click Through failed to open issue because Atlassian Bamboo Integration is missing.",
 			    			MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
 				}
 			});
-			
-			/*
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					boolean found = false;
-					// try to open received build in all open projects
-					for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-
-						final BambooToolWindowPanel panel = IdeaHelper.getBambooToolWindowPanel(project);
-						if (panel != null) {
-							bringIdeaToFront(project);
-							panel.openBuild(buildKey, buildNumberIntFinal, serverUrl);
-						}
-
-					}
-
-//					if (!found) {
-//						Messages.showInfoMessage("Cannot find build " + buildKey + "-" + buildNumberIntFinal,
-//								PluginUtil.PRODUCT_NAME);
-//					}
-				}
-			});*/
-		} else {
-			StatusHandler.log(new Status(IStatus.WARNING, DirectClickThroughUiPlugin.PLUGIN_ID, "Cannot open build: build_key or build_number or server_url parameter is null"));
 		}
+
 	}
 	
 	@SuppressWarnings("restriction")
