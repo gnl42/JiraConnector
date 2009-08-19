@@ -512,6 +512,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
 		assertFalse(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_FIXVERSIONS).getMetaData().isReadOnly());
 
+		issue.setResolution(new Resolution(Resolution.FIXED_ID));
 		// close
 		client.advanceIssueWorkflow(issue, "2", "", null);
 
