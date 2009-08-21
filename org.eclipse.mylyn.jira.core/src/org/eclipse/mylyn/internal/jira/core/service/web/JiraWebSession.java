@@ -46,6 +46,8 @@ import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.service.JiraAuthenticationException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraInvalidResponseTypeException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 
 /**
@@ -94,21 +96,45 @@ public class JiraWebSession {
 
 	public void doInSession(JiraWebSessionCallback callback, IProgressMonitor monitor) throws JiraException {
 		monitor = Policy.monitorFor(monitor);
-		try {
-			lock(monitor);
-			if (httpClient == null) {
-				httpClient = new HttpClient(WebUtil.getConnectionManager());
+		boolean doLogin = hostConfiguration == null;
+		int MAX_RETRIES = doLogin ? 1 : 2; //if login gets skipped, a second try might be needed
+		for (int i = 1; i <= MAX_RETRIES; i++) {
+			try {
+				lock(monitor);
+				if (httpClient == null) {
+					httpClient = new HttpClient(WebUtil.getConnectionManager());
+				}
+				if (doLogin) {
+					hostConfiguration = login(httpClient, monitor);
+				}
+			} finally {
+				unlock(monitor);
 			}
-			hostConfiguration = login(httpClient, monitor);
-		} finally {
-			unlock(monitor);
+			try {
+				callback.configure(httpClient, hostConfiguration, baseUrl, client.getConfiguration()
+						.getFollowRedirects());
+				callback.run(client, baseUrl, monitor);
+				return;
+			} catch (IOException e) {
+				throw new JiraException(e);
+			} catch (JiraException e) {
+				//if an exception occurs because of a missing login
+				if (isAuthenticationFailure(e)) {
+					//rinse and repeat with login
+					doLogin = true;
+				} else {
+					throw e;
+				}
+			}
 		}
-		try {
-			callback.configure(httpClient, hostConfiguration, baseUrl, client.getConfiguration().getFollowRedirects());
-			callback.run(client, baseUrl, monitor);
-		} catch (IOException e) {
-			throw new JiraException(e);
+	}
+
+	private boolean isAuthenticationFailure(JiraException e) {
+		if (e instanceof JiraRemoteMessageException) {
+			String message = ((JiraRemoteMessageException) e).getHtmlMessage();
+			return message != null && message.contains("login.jsp"); //$NON-NLS-1$
 		}
+		return (e instanceof JiraInvalidResponseTypeException);
 	}
 
 	public void doLogout(IProgressMonitor monitor) throws JiraException {
@@ -292,6 +318,7 @@ public class JiraWebSession {
 		logout.setFollowRedirects(false);
 		try {
 			WebUtil.execute(httpClient, hostConfiguration, logout, monitor);
+			httpClient.getState().clear(); //clear cookies and credentials for full logout
 		} catch (IOException e) {
 			// It doesn't matter if the logout fails. The server will clean up
 			// the session eventually

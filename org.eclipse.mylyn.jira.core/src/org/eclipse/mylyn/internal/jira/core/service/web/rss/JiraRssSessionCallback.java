@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
+import org.eclipse.mylyn.internal.jira.core.service.JiraInvalidResponseTypeException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRedirectException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.web.JiraWebSessionCallback;
@@ -88,7 +89,7 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 
 			// if it still isn't an XML response, an invalid issue was entered
 			if (!isXMLOrRSS(rssRequest)) {
-				return;
+				throw new JiraInvalidResponseTypeException(Messages.JiraRssSessionCallback_Repository_returned_invalid_type);
 			}
 
 			parseResult(client, baseUrl, rssRequest);

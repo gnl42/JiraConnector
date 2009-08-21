@@ -34,6 +34,8 @@ public class JiraWebClientTest extends TestCase {
 
 	private JiraClient client;
 
+	private JiraWebSession webSession;
+
 	@Override
 	protected void tearDown() throws Exception {
 		JiraTestUtil.tearDown();
@@ -42,7 +44,8 @@ public class JiraWebClientTest extends TestCase {
 	protected void init(String url, PrivilegeLevel level) throws Exception {
 		Credentials credentials = TestUtil.readCredentials(level);
 		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password));
-		webClient = new JiraWebClient(client, new JiraWebSession(client));
+		webSession = new JiraWebSession(client);
+		webClient = new JiraWebClient(client, webSession);
 
 		JiraTestUtil.refreshDetails(client);
 	}
@@ -71,6 +74,19 @@ public class JiraWebClientTest extends TestCase {
 				// ignore
 			}
 		}
+	}
+
+	public void testDoInSession() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testDoInSession");
+		webClient.updateIssue(issue, "updated", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
+		assertEquals(1, issue.getComments().length);
+		webSession.doLogout(null);
+		webClient.updateIssue(issue, "updatedAgain", null);
+		issue = client.getIssueByKey(issue.getKey(), null);
+		assertNotNull(issue);
+		assertEquals(2, issue.getComments().length);
 	}
 
 }
