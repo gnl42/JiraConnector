@@ -12,13 +12,17 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -101,10 +105,16 @@ public class BambooDetailsPart extends AbstractBambooEditorFormPart {
 		label.setForeground(contentForeground);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
 
-		label = createLabelControl(toolkit, contentComp, "Build reason: " + bambooBuild.getReason());
-		label.setBackground(contentBackground);
-		label.setForeground(contentForeground);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
+		Link link = new Link(contentComp, SWT.NONE);
+		link.setText("Build reason: " + bambooBuild.getReason());
+		link.setBackground(contentBackground);
+		link.setForeground(contentForeground);
+		link.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				TasksUiUtil.openUrl(e.text);
+			}
+		});
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(link);
 
 		GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(titleComp);
 
