@@ -67,9 +67,8 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade> {
 		IProgressMonitor monitor = op.getMonitor();
 		TaskRepository taskRepository = op.getTaskRepository();
 		try {
-
-			if (taskRepository.getCredentials(AuthenticationType.REPOSITORY).getPassword().length() < 1
-					&& promptForCredentials) {
+			AuthenticationCredentials creds = taskRepository.getCredentials(AuthenticationType.REPOSITORY);
+			if (creds != null && creds.getPassword().length() < 1 && promptForCredentials) {
 				try {
 					location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
 				} catch (UnsupportedRequestException e) {
