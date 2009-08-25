@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
@@ -93,8 +94,8 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 		if (s instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) s;
 			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuild) {
-				final BambooBuild build = (BambooBuild) selected;
+			if (selected instanceof BambooBuildAdapter) {
+				final BambooBuild build = ((BambooBuildAdapter) selected).getBuild();
 				if (build != null) {
 					downloadAndShowTestResults(build);
 				}
@@ -132,7 +133,11 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 		if (selection.size() != 1 || !isJUnitAvailable) {
 			return false;
 		}
-		BambooBuild build = (BambooBuild) selection.iterator().next();
+
+		BambooBuild build = null;
+
+		build = ((BambooBuildAdapter) selection.iterator().next()).getBuild();
+
 		if (build != null) {
 			try {
 				build.getNumber();

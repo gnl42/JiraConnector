@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiUtil;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveFullBuildInfoJob;
 import com.atlassian.theplugin.commons.BambooFileInfo;
@@ -63,10 +64,10 @@ public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
 		if (s instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) s;
 			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuild) {
-				final BambooBuild build = (BambooBuild) selected;
+			if (selected instanceof BambooBuildAdapter) {
+				final BambooBuildAdapter build = (BambooBuildAdapter) selected;
 				if (build != null) {
-					downloadAndCreateNewTask(build);
+					downloadAndCreateNewTask(build.getBuild());
 				}
 			}
 		}
@@ -76,7 +77,7 @@ public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (selection.size() == 1) {
 			try {
-				BambooBuild build = ((BambooBuild) selection.getFirstElement());
+				BambooBuild build = ((BambooBuildAdapter) selection.getFirstElement()).getBuild();
 				build.getNumber(); // check if this is a valid build, it'll throw exc otherwise
 				return build.getStatus().equals(BuildStatus.FAILURE);
 			} catch (UnsupportedOperationException e) {

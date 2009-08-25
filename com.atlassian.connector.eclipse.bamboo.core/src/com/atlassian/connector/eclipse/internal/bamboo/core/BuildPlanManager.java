@@ -261,7 +261,7 @@ public final class BuildPlanManager {
 					oldBuild.getStatus(), oldBuild.getReason(), oldBuild.getStartDate(), null, null,
 					oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getCompletionDate(),
 					newBuild.getErrorMessage(), oldBuild.getException(), oldBuild.getRelativeBuildDate(),
-					oldBuild.getDurationDescription(), oldBuild.getCommiters());
+					oldBuild.getDurationDescription(), oldBuild.getCommiters(), oldBuild.getLastStatus());
 		} catch (UnsupportedOperationException e) {
 			return null;
 		}

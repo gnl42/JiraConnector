@@ -63,15 +63,19 @@ public class BambooBuildViewerComparator extends ViewerComparator {
 
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
-		if (e1 instanceof BambooBuild && e2 instanceof BambooBuild) {
-			BuildStatus state1 = ((BambooBuild) e1).getStatus();
-			BuildStatus state2 = ((BambooBuild) e2).getStatus();
+		if (e1 instanceof BambooBuildAdapter && e2 instanceof BambooBuildAdapter) {
+			BambooBuild build1 = ((BambooBuildAdapter) e1).getBuild();
+			BambooBuild build2 = ((BambooBuildAdapter) e2).getBuild();
+
+			BuildStatus state1 = build1.getStatus();
+			BuildStatus state2 = build2.getStatus();
+
 			switch (sortOrder) {
 			case UNSORTED:
-				return sortByName((BambooBuild) e1, (BambooBuild) e2);
+				return sortByName(build1, build2);
 			case STATE_PASSED_FAILED:
 				if (state1 == state2) {
-					return sortByName((BambooBuild) e1, (BambooBuild) e2);
+					return sortByName(build1, build2);
 				}
 				if (state1 == BuildStatus.SUCCESS) {
 					return -1;
@@ -85,10 +89,10 @@ public class BambooBuildViewerComparator extends ViewerComparator {
 				if (state2 == BuildStatus.FAILURE) {
 					return 1;
 				}
-				return sortByName((BambooBuild) e1, (BambooBuild) e2);
+				return sortByName(build1, build2);
 			case STATE_FAILED_PASSED:
 				if (state1 == state2) {
-					return sortByName((BambooBuild) e1, (BambooBuild) e2);
+					return sortByName(build1, build2);
 				}
 				if (state1 == BuildStatus.FAILURE) {
 					return -1;
@@ -102,7 +106,7 @@ public class BambooBuildViewerComparator extends ViewerComparator {
 				if (state2 == BuildStatus.SUCCESS) {
 					return 1;
 				}
-				return sortByName((BambooBuild) e1, (BambooBuild) e2);
+				return sortByName(build1, build2);
 			}
 		}
 		return 0;

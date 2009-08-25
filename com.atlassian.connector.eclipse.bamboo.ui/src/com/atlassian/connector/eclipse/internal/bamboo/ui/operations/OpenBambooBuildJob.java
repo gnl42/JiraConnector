@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.operations;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.core.client.BambooClient;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditor;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditorInput;
@@ -64,7 +65,7 @@ public class OpenBambooBuildJob extends Job {
 
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
-				BambooEditorInput input = new BambooEditorInput(repository, build[0]);
+				BambooEditorInput input = new BambooEditorInput(repository, new BambooBuildAdapter(build[0]));
 				try {
 					IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 					if (window == null) {

@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.dialogs.AddLabelOrCommentDialog.Type;
@@ -45,8 +46,8 @@ public class AddCommentToBuildAction extends BaseSelectionListenerAction {
 		if (s instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) s;
 			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuild) {
-				final BambooBuild build = (BambooBuild) selected;
+			if (selected instanceof BambooBuildAdapter) {
+				final BambooBuild build = ((BambooBuildAdapter) selected).getBuild();
 				if (build != null) {
 					AddLabelOrCommentDialog dialog = new AddLabelOrCommentDialog(null, build,
 							TasksUi.getRepositoryManager().getRepository(BambooCorePlugin.CONNECTOR_KIND,
@@ -61,7 +62,7 @@ public class AddCommentToBuildAction extends BaseSelectionListenerAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (selection.size() == 1) {
 			try {
-				((BambooBuild) selection.getFirstElement()).getNumber();
+				((BambooBuildAdapter) selection.getFirstElement()).getBuild().getNumber();
 				return true;
 			} catch (UnsupportedOperationException e) {
 				// ignore

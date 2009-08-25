@@ -76,8 +76,13 @@ public class BambooClient extends AbstractConnectorClient<BambooServerFacade2> {
 			public Collection<BambooBuild> run(BambooServerFacade2 server, ConnectionCfg serverCfg,
 					IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException {
 				monitor.subTask("Retrieving builds");
-				return server.getSubscribedPlansResults(serverCfg, BambooUtil.getSubscribedPlans(taskRepository),
-						false, 0);
+				if (server.isBamboo2M9(serverCfg)) {
+					return server.getSubscribedPlansResultsNew(serverCfg,
+							BambooUtil.getSubscribedPlans(taskRepository), false, 0);
+				} else {
+					return server.getSubscribedPlansResults(serverCfg, BambooUtil.getSubscribedPlans(taskRepository),
+							false, 0);
+				}
 			}
 		}, promptForCredentials);
 	}

@@ -11,8 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
@@ -21,39 +19,45 @@ import org.eclipse.swt.graphics.Image;
 public class BuildLabelProvider implements ILabelProvider {
 
 	public Image getImage(Object element) {
-		if (element instanceof BambooBuild) {
-			if (((BambooBuild) element).getEnabled()) {
-				if (((BambooBuild) element).getErrorMessage() != null) {
-					return CommonImages.getImage(BambooImages.STATUS_DISABLED);
-				}
-				switch (((BambooBuild) element).getStatus()) {
-				case FAILURE:
-					return CommonImages.getImage(BambooImages.STATUS_FAILED);
-				case SUCCESS:
-					return CommonImages.getImage(BambooImages.STATUS_PASSED);
-				}
-			}
+
+		if (element instanceof BambooBuildAdapter) {
+			return ((BambooBuildAdapter) element).getImage();
 		}
 		return CommonImages.getImage(BambooImages.STATUS_DISABLED);
+
+//		if (element instanceof BambooBuild) {
+//			if (((BambooBuild) element).getEnabled()) {
+//				if (((BambooBuild) element).getErrorMessage() != null) {
+//					return CommonImages.getImage(BambooImages.STATUS_DISABLED);
+//				}
+//				switch (((BambooBuild) element).getStatus()) {
+//				case FAILURE:
+//					return CommonImages.getImage(BambooImages.STATUS_FAILED);
+//				case SUCCESS:
+//					return CommonImages.getImage(BambooImages.STATUS_PASSED);
+//				}
+//			}
+//		}
+//		return CommonImages.getImage(BambooImages.STATUS_DISABLED);
 	}
 
 	public String getText(Object element) {
 		StringBuilder builder = new StringBuilder();
-		BambooBuild bambooBuild = (BambooBuild) element;
-		if (bambooBuild.getPlanName() == null) {
+		BambooBuildAdapter bambooBuild = (BambooBuildAdapter) element;
+		if (bambooBuild.getBuild().getPlanName() == null) {
 			builder.append("N/A");
 		} else {
-			builder.append(bambooBuild.getPlanName());
+			builder.append(bambooBuild.getBuild().getPlanName());
 		}
-		if (bambooBuild.getPlanKey() != null) {
+		if (bambooBuild.getBuild().getPlanKey() != null) {
 			builder.append("  [");
-			builder.append(bambooBuild.getPlanKey());
+			builder.append(bambooBuild.getBuild().getPlanKey());
 			try {
-				String number = String.valueOf(bambooBuild.getNumber());
+				String number = String.valueOf(bambooBuild.getBuild().getNumber());
 				builder.append("-");
 				builder.append(number);
 			} catch (UnsupportedOperationException e) {
-				if (bambooBuild.getPlanName() != null) {
+				if (bambooBuild.getBuild().getPlanName() != null) {
 					builder.append("-");
 					builder.append("N/A");
 				}

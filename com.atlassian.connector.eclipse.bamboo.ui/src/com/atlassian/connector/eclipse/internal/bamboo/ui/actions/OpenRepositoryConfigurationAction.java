@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.jface.viewers.ISelection;
@@ -42,8 +43,8 @@ public class OpenRepositoryConfigurationAction extends BaseSelectionListenerActi
 		if (s instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) s;
 			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuild) {
-				BambooBuild build = (BambooBuild) selected;
+			if (selected instanceof BambooBuildAdapter) {
+				BambooBuild build = ((BambooBuildAdapter) selected).getBuild();
 				TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
 						BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl());
 				openConfiguration(repository);

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="com.atlassian.connector.eclipse.bamboo.ui" version="2">
+    <resource path="src/com/atlassian/connector/eclipse/internal/bamboo/ui/BuildTreeViewer.java" type="com.atlassian.connector.eclipse.internal.bamboo.ui.BuildTreeViewer">
+        <filter id="571473929">
+            <message_arguments>
+                <message_argument value="TreeViewer"/>
+                <message_argument value="BuildTreeViewer"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>

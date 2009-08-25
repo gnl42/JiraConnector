@@ -37,9 +37,9 @@ public class BambooSummaryPart extends AbstractBambooEditorFormPart {
 		composite.setLayout(layout);
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(composite);
 
-		text = createReadOnlyText(toolkit, composite, bambooBuild.getProjectName(), "Project:", false);
-		createReadOnlyText(toolkit, composite, bambooBuild.getPlanName(), "Plan:", false);
-		createReadOnlyText(toolkit, composite, String.valueOf(bambooBuild.getNumber()), "Build:", false);
+		text = createReadOnlyText(toolkit, composite, bambooBuild.getBuild().getProjectName(), "Project:", false);
+		createReadOnlyText(toolkit, composite, bambooBuild.getBuild().getPlanName(), "Plan:", false);
+		createReadOnlyText(toolkit, composite, String.valueOf(bambooBuild.getBuild().getNumber()), "Build:", false);
 
 		toolkit.paintBordersFor(composite);
 

@@ -131,4 +131,9 @@ public class MockBambooBuild implements BambooBuild {
 		return null;
 	}
 
+	public BuildStatus getLastStatus() {
+		// ignore
+		return null;
+	}
+
 }

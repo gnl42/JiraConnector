@@ -70,7 +70,7 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 	}
 
 	private void createShowInJunitLink() {
-		if (bambooBuild.getTestsFailed() + bambooBuild.getTestsPassed() > 0) {
+		if (bambooBuild.getBuild().getTestsFailed() + bambooBuild.getBuild().getTestsPassed() > 0) {
 			Link link = createLink(mainComposite, toolkit, null, "Show Test Results", null, new Listener() {
 				public void handleEvent(Event event) {
 					showTestResultsAction.run();
@@ -100,8 +100,8 @@ public class BambooTestPart extends AbstractBambooEditorFormPart {
 		reinitMainComposite();
 
 		Composite labelComposite = toolkit.createComposite(mainComposite, SWT.NONE);
-		int failed = bambooBuild.getTestsFailed();
-		int passed = bambooBuild.getTestsPassed();
+		int failed = bambooBuild.getBuild().getTestsFailed();
+		int passed = bambooBuild.getBuild().getTestsPassed();
 		GridLayout layout = new GridLayout();
 		if (failed > 0) {
 			layout.numColumns = 4;

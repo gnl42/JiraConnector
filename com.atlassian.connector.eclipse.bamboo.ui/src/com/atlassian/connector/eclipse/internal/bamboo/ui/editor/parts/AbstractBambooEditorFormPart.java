@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooBuildEditorPage;
 import com.atlassian.connector.eclipse.ui.editor.AbstractFormPagePart;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
 
 import org.eclipse.jface.action.ToolBarManager;
@@ -59,7 +59,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 
 	protected static final RGB FAILED_BACKGROUND_TITLE = new RGB(214, 61, 61);
 
-	protected BambooBuild bambooBuild;
+	protected BambooBuildAdapter bambooBuild;
 
 	protected TaskRepository repository;
 
@@ -87,7 +87,7 @@ public abstract class AbstractBambooEditorFormPart extends AbstractFormPagePart 
 		this.partName = partName;
 	}
 
-	public void initialize(BambooBuildEditorPage editor, BambooBuild bambooBuild, TaskRepository repository,
+	public void initialize(BambooBuildEditorPage editor, BambooBuildAdapter bambooBuild, TaskRepository repository,
 			String buildLog, BuildDetails buildDetails) {
 		this.bambooBuild = bambooBuild;
 		this.repository = repository;

@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
@@ -79,8 +80,8 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 		if (s instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) s;
 			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuild) {
-				final BambooBuild build = (BambooBuild) selected;
+			if (selected instanceof BambooBuildAdapter) {
+				final BambooBuild build = ((BambooBuildAdapter) selected).getBuild();
 				if (build != null) {
 					new ShowBuildLogExecute().downloadAndShowBuildLog(build);
 
@@ -92,9 +93,9 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (selection.size() == 1 && isConsoleAvailable) {
-			if (selection.getFirstElement() instanceof BambooBuild) {
+			if (selection.getFirstElement() instanceof BambooBuildAdapter) {
 				try {
-					BambooBuild build = (BambooBuild) selection.getFirstElement();
+					BambooBuild build = ((BambooBuildAdapter) selection.getFirstElement()).getBuild();
 					build.getNumber();
 					return true;
 				} catch (UnsupportedOperationException e) {

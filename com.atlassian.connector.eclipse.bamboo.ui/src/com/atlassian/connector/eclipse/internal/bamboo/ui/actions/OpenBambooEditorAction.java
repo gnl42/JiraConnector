@@ -12,10 +12,10 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditor;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.BambooEditorInput;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -51,11 +51,11 @@ public class OpenBambooEditorAction extends BaseSelectionListenerAction {
 		if (s instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) s;
 			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuild) {
-				BambooBuild build = (BambooBuild) selected;
+			if (selected instanceof BambooBuildAdapter) {
+				BambooBuildAdapter buildAdapter = (BambooBuildAdapter) selected;
 				TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
-						BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl());
-				BambooEditorInput input = new BambooEditorInput(repository, build);
+						BambooCorePlugin.CONNECTOR_KIND, buildAdapter.getBuild().getServerUrl());
+				BambooEditorInput input = new BambooEditorInput(repository, buildAdapter);
 				try {
 					IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 					if (window == null) {
@@ -76,7 +76,7 @@ public class OpenBambooEditorAction extends BaseSelectionListenerAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (selection.size() == 1) {
 			try {
-				((BambooBuild) selection.getFirstElement()).getNumber();
+				((BambooBuildAdapter) selection.getFirstElement()).getBuild().getNumber();
 				return true;
 			} catch (UnsupportedOperationException e) {
 				// ignore

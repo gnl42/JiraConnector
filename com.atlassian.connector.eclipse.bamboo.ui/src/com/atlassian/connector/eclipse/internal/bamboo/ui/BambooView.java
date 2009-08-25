@@ -49,7 +49,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -116,8 +115,8 @@ public class BambooView extends ViewPart {
 				IStructuredSelection selection = (IStructuredSelection) s;
 				for (Iterator<?> it = selection.iterator(); it.hasNext();) {
 					Object selected = it.next();
-					if (selected instanceof BambooBuild) {
-						String url = BambooUtil.getUrlFromBuild((BambooBuild) selected);
+					if (selected instanceof BambooBuildAdapter) {
+						String url = BambooUtil.getUrlFromBuild(((BambooBuildAdapter) selected).getBuild());
 						TasksUiUtil.openUrl(url);
 					}
 				}
@@ -130,7 +129,7 @@ public class BambooView extends ViewPart {
 				try {
 					Iterator<?> it = selection.iterator();
 					while (it.hasNext()) {
-						((BambooBuild) it.next()).getNumber();
+						((BambooBuildAdapter) it.next()).getBuild().getNumber();
 					}
 					return true;
 				} catch (UnsupportedOperationException e) {
@@ -155,7 +154,14 @@ public class BambooView extends ViewPart {
 			for (Collection<BambooBuild> collection : builds.values()) {
 				allBuilds.addAll(collection);
 			}
-			return allBuilds.toArray();
+
+			List<BambooBuildAdapter> allBuildAdapters = new ArrayList<BambooBuildAdapter>();
+
+			for (BambooBuild build : allBuilds) {
+				allBuildAdapters.add(new BambooBuildAdapter(build));
+			}
+
+			return allBuildAdapters.toArray();
 		}
 
 		public Object getParent(Object element) {
@@ -179,7 +185,7 @@ public class BambooView extends ViewPart {
 		NONE, PASSED, FAILED, ERROR,
 	};
 
-	private TreeViewer buildViewer;
+	private BuildTreeViewer buildViewer;
 
 	private Map<TaskRepository, Collection<BambooBuild>> builds;
 
@@ -287,27 +293,29 @@ public class BambooView extends ViewPart {
 			BambooCorePlugin.getBuildPlanManager().removeBuildsChangedListener(buildsChangedListener);
 			buildsChangedListener = null;
 		}
+
+		buildViewer.dispose();
 	}
 
 	private void createTreeViewer(Composite parent) {
-		buildViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		buildViewer = new BuildTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		buildViewer.setContentProvider(new BuildContentProvider());
 		buildViewer.setUseHashlookup(true);
 
-		TreeViewerColumn column = new TreeViewerColumn(buildViewer, SWT.NONE);
-		column.getColumn().setText("Build");
-		column.getColumn().setWidth(300);
-		column.setLabelProvider(new TreeColumnViewerLabelProvider(new DecoratingLabelProvider(new BuildLabelProvider(),
-				PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator())));
+		final TreeViewerColumn columnName = new TreeViewerColumn(buildViewer, SWT.NONE);
+		columnName.getColumn().setText("Build");
+		columnName.getColumn().setWidth(300);
+		columnName.setLabelProvider(new TreeColumnViewerLabelProvider(new DecoratingLabelProvider(
+				new BuildLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator())));
 
-		column = new TreeViewerColumn(buildViewer, SWT.NONE);
+		TreeViewerColumn column = new TreeViewerColumn(buildViewer, SWT.NONE);
 		column.getColumn().setText("Status");
 		column.getColumn().setWidth(350);
 		column.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof BambooBuild) {
-					BambooBuild build = ((BambooBuild) element);
+				if (element instanceof BambooBuildAdapter) {
+					BambooBuild build = ((BambooBuildAdapter) element).getBuild();
 					StringBuilder builder = new StringBuilder();
 					int totalTests = build.getTestsFailed() + build.getTestsPassed();
 					try {
@@ -343,8 +351,8 @@ public class BambooView extends ViewPart {
 		column.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof BambooBuild) {
-					BambooBuild build = ((BambooBuild) element);
+				if (element instanceof BambooBuildAdapter) {
+					BambooBuild build = ((BambooBuildAdapter) element).getBuild();
 					try {
 						build.getNumber();
 					} catch (UnsupportedOperationException e) {
@@ -354,6 +362,25 @@ public class BambooView extends ViewPart {
 				}
 				return super.getText(element);
 			}
+		});
+
+		column = new TreeViewerColumn(buildViewer, SWT.NONE);
+		column.getColumn().setText("State");
+		column.getColumn().setWidth(40);
+		column.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return null;
+			}
+
+			@Override
+			public Image getImage(Object element) {
+				if (element instanceof BambooBuildAdapter) {
+					return ((BambooBuildAdapter) element).getBuildingImage();
+				}
+				return null;
+			}
+
 		});
 
 		final BambooBuildViewerComparator comparator = new BambooBuildViewerComparator();
@@ -525,7 +552,7 @@ public class BambooView extends ViewPart {
 		newTaskFromFailedBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(newTaskFromFailedBuildAction);
 
-		runBuildAction = new RunBuildAction();
+		runBuildAction = new RunBuildAction(refreshAction);
 		runBuildAction.setEnabled(false);
 		buildViewer.addSelectionChangedListener(runBuildAction);
 
@@ -598,8 +625,9 @@ public class BambooView extends ViewPart {
 
 		updateViewIcon(status);
 
-		buildViewer.setInput(builds);
+		buildViewer.setBuilds(builds);
 		buildViewer.refresh(true);
+
 	}
 
 	private void updateViewIcon(ViewStatus status) {

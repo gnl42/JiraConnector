@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.AbstractBambooEditorFormPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooBuildLogPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooCodeChangesPart;
@@ -19,7 +20,6 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooDet
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooSummaryPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooTestPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveFullBuildInfoJob;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -95,7 +95,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 	private Color selectionColor;
 
-	private final BambooBuild build;
+	private final BambooBuildAdapter build;
 
 	private final TaskRepository repository;
 
@@ -168,7 +168,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 	}
 
 	private void downloadAndRefreshBuild(long delay) {
-		final RetrieveFullBuildInfoJob job = new RetrieveFullBuildInfoJob(this.build, this.repository);
+		final RetrieveFullBuildInfoJob job = new RetrieveFullBuildInfoJob(this.build.getBuild(), this.repository);
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(final IJobChangeEvent event) {

@@ -31,6 +31,14 @@ public class BambooImages {
 
 	public static final ImageDescriptor STATUS_PASSED = create(T_OBJ, "icn_plan_passed.gif"); //$NON-NLS-1$
 
+	public static final ImageDescriptor STATUS_WAITING = create(T_OBJ, "icn_plan_waiting.gif"); //$NON-NLS-1$
+
+	public static final ImageDescriptor[] STATUS_BUILDING = { create(T_OBJ, "icn_building_1.gif"),
+			create(T_OBJ, "icn_building_2.gif"), create(T_OBJ, "icn_building_3.gif"),
+			create(T_OBJ, "icn_building_4.gif"), create(T_OBJ, "icn_building_5.gif"),
+			create(T_OBJ, "icn_building_6.gif"), create(T_OBJ, "icn_building_7.gif"),
+			create(T_OBJ, "icn_building_8.gif") };
+
 	public static final ImageDescriptor VIEW_STATUS_WARNING = create(T_OBJ, "bamboo_warning.png"); //$NON-NLS-1$
 
 	public static final ImageDescriptor VIEW_STATUS_FAILED = create(T_OBJ, "bamboo_error.png"); //$NON-NLS-1$
