@@ -598,7 +598,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testBasicAuth() throws Exception {
-		basicAuth(JiraTestConstants.JIRA_39_BASIC_AUTH_URL);
+		basicAuth(JiraTestConstants.JIRA_BASIC_AUTH_URL);
 	}
 
 	private void basicAuth(String url) throws Exception {
