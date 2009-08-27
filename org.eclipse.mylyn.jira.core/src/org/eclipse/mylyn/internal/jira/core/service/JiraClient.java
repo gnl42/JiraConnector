@@ -8,12 +8,17 @@
  * Contributors:
  *     Brock Janiczak - initial API and implementation
  *     Tasktop Technologies - improvements
+ *     Jacek Jaroczynski - fixes for bug 233757
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.core.service;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.Assert;
@@ -389,8 +394,20 @@ public class JiraClient {
 		return (credentials != null) ? credentials.getUserName() : ""; //$NON-NLS-1$
 	}
 
+	/**
+	 * Returns a sorted list of versions for the specified project in descended order.
+	 * 
+	 * @param key
+	 *            the project key
+	 */
 	public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
-		return soapClient.getVersions(key, monitor);
+		List<Version> versions = Arrays.asList(soapClient.getVersions(key, monitor));
+		Collections.sort(versions, new Comparator<Version>() {
+			public int compare(Version o1, Version o2) {
+				return o1.getSequence() > o2.getSequence() ? -1 : (o1.getSequence() == o2.getSequence() ? 0 : 1);
+			}
+		});
+		return versions.toArray(new Version[0]);
 	}
 
 	@Override
