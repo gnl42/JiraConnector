@@ -57,11 +57,11 @@ public class CrucibleAddPatchPage extends WizardPage {
 
 	private boolean includePatch = false;
 
-	private final CrucibleReviewWizard wizard;
+	private final ReviewWizard wizard;
 
 	protected boolean patchPasted = false;
 
-	public CrucibleAddPatchPage(TaskRepository repository, CrucibleReviewWizard wizard) {
+	public CrucibleAddPatchPage(TaskRepository repository, ReviewWizard wizard) {
 		super("cruciblePatch"); //$NON-NLS-1$
 		setTitle("Add Patch to Review");
 		setDescription("Attach a patch from the clipboard to the review.");

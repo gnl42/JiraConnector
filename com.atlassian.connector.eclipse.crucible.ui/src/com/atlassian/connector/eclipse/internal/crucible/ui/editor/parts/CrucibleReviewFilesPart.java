@@ -14,8 +14,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard.Type;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard.Type;
 import com.atlassian.connector.eclipse.ui.forms.ReflowRespectingSection;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
@@ -153,7 +153,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 			Action addChangesetAction = new Action() {
 				@Override
 				public void run() {
-					CrucibleReviewWizard wizard = new CrucibleReviewWizard(crucibleReview, Type.ADD_CHANGESET);
+					ReviewWizard wizard = new ReviewWizard(crucibleReview, Type.ADD_CHANGESET);
 					wizard.setWindowTitle("Add Changeset");
 					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), wizard);
 					wd.setBlockOnOpen(true);
@@ -168,7 +168,7 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 			Action addPatchAction = new Action() {
 				@Override
 				public void run() {
-					CrucibleReviewWizard wizard = new CrucibleReviewWizard(crucibleReview, Type.ADD_PATCH);
+					ReviewWizard wizard = new ReviewWizard(crucibleReview, Type.ADD_PATCH);
 					wizard.setWindowTitle("Add Patch");
 					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), wizard);
 					wd.setBlockOnOpen(true);

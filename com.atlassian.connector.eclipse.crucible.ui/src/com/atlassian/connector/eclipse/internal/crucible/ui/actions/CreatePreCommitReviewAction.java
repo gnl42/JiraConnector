@@ -11,32 +11,32 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
-import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.mylyn.internal.tasks.ui.wizards.SelectRepositoryPage;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
-
-import java.util.Iterator;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Action for creating a review from a revision
  * 
  * @author Thomas Ehrnhoefer
  */
-public class CreateReviewAction extends BaseSelectionListenerAction implements IActionDelegate {
+@SuppressWarnings("restriction")
+public class CreatePreCommitReviewAction extends BaseSelectionListenerAction implements IActionDelegate {
 
 	private ISelection selection;
 
-	public CreateReviewAction() {
+	public CreatePreCommitReviewAction() {
 		super("New Crucible Review...");
 	}
 
@@ -44,17 +44,14 @@ public class CreateReviewAction extends BaseSelectionListenerAction implements I
 		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
 			return;
 		}
-		Iterator<?> it = ((IStructuredSelection) selection).iterator();
-		SortedSet<ICustomChangesetLogEntry> logEntries = new TreeSet<ICustomChangesetLogEntry>();
-		while (it.hasNext()) {
-			Object obj = it.next();
-			if (obj instanceof ICustomChangesetLogEntry) {
-				logEntries.add((ICustomChangesetLogEntry) obj);
-			}
-		}
-		RepositorySelectionWizard wizard = new RepositorySelectionWizard(new SelectCrucibleRepositoryPage(logEntries));
 
-		WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), wizard);
+		WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new RepositorySelectionWizard(
+				new SelectRepositoryPage(SelectCrucibleRepositoryPage.CRUCIBLE_REPOSITORY_FILTER) {
+					@Override
+					protected IWizard createWizard(TaskRepository taskRepository) {
+						return new CrucibleReviewWizard(taskRepository);
+					}
+				}));
 		wd.setBlockOnOpen(true);
 		wd.open();
 	}

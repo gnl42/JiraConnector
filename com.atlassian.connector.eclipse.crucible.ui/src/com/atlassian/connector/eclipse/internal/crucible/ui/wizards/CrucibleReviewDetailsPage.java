@@ -75,13 +75,13 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	private Button anyoneCanJoin;
 
-	private final CrucibleReviewWizard wizard;
+	private final ReviewWizard wizard;
 
 	private Button startReview;
 
 	private boolean firstTimeCheck = true;
 
-	public CrucibleReviewDetailsPage(TaskRepository repository, CrucibleReviewWizard wizard) {
+	public CrucibleReviewDetailsPage(TaskRepository repository, ReviewWizard wizard) {
 		super("crucibleDetails"); //$NON-NLS-1$
 		Assert.isNotNull(repository);
 		setTitle("New Crucible Review");

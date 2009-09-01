@@ -64,6 +64,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.views.navigator.ResourceComparator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -233,14 +235,14 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private MenuItem addChangesetMenuItem;
 
-	private final CrucibleReviewWizard wizard;
+	private final ReviewWizard wizard;
 
-	public CrucibleAddChangesetsPage(TaskRepository repository, CrucibleReviewWizard wizard) {
+	public CrucibleAddChangesetsPage(@NotNull TaskRepository repository, @NotNull ReviewWizard wizard) {
 		this(repository, new TreeSet<ICustomChangesetLogEntry>(), wizard);
 	}
 
-	public CrucibleAddChangesetsPage(TaskRepository repository, SortedSet<ICustomChangesetLogEntry> logEntries,
-			CrucibleReviewWizard wizard) {
+	public CrucibleAddChangesetsPage(@NotNull TaskRepository repository,
+			@Nullable SortedSet<ICustomChangesetLogEntry> logEntries, @NotNull ReviewWizard wizard) {
 		super("crucibleChangesets"); //$NON-NLS-1$
 		setTitle("Select Changesets");
 		setDescription("Select the changesets that should be included in the review.");
@@ -249,10 +251,12 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		this.repositoryMappings = new HashMap<RepositoryInfo, Repository>();
 		this.mappingCombos = new HashMap<RepositoryInfo, ComboViewer>();
 		this.taskRepository = repository;
-		if (logEntries.size() > 0) {
+
+		if (logEntries != null && logEntries.size() > 0) {
 			this.selectedLogEntries.put(logEntries.first().getRepository(), logEntries);
 			this.repositoryMappings.put(logEntries.first().getRepository(), null);
 		}
+
 		this.wizard = wizard;
 	}
 

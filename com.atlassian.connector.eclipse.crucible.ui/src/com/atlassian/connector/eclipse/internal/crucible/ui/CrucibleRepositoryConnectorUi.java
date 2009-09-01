@@ -49,7 +49,7 @@ public class CrucibleRepositoryConnectorUi extends AbstractRepositoryConnectorUi
 
 	@Override
 	public IWizard getNewTaskWizard(TaskRepository taskRepository, ITaskMapping selection) {
-		return new CrucibleReviewWizard(taskRepository, null);
+		return new CrucibleReviewWizard(taskRepository);
 	}
 
 	@Override

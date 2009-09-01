@@ -11,31 +11,43 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard.Type;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard.Type;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.jface.wizard.IWizard;
+import org.eclipse.jface.wizard.IWizardNode;
+import org.eclipse.jface.wizard.WizardSelectionPage;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Page for selecting which kind of review to create
  * 
  * @author Thomas Ehrnhoefer
  */
-public class CrucibleTypeSelectionPage extends WizardPage {
+public class ReviewTypeSelectionPage extends WizardSelectionPage {
 
 	private Button patchReview;
 
 	private Button changesetReview;
 
-	public CrucibleTypeSelectionPage() {
+	private Button workspacePatchReview;
+
+	private final TaskRepository taskRepository;
+
+	public ReviewTypeSelectionPage(TaskRepository taskRepository) {
 		super("crucibleSelection"); //$NON-NLS-1$
 		setTitle("Select type of review to create");
 		setDescription("Select which kind of review you want to create.");
+		this.taskRepository = taskRepository;
 	}
 
 	public void createControl(Composite parent) {
@@ -49,23 +61,54 @@ public class CrucibleTypeSelectionPage extends WizardPage {
 
 		changesetReview = new Button(buttonComp, SWT.CHECK);
 		changesetReview.setText("From a Changeset");
+
 		patchReview = new Button(buttonComp, SWT.CHECK);
 		patchReview.setText("From a Patch");
 
+		workspacePatchReview = new Button(buttonComp, SWT.CHECK);
+		workspacePatchReview.setText("From Workspace Changes");
+
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonComp);
 		setControl(composite);
+
+		setSelectedNode(new IWizardNode() {
+			private ReviewWizard wizard;
+
+			public boolean isContentCreated() {
+				// re-create this wizard every time
+				return false;
+			}
+
+			public IWizard getWizard() {
+				dispose();
+				wizard = new ReviewWizard(taskRepository, getTypes());
+				return wizard;
+			}
+
+			public Point getExtent() {
+				return null;
+			}
+
+			public void dispose() {
+				if (wizard != null) {
+					wizard.dispose();
+				}
+			}
+		});
+
 	}
 
-	public Type getType() {
+	public Set<Type> getTypes() {
+		Set<Type> types = new HashSet<Type>();
 		if (patchReview.getSelection()) {
-			if (changesetReview.getSelection()) {
-				return Type.ALL;
-			}
-			return Type.ADD_PATCH;
+			types.add(Type.ADD_PATCH);
 		}
 		if (changesetReview.getSelection()) {
-			return Type.ADD_CHANGESET;
+			types.add(Type.ADD_CHANGESET);
 		}
-		return Type.EMPTY;
+		if (workspacePatchReview.getSelection()) {
+			types.add(Type.ADD_WORKSPACE_PATCH);
+		}
+		return types;
 	}
 }
