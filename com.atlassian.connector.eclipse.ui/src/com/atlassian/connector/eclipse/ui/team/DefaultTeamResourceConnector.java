@@ -535,4 +535,8 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	public String getName() {
 		return "Team API (partial support)";
 	}
+
+	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
+		return false;
+	}
 }

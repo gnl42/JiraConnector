@@ -44,6 +44,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
+import org.eclipse.team.svn.core.IStateFilter;
 import org.eclipse.team.svn.core.SVNTeamPlugin;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
@@ -63,6 +64,7 @@ import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.resource.IRepositoryRoot;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
+import org.eclipse.team.svn.core.utility.FileUtility;
 import org.eclipse.team.svn.core.utility.ProgressMonitorUtility;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.team.svn.ui.SVNTeamUIPlugin;
@@ -586,4 +588,18 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 	public String getName() {
 		return "Subversive";
 	}
+
+	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
+		return FileUtility.checkForResourcesPresenceRecursive(roots, getStateFilter(filter));
+	}
+
+	private IStateFilter getStateFilter(State filter) {
+		switch (filter) {
+		case SF_ANY_CHANGE:
+			return IStateFilter.SF_ANY_CHANGE;
+		default:
+			return IStateFilter.SF_ALL; // accept everything
+		}
+	}
+
 }

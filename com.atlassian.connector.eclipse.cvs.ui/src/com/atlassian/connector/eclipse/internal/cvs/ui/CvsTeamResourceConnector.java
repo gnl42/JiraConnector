@@ -173,4 +173,9 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return "CVS (FishEye only)";
 	}
 
+	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
+		// ignore
+		return false;
+	}
+
 }

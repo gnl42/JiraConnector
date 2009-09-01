@@ -34,6 +34,11 @@ import java.util.SortedSet;
  */
 public interface ITeamResourceConnector {
 
+	enum State {
+		// resources modified from SCM base state
+		SF_ANY_CHANGE
+	};
+
 	boolean isEnabled();
 
 	boolean canHandleFile(String repoUrl, String filePath, IProgressMonitor monitor);
@@ -135,4 +140,10 @@ public interface ITeamResourceConnector {
 	@NotNull
 	String getName();
 
+	/**
+	 * @param roots
+	 * @param filter
+	 * @return true if given roots (or their children) match given state
+	 */
+	boolean checkForResourcesPresenceRecursive(@NotNull IResource[] roots, State filter);
 }
