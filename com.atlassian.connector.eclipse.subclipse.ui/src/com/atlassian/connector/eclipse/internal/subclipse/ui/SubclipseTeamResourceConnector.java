@@ -499,6 +499,11 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return "Subclipse";
 	}
 
+	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
+		// ignore
+		return false;
+	}
+
 // Code that can work if there is no file in the local workspace 
 //	private RemoteFile getRemoteFile(String repoUrl, String filePath, String revisionString,
 //	ISVNRepositoryLocation location) throws MalformedURLException, ParseException, SVNException {
