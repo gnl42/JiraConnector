@@ -622,7 +622,11 @@ public class JiraClientTest extends TestCase {
 //	}
 
 	public void testGetServerInfo3_13_1() throws Exception {
-		getServerInfo(JiraTestConstants.JIRA_3_13_1_URL, "3.13.1", "333");
+		if (JiraTestConstants.JIRA_3_13_1_URL.contains("mylyn.eclipse.org")) {
+			getServerInfo(JiraTestConstants.JIRA_3_13_1_URL, "3.13.1", "333");
+		} else {
+			getServerInfo(JiraTestConstants.JIRA_3_13_1_URL, "3.13", "330");
+		}
 	}
 
 	private void getServerInfo(String url, String version, String buildNumber) throws Exception {
