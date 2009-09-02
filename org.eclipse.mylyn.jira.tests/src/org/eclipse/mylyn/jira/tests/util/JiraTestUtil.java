@@ -35,6 +35,7 @@ import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
+import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
@@ -213,13 +214,18 @@ public class JiraTestUtil {
 		refreshDetails(client);
 
 		JiraIssue issue = new JiraIssue();
-		issue.setProject(getProject(client, PROJECT1));
-		issue.setType(client.getCache().getIssueTypes()[1]);
+		Project project = getProject(client, PROJECT1);
+		issue.setProject(project);
 		issue.setParentId(parent.getId());
 		issue.setSummary(summary);
 		issue.setAssignee(client.getUserName());
-
-		return issue;
+		for (IssueType type : project.getIssueTypes()) {
+			if (type.isSubTaskType()) {
+				issue.setType(client.getCache().getIssueTypes()[1]);
+				return issue;
+			}
+		}
+		throw new JiraException("No subtask type found for project '" + project.getKey() + "'");
 	}
 
 	public static byte[] readFile(File file) throws IOException {

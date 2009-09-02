@@ -390,19 +390,10 @@ public class JiraClientTest extends TestCase {
 	private void createSubTask(String url) throws Exception {
 		init(url, PrivilegeLevel.USER);
 
-		JiraIssue issue = new JiraIssue();
-		issue.setProject(client.getCache().getProjects()[0]);
-		issue.setType(client.getCache().getIssueTypes()[0]);
-		issue.setSummary("testCreateSubTaskParent");
-
+		JiraIssue issue = JiraTestUtil.newIssue(client, "testCreateSubTaskParent");
 		JiraIssue parentIssue = JiraTestUtil.createIssue(client, issue);
 
-		issue = new JiraIssue();
-		issue.setProject(client.getCache().getProjects()[0]);
-		issue.setType(client.getCache().getIssueTypes()[1]);
-		issue.setParentId(parentIssue.getId());
-		issue.setSummary("testCreateSubTaskChild");
-
+		issue = JiraTestUtil.newSubTask(client, parentIssue, "testCreateSubTaskParent");
 		JiraIssue childIssue = client.createSubTask(issue, null);
 		assertEquals(parentIssue.getId(), childIssue.getParentId());
 
@@ -422,9 +413,7 @@ public class JiraClientTest extends TestCase {
 		String summary = "  testCreateIssueLeadingSpaces";
 		String description = "  leading spaces\n  more spaces";
 
-		JiraIssue issue = new JiraIssue();
-		issue.setProject(client.getCache().getProjects()[0]);
-		issue.setType(client.getCache().getIssueTypes()[0]);
+		JiraIssue issue = JiraTestUtil.newIssue(client, summary);
 		issue.setSummary(summary);
 		issue.setDescription(description);
 		issue.setAssignee(client.getUserName());
