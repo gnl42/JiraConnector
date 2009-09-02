@@ -221,7 +221,7 @@ public class JiraTestUtil {
 		issue.setAssignee(client.getUserName());
 		for (IssueType type : project.getIssueTypes()) {
 			if (type.isSubTaskType()) {
-				issue.setType(client.getCache().getIssueTypes()[1]);
+				issue.setType(type);
 				return issue;
 			}
 		}
