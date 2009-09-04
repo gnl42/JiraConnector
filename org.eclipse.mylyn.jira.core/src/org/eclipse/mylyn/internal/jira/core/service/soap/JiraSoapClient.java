@@ -88,6 +88,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 
 	private static final String REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG = "Content is not allowed in prolog."; //$NON-NLS-1$
 
+	private static final String REMOTE_ERROR_PROCESSING_INSTRUCTIONS = "Processing instructions are not allowed within SOAP messages";
+
 	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2"; //$NON-NLS-1$
 
 	/**
@@ -455,7 +457,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 			} else if (cause instanceof SAXException) {
 				if (REMOTE_ERROR_BAD_ENVELOPE_TAG.equalsIgnoreCase(cause.getMessage())
 						|| REMOTE_ERROR_BAD_ID.equals(cause.getMessage())
-						|| REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG.equals(cause.getMessage())) {
+						|| REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG.equals(cause.getMessage())
+						|| REMOTE_ERROR_PROCESSING_INSTRUCTIONS.equals(cause.getMessage())) {
 					return ERROR_RPC_NOT_ENABLED;
 				}
 			}
