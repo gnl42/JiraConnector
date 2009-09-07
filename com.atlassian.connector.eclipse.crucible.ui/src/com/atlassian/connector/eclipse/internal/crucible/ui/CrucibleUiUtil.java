@@ -35,6 +35,7 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -289,4 +290,13 @@ public final class CrucibleUiUtil {
 		return clientData.hasData();
 	}
 
+	@NotNull
+	public static Set<Reviewer> getAllCachedUsersAsReviewers(@NotNull Review review) {
+		Set<Reviewer> allReviewers = new HashSet<Reviewer>();
+		for (User user : CrucibleUiUtil.getCachedUsers(review)) {
+			Reviewer reviewer = CrucibleUiUtil.createReviewerFromCachedUser(review, user);
+			allReviewers.add(reviewer);
+		}
+		return allReviewers;
+	}
 }

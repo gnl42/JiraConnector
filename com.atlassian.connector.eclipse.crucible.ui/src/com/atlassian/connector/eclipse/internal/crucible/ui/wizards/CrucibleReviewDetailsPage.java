@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -97,16 +98,15 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		if (visible && !CrucibleUiUtil.hasCachedData(repository)) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					// ignore
 					wizard.updateCache(CrucibleReviewDetailsPage.this);
 					preselectDefaultUsers();
-					reviewersSelectionTreePart.updateInput();
+					reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(newReview));
 				}
 			});
 		} else if (visible) {
 			//preselect
 			preselectDefaultUsers();
-			reviewersSelectionTreePart.updateInput();
+			reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(newReview));
 		}
 		super.setVisible(visible);
 	}
@@ -233,7 +233,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		objectivesText = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
 		GridDataFactory.fillDefaults().grab(true, true).hint(480, 200).span(4, 2).applyTo(objectivesText);
 
-		reviewersSelectionTreePart = new ReviewersSelectionTreePart(newReview);
+		reviewersSelectionTreePart = new ReviewersSelectionTreePart(Collections.<Reviewer> emptySet(),
+				CrucibleUiUtil.getAllCachedUsersAsReviewers(newReview));
 		Composite reviewersComp = reviewersSelectionTreePart.createControl(composite);
 		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).hint(SWT.DEFAULT, 150).applyTo(reviewersComp);
 		reviewersSelectionTreePart.setCheckStateListener(new ICheckStateListener() {
@@ -254,7 +255,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				wizard.updateCache(CrucibleReviewDetailsPage.this);
 				preselectDefaultUsers();
-				reviewersSelectionTreePart.updateInput();
+				reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(newReview));
 			}
 		});
 

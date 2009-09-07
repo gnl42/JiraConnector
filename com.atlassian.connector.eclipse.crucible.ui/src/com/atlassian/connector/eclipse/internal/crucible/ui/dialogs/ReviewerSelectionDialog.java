@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
@@ -23,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -45,19 +45,38 @@ public class ReviewerSelectionDialog extends Dialog {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.review = review;
-		selectedReviewers = new HashSet<Reviewer>();
-		allReviewers = new HashSet<Reviewer>();
-		for (User user : CrucibleUiUtil.getCachedUsers(review)) {
-			Reviewer reviewer = CrucibleUiUtil.createReviewerFromCachedUser(review, user);
-			selectedReviewers.add(reviewer);
-			allReviewers.add(reviewer);
+		try {
+			selectedReviewers = review.getReviewers();
+		} catch (ValueNotYetInitialized e) {
+			throw new RuntimeException(e);
 		}
+		allReviewers = CrucibleUiUtil.getAllCachedUsersAsReviewers(review);
 	}
+
+//	private ReviewerBean createReviewerFromCachedUser(CrucibleCachedUser user) {
+//		ReviewerBean reviewer = new ReviewerBean();
+//		reviewer.setDisplayName(user.getDisplayName());
+//		reviewer.setUserName(user.getUserName());
+//		boolean completed = false;
+//		try {
+//			for (Reviewer r : review.getReviewers()) {
+//				if (r.getUserName().equals(reviewer.getUserName())) {
+//					completed = r.isCompleted();
+//					selectedReviewers.add(reviewer);
+//					break;
+//				}
+//			}
+//		} catch (ValueNotYetInitialized e) {
+//			// ignore
+//		}
+//		reviewer.setCompleted(completed);
+//		return reviewer;
+//	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		getShell().setText("Select Reviewer(s)");
-		reviewersSelectionTreePart = new ReviewersSelectionTreePart(selectedReviewers, review);
+		reviewersSelectionTreePart = new ReviewersSelectionTreePart(selectedReviewers, allReviewers);
 		Composite composite = reviewersSelectionTreePart.createControl(parent);
 
 		applyDialogFont(composite);
