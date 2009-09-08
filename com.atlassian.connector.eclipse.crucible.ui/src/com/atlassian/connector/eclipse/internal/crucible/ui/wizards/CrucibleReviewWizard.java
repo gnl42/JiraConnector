@@ -25,6 +25,7 @@ public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
 		super(taskRepository, null);
 		setWindowTitle("New Crucible Review");
 		setNeedsProgressMonitor(true);
+		setForcePreviousAndNextButtons(true);
 	}
 
 	@Override
