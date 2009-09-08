@@ -8,6 +8,7 @@
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
  *     Eugene Kuleshov - improvements
+ *     Pawel Niewiadomski - fix for bug 287736 
  *******************************************************************************/
 
 package org.eclipse.mylyn.jira.tests.core;
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -186,7 +188,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 	public void testUpdateTaskCustomFields() throws Exception {
 		init(JiraTestConstants.JIRA_LATEST_URL);
 
-		Date today = new SimpleDateFormat("dd/MMM/yy").parse("1/Jun/06");
+		Date today = new SimpleDateFormat("dd/MMM/yy", Locale.ENGLISH).parse("1/Jun/06");
 		String dueDate = JiraUtil.dateToString(today);
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testUpdateTask");
 		ITask task = JiraTestUtil.createTask(repository, issue.getKey());
