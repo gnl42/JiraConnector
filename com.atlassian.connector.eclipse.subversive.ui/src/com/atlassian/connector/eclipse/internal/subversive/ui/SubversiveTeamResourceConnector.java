@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.ui.team.IGenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
@@ -600,6 +601,12 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		default:
 			return IStateFilter.SF_ALL; // accept everything
 		}
+	}
+
+	public IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
+			boolean eclipseFormat, boolean projectRelative) throws CoreException {
+		// ignore
+		return null;
 	}
 
 }
