@@ -539,4 +539,10 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
 		return false;
 	}
+
+	public IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
+			boolean eclipseFormat, boolean projectRelative) throws CoreException {
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
+				"Not implemented yet for Team API."));
+	}
 }

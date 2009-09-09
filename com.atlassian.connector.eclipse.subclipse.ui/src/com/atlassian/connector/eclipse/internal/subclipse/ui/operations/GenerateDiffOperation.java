@@ -18,24 +18,20 @@
  * Contributors:
  *     Subclipse project committers - initial API and implementation
  ******************************************************************************/
-package com.atlassian.connector.eclipse.internal.subclipse.ui.wizards;
+
+package com.atlassian.connector.eclipse.internal.subclipse.ui.operations;
+
+import com.atlassian.connector.eclipse.ui.team.IGenerateDiffOperation;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.team.core.TeamException;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
-import org.tigris.subversion.subclipse.core.SVNTeamProvider;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
-import org.tigris.subversion.subclipse.ui.Policy;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
 import org.tigris.subversion.svnclientadapter.SVNClientException;
 
@@ -45,43 +41,27 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 /**
  * An operation to run the SVN diff operation on a set of resources. The result of the diff is written to a file. If
  * there are no differences found, the user is notified and the output file is not created.
  */
-public class GenerateDiffFileOperation implements IRunnableWithProgress {
+public class GenerateDiffOperation implements IGenerateDiffOperation {
 	private static String ECLIPSE_PATCH_HEADER = "### Eclipse Workspace Patch 1.0"; //$NON-NLS-1$
 
 	private static String ECLIPSE_PROJECT_MARKER = "#P "; //$NON-NLS-1$
 
 	private static String EOL = System.getProperty("line.separator");
 
-	private final File outputFile;
-
 	private final IResource[] resources;
 
-	private final IResource[] unaddedResources;
-
-	private final Shell shell;
-
 	private final boolean recursive;
-
-	private final boolean toClipboard;
-
-	private ArrayList newFiles;
 
 	private IResource[] selectedResources;
 
@@ -89,16 +69,14 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 
 	private final boolean projectRelative;
 
-	GenerateDiffFileOperation(IResource[] resources, IResource[] unaddedResources, File file, boolean toClipboard,
-			boolean recursive, boolean eclipseFormat, boolean projectRelative, Shell shell) {
+	private String patchText;
+
+	public GenerateDiffOperation(IResource[] resources, boolean recursive, boolean eclipseFormat,
+			boolean projectRelative) {
 		this.resources = resources;
-		this.unaddedResources = unaddedResources;
-		this.outputFile = file;
 		this.eclipseFormat = eclipseFormat;
 		this.projectRelative = projectRelative;
-		this.shell = shell;
 		this.recursive = recursive;
-		this.toClipboard = toClipboard;
 	}
 
 	/**
@@ -107,18 +85,26 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 	 * 
 	 * @return a hashtable mapping providers to their resources
 	 */
-	protected Hashtable getProviderMapping(IResource[] resources) {
-		Hashtable result = new Hashtable();
+	protected Map<RepositoryProvider, List<IResource>> getProviderMapping(IResource[] resources) {
+		Hashtable<RepositoryProvider, List<IResource>> result = new Hashtable<RepositoryProvider, List<IResource>>();
 		for (IResource resource : resources) {
 			RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
-			List list = (List) result.get(provider);
+			List<IResource> list = result.get(provider);
 			if (list == null) {
-				list = new ArrayList();
+				list = new ArrayList<IResource>();
 				result.put(provider, list);
 			}
 			list.add(resource);
 		}
 		return result;
+	}
+
+	public String getPatch() {
+		return patchText;
+	}
+
+	public boolean hasPatch() {
+		return !patchText.isEmpty();
 	}
 
 	/**
@@ -127,53 +113,13 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			monitor.beginTask("", 500); //$NON-NLS-1$
-			monitor.setTaskName(Policy.bind("GenerateSVNDiff.working")); //$NON-NLS-1$
+			monitor.setTaskName("Running SVN diff..."); //$NON-NLS-1$
 
-			OutputStream os;
-			if (toClipboard) {
-				os = new ByteArrayOutputStream();
-			} else {
-				os = new FileOutputStream(outputFile);
-			}
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			File tmpFile = File.createTempFile("sub", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			tmpFile.deleteOnExit();
 
 			ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resources[0]);
-
-			newFiles = new ArrayList();
-			if (unaddedResources.length > 0) {
-//					Display.getDefault().syncExec(new Runnable() {
-//						 public void run() {
-//							 DiffNewFilesDialog dialog = new DiffNewFilesDialog(shell,unaddedResources);
-//							 	boolean revert = (dialog.open() == RevertDialog.OK);
-//								if (revert) {
-//									newFiles.addAll(Arrays.asList(dialog.getSelectedResources()));
-//								}
-//							 }
-//					});
-				for (IResource unaddedResource : unaddedResources) {
-					newFiles.add(unaddedResource);
-				}
-				if (newFiles.size() > 0) {
-					try {
-						// associate the resources with their respective RepositoryProvider					
-						Hashtable table = getProviderMapping((IResource[]) newFiles.toArray(new IResource[newFiles.size()]));
-						Set keySet = table.keySet();
-						Iterator iterator = keySet.iterator();
-						while (iterator.hasNext()) {
-							IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 100);
-							SVNTeamProvider provider = (SVNTeamProvider) iterator.next();
-							List list = (List) table.get(provider);
-							IResource[] providerResources = (IResource[]) list.toArray(new IResource[list.size()]);
-
-							provider.add(providerResources, IResource.DEPTH_INFINITE, subMonitor);
-						}
-					} catch (TeamException e) {
-						throw new InvocationTargetException(e);
-					}
-				}
-			}
-
 			ISVNClientAdapter svnClient = svnResource.getRepository().getSVNClient();
 			try {
 				monitor.worked(100);
@@ -182,11 +128,7 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 					svnClient.diff(files, tmpFile, recursive);
 				} else {
 					if (eclipseFormat) {
-						HashSet includedResources = new HashSet();
-						includedResources.addAll(Arrays.asList(unaddedResources));
-						includedResources.addAll(Arrays.asList(resources));
-						createEclipsePatch((IResource[]) includedResources.toArray(new IResource[0]), tmpFile,
-								recursive);
+						createEclipsePatch(resources, tmpFile, recursive);
 					} else {
 						File relativeToPath = null;
 						if (projectRelative) {
@@ -211,49 +153,7 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 				os.close();
 			}
 
-			if (newFiles.size() > 0) {
-				for (int i = 0; i < newFiles.size(); i++) {
-					IResource resource = (IResource) newFiles.get(i);
-					try {
-						SVNWorkspaceRoot.getSVNResourceFor(resource).revert();
-					} catch (Exception e) {
-					}
-				}
-			}
-
-			boolean emptyDiff = false;
-
-			if (toClipboard) {
-				final ByteArrayOutputStream baos = (ByteArrayOutputStream) os;
-				if (baos.size() == 0) {
-					emptyDiff = true;
-				} else {
-					Display.getDefault().syncExec(new Runnable() {
-						public void run() {
-							TextTransfer plainTextTransfer = TextTransfer.getInstance();
-							Clipboard clipboard = new Clipboard(shell.getDisplay());
-							clipboard.setContents(new String[] { baos.toString() },
-									new Transfer[] { plainTextTransfer });
-							clipboard.dispose();
-						}
-					});
-				}
-			} else {
-				if (outputFile.length() == 0) {
-					emptyDiff = true;
-					outputFile.delete();
-				}
-			}
-
-			// check for empty diff and report
-			if (emptyDiff) {
-				Display.getDefault().syncExec(new Runnable() {
-					public void run() {
-						MessageDialog.openInformation(shell, Policy.bind("GenerateSVNDiff.noDiffsFoundTitle"), //$NON-NLS-1$
-								Policy.bind("GenerateSVNDiff.noDiffsFoundMsg")); //$NON-NLS-1$
-					}
-				});
-			}
+			patchText = os.toString();
 		} catch (Exception e) {
 			throw new InvocationTargetException(e);
 		} finally {
@@ -285,22 +185,14 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 	}
 
 	private File[] getVersionedFiles() {
-		ArrayList versionedFileList = new ArrayList();
-		ArrayList unaddedResourceList = new ArrayList();
-		for (IResource unaddedResource : unaddedResources) {
-			unaddedResourceList.add(unaddedResource);
+		ArrayList<File> versionedFileList = new ArrayList<File>();
+		for (IResource resource : resources) {
+			versionedFileList.add(new File(resource.getLocation().toOSString()));
 		}
-		for (int i = 0; i < resources.length; i++) {
-			if (!containsResource(unaddedResourceList, resources[i]) || containsResource(newFiles, resources[i])) {
-				versionedFileList.add(new File(resources[i].getLocation().toOSString()));
-			}
-		}
-		File[] files = new File[versionedFileList.size()];
-		versionedFileList.toArray(files);
-		return files;
+		return versionedFileList.toArray(new File[versionedFileList.size()]);
 	}
 
-	private boolean containsResource(ArrayList list, IResource resource) {
+	private boolean containsResource(List<IResource> list, IResource resource) {
 		if (list.contains(resource)) {
 			return true;
 		}
@@ -330,23 +222,22 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 				os.write(EOL.getBytes());
 			}
 
-			Map projectToResources = new HashMap();
+			Map<IProject, List<File>> projectToResources = new HashMap<IProject, List<File>>();
 
 			for (IResource resource : paths) {
 				IProject project = resource.getProject();
-				List files = (List) projectToResources.get(project);
+				List<File> files = projectToResources.get(project);
 				if (files == null) {
-					files = new ArrayList();
+					files = new ArrayList<File>();
 					projectToResources.put(project, files);
 				}
 				files.add(resource.getLocation().toFile());
 			}
 
-			for (Iterator iEntry = projectToResources.entrySet().iterator(); iEntry.hasNext();) {
-				Entry entry = (Entry) iEntry.next();
+			for (Map.Entry<IProject, List<File>> entry : projectToResources.entrySet()) {
 
-				IResource project = (IResource) entry.getKey();
-				List files = (List) entry.getValue();
+				IResource project = entry.getKey();
+				List<File> files = entry.getValue();
 
 				ISVNClientAdapter client = SVNWorkspaceRoot.getSVNResourceFor(project).getRepository().getSVNClient();
 
@@ -356,8 +247,8 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 
 				File tempFile = File.createTempFile("tempDiff", ".txt");
 				tempFile.deleteOnExit();
-				client.createPatch((File[]) files.toArray(new File[files.size()]), project.getLocation().toFile(),
-						tempFile, recurse);
+				client.createPatch(files.toArray(new File[files.size()]), project.getLocation().toFile(), tempFile,
+						recurse);
 
 				try {
 					is = new FileInputStream(tempFile);
@@ -386,4 +277,9 @@ public class GenerateDiffFileOperation implements IRunnableWithProgress {
 			}
 		}
 	}
+
+	public IStatus getStatus() {
+		return Status.OK_STATUS;
+	}
+
 }

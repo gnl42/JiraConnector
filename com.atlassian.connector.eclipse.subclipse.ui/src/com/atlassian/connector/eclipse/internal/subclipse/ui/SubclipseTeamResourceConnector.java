@@ -11,13 +11,17 @@
 
 package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
+import com.atlassian.connector.eclipse.internal.subclipse.core.FileUtility;
+import com.atlassian.connector.eclipse.internal.subclipse.core.IStateFilter;
 import com.atlassian.connector.eclipse.internal.subclipse.core.SubclipseUtil;
 import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSubclipseCompareEditorInput;
+import com.atlassian.connector.eclipse.internal.subclipse.ui.operations.GenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.ui.team.IGenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
@@ -500,37 +504,21 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
-		// ignore
-		return false;
+		return FileUtility.checkForResourcesPresenceRecursive(roots, getStateFilter(filter));
 	}
 
-// Code that can work if there is no file in the local workspace 
-//	private RemoteFile getRemoteFile(String repoUrl, String filePath, String revisionString,
-//	ISVNRepositoryLocation location) throws MalformedURLException, ParseException, SVNException {
-//RemoteFile file;
-//SVNUrl svnUrl = new SVNUrl(repoUrl).appendPath(filePath);
-//SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
-//
-//ISVNClientAdapter svnClient = location.getSVNClient();
-//ISVNInfo info = null;
-//try {
-//	if (location.getRepositoryRoot().equals(svnUrl)) {
-//		file = new RemoteFile(location, svnUrl, svnRevision);
-//	} else {
-//		info = svnClient.getInfo(svnUrl, svnRevision, svnRevision);
-//	}
-//} catch (SVNClientException e) {
-//	throw new SVNException("Can't get latest remote resource for " + svnUrl);
-//}
-//
-//if (info == null) {
-//	file = null;//new RemoteFile(location, svnUrl, svnRevision);
-//} else {
-//	file = new RemoteFile(
-//			null, // we don't know its parent
-//			location, svnUrl, svnRevision, info.getLastChangedRevision(), info.getLastChangedDate(),
-//			info.getLastCommitAuthor());
-//}
-//return file;
-//}
+	private IStateFilter getStateFilter(State filter) {
+		switch (filter) {
+		case SF_ANY_CHANGE:
+			return IStateFilter.SF_ANY_CHANGE;
+		default:
+			return IStateFilter.SF_ALL; // accept everything
+		}
+	}
+
+	public IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
+			boolean eclipseFormat, boolean projectRelative) throws CoreException {
+		return new GenerateDiffOperation(resources, recursive, eclipseFormat, projectRelative);
+	}
+
 }

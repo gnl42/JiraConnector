@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
@@ -19,6 +18,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -66,7 +66,7 @@ public class ComboViewerSelectionDialog extends Dialog {
 
 		final ComboViewer comboViewer = new ComboViewer(composite);
 		comboViewer.getCombo().setText("Select");
-		comboViewer.setContentProvider(new CrucibleRepositoriesContentProvider());
+		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
 		comboViewer.setSorter(new ViewerSorter());
 		comboViewer.setInput(inputObjects);

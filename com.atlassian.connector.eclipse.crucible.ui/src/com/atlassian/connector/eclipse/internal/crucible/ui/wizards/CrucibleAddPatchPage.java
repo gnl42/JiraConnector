@@ -12,17 +12,18 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
@@ -75,7 +76,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 
 		final Button includePatchButton = new Button(composite, SWT.CHECK);
 		includePatchButton.setText("Include this Patch from the clipboard in the review:");
-		GridDataFactory.fillDefaults().applyTo(includePatchButton);
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(includePatchButton);
 		includePatchButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -93,8 +94,9 @@ public class CrucibleAddPatchPage extends WizardPage {
 		GridDataFactory.fillDefaults().grab(false, false).applyTo(label);
 		comboViewer = new ComboViewer(composite);
 		comboViewer.getCombo().setText("Select Repository");
-		comboViewer.setContentProvider(new CrucibleRepositoriesContentProvider());
+		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
+		comboViewer.setSorter(new ViewerSorter());
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (comboViewer.getSelection() instanceof IStructuredSelection) {

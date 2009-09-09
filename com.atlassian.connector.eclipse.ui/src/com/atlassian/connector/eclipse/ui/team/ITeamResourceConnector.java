@@ -146,4 +146,8 @@ public interface ITeamResourceConnector {
 	 * @return true if given roots (or their children) match given state
 	 */
 	boolean checkForResourcesPresenceRecursive(@NotNull IResource[] roots, State filter);
+
+	@NotNull
+	IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
+			boolean eclipseFormat, boolean projectRelative) throws CoreException;
 }

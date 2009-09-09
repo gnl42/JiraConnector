@@ -321,7 +321,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		return false;
 	}
 
-	public void applyTo() {
+	private void applyTo() {
 		newReview.setName(titleText.getText());
 		newReview.setDescription(objectivesText.getText());
 		newReview.setReviewers(reviewersSelectionTreePart.getSelectedReviewers());
@@ -330,6 +330,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	}
 
 	public Review getReview() {
+		applyTo();
 		return newReview;
 	}
 

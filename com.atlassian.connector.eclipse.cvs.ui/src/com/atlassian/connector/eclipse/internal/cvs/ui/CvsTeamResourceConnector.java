@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.cvs.ui;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.ui.team.IGenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
@@ -176,6 +177,12 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
 		// ignore
 		return false;
+	}
+
+	public IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
+			boolean eclipseFormat, boolean projectRelative) throws CoreException {
+		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
+				"Not implemented yet for CVS."));
 	}
 
 }

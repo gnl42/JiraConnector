@@ -111,4 +111,5 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 		}
 		return types;
 	}
+
 }
