@@ -11,20 +11,21 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySelectionWizard;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.SelectRepositoryPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.ui.IActionDelegate;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
+import org.eclipse.team.internal.ui.actions.TeamAction;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 /**
  * Action for creating a review from a revision
@@ -32,32 +33,24 @@ import org.eclipse.ui.actions.BaseSelectionListenerAction;
  * @author Thomas Ehrnhoefer
  */
 @SuppressWarnings("restriction")
-public class CreatePreCommitReviewAction extends BaseSelectionListenerAction implements IActionDelegate {
-
-	private ISelection selection;
-
+public class CreatePreCommitReviewAction extends TeamAction {
 	public CreatePreCommitReviewAction() {
-		super("New Crucible Review...");
+		super();
 	}
 
-	public void run(IAction action) {
-		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
-			return;
-		}
-
+	@Override
+	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new RepositorySelectionWizard(
 				new SelectRepositoryPage(SelectCrucibleRepositoryPage.CRUCIBLE_REPOSITORY_FILTER) {
 					@Override
 					protected IWizard createWizard(TaskRepository taskRepository) {
-						return new CrucibleReviewWizard(taskRepository);
+						ReviewWizard wizard = new ReviewWizard(taskRepository,
+								MiscUtil.buildHashSet(ReviewWizard.Type.ADD_WORKSPACE_PATCH));
+						wizard.setRoots(Arrays.asList(getSelectedResources()));
+						return wizard;
 					}
 				}));
 		wd.setBlockOnOpen(true);
 		wd.open();
 	}
-
-	public void selectionChanged(IAction action, ISelection selected) {
-		this.selection = selected;
-	}
-
 }

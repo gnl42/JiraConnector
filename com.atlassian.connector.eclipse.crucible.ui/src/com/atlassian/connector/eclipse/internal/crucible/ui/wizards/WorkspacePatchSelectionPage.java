@@ -63,7 +63,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -74,7 +76,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 	private Object[] initialSelection;
 
-	private final IResource[] roots;
+	private final List<IResource> roots = new ArrayList<IResource>();
 
 	private Object[] realSelection;
 
@@ -95,14 +97,14 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 	private ComboViewer scmViewer;
 
 	public WorkspacePatchSelectionPage(@NotNull TaskRepository taskRepository, @NotNull ReviewWizard wizard,
-			@NotNull IResource[] roots) {
+			@NotNull List<IResource> roots) {
 		super("Add Workspace Patch to Review");
 		setTitle("Add Workspace Patch to Review");
 		setDescription("Attach a patch from the workspace to the review.");
 
 		this.taskRepository = taskRepository;
 		this.wizard = wizard;
-		this.roots = roots;
+		this.roots.addAll(roots);
 		this.teamConnectors = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectors();
 	}
 
@@ -185,7 +187,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 			/*public Object[] getChildren(Object element) {
 				if (element instanceof IProject || element instanceof IFolder) {
 					try {
-						//return SVNRemoteStorage.instance().getRegisteredChildren((IContainer) element);
+						return ((IContainer) element).members();
 					} catch (Exception e) {
 						// do nothing
 					}

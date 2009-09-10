@@ -26,6 +26,7 @@ import org.tigris.subversion.subclipse.core.ISVNLocalFolder;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNResource;
 import org.tigris.subversion.subclipse.core.SVNException;
+import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
 
 /**
@@ -114,6 +115,14 @@ public final class FileUtility {
 	}
 	
 	private FileUtility() {
+	}
+
+	public static boolean isSVNInternals(IResource resource) {
+		if (SVNProviderPlugin.getPlugin().isAdminDirectory(resource.getName())) {
+			return true;
+		}
+		IResource parent = resource.getParent();
+		return parent == null ? false : FileUtility.isSVNInternals(parent);
 	}
 
 }

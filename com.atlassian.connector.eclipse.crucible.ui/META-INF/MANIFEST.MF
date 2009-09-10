@@ -24,7 +24,8 @@ Require-Bundle: com.atlassian.connector.commons,
  org.eclipse.compare,
  org.eclipse.mylyn.commons.net,
  org.eclipse.core.expressions,
- org.jetbrains.annotations;resolution:=optional
+ org.jetbrains.annotations;resolution:=optional,
+ org.eclipse.team.ui
 Bundle-Activator: com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -30,7 +30,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -57,6 +57,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -171,6 +172,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private String previousWorkspacePatchRepository;
 
+	private final List<IResource> roots = new ArrayList<IResource>();
+
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
 		setWindowTitle("New Crucible Review");
@@ -211,8 +214,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		if (types.contains(Type.ADD_WORKSPACE_PATCH)) {
-			addWorkspacePatchPage = new WorkspacePatchSelectionPage(getTaskRepository(), this,
-					ResourcesPlugin.getWorkspace().getRoot().getProjects());
+			addWorkspacePatchPage = new WorkspacePatchSelectionPage(getTaskRepository(), this, roots);
 			addPage(addWorkspacePatchPage);
 		}
 
@@ -507,5 +509,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public void setLogEntries(SortedSet<ICustomChangesetLogEntry> logEntries) {
 		this.preselectedLogEntries = logEntries;
+	}
+
+	public void setRoots(List<IResource> list) {
+		this.roots.clear();
+		this.roots.addAll(list);
 	}
 }

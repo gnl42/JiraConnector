@@ -22,6 +22,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
@@ -183,6 +184,10 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 			boolean eclipseFormat, boolean projectRelative) throws CoreException {
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
 				"Not implemented yet for CVS."));
+	}
+
+	public IResource[] getRegisteredChilder(IFolder folder) throws CoreException {
+		return new IResource[0];
 	}
 
 }

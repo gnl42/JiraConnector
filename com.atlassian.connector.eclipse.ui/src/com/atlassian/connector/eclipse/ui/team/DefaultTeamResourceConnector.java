@@ -22,6 +22,7 @@ import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -544,5 +545,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 			boolean eclipseFormat, boolean projectRelative) throws CoreException {
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
 				"Not implemented yet for Team API."));
+	}
+
+	public IResource[] getRegisteredChilder(IFolder folder) throws CoreException {
+		return new IResource[0];
 	}
 }

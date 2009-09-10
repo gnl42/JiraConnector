@@ -93,7 +93,10 @@ import java.util.TreeSet;
  */
 public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
+	protected Map parent2Children;
+
 	public SubclipseTeamResourceConnector() {
+		this.parent2Children = new HashMap();
 	}
 
 	public boolean isEnabled() {
@@ -511,6 +514,10 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		switch (filter) {
 		case SF_ANY_CHANGE:
 			return IStateFilter.SF_ANY_CHANGE;
+		case SF_UNVERSIONED:
+			return IStateFilter.SF_UNVERSIONED;
+		case SF_IGNORED:
+			return IStateFilter.SF_IGNORED;
 		default:
 			return IStateFilter.SF_ALL; // accept everything
 		}

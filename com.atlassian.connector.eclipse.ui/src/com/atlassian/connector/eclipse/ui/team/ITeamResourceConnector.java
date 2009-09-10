@@ -36,7 +36,7 @@ public interface ITeamResourceConnector {
 
 	enum State {
 		// resources modified from SCM base state
-		SF_ANY_CHANGE
+		SF_ANY_CHANGE, SF_UNVERSIONED, SF_IGNORED, SF_ALL
 	};
 
 	boolean isEnabled();
@@ -150,4 +150,5 @@ public interface ITeamResourceConnector {
 	@NotNull
 	IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
 			boolean eclipseFormat, boolean projectRelative) throws CoreException;
+
 }

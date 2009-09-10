@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -12,6 +13,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.team.core.Team;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
@@ -122,6 +124,18 @@ public final class SubclipseUtil {
 		return null;
 	}
 
+	public static boolean isIgnored(IResource resource) {
+		// Ignore WorkspaceRoot, derived and team-private resources and resources from TeamHints 
+        if (resource instanceof IWorkspaceRoot || resource.isDerived() || 
+        	FileUtility.isSVNInternals(resource) || Team.isIgnoredHint(resource) || isMergeParts(resource)) {
+        	return true;
+        }
+        return false;
+    }
 
-
+	private static boolean isMergeParts(IResource resource) {
+		String ext = resource.getFileExtension();
+		return ext != null && ext.matches("r(\\d)+"); //$NON-NLS-1$
+	}
+	
 }
