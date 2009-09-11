@@ -17,18 +17,20 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.IGenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -57,7 +59,9 @@ import org.eclipse.team.svn.core.connector.SVNLogPath;
 import org.eclipse.team.svn.core.connector.SVNProperty;
 import org.eclipse.team.svn.core.connector.SVNRevision;
 import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
+import org.eclipse.team.svn.core.connector.SVNRevision.Kind;
 import org.eclipse.team.svn.core.operation.IActionOperation;
+import org.eclipse.team.svn.core.operation.local.GetLocalFileContentOperation;
 import org.eclipse.team.svn.core.operation.remote.GetLogMessagesOperation;
 import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryFile;
@@ -82,6 +86,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -598,15 +604,62 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		switch (filter) {
 		case SF_ANY_CHANGE:
 			return IStateFilter.SF_ANY_CHANGE;
+		case SF_ALL:
+			return IStateFilter.SF_ALL;
+		case SF_IGNORED:
+			return IStateFilter.SF_IGNORED;
+		case SF_UNVERSIONED:
+			return IStateFilter.SF_UNVERSIONED;
 		default:
-			return IStateFilter.SF_ALL; // accept everything
+			throw new IllegalStateException("Unhandled IStateFilter");
 		}
 	}
 
-	public IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
-			boolean eclipseFormat, boolean projectRelative) throws CoreException {
-		// ignore
-		return null;
+	public IResource[] getMembersForContainer(IContainer element) throws CoreException {
+		try {
+			return SVNRemoteStorage.instance().getRegisteredChildren(element);
+		} catch (Exception e) {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+					"Can't get container members", e));
+		}
 	}
 
+	private String getResourceContent(InputStream is) {
+		try {
+			return IOUtils.toString(is);
+		} catch (IOException e) {
+			return "";
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
+	}
+
+	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources, IProgressMonitor monitor)
+			throws CoreException {
+		List<UploadItem> items = MiscUtil.buildArrayList();
+		for (IResource resource : resources) {
+			if (resource.getType() != IResource.FILE) {
+				// ignore anything but files
+				continue;
+			}
+
+			IRepositoryResource repositoryResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
+			ILocalResource localResource = SVNRemoteStorage.instance().asLocalResource(resource);
+			String revision = Long.toString(localResource.getRevision());
+			String url = repositoryResource.getUrl();
+
+			if (IStateFilter.SF_UNVERSIONED.accept(localResource) || IStateFilter.SF_ADDED.accept(localResource)) {
+				items.add(new UploadItem(url, "", getResourceContent(((IFile) resource).getContents()), revision));
+			} else if (IStateFilter.SF_DELETED.accept(localResource)) {
+				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
+				getContent.run(monitor);
+				items.add(new UploadItem(url, getResourceContent(getContent.getContent()), "", revision));
+			} else if (IStateFilter.SF_MODIFIED.accept(localResource)) {
+				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
+				items.add(new UploadItem(url, getResourceContent(getContent.getContent()),
+						getResourceContent(((IFile) resource).getContents()), revision));
+			}
+		}
+		return items;
+	}
 }

@@ -20,6 +20,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.commons.net,
  org.eclipse.team.svn.core,
  org.eclipse.team.svn.ui,
+ org.apache.commons.io,
  org.jetbrains.annotations;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.subversive.ui;x-internal:=true,
