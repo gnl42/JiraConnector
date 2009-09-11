@@ -66,7 +66,7 @@ public class ComboViewerSelectionDialog extends Dialog {
 
 		final ComboViewer comboViewer = new ComboViewer(composite);
 		comboViewer.getCombo().setText("Select");
-		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
+		comboViewer.setContentProvider(new ArrayContentProvider());
 		comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
 		comboViewer.setSorter(new ViewerSorter());
 		comboViewer.setInput(inputObjects);

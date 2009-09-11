@@ -94,7 +94,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 		GridDataFactory.fillDefaults().grab(false, false).applyTo(label);
 		comboViewer = new ComboViewer(composite);
 		comboViewer.getCombo().setText("Select Repository");
-		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
+		comboViewer.setContentProvider(new ArrayContentProvider());
 		comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
 		comboViewer.setSorter(new ViewerSorter());
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
