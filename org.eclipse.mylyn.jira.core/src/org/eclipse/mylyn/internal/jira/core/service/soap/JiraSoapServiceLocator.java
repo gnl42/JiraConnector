@@ -8,6 +8,7 @@
  * Contributors:
  *     Brock Janiczak - initial API and implementation
  *     Tasktop Technologies - improvements
+ *     Pawel Niewiadomski - fix for bug 288441
  *******************************************************************************/
 
 /*
@@ -19,13 +20,13 @@
 package org.eclipse.mylyn.internal.jira.core.service.soap;
 
 import java.util.Hashtable;
-import java.util.Map;
 
 import javax.xml.rpc.Call;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.transport.http.HTTPConstants;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
 import org.eclipse.mylyn.internal.provisional.commons.soap.SoapHttpSender;
 
@@ -72,12 +73,12 @@ public class JiraSoapServiceLocator extends JiraSoapServiceServiceLocator {
 //			call.setProperty(JiraHttpSender.PROXY, proxy);
 //		}
 		call.setProperty(SoapHttpSender.LOCATION, location);
-		call.setProperty(SoapHttpSender.USER_AGENT, "JiraConnector Apache Axis/1.4"); //$NON-NLS-1$
 
+		Hashtable<String, String> headers = new Hashtable<String, String>();
+		headers.put(HTTPConstants.HEADER_USER_AGENT, WebUtil.getUserAgent("JiraConnector Axis/1.4")); //$NON-NLS-1$
 		// some servers break with a 411 Length Required when chunked encoding
 		// is used
-		Map<String, Boolean> headers = new Hashtable<String, Boolean>();
-		headers.put(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED, Boolean.FALSE);
+		headers.put(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED, Boolean.FALSE.toString());
 		call.setProperty(HTTPConstants.REQUEST_HEADERS, headers);
 		return call;
 	}

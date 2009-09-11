@@ -103,6 +103,7 @@ public class JiraWebSession {
 				lock(monitor);
 				if (httpClient == null) {
 					httpClient = new HttpClient(WebUtil.getConnectionManager());
+					WebUtil.configureHttpClient(httpClient, "JiraConnector"); //$NON-NLS-1$
 				}
 				if (doLogin) {
 					hostConfiguration = login(httpClient, monitor);
