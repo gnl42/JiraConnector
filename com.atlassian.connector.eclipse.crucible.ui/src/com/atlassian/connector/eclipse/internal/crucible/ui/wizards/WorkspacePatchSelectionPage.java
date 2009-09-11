@@ -118,7 +118,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		GridDataFactory.fillDefaults().grab(false, false).applyTo(label);
 		scmViewer = new ComboViewer(composite);
 		scmViewer.getCombo().setText("Select SCM provider");
-		scmViewer.setContentProvider(ArrayContentProvider.getInstance());
+		scmViewer.setContentProvider(new ArrayContentProvider());
 		scmViewer.setSorter(new ViewerSorter());
 		scmViewer.setLabelProvider(new LabelProvider() {
 			@Override
