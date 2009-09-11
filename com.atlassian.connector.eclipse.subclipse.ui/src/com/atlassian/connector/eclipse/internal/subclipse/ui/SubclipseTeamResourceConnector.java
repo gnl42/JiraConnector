@@ -31,10 +31,13 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.compare.CompareEditorInput;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -67,6 +70,7 @@ import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.commands.GetLogsCommand;
 import org.tigris.subversion.subclipse.core.history.ILogEntry;
 import org.tigris.subversion.subclipse.core.history.LogEntryChangePath;
+import org.tigris.subversion.subclipse.core.resources.LocalResourceStatus;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
 import org.tigris.subversion.subclipse.ui.Policy;
 import org.tigris.subversion.subclipse.ui.SVNUIPlugin;
@@ -76,6 +80,8 @@ import org.tigris.subversion.svnclientadapter.ISVNProperty;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.util.Collection;
@@ -522,7 +528,53 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 	}
 
-	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources) throws CoreException {
-		return MiscUtil.buildArrayList();
+	private String getResourceContent(IStorage resource) {
+		InputStream is;
+		try {
+			is = resource.getContents();
+		} catch (CoreException e) {
+			return "";
+		}
+		try {
+			return IOUtils.toString(is);
+		} catch (IOException e) {
+			return "";
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
+	}
+
+	@NotNull
+	public Collection<UploadItem> getUploadItemsForResources(@NotNull IResource[] resources,
+			@NotNull IProgressMonitor monitor) throws CoreException {
+		List<UploadItem> items = MiscUtil.buildArrayList();
+		for (IResource resource : resources) {
+			if (resource.getType() != IResource.FILE) {
+				// ignore anything but files
+				continue;
+			}
+
+			ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
+			SVNRevision svnRevision = svnResource.getRevision();
+			String revision = svnRevision != null ? svnRevision.toString() : "";
+			String url = svnResource.getUrl().toString();
+			LocalResourceStatus status = svnResource.getStatus();
+
+			if (status.isUnversioned() || status.isAdded()) {
+				items.add(new UploadItem(url, "", getResourceContent((IFile) resource), revision));
+			} else if (status.isDeleted()) {
+				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
+						"", revision));
+			} else if (status.isDirty()) {
+				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
+						getResourceContent((IFile) resource), revision));
+			}
+		}
+		return items;
+	}
+
+	@NotNull
+	public IResource[] getMembersForContainer(@NotNull IContainer element) throws CoreException {
+		return FileUtility.getAllMembers(element);
 	}
 }

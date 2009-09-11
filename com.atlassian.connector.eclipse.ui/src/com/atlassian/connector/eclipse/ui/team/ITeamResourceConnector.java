@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.ui.team;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -149,6 +150,10 @@ public interface ITeamResourceConnector {
 	boolean checkForResourcesPresenceRecursive(@NotNull IResource[] roots, State filter);
 
 	@NotNull
-	Collection<UploadItem> getUploadItemsForResources(@NotNull IResource[] resources) throws CoreException;
+	Collection<UploadItem> getUploadItemsForResources(@NotNull IResource[] resources, @NotNull IProgressMonitor monitor)
+			throws CoreException;
+
+	@NotNull
+	IResource[] getMembersForContainer(@NotNull IContainer element) throws CoreException;
 
 }

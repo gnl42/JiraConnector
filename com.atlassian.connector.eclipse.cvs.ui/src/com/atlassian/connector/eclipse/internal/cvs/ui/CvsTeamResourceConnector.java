@@ -21,6 +21,7 @@ import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -179,8 +180,14 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return false;
 	}
 
-	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources) throws CoreException {
+	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources, @NotNull IProgressMonitor monitor)
+			throws CoreException {
 		return MiscUtil.buildArrayList();
+	}
+
+	@NotNull
+	public IResource[] getMembersForContainer(@NotNull IContainer element) throws CoreException {
+		return new IResource[0];
 	}
 
 }

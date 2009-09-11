@@ -24,9 +24,14 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -51,6 +56,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.jetbrains.annotations.NotNull;
@@ -164,23 +170,26 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		label = new Label(composite, SWT.NONE);
 		label.setText("Include changes:");
 
-		this.changeViewer = new CheckboxTreeViewer(composite, SWT.BORDER);
+		changeViewer = new CheckboxTreeViewer(composite, SWT.BORDER);
 		GridDataFactory.fillDefaults().span(2, 1).hint(SWT.DEFAULT, 220).grab(true, true).applyTo(
 				changeViewer.getControl());
-		this.changeViewer.setContentProvider(new WorkbenchContentProvider() {
-			/*public Object[] getChildren(Object element) {
-				if (element instanceof IProject || element instanceof IFolder) {
+		changeViewer.setContentProvider(new WorkbenchContentProvider() {
+			public Object[] getChildren(Object element) {
+				if (element instanceof IContainer) {
 					try {
-						return ((IContainer) element).members();
+						IResource[] children = selectedTeamConnector.getMembersForContainer((IContainer) element);
+						if (children != null && children.length != 0) {
+							return children;
+						}
 					} catch (Exception e) {
 						// do nothing
 					}
 				}
 				return super.getChildren(element);
-			}*/
+			}
 		});
-		this.changeViewer.setLabelProvider(new WorkbenchLabelProvider());
-		this.changeViewer.addCheckStateListener(new ICheckStateListener() {
+		changeViewer.setLabelProvider(new WorkbenchLabelProvider());
+		changeViewer.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
 					IResource resource = (IResource) event.getElement();
@@ -225,7 +234,18 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 				WorkspacePatchSelectionPage.this.realSelection = WorkspacePatchSelectionPage.this.changeViewer.getCheckedElements();
 			}
 		});
-		this.changeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
+		changeViewer.setUseHashlookup(true);
+		changeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
+
+		MenuManager menuMgr = new MenuManager();
+		Menu menu = menuMgr.createContextMenu(changeViewer.getTree());
+		menuMgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager menuMgr) {
+				fillTreeMenu(menuMgr);
+			}
+		});
+		menuMgr.setRemoveAllWhenShown(true);
+		changeViewer.getTree().setMenu(menu);
 
 		Button updateData = new Button(composite, SWT.PUSH);
 		updateData.setText("Update Repository Data");
@@ -240,6 +260,25 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		// update selection after all wiring has been done
 		scmViewer.setInput(teamConnectors);
 		scmViewer.setSelection(new StructuredSelection(scmViewer.getElementAt(0)));
+	}
+
+	void setAllChecked(boolean state) {
+		changeViewer.setAllChecked(state);
+	}
+
+	protected void fillTreeMenu(IMenuManager menuMgr) {
+		Action selectAllAction = new Action("Select all") {
+			public void run() {
+				setAllChecked(true);
+			}
+		};
+		menuMgr.add(selectAllAction);
+		Action deselectAllAction = new Action("Deselect all") { //$NON-NLS-1$
+			public void run() {
+				setAllChecked(false);
+			}
+		};
+		menuMgr.add(deselectAllAction);
 	}
 
 	private void validatePage() {

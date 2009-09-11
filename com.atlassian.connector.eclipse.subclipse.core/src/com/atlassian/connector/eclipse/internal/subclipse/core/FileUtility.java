@@ -99,10 +99,10 @@ public final class FileUtility {
 	}
 	
 	@NotNull
-	private static IResource []getAllMembers(IContainer container) throws SVNException {
+	public static IResource []getAllMembers(IContainer container) throws SVNException {
 		ISVNLocalFolder folder = SVNWorkspaceRoot.getSVNFolderFor(container);
 		if (folder != null) {
-			ISVNResource[] svnResources = folder.members(new NullProgressMonitor(), ISVNLocalFolder.MANAGED_MEMBERS);
+			ISVNResource[] svnResources = folder.members(new NullProgressMonitor(), ISVNLocalFolder.ALL_MEMBERS);
 			if (svnResources != null) {
 				IResource[] resources = new IResource[svnResources.length];
 				for(int i = 0, s = svnResources.length; i < s; ++i) {

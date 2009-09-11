@@ -37,6 +37,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -299,12 +300,12 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		if (addWorkspacePatchPage != null) {
 			IResource[] selection = addWorkspacePatchPage.getSelection();
 
-			if (selection != null && selection.length > 0 && Arrays.equals(selection, previousWorkspaceSelection)
+			if (selection != null && selection.length > 0 && !Arrays.equals(selection, previousWorkspaceSelection)
 					&& addWorkspacePatchPage.getSelectedTeamResourceConnector() != null) {
 				try {
 					CrucibleReviewChangeJob job = new AddItemsToReviewJob("Add patch to review", getTaskRepository(),
 							addWorkspacePatchPage.getSelectedTeamResourceConnector().getUploadItemsForResources(
-									selection));
+									selection, new NullProgressMonitor()));
 
 					runJobInContainer(job);
 					if (job.getStatus().isOK()) {

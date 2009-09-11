@@ -542,7 +542,14 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return false;
 	}
 
-	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources) throws CoreException {
+	@NotNull
+	public Collection<UploadItem> getUploadItemsForResources(@NotNull IResource[] resources,
+			@NotNull IProgressMonitor monitor) throws CoreException {
 		return MiscUtil.buildArrayList();
+	}
+
+	@NotNull
+	public IResource[] getMembersForContainer(@NotNull IContainer element) throws CoreException {
+		return new IResource[0];
 	}
 }
