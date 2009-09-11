@@ -15,19 +15,18 @@ import com.atlassian.connector.eclipse.internal.subclipse.core.FileUtility;
 import com.atlassian.connector.eclipse.internal.subclipse.core.IStateFilter;
 import com.atlassian.connector.eclipse.internal.subclipse.core.SubclipseUtil;
 import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSubclipseCompareEditorInput;
-import com.atlassian.connector.eclipse.internal.subclipse.ui.operations.GenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.IGenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -523,9 +522,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 	}
 
-	public IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
-			boolean eclipseFormat, boolean projectRelative) throws CoreException {
-		return new GenerateDiffOperation(resources, recursive, eclipseFormat, projectRelative);
+	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources) throws CoreException {
+		return MiscUtil.buildArrayList();
 	}
-
 }

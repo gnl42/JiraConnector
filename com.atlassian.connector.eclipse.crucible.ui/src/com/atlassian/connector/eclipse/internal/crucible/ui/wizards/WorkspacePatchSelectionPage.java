@@ -21,16 +21,11 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.IGenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -49,20 +44,17 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,19 +72,11 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 	private Object[] realSelection;
 
-	private String selectedRepository;
-
-	private Set<Repository> cachedRepositories;
-
 	private final Set<ITeamResourceConnector> teamConnectors;
 
 	private ITeamResourceConnector selectedTeamConnector;
 
-	private ComboViewer repositoryViewer;
-
 	private final ReviewWizard wizard;
-
-	private final TaskRepository taskRepository;
 
 	private ComboViewer scmViewer;
 
@@ -102,7 +86,6 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		setTitle("Add Workspace Patch to Review");
 		setDescription("Attach a patch from the workspace to the review.");
 
-		this.taskRepository = taskRepository;
 		this.wizard = wizard;
 		this.roots.addAll(roots);
 		this.teamConnectors = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectors();
@@ -130,6 +113,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		scmViewer = new ComboViewer(composite);
 		scmViewer.getCombo().setText("Select SCM provider");
 		scmViewer.setContentProvider(ArrayContentProvider.getInstance());
+		scmViewer.setSorter(new ViewerSorter());
 		scmViewer.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -243,31 +227,6 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		});
 		this.changeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
 
-		label = new Label(composite, SWT.NONE);
-		label.setText("Select the repository on Crucible:");
-		GridDataFactory.fillDefaults().grab(false, false).applyTo(label);
-		repositoryViewer = new ComboViewer(composite);
-		repositoryViewer.getCombo().setText("Select Repository");
-		repositoryViewer.setContentProvider(ArrayContentProvider.getInstance());
-		repositoryViewer.setSorter(new ViewerSorter());
-		repositoryViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
-		repositoryViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				if (repositoryViewer.getSelection() instanceof IStructuredSelection) {
-					Object selected = ((IStructuredSelection) repositoryViewer.getSelection()).getFirstElement();
-					if (cachedRepositories.contains(selected)) {
-						selectedRepository = ((Repository) selected).getName();
-					}
-				}
-				validatePage();
-			}
-		});
-		GridDataFactory.fillDefaults()
-				.align(SWT.BEGINNING, SWT.BEGINNING)
-				.grab(true, false)
-				.hint(100, SWT.DEFAULT)
-				.applyTo(repositoryViewer.getCombo());
-
 		Button updateData = new Button(composite, SWT.PUSH);
 		updateData.setText("Update Repository Data");
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
@@ -289,6 +248,11 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		boolean allFine = true;
 		String errorMessage = null;
 
+		if (getSelectedTeamResourceConnector() == null) {
+			errorMessage = "Please select SCM provider";
+			allFine = false;
+		}
+
 		/*FIXME: if (patchText.getText().length() < 1) {
 			errorMessage = "In order to create a review from a patch,"
 					+ " copy the patch to the clipboard before opening this Wizard.";
@@ -296,66 +260,22 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		} else if (selectedRepository == null) {
 			errorMessage = "Choose a repository on Crucible this patch relates to.";
 			allFine = false;
-		}
-		if (includePatch) {
-			setPageComplete(allFine);
+		}*/
+
+		if (!allFine) {
+			setPageComplete(false);
 			if (errorMessage != null) {
 				setErrorMessage(errorMessage);
 			}
 		} else {
 			setPageComplete(true);
-		}*/
+		}
 
 		getContainer().updateButtons();
 	}
 
-	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		if (visible) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
-						wizard.updateCache(WorkspacePatchSelectionPage.this);
-					}
-					if (cachedRepositories == null) {
-						cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
-					}
-					repositoryViewer.setInput(cachedRepositories);
-					validatePage();
-				}
-			});
-		} else {
-			setErrorMessage(null);
-			setPageComplete(true);
-			getContainer().updateButtons();
-		}
+	public ITeamResourceConnector getSelectedTeamResourceConnector() {
+		return selectedTeamConnector;
 	}
 
-	public String getSelectedRepository() {
-		return selectedRepository;
-	}
-
-	public boolean hasPatch() {
-		return realSelection != null && realSelection.length > 0;
-	}
-
-	public String getPatch() {
-		try {
-			IGenerateDiffOperation runnable = selectedTeamConnector.getGenerateDiffOperationInstance(getSelection(),
-					true, false, true);
-			getContainer().run(false, false, runnable);
-
-			if (runnable.getStatus().isOK()) {
-				return runnable.getPatch();
-			}
-		} catch (CoreException e) {
-			StatusHandler.log(e.getStatus());
-		} catch (InvocationTargetException e) {
-			// FIXME: ignoring exception
-		} catch (InterruptedException e) {
-			// FIXME: ignoring exception
-		}
-		return "";
-	}
 }

@@ -25,12 +25,14 @@ import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -56,6 +58,7 @@ import org.eclipse.ui.IWorkbench;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -148,6 +151,35 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 	}
 
+	private class AddItemsToReviewJob extends CrucibleReviewChangeJob {
+		private final Collection<UploadItem> items;
+
+		public AddItemsToReviewJob(String name, TaskRepository taskRepository, Collection<UploadItem> items) {
+			super(name, taskRepository);
+			this.items = items;
+		}
+
+		@Override
+		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+			Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+				@Override
+				public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+						throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+
+					return server.addItemsToReview(serverCfg, crucibleReview.getPermId(), items);
+				}
+			});
+
+			if (updatedReview != null) {
+				crucibleReview = updatedReview;
+			} else {
+				crucibleReview = client.getReview(getTaskRepository(),
+						CrucibleUtil.getTaskIdFromReview(crucibleReview), true, monitor);
+			}
+			return Status.OK_STATUS;
+		}
+	}
+
 	private CrucibleReviewDetailsPage detailsPage;
 
 	private Review crucibleReview;
@@ -168,17 +200,16 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private String previousPatchRepository;
 
-	private String previousWorkspacePatch;
-
-	private String previousWorkspacePatchRepository;
-
 	private final List<IResource> roots = new ArrayList<IResource>();
+
+	private IResource[] previousWorkspaceSelection;
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
 		setWindowTitle("New Crucible Review");
 		setNeedsProgressMonitor(true);
 		this.types = types;
+		this.roots.addAll(Arrays.asList((IResource[]) ResourcesPlugin.getWorkspace().getRoot().getProjects()));
 	}
 
 	public ReviewWizard(Review review, Set<Type> types) {
@@ -266,19 +297,22 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		if (addWorkspacePatchPage != null) {
-			String patchToAdd = addWorkspacePatchPage.hasPatch() ? addWorkspacePatchPage.getPatch() : null;
-			String patchRepositoryToAdd = addWorkspacePatchPage.hasPatch() ? addWorkspacePatchPage.getSelectedRepository()
-					: null;
+			IResource[] selection = addWorkspacePatchPage.getSelection();
 
-			if (patchToAdd != null && patchRepositoryToAdd != null && !patchToAdd.equals(previousWorkspacePatch)
-					&& !patchRepositoryToAdd.equals(previousWorkspacePatchRepository)) {
-				final CrucibleReviewChangeJob job = new AddPatchToReviewJob("Add patch to review", getTaskRepository(),
-						patchToAdd, patchRepositoryToAdd);
+			if (selection != null && selection.length > 0 && Arrays.equals(selection, previousWorkspaceSelection)
+					&& addWorkspacePatchPage.getSelectedTeamResourceConnector() != null) {
+				try {
+					CrucibleReviewChangeJob job = new AddItemsToReviewJob("Add patch to review", getTaskRepository(),
+							addWorkspacePatchPage.getSelectedTeamResourceConnector().getUploadItemsForResources(
+									selection));
 
-				runJobInContainer(job);
-				if (job.getStatus().isOK()) {
-					previousWorkspacePatch = patchToAdd;
-					previousWorkspacePatchRepository = patchRepositoryToAdd;
+					runJobInContainer(job);
+					if (job.getStatus().isOK()) {
+						previousWorkspaceSelection = selection;
+					}
+
+				} catch (CoreException e) {
+					creationProcessStatus.add(e.getStatus());
 				}
 			}
 		}

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.ui.team;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
@@ -19,5 +20,7 @@ public interface IGenerateDiffOperation extends IRunnableWithProgress {
 	IStatus getStatus();
 
 	String getPatch();
+
+	void setSelectedResources(IResource[] selectedResources);
 
 }

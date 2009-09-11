@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.team.core.RepositoryProvider;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
 import org.tigris.subversion.svnclientadapter.ISVNClientAdapter;
@@ -44,7 +43,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -79,26 +77,6 @@ public class GenerateDiffOperation implements IGenerateDiffOperation {
 		this.recursive = recursive;
 	}
 
-	/**
-	 * Convenience method that maps the given resources to their providers. The returned Hashtable has keys which are
-	 * ITeamProviders, and values which are Lists of IResources that are shared with that provider.
-	 * 
-	 * @return a hashtable mapping providers to their resources
-	 */
-	protected Map<RepositoryProvider, List<IResource>> getProviderMapping(IResource[] resources) {
-		Hashtable<RepositoryProvider, List<IResource>> result = new Hashtable<RepositoryProvider, List<IResource>>();
-		for (IResource resource : resources) {
-			RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
-			List<IResource> list = result.get(provider);
-			if (list == null) {
-				list = new ArrayList<IResource>();
-				result.put(provider, list);
-			}
-			list.add(resource);
-		}
-		return result;
-	}
-
 	public String getPatch() {
 		return patchText;
 	}
@@ -123,7 +101,7 @@ public class GenerateDiffOperation implements IGenerateDiffOperation {
 			ISVNClientAdapter svnClient = svnResource.getRepository().getSVNClient();
 			try {
 				monitor.worked(100);
-				File[] files = getVersionedFiles();
+				File[] files = { getVersionedFiles()[1] };
 				if (selectedResources == null) {
 					svnClient.diff(files, tmpFile, recursive);
 				} else {

@@ -15,14 +15,15 @@ import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
+import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -541,13 +542,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return false;
 	}
 
-	public IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
-			boolean eclipseFormat, boolean projectRelative) throws CoreException {
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianUiPlugin.PLUGIN_ID,
-				"Not implemented yet for Team API."));
-	}
-
-	public IResource[] getRegisteredChilder(IFolder folder) throws CoreException {
-		return new IResource[0];
+	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources) throws CoreException {
+		return MiscUtil.buildArrayList();
 	}
 }

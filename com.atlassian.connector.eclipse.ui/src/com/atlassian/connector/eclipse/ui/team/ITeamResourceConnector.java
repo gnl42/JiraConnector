@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.ui.team;
 
+import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.resources.IFile;
@@ -148,7 +149,6 @@ public interface ITeamResourceConnector {
 	boolean checkForResourcesPresenceRecursive(@NotNull IResource[] roots, State filter);
 
 	@NotNull
-	IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
-			boolean eclipseFormat, boolean projectRelative) throws CoreException;
+	Collection<UploadItem> getUploadItemsForResources(@NotNull IResource[] resources) throws CoreException;
 
 }

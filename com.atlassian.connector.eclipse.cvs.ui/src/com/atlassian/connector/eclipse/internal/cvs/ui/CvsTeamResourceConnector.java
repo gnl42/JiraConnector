@@ -14,15 +14,14 @@ package com.atlassian.connector.eclipse.internal.cvs.ui;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.IGenerateDiffOperation;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
@@ -180,14 +179,8 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return false;
 	}
 
-	public IGenerateDiffOperation getGenerateDiffOperationInstance(IResource[] resources, boolean recursive,
-			boolean eclipseFormat, boolean projectRelative) throws CoreException {
-		throw new CoreException(new Status(IStatus.WARNING, AtlassianCvsUiPlugin.PLUGIN_ID,
-				"Not implemented yet for CVS."));
-	}
-
-	public IResource[] getRegisteredChilder(IFolder folder) throws CoreException {
-		return new IResource[0];
+	public Collection<UploadItem> getUploadItemsForResources(IResource[] resources) throws CoreException {
+		return MiscUtil.buildArrayList();
 	}
 
 }
