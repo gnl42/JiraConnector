@@ -18,13 +18,17 @@ import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraFieldType;
 import org.eclipse.mylyn.internal.jira.core.JiraTaskDataHandler;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
+import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPage;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.mylyn.tasks.ui.editors.AttributeEditorFactory;
+import org.eclipse.mylyn.tasks.ui.editors.LayoutHint;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditorPartDescriptor;
+import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.ColumnSpan;
+import org.eclipse.mylyn.tasks.ui.editors.LayoutHint.RowSpan;
 
 /**
  * @author Steffen Pingel
@@ -66,6 +70,12 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 					} else if (JiraFieldType.DATE.getKey().equals(metaType)) {
 						return new DateTimeAttributeEditor(getModel(), taskAttribute, false);
 					}
+				}
+				if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
+					CheckboxMultiSelectAttributeEditor attributeEditor = new CheckboxMultiSelectAttributeEditor(
+							getModel(), taskAttribute);
+					attributeEditor.setLayoutHint(new LayoutHint(RowSpan.SINGLE, ColumnSpan.SINGLE));
+					return attributeEditor;
 				}
 				return super.createEditor(type, taskAttribute);
 			}
