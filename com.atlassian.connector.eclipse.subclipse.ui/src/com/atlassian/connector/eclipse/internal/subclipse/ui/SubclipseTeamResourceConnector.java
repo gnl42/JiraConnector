@@ -566,7 +566,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				items.add(new UploadItem(url, "", getResourceContent((IFile) resource), revision));
 			} else if (status.isDeleted()) {
 				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
-						"", revision));
+						"[--item deleted--]", revision));
 			} else if (status.isDirty()) {
 				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
 						getResourceContent((IFile) resource), revision));
