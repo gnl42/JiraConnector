@@ -648,16 +648,22 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			String revision = Long.toString(localResource.getRevision());
 			String url = repositoryResource.getUrl();
 
+			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(localResource) || IStateFilter.SF_ADDED.accept(localResource)) {
-				items.add(new UploadItem(url, "", getResourceContent(((IFile) resource).getContents()), revision));
+				String newContent = getResourceContent(((IFile) resource).getContents());
+				if (!newContent.isEmpty()) {
+					items.add(new UploadItem(url, "", newContent, revision));
+				}
 			} else if (IStateFilter.SF_DELETED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
-				items.add(new UploadItem(url, getResourceContent(getContent.getContent()), "", revision));
+				items.add(new UploadItem(url, getResourceContent(getContent.getContent()), "[--item deleted--]",
+						revision));
 			} else if (IStateFilter.SF_MODIFIED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
+				String newContent = getResourceContent(((IFile) resource).getContents());
 				items.add(new UploadItem(url, getResourceContent(getContent.getContent()),
-						getResourceContent(((IFile) resource).getContents()), revision));
+						newContent.isEmpty() ? "[--item is empty--]" : newContent, revision));
 			}
 		}
 		return items;
