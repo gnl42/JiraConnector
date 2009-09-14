@@ -523,8 +523,10 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			return IStateFilter.SF_UNVERSIONED;
 		case SF_IGNORED:
 			return IStateFilter.SF_IGNORED;
+		case SF_ALL:
+			return IStateFilter.SF_ALL;
 		default:
-			return IStateFilter.SF_ALL; // accept everything
+			throw new IllegalStateException("Unhandled IStateFilter");
 		}
 	}
 
