@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor;
 
+import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
@@ -20,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.sync.SynchronizationJob;
@@ -32,9 +32,7 @@ import java.util.Collections;
  * 
  * @author Shawn Minto
  */
-public abstract class CrucibleReviewChangeJob extends Job {
-
-	private IStatus status;
+public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 
 	private final TaskRepository taskRepository;
 
@@ -78,13 +76,4 @@ public abstract class CrucibleReviewChangeJob extends Job {
 	}
 
 	protected abstract IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException;
-
-	public IStatus getStatus() {
-		return status;
-	}
-
-	protected void setStatus(IStatus status) {
-		this.status = status;
-	}
-
 }

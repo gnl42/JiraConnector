@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
+import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
@@ -37,7 +38,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -298,22 +298,36 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		if (addWorkspacePatchPage != null) {
-			IResource[] selection = addWorkspacePatchPage.getSelection();
+			final IResource[] selection = addWorkspacePatchPage.getSelection();
 
 			if (selection != null && selection.length > 0 && !Arrays.equals(selection, previousWorkspaceSelection)
 					&& addWorkspacePatchPage.getSelectedTeamResourceConnector() != null) {
-				try {
+				final Collection<UploadItem> uploadItems = new ArrayList<UploadItem>();
+
+				JobWithStatus getItemsJob = new JobWithStatus("Prepare upload items for review") {
+					@Override
+					public IStatus run(IProgressMonitor monitor) {
+						try {
+							uploadItems.addAll(addWorkspacePatchPage.getSelectedTeamResourceConnector()
+									.getUploadItemsForResources(selection, monitor));
+						} catch (CoreException e) {
+							setStatus(e.getStatus());
+							creationProcessStatus.add(e.getStatus());
+						}
+						return Status.OK_STATUS;
+					}
+				};
+
+				runJobInContainer(getItemsJob);
+
+				if (getItemsJob.getStatus().isOK()) {
 					CrucibleReviewChangeJob job = new AddItemsToReviewJob("Add patch to review", getTaskRepository(),
-							addWorkspacePatchPage.getSelectedTeamResourceConnector().getUploadItemsForResources(
-									selection, new NullProgressMonitor()));
+							uploadItems);
 
 					runJobInContainer(job);
 					if (job.getStatus().isOK()) {
 						previousWorkspaceSelection = selection;
 					}
-
-				} catch (CoreException e) {
-					creationProcessStatus.add(e.getStatus());
 				}
 			}
 		}
@@ -445,7 +459,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 	}
 
-	private void runJobInContainer(final CrucibleReviewChangeJob job) {
+	private void runJobInContainer(final JobWithStatus job) {
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				job.run(monitor);
