@@ -18,4 +18,6 @@ public final class CrucibleUIConstants {
 
 	public static final String PREFERENCE_ACTIVATE_REVIEW = "prefs_activate_review";
 
+	public static final String PREFERRED_TEAM_RESOURCE_CONNECTOR_NAME = "preferred_team_resource_connector_name";
+
 }
