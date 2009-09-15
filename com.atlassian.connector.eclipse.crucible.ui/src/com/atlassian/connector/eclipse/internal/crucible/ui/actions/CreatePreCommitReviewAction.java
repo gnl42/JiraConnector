@@ -26,6 +26,7 @@ import org.eclipse.team.internal.ui.actions.TeamAction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Action for creating a review from a revision
@@ -40,16 +41,27 @@ public class CreatePreCommitReviewAction extends TeamAction {
 
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
-		WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new RepositorySelectionWizard(
-				new SelectRepositoryPage(SelectCrucibleRepositoryPage.CRUCIBLE_REPOSITORY_FILTER) {
-					@Override
-					protected IWizard createWizard(TaskRepository taskRepository) {
-						ReviewWizard wizard = new ReviewWizard(taskRepository,
-								MiscUtil.buildHashSet(ReviewWizard.Type.ADD_WORKSPACE_PATCH));
-						wizard.setRoots(Arrays.asList(getSelectedResources()));
-						return wizard;
-					}
-				}));
+		SelectRepositoryPage selectRepositoryPage = new SelectRepositoryPage(
+				SelectCrucibleRepositoryPage.CRUCIBLE_REPOSITORY_FILTER) {
+			@Override
+			protected IWizard createWizard(TaskRepository taskRepository) {
+				ReviewWizard wizard = new ReviewWizard(taskRepository,
+						MiscUtil.buildHashSet(ReviewWizard.Type.ADD_WORKSPACE_PATCH));
+				wizard.setRoots(Arrays.asList(getSelectedResources()));
+				return wizard;
+			}
+		};
+
+		List<TaskRepository> taskRepositories = selectRepositoryPage.getTaskRepositories();
+		WizardDialog wd = null;
+		if (taskRepositories.size() != 1) {
+			wd = new WizardDialog(WorkbenchUtil.getShell(), new RepositorySelectionWizard(selectRepositoryPage));
+		} else {
+			ReviewWizard reviewWizard = new ReviewWizard(taskRepositories.get(0),
+					MiscUtil.buildHashSet(ReviewWizard.Type.ADD_WORKSPACE_PATCH));
+			reviewWizard.setRoots(Arrays.asList(getSelectedResources()));
+			wd = new WizardDialog(WorkbenchUtil.getShell(), reviewWizard);
+		}
 		wd.setBlockOnOpen(true);
 		wd.open();
 	}

@@ -310,7 +310,9 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 			setPageComplete(true);
 		}
 
-		getContainer().updateButtons();
+		if (getContainer().getCurrentPage() != null) {
+			getContainer().updateButtons();
+		}
 	}
 
 	public ITeamResourceConnector getSelectedTeamResourceConnector() {
