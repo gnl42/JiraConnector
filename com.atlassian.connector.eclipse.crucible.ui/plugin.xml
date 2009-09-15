@@ -90,8 +90,8 @@
 			objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
 			adaptable="true"
 			id="com.atlassian.connector.eclipse.crucible.ui.ResourceContributions">
-
-			<action label="Create pre-commit review" tooltip="Create pre-commit review in Crucible"
+			
+			<action label="Create Pre-commit Review" tooltip="Create Pre-commit Review in Crucible"
 				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePreCommitReviewAction"
 				menubarPath="team.main/group10"
 				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePreCommitReviewObjectAction">
