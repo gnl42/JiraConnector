@@ -42,7 +42,7 @@ public class CreatePreCommitReviewAction extends TeamAction {
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		SelectRepositoryPage selectRepositoryPage = new SelectRepositoryPage(
-				SelectCrucibleRepositoryPage.CRUCIBLE_REPOSITORY_FILTER) {
+				SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER) {
 			@Override
 			protected IWizard createWizard(TaskRepository taskRepository) {
 				ReviewWizard wizard = new ReviewWizard(taskRepository,

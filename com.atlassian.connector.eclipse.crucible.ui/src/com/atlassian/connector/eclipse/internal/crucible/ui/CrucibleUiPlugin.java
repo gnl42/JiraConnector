@@ -24,6 +24,7 @@ import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -80,7 +81,7 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		editorLinkWithReviewSelectionListener = new EditorLinkWithReviewSelectionListener();
 		MonitorUi.addWindowPostSelectionListener(editorLinkWithReviewSelectionListener);
 
-		plugin.getPreferenceStore().setDefault(CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW,
+		plugin.getPreferenceStore().setDefault(CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW,
 				MessageDialogWithToggle.PROMPT);
 
 		// PLE-516 we want to make sure that we init CrucibleEditorTracker only when this bundle is really started
@@ -153,11 +154,21 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	}
 
 	public static void setActivateReviewPreference(String activationType) {
-		plugin.getPreferenceStore().setValue(CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW, activationType);
+		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW, activationType);
 		plugin.savePluginPreferences();
 	}
 
 	public static String getActivateReviewPreference() {
-		return plugin.getPreferenceStore().getString(CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW);
+		return plugin.getPreferenceStore().getString(CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW);
+	}
+
+	public void setPreferredTeamResourceConnectorName(@Nullable String name) {
+		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREFERRED_TEAM_RESOURCE_CONNECTOR_NAME, name);
+		plugin.savePluginPreferences();
+	}
+
+	@Nullable
+	public String getPreferredTeamResourceConnectorName() {
+		return plugin.getPreferenceStore().getString(CrucibleUiConstants.PREFERRED_TEAM_RESOURCE_CONNECTOR_NAME);
 	}
 }

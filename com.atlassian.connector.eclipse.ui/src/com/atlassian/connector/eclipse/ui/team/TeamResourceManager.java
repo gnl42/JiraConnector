@@ -11,6 +11,11 @@
 
 package com.atlassian.connector.eclipse.ui.team;
 
+import com.atlassian.theplugin.commons.util.MiscUtil;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Set;
 
 /**
@@ -20,14 +25,33 @@ import java.util.Set;
  */
 public class TeamResourceManager {
 
-	private final Set<ITeamResourceConnector> teamConnectors;
+	private final Set<ITeamResourceConnector> teamConnectors = MiscUtil.buildHashSet();
 
 	public TeamResourceManager() {
-		teamConnectors = TeamResourceConnectorExtensionReader.getTeamConnectors();
+		teamConnectors.addAll(TeamResourceConnectorExtensionReader.getTeamConnectors());
 	}
 
+	@NotNull
 	public Set<ITeamResourceConnector> getTeamConnectors() {
 		return teamConnectors;
 	}
 
+	/**
+	 * 
+	 * @param name
+	 *            name you're looking for, to make easier using this method we also accept nulls
+	 * @return
+	 */
+	@Nullable
+	public ITeamResourceConnector getTeamConnectorByName(@Nullable String name) {
+		if (name != null) {
+			Set<ITeamResourceConnector> connectors = getTeamConnectors();
+			for (ITeamResourceConnector connector : connectors) {
+				if (connector.getName().equals(name)) {
+					return connector;
+				}
+			}
+		}
+		return null;
+	}
 }

@@ -34,6 +34,16 @@ public class SelectCrucibleRepositoryPage extends SelectRepositoryPage {
 
 	private final SortedSet<ICustomChangesetLogEntry> logEntries;
 
+	public static final ITaskRepositoryFilter ENABLED_CRUCIBLE_REPOSITORY_FILTER = new ITaskRepositoryFilter() {
+		public boolean accept(TaskRepository repository, AbstractRepositoryConnector connector) {
+			if (CrucibleCorePlugin.getRepositoryConnector().getConnectorKind().equals(connector.getConnectorKind())
+					&& !repository.isOffline()) {
+				return true;
+			}
+			return false;
+		}
+	};
+
 	public static final ITaskRepositoryFilter CRUCIBLE_REPOSITORY_FILTER = new ITaskRepositoryFilter() {
 		public boolean accept(TaskRepository repository, AbstractRepositoryConnector connector) {
 			if (CrucibleCorePlugin.getRepositoryConnector().getConnectorKind().equals(connector.getConnectorKind())) {

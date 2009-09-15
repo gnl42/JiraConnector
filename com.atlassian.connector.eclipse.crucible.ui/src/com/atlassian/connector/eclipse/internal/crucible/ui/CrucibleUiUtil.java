@@ -220,7 +220,7 @@ public final class CrucibleUiUtil {
 						"Review comments will only be visible in editors if the corresponding review is active."
 								+ "\n\nWould you like to activate this review?", "Remember my decision", false,
 						CrucibleUiPlugin.getDefault().getPreferenceStore(),
-						CrucibleUIConstants.PREFERENCE_ACTIVATE_REVIEW);
+						CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW);
 
 				activate = m.getReturnCode() == IDialogConstants.YES_ID || m.getReturnCode() == IDialogConstants.OK_ID;
 			}

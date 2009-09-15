@@ -21,6 +21,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 
@@ -95,6 +96,8 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		this.wizard = wizard;
 		this.roots.addAll(roots);
 		this.teamConnectors = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectors();
+		this.selectedTeamConnector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectorByName(
+				CrucibleUiPlugin.getDefault().getPreferredTeamResourceConnectorName());
 	}
 
 	public IResource[] getSelection() {
@@ -137,6 +140,11 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 				}
 
 				selectedTeamConnector = (ITeamResourceConnector) selection.getFirstElement();
+				if (selectedTeamConnector == null) {
+					return;
+				}
+
+				CrucibleUiPlugin.getDefault().setPreferredTeamResourceConnectorName(selectedTeamConnector.getName());
 
 				changeViewer.resetFilters();
 				changeViewer.addFilter(new ViewerFilter() {
@@ -259,7 +267,8 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 		// update selection after all wiring has been done
 		scmViewer.setInput(teamConnectors);
-		scmViewer.setSelection(new StructuredSelection(scmViewer.getElementAt(0)));
+		scmViewer.setSelection(new StructuredSelection(selectedTeamConnector != null ? selectedTeamConnector
+				: scmViewer.getElementAt(0)));
 	}
 
 	void setAllChecked(boolean state) {
@@ -291,15 +300,6 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 			errorMessage = "Please select SCM provider";
 			allFine = false;
 		}
-
-		/*FIXME: if (patchText.getText().length() < 1) {
-			errorMessage = "In order to create a review from a patch,"
-					+ " copy the patch to the clipboard before opening this Wizard.";
-			allFine = false;
-		} else if (selectedRepository == null) {
-			errorMessage = "Choose a repository on Crucible this patch relates to.";
-			allFine = false;
-		}*/
 
 		if (!allFine) {
 			setPageComplete(false);

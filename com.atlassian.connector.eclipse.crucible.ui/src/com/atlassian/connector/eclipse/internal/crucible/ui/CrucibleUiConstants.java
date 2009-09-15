@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-public final class CrucibleUIConstants {
+public final class CrucibleUiConstants {
 
-	private CrucibleUIConstants() {
+	private CrucibleUiConstants() {
 	}
 
 	public static final String PREFERENCE_ACTIVATE_REVIEW = "prefs_activate_review";
