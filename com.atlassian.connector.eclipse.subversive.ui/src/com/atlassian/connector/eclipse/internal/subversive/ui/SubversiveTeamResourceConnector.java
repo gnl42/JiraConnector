@@ -596,7 +596,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		return "Subversive";
 	}
 
-	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
+	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {
 		return FileUtility.checkForResourcesPresenceRecursive(roots, getStateFilter(filter));
 	}
 
@@ -667,5 +667,10 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			}
 		}
 		return items;
+	}
+
+	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
+		IResource[] result = FileUtility.getResourcesRecursive(roots, getStateFilter(filter));
+		return result == null ? new ArrayList<IResource>() : MiscUtil.buildArrayList(result);
 	}
 }
