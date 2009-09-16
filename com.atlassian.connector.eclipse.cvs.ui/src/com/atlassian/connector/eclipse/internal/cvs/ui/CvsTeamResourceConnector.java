@@ -175,7 +175,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return "CVS (FishEye only)";
 	}
 
-	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
+	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {
 		// ignore
 		return false;
 	}
@@ -188,6 +188,10 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	@NotNull
 	public IResource[] getMembersForContainer(@NotNull IContainer element) throws CoreException {
 		return new IResource[0];
+	}
+
+	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
+		return MiscUtil.buildArrayList();
 	}
 
 }

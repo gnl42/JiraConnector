@@ -13,25 +13,36 @@ package com.atlassian.connector.eclipse.internal.core.jobs;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class JobWithStatus extends Job {
 
-	private IStatus status;
+	private IStatus status = Status.OK_STATUS;
 
 	public JobWithStatus(String name) {
 		super(name);
 	}
 
-	protected void setStatus(IStatus status) {
+	protected void setStatus(@NotNull IStatus status) {
 		this.status = status;
 	}
 
+	/**
+	 * @return if run did not set status it will return {@link Status#OK_STATUS} just to make using this method easier
+	 */
+	@NotNull
 	public IStatus getStatus() {
 		return status;
 	}
 
 	@Override
-	public abstract IStatus run(IProgressMonitor monitor);
+	@NotNull
+	public IStatus run(IProgressMonitor monitor) {
+		runImpl(monitor);
+		return Status.OK_STATUS;
+	}
 
+	protected abstract void runImpl(IProgressMonitor monitor);
 }

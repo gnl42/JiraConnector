@@ -314,7 +314,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 				JobWithStatus getItemsJob = new JobWithStatus("Prepare upload items for review") {
 					@Override
-					public IStatus run(IProgressMonitor monitor) {
+					public void runImpl(IProgressMonitor monitor) {
 						try {
 							uploadItems.addAll(addWorkspacePatchPage.getSelectedTeamResourceConnector()
 									.getUploadItemsForResources(selection, monitor));
@@ -322,13 +322,12 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 							setStatus(e.getStatus());
 							creationProcessStatus.add(e.getStatus());
 						}
-						return Status.OK_STATUS;
 					}
 				};
 
 				runJobInContainer(getItemsJob);
 
-				if (getItemsJob.getStatus().isOK()) {
+				if (getItemsJob.getStatus().isOK() && uploadItems.size() > 0) {
 					CrucibleReviewChangeJob job = new AddItemsToReviewJob("Add patch to review", getTaskRepository(),
 							uploadItems);
 
@@ -336,6 +335,9 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					if (job.getStatus().isOK()) {
 						previousWorkspaceSelection = selection;
 					}
+				} else {
+					creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"Can't create a patch, did you select modified files?"));
 				}
 			}
 		}

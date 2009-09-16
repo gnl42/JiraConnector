@@ -9,7 +9,8 @@ Eclipse-LazyStart: true
 Require-Bundle: com.atlassian.connector.commons,
  org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.commons.net,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.jetbrains.annotations;resolution:=optional
 Export-Package: com.atlassian.connector.eclipse.internal.core;
   x-friends:="com.atlassian.connector.eclipse.bamboo.core,
    com.atlassian.connector.eclipse.bamboo.ui,

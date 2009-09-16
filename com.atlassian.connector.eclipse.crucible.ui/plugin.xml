@@ -94,6 +94,7 @@
 			<action label="Create Pre-commit Review" tooltip="Create Pre-commit Review in Crucible"
 				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePreCommitReviewAction"
 				menubarPath="team.main/group10"
+				icon="icons/obj16/crucible.png"
 				id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePreCommitReviewObjectAction">
 			</action>
 		</objectContribution>

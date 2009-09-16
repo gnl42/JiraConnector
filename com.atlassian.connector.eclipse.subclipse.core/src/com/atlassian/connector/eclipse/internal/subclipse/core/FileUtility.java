@@ -14,6 +14,8 @@ package com.atlassian.connector.eclipse.internal.subclipse.core;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -28,6 +30,8 @@ import org.tigris.subversion.subclipse.core.ISVNResource;
 import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
+
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 /**
  * Common file processing functions
@@ -49,7 +53,33 @@ public final class FileUtility {
     	return resource.isDerived() || resource.isTeamPrivateMember() || FileUtility.isLinked(resource); 
     }
     
-    
+    public static List<IResource> getResourcesByFilterRecursive(IResource []roots, IStateFilter filter) {
+    	final List<IResource> result = MiscUtil.buildArrayList();
+    	
+		// first check all resources that are already accessible (performance optimizations)
+		for (int i = 0; i < roots.length; i++) {
+			//don't check ignored resources
+			if (FileUtility.isIgnored(roots[i])) {//FileUtility.isSVNInternals(roots[i])
+				continue;
+			}
+			
+			ISVNLocalResource local = SVNWorkspaceRoot.getSVNResourceFor(roots[i]);
+			try {
+				if (filter.accept(local)) {
+					result.add(roots[i]);
+				}
+				
+				if (roots[i] instanceof IContainer && filter.allowsRecursion(local)) {
+					result.addAll(getResourcesByFilterRecursive(getAllMembers((IContainer) roots[i]), filter));
+				}
+			} catch (SVNException e) {
+				StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Failed to check resource", e));
+			}
+		}
+		
+		return result;
+	}
+	    
 	public static boolean checkForResourcesPresenceRecursive(IResource []roots, IStateFilter filter) {
 		return FileUtility.checkForResourcesPresence(roots, filter, IResource.DEPTH_INFINITE);
 	}

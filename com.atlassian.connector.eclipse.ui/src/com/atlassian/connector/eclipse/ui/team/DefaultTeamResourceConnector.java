@@ -57,6 +57,7 @@ import org.osgi.framework.Bundle;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -538,7 +539,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return "Team API (partial support)";
 	}
 
-	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
+	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {
 		return false;
 	}
 
@@ -551,5 +552,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	@NotNull
 	public IResource[] getMembersForContainer(@NotNull IContainer element) throws CoreException {
 		return new IResource[0];
+	}
+
+	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
+		return MiscUtil.buildArrayList();
 	}
 }

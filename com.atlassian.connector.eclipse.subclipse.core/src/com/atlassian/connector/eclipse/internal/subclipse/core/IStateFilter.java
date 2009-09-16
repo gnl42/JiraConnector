@@ -105,7 +105,7 @@ public interface IStateFilter {
 	
 	public static final IStateFilter SF_UNVERSIONED = new AbstractStateFilter() {
 		protected boolean acceptImpl(ISVNLocalResource local, IResource resource, LocalResourceStatus state) {
-			return state.isUnversioned();
+			return state.isUnversioned() || (resource != null && !SVNWorkspaceRoot.isManagedBySubclipse(resource.getProject()));
 		}
 		protected boolean allowsRecursionImpl(ISVNLocalResource local, IResource resource, LocalResourceStatus state) {
 			return true;

@@ -505,7 +505,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		return "Subclipse";
 	}
 
-	public boolean checkForResourcesPresenceRecursive(IResource[] roots, State filter) {
+	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {
 		return FileUtility.checkForResourcesPresenceRecursive(roots, getStateFilter(filter));
 	}
 
@@ -577,5 +577,9 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	@NotNull
 	public IResource[] getMembersForContainer(@NotNull IContainer element) throws CoreException {
 		return FileUtility.getAllMembers(element);
+	}
+
+	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
+		return FileUtility.getResourcesByFilterRecursive(roots, getStateFilter(filter));
 	}
 }

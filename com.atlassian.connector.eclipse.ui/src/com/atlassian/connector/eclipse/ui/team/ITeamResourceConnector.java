@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
@@ -143,11 +144,22 @@ public interface ITeamResourceConnector {
 	String getName();
 
 	/**
+	 * Returns true if specified roots include recursively resources matching given filter
+	 * 
 	 * @param roots
 	 * @param filter
 	 * @return true if given roots (or their children) match given state
 	 */
-	boolean checkForResourcesPresenceRecursive(@NotNull IResource[] roots, State filter);
+	boolean haveMatchingResourcesRecursive(@NotNull IResource[] roots, State filter);
+
+	/**
+	 * Gets all resources matching filter (also their memebers, and members their memebers)
+	 * 
+	 * @param roots
+	 * @param filter
+	 * @return
+	 */
+	List<IResource> getResourcesByFilterRecursive(@NotNull IResource[] roots, State filter);
 
 	@NotNull
 	Collection<UploadItem> getUploadItemsForResources(@NotNull IResource[] resources, @NotNull IProgressMonitor monitor)

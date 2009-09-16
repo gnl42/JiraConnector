@@ -24,11 +24,11 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -36,6 +36,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -62,6 +63,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -146,26 +148,34 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 				CrucibleUiPlugin.getDefault().setPreferredTeamResourceConnectorName(selectedTeamConnector.getName());
 
-				changeViewer.resetFilters();
-				changeViewer.addFilter(new ViewerFilter() {
-					public boolean select(Viewer viewer, Object parentElement, Object element) {
-						if (element instanceof IResource && selectedTeamConnector != null) {
-							IResource resource = (IResource) element;
-							IPath resourcePath = resource.getFullPath();
-							for (IResource root : WorkspacePatchSelectionPage.this.roots) {
-								IPath rootPath = root.getFullPath();
-								if (rootPath.isPrefixOf(resourcePath) || resourcePath.isPrefixOf(rootPath)) {
-									if (selectedTeamConnector.checkForResourcesPresenceRecursive(
-											new IResource[] { resource }, ITeamResourceConnector.State.SF_ANY_CHANGE)) {
-										return true;
-									}
-								}
+				final List<IResource> modifiedResources = MiscUtil.buildArrayList();
 
+				IRunnableWithProgress getModifiedResources = new IRunnableWithProgress() {
+					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+						monitor.beginTask("Getting workspace changes", roots.size());
+						try {
+							for (IResource root : roots) {
+								modifiedResources.addAll(selectedTeamConnector.getResourcesByFilterRecursive(
+										new IResource[] { root }, ITeamResourceConnector.State.SF_ANY_CHANGE));
+								monitor.worked(1);
 							}
+						} finally {
+							monitor.done();
 						}
-						return false;
 					}
-				});
+				};
+
+				try {
+					getContainer().run(false, false, getModifiedResources);
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				changeViewer.setInput(modifiedResources.toArray(new IResource[modifiedResources.size()]));
 
 				changeViewer.expandAll();
 				changeViewer.setAllChecked(true);
@@ -181,22 +191,38 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		changeViewer = new CheckboxTreeViewer(composite, SWT.BORDER);
 		GridDataFactory.fillDefaults().span(2, 1).hint(SWT.DEFAULT, 220).grab(true, true).applyTo(
 				changeViewer.getControl());
-		changeViewer.setContentProvider(new WorkbenchContentProvider() {
-			public Object[] getChildren(Object element) {
-				if (element instanceof IContainer) {
-					try {
-						IResource[] children = selectedTeamConnector.getMembersForContainer((IContainer) element);
-						if (children != null && children.length != 0) {
-							return children;
-						}
-					} catch (Exception e) {
-						// do nothing
-					}
-				}
-				return super.getChildren(element);
+		changeViewer.addFilter(new ViewerFilter() {
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				return element instanceof IResource && ((IResource) element).getType() == IResource.FILE;
 			}
 		});
-		changeViewer.setLabelProvider(new WorkbenchLabelProvider());
+		changeViewer.setContentProvider(new WorkbenchContentProvider() {
+			public Object getParent(Object element) {
+				return ((IResource) element).getParent();
+			}
+
+			public boolean hasChildren(Object element) {
+				return false;
+			}
+
+			public Object[] getElements(Object inputElement) {
+				return getChildren(inputElement);
+			}
+
+			public Object[] getChildren(Object parentElement) {
+				if (parentElement instanceof IResource[]) {
+					return (Object[]) parentElement;
+				}
+				return new Object[0];
+			}
+		});
+		changeViewer.setLabelProvider(new WorkbenchLabelProvider() {
+			@Override
+			protected String decorateText(String input, Object element) {
+				return ((IResource) element).getFullPath().toString();
+			}
+		});
 		changeViewer.addCheckStateListener(new ICheckStateListener() {
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				if (event.getChecked()) {
@@ -243,7 +269,6 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 			}
 		});
 		changeViewer.setUseHashlookup(true);
-		changeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
 
 		MenuManager menuMgr = new MenuManager();
 		Menu menu = menuMgr.createContextMenu(changeViewer.getTree());
@@ -282,7 +307,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 			}
 		};
 		menuMgr.add(selectAllAction);
-		Action deselectAllAction = new Action("Deselect all") { //$NON-NLS-1$
+		Action deselectAllAction = new Action("Deselect all") {
 			public void run() {
 				setAllChecked(false);
 			}

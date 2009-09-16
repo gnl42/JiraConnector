@@ -49,12 +49,14 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 	}
 
 	@Override
-	public IStatus run(IProgressMonitor monitor) {
+	public void runImpl(IProgressMonitor monitor) {
 		setStatus(Status.CANCEL_STATUS);
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(taskRepository);
 		if (client == null) {
-			return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Unable to get client, please try to refresh");
+			setStatus(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Unable to get client, please try to refresh"));
+			return;
 		}
 		try {
 			IStatus result = execute(client, monitor);
@@ -72,7 +74,7 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 		} catch (CoreException e) {
 			setStatus(e.getStatus());
 		}
-		return Status.OK_STATUS;
+		setStatus(Status.OK_STATUS);
 	}
 
 	protected abstract IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException;
