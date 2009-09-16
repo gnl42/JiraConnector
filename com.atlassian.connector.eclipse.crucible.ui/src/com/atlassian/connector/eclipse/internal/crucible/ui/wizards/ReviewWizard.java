@@ -267,6 +267,14 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
+
+		// save project selection
+		CrucibleRepositoryConnector.updateLastSelectedProject(getTaskRepository(), detailsPage.getSelectedProject());
+
+		// save checkbox selections
+		CrucibleRepositoryConnector.updateAllowAnyoneOption(getTaskRepository(), detailsPage.isAllowAnyoneToJoin());
+		CrucibleRepositoryConnector.updateStartReviewOption(getTaskRepository(), detailsPage.isStartReviewImmediately());
+
 		creationProcessStatus = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.OK,
 				"Error during review creation. See error log for details.", null);
 
@@ -344,7 +352,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		try {
-			if (crucibleReview != null && detailsPage != null && detailsPage.startImmediately()
+			if (crucibleReview != null && detailsPage != null && detailsPage.isStartReviewImmediately()
 					&& crucibleReview.getActions().contains(CrucibleAction.SUBMIT)) {
 				startReview();
 			}

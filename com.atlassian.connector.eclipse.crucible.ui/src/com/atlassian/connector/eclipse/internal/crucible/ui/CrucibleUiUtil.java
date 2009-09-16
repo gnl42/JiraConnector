@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
+import com.atlassian.connector.eclipse.crucible.ui.preferences.ActivateReview;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
@@ -209,10 +210,10 @@ public final class CrucibleUiUtil {
 		if (activeReview == null || !activeReview.getPermId().equals(review.getPermId())) {
 			//review activation
 			boolean activate = false;
-			String pref = CrucibleUiPlugin.getActivateReviewPreference();
-			if (pref.equals(MessageDialogWithToggle.ALWAYS)) {
+			ActivateReview pref = CrucibleUiPlugin.getActivateReviewPreference();
+			if (pref.equals(ActivateReview.ALWAYS)) {
 				activate = true;
-			} else if (pref.equals(MessageDialogWithToggle.NEVER)) {
+			} else if (pref.equals(ActivateReview.NEVER)) {
 				activate = false;
 			} else {
 				// Ask the user whether to switch

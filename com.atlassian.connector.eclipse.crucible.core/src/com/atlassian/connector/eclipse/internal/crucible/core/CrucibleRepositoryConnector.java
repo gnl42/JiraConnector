@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -46,6 +47,12 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String IS_FISHEYE_PROP = "isFishEye";
 
+	private static final String DEFAULT_PROJECT = "defaultProject";
+
+	private static final String ALLOW_ANYONE_TO_JOIN = "allowAnyoneToJoin";
+
+	private static final String START_REVIEW = "startReview";
+
 	private CrucibleClientManager clientManager;
 
 	private File repositoryConfigurationCacheFile;
@@ -57,6 +64,54 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 	public static boolean isFishEye(TaskRepository taskRepository) {
 		final String prop = taskRepository.getProperty(IS_FISHEYE_PROP);
 		return prop != null && Boolean.valueOf(prop);
+	}
+
+	public static boolean getAllowAnyoneOption(TaskRepository repository) {
+		final String prop = repository.getProperty(ALLOW_ANYONE_TO_JOIN);
+		return prop != null && Boolean.valueOf(prop);
+	}
+
+	public static void updateAllowAnyoneOption(TaskRepository taskRepository, boolean allowAnyone) {
+		taskRepository.setProperty(ALLOW_ANYONE_TO_JOIN, String.valueOf(allowAnyone));
+	}
+
+	public static boolean getStartReviewOption(TaskRepository repository) {
+		final String prop = repository.getProperty(START_REVIEW);
+		return prop != null && Boolean.valueOf(prop);
+	}
+
+	public static void updateStartReviewOption(TaskRepository taskRepository, boolean startReview) {
+		taskRepository.setProperty(START_REVIEW, String.valueOf(startReview));
+	}
+
+	/**
+	 * 
+	 * @param repository
+	 * @param crucibleProject
+	 */
+	public static void updateLastSelectedProject(TaskRepository repository, CrucibleProject crucibleProject) {
+		repository.setProperty(DEFAULT_PROJECT, crucibleProject.getId());
+	}
+
+	/**
+	 * Takes project ID from the storage and looks for Crucible project with that project ID in the provided collection
+	 * 
+	 * @param repository
+	 * @param projects
+	 *            collection of projects
+	 * @return Crucible project or null
+	 */
+	public static CrucibleProject getLastSelectedProject(TaskRepository repository, Set<CrucibleProject> projects) {
+
+		String projectId = repository.getProperty(DEFAULT_PROJECT);
+
+		for (CrucibleProject project : projects) {
+			if (project.getId().equals(projectId)) {
+				return project;
+			}
+		}
+
+		return null;
 	}
 
 	public CrucibleRepositoryConnector() {
@@ -231,4 +286,5 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		};
 	}
+
 }

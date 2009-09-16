@@ -30,3 +30,7 @@ Export-Package: com.atlassian.connector.eclipse.fisheye.ui,
  com.atlassian.connector.eclipse.internal.fisheye.ui.action;x-internal:=true,
  com.atlassian.connector.eclipse.internal.fisheye.ui.command;x-internal:=true,
  com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs;x-internal:=true
+Import-Package: org.eclipse.mylyn.internal.provisional.commons.ui,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.tasks.ui,
+ org.eclipse.mylyn.tasks.ui.wizards

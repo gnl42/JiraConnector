@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsLabelProvider;
@@ -112,15 +113,29 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	}
 
 	private void preselectDefaultUsers() {
+
+		// restore project selection
 		Set<CrucibleProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
 		projectsComboViewer.setInput(cachedProjects);
 		if (cachedProjects.size() > 0) {
 			if (newReview.getCrucibleProject() == null) {
-				projectsComboViewer.setSelection(new StructuredSelection(projectsComboViewer.getElementAt(0)));
+				// select default project
+				CrucibleProject defaultProject = CrucibleRepositoryConnector.getLastSelectedProject(repository,
+						cachedProjects);
+				if (defaultProject != null) {
+					projectsComboViewer.setSelection(new StructuredSelection(defaultProject));
+				} else {
+					projectsComboViewer.setSelection(new StructuredSelection(projectsComboViewer.getElementAt(0)));
+				}
 			} else {
 				projectsComboViewer.setSelection(new StructuredSelection(newReview.getCrucibleProject()));
 			}
 		}
+
+		// restore checkboxes selection
+		anyoneCanJoin.setSelection(CrucibleRepositoryConnector.getAllowAnyoneOption(repository));
+		startReview.setSelection(CrucibleRepositoryConnector.getStartReviewOption(repository));
+
 		Set<User> cachedUsers = CrucibleUiUtil.getCachedUsers(repository);
 		moderatorComboViewer.setInput(cachedUsers);
 		authorComboViewer.setInput(cachedUsers);
@@ -338,8 +353,20 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		return reviewersSelectionTreePart.getSelectedReviewers();
 	}
 
-	public boolean startImmediately() {
+	public boolean isStartReviewImmediately() {
 		return startReview.getSelection();
+	}
+
+	public CrucibleProject getSelectedProject() {
+		Object firstElement = ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
+		if (firstElement != null) {
+			return (CrucibleProject) firstElement;
+		}
+		return null;
+	}
+
+	public boolean isAllowAnyoneToJoin() {
+		return anyoneCanJoin.getSelection();
 	}
 
 }

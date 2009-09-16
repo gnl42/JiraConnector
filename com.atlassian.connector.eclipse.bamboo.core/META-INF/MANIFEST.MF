@@ -16,3 +16,7 @@ Export-Package: com.atlassian.connector.eclipse.internal.bamboo.core;x-friends:=
  com.atlassian.connector.eclipse.internal.bamboo.core.client;x-friends:="com.atlassian.connector.eclipse.bamboo.tests,com.atlassian.connector.eclipse.bamboo.ui"
 Bundle-Vendor: Atlassian
 Eclipse-RegisterBuddy: com.atlassian.connector.eclipse.core
+Import-Package: org.eclipse.mylyn.commons.core,
+ org.eclipse.mylyn.tasks.core,
+ org.eclipse.mylyn.tasks.core.data,
+ org.eclipse.mylyn.tasks.core.sync
