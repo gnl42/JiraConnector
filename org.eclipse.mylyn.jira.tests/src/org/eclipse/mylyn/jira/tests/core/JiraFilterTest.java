@@ -83,8 +83,13 @@ public class JiraFilterTest extends TestCase {
 		NamedFilter[] filters = client.getNamedFilters(null);
 		assertTrue(filters.length > 1);
 
-		NamedFilter filter = filters[1];
-		assertEquals("My Issues", filter.getName());
+		NamedFilter filter = null;
+		for (NamedFilter f : filters) {
+			if (f.getName().equals("My Recent")) {
+				filter = f;
+			}
+		}
+		assertNotNull("Filter 'My Recent' not found", filter);
 
 		RepositoryQuery query = (RepositoryQuery) JiraTestUtil.createQuery(repository, filter);
 		TasksUiPlugin.getTaskList().addQuery(query);
