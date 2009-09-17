@@ -64,10 +64,10 @@ public class OpenVersionedVirtualFileAction extends Action {
 			}
 
 			boolean annotationsAdded = false;
+			final ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
 
 			if (editor instanceof ITextEditor) {
 				ITextEditor textEditor = ((ITextEditor) editor);
-				ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
 				if (activeTask != null && activeTask.equals(task)) {
 					annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
 				}
@@ -77,10 +77,15 @@ public class OpenVersionedVirtualFileAction extends Action {
 			}
 
 			if (!annotationsAdded) {
+				final String msg;
+				if (activeTask == null || !activeTask.equals(task)) {
+					msg = "To annotate this file, review " + review.getPermId().getId() + " must be active.";
+				} else {
+					msg = "Editor for selected file doesn't support annotations.";
+				}
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null,
-								"Editor for selected file doesn't support annotations.",
+						new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null, msg,
 								MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
 					}
 				});
