@@ -11,25 +11,42 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.wizards.NewTaskWizard;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
 
 /**
  * Wizard for creating a new review
  * 
  * @author Thomas Ehrnhoefer
  */
-public class CrucibleReviewWizard extends NewTaskWizard implements INewWizard {
+public class CrucibleReviewWizard extends Wizard implements INewWizard {
+	private final TaskRepository taskRepository;
+
 	public CrucibleReviewWizard(TaskRepository taskRepository) {
-		super(taskRepository, null);
 		setWindowTitle("New Crucible Review");
 		setNeedsProgressMonitor(true);
 		setForcePreviousAndNextButtons(true);
+		this.taskRepository = taskRepository;
 	}
 
 	@Override
 	public void addPages() {
 		addPage(new ReviewTypeSelectionPage(getTaskRepository()));
+	}
+
+	@Override
+	public boolean performFinish() {
+		return true;
+	}
+
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		// ignore
+	}
+
+	public TaskRepository getTaskRepository() {
+		return taskRepository;
 	}
 }

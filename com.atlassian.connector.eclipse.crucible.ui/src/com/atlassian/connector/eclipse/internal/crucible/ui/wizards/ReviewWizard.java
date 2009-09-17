@@ -60,6 +60,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,9 @@ import java.util.SortedSet;
  * Wizard for creating a new review
  * 
  * @author Thomas Ehrnhoefer
+ * @author Pawel Niewiadomski
  */
+@SuppressWarnings("restriction")
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
@@ -88,7 +91,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 		@Override
 		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-			Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+			Review review = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 				@Override
 				public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 						throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -110,12 +113,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				}
 			});
 
-			if (updatedReview != null) {
-				crucibleReview = updatedReview;
-			} else {
-				crucibleReview = client.getReview(getTaskRepository(),
-						CrucibleUtil.getTaskIdFromReview(crucibleReview), true, monitor);
-			}
+			updateCrucibleReview(client, review, monitor);
 			return Status.OK_STATUS;
 		}
 	}
@@ -142,12 +140,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				}
 			});
 
-			if (updatedReview != null) {
-				crucibleReview = updatedReview;
-			} else {
-				crucibleReview = client.getReview(getTaskRepository(),
-						CrucibleUtil.getTaskIdFromReview(crucibleReview), true, monitor);
-			}
+			updateCrucibleReview(client, updatedReview, monitor);
 			return Status.OK_STATUS;
 		}
 	}
@@ -171,12 +164,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				}
 			});
 
-			if (updatedReview != null) {
-				crucibleReview = updatedReview;
-			} else {
-				crucibleReview = client.getReview(getTaskRepository(),
-						CrucibleUtil.getTaskIdFromReview(crucibleReview), true, monitor);
-			}
+			updateCrucibleReview(client, updatedReview, monitor);
 			return Status.OK_STATUS;
 		}
 	}
@@ -184,8 +172,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	private CrucibleReviewDetailsPage detailsPage;
 
 	private Review crucibleReview;
-
-	private MultiStatus creationProcessStatus;
 
 	private CrucibleAddChangesetsPage addChangeSetsPage;
 
@@ -268,25 +254,32 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	@Override
 	public boolean performFinish() {
 
-		// save project selection
-		CrucibleRepositoryConnector.updateLastSelectedProject(getTaskRepository(), detailsPage.getSelectedProject());
-
-		// save checkbox selections
-		CrucibleRepositoryConnector.updateAllowAnyoneOption(getTaskRepository(), detailsPage.isAllowAnyoneToJoin());
-		CrucibleRepositoryConnector.updateStartReviewOption(getTaskRepository(), detailsPage.isStartReviewImmediately());
-
-		creationProcessStatus = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.OK,
-				"Error during review creation. See error log for details.", null);
-
 		setErrorMessage(null);
 
-		//create review if not yet done
+		// create review if not yet done, if it fails abort immediately
 		if (crucibleReview == null && detailsPage != null) {
-			if (!createAndStoreReview(detailsPage.getReview(),
-					CrucibleUiUtil.getUsernamesFromUsers(detailsPage.getReviewers()))) {
+			IStatus result = createAndStoreReview(detailsPage.getReview(),
+					CrucibleUiUtil.getUsernamesFromUsers(detailsPage.getReviewers()));
+
+			if (!result.isOK()) {
+				StatusHandler.log(result);
+				setErrorMessage(result.getMessage());
 				return false;
 			}
 		}
+
+		if (detailsPage != null) {
+			// save project selection
+			CrucibleRepositoryConnector.updateLastSelectedProject(getTaskRepository(), detailsPage.getSelectedProject());
+
+			// save checkbox selections
+			CrucibleRepositoryConnector.updateAllowAnyoneOption(getTaskRepository(), detailsPage.isAllowAnyoneToJoin());
+			CrucibleRepositoryConnector.updateStartReviewOption(getTaskRepository(),
+					detailsPage.isStartReviewImmediately());
+		}
+
+		final MultiStatus creationProcessStatus = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.OK,
+				"Error during review creation. See error log for details.", null);
 
 		if (addPatchPage != null) {
 			String patchToAdd = addPatchPage.hasPatch() ? addPatchPage.getPatch() : null;
@@ -294,13 +287,15 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 			if (patchToAdd != null && patchRepositoryToAdd != null && !patchToAdd.equals(previousPatch)
 					&& !patchRepositoryToAdd.equals(previousPatchRepository)) {
-				final CrucibleReviewChangeJob job = new AddPatchToReviewJob("Add patch to review", getTaskRepository(),
+				final JobWithStatus job = new AddPatchToReviewJob("Add patch to review", getTaskRepository(),
 						patchToAdd, patchRepositoryToAdd);
 
-				runJobInContainer(job);
-				if (job.getStatus().isOK()) {
+				IStatus result = runJobInContainer(job);
+				if (result.isOK()) {
 					previousPatch = patchToAdd;
 					previousPatchRepository = patchRepositoryToAdd;
+				} else {
+					creationProcessStatus.add(result);
 				}
 			}
 		}
@@ -325,15 +320,15 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					}
 				};
 
-				runJobInContainer(getItemsJob);
+				IStatus result = runJobInContainer(getItemsJob);
+				if (result.isOK() && uploadItems.size() > 0) {
+					JobWithStatus job = new AddItemsToReviewJob("Add patch to review", getTaskRepository(), uploadItems);
 
-				if (getItemsJob.getStatus().isOK() && uploadItems.size() > 0) {
-					CrucibleReviewChangeJob job = new AddItemsToReviewJob("Add patch to review", getTaskRepository(),
-							uploadItems);
-
-					runJobInContainer(job);
-					if (job.getStatus().isOK()) {
+					result = runJobInContainer(job);
+					if (result.isOK()) {
 						previousWorkspaceSelection = selection;
+					} else {
+						creationProcessStatus.add(result);
 					}
 				} else {
 					creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
@@ -343,23 +338,45 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		if (addChangeSetsPage != null) {
-			Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
+			final Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
 
 			if (changesetsToAdd != null && changesetsToAdd.size() > 0) {
 				final CrucibleReviewChangeJob job = new AddChangesetsToReviewJob("Add changesets to review",
 						getTaskRepository(), changesetsToAdd);
 
-				runJobInContainer(job);
+				IStatus result = runJobInContainer(job);
+				if (!result.isOK()) {
+					creationProcessStatus.add(result);
+				}
 			}
 		}
 
+		EnumSet<CrucibleAction> crucibleActions = null;
 		try {
-			if (crucibleReview != null && detailsPage != null && detailsPage.isStartReviewImmediately()
-					&& crucibleReview.getActions().contains(CrucibleAction.SUBMIT)) {
-				startReview();
+			crucibleActions = crucibleReview.getActions();
+		} catch (ValueNotYetInitialized e) {
+			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to get allowed actions",
+					e));
+		}
+
+		if (crucibleActions == null) {
+			crucibleActions = EnumSet.noneOf(CrucibleAction.class);
+		}
+
+		if (crucibleReview != null && detailsPage != null && detailsPage.isStartReviewImmediately()
+				&& crucibleActions.contains(CrucibleAction.SUBMIT)) {
+
+			IStatus result = startAndUpdateReview();
+			if (!result.isOK()) {
+				creationProcessStatus.add(result);
 			}
-		} catch (ValueNotYetInitialized e1) {
-			//ignore
+
+			if (crucibleActions.contains(CrucibleAction.APPROVE)) {
+				result = approveAndUpdateReview();
+				if (!result.isOK()) {
+					creationProcessStatus.add(result);
+				}
+			}
 		}
 
 		if (creationProcessStatus.getSeverity() != IStatus.OK) {
@@ -397,102 +414,69 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		return crucibleReview != null && creationProcessStatus.getSeverity() == IStatus.OK;
 	}
 
-	private void startReview() {
-		try {
-			//submit review
-			getContainer().run(true, true, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("submit review", getTaskRepository()) {
-						@Override
-						protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-							try {
-								crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor,
-										getTaskRepository()) {
-									@Override
-									public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
-											IProgressMonitor monitor) throws CrucibleLoginException,
-											RemoteApiException, ServerPasswordNotProvidedException {
-										return server.submitReview(serverCfg, crucibleReview.getPermId());
-									}
-								});
-							} catch (final CoreException e) {
-								creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-										"Error starting review", e));
-								throw e;
-							}
-							crucibleReview = client.getReview(getTaskRepository(),
-									CrucibleUtil.getTaskIdFromReview(detailsPage.getReview()), true, monitor);
-
-							return Status.OK_STATUS;
-						}
-					};
-					job.run(monitor);
-				}
-			});
-			//if possible, approve review
-			if (crucibleReview.getActions().contains(CrucibleAction.APPROVE)) {
-				getContainer().run(true, true, new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("approve review", getTaskRepository()) {
-							@Override
-							protected IStatus execute(CrucibleClient client, IProgressMonitor monitor)
-									throws CoreException {
-								try {
-									crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor,
-											getTaskRepository()) {
-										@Override
-										public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
-												IProgressMonitor monitor) throws CrucibleLoginException,
-												RemoteApiException, ServerPasswordNotProvidedException {
-											return server.approveReview(serverCfg, crucibleReview.getPermId());
-										}
-									});
-								} catch (final CoreException e) {
-									creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-											"Error starting review", e));
-									throw e;
-								}
-								crucibleReview = client.getReview(getTaskRepository(),
-										CrucibleUtil.getTaskIdFromReview(detailsPage.getReview()), true, monitor);
-								return Status.OK_STATUS;
-							}
-						};
-						job.run(monitor);
+	private IStatus startAndUpdateReview() {
+		final JobWithStatus startReviewJob = new CrucibleReviewChangeJob("Start review immediately",
+				getTaskRepository()) {
+			@Override
+			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+				Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+					@Override
+					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+						return server.submitReview(serverCfg, crucibleReview.getPermId());
 					}
 				});
 
+				updateCrucibleReview(client, updatedReview, monitor);
+				return Status.OK_STATUS;
 			}
-		} catch (ValueNotYetInitialized e) {
-			// ignore
-		} catch (Exception e) {
-			creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error starting review", e));
-		}
+		};
+
+		return runJobInContainer(startReviewJob);
 	}
 
-	private void runJobInContainer(final JobWithStatus job) {
+	private IStatus approveAndUpdateReview() {
+		// if possible, approve review
+		final CrucibleReviewChangeJob approveReviewJob = new CrucibleReviewChangeJob("Approve Review",
+				getTaskRepository()) {
+			@Override
+			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+				Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+					@Override
+					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+						return server.approveReview(serverCfg, crucibleReview.getPermId());
+					}
+				});
+
+				updateCrucibleReview(client, updatedReview, monitor);
+				return Status.OK_STATUS;
+			}
+		};
+
+		return runJobInContainer(approveReviewJob);
+	}
+
+	private IStatus runJobInContainer(final JobWithStatus job) {
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				job.run(monitor);
 			}
 		};
-
 		try {
 			getContainer().run(true, true, runnable);
 		} catch (Exception e) {
-			creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, String.format(
-					"Job \"%s\" failed", job.getName()), e));
+			return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, String.format("Job \"%s\" failed",
+					job.getName()), e);
 		}
-
-		if (!job.getStatus().isOK()) {
-			creationProcessStatus.add(job.getStatus());
-		}
+		return job.getStatus();
 	}
 
-	private boolean createAndStoreReview(final Review newReview, final Set<String> reviewers) {
+	private IStatus createAndStoreReview(final Review newReview, final Set<String> reviewers) {
 		final CrucibleReviewChangeJob job = new CrucibleReviewChangeJob("Create new review", getTaskRepository()) {
 			@Override
 			protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
-				crucibleReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
+				Review updatedReview = client.execute(new CrucibleRemoteOperation<Review>(monitor, getTaskRepository()) {
 					@Override
 					public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
@@ -504,10 +488,12 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					}
 				});
 
-				// FIXME: I don't think we need this, please someone take a look
-				//crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(newReview),
-				//		true, monitor);
+				if (updatedReview == null) {
+					// WTF? No error and null
+					return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Server didn't return review");
+				}
 
+				updateCrucibleReview(client, updatedReview, monitor);
 				return Status.OK_STATUS;
 			}
 		};
@@ -521,16 +507,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		try {
 			getContainer().run(true, true, runnable);
 		} catch (Exception e) {
-			creationProcessStatus.add(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error creating Review", e));
+			return new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Error creating Review", e);
 		}
 
-		if (!job.getStatus().isOK() || crucibleReview == null) {
-			setErrorMessage(creationProcessStatus.getMessage());
-			StatusHandler.log(creationProcessStatus);
-			return false;
-		}
-
-		return true;
+		return job.getStatus();
 	}
 
 	private void setErrorMessage(String message) {
@@ -573,5 +553,15 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	public void setRoots(List<IResource> list) {
 		this.roots.clear();
 		this.roots.addAll(list);
+	}
+
+	private void updateCrucibleReview(CrucibleClient client, Review updatedReview, IProgressMonitor monitor)
+			throws CoreException {
+		if (updatedReview != null) {
+			crucibleReview = updatedReview;
+		} else {
+			crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(crucibleReview),
+					true, monitor);
+		}
 	}
 }

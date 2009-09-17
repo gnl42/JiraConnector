@@ -59,8 +59,7 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 			return;
 		}
 		try {
-			IStatus result = execute(client, monitor);
-			setStatus(result);
+			setStatus(execute(client, monitor));
 			SynchronizationJob synchronizeRepositoriesJob = TasksUiPlugin.getTaskJobFactory()
 					.createSynchronizeRepositoriesJob(Collections.singleton(taskRepository));
 			synchronizeRepositoriesJob.schedule();
@@ -74,7 +73,6 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 		} catch (CoreException e) {
 			setStatus(e.getStatus());
 		}
-		setStatus(Status.OK_STATUS);
 	}
 
 	protected abstract IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException;

@@ -220,7 +220,11 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		changeViewer.setLabelProvider(new WorkbenchLabelProvider() {
 			@Override
 			protected String decorateText(String input, Object element) {
-				return ((IResource) element).getFullPath().toString();
+				if (element instanceof IResource) {
+					IResource resource = (IResource) element;
+					return resource.getProject().getName() + IPath.SEPARATOR + resource.getProjectRelativePath();
+				}
+				return super.decorateText(input, element);
 			}
 		});
 		changeViewer.addCheckStateListener(new ICheckStateListener() {
