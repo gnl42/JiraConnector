@@ -651,9 +651,8 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(localResource) || IStateFilter.SF_ADDED.accept(localResource)) {
 				String newContent = getResourceContent(((IFile) resource).getContents());
-				if (newContent.length() != 0) {
-					items.add(new UploadItem(url, "", newContent, revision));
-				}
+				items.add(new UploadItem(url, "", newContent.length() == 0 ? "[--item is empty--]" : newContent,
+						revision));
 			} else if (IStateFilter.SF_DELETED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
