@@ -154,11 +154,6 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 		}
 	}
 
-	public static void setActivateReviewPreference(String activationType) {
-		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW, activationType);
-		plugin.savePluginPreferences();
-	}
-
 	public static ActivateReview getActivateReviewPreference() {
 
 		ActivateReview ret = ActivateReview.getObjectFromKey(plugin.getPreferenceStore().getString(
