@@ -557,11 +557,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private void updateCrucibleReview(CrucibleClient client, Review updatedReview, IProgressMonitor monitor)
 			throws CoreException {
-		if (updatedReview != null) {
-			crucibleReview = updatedReview;
-		} else {
-			crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(crucibleReview),
-					true, monitor);
-		}
+		crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(updatedReview), true,
+				monitor);
 	}
 }
