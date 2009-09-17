@@ -557,6 +557,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private void updateCrucibleReview(CrucibleClient client, Review updatedReview, IProgressMonitor monitor)
 			throws CoreException {
+		// Update review after every change because otherwise some data will be missing (in this case we miss actions)
 		crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(updatedReview), true,
 				monitor);
 	}
