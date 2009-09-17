@@ -155,8 +155,6 @@ public class Messages extends NLS {
 
 	public static String JiraRepositorySettingsPage_Enabled;
 
-	public static String JiraRepositorySettingsPage_EXAMPLE_HTTP_DEVELOPER_ALTASSIAN_COM_JIRA;
-
 	public static String JiraRepositorySettingsPage_Follow_redirects;
 
 	public static String JiraRepositorySettingsPage_If_checked_an_issue_is_considered_completed_if_it_has_a_resolution;
