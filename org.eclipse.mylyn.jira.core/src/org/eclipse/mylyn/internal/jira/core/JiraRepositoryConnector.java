@@ -564,9 +564,15 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 					// ignore
 				}
 			}
+
+			// no session means not a task list query
+			// no oldTaskData means a new task was received
+			// in both cases do not download full details but return results quickly 
+			boolean forceCache = (session == null || oldTaskData == null);
+
 			TaskData taskData;
 			try {
-				taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData, monitor);
+				taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData, forceCache, monitor);
 				collector.accept(taskData);
 			} catch (JiraException e) {
 				addStatus(JiraCorePlugin.toStatus(repository, e));

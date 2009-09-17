@@ -159,11 +159,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 	public TaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
 			TaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
+		return createTaskData(repository, client, jiraIssue, oldTaskData, false, monitor);
+	}
+
+	public TaskData createTaskData(TaskRepository repository, JiraClient client, JiraIssue jiraIssue,
+			TaskData oldTaskData, boolean forceCache, IProgressMonitor monitor) throws JiraException {
 		TaskData data = new TaskData(getAttributeMapper(repository), JiraCorePlugin.CONNECTOR_KIND,
 				repository.getRepositoryUrl(), jiraIssue.getId());
 		initializeTaskData(data, client, jiraIssue.getProject());
-		updateTaskData(data, jiraIssue, client, oldTaskData, monitor);
-		addOperations(data, jiraIssue, client, oldTaskData, monitor);
+		updateTaskData(data, jiraIssue, client, oldTaskData, forceCache, monitor);
+		addOperations(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 		return data;
 	}
 
@@ -285,7 +290,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private void updateTaskData(TaskData data, JiraIssue jiraIssue, JiraClient client, TaskData oldTaskData,
-			IProgressMonitor monitor) throws JiraException {
+			boolean forceCache, IProgressMonitor monitor) throws JiraException {
 		String parentKey = jiraIssue.getParentKey();
 		if (parentKey != null) {
 			setAttributeValue(data, JiraAttribute.PARENT_KEY, parentKey);
@@ -444,11 +449,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		addAttachments(data, jiraIssue, client);
 		addCustomFields(data, jiraIssue);
 
-		addWorklog(data, jiraIssue, client, oldTaskData, monitor);
+		addWorklog(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 
-		updateMarkup(data, jiraIssue, client, oldTaskData, monitor);
+		updateMarkup(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 
-		HashSet<String> editableKeys = getEditableKeys(data, jiraIssue, client, oldTaskData, monitor);
+		HashSet<String> editableKeys = getEditableKeys(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 		updateProperties(data, editableKeys);
 	}
 
@@ -541,10 +546,16 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private HashSet<String> getEditableKeys(TaskData data, JiraIssue jiraIssue, JiraClient client,
-			TaskData oldTaskData, IProgressMonitor monitor) throws JiraException {
+			TaskData oldTaskData, boolean forceCache, IProgressMonitor monitor) throws JiraException {
 		HashSet<String> editableKeys = new HashSet<String>();
 		if (!JiraRepositoryConnector.isClosed(jiraIssue)) {
-			if (useCachedInformation(jiraIssue, oldTaskData)) {
+			if (useCachedInformation(jiraIssue, oldTaskData, forceCache)) {
+				if (oldTaskData == null) {
+					// caching forced but no information available
+					data.setPartial(true);
+					return editableKeys;
+				}
+
 				// avoid server round-trips
 				for (TaskAttribute attribute : oldTaskData.getRoot().getAttributes().values()) {
 					if (!attribute.getMetaData().isReadOnly()) {
@@ -621,7 +632,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		return attribute;
 	}
 
-	private boolean useCachedInformation(JiraIssue issue, TaskData oldTaskData) {
+	private boolean useCachedInformation(JiraIssue issue, TaskData oldTaskData, boolean forceCache) {
+		if (forceCache) {
+			return true;
+		}
 		if (oldTaskData != null && issue.getStatus() != null) {
 			TaskAttribute attribute = oldTaskData.getRoot().getMappedAttribute(TaskAttribute.STATUS);
 			if (attribute != null) {
@@ -682,13 +696,21 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	/**
 	 * Replaces the values in fields that are suspected to contain rendered markup with the source values retrieved
 	 * through SOAP.
+	 * 
+	 * @param forceCache
 	 */
 	private void updateMarkup(TaskData data, JiraIssue jiraIssue, JiraClient client, TaskData oldTaskData,
-			IProgressMonitor monitor) throws JiraException {
+			boolean forceCache, IProgressMonitor monitor) throws JiraException {
 		if (!jiraIssue.isMarkupDetected()) {
 			return;
 		}
-		if (useCachedData(jiraIssue, oldTaskData)) {
+		if (useCachedData(jiraIssue, oldTaskData, forceCache)) {
+			if (oldTaskData == null) {
+				// caching forced but no information available
+				data.setPartial(true);
+				return;
+			}
+
 			// use cached information
 			if (data.getRoot().getAttribute(TaskAttribute.DESCRIPTION) != null) {
 				setAttributeValue(data, JiraAttribute.DESCRIPTION, getAttributeValue(oldTaskData,
@@ -796,7 +818,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 	}
 
-	private boolean useCachedData(JiraIssue jiraIssue, TaskData oldTaskData) {
+	private boolean useCachedData(JiraIssue jiraIssue, TaskData oldTaskData, boolean forceCache) {
+		if (forceCache) {
+			return true;
+		}
 		if (jiraIssue.getUpdated() != null && oldTaskData != null) {
 			String value = getAttributeValue(oldTaskData, JiraAttribute.MODIFICATION_DATE);
 			if (jiraIssue.getUpdated().equals(JiraUtil.stringToDate(value))) {
@@ -807,9 +832,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	private void addWorklog(TaskData data, JiraIssue jiraIssue, JiraClient client, TaskData oldTaskData,
-			IProgressMonitor monitor) throws JiraException {
-		if (useCachedData(jiraIssue, oldTaskData)) {
-			if (useCachedInformation(jiraIssue, oldTaskData)) {
+			boolean forceCache, IProgressMonitor monitor) throws JiraException {
+		if (useCachedData(jiraIssue, oldTaskData, forceCache)) {
+			if (useCachedInformation(jiraIssue, oldTaskData, forceCache)) {
+				if (oldTaskData == null) {
+					// caching forced but no information available
+					data.setPartial(true);
+					return;
+				}
 				List<TaskAttribute> attributes = oldTaskData.getAttributeMapper().getAttributesByType(oldTaskData,
 						WorkLogConverter.TYPE_WORKLOG);
 				for (TaskAttribute taskAttribute : attributes) {
@@ -845,9 +875,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	public void addOperations(TaskData data, JiraIssue issue, JiraClient client, TaskData oldTaskData,
-			IProgressMonitor monitor) throws JiraException {
+			boolean forceCache, IProgressMonitor monitor) throws JiraException {
 		// avoid server round-trips
-		if (useCachedInformation(issue, oldTaskData)) {
+		if (useCachedInformation(issue, oldTaskData, forceCache)) {
+			if (oldTaskData == null) {
+				// caching forced but no information available
+				data.setPartial(true);
+				return;
+			}
+
 			List<TaskAttribute> attributes = oldTaskData.getAttributeMapper().getAttributesByType(oldTaskData,
 					TaskAttribute.TYPE_OPERATION);
 			for (TaskAttribute taskAttribute : attributes) {

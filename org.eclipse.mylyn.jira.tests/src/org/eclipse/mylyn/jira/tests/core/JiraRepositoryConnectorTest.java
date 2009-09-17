@@ -29,7 +29,9 @@ import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
+import org.eclipse.mylyn.internal.jira.core.WorkLogConverter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.DateFilter;
@@ -51,6 +53,7 @@ import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITaskAttachment;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
@@ -212,6 +215,32 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		} finally {
 			JiraUtil.setMaxSearchResults(repository, JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
 		}
+	}
+
+	/**
+	 * Tests that a TaskSearch is not downloading the task details
+	 */
+	public void testPerformQueryTaskSearch() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+		String timestamp = Long.toString(System.currentTimeMillis());
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testPerformQueryTaskSearch on " + timestamp);
+		JiraWorkLog log = new JiraWorkLog();
+		log.setComment("a worklog");
+		log.setStartDate(new Date(System.currentTimeMillis()));
+		log.setTimeSpent(120);
+		log.setAuthor(repository.getUserName());
+		client.addWorkLog(issue.getKey(), log, null);
+		FilterDefinition filter = new FilterDefinition();
+		filter.setContentFilter(new ContentFilter(timestamp, true, false, false, false));
+		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
+		JiraTestResultCollector collector = new JiraTestResultCollector();
+		connector.performQuery(repository, query, collector, null, null);
+		assertEquals(1, collector.results.size());
+		TaskData hit = collector.results.get(0);
+		TaskAttribute summary = hit.getRoot().getMappedAttribute(TaskAttribute.SUMMARY);
+		assertTrue(summary.getValue().contains(timestamp));
+		List<TaskAttribute> worklogs = hit.getAttributeMapper().getAttributesByType(hit, WorkLogConverter.TYPE_WORKLOG);
+		assertEquals(0, worklogs.size());
 	}
 
 	public void testMarkStaleNoTasks() throws Exception {
