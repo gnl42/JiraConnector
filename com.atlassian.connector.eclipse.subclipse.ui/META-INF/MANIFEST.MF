@@ -24,7 +24,6 @@ Require-Bundle: org.eclipse.ui,
  org.jetbrains.annotations;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.subclipse.ui;x-internal:=true,
- com.atlassian.connector.eclipse.internal.subclipse.ui.compare;x-internal:=true,
- com.atlassian.connector.eclipse.internal.subclipse.ui.wizards;x-internal:=true
+ com.atlassian.connector.eclipse.internal.subclipse.ui.compare;x-internal:=true
 Bundle-Vendor: Atlassian
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
