@@ -41,16 +41,21 @@ public interface IStateFilter {
 
 	public abstract class AbstractStateFilter implements IStateFilter {
 		public boolean accept(ISVNLocalResource resource) throws SVNException {
-			return resource.getStatus() != null && this.acceptImpl(resource, resource.getResource(), resource.getStatus());
+			return resource.getStatus() != null && SVNWorkspaceRoot.isManagedBySubclipse(resource.getIResource().getProject()) 
+				&& this.acceptImpl(resource, resource.getResource(), resource.getStatus());
 		}
 		public boolean accept(IResource resource, LocalResourceStatus state) {
-			return state != null && this.acceptImpl(null, resource, state);
+			return state != null && SVNWorkspaceRoot.isManagedBySubclipse(resource.getProject()) && this.acceptImpl(null, resource, state);
 		}
 		public boolean allowsRecursion(ISVNLocalResource resource) throws SVNException {
-			return resource.getStatus() != null && this.allowsRecursionImpl(null, resource.getResource(), resource.getStatus());
+			return resource.getStatus() != null 
+				&& SVNWorkspaceRoot.isManagedBySubclipse(resource.getIResource().getProject())
+				&& this.allowsRecursionImpl(null, resource.getResource(), resource.getStatus());
 		}
 		public boolean allowsRecursion(IResource resource, LocalResourceStatus state) {
-			return state != null && this.allowsRecursionImpl(null, resource, state);
+			return state != null 
+				&& SVNWorkspaceRoot.isManagedBySubclipse(resource.getProject())
+				&& this.allowsRecursionImpl(null, resource, state);
 		}
 		
 		protected abstract boolean acceptImpl(ISVNLocalResource local, IResource resource, LocalResourceStatus state);
