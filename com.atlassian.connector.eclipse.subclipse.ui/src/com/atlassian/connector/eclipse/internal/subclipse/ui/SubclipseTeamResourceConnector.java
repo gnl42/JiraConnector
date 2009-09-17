@@ -559,9 +559,8 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (status.isUnversioned() || status.isAdded()) {
 				String newContent = getResourceContent((IFile) resource);
-				if (newContent.length() != 0) {
-					items.add(new UploadItem(url, "", newContent, revision));
-				}
+				items.add(new UploadItem(url, "", newContent.length() == 0 ? "[--item is empty--]" : newContent,
+						revision));
 			} else if (status.isDeleted()) {
 				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
 						"[--item deleted--]", revision));
