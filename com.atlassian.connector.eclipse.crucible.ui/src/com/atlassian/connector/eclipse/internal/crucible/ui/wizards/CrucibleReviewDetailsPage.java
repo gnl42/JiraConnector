@@ -118,7 +118,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		Set<CrucibleProject> cachedProjects = CrucibleUiUtil.getCachedProjects(repository);
 		projectsComboViewer.setInput(cachedProjects);
 		if (cachedProjects.size() > 0) {
-			if (newReview.getCrucibleProject() == null) {
+			if (newReview.getProjectKey() == null) {
 				// select default project
 				CrucibleProject defaultProject = CrucibleRepositoryConnector.getLastSelectedProject(repository,
 						cachedProjects);
@@ -128,7 +128,11 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 					projectsComboViewer.setSelection(new StructuredSelection(projectsComboViewer.getElementAt(0)));
 				}
 			} else {
-				projectsComboViewer.setSelection(new StructuredSelection(newReview.getCrucibleProject()));
+				final CrucibleProject project = CrucibleUiUtil.findCachedProject(cachedProjects,
+						newReview.getProjectKey());
+				if (project != null) {
+					projectsComboViewer.setSelection(new StructuredSelection(project));
+				}
 			}
 		}
 
@@ -153,9 +157,10 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			} else {
 				moderatorComboViewer.setSelection(new StructuredSelection(newReview.getModerator()));
 			}
-			if (newReview.getCrucibleProject() != null) {
-				projectsComboViewer.setSelection(new StructuredSelection(newReview.getCrucibleProject()));
-			}
+// is it really necessary???
+			//			if (newReview.getCrucibleProject() != null) {
+//				projectsComboViewer.setSelection(new StructuredSelection(newReview.getCrucibleProject()));
+//			}
 		}
 	}
 
@@ -184,8 +189,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
 				if (firstElement != null) {
-					newReview.setProject((CrucibleProject) firstElement);
-					newReview.setProjectKey(newReview.getCrucibleProject().getKey());
+					CrucibleProject prj = (CrucibleProject) firstElement;
+//					newReview.setProject((CrucibleProject) firstElement);
+					newReview.setProjectKey(prj.getKey());
 					getWizard().getContainer().updateButtons();
 				}
 			}

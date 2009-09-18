@@ -37,6 +37,7 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -270,6 +271,16 @@ public final class CrucibleUiUtil {
 			projects = clientData.getCachedProjects();
 		}
 		return projects;
+	}
+
+	@Nullable
+	public static CrucibleProject findCachedProject(Set<CrucibleProject> projects, String projectKey) {
+		for (CrucibleProject crucibleProject : projects) {
+			if (crucibleProject.getKey().equals(projectKey)) {
+				return crucibleProject;
+			}
+		}
+		return null;
 	}
 
 	public static boolean canModifyComment(Review review, Comment comment) {

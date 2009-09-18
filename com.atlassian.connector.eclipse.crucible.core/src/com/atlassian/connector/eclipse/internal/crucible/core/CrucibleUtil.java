@@ -256,8 +256,7 @@ public final class CrucibleUtil {
 			result = prime * result + ((review.getCreateDate() == null) ? 0 : review.getCreateDate().hashCode());
 			result = prime * result
 					+ ((review.getCreator() == null) ? 0 : review.getCreator().getUsername().hashCode());
-			result = prime * result
-					+ ((review.getCrucibleProject() == null) ? 0 : review.getCrucibleProject().getId().hashCode());
+			result = prime * result + ((review.getProjectKey() == null) ? 0 : review.getProjectKey().hashCode());
 			result = prime * result + ((review.getDescription() == null) ? 0 : review.getDescription().hashCode());
 
 			int miniResult = 0;
