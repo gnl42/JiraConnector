@@ -122,7 +122,8 @@ public class JiraUtil {
 			IRepositoryQuery query, boolean validate) {
 		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
 		if (customUrl != null && customUrl.length() > 0) {
-			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+					JiraUtil.getConfiguration(taskRepository).getDateFormat());
 			return converter.toFilter(client, customUrl, validate);
 		}
 		return null;
@@ -248,7 +249,8 @@ public class JiraUtil {
 			query.setUrl(taskRepository.getRepositoryUrl() + JiraRepositoryConnector.FILTER_URL_PREFIX + "&requestId=" //$NON-NLS-1$
 					+ namedFilter.getId());
 		} else if (filter instanceof FilterDefinition) {
-			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+					JiraUtil.getConfiguration(taskRepository).getDateFormat());
 			String url = converter.toUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter);
 			query.setAttribute(KEY_FILTER_CUSTOM_URL, url);
 			query.setUrl(url);

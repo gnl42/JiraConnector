@@ -11,8 +11,12 @@
 
 package org.eclipse.mylyn.jira.tests.core;
 
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
@@ -24,6 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ComponentFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ContentFilter;
+import org.eclipse.mylyn.internal.jira.core.model.filter.DateRangeFilter;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.model.filter.ProjectFilter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -161,6 +166,48 @@ public class JiraFilterTest extends TestCase {
 		assertEquals(1, hitCollector.results.size());
 		taskMapping = connector.getTaskMapping(hitCollector.results.iterator().next());
 		assertEquals(issue2.getSummary(), taskMapping.getSummary());
+	}
+
+	public void testCustomQueryWrongLocale() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+
+		FilterDefinition filter = new FilterDefinition();
+		GregorianCalendar date = new GregorianCalendar(2008, 9, 1);
+		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
+		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
+
+		JiraTestResultCollector hitCollector = new JiraTestResultCollector();
+		IStatus result = connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals(IStatus.OK, result.getSeverity());
+
+		repository.setProperty("jira.locale", Locale.GERMANY.toString());
+		filter = new FilterDefinition();
+		date = new GregorianCalendar(2008, 9, 1);
+		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
+		query = JiraTestUtil.createQuery(repository, filter);
+		result = connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
+	}
+
+	public void testCustomQueryWrongDatePattern() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+
+		FilterDefinition filter = new FilterDefinition();
+		GregorianCalendar date = new GregorianCalendar(2008, 9, 1);
+		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
+		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
+
+		JiraTestResultCollector hitCollector = new JiraTestResultCollector();
+		IStatus result = connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals(IStatus.OK, result.getSeverity());
+
+		repository.setProperty("jira.datePattern", "MM/dd/yyyy");
+		filter = new FilterDefinition();
+		date = new GregorianCalendar(2008, 9, 1);
+		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
+		query = JiraTestUtil.createQuery(repository, filter);
+		result = connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
 	}
 
 }

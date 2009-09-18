@@ -91,7 +91,8 @@ public class JiraRssClient {
 						rssUrlBuffer.append("tempMax=").append(collector.getMaxHits()).append('&'); //$NON-NLS-1$
 					}
 				}
-				FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(client.getCharacterEncoding());
+				FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(
+						client.getCharacterEncoding(), client.getConfiguration().getDateFormat());
 				rssUrlBuffer.append(filterConverter.getQueryParams(filterDefinition));
 
 				return rssUrlBuffer.toString();

@@ -16,7 +16,7 @@ package org.eclipse.mylyn.internal.jira.core.service;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,10 +24,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.mylyn.internal.jira.core.InvalidJiraQueryException;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
@@ -67,8 +67,6 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.RelativeDateRangeFilter
  * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class FilterDefinitionConverter {
-
-	private static final String DATE_FORMAT = "d/MMM/yy"; //$NON-NLS-1$
 
 	private static final String PROJECT_KEY = "pid"; //$NON-NLS-1$
 
@@ -126,8 +124,13 @@ public class FilterDefinitionConverter {
 
 	private final String encoding;
 
-	public FilterDefinitionConverter(String encoding) {
+	private final DateFormat dateFormat;
+
+	public FilterDefinitionConverter(String encoding, DateFormat dateFormat) {
+		Assert.isNotNull(dateFormat);
+		Assert.isNotNull(encoding);
 		this.encoding = encoding;
+		this.dateFormat = dateFormat;
 	}
 
 	public String toUrl(String repositoryUrl, FilterDefinition filter) {
@@ -324,16 +327,15 @@ public class FilterDefinitionConverter {
 		String after = getId(params, key + ":after"); //$NON-NLS-1$
 		String before = getId(params, key + ":before"); //$NON-NLS-1$
 
-		SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 		Date fromDate;
 		try {
-			fromDate = df.parse(after);
+			fromDate = dateFormat.parse(after);
 		} catch (Exception ex) {
 			fromDate = null;
 		}
 		Date toDate;
 		try {
-			toDate = df.parse(before);
+			toDate = dateFormat.parse(before);
 		} catch (Exception ex) {
 			toDate = null;
 		}
@@ -520,13 +522,12 @@ public class FilterDefinitionConverter {
 
 	private void addDateFilter(StringBuilder sb, DateFilter filter, String type) {
 		if (filter instanceof DateRangeFilter) {
-			SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 			DateRangeFilter rangeFilter = (DateRangeFilter) filter;
 			if (rangeFilter.getFromDate() != null) {
-				addParameter(sb, type + ":after", df.format(rangeFilter.getFromDate())); //$NON-NLS-1$
+				addParameter(sb, type + ":after", dateFormat.format(rangeFilter.getFromDate())); //$NON-NLS-1$
 			}
 			if (rangeFilter.getToDate() != null) {
-				addParameter(sb, type + ":before", df.format(rangeFilter.getToDate())); //$NON-NLS-1$
+				addParameter(sb, type + ":before", dateFormat.format(rangeFilter.getToDate())); //$NON-NLS-1$
 			}
 		} else if (filter instanceof RelativeDateRangeFilter) {
 			RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) filter;

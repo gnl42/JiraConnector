@@ -39,6 +39,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.FilterDefinitionConverter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
+import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
 import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.jira.tests.util.MockJiraClient;
@@ -188,7 +189,8 @@ public class JiraCustomQueryTest extends TestCase {
 		};
 		client.setCache(cache);
 
-		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+				JiraUtil.getConfiguration(taskRepository).getDateFormat());
 		FilterDefinition filter2 = converter.toFilter(client, queryUrl, true);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();
@@ -260,7 +262,7 @@ public class JiraCustomQueryTest extends TestCase {
 	public void testGetFilterDefinitionUnresolvedResolution() {
 		String repositoryUrl = JiraTestConstants.JIRA_LATEST_URL;
 		MockJiraClient client = new MockJiraClient(repositoryUrl);
-		FilterDefinitionConverter converter = new FilterDefinitionConverter(JiraClient.DEFAULT_CHARSET);
+		FilterDefinitionConverter converter = new FilterDefinitionConverter(JiraClient.DEFAULT_CHARSET, null);
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
@@ -341,7 +343,8 @@ public class JiraCustomQueryTest extends TestCase {
 		};
 		client.setCache(cache);
 
-		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+				JiraUtil.getConfiguration(taskRepository).getDateFormat());
 		FilterDefinition filter2 = converter.toFilter(client, queryUrl, true);
 
 		ProjectFilter projectFilter2 = filter2.getProjectFilter();

@@ -191,11 +191,13 @@ public class FilterDefinitionConverterTest extends TestCase {
 		JiraUtil.setQuery(taskRepository, customQuery, filter);
 		filter2Url = customQuery.getUrl();
 
-		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding());
+		FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+				JiraUtil.getConfiguration(taskRepository).getDateFormat());
 		filter2Url2filter = converter.toFilter(client, filter2Url, true);
 
-		String filter2Url2Filter2Url = new FilterDefinitionConverter(taskRepository.getCharacterEncoding()).toUrl(
-				"http://no.url.net/", filter2Url2filter);
+		String filter2Url2Filter2Url = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+				JiraUtil.getConfiguration(taskRepository).getDateFormat()).toUrl("http://no.url.net/",
+				filter2Url2filter);
 		compareUrls(filter2Url, filter2Url2Filter2Url);
 	}
 

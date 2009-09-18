@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -823,8 +824,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			return true;
 		}
 		if (jiraIssue.getUpdated() != null && oldTaskData != null) {
-			String value = getAttributeValue(oldTaskData, JiraAttribute.MODIFICATION_DATE);
-			if (jiraIssue.getUpdated().equals(JiraUtil.stringToDate(value))) {
+			if (jiraIssue.getUpdated().equals(getDateValue(oldTaskData, JiraAttribute.MODIFICATION_DATE))) {
 				return true;
 			}
 		}
@@ -1148,7 +1148,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		issue.setDescription(getAttributeValue(taskData, JiraAttribute.DESCRIPTION));
 
 		// TODO sync due date between jira and local planning
-		issue.setDue(JiraUtil.stringToDate(getAttributeValue(taskData, JiraAttribute.DUE_DATE)));
+		issue.setDue(getDateValue(taskData, JiraAttribute.DUE_DATE));
 
 		String parentId = getAttributeValue(taskData, JiraAttribute.PARENT_ID);
 		if (parentId != null) {
@@ -1254,6 +1254,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 	private String getAttributeValue(TaskData taskData, JiraAttribute key) {
 		TaskAttribute attribute = taskData.getRoot().getAttribute(key.id());
 		return (attribute != null) ? attribute.getValue() : null;
+	}
+
+	private Date getDateValue(TaskData data, JiraAttribute key) {
+		TaskAttribute attribute = data.getRoot().getAttribute(key.id());
+		return (attribute != null) ? data.getAttributeMapper().getDateValue(attribute) : null;
 	}
 
 	private static void trace(IStatus status) {
