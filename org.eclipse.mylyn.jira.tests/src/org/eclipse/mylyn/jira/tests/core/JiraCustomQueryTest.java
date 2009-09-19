@@ -12,7 +12,9 @@
 
 package org.eclipse.mylyn.jira.tests.core;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -39,6 +41,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.VersionFilter;
 import org.eclipse.mylyn.internal.jira.core.service.FilterDefinitionConverter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClientCache;
+import org.eclipse.mylyn.internal.jira.core.service.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
 import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
@@ -262,7 +265,8 @@ public class JiraCustomQueryTest extends TestCase {
 	public void testGetFilterDefinitionUnresolvedResolution() {
 		String repositoryUrl = JiraTestConstants.JIRA_LATEST_URL;
 		MockJiraClient client = new MockJiraClient(repositoryUrl);
-		FilterDefinitionConverter converter = new FilterDefinitionConverter(JiraClient.DEFAULT_CHARSET, null);
+		FilterDefinitionConverter converter = new FilterDefinitionConverter(JiraClient.DEFAULT_CHARSET,
+				new SimpleDateFormat(JiraConfiguration.DEFAULT_DATE_PATTERN, Locale.US));
 
 		FilterDefinition filter = new FilterDefinition();
 		filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
