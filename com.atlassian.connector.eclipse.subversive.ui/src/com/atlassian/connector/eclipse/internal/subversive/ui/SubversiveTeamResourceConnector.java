@@ -660,6 +660,7 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 						revision));
 			} else if (IStateFilter.SF_MODIFIED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
+				getContent.run(monitor);
 				String newContent = getResourceContent(((IFile) resource).getContents());
 				items.add(new UploadItem(url, getResourceContent(getContent.getContent()),
 						newContent.length() == 0 ? "[--item is empty--]" : newContent, revision));
