@@ -2,7 +2,7 @@
 <feature
       id="com.atlassian.connector.eclipse.subclipse"
       label="%featureName"
-      version="1.2.0.qualifier"
+      version="1.3.0.qualifier"
       provider-name="%providerName"
       plugin="com.atlassian.connector.eclipse.ui">
 
@@ -31,7 +31,7 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import feature="com.atlassian.connector.eclipse.crucible" version="1.2.0.qualifier" match="equivalent"/>
+      <import feature="com.atlassian.connector.eclipse.crucible" version="1.3.0.qualifier" match="equivalent"/>
       <import plugin="org.tigris.subversion.subclipse.core" version="1.6.0" match="compatible"/>
       <import plugin="org.tigris.subversion.subclipse.ui" version="1.6.0" match="compatible"/>
       <import feature="org.tigris.subversion.subclipse" version="1.6.0" match="compatible"/>
