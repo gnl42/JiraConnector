@@ -285,6 +285,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				wizard.updateCache(CrucibleAddChangesetsPage.this);
+				cachedRepositories = null;
 			}
 		});
 
