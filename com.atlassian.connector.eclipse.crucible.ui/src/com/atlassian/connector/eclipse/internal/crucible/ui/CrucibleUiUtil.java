@@ -311,4 +311,13 @@ public final class CrucibleUiUtil {
 		}
 		return allReviewers;
 	}
+
+	@NotNull
+	public static Set<Reviewer> getAllCachedUsersAsReviewers(@NotNull TaskRepository taskRepository) {
+		Set<Reviewer> allReviewers = new HashSet<Reviewer>();
+		for (User user : CrucibleUiUtil.getCachedUsers(taskRepository)) {
+			allReviewers.add(new Reviewer(user.getUsername(), user.getDisplayName(), false));
+		}
+		return allReviewers;
+	}
 }
