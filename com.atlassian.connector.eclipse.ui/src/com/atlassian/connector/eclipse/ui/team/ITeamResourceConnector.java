@@ -168,4 +168,11 @@ public interface ITeamResourceConnector {
 	@NotNull
 	IResource[] getMembersForContainer(@NotNull IContainer element) throws CoreException;
 
+	/**
+	 * 
+	 * @param resource
+	 * @return true if specified resource is managed by this {@link ITeamResourceConnector}, if
+	 *         {@link ITeamResourceConnector} is disabled returns false without checking the resource
+	 */
+	boolean isResourceManagedBy(IResource resource);
 }

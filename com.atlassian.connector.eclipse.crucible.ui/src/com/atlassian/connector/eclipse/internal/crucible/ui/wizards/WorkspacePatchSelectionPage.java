@@ -101,8 +101,17 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		this.wizard = wizard;
 		this.roots.addAll(roots);
 		this.teamConnectors = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectors();
-		this.selectedTeamConnector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectorByName(
-				CrucibleUiPlugin.getDefault().getPreferredTeamResourceConnectorName());
+		//this.selectedTeamConnector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectorByName(
+		//		CrucibleUiPlugin.getDefault().getPreferredTeamResourceConnectorName());
+		if (this.selectedTeamConnector == null && roots.size() > 0) {
+			IResource first = roots.get(0);
+			for (ITeamResourceConnector connector : teamConnectors) {
+				if (connector.isResourceManagedBy(first)) {
+					this.selectedTeamConnector = connector;
+					break;
+				}
+			}
+		}
 	}
 
 	public IResource[] getSelection() {

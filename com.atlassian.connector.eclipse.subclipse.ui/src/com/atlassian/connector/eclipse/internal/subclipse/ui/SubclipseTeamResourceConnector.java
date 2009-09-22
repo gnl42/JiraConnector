@@ -398,8 +398,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 	private String getAbsoluteUrl(VersionedVirtualFile fileDescriptor) {
 		//TODO might need some performance tweak, but works for now for M2
 		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-
-			if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
+			if (isResourceManagedBy(project)) {
 				try {
 					IPath fileIPath = new Path(fileDescriptor.getUrl());
 					IResource resource = project.findMember(fileIPath);
@@ -452,7 +451,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		if (project == null) {
 			return null;
 		}
-		if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
+		if (isResourceManagedBy(project)) {
 			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
 			final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
 			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"));
@@ -490,7 +489,7 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		if (project == null) {
 			return null;
 		}
-		if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
+		if (isResourceManagedBy(project)) {
 			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
 			final ISVNRepositoryLocation repository = svnResource.getRepository();
 			if (repository != null) {
@@ -580,5 +579,12 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
 		return FileUtility.getResourcesByFilterRecursive(roots, getStateFilter(filter));
+	}
+
+	public boolean isResourceManagedBy(IResource resource) {
+		if (!isEnabled()) {
+			return false;
+		}
+		return SVNWorkspaceRoot.isManagedBySubclipse(resource.getProject());
 	}
 }

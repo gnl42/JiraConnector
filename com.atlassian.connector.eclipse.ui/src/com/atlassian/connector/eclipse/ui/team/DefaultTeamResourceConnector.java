@@ -557,4 +557,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
 		return MiscUtil.buildArrayList();
 	}
+
+	public boolean isResourceManagedBy(IResource resource) {
+		// ignore
+		return false;
+	}
 }

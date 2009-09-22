@@ -330,18 +330,36 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	public Review getReview() {
 		Review review = new Review(repository.getUrl());
 
-		review.setName(titleText.getText());
-		review.setSummary(titleText.getText());
-		review.setDescription(objectivesText.getText());
-		review.setReviewers(reviewersSelectionTreePart.getSelectedReviewers());
-		review.setAllowReviewerToJoin(anyoneCanJoin.getEnabled());
+		if (titleText != null) {
+			review.setName(titleText.getText());
+			review.setSummary(titleText.getText());
+		}
+
+		if (objectivesText != null) {
+			review.setDescription(objectivesText.getText());
+		}
+
+		if (reviewersSelectionTreePart != null) {
+			review.setReviewers(reviewersSelectionTreePart.getSelectedReviewers());
+		}
+
+		if (anyoneCanJoin != null) {
+			review.setAllowReviewerToJoin(anyoneCanJoin.getEnabled());
+		}
 		review.setCreator(CrucibleUiUtil.getCurrentCachedUser(repository));
-		review.setAuthor((User) ((IStructuredSelection) authorComboViewer.getSelection()).getFirstElement());
-		review.setModerator((User) ((IStructuredSelection) moderatorComboViewer.getSelection()).getFirstElement());
 
-		CrucibleProject project = (CrucibleProject) ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
-		review.setProjectKey(project != null ? project.getKey() : null);
+		if (authorComboViewer != null) {
+			review.setAuthor((User) ((IStructuredSelection) authorComboViewer.getSelection()).getFirstElement());
+		}
 
+		if (moderatorComboViewer != null) {
+			review.setModerator((User) ((IStructuredSelection) moderatorComboViewer.getSelection()).getFirstElement());
+		}
+
+		if (projectsComboViewer != null) {
+			CrucibleProject project = (CrucibleProject) ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
+			review.setProjectKey(project != null ? project.getKey() : null);
+		}
 		return review;
 	}
 

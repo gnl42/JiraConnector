@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
@@ -192,6 +193,17 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 
 	public List<IResource> getResourcesByFilterRecursive(IResource[] roots, State filter) {
 		return MiscUtil.buildArrayList();
+	}
+
+	public boolean isResourceManagedBy(IResource resource) {
+		if (!isEnabled()) {
+			return false;
+		}
+		try {
+			return CVSWorkspaceRoot.isSharedWithCVS(resource);
+		} catch (CVSException e) {
+			return false;
+		}
 	}
 
 }
