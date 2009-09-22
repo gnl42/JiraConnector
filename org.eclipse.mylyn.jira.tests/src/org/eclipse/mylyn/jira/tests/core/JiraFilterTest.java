@@ -87,7 +87,6 @@ public class JiraFilterTest extends TestCase {
 
 		NamedFilter[] filters = client.getNamedFilters(null);
 		assertNotNull("Expected named filters on server", filters);
-		assertTrue("Expected named filters on server", filters.length > 1);
 
 		NamedFilter filter = null;
 		for (NamedFilter f : filters) {
