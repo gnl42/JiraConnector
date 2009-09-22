@@ -120,7 +120,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		if (lastSelectedProject != null) {
 			projectsComboViewer.setSelection(new StructuredSelection(lastSelectedProject));
 		} else {
-			projectsComboViewer.setSelection(new StructuredSelection(projectsComboViewer.getElementAt(0)));
+			if (projectsComboViewer.getElementAt(0) != null) {
+				projectsComboViewer.setSelection(new StructuredSelection(projectsComboViewer.getElementAt(0)));
+			}
 		}
 
 		User currentUser = CrucibleUiUtil.getCurrentCachedUser(repository);
@@ -128,8 +130,12 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 			moderatorComboViewer.setSelection(new StructuredSelection(currentUser));
 			authorComboViewer.setSelection(new StructuredSelection(currentUser));
 		} else {
-			moderatorComboViewer.setSelection(new StructuredSelection(moderatorComboViewer.getElementAt(0)));
-			authorComboViewer.setSelection(new StructuredSelection(authorComboViewer.getElementAt(0)));
+			if (moderatorComboViewer.getElementAt(0) != null) {
+				moderatorComboViewer.setSelection(new StructuredSelection(moderatorComboViewer.getElementAt(0)));
+			}
+			if (authorComboViewer.getElementAt(0) != null) {
+				authorComboViewer.setSelection(new StructuredSelection(authorComboViewer.getElementAt(0)));
+			}
 		}
 
 		// restore checkboxes selection
