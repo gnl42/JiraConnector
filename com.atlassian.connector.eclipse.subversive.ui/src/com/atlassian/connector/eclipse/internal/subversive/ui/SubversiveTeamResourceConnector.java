@@ -86,6 +86,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -624,13 +625,17 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		}
 	}
 
-	private String getResourceContent(InputStream is) {
+	private byte[] getResourceContent(InputStream is) {
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+
 		try {
-			return IOUtils.toString(is);
+			IOUtils.copy(is, out);
+			return out.toByteArray();
 		} catch (IOException e) {
-			return "";
+			return new byte[0];
 		} finally {
 			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(out);
 		}
 	}
 
@@ -650,20 +655,20 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(localResource) || IStateFilter.SF_ADDED.accept(localResource)) {
-				String newContent = getResourceContent(((IFile) resource).getContents());
-				items.add(new UploadItem(url, "", newContent.length() == 0 ? "[--item is empty--]" : newContent,
-						revision));
+				byte[] newContent = getResourceContent(((IFile) resource).getContents());
+				items.add(new UploadItem(url, new byte[0], newContent.length == 0 ? "[--item is empty--]".getBytes()
+						: newContent, revision));
 			} else if (IStateFilter.SF_DELETED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
-				items.add(new UploadItem(url, getResourceContent(getContent.getContent()), "[--item deleted--]",
-						revision));
+				items.add(new UploadItem(url, getResourceContent(getContent.getContent()),
+						"[--item deleted--]".getBytes(), revision));
 			} else if (IStateFilter.SF_MODIFIED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
-				String newContent = getResourceContent(((IFile) resource).getContents());
+				byte[] newContent = getResourceContent(((IFile) resource).getContents());
 				items.add(new UploadItem(url, getResourceContent(getContent.getContent()),
-						newContent.length() == 0 ? "[--item is empty--]" : newContent, revision));
+						newContent.length == 0 ? "[--item is empty--]".getBytes() : newContent, revision));
 			}
 		}
 		return items;

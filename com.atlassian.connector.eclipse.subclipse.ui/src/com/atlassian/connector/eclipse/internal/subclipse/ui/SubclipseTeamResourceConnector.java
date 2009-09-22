@@ -80,6 +80,7 @@ import org.tigris.subversion.svnclientadapter.ISVNProperty;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -523,19 +524,23 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 		}
 	}
 
-	private String getResourceContent(IStorage resource) {
+	private byte[] getResourceContent(IStorage resource) {
 		InputStream is;
 		try {
 			is = resource.getContents();
 		} catch (CoreException e) {
-			return "";
+			return new byte[0];
 		}
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+
 		try {
-			return IOUtils.toString(is);
+			IOUtils.copy(is, out);
+			return out.toByteArray();
 		} catch (IOException e) {
-			return "";
+			return new byte[0];
 		} finally {
 			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(out);
 		}
 	}
 
@@ -557,16 +562,16 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (status.isUnversioned() || status.isAdded()) {
-				String newContent = getResourceContent((IFile) resource);
-				items.add(new UploadItem(url, "", newContent.length() == 0 ? "[--item is empty--]" : newContent,
-						revision));
+				byte[] newContent = getResourceContent((IFile) resource);
+				items.add(new UploadItem(url, new byte[0], newContent.length == 0 ? "[--item is empty--]".getBytes()
+						: newContent, revision));
 			} else if (status.isDeleted()) {
 				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
-						"[--item deleted--]", revision));
+						"[--item deleted--]".getBytes(), revision));
 			} else if (status.isDirty()) {
-				String newContent = getResourceContent((IFile) resource);
+				byte[] newContent = getResourceContent((IFile) resource);
 				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
-						newContent.length() == 0 ? "[--item is empty--]" : newContent, revision));
+						newContent.length == 0 ? "[--item is empty--]".getBytes() : newContent, revision));
 			}
 		}
 		return items;
