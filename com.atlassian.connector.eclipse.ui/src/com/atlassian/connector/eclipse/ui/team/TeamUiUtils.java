@@ -417,18 +417,15 @@ public final class TeamUiUtils {
 	}
 
 	public static RevisionInfo getLocalRevision(@NotNull IResource resource) throws CoreException {
-		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+		ITeamResourceConnector connector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnector(
+				resource);
 
-		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
-			if (connector.isEnabled()) {
-				RevisionInfo res = connector.getLocalRevision(resource);
-				if (res != null) {
-					return res;
-				}
+		if (connector != null && connector.isEnabled()) {
+			RevisionInfo res = connector.getLocalRevision(resource);
+			if (res != null) {
+				return res;
 			}
 		}
-		// We fail to understand Team API here. 
-		//return defaultConnector.getLocalRevision(resource);
 		return null;
 	}
 

@@ -14,8 +14,11 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -64,5 +67,23 @@ public class CreatePreCommitReviewAction extends TeamAction {
 		}
 		wd.setBlockOnOpen(true);
 		wd.open();
+	}
+
+	@Override
+	protected void setActionEnablement(IAction action) {
+		boolean enabled = false;
+		for (IResource resource : getSelectedResources()) {
+			if (enabledFor(resource)) {
+				enabled = true;
+			}
+		}
+		action.setEnabled(enabled);
+	}
+
+	private boolean enabledFor(IResource selected) {
+		ITeamResourceConnector connector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnector(
+				selected);
+
+		return (connector != null);
 	}
 }
