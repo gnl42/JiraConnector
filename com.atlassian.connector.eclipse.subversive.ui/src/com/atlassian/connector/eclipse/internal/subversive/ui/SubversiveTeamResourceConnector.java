@@ -673,4 +673,18 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 		IResource[] result = FileUtility.getResourcesRecursive(roots, getStateFilter(filter));
 		return result == null ? new ArrayList<IResource>() : MiscUtil.buildArrayList(result);
 	}
+
+	public boolean isResourceManagedBy(IResource resource) {
+		if (!isEnabled()) {
+			return false;
+		}
+
+		// check if project is associated with Subversive Team provider, 
+		// if we don't test it asRepositoryResource will throw RuntimeException
+		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), SVNTeamPlugin.NATURE_ID);
+		if (provider != null) {
+			return true;
+		}
+		return false;
+	}
 }
