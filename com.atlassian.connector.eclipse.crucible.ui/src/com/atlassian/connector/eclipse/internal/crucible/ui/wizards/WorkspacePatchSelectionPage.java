@@ -56,9 +56,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -292,16 +289,6 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		});
 		menuMgr.setRemoveAllWhenShown(true);
 		changeViewer.getTree().setMenu(menu);
-
-		Button updateData = new Button(composite, SWT.PUSH);
-		updateData.setText("Update Repository Data");
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(updateData);
-		updateData.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				wizard.updateCache(WorkspacePatchSelectionPage.this);
-			}
-		});
 
 		// update selection after all wiring has been done
 		scmViewer.setInput(teamConnectors);
