@@ -153,7 +153,7 @@ public interface ITeamResourceConnector {
 	boolean haveMatchingResourcesRecursive(@NotNull IResource[] roots, State filter);
 
 	/**
-	 * Gets all resources matching filter (also their memebers, and members their memebers)
+	 * Gets all resources matching filter (also their members, and members their members)
 	 * 
 	 * @param roots
 	 * @param filter

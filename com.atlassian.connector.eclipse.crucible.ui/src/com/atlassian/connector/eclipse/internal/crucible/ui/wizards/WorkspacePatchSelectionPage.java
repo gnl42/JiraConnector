@@ -94,22 +94,19 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 	public WorkspacePatchSelectionPage(@NotNull TaskRepository taskRepository, @NotNull ReviewWizard wizard,
 			@NotNull List<IResource> roots) {
-		super("Add Workspace Patch to Review");
-		setTitle("Add Workspace Patch to Review");
-		setDescription("Attach a patch from the workspace to the review.");
+		super("Add Workspace Changes to Review");
+		setTitle("Add Workspace Changes to Review");
+		setDescription("Attach local, uncommited changes from the workspace to the review.");
 
 		this.wizard = wizard;
 		this.roots.addAll(roots);
 		this.teamConnectors = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectors();
-		//this.selectedTeamConnector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectorByName(
-		//		CrucibleUiPlugin.getDefault().getPreferredTeamResourceConnectorName());
 		if (this.selectedTeamConnector == null && roots.size() > 0) {
-			IResource first = roots.get(0);
-			for (ITeamResourceConnector connector : teamConnectors) {
-				if (connector.isResourceManagedBy(first)) {
-					this.selectedTeamConnector = connector;
-					break;
-				}
+			final ITeamResourceConnector teamConnector = AtlassianUiPlugin.getDefault()
+					.getTeamResourceManager()
+					.getTeamConnector(roots.get(0));
+			if (teamConnector != null) {
+				this.selectedTeamConnector = teamConnector;
 			}
 		}
 	}

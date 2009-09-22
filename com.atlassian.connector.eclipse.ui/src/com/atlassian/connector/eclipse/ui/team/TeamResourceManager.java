@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.resources.IResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,4 +55,15 @@ public class TeamResourceManager {
 		}
 		return null;
 	}
+
+	@Nullable
+	public ITeamResourceConnector getTeamConnector(@NotNull IResource resource) {
+		for (ITeamResourceConnector connector : getTeamConnectors()) {
+			if (connector.isResourceManagedBy(resource)) {
+				return connector;
+			}
+		}
+		return null;
+	}
+
 }
