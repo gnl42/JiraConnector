@@ -535,4 +535,5 @@ public final class TeamUiUtils {
 			// ignore as it may not exist in other versions
 		}
 	}
+
 }

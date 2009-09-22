@@ -16,11 +16,11 @@ import com.atlassian.connector.eclipse.internal.subclipse.core.IStateFilter;
 import com.atlassian.connector.eclipse.internal.subclipse.core.SubclipseUtil;
 import com.atlassian.connector.eclipse.internal.subclipse.ui.compare.CrucibleSubclipseCompareEditorInput;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.team.AbstractTeamConnector;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -97,7 +97,7 @@ import java.util.TreeSet;
  * 
  * @author Shawn Minto
  */
-public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
+public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 
 	public boolean isEnabled() {
 		return true;
@@ -554,24 +554,27 @@ public class SubclipseTeamResourceConnector implements ITeamResourceConnector {
 				continue;
 			}
 
-			ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
-			SVNRevision svnRevision = svnResource.getRevision();
-			String revision = svnRevision != null ? svnRevision.toString() : "";
-			String url = svnResource.getUrl().toString();
-			LocalResourceStatus status = svnResource.getStatus();
+			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
+			final LocalResourceStatus status = svnResource.getStatus();
+
+			// for unversioned files SVNRevision.getRevision throws an exception
+			final SVNRevision svnRevision = (status.isUnversioned()) ? null : svnResource.getRevision();
+			final String fileName = getFileNameWithProjectName(resource);
+			final String revision = svnRevision != null ? svnRevision.toString() : "";
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (status.isUnversioned() || status.isAdded()) {
 				byte[] newContent = getResourceContent((IFile) resource);
-				items.add(new UploadItem(url, new byte[0], newContent.length == 0 ? "[--item is empty--]".getBytes()
-						: newContent, revision));
+				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent,
+						revision));
 			} else if (status.isDeleted()) {
-				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
-						"[--item deleted--]".getBytes(), revision));
+				items.add(new UploadItem(fileName,
+						getResourceContent(svnResource.getBaseResource().getStorage(monitor)), DELETED_ITEM, revision));
 			} else if (status.isDirty()) {
 				byte[] newContent = getResourceContent((IFile) resource);
-				items.add(new UploadItem(url, getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
-						newContent.length == 0 ? "[--item is empty--]".getBytes() : newContent, revision));
+				items.add(new UploadItem(fileName,
+						getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
+						newContent.length == 0 ? EMPTY_ITEM : newContent, revision));
 			}
 		}
 		return items;

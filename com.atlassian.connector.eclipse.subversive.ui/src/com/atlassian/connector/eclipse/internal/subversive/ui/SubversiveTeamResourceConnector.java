@@ -13,11 +13,11 @@ package com.atlassian.connector.eclipse.internal.subversive.ui;
 
 import com.atlassian.connector.eclipse.internal.subversive.core.SubversiveUtil;
 import com.atlassian.connector.eclipse.internal.subversive.ui.compare.CrucibleSubversiveCompareEditorInput;
+import com.atlassian.connector.eclipse.ui.team.AbstractTeamConnector;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -104,7 +104,7 @@ import java.util.TreeSet;
  * @author Pawel Niewiadomski
  * @author Wojciech Seliga
  */
-public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
+public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 
 	private final class ProgressMonitorWrapper implements ISVNProgressMonitor {
 		private final IProgressMonitor subMonitor;
@@ -648,27 +648,25 @@ public class SubversiveTeamResourceConnector implements ITeamResourceConnector {
 				continue;
 			}
 
-			IRepositoryResource repositoryResource = SVNRemoteStorage.instance().asRepositoryResource(resource);
 			ILocalResource localResource = SVNRemoteStorage.instance().asLocalResource(resource);
 			String revision = Long.toString(localResource.getRevision());
-			String url = repositoryResource.getUrl();
+			final String fileName = getFileNameWithProjectName(resource);
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(localResource) || IStateFilter.SF_ADDED.accept(localResource)) {
 				byte[] newContent = getResourceContent(((IFile) resource).getContents());
-				items.add(new UploadItem(url, new byte[0], newContent.length == 0 ? "[--item is empty--]".getBytes()
-						: newContent, revision));
+				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent,
+						revision));
 			} else if (IStateFilter.SF_DELETED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
-				items.add(new UploadItem(url, getResourceContent(getContent.getContent()),
-						"[--item deleted--]".getBytes(), revision));
+				items.add(new UploadItem(fileName, getResourceContent(getContent.getContent()), DELETED_ITEM, revision));
 			} else if (IStateFilter.SF_MODIFIED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
 				byte[] newContent = getResourceContent(((IFile) resource).getContents());
-				items.add(new UploadItem(url, getResourceContent(getContent.getContent()),
-						newContent.length == 0 ? "[--item is empty--]".getBytes() : newContent, revision));
+				items.add(new UploadItem(fileName, getResourceContent(getContent.getContent()),
+						newContent.length == 0 ? EMPTY_ITEM : newContent, revision));
 			}
 		}
 		return items;
