@@ -19,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
+import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,6 +35,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -44,21 +46,9 @@ import java.net.URL;
  */
 public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
-//	private Button buttonAlways;
-//
-//	private Button buttonNever;
-//
-//	private Button buttonPrompt;
-
 	private Button fishEyeButton;
 
 	private boolean isFishEyeDetected;
-
-//	private ComboViewer defaultProjectCombo;
-//
-//	private ExpandableComposite defaultSection;
-//
-//	private Button updateRepositoryButton;
 
 	private class CrucibleValidator extends Validator {
 
@@ -78,6 +68,16 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 
 				monitor = Policy.backgroundMonitorFor(monitor);
 				client.validate(monitor, taskRepository);
+			} catch (CoreException e) {
+				if (e.getCause() != null && e.getCause() instanceof RemoteApiException
+						&& e.getCause().getCause() != null && e.getCause().getCause() instanceof IOException
+						&& e.getCause().getCause().getMessage().contains("HTTP 404")) {
+					setStatus(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"HTTP 404 (Not Found) - Did you enable Remote API in Crucible?", e));
+				} else {
+					setStatus(e.getStatus());
+				}
+				return;
 			} finally {
 				if (client != null) {
 					clientManager.deleteTempClient(client.getServerData());
@@ -93,7 +93,7 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 				isFishEyeDetected = true;
 			} catch (CoreException e) {
 				if (CrucibleRepositoryConnector.isFishEye(taskRepository)) {
-					throw new CoreException(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					setStatus(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 							"This server does not seem to be integrated with FishEye.", e));
 				}
 				// if it's not marked as FishEye - that's OK. No exception re-thrown
@@ -102,7 +102,6 @@ public class CrucibleRepositorySettingsPage extends AbstractRepositorySettingsPa
 					clientManager.deleteTempFishEyeClient(fishEyeClient.getServerData());
 				}
 			}
-//			}
 		}
 	}
 
