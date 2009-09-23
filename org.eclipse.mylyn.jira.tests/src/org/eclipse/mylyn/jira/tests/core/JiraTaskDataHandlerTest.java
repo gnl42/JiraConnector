@@ -8,7 +8,7 @@
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
  *     Eugene Kuleshov - improvements
- *     Pawel Niewiadomski - fix for bug 287736 
+ *     Pawel Niewiadomski - fix for bug 287736
  *******************************************************************************/
 
 package org.eclipse.mylyn.jira.tests.core;
@@ -16,8 +16,10 @@ package org.eclipse.mylyn.jira.tests.core;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -54,6 +56,8 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.core.data.TaskRelation;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.mylyn.tests.util.TestUtil;
+import org.eclipse.mylyn.tests.util.TestUtil.Credentials;
 import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
 
 /**
@@ -752,6 +756,90 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals("comment1", comments.get(0).getText());
 		assertEquals("comment2", comments.get(1).getText());
 		return taskData;
+	}
+
+	/**
+	 * Adds a comment to a task which user doesn't have edit permission for.
+	 */
+	public void testPostTaskDataCommentWithoutEditPermission() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testWithoutEditPermission");
+
+		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).setValue("new summary");
+		taskData.getRoot().getAttribute(JiraAttribute.COMMENT_NEW.id()).setValue("comment");
+		dataHandler.postTaskData(repository, taskData, buildChanged(taskData.getRoot(), JiraAttribute.SUMMARY,
+				JiraAttribute.COMMENT_NEW), new NullProgressMonitor());
+		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("new summary", taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).getValue());
+		ITask task = JiraTestUtil.createTask(repository, taskData.getTaskId());
+		List<ITaskComment> comments = JiraTestUtil.getTaskComments(task);
+		assertEquals(1, comments.size());
+		assertEquals("comment", comments.get(0).getText());
+		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
+
+		setUp();
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.READ_ONLY);
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
+
+		taskData.getRoot().getAttribute(JiraAttribute.COMMENT_NEW.id()).setValue("new comment");
+
+		dataHandler.postTaskData(repository, taskData, buildChanged(taskData.getRoot(), JiraAttribute.COMMENT_NEW),
+				new NullProgressMonitor());
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals("new summary", taskData.getRoot().getAttribute(JiraAttribute.SUMMARY.id()).getValue());
+		task = JiraTestUtil.createTask(repository, taskData.getTaskId());
+		comments = JiraTestUtil.getTaskComments(task);
+		assertEquals(2, comments.size());
+		assertEquals("comment", comments.get(0).getText());
+		assertEquals("new comment", comments.get(1).getText());
+		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
+	}
+
+	private Set<TaskAttribute> buildChanged(TaskAttribute root, JiraAttribute... attrs) {
+		Set<TaskAttribute> changed = new HashSet<TaskAttribute>();
+		for (JiraAttribute ja : attrs) {
+			changed.add(root.getAttribute(ja.id()));
+		}
+		return changed;
+	}
+
+	/**
+	 * Reassigns a task for which the user does not have edit permissions for.
+	 */
+	public void testPostTaskDataAssignWithoutEditPermission() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
+
+		Credentials userCredentials = TestUtil.readCredentials(PrivilegeLevel.USER);
+		JiraIssue issue = JiraTestUtil.createIssue(client, "testWithoutEditPermission");
+
+		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		taskData.getRoot().getAttribute(JiraAttribute.USER_ASSIGNED.id()).setValue("-1");
+
+		dataHandler.postTaskData(repository, taskData, buildChanged(taskData.getRoot(), JiraAttribute.USER_ASSIGNED),
+				new NullProgressMonitor());
+		assertNull(taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY));
+
+		setUp();
+		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.READ_ONLY);
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+
+		taskData.getRoot().getAttribute(JiraAttribute.USER_ASSIGNED.id()).setValue(userCredentials.username);
+
+		dataHandler.postTaskData(repository, taskData, buildChanged(taskData.getRoot(), JiraAttribute.USER_ASSIGNED),
+				new NullProgressMonitor());
+
+		taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		assertEquals(userCredentials.username, taskData.getRoot()
+				.getAttribute(JiraAttribute.USER_ASSIGNED.id())
+				.getValue());
 	}
 
 }

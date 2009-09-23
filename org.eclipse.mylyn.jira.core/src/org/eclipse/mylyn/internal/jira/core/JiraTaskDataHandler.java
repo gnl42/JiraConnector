@@ -8,6 +8,7 @@
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
  *     Eugene Kuleshov - improvements
+ *     Pawel Niewiadomski - fixes for bug 288347
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.core;
@@ -18,6 +19,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -974,12 +976,40 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				} else {
 					String operationId = getOperationId(taskData);
 					String newComment = getNewComment(taskData);
-					// do normal workflow all the time
-					if (!JiraRepositoryConnector.isClosed(issue)
-							&& taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null) {
+					Set<String> changeIds = new HashSet<String>();
+					if (changedAttributes != null) {
+						for (TaskAttribute ta : changedAttributes) {
+							changeIds.add(ta.getId());
+						}
+					}
+
+					boolean handled = false;
+
+					// if only reassigning do not do the workflow
+					if (!handled && changeIds.contains(TaskAttribute.USER_ASSIGNED)) {
+						Set<String> anythingElse = new HashSet<String>(changeIds);
+						anythingElse.removeAll(Arrays.asList(TaskAttribute.USER_ASSIGNED, TaskAttribute.COMMENT_NEW));
+						if (anythingElse.size() == 0) {
+							// no more changes, so that's a re-assign operation (we can't count on operationId == REASSIGN_OPERATION)
+							client.assignIssueTo(issue, JiraClient.ASSIGNEE_USER, getAssignee(taskData), newComment,
+									monitor);
+							handled = true;
+						}
+					}
+
+					// if only comment was modified do not do the workflow
+					if (!handled //
+							&& !JiraRepositoryConnector.isClosed(issue)
+							&& taskData.getRoot().getMappedAttribute(IJiraConstants.ATTRIBUTE_READ_ONLY) == null
+							&& !changeIds.equals(Collections.singleton(TaskAttribute.COMMENT_NEW))) {
 						client.updateIssue(issue, newComment, monitor);
-					} else if (newComment.length() > 0) {
+						handled = true;
+					}
+
+					// at last try to at least post the comment (if everything else failed)
+					if (!handled && newComment.length() > 0) {
 						client.addCommentToIssue(issue, newComment, monitor);
+						handled = true;
 					}
 
 					postWorkLog(repository, client, taskData, issue, monitor);
@@ -1020,6 +1050,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			newComment = taskData.getAttributeMapper().getValue(attribute);
 		}
 		return newComment;
+	}
+
+	private String getAssignee(TaskData taskData) {
+		String asignee = ""; //$NON-NLS-1$
+		TaskAttribute attribute = taskData.getRoot().getMappedAttribute(TaskAttribute.USER_ASSIGNED);
+		if (attribute != null) {
+			asignee = taskData.getAttributeMapper().getValue(attribute);
+		}
+		return asignee;
 	}
 
 	private String getOperationId(TaskData taskData) {
