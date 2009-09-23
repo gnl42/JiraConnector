@@ -65,6 +65,18 @@ public class CrucibleClientManager extends RepositoryClientManager<CrucibleClien
 	}
 
 	/**
+	 * Use this method instead of {@link #getClient(TaskRepository)} and then getClientData() as on Linux it has very
+	 * poor performance (100ms+ each call). Here we are by-passing {@link CrucibleClient} initilization, which anyway
+	 * does not matter for {@link CrucibleClientData}
+	 * 
+	 * @param taskRepository
+	 * @return cached data for Crucible
+	 */
+	public synchronized CrucibleClientData getCrucibleClientData(TaskRepository taskRepository) {
+		return super.getClient(taskRepository).getClientData();
+	}
+
+	/**
 	 * 
 	 * @param taskRepository
 	 * @return <code>null</code> when given taskRepository does not represent FishEye

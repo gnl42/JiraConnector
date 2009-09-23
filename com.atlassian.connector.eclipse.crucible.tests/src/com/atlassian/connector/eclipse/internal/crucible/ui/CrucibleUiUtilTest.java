@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -226,12 +225,10 @@ public class CrucibleUiUtilTest extends TestCase {
 	public void testGetCachedUsersReview() {
 		Review review = createMockReview(createMockRepository());
 
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
-				CrucibleUiUtil.getCrucibleTaskRepository(review));
+		final CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(CrucibleUiUtil.getCrucibleTaskRepository(review));
 
-		assertNotNull(client);
-
-		CrucibleClientData clientData = client.getClientData();
 		assertNotNull(clientData);
 
 		List<User> users = new ArrayList<User>();
@@ -285,8 +282,11 @@ public class CrucibleUiUtilTest extends TestCase {
 		TaskRepository repo = createMockRepository();
 		createMockReview(repo);
 
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repo);
-		CrucibleClientData clientData = client.getClientData();
+		final CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(repo);
+		assertNotNull(clientData);
+
 		User userA = new User("userA", "a");
 		User userB = new User("user", "u");
 		List<User> users = new ArrayList<User>();
@@ -304,8 +304,11 @@ public class CrucibleUiUtilTest extends TestCase {
 		TaskRepository repo = createMockRepository();
 		Review review = createMockReview(repo);
 
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repo);
-		CrucibleClientData clientData = client.getClientData();
+		final CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(repo);
+		assertNotNull(clientData);
+
 		User userA = new User("userA", "a");
 		User userB = new User("user", "u");
 		List<User> users = new ArrayList<User>();
@@ -322,8 +325,9 @@ public class CrucibleUiUtilTest extends TestCase {
 	public void testGetCachedUser() {
 		TaskRepository repo = createMockRepository();
 		createMockReview(repo);
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repo);
-		CrucibleClientData clientData = client.getClientData();
+		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(repo);
 		User userA = new User("userA", "a");
 		User userB = new User("userB", "b");
 		List<User> users = new ArrayList<User>();
@@ -341,12 +345,10 @@ public class CrucibleUiUtilTest extends TestCase {
 		TaskRepository repository = createMockRepository();
 		Review review = createMockReview(repository);
 
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
-				CrucibleUiUtil.getCrucibleTaskRepository(review));
+		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(CrucibleUiUtil.getCrucibleTaskRepository(review));
 
-		assertNotNull(client);
-
-		CrucibleClientData clientData = client.getClientData();
 		assertNotNull(clientData);
 
 		List<User> users = new ArrayList<User>();
@@ -376,12 +378,9 @@ public class CrucibleUiUtilTest extends TestCase {
 		TaskRepository repository = createMockRepository();
 		Review review = createMockReview(repository);
 
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(
-				CrucibleUiUtil.getCrucibleTaskRepository(review));
-
-		assertNotNull(client);
-
-		CrucibleClientData clientData = client.getClientData();
+		final CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(CrucibleUiUtil.getCrucibleTaskRepository(review));
 		assertNotNull(clientData);
 
 		List<CrucibleProject> projects = new ArrayList<CrucibleProject>();

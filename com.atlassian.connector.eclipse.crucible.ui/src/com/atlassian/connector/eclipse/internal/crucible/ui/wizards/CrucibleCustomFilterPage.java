@@ -262,10 +262,10 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 	@Override
 	protected void doRefresh() {
-		Set<User> users = new HashSet<User>(getClient().getClientData().getCachedUsers());
+		Set<User> users = new HashSet<User>(getCrucibleClientData().getCachedUsers());
 		users.add(USER_ANY);
 
-		Set<CrucibleProject> projects = new HashSet<CrucibleProject>(getClient().getClientData().getCachedProjects());
+		Set<CrucibleProject> projects = new HashSet<CrucibleProject>(getCrucibleClientData().getCachedProjects());
 		projects.add(PROJECT_ANY);
 
 		// TODO add the ANY values and set selections to be what they were before if they exist
@@ -303,6 +303,11 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 
 	private CrucibleClient getClient() {
 		return ((CrucibleRepositoryConnector) getConnector()).getClientManager().getClient(getTaskRepository());
+	}
+
+	private CrucibleClientData getCrucibleClientData() {
+		return ((CrucibleRepositoryConnector) getConnector()).getClientManager().getCrucibleClientData(
+				getTaskRepository());
 	}
 
 	@Override
@@ -375,7 +380,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 			return USER_ANY;
 		}
 
-		CrucibleClientData clientData = getClient().getClientData();
+		final CrucibleClientData clientData = getCrucibleClientData();
 		if (clientData != null && clientData.getCachedUsers() != null) {
 			for (User user : clientData.getCachedUsers()) {
 				if (user.getUsername().equals(username)) {
@@ -392,7 +397,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 			return PROJECT_ANY;
 		}
 
-		CrucibleClientData clientData = getClient().getClientData();
+		final CrucibleClientData clientData = getCrucibleClientData();
 		if (clientData != null && clientData.getCachedProjects() != null) {
 			for (CrucibleProject project : clientData.getCachedProjects()) {
 				if (project.getKey().equals(projectKey)) {

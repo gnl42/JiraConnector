@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.crucible.ui.preferences.ActivateReview;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleClientManager;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
@@ -238,9 +239,9 @@ public final class CrucibleUiUtil {
 	}
 
 	public static Set<User> getCachedUsers(TaskRepository repository) {
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
-		CrucibleClientData clientData = client.getClientData();
-		Set<User> users;
+		final CrucibleClientManager clientManager = CrucibleCorePlugin.getRepositoryConnector().getClientManager();
+		final CrucibleClientData clientData = clientManager.getCrucibleClientData(repository);
+		final Set<User> users;
 		if (clientData == null) {
 			users = new HashSet<User>();
 		} else {
@@ -250,8 +251,9 @@ public final class CrucibleUiUtil {
 	}
 
 	public static Set<Repository> getCachedRepositories(TaskRepository repository) {
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
-		CrucibleClientData clientData = client.getClientData();
+		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(repository);
 		Set<Repository> repositories;
 		if (clientData == null) {
 			repositories = new HashSet<Repository>();
@@ -262,8 +264,9 @@ public final class CrucibleUiUtil {
 	}
 
 	public static Set<CrucibleProject> getCachedProjects(TaskRepository repository) {
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
-		CrucibleClientData clientData = client.getClientData();
+		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(repository);
 		Set<CrucibleProject> projects;
 		if (clientData == null) {
 			projects = new HashSet<CrucibleProject>();
@@ -297,8 +300,9 @@ public final class CrucibleUiUtil {
 	}
 
 	public static boolean hasCachedData(TaskRepository repository) {
-		CrucibleClient client = CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
-		CrucibleClientData clientData = client.getClientData();
+		CrucibleClientData clientData = CrucibleCorePlugin.getRepositoryConnector()
+				.getClientManager()
+				.getCrucibleClientData(repository);
 		return clientData.hasData();
 	}
 
