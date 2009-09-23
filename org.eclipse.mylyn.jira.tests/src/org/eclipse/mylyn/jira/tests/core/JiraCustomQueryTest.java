@@ -60,8 +60,6 @@ public class JiraCustomQueryTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		super.setUp();
-
 		Component[] comps = new Component[3];
 		comps[0] = new Component();
 		comps[0].setId("comp0");

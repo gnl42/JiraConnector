@@ -19,7 +19,6 @@ import org.eclipse.mylyn.jira.tests.client.JiraClientTest;
 import org.eclipse.mylyn.jira.tests.client.JiraRssHandlerTest;
 import org.eclipse.mylyn.jira.tests.client.JiraWebClientTest;
 import org.eclipse.mylyn.jira.tests.core.FilterDefinitionConverterTest;
-import org.eclipse.mylyn.jira.tests.core.JiraCustomQueryTest;
 import org.eclipse.mylyn.jira.tests.core.JiraTimeFormatTest;
 import org.eclipse.mylyn.jira.tests.model.JiraVersionTest;
 import org.eclipse.mylyn.jira.tests.util.JiraFixture;
@@ -36,7 +35,6 @@ public class AllJiraHeadlessStandaloneTests {
 		suite.addTestSuite(FilterDefinitionConverterTest.class);
 		suite.addTestSuite(JiraRssHandlerTest.class);
 		suite.addTestSuite(JiraVersionTest.class);
-		suite.addTestSuite(JiraCustomQueryTest.class);
 		// repository tests
 		for (JiraFixture fixture : JiraFixture.ALL) {
 			TestSuite fixtureSuite = fixture.createSuite();
