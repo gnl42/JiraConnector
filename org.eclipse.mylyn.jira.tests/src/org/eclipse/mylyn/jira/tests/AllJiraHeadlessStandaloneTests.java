@@ -37,10 +37,10 @@ public class AllJiraHeadlessStandaloneTests {
 		suite.addTestSuite(JiraVersionTest.class);
 		// repository tests
 		for (JiraFixture fixture : JiraFixture.ALL) {
-			TestSuite fixtureSuite = fixture.createSuite();
-			fixture.add(fixtureSuite, JiraClientTest.class);
-			fixture.add(fixtureSuite, JiraWebClientTest.class);
-			suite.addTest(fixtureSuite);
+			fixture.createSuite(suite);
+			fixture.add(JiraClientTest.class);
+			fixture.add(JiraWebClientTest.class);
+			fixture.done();
 		}
 		return suite;
 	}

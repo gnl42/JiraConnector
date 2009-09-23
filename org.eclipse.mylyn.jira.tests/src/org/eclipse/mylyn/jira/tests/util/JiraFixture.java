@@ -65,6 +65,11 @@ public class JiraFixture extends TestFixture {
 		return this;
 	}
 
+	@Override
+	protected TestFixture getDefault() {
+		return DEFAULT;
+	}
+
 	public JiraClient client() throws Exception {
 		return client(PrivilegeLevel.USER);
 	}

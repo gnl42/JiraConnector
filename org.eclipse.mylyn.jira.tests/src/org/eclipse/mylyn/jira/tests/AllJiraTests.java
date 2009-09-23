@@ -46,9 +46,9 @@ public class AllJiraTests {
 		suite.addTestSuite(JiraConnectorUiTest.class);
 		// repository tests
 		for (JiraFixture fixture : JiraFixture.ALL) {
-			TestSuite fixtureSuite = fixture.createSuite();
-			fixture.add(fixtureSuite, JiraFilterTest.class);
-			suite.addTest(fixtureSuite);
+			fixture.createSuite(suite);
+			fixture.add(JiraFilterTest.class);
+			fixture.done();
 		}
 		return suite;
 	}
