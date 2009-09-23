@@ -115,8 +115,15 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 		if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
 			JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
 			if (client != null) {
-				clientManager.removeClient(client, false);
+				updateClient(client, repository);
 			}
+		}
+	}
+
+	private void updateClient(JiraClient client, TaskRepository repository) {
+		JiraConfiguration configuration = JiraUtil.getConfiguration(repository);
+		if (!configuration.equals(client.getConfiguration())) {
+			client.setConfiguration(configuration);
 		}
 	}
 
@@ -124,7 +131,6 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 	 * Validate the server URL and user credentials
 	 * 
 	 * @param monitor
-	 * 
 	 * @param serverUrl
 	 *            Location of the Jira Server
 	 * @param user
@@ -158,7 +164,7 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 	}
 
 	public void repositoryUrlChanged(TaskRepository repository, String oldUrl) {
-		// ignore
+		// nothing to do, the next call to getClient() will create a new client since it's stored by URL
 	}
 
 }

@@ -88,7 +88,7 @@ public class JiraSoapClient extends AbstractSoapClient {
 
 	private static final String REMOTE_ERROR_CONTENT_NOT_ALLOWED_IN_PROLOG = "Content is not allowed in prolog."; //$NON-NLS-1$
 
-	private static final String REMOTE_ERROR_PROCESSING_INSTRUCTIONS = "Processing instructions are not allowed within SOAP messages";
+	private static final String REMOTE_ERROR_PROCESSING_INSTRUCTIONS = "Processing instructions are not allowed within SOAP messages"; //$NON-NLS-1$
 
 	private static final String SOAP_SERVICE_URL = "/rpc/soap/jirasoapservice-v2"; //$NON-NLS-1$
 
@@ -115,10 +115,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 		try {
 			if (soapService == null) {
 				JiraSoapServiceLocator locator = new JiraSoapServiceLocator(//
-						new FileProvider(getClass().getClassLoader().getResourceAsStream(CONFIG_FILE)));
-				locator.setLocation(jiraClient.getLocation());
-				locator.setCompression(jiraClient.useCompression());
-
+						new FileProvider(getClass().getClassLoader().getResourceAsStream(CONFIG_FILE)), //
+						jiraClient);
 				try {
 					soapService = locator.getJirasoapserviceV2(new URL(jiraClient.getBaseUrl() + SOAP_SERVICE_URL));
 				} catch (ServiceException e) {
@@ -472,57 +470,6 @@ public class JiraSoapClient extends AbstractSoapClient {
 		return e.getLocalizedMessage();
 	}
 
-//	private <T> T callWithRetry(IProgressMonitor monitor, Callable<T> runnable) throws JiraException {
-//		try {
-//			return callOnce(monitor, runnable);
-//		} catch (JiraAuthenticationException e) {
-//			loginToken.expire();
-//			return callOnce(monitor, runnable);
-//		}
-//	}
-
-//	private <T> T callOnce(IProgressMonitor monitor, final Callable<T> runnable) throws JiraException,
-//			JiraInsufficientPermissionException, JiraAuthenticationException, JiraServiceUnavailableException {
-//		try {
-//			monitor = Policy.monitorFor(monitor);
-//
-//			final JiraRequest request = new JiraRequest(monitor);
-//			return WebUtil.execute(monitor, new WebRequest<T>() {
-//
-//				@Override
-//				public void abort() {
-//					request.cancel();
-//				}
-//
-//				public T call() throws Exception {
-//					try {
-//						JiraRequest.setCurrentRequest(request);
-//						return runnable.run();
-//					} finally {
-//						request.done();
-//					}
-//				}
-//
-//			});
-//		} catch (RemotePermissionException e) {
-//			throw new JiraInsufficientPermissionException(e.getMessage());
-//		} catch (RemoteAuthenticationException e) {
-//			throw new JiraAuthenticationException(e.getMessage());
-//		} catch (RemoteException e) {
-//			throw new JiraServiceUnavailableException(e.getMessage());
-//		} catch (java.rmi.RemoteException e) {
-//			throw new JiraServiceUnavailableException(unwrapRemoteException(e));
-//		} catch (JiraException e) {
-//			throw e;
-//		} catch (RuntimeException e) {
-//			throw e;
-//		} catch (Error e) {
-//			throw e;
-//		} catch (Throwable e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-
 	@Override
 	protected <T> T call(IProgressMonitor monitor, Callable<T> runnable) throws JiraException {
 		try {
@@ -580,13 +527,6 @@ public class JiraSoapClient extends AbstractSoapClient {
 		loginToken.expire();
 		return true;
 	}
-
-//
-//	private interface Callable<T> {
-//
-//		T call() throws java.rmi.RemoteException, JiraException;
-//
-//	}
 
 	private class LoginToken {
 

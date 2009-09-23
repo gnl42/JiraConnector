@@ -24,6 +24,8 @@ public class JiraTestConstants {
 
 	public static final String JIRA_BASIC_AUTH_URL = getServerUrl("jira-basic-auth");
 
+	public static final String JIRA_4_0_0_URL = getServerUrl("jira-enterprise-4.0.0");
+
 	private static final String getServerUrl(String version) {
 		return "http://" + SERVER + "/" + version;
 	}

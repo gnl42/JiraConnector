@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
@@ -35,7 +35,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
-import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
+import org.eclipse.mylyn.jira.tests.util.JiraFixture;
 import org.eclipse.mylyn.jira.tests.util.JiraTestResultCollector;
 import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
@@ -58,10 +58,13 @@ public class JiraFilterTest extends TestCase {
 
 	private JiraRepositoryConnector connector;
 
+	private JiraClient client;
+
 	@Override
 	protected void setUp() throws Exception {
-		JiraTestUtil.setUp();
+		client = JiraFixture.current().client();
 		connector = (JiraRepositoryConnector) TasksUi.getRepositoryConnector(JiraCorePlugin.CONNECTOR_KIND);
+		repository = JiraFixture.current().singleRepository();
 	}
 
 	@Override
@@ -69,18 +72,7 @@ public class JiraFilterTest extends TestCase {
 		JiraTestUtil.tearDown();
 	}
 
-	protected void init(String url, PrivilegeLevel level) throws Exception {
-		repository = JiraTestUtil.init(url, level);
-	}
-
 	public void testJiraFilterRefresh() throws Exception {
-		filterRefresh(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void filterRefresh(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
-		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testFilterRefresh");
 		issue.setAssignee(client.getUserName());
 		JiraTestUtil.createIssue(client, issue);
@@ -107,12 +99,6 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testCustomQuery() throws Exception {
-		customQuery(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void customQuery(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		String summary = "testCustomQuery" + System.currentTimeMillis();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		JiraIssue issue = JiraTestUtil.newIssue(client, summary);
@@ -133,12 +119,6 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testCustomQueryWithoutRepositoryConfiguraton() throws Exception {
-		customQueryWithoutRepositoryConfiguraton(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void customQueryWithoutRepositoryConfiguraton(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		String summary = "testCustomQueryWithoutRepositoryConfiguraton" + System.currentTimeMillis();
 		JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
 		JiraTestUtil.createIssue(client, summary + " 1");
@@ -169,8 +149,6 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testCustomQueryWrongLocale() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
-
 		FilterDefinition filter = new FilterDefinition();
 		GregorianCalendar date = new GregorianCalendar(2008, 9, 1);
 		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
@@ -190,8 +168,6 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testCustomQueryWrongDatePattern() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
-
 		FilterDefinition filter = new FilterDefinition();
 		GregorianCalendar date = new GregorianCalendar(2008, 9, 1);
 		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
@@ -199,7 +175,7 @@ public class JiraFilterTest extends TestCase {
 
 		JiraTestResultCollector hitCollector = new JiraTestResultCollector();
 		IStatus result = connector.performQuery(repository, query, hitCollector, null, null);
-		assertEquals(IStatus.OK, result.getSeverity());
+		assertEquals(Status.OK_STATUS, result);
 
 		repository.setProperty("jira.datePattern", "MM/dd/yyyy");
 		filter = new FilterDefinition();

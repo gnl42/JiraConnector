@@ -26,25 +26,25 @@ public class JiraConfiguration {
 
 	public static final Locale DEFAULT_LOCALE = Locale.US;
 
+	public static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
+
+	public static final int DEFAULT_WORK_HOURS_PER_DAY = 24;
+
+	private String characterEncoding;
+
+	private boolean compressionEnabled;
+
 	private String datePattern;
 
 	private String dateTimePattern;
 
-	private boolean compressionEnabled;
+	private boolean followRedirects;
 
 	private Locale locale;
-
-	private String characterEncoding;
-
-	private boolean followRedirects;
 
 	private int workDaysPerWeek;
 
 	private int workHoursPerDay;
-
-	public static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
-
-	public static final int DEFAULT_WORK_HOURS_PER_DAY = 24;
 
 	public JiraConfiguration() {
 		setDatePattern(DEFAULT_DATE_PATTERN);
@@ -55,75 +55,145 @@ public class JiraConfiguration {
 		setWorkHoursPerDay(DEFAULT_WORK_HOURS_PER_DAY);
 	}
 
-	public String getCharacterEncoding() {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		JiraConfiguration other = (JiraConfiguration) obj;
+		if (characterEncoding == null) {
+			if (other.characterEncoding != null) {
+				return false;
+			}
+		} else if (!characterEncoding.equals(other.characterEncoding)) {
+			return false;
+		}
+		if (compressionEnabled != other.compressionEnabled) {
+			return false;
+		}
+		if (datePattern == null) {
+			if (other.datePattern != null) {
+				return false;
+			}
+		} else if (!datePattern.equals(other.datePattern)) {
+			return false;
+		}
+		if (dateTimePattern == null) {
+			if (other.dateTimePattern != null) {
+				return false;
+			}
+		} else if (!dateTimePattern.equals(other.dateTimePattern)) {
+			return false;
+		}
+		if (followRedirects != other.followRedirects) {
+			return false;
+		}
+		if (locale == null) {
+			if (other.locale != null) {
+				return false;
+			}
+		} else if (!locale.equals(other.locale)) {
+			return false;
+		}
+		if (workDaysPerWeek != other.workDaysPerWeek) {
+			return false;
+		}
+		if (workHoursPerDay != other.workHoursPerDay) {
+			return false;
+		}
+		return true;
+	}
+
+	public synchronized String getCharacterEncoding() {
 		return characterEncoding;
 	}
 
-	public String getDatePattern() {
-		return datePattern;
-	}
-
-	public String getDateTimePattern() {
-		return dateTimePattern;
-	}
-
-	public Locale getLocale() {
-		return locale;
-	}
-
-	public boolean isCompressionEnabled() {
-		return compressionEnabled;
-	}
-
-	public void setCompressionEnabled(boolean compressionEnabled) {
-		this.compressionEnabled = compressionEnabled;
-	}
-
-	public void setDatePattern(String dateFormat) {
-		this.datePattern = dateFormat;
-	}
-
-	public void setDateTimePattern(String dateTimeFormat) {
-		this.dateTimePattern = dateTimeFormat;
-	}
-
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
-
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
-
-	public DateFormat getDateFormat() {
+	public synchronized DateFormat getDateFormat() {
 		return new SimpleDateFormat(getDatePattern(), getLocale());
 	}
 
-	public DateFormat getDateTimeFormat() {
+	public synchronized String getDatePattern() {
+		return datePattern;
+	}
+
+	public synchronized DateFormat getDateTimeFormat() {
 		return new SimpleDateFormat(getDateTimePattern(), getLocale());
 	}
 
-	public boolean getFollowRedirects() {
+	public synchronized String getDateTimePattern() {
+		return dateTimePattern;
+	}
+
+	public synchronized boolean getFollowRedirects() {
 		return followRedirects;
 	}
 
-	public void setFollowRedirects(boolean followRedirects) {
-		this.followRedirects = followRedirects;
+	public synchronized Locale getLocale() {
+		return locale;
 	}
 
-	public int getWorkDaysPerWeek() {
+	public synchronized int getWorkDaysPerWeek() {
 		return workDaysPerWeek;
 	}
 
-	public void setWorkDaysPerWeek(int workDaysPerWeek) {
-		this.workDaysPerWeek = workDaysPerWeek;
-	}
-
-	public int getWorkHoursPerDay() {
+	public synchronized int getWorkHoursPerDay() {
 		return workHoursPerDay;
 	}
 
-	public void setWorkHoursPerDay(int workHoursPerDay) {
+	@Override
+	public synchronized int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((characterEncoding == null) ? 0 : characterEncoding.hashCode());
+		result = prime * result + (compressionEnabled ? 1231 : 1237);
+		result = prime * result + ((datePattern == null) ? 0 : datePattern.hashCode());
+		result = prime * result + ((dateTimePattern == null) ? 0 : dateTimePattern.hashCode());
+		result = prime * result + (followRedirects ? 1231 : 1237);
+		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+		result = prime * result + workDaysPerWeek;
+		result = prime * result + workHoursPerDay;
+		return result;
+	}
+
+	public synchronized boolean isCompressionEnabled() {
+		return compressionEnabled;
+	}
+
+	public synchronized void setCharacterEncoding(String characterEncoding) {
+		this.characterEncoding = characterEncoding;
+	}
+
+	public synchronized void setCompressionEnabled(boolean compressionEnabled) {
+		this.compressionEnabled = compressionEnabled;
+	}
+
+	public synchronized void setDatePattern(String dateFormat) {
+		this.datePattern = dateFormat;
+	}
+
+	public synchronized void setDateTimePattern(String dateTimeFormat) {
+		this.dateTimePattern = dateTimeFormat;
+	}
+
+	public synchronized void setFollowRedirects(boolean followRedirects) {
+		this.followRedirects = followRedirects;
+	}
+
+	public synchronized void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+	public synchronized void setWorkDaysPerWeek(int workDaysPerWeek) {
+		this.workDaysPerWeek = workDaysPerWeek;
+	}
+
+	public synchronized void setWorkHoursPerDay(int workHoursPerDay) {
 		this.workHoursPerDay = workHoursPerDay;
 	}
 

@@ -34,14 +34,11 @@ public class JiraRssClient {
 
 	private final JiraClient client;
 
-	private final boolean useGZipCompression;
-
 	private final JiraWebSession session;
 
 	public JiraRssClient(JiraClient client, JiraWebSession session) {
 		this.client = client;
 		this.session = session;
-		this.useGZipCompression = client.useCompression();
 	}
 
 	private void doInSession(IProgressMonitor monitor, JiraWebSessionCallback callback) throws JiraException {
@@ -50,7 +47,7 @@ public class JiraRssClient {
 
 	public void executeNamedFilter(final NamedFilter filter, final IssueCollector collector,
 			final IProgressMonitor monitor) throws JiraException {
-		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
+		doInSession(monitor, new JiraRssSessionCallback(client.isCompressionEnabled(), collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
@@ -75,7 +72,7 @@ public class JiraRssClient {
 
 	public void findIssues(final FilterDefinition filterDefinition, final IssueCollector collector,
 			final IProgressMonitor monitor) throws JiraException {
-		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
+		doInSession(monitor, new JiraRssSessionCallback(client.isCompressionEnabled(), collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
@@ -102,7 +99,7 @@ public class JiraRssClient {
 
 	public void getIssueByKey(final String issueKey, final IssueCollector collector, final IProgressMonitor monitor)
 			throws JiraException {
-		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
+		doInSession(monitor, new JiraRssSessionCallback(client.isCompressionEnabled(), collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) throws JiraException {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
@@ -125,7 +122,7 @@ public class JiraRssClient {
 
 	public void quickSearch(final String searchString, final IssueCollector collector, IProgressMonitor monitor)
 			throws JiraException {
-		doInSession(monitor, new JiraRssSessionCallback(useGZipCompression, collector) {
+		doInSession(monitor, new JiraRssSessionCallback(client.isCompressionEnabled(), collector) {
 			@Override
 			protected String getRssUrl(String baseUrl) {
 				StringBuilder rssUrlBuffer = new StringBuilder(baseUrl);
@@ -138,13 +135,12 @@ public class JiraRssClient {
 				try {
 					rssUrlBuffer.append("searchString=").append(URLEncoder.encode(searchString, "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
 				} catch (UnsupportedEncodingException e) {
-					// TODO log
+					throw new RuntimeException("Unexpected error encoding search query", e); //$NON-NLS-1$
 				}
 
 				return rssUrlBuffer.toString();
 			}
 		});
-
 	}
 
 }

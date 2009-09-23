@@ -23,9 +23,6 @@ import junit.framework.TestCase;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.WebLocation;
-import org.eclipse.mylyn.context.tests.support.TestUtil;
-import org.eclipse.mylyn.context.tests.support.TestUtil.Credentials;
-import org.eclipse.mylyn.context.tests.support.TestUtil.PrivilegeLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
 import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.IssueField;
@@ -41,9 +38,13 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
+import org.eclipse.mylyn.jira.tests.util.JiraFixture;
 import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
 import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.jira.tests.util.MockIssueCollector;
+import org.eclipse.mylyn.tests.util.TestUtil;
+import org.eclipse.mylyn.tests.util.TestUtil.Credentials;
+import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
 
 /**
  * @author Steffen Pingel
@@ -55,40 +56,26 @@ public class JiraClientTest extends TestCase {
 	private JiraClient client;
 
 	@Override
+	protected void setUp() throws Exception {
+		client = JiraFixture.current().client();
+	}
+
+	@Override
 	protected void tearDown() throws Exception {
 		JiraTestUtil.tearDown();
 	}
 
-	protected void init(String url, PrivilegeLevel level) throws Exception {
-		Credentials credentials = TestUtil.readCredentials(level);
-		client = new JiraClient(new WebLocation(url, credentials.username, credentials.password));
-
-		JiraTestUtil.refreshDetails(client);
-	}
-
-	public void testLogin381() throws Exception {
-		login(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void login(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
+	public void testLogin() throws Exception {
 		client.login(null);
 		client.logout(null);
 		// should automatically login
 		client.getCache().refreshDetails(new NullProgressMonitor());
 
-		init(url, PrivilegeLevel.GUEST);
+		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
 		client.login(null);
 	}
 
 	public void testStartStopIssue() throws Exception {
-		startStopIssue(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void startStopIssue(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testStartStopIssue");
 
 		String startOperation = JiraTestUtil.getOperation(client, issue.getKey(), "start");
@@ -114,12 +101,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testResolveCloseReopenIssue() throws Exception {
-		resolveCloseReopenIssue(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void resolveCloseReopenIssue(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		Resolution resolution = JiraTestUtil.getFixedResolution(client);
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testStartStopIssue");
 
@@ -169,12 +150,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testGetIdFromKey() throws Exception {
-		getIdFromKey(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void getIdFromKey(String url) throws Exception {
-		init(url, PrivilegeLevel.GUEST);
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getIdFromKey");
 
 		String key = client.getKeyFromId(issue.getId(), null);
@@ -195,12 +170,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testReassign() throws Exception {
-		reassign(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void reassign(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testReassign");
 
 		issue.setAssignee("nonexistantuser");
@@ -239,7 +208,7 @@ public class JiraClientTest extends TestCase {
 		issue = client.getIssueByKey(issue.getKey(), null);
 		assertEquals(client.getUserName(), issue.getAssignee());
 
-		init(url, PrivilegeLevel.GUEST);
+		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
 		try {
 			client.assignIssueTo(issue, JiraClient.ASSIGNEE_SELF, "", "", null);
 			fail("Expected JiraException");
@@ -248,12 +217,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testFindIssues() throws Exception {
-		findIssues(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void findIssues(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		FilterDefinition filter = new FilterDefinition();
 		MockIssueCollector collector = new MockIssueCollector();
 		client.search(filter, collector, null);
@@ -261,12 +224,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testAddComment() throws Exception {
-		addComment(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void addComment(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testAddComment");
 
 		client.addCommentToIssue(issue, "comment 1", null);
@@ -275,7 +232,8 @@ public class JiraClientTest extends TestCase {
 		assertNotNull(comment);
 		assertEquals(client.getUserName(), comment.getAuthor());
 
-		init(url, PrivilegeLevel.GUEST);
+		// test with other privileges
+		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
 
 		client.addCommentToIssue(issue, "comment guest", null);
 		issue = client.getIssueByKey(issue.getKey(), null);
@@ -294,12 +252,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testAttachFile() throws Exception {
-		attachFile(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void attachFile(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		File file = File.createTempFile("mylyn", null);
 		file.deleteOnExit();
 
@@ -351,12 +303,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testCreateIssue() throws Exception {
-		createIssue(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void createIssue(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = new JiraIssue();
 		issue.setProject(client.getCache().getProjects()[0]);
 		issue.setType(client.getCache().getIssueTypes()[0]);
@@ -373,7 +319,8 @@ public class JiraClientTest extends TestCase {
 		// assertNotNull(issue.getCreated());
 		// assertNotNull(issue.getUpdated());
 
-		init(url, PrivilegeLevel.GUEST);
+		// change privilege level
+		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
 
 		createdIssue = JiraTestUtil.createIssue(client, issue);
 		assertEquals(issue.getProject(), createdIssue.getProject());
@@ -384,12 +331,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testCreateSubTask() throws Exception {
-		createSubTask(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void createSubTask(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testCreateSubTaskParent");
 		JiraIssue parentIssue = JiraTestUtil.createIssue(client, issue);
 
@@ -404,12 +345,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testGetIssueLeadingSpaces() throws Exception {
-		getIssueLeadingSpaces(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void getIssueLeadingSpaces(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		String summary = "  testCreateIssueLeadingSpaces";
 		String description = "  leading spaces\n  more spaces";
 
@@ -430,23 +365,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssue() throws Exception {
-		updateIssue(JiraTestConstants.JIRA_LATEST_URL, "CUSTOMFIELDS");
-	}
-
-	public void testUpdateIssueCustomOperation() throws Exception {
-		JiraIssue issue = updateIssue(JiraTestConstants.JIRA_LATEST_URL, "EDITABLEREPORTER");
-
-		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "custom");
-		assertNotNull("Unable to find Custom workflow action", operation);
-
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
-		client.advanceIssueWorkflow(issue, operation, "custom action test", null);
-	}
-
-	private JiraIssue updateIssue(String url, String projectKey) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
-		Project project = JiraTestUtil.getProject(client, projectKey);
+		Project project = JiraTestUtil.getProject(client, "EDITABLEREPORTER");
 
 		JiraIssue issue = new JiraIssue();
 		issue.setProject(project);
@@ -461,14 +380,16 @@ public class JiraClientTest extends TestCase {
 		assertEquals("testUpdateIssueChanged", issue.getSummary());
 		assertNotNull(issue.getUpdated());
 
-		init(url, PrivilegeLevel.GUEST);
+		String operation = JiraTestUtil.getOperation(client, issue.getKey(), "custom");
+		assertNotNull("Unable to find Custom workflow action", operation);
+
+		// change privilege level
+		client = JiraFixture.current().client(PrivilegeLevel.GUEST);
 		try {
 			client.updateIssue(issue, "", null);
 			fail("Expected JiraException");
 		} catch (JiraRemoteMessageException e) {
 		}
-
-		init(url, PrivilegeLevel.GUEST);
 
 		issue.setSummary("testUpdateIssueGuest");
 		issue = JiraTestUtil.createIssue(client, issue);
@@ -479,16 +400,12 @@ public class JiraClientTest extends TestCase {
 		} catch (JiraRemoteMessageException e) {
 		}
 
-		return issue;
+		// change privilege level
+		client = JiraFixture.current().client(PrivilegeLevel.USER);
+		client.advanceIssueWorkflow(issue, operation, "custom action test", null);
 	}
 
 	public void testUpdateIssueNonAscii() throws Exception {
-		updateIssueNonAscii(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void updateIssueNonAscii(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		String summary = "\u00C4\u00D6\u00DC\nnewline";
 		String description = "\"&\n\u00A9\\ ',><br/>&nbsp; ";
 
@@ -505,12 +422,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssueMultipleLinesOfText() throws Exception {
-		updateIssueMultipleLinesOfText(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void updateIssueMultipleLinesOfText(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		String summary = "line1\nline2";
 		String description = "\nline2\n\nline4\n";
 
@@ -525,12 +436,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssueWithLinkInDescription() throws Exception {
-		updateIssueWithLinkInDescriptoin(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void updateIssueWithLinkInDescriptoin(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		String summary = "updateIssueWithLinkInDescriptoin";
 		String description = "Link:\n\nhttp://mylyn.eclipse.org/";
 
@@ -544,12 +449,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testUpdateIssueHtmlTag() throws Exception {
-		updateIssueHtmlTags(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void updateIssueHtmlTags(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		String summary = "<b>bold</b>";
 		String description = "<head>123\n<pre>line1\nline2\n\nline4</pre>  &nbsp;&lt;&gt; ";
 
@@ -564,12 +463,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testWatchUnwatchIssue() throws Exception {
-		watchUnwatchIssue(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void watchUnwatchIssue(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "testWatchUnwatch");
 
 		assertFalse(issue.isWatched());
@@ -607,11 +500,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testCharacterEncoding() throws Exception {
-		characterEncoding(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void characterEncoding(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
 		assertEquals("ISO-8859-1", client.getCharacterEncoding());
 		client.getConfiguration().setCharacterEncoding("UTF-8");
 		assertEquals("UTF-8", client.getCharacterEncoding());
@@ -621,29 +509,15 @@ public class JiraClientTest extends TestCase {
 //		getServerInfo(JiraTestConstants.JIRA_39_URL, "3.9", "233");
 //	}
 
-	public void testGetServerInfo3_13_1() throws Exception {
-		// FIXME make test more robust
-		if (JiraTestConstants.JIRA_3_13_1_URL.contains("mylyn.eclipse.org")) {
-			getServerInfo(JiraTestConstants.JIRA_3_13_1_URL, "3.13.1", "333");
-		}
-	}
-
-	private void getServerInfo(String url, String version, String buildNumber) throws Exception {
-		init(url, PrivilegeLevel.USER);
+	public void testGetServerInfo() throws Exception {
 		ServerInfo serverInfo = client.getCache().getServerInfo(null);
-		assertEquals(version, serverInfo.getVersion());
-		assertEquals(buildNumber, serverInfo.getBuildNumber());
+		assertEquals(JiraFixture.current().getVersion(), serverInfo.getVersion());
+		assertEquals(JiraFixture.current().getBuildNumber(), serverInfo.getBuildNumber());
 		assertEquals("ISO-8859-1", serverInfo.getCharacterEncoding());
-		assertEquals(url, serverInfo.getBaseUrl());
+		assertEquals(JiraFixture.current().getRepositoryUrl(), serverInfo.getBaseUrl());
 	}
 
 	public void testGetEditableFields() throws Exception {
-		getEditableFields(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void getEditableFields(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getEditableFields");
 
 		IssueField[] fields = client.getEditableAttributes(issue.getKey(), null);
@@ -657,12 +531,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testGetWorkLogs() throws Exception {
-		getWorkLogs(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void getWorkLogs(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
 
 		JiraWorkLog[] logs = client.getWorklogs(issue.getKey(), null);
@@ -682,12 +550,6 @@ public class JiraClientTest extends TestCase {
 	 * Tests soap retrieval of the SecurityLevels
 	 */
 	public void testAvailableGetSecurityLevels() throws Exception {
-		getSecurityLevels(JiraTestConstants.JIRA_LATEST_URL);
-	}
-
-	private void getSecurityLevels(String url) throws Exception {
-		init(url, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testAvailableGetSecurityLevels");
 		issue.setProject(client.getCache().getProjectByKey(("SECURITY")));
 		issue = JiraTestUtil.createIssue(client, issue);
@@ -706,8 +568,6 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testAddWorkLog() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
-
 		JiraIssue issue = JiraTestUtil.createIssue(client, "getWorklogs");
 		issue.setEstimate(1200);
 		client.updateIssue(issue, "", null);
@@ -755,7 +615,6 @@ public class JiraClientTest extends TestCase {
 //	}
 
 	public void testProjectSecurityLevelAccessible() throws Exception {
-		init(JiraTestConstants.JIRA_LATEST_URL, PrivilegeLevel.USER);
 		Project project = client.getCache().getProjectById("10050");
 		assertNotNull(project.getSecurityLevels());
 	}

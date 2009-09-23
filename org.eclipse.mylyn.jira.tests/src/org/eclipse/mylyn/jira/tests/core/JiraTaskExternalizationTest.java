@@ -30,7 +30,7 @@ import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.tests.TaskTestUtil;
+import org.eclipse.mylyn.tests.util.TestFixture;
 
 /**
  * @author Wesley Coelho (initial integration patch)
@@ -53,7 +53,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		JiraTestUtil.setUp();
 		taskList = TasksUiPlugin.getTaskList();
 		repository = JiraTestUtil.init(JiraTestConstants.JIRA_LATEST_URL);
-		TaskTestUtil.resetTaskList();
+		TestFixture.resetTaskList();
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertEquals("f-name", taskList.getQueries().iterator().next().getSummary());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getHandleIdentifier());
 
-		TaskTestUtil.saveAndReadTasklist();
+		TestFixture.saveAndReadTasklist();
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("f-name", taskList.getQueries().iterator().next().getSummary());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getHandleIdentifier());
@@ -90,7 +90,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
 		assertEquals("handle", taskList.getQueries().iterator().next().getHandleIdentifier());
 
-		TaskTestUtil.saveAndReadTasklist();
+		TestFixture.saveAndReadTasklist();
 		assertEquals(1, taskList.getQueries().size());
 		assertEquals("q-name", taskList.getQueries().iterator().next().getSummary());
 		assertEquals("handle", taskList.getQueries().iterator().next().getHandleIdentifier());
@@ -102,7 +102,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraTask.setCompletionDate(new Date());
 		taskList.addTask(jiraTask);
 
-		TaskTestUtil.saveAndReadTasklist();
+		TestFixture.saveAndReadTasklist();
 		ITask task = taskList.getTask(repository.getRepositoryUrl(), TEST_TASK);
 		assertTrue(task.isCompleted());
 	}
@@ -114,7 +114,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		jiraTask.setUrl(testUrl);
 		taskList.addTask(jiraTask);
 
-		TaskTestUtil.saveAndReadTasklist();
+		TestFixture.saveAndReadTasklist();
 		boolean taskFound = false;
 		for (AbstractTask task : taskList.getAllTasks()) {
 			if (task.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
@@ -146,7 +146,7 @@ public class JiraTaskExternalizationTest extends TestCase {
 		TasksUiPlugin.getTaskList().addTask(jiraTask, query);
 		assertNotNull(taskList.getTask(jiraTask.getHandleIdentifier()));
 
-		TaskTestUtil.saveAndReadTasklist();
+		TestFixture.saveAndReadTasklist();
 
 		Set<RepositoryQuery> queries = taskList.getQueries();
 		RepositoryQuery savedFilter = null;

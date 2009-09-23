@@ -15,7 +15,10 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylyn.internal.jira.core.service.web.rss.JiraRssHandler;
 
-public class RssContentHandlerTest extends TestCase {
+/**
+ * @author Steffen Pingel
+ */
+public class JiraRssHandlerTest extends TestCase {
 
 	public void testUnescape() {
 		assertEquals("\n", JiraRssHandler.stripTags("\n<br/>\n"));

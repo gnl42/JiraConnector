@@ -27,6 +27,7 @@ import javax.xml.rpc.ServiceException;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
+import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
 import org.eclipse.mylyn.internal.provisional.commons.soap.SoapHttpSender;
 
@@ -37,66 +38,37 @@ import org.eclipse.mylyn.internal.provisional.commons.soap.SoapHttpSender;
 @SuppressWarnings("serial")
 public class JiraSoapServiceLocator extends JiraSoapServiceServiceLocator {
 
-	private AbstractWebLocation location;
+	private final AbstractWebLocation location;
 
-	private boolean compression;
+	private final JiraClient client;
 
-	public JiraSoapServiceLocator() {
-	}
-
-	public JiraSoapServiceLocator(org.apache.axis.EngineConfiguration config) {
+	public JiraSoapServiceLocator(org.apache.axis.EngineConfiguration config, JiraClient client) {
 		super(config);
-	}
-
-	public JiraSoapServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName)
-			throws javax.xml.rpc.ServiceException {
-		super(wsdlLoc, sName);
+		this.client = client;
+		this.location = client.getLocation();
 	}
 
 	@Override
 	public Call createCall() throws ServiceException {
 		Call call = super.createCall();
-		// JIRA does not accept compressed SOAP messages: see bug 175915
+		// JIRA does not accept compressed SOAP messages
 		//call.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
-		if (compression) {
+		if (client.isCompressionEnabled()) {
 			call.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
 		}
 
-//		WebCredentials credentials = location.getCredentials(WebCredentials.Type.HTTP);
-//		if (credentials != null) {
-//			call.setProperty(JiraHttpSender.HTTP_USER, credentials.getUserName());
-//			call.setProperty(JiraHttpSender.HTTP_PASSWORD, credentials.getPassword());
-//		}
-//
-//		Proxy proxy = location.getProxyForHost(WebClientUtil.getDomain(location.getUrl()), IProxyData.HTTP_PROXY_TYPE);
-//		if (proxy != null) {
-//			call.setProperty(JiraHttpSender.PROXY, proxy);
-//		}
 		call.setProperty(SoapHttpSender.LOCATION, location);
 
 		Hashtable<String, String> headers = new Hashtable<String, String>();
 		headers.put(HTTPConstants.HEADER_USER_AGENT, WebUtil.getUserAgent("JiraConnector Axis/1.4")); //$NON-NLS-1$
-		// some servers break with a 411 Length Required when chunked encoding
-		// is used
+		// some servers break with a 411 Length Required when chunked encoding is used
 		headers.put(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED, Boolean.FALSE.toString());
 		call.setProperty(HTTPConstants.REQUEST_HEADERS, headers);
 		return call;
 	}
 
-	public boolean isCompression() {
-		return compression;
-	}
-
-	public void setCompression(boolean compression) {
-		this.compression = compression;
-	}
-
 	public AbstractWebLocation getLocation() {
 		return location;
-	}
-
-	public void setLocation(AbstractWebLocation location) {
-		this.location = location;
 	}
 
 }

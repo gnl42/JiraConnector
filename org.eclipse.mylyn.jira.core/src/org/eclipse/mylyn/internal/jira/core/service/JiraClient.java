@@ -108,7 +108,7 @@ public class JiraClient {
 
 	private final JiraSoapClient soapClient;
 
-	private final JiraConfiguration configuration;
+	private JiraConfiguration configuration;
 
 	public JiraClient(AbstractWebLocation location, JiraConfiguration configuration) {
 		Assert.isNotNull(location);
@@ -275,7 +275,7 @@ public class JiraClient {
 		return soapClient.getComponents(projectKey, monitor);
 	}
 
-	public JiraConfiguration getConfiguration() {
+	public synchronized JiraConfiguration getConfiguration() {
 		return configuration;
 	}
 
@@ -499,10 +499,6 @@ public class JiraClient {
 		webClient.updateIssue(issue, comment, monitor);
 	}
 
-	public boolean useCompression() {
-		return configuration.isCompressionEnabled();
-	}
-
 	/**
 	 * Vote for <code>issue</code>. Issues can only be voted on if the issue was not raied by the current user and is
 	 * not resolved. Before calling this method, ensure it is valid to vote by calling
@@ -537,4 +533,14 @@ public class JiraClient {
 	public JiraWorkLog addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {
 		return soapClient.addWorkLog(issueKey, log, monitor);
 	}
+
+	public synchronized void setConfiguration(JiraConfiguration configuration) {
+		Assert.isNotNull(configuration);
+		this.configuration = configuration;
+	}
+
+	public boolean isCompressionEnabled() {
+		return getConfiguration().isCompressionEnabled();
+	}
+
 }
