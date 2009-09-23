@@ -59,26 +59,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jetbrains.annotations.NotNull;
-import org.tigris.subversion.subclipse.core.ISVNLocalFile;
-import org.tigris.subversion.subclipse.core.ISVNLocalResource;
-import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
-import org.tigris.subversion.subclipse.core.ISVNRemoteFolder;
-import org.tigris.subversion.subclipse.core.ISVNRemoteResource;
-import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
-import org.tigris.subversion.subclipse.core.ISVNResource;
-import org.tigris.subversion.subclipse.core.SVNException;
-import org.tigris.subversion.subclipse.core.commands.GetLogsCommand;
-import org.tigris.subversion.subclipse.core.history.ILogEntry;
-import org.tigris.subversion.subclipse.core.history.LogEntryChangePath;
-import org.tigris.subversion.subclipse.core.resources.LocalResourceStatus;
-import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
-import org.tigris.subversion.subclipse.ui.Policy;
-import org.tigris.subversion.subclipse.ui.SVNUIPlugin;
-import org.tigris.subversion.subclipse.ui.compare.ResourceEditionNode;
-import org.tigris.subversion.subclipse.ui.editor.RemoteFileEditorInput;
-import org.tigris.subversion.svnclientadapter.ISVNProperty;
-import org.tigris.subversion.svnclientadapter.SVNRevision;
-import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -559,7 +539,7 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 
 			// for unversioned files SVNRevision.getRevision throws an exception
 			final SVNRevision svnRevision = (status.isUnversioned()) ? null : svnResource.getRevision();
-			final String fileName = getFileNameWithProjectName(resource);
+			final String fileName = getResourcePathWithProjectName(resource);
 			final String revision = svnRevision != null ? svnRevision.toString() : "";
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
