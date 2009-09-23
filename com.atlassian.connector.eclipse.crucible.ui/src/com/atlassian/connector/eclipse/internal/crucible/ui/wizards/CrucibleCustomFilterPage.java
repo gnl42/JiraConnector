@@ -15,7 +15,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepository
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserSorter;
 import com.atlassian.connector.eclipse.ui.commons.TreeContentProvider;
@@ -25,6 +24,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -188,7 +188,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		label.setLayoutData(new GridData());
 
 		authorCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
-		authorCombo.setContentProvider(new CrucibleUserContentProvider());
+		authorCombo.setContentProvider(new ArrayContentProvider());
 		authorCombo.setLabelProvider(new CrucibleUserLabelProvider());
 		authorCombo.setSorter(new CrucibleUserSorter());
 		authorCombo.getControl().setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
@@ -198,7 +198,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		label.setLayoutData(new GridData());
 
 		moderatorCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
-		moderatorCombo.setContentProvider(new CrucibleUserContentProvider());
+		moderatorCombo.setContentProvider(new ArrayContentProvider());
 		moderatorCombo.setLabelProvider(new CrucibleUserLabelProvider());
 		moderatorCombo.setSorter(new CrucibleUserSorter());
 		moderatorCombo.getControl().setLayoutData(
@@ -209,7 +209,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		label.setLayoutData(new GridData());
 
 		creatorCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
-		creatorCombo.setContentProvider(new CrucibleUserContentProvider());
+		creatorCombo.setContentProvider(new ArrayContentProvider());
 		creatorCombo.setLabelProvider(new CrucibleUserLabelProvider());
 		creatorCombo.setSorter(new CrucibleUserSorter());
 		creatorCombo.getControl()
@@ -220,7 +220,7 @@ public class CrucibleCustomFilterPage extends AbstractRepositoryQueryPage2 {
 		label.setLayoutData(new GridData());
 
 		reviewerCombo = new ComboViewer(rolesGroup, SWT.READ_ONLY);
-		reviewerCombo.setContentProvider(new CrucibleUserContentProvider());
+		reviewerCombo.setContentProvider(new ArrayContentProvider());
 		reviewerCombo.setLabelProvider(new CrucibleUserLabelProvider());
 		reviewerCombo.setSorter(new CrucibleUserSorter());
 		reviewerCombo.getControl().setLayoutData(

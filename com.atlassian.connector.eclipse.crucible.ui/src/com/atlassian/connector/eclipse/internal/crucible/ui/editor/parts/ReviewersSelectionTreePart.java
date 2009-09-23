@@ -11,8 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
+import com.atlassian.connector.eclipse.ui.viewers.ArrayTreeContentProvider;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -96,7 +96,7 @@ public class ReviewersSelectionTreePart {
 
 		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 250).applyTo(tree);
 
-		tree.getViewer().setContentProvider(new CrucibleUserContentProvider());
+		tree.getViewer().setContentProvider(ArrayTreeContentProvider.getInstance());
 
 		tree.getViewer().setInput(allReviewers);
 //		updateInput();

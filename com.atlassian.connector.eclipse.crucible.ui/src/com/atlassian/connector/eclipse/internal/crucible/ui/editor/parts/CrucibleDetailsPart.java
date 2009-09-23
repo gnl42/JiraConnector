@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRem
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ReviewerSelectionDialog;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
@@ -45,6 +44,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -262,7 +262,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			combo.setEditable(false);
 			ComboViewer comboViewer = new ComboViewer(combo);
 			comboViewer.setLabelProvider(new CrucibleUserLabelProvider());
-			comboViewer.setContentProvider(new CrucibleUserContentProvider());
+			comboViewer.setContentProvider(new ArrayContentProvider());
 			comboViewer.setInput(users);
 			comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent event) {

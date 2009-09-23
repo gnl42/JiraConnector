@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleProjectsLabelProvider;
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserContentProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleUserLabelProvider;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts.ReviewersSelectionTreePart;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleProject;
@@ -34,6 +33,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -94,18 +94,20 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 	@Override
 	public void setVisible(final boolean visible) {
 		// check if cached data is available, if not, start background process to fetch it
-		if (visible && !CrucibleUiUtil.hasCachedData(repository)) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					wizard.updateCache(CrucibleReviewDetailsPage.this);
-					setInputAndInitialSelections();
-					reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(repository));
-				}
-			});
-		} else if (visible) {
-			// preselect
-			setInputAndInitialSelections();
-			reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(repository));
+		if (visible) {
+			if (!CrucibleUiUtil.hasCachedData(repository)) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						wizard.updateCache(CrucibleReviewDetailsPage.this);
+						setInputAndInitialSelections();
+						reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(repository));
+					}
+				});
+			} else {
+				// preselect
+				setInputAndInitialSelections();
+				reviewersSelectionTreePart.setAllReviewers(CrucibleUiUtil.getAllCachedUsersAsReviewers(repository));
+			}
 		}
 		super.setVisible(visible);
 	}
@@ -203,8 +205,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		new Label(composite, SWT.NONE).setText("Moderator:");
 		moderatorComboViewer = new ComboViewer(composite);
 		moderatorComboViewer.setLabelProvider(new CrucibleUserLabelProvider());
-		moderatorComboViewer.setContentProvider(new CrucibleUserContentProvider());
-		moderatorComboViewer.setSorter(new ViewerSorter());
+		moderatorComboViewer.setContentProvider(new ArrayContentProvider());
+		moderatorComboViewer.setComparator(new ViewerComparator());
 		moderatorComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
@@ -218,8 +220,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		new Label(composite, SWT.NONE).setText("Author:");
 		authorComboViewer = new ComboViewer(composite);
 		authorComboViewer.setLabelProvider(new CrucibleUserLabelProvider());
-		authorComboViewer.setContentProvider(new CrucibleUserContentProvider());
-		authorComboViewer.setSorter(new ViewerSorter());
+		authorComboViewer.setContentProvider(new ArrayContentProvider());
+		authorComboViewer.setComparator(new ViewerComparator());
 		authorComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
@@ -281,8 +283,9 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		Review review = getReview();
-		return review != null && hasRequiredFields(review) && hasValidReviewers(review);
+		//Review review = getReview();
+		//return review != null && hasRequiredFields(review) && hasValidReviewers(review);
+		return false;
 	}
 
 	private boolean hasRequiredFields(Review newReview) {
