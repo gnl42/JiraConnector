@@ -650,7 +650,7 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 
 			ILocalResource localResource = SVNRemoteStorage.instance().asLocalResource(resource);
 			String revision = Long.toString(localResource.getRevision());
-			final String fileName = getFileNameWithProjectName(resource);
+			final String fileName = getResourcePathWithProjectName(resource);
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(localResource) || IStateFilter.SF_ADDED.accept(localResource)) {

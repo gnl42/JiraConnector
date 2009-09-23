@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 
 public abstract class AbstractTeamConnector implements ITeamResourceConnector {
-	protected String getFileNameWithProjectName(IResource resource) {
+	public static String getResourcePathWithProjectName(IResource resource) {
 		final IProject project = resource.getProject();
 		return (project != null ? project.getName() : "") + IPath.SEPARATOR
 				+ resource.getProjectRelativePath().toString();

@@ -283,9 +283,8 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 
 	@Override
 	public boolean isPageComplete() {
-		//Review review = getReview();
-		//return review != null && hasRequiredFields(review) && hasValidReviewers(review);
-		return false;
+		Review review = getReview();
+		return review != null && hasRequiredFields(review) && hasValidReviewers(review);
 	}
 
 	private boolean hasRequiredFields(Review newReview) {
@@ -372,15 +371,15 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		return review;
 	}
 
-	public Set<Reviewer> getReviewers() {
+	Set<Reviewer> getReviewers() {
 		return reviewersSelectionTreePart.getSelectedReviewers();
 	}
 
-	public boolean isStartReviewImmediately() {
+	boolean isStartReviewImmediately() {
 		return startReview.getSelection();
 	}
 
-	public CrucibleProject getSelectedProject() {
+	CrucibleProject getSelectedProject() {
 		Object firstElement = ((IStructuredSelection) projectsComboViewer.getSelection()).getFirstElement();
 		if (firstElement != null) {
 			return (CrucibleProject) firstElement;
@@ -388,7 +387,7 @@ public class CrucibleReviewDetailsPage extends WizardPage {
 		return null;
 	}
 
-	public boolean isAllowAnyoneToJoin() {
+	boolean isAllowAnyoneToJoin() {
 		return anyoneCanJoin.getSelection();
 	}
 

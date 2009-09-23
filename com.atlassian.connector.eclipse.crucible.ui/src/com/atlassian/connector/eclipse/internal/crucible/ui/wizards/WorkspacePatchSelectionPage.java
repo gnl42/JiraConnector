@@ -23,6 +23,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.team.AbstractTeamConnector;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -85,8 +86,6 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 	private ITeamResourceConnector selectedTeamConnector;
 
-	private final ReviewWizard wizard;
-
 	private ComboViewer scmViewer;
 
 	public WorkspacePatchSelectionPage(@NotNull TaskRepository taskRepository, @NotNull ReviewWizard wizard,
@@ -95,7 +94,6 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		setTitle("Add Workspace Changes to Review");
 		setDescription("Attach local, uncommited changes from the workspace to the review.");
 
-		this.wizard = wizard;
 		this.roots.addAll(roots);
 		this.teamConnectors = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectors();
 		if (this.selectedTeamConnector == null && roots.size() > 0) {
@@ -227,8 +225,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 			@Override
 			protected String decorateText(String input, Object element) {
 				if (element instanceof IResource) {
-					IResource resource = (IResource) element;
-					return resource.getProject().getName() + IPath.SEPARATOR + resource.getProjectRelativePath();
+					return AbstractTeamConnector.getResourcePathWithProjectName((IResource) element);
 				}
 				return super.decorateText(input, element);
 			}
