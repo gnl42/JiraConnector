@@ -23,6 +23,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -89,10 +90,11 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 
 			// if it still isn't an XML response, an invalid issue was entered
 			if (!isXMLOrRSS(rssRequest)) {
-				throw new JiraInvalidResponseTypeException(Messages.JiraRssSessionCallback_Repository_returned_invalid_type);
+				throw new JiraInvalidResponseTypeException(
+						Messages.JiraRssSessionCallback_Repository_returned_invalid_type);
 			}
 
-			parseResult(client, baseUrl, rssRequest);
+			parseResult(client, baseUrl, rssRequest, monitor);
 
 			// success
 			return;
@@ -104,11 +106,12 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 		//throw new JiraException("Maximum number of query redirects exceeded: " + rssUrl); //$NON-NLS-1$
 	}
 
-	private void parseResult(JiraClient client, String baseUrl, GetMethod rssRequest) throws IOException, JiraException {
-		InputStream in = rssRequest.getResponseBodyAsStream();
+	private void parseResult(JiraClient client, String baseUrl, GetMethod method, IProgressMonitor monitor)
+			throws IOException, JiraException {
+		InputStream in = WebUtil.getResponseBodyAsStream(method, monitor);
 		try {
-			if (isResponseGZipped(rssRequest)) {
-				in = new GZIPInputStream(rssRequest.getResponseBodyAsStream());
+			if (isResponseGZipped(method)) {
+				in = new GZIPInputStream(in);
 			}
 			new JiraRssReader(client, collector).readRssFeed(in, baseUrl);
 		} finally {
