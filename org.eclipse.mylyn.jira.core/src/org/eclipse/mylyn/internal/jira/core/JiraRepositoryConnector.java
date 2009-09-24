@@ -12,7 +12,6 @@
 
 package org.eclipse.mylyn.internal.jira.core;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -553,26 +552,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 				addStatus(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION, null));
 				return;
 			}
-			monitor.subTask(MessageFormat.format(Messages.JiraRepositoryConnector_Retrieving_issue_X, issue.getKey()
-					+ " " + issue.getSummary())); //$NON-NLS-1$
-			TaskData oldTaskData = null;
-			// TODO consider marking result as partial instead of loading task data from disk
-			if (session != null) {
-				try {
-					oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
-				} catch (CoreException e) {
-					// ignore
-				}
-			}
-
-			// no session means not a task list query
-			// no oldTaskData means a new task was received
-			// in both cases do not download full details but return results quickly 
-			boolean forceCache = (session == null || oldTaskData == null);
 
 			TaskData taskData;
 			try {
-				taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData, forceCache, monitor);
+				taskData = taskDataHandler.createTaskData(repository, client, issue, null, true, monitor);
 				collector.accept(taskData);
 			} catch (JiraException e) {
 				addStatus(JiraCorePlugin.toStatus(repository, e));
