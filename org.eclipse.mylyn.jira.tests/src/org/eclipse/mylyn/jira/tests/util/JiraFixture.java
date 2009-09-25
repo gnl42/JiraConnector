@@ -56,7 +56,7 @@ public class JiraFixture extends TestFixture {
 		super(JiraCorePlugin.CONNECTOR_KIND, url);
 		this.version = version;
 		this.buildNumber = buildNumber;
-		setInfo("JIRA " + version + ((info.length() > 0) ? "/" + info : ""));
+		setInfo("JIRA", version, info);
 	}
 
 	@Override
