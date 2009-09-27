@@ -55,6 +55,8 @@ public class JiraSoapServiceLocator extends JiraSoapServiceServiceLocator {
 		//call.setProperty(HTTPConstants.MC_GZIP_REQUEST, Boolean.TRUE);
 		if (client.isCompressionEnabled()) {
 			call.setProperty(HTTPConstants.MC_ACCEPT_GZIP, Boolean.TRUE);
+			// work around a bug in JIRA 3.11 to 3.13.1 that causes server to return malformed HTTP header
+			call.setProperty(SoapHttpSender.ALLOW_EMPTY_CONTENT_ENCODING, Boolean.TRUE);
 		}
 
 		call.setProperty(SoapHttpSender.LOCATION, location);
