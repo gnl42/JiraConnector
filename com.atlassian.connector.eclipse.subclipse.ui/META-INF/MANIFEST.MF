@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.mylyn.commons.net,
  org.apache.commons.io,
- org.jetbrains.annotations;resolution:=optional
+ org.jetbrains.annotations;resolution:=optional,
+ com.collabnet.subversion.merge;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Export-Package: com.atlassian.connector.eclipse.internal.subclipse.ui;x-internal:=true,
  com.atlassian.connector.eclipse.internal.subclipse.ui.compare;x-internal:=true
