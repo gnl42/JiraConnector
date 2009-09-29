@@ -28,4 +28,19 @@ public class Messages {
 	public static String JiraClientCache_Getting_server_information;
 
 	public static String JiraClientCache_Updating_repository_configuration;
+
+	public static String JiraClientCache_getting_issue_types;
+
+	public static String JiraClientCache_getting_priorities;
+
+	public static String JiraClientCache_getting_project_details;
+
+	public static String JiraClientCache_getting_resolutions;
+
+	public static String JiraClientCache_getting_server_info;
+
+	public static String JiraClientCache_getting_statuses;
+
+	public static String JiraClientCache_project_details_for;
+
 }

@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
+ *     Pawel Niewiadomski - fixes for bug 290490
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.core.service;
@@ -17,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.mylyn.commons.net.Policy;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
@@ -27,6 +28,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.User;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Steffen Pingel
@@ -64,20 +66,34 @@ public class JiraClientCache {
 	}
 
 	private void initializeProjects(JiraClientData data, IProgressMonitor monitor) throws JiraException {
-		String version = data.serverInfo.getVersion();
-
-		data.projects = jiraClient.getProjects(monitor);
+		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_project_details, 10);
+		data.projects = jiraClient.getProjects(submonitor.newChild(1));
 
 		data.projectsById = new HashMap<String, Project>(data.projects.length);
 		data.projectsByKey = new HashMap<String, Project>(data.projects.length);
 
+		submonitor.setWorkRemaining(data.projects.length);
 		for (Project project : data.projects) {
-			project.setComponents(jiraClient.getComponents(project.getKey(), monitor));
-			project.setVersions(jiraClient.getVersions(project.getKey(), monitor));
+			initializeProject(project, submonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+
+			data.projectsById.put(project.getId(), project);
+			data.projectsByKey.put(project.getKey(), project);
+		}
+	}
+
+	private void initializeProject(Project project, IProgressMonitor monitor) throws JiraException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.JiraClientCache_project_details_for,
+				project.getKey()), 5);
+
+		synchronized (project) {
+			final String version = data.serverInfo.getVersion();
+
+			project.setComponents(jiraClient.getComponents(project.getKey(), subMonitor.newChild(1)));
+			project.setVersions(jiraClient.getVersions(project.getKey(), subMonitor.newChild(1)));
 
 			if (supportsPerProjectIssueTypes(version) >= 0) {
-				IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), monitor);
-				IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), monitor);
+				IssueType[] issueTypes = jiraClient.getIssueTypes(project.getId(), subMonitor.newChild(1));
+				IssueType[] subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(project.getId(), subMonitor.newChild(1));
 				for (IssueType issueType : subTaskIssueTypes) {
 					issueType.setSubTaskType(true);
 				}
@@ -90,7 +106,8 @@ public class JiraClientCache {
 			}
 			if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_13) >= 0) {
 				try {
-					SecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(), monitor);
+					SecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(),
+							subMonitor.newChild(1));
 					if (securityLevels.length > 0) {
 						SecurityLevel[] projectSecurityLevels = new SecurityLevel[securityLevels.length + 1];
 						projectSecurityLevels[0] = SecurityLevel.NONE;
@@ -102,9 +119,6 @@ public class JiraClientCache {
 					project.setSecurityLevels(null);
 				}
 			}
-
-			data.projectsById.put(project.getId(), project);
-			data.projectsByKey.put(project.getKey(), project);
 		}
 	}
 
@@ -121,6 +135,8 @@ public class JiraClientCache {
 	}
 
 	private void initializePriorities(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		monitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_priorities, 1);
+
 		data.priorities = jiraClient.getPriorities(monitor);
 		data.prioritiesById = new HashMap<String, Priority>(data.priorities.length);
 		for (Priority priority : data.priorities) {
@@ -137,6 +153,8 @@ public class JiraClientCache {
 	}
 
 	private void initializeIssueTypes(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_issue_types, 2);
+
 		String version = data.serverInfo.getVersion();
 		if (supportsPerProjectIssueTypes(version) >= 0) {
 			// collect issue types from all projects to avoid additional SOAP request
@@ -154,10 +172,10 @@ public class JiraClientCache {
 				data.issueTypesById.put(issueType.getId(), issueType);
 			}
 		} else {
-			IssueType[] issueTypes = jiraClient.getIssueTypes(monitor);
+			IssueType[] issueTypes = jiraClient.getIssueTypes(submonitor.newChild(1));
 			IssueType[] subTaskIssueTypes;
 			if (new JiraVersion(version).compareTo(JiraVersion.JIRA_3_3) >= 0) {
-				subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(monitor);
+				subTaskIssueTypes = jiraClient.getSubTaskIssueTypes(submonitor.newChild(1));
 			} else {
 				subTaskIssueTypes = new IssueType[0];
 			}
@@ -180,7 +198,9 @@ public class JiraClientCache {
 	}
 
 	private void initializeStatuses(JiraClientData data, IProgressMonitor monitor) throws JiraException {
-		data.statuses = jiraClient.getStatuses(monitor);
+		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_statuses, 1);
+
+		data.statuses = jiraClient.getStatuses(submonitor.newChild(1));
 		data.statusesById = new HashMap<String, JiraStatus>(data.statuses.length);
 		for (JiraStatus status : data.statuses) {
 			data.statusesById.put(status.getId(), status);
@@ -188,7 +208,9 @@ public class JiraClientCache {
 	}
 
 	private void initializeResolutions(JiraClientData data, IProgressMonitor monitor) throws JiraException {
-		data.resolutions = jiraClient.getResolutions(monitor);
+		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_resolutions, 1);
+
+		data.resolutions = jiraClient.getResolutions(submonitor.newChild(0));
 		data.resolutionsById = new HashMap<String, Resolution>(data.resolutions.length);
 		for (Resolution resolution : data.resolutions) {
 			data.resolutionsById.put(resolution.getId(), resolution);
@@ -211,48 +233,45 @@ public class JiraClientCache {
 		return data;
 	}
 
-	public synchronized void refreshDetails(IProgressMonitor monitor) throws JiraException {
-		try {
-			monitor = Policy.monitorFor(monitor);
-
-			// use UNKNOWN since some of the update operations block for a long time
-			// TODO use InfiniteSubProgressMonitor
-			monitor.beginTask(Messages.JiraClientCache_Updating_repository_configuration, IProgressMonitor.UNKNOWN);
-
-			JiraClientData newData = new JiraClientData();
-
-			data.serverInfo = newData.serverInfo = jiraClient.getServerInfo(monitor);
-
-			Policy.advance(monitor, 1);
-			initializeProjects(newData, monitor);
-			Policy.advance(monitor, 1);
-			initializePriorities(newData, monitor);
-			Policy.advance(monitor, 1);
-			initializeIssueTypes(newData, monitor);
-			Policy.advance(monitor, 1);
-			initializeResolutions(newData, monitor);
-			Policy.advance(monitor, 1);
-			initializeStatuses(newData, monitor);
-			Policy.advance(monitor, 1);
-
-			newData.lastUpdate = System.currentTimeMillis();
-			this.data = newData;
-		} finally {
-			monitor.done();
+	public synchronized void refreshProjectDetails(String projectId, IProgressMonitor monitor) throws JiraException {
+		Project project = getProjectById(projectId);
+		if (project != null) {
+			initializeProject(project, monitor);
+		} else {
+			refreshDetails(monitor);
 		}
+	}
+
+	public synchronized void refreshDetails(IProgressMonitor monitor) throws JiraException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_Updating_repository_configuration,
+				20);
+
+		final JiraClientData newData = new JiraClientData();
+
+		refreshServerInfo(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+		data.serverInfo = newData.serverInfo;
+
+		initializeProjects(newData, subMonitor.newChild(15, SubMonitor.SUPPRESS_NONE));
+		initializePriorities(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+		initializeIssueTypes(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+		initializeResolutions(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+		initializeStatuses(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+
+		newData.lastUpdate = System.currentTimeMillis();
+		this.data = newData;
 	}
 
 	/**
 	 * Refresh any cached information with the latest values from the remote server. This operation may take a long time
 	 * to complete and should not be called from a UI thread.
 	 */
+	public synchronized void refreshServerInfo(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		monitor = SubMonitor.convert(monitor, Messages.JiraClientCache_Getting_server_information, 1);
+		data.serverInfo = jiraClient.getServerInfo(monitor);
+	}
+
 	public synchronized void refreshServerInfo(IProgressMonitor monitor) throws JiraException {
-		try {
-			monitor.beginTask(Messages.JiraClientCache_Getting_server_information, IProgressMonitor.UNKNOWN);
-			data.serverInfo = jiraClient.getServerInfo(monitor);
-		} finally {
-			monitor.done();
-		}
+		refreshServerInfo(data, monitor);
 	}
 
 	/**

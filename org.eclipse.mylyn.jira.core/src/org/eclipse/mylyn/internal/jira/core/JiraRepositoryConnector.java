@@ -8,6 +8,7 @@
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
  *     Eugene Kuleshov - improvements
+ *     Pawel Niewiadomski - fixes for bug 290490
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.core;
@@ -418,6 +419,24 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	}
 
 	@Override
+	public void updateRepositoryConfiguration(TaskRepository taskRepository, ITask task, IProgressMonitor monitor)
+			throws CoreException {
+		final String projectId = task.getAttribute(JiraAttribute.PROJECT.id());
+		if (projectId != null && !"".equals(projectId)) { //$NON-NLS-1$
+			try {
+				JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
+				client.getCache().refreshProjectDetails(projectId, monitor);
+			} catch (JiraException e) {
+				IStatus status = JiraCorePlugin.toStatus(taskRepository, e);
+				trace(status);
+				throw new CoreException(status);
+			}
+		} else {
+			updateRepositoryConfiguration(taskRepository, monitor);
+		}
+	}
+
+	@Override
 	public String getTaskIdPrefix() {
 		return "issue"; //$NON-NLS-1$
 	}
@@ -484,6 +503,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		} else {
 			task.setAttribute(IJiraConstants.META_SUB_TASK_TYPE, Boolean.toString(false));
 		}
+
+		// add project id for Refresh Attributes (#290490)
+		attribute = taskData.getRoot().getAttribute(JiraAttribute.PROJECT.id());
+		if (attribute != null) {
+			task.setAttribute(JiraAttribute.PROJECT.id(), attribute.getValue());
+		}
 	}
 
 	@Override
@@ -525,8 +550,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
 		private final IProgressMonitor monitor;
 
-		private final ISynchronizationSession session;
-
 		private final JiraClient client;
 
 		private final TaskRepository repository;
@@ -542,7 +565,6 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 			this.repository = repository;
 			this.client = client;
 			this.collector = collector;
-			this.session = session;
 			this.monitor = monitor;
 			this.maxHits = JiraUtil.getMaxSearchResults(repository);
 		}
