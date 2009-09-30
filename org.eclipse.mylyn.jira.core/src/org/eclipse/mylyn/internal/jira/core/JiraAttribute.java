@@ -95,7 +95,10 @@ public enum JiraAttribute {
 
 	USER_REPORTER(TaskAttribute.USER_REPORTER, JiraFieldType.USERPICKER, Messages.JiraAttribute_Reported_by),
 
-	TASK_URL(TaskAttribute.TASK_URL, JiraFieldType.URL, Messages.JiraAttribute_URL);
+	TASK_URL(TaskAttribute.TASK_URL, JiraFieldType.URL, Messages.JiraAttribute_URL),
+
+	PROJECT_ROLES(IJiraConstants.ATTRIBUTE_PROJECT_ROLES, JiraFieldType.SELECT, Messages.JiraAttribute_Viewable_by,
+			true, false);
 
 	public static JiraAttribute valueById(String id) {
 		for (JiraAttribute attribute : values()) {

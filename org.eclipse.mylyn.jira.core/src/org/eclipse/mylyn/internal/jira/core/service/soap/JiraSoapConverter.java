@@ -24,6 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
@@ -37,6 +38,7 @@ import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteGroup;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssueType;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemotePriority;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProject;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRole;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteResolution;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo;
@@ -216,6 +218,48 @@ class JiraSoapConverter {
 		return project;
 	}
 
+	public static RemoteProject convert(Project project) {
+		RemoteProject remoteProject = new RemoteProject();
+
+		remoteProject.setDescription(project.getDescription());
+		remoteProject.setId(project.getId());
+		remoteProject.setKey(project.getKey());
+		remoteProject.setLead(project.getLead());
+		remoteProject.setName(project.getName());
+		remoteProject.setProjectUrl(project.getProjectUrl());
+		remoteProject.setUrl(project.getUrl());
+
+		return remoteProject;
+	}
+
+	public static ProjectRole[] convert(RemoteProjectRole[] remoteProjectRoles) {
+		ProjectRole[] projectRoles = new ProjectRole[remoteProjectRoles.length];
+		for (int i = 0; i < remoteProjectRoles.length; ++i) {
+			projectRoles[i] = convert(remoteProjectRoles[i]);
+		}
+		return projectRoles;
+	}
+
+	private static ProjectRole convert(RemoteProjectRole remoteProjectRole) {
+		ProjectRole projectRole = new ProjectRole();
+
+		projectRole.setDescription(remoteProjectRole.getDescription());
+		projectRole.setId(remoteProjectRole.getId());
+		projectRole.setName(remoteProjectRole.getName());
+
+		return projectRole;
+	}
+
+	public static RemoteProjectRole convert(ProjectRole projectRole) {
+		RemoteProjectRole remoteProjectRole = new RemoteProjectRole();
+
+		remoteProjectRole.setDescription(projectRole.getDescription());
+		remoteProjectRole.setId(projectRole.getId());
+		remoteProjectRole.setName(projectRole.getName());
+
+		return remoteProjectRole;
+	}
+
 	protected static Component[] convert(RemoteComponent[] remoteComponents) {
 		Component[] components = new Component[remoteComponents.length];
 		for (int i = 0; i < remoteComponents.length; i++) {
@@ -294,14 +338,26 @@ class JiraSoapConverter {
 	public static Comment[] convert(RemoteComment[] remoteComments) {
 		Comment[] comments = new Comment[remoteComments.length];
 		for (int i = 0; i < remoteComments.length; i++) {
-			RemoteComment remoteComment = remoteComments[i];
-			Comment comment = new Comment();
-			comment.setAuthor(remoteComment.getAuthor());
-			comment.setComment(remoteComment.getBody());
-			comment.setLevel(remoteComment.getRoleLevel());
-			comments[i] = comment;
+			comments[i] = convert(remoteComments[i]);
 		}
 		return comments;
+	}
+
+	private static Comment convert(RemoteComment remoteComment) {
+		Comment comment = new Comment();
+		comment.setAuthor(remoteComment.getAuthor());
+		comment.setComment(remoteComment.getBody());
+		comment.setRoleLevel(remoteComment.getRoleLevel());
+		return comment;
+	}
+
+	public static RemoteComment convert(Comment comment) {
+		RemoteComment rComment = new RemoteComment();
+		rComment.setAuthor(comment.getAuthor());
+		rComment.setBody(comment.getComment());
+		rComment.setRoleLevel(comment.getRoleLevel());
+
+		return rComment;
 	}
 
 	protected static SecurityLevel[] convert(RemoteSecurityLevel[] remoteSecurityLevels) {

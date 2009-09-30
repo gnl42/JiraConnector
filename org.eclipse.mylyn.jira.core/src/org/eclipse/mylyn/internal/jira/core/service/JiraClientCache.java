@@ -24,6 +24,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
@@ -134,6 +135,10 @@ public class JiraClientCache {
 		return data.projects;
 	}
 
+	public ProjectRole[] getProjectRoles() {
+		return data.projectRoles;
+	}
+
 	private void initializePriorities(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		monitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_priorities, 1);
 
@@ -207,6 +212,10 @@ public class JiraClientCache {
 		}
 	}
 
+	private void initializeProjectRoles(JiraClientData data, IProgressMonitor monitor) throws JiraException {
+		data.projectRoles = jiraClient.getProjectRoles(monitor);
+	}
+
 	private void initializeResolutions(JiraClientData data, IProgressMonitor monitor) throws JiraException {
 		SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_resolutions, 1);
 
@@ -256,6 +265,7 @@ public class JiraClientCache {
 		initializeIssueTypes(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 		initializeResolutions(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 		initializeStatuses(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+		initializeProjectRoles(newData, subMonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
 
 		newData.lastUpdate = System.currentTimeMillis();
 		this.data = newData;

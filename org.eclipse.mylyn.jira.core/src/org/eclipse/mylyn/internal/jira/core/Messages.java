@@ -51,6 +51,8 @@ public class Messages extends NLS {
 
 	public static String JiraAttribute_New_Comment;
 
+	public static String JiraAttribute_Viewable_by;
+
 	public static String JiraAttribute_Original_Estimate;
 
 	public static String JiraAttribute_Parent;

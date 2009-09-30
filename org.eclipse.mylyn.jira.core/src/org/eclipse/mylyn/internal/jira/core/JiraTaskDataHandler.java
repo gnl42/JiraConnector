@@ -50,6 +50,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.Subtask;
@@ -279,6 +280,13 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		}
 
 		data.getRoot().createAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+
+		TaskAttribute projectRoles = createAttribute(data, JiraAttribute.PROJECT_ROLES);
+		projectRoles.putOption(IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL, IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL);
+		for (ProjectRole projectRole : client.getCache().getProjectRoles()) {
+			projectRoles.putOption(projectRole.getName(), projectRole.getName());
+		}
+
 	}
 
 	public TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
@@ -448,6 +456,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			removeAttribute(data, JiraAttribute.ENVIRONMENT);
 		}
 
+		addAttributeValue(data, JiraAttribute.PROJECT_ROLES, IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL);
+
 		addComments(data, jiraIssue, client);
 		addAttachments(data, jiraIssue, client);
 		addCustomFields(data, jiraIssue);
@@ -599,7 +609,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 			if (TaskAttribute.COMMENT_NEW.equals(attribute.getId())
 					|| TaskAttribute.RESOLUTION.equals(attribute.getId())
-					|| TaskAttribute.USER_ASSIGNED.equals(attribute.getId())) {
+					|| TaskAttribute.USER_ASSIGNED.equals(attribute.getId())
+					|| JiraAttribute.PROJECT_ROLES.id().equals(attribute.getId())) {
 				properties.setReadOnly(false);
 			} else {
 				// make attributes read-only if can't find editing options
@@ -976,10 +987,30 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 				} else {
 					String operationId = getOperationId(taskData);
 					String newComment = getNewComment(taskData);
+
 					Set<String> changeIds = new HashSet<String>();
 					if (changedAttributes != null) {
 						for (TaskAttribute ta : changedAttributes) {
 							changeIds.add(ta.getId());
+						}
+					}
+
+					String commentVisibility = taskData.getRoot()
+							.getMappedAttribute(JiraAttribute.PROJECT_ROLES.id())
+							.getValue();
+
+					// check if the visibility of the comment needs to be set 
+					Comment soapComment = null;
+					if (!IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL.equals(commentVisibility)) {
+						// not relevant for later processing
+						changeIds.remove(JiraAttribute.PROJECT_ROLES.id());
+
+						if (newComment != null && newComment.length() > 0) {
+							soapComment = new Comment();
+							soapComment.setComment(newComment);
+							soapComment.setRoleLevel(commentVisibility);
+
+							newComment = null;
 						}
 					}
 
@@ -1007,8 +1038,11 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 					}
 
 					// at last try to at least post the comment (if everything else failed)
-					if (!handled && newComment.length() > 0) {
+					if (!handled && newComment != null && newComment.length() > 0) {
 						client.addCommentToIssue(issue, newComment, monitor);
+						handled = true;
+					} else if (soapComment != null) {
+						client.addComentToIssueWithViewable(issue.getKey(), soapComment, monitor);
 						handled = true;
 					}
 

@@ -20,6 +20,7 @@ import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.User;
@@ -56,6 +57,8 @@ public class JiraClientData implements Serializable {
 	volatile ServerInfo serverInfo;
 
 	JiraStatus[] statuses = new JiraStatus[0];
+
+	ProjectRole[] projectRoles = new ProjectRole[0];
 
 	Map<String, JiraStatus> statusesById = new HashMap<String, JiraStatus>();
 

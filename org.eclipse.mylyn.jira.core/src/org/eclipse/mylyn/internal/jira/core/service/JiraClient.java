@@ -28,6 +28,7 @@ import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.internal.jira.core.model.Attachment;
+import org.eclipse.mylyn.internal.jira.core.model.Comment;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.CustomField;
 import org.eclipse.mylyn.internal.jira.core.model.IssueField;
@@ -41,9 +42,11 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
+import org.eclipse.mylyn.internal.jira.core.model.User;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.WebServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -130,6 +133,11 @@ public class JiraClient {
 
 	public void addCommentToIssue(JiraIssue issue, String comment, IProgressMonitor monitor) throws JiraException {
 		webClient.addCommentToIssue(issue, comment, monitor);
+	}
+
+	public void addComentToIssueWithViewable(String issueKey, Comment comment, IProgressMonitor monitor)
+			throws JiraException {
+		soapClient.addComment(issueKey, comment, monitor);
 	}
 
 	public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
@@ -532,6 +540,15 @@ public class JiraClient {
 
 	public JiraWorkLog addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {
 		return soapClient.addWorkLog(issueKey, log, monitor);
+	}
+	
+	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
+		return soapClient.getProjectRoles(monitor);
+	}
+
+	public User[] getProjectRoleUsers(Project project, ProjectRole projectRole, IProgressMonitor monitor)
+			throws JiraException {
+		return soapClient.getProjectRoleUsers(project, projectRole, monitor);
 	}
 
 	public synchronized void setConfiguration(JiraConfiguration configuration) {

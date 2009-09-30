@@ -16,15 +16,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Represents an immutable comment that will be attached to an issue. Comments can not be changed once created.
- * 
  * @author Brock Janiczak
  */
 public final class Comment implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String level;
+	private String roleLevel;
 
 	private String comment;
 
@@ -34,10 +32,10 @@ public final class Comment implements Serializable {
 
 	private boolean markupDetected;
 
-	public Comment(String comment, String author, String level, Date created) {
+	public Comment(String comment, String author, String roleLvel, Date created) {
 		this.comment = comment;
 		this.author = author;
-		this.level = level;
+		this.roleLevel = roleLvel;
 		this.created = created;
 	}
 
@@ -56,8 +54,8 @@ public final class Comment implements Serializable {
 		return this.created;
 	}
 
-	public String getLevel() {
-		return this.level;
+	public String getRoleLevel() {
+		return this.roleLevel;
 	}
 
 	public boolean isMarkupDetected() {
@@ -76,8 +74,8 @@ public final class Comment implements Serializable {
 		this.created = created;
 	}
 
-	public void setLevel(String level) {
-		this.level = level;
+	public void setRoleLevel(String level) {
+		this.roleLevel = level;
 	}
 
 	public void setMarkupDetected(boolean markupDetected) {

@@ -45,6 +45,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
@@ -59,6 +60,7 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteField;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteIssue;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteNamedObject;
+import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteProjectRoleActors;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteSecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteServerInfo;
 import org.eclipse.mylyn.internal.jira.core.wsdl.beans.RemoteWorklog;
@@ -306,6 +308,14 @@ public class JiraSoapClient extends AbstractSoapClient {
 		return call(monitor, new Callable<Project[]>() {
 			public Project[] call() throws java.rmi.RemoteException, JiraException {
 				return JiraSoapConverter.convert(getSoapService().getProjectsNoSchemes(loginToken.getCurrentValue()));
+			}
+		});
+	}
+
+	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
+		return call(monitor, new Callable<ProjectRole[]>() {
+			public ProjectRole[] call() throws java.rmi.RemoteException, JiraException {
+				return JiraSoapConverter.convert(getSoapService().getProjectRoles(loginToken.getCurrentValue()));
 			}
 		});
 	}
@@ -624,6 +634,27 @@ public class JiraSoapClient extends AbstractSoapClient {
 							issueKey, remoteLog);
 				}
 				return (remoteLog != null) ? JiraSoapConverter.convert(remoteLog) : null;
+			}
+		});
+	}
+
+	public void addComment(final String issueKey, final Comment comment, IProgressMonitor monitor) throws JiraException {
+		call(monitor, new Callable<Object>() {
+			public Object call() throws java.rmi.RemoteException, JiraException {
+				getSoapService().addComment(loginToken.getCurrentValue(), issueKey, JiraSoapConverter.convert(comment));
+				return null;
+			}
+		});
+	}
+
+	public User[] getProjectRoleUsers(final Project project, final ProjectRole projectRole, IProgressMonitor monitor)
+			throws JiraException {
+		return call(monitor, new Callable<User[]>() {
+			public User[] call() throws Exception {
+				RemoteProjectRoleActors actors = getSoapService().getProjectRoleActors(loginToken.getCurrentValue(),
+						JiraSoapConverter.convert(projectRole), JiraSoapConverter.convert(project));
+
+				return JiraSoapConverter.convert(actors.getUsers());
 			}
 		});
 	}
