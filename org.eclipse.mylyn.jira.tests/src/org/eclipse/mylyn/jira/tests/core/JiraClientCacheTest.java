@@ -20,6 +20,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
 import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
 import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
@@ -83,6 +84,11 @@ public class JiraClientCacheTest extends TestCase {
 			@Override
 			public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
 				return new Priority[0];
+			}
+
+			@Override
+			public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
+				return new ProjectRole[0];
 			}
 
 			@Override

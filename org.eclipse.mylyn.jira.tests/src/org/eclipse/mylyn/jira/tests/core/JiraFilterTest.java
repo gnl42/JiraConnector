@@ -58,11 +58,8 @@ public class JiraFilterTest extends TestCase {
 
 	private JiraRepositoryConnector connector;
 
-	private JiraClient client;
-
 	@Override
 	protected void setUp() throws Exception {
-		client = JiraFixture.current().client();
 		connector = (JiraRepositoryConnector) TasksUi.getRepositoryConnector(JiraCorePlugin.CONNECTOR_KIND);
 		repository = JiraFixture.current().singleRepository();
 	}
@@ -73,6 +70,7 @@ public class JiraFilterTest extends TestCase {
 	}
 
 	public void testJiraFilterRefresh() throws Exception {
+		JiraClient client = JiraFixture.current().client();
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testFilterRefresh");
 		issue.setAssignee(client.getUserName());
 		JiraTestUtil.createIssue(client, issue);
@@ -158,18 +156,13 @@ public class JiraFilterTest extends TestCase {
 		IStatus result = connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(IStatus.OK, result.getSeverity());
 
-		String originalProptery = repository.getProperty("jira.locale");
-		try {
-			repository.setProperty("jira.locale", Locale.GERMANY.toString());
-			filter = new FilterDefinition();
-			date = new GregorianCalendar(2008, 9, 1);
-			filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
-			query = JiraTestUtil.createQuery(repository, filter);
-			result = connector.performQuery(repository, query, hitCollector, null, null);
-			assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
-		} finally {
-			repository.setProperty("jira.locale", originalProptery);
-		}
+		repository.setProperty("jira.locale", Locale.GERMANY.toString());
+		filter = new FilterDefinition();
+		date = new GregorianCalendar(2008, 9, 1);
+		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
+		query = JiraTestUtil.createQuery(repository, filter);
+		result = connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
 	}
 
 	public void testCustomQueryWrongDatePattern() throws Exception {
@@ -182,18 +175,13 @@ public class JiraFilterTest extends TestCase {
 		IStatus result = connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(Status.OK_STATUS, result);
 
-		String originalProptery = repository.getProperty("jira.locale");
-		try {
-			repository.setProperty("jira.datePattern", "MM/dd/yyyy");
-			filter = new FilterDefinition();
-			date = new GregorianCalendar(2008, 9, 1);
-			filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
-			query = JiraTestUtil.createQuery(repository, filter);
-			result = connector.performQuery(repository, query, hitCollector, null, null);
-			assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
-		} finally {
-			repository.setProperty("jira.locale", originalProptery);
-		}
+		repository.setProperty("jira.datePattern", "MM/dd/yyyy");
+		filter = new FilterDefinition();
+		date = new GregorianCalendar(2008, 9, 1);
+		filter.setCreatedDateFilter(new DateRangeFilter(date.getTime(), date.getTime()));
+		query = JiraTestUtil.createQuery(repository, filter);
+		result = connector.performQuery(repository, query, hitCollector, null, null);
+		assertEquals("Date not localized.", IStatus.ERROR, result.getSeverity());
 	}
 
 }

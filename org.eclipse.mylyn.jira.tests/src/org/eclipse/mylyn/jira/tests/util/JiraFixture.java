@@ -11,6 +11,7 @@
 
 package org.eclipse.mylyn.jira.tests.util;
 
+import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
@@ -99,6 +100,12 @@ public class JiraFixture extends TestFixture {
 	@Override
 	public JiraRepositoryConnector connector() {
 		return (JiraRepositoryConnector) super.connector();
+	}
+
+	@Override
+	protected void resetRepositories() {
+		// TODO bug 184806 need to manually remove stale clients
+		JiraClientFactory.getDefault().clearClients();
 	}
 
 }
