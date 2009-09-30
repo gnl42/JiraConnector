@@ -310,6 +310,7 @@ public final class TeamUiUtils {
 				}
 			}
 		}
+
 		try {
 			if (!defaultConnector.openCompareEditor(repoUrl, filePath, otherRevisionFilePath, oldRevisionString,
 					newRevisionString, annotationModel, monitor)) {
