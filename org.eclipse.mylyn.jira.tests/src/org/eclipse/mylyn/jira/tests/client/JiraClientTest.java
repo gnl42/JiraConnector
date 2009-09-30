@@ -39,7 +39,6 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraRemoteMessageException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.jira.tests.util.JiraFixture;
-import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
 import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 import org.eclipse.mylyn.jira.tests.util.MockIssueCollector;
 import org.eclipse.mylyn.tests.util.TestUtil;
@@ -480,7 +479,7 @@ public class JiraClientTest extends TestCase {
 	}
 
 	public void testBasicAuth() throws Exception {
-		basicAuth(JiraTestConstants.JIRA_BASIC_AUTH_URL);
+		basicAuth(JiraFixture.ENTERPRISE_3_13_BASIC_AUTH.getRepositoryUrl());
 	}
 
 	private void basicAuth(String url) throws Exception {

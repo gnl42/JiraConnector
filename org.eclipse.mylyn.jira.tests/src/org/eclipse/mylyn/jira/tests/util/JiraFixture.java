@@ -22,18 +22,26 @@ import org.eclipse.mylyn.tests.util.TestUtil.PrivilegeLevel;
  */
 public class JiraFixture extends TestFixture {
 
-	public static JiraFixture ENTERPRISE_3_13_1 = new JiraFixture(JiraTestConstants.JIRA_3_13_1_URL, //
-			"3.13.1", "333", "Enterprise");
+	public static final String SERVER = System.getProperty("mylyn.jira.server", "mylyn.eclipse.org");
 
-	public static JiraFixture ENTERPRISE_3_13_1_BASIC_AUTH = new JiraFixture(JiraTestConstants.JIRA_3_13_1_URL, //
-			"3.13.1", "333", "Enterprise/BasicAuth");
+	private static final String getServerUrl(String version) {
+		return "http://" + SERVER + "/" + version;
+	}
 
-	public static JiraFixture ENTERPRISE_4_0_0 = new JiraFixture(JiraTestConstants.JIRA_4_0_0_URL, //
-			"4.0.0-Beta2", "432", "Enterprise");
+	public static JiraFixture ENTERPRISE_3_13 = new JiraFixture(getServerUrl("jira-enterprise-3.13.5"), //
+			"3.13.5", "360", "Enterprise");
 
-	public static final JiraFixture[] ALL = new JiraFixture[] { ENTERPRISE_3_13_1, ENTERPRISE_4_0_0 };
+	public static JiraFixture ENTERPRISE_3_13_BASIC_AUTH = new JiraFixture(getServerUrl("jira-basic-auth"), //
+			"3.13.5", "360", "Enterprise/BasicAuth");
 
-	public static JiraFixture DEFAULT = ENTERPRISE_3_13_1;
+	public static JiraFixture ENTERPRISE_4_0 = new JiraFixture(getServerUrl("jira-enterprise-4.0.0"), //
+			"4.0.0-rc1", "460", "Enterprise");
+
+	public static final JiraFixture[] ALL = new JiraFixture[] { ENTERPRISE_3_13, ENTERPRISE_4_0 };
+
+	public static JiraFixture DEFAULT = ENTERPRISE_3_13;
+
+//	public static JiraFixture DEFAULT = ENTERPRISE_4_0;
 
 	private static JiraFixture current;
 

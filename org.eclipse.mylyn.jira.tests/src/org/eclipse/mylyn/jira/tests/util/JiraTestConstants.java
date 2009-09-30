@@ -16,18 +16,6 @@ package org.eclipse.mylyn.jira.tests.util;
  */
 public class JiraTestConstants {
 
-	public static final String SERVER = System.getProperty("mylyn.jira.server", "mylyn.eclipse.org");
-
-	public static final String JIRA_LATEST_URL = getServerUrl("jira-enterprise-3.13.1");
-
-	public static final String JIRA_3_13_1_URL = getServerUrl("jira-enterprise-3.13.1");
-
-	public static final String JIRA_BASIC_AUTH_URL = getServerUrl("jira-basic-auth");
-
-	public static final String JIRA_4_0_0_URL = getServerUrl("jira-enterprise-4.0.0");
-
-	private static final String getServerUrl(String version) {
-		return "http://" + SERVER + "/" + version;
-	}
+	public static final String JIRA_LATEST_URL = JiraFixture.DEFAULT.getRepositoryUrl();
 
 }
