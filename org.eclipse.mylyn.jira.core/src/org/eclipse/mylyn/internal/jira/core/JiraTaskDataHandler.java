@@ -283,10 +283,12 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
 		TaskAttribute projectRoles = createAttribute(data, JiraAttribute.PROJECT_ROLES);
 		projectRoles.putOption(IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL, IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL);
-		for (ProjectRole projectRole : client.getCache().getProjectRoles()) {
-			projectRoles.putOption(projectRole.getName(), projectRole.getName());
+		ProjectRole[] roles = client.getCache().getProjectRoles();
+		if (roles != null) {
+			for (ProjectRole projectRole : roles) {
+				projectRoles.putOption(projectRole.getName(), projectRole.getName());
+			}
 		}
-
 	}
 
 	public TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
