@@ -29,6 +29,7 @@ import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -112,10 +113,15 @@ public class JiraWebSession {
 				unlock(monitor);
 			}
 			try {
-				callback.configure(httpClient, hostConfiguration, baseUrl, client.getConfiguration()
-						.getFollowRedirects());
-				callback.run(client, baseUrl, monitor);
-				return;
+				// check if session is expired
+				if (doLogin || isAuthenticated(httpClient, hostConfiguration, monitor)) {
+					callback.configure(httpClient, hostConfiguration, baseUrl, client.getConfiguration()
+							.getFollowRedirects());
+					callback.run(client, baseUrl, monitor);
+					return;
+				} else {
+					doLogin = true;
+				}
 			} catch (IOException e) {
 				throw new JiraException(e);
 			} catch (JiraException e) {
@@ -127,6 +133,20 @@ public class JiraWebSession {
 					throw e;
 				}
 			}
+		}
+	}
+
+	private boolean isAuthenticated(HttpClient httpClient, HostConfiguration hostConfiguration, IProgressMonitor monitor)
+			throws JiraException {
+		String url = baseUrl + "/secure/UpdateUserPreferences!default.jspa"; //$NON-NLS-1$
+		HeadMethod method = new HeadMethod(url);
+		method.setFollowRedirects(false);
+
+		try {
+			int statusCode = WebUtil.execute(httpClient, hostConfiguration, method, monitor);
+			return statusCode == HttpStatus.SC_OK;
+		} catch (IOException e) {
+			throw new JiraException(e);
 		}
 	}
 
