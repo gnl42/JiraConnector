@@ -43,4 +43,5 @@ public class Messages {
 
 	public static String JiraClientCache_project_details_for;
 
+	public static String JiraClientCache_getting_project_roles;
 }

@@ -32,6 +32,7 @@ public class NewJiraTaskWizard extends NewTaskWizard implements INewWizard {
 
 	public NewJiraTaskWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
 		super(taskRepository, taskSelection);
+		setWindowTitle(Messages.NewJiraTaskWizard_New_Jira_Task_Title);
 	}
 
 	@Override

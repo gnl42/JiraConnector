@@ -128,7 +128,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 						JiraAttribute.PROJECT.id());
 				if (projectAttribute != null) {
 					Project project = client.getCache().getProjectById(projectAttribute.getValue());
-					if (project != null) {
+					if (project != null && project.hasDetails()) {
 						if (JiraAttribute.COMPONENTS.id().equals(attribute.getId())) {
 							for (Component component : project.getComponents()) {
 								options.put(component.getId(), component.getName());

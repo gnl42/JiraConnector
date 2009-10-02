@@ -14,7 +14,9 @@ package org.eclipse.mylyn.internal.jira.core.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO need mapping statuses -> actions -> fields TODO need mapping statuses -> fields
@@ -47,6 +49,10 @@ public class Project implements Serializable {
 	private IssueType[] issueTypes;
 
 	private SecurityLevel[] securityLevels;
+
+	private Map<String, IssueType> issueTypesById;
+
+	private boolean details;
 
 	public Project(String id) {
 		this.id = id;
@@ -212,6 +218,12 @@ public class Project implements Serializable {
 
 	public void setIssueTypes(IssueType[] issueTypes) {
 		this.issueTypes = issueTypes;
+		this.issueTypesById = new HashMap<String, IssueType>();
+		if (issueTypes != null) {
+			for (IssueType type : issueTypes) {
+				issueTypesById.put(type.getId(), type);
+			}
+		}
 	}
 
 	public SecurityLevel[] getSecurityLevels() {
@@ -222,4 +234,18 @@ public class Project implements Serializable {
 		this.securityLevels = securityLevels;
 	}
 
+	public void setDetails(boolean details) {
+		this.details = details;
+	}
+
+	public boolean hasDetails() {
+		return details;
+	}
+
+	public IssueType getIssueTypeById(String typeId) {
+		if (issueTypesById != null) {
+			return issueTypesById.get(typeId);
+		}
+		return null;
+	}
 }

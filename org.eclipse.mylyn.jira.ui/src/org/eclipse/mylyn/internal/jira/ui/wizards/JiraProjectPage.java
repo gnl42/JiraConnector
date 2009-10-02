@@ -8,6 +8,7 @@
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
  *     Eugene Kuleshov - improvements
+ *     Atlassian - improvements
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.ui.wizards;
@@ -57,6 +58,7 @@ import org.eclipse.mylyn.tasks.ui.editors.TaskEditorInput;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -75,7 +77,8 @@ import org.eclipse.ui.progress.UIJob;
  * 
  * @author Steffen Pingel
  * @author Eugene Kuleshov
- * @author Thomas Ehrnhoefer (multiple projects selection)
+ * @author Thomas Ehrnhoefer
+ * @author Pawel Niewiadomski
  */
 public class JiraProjectPage extends WizardPage {
 
@@ -127,6 +130,17 @@ public class JiraProjectPage extends WizardPage {
 				}
 				return ""; //$NON-NLS-1$
 			}
+
+			@Override
+			public Image getImage(Object element) {
+//				if (element instanceof Project) {
+//					Project project = (Project) element;
+//					if (!project.hasDetails()) {
+//						return CommonImages.getImage(CommonImages.REFRESH);
+//					}
+//				}
+				return super.getImage(element);
+			}
 		});
 
 		projectTreeViewer.setContentProvider(new ITreeContentProvider() {
@@ -176,13 +190,16 @@ public class JiraProjectPage extends WizardPage {
 			}.schedule(300L);
 		}
 
-		projectTreeViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
+		projectTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (getSelectedProject() == null) {
 					setErrorMessage(Messages.JiraProjectPage_You_must_select_a_project);
+				} else if (!getSelectedProject().hasDetails()) {
+					setMessage(Messages.JiraProjectPage_This_project_has_details_missing);
 				} else {
 					setErrorMessage(null);
+					setMessage(null);
 				}
 				getWizard().getContainer().updateButtons();
 			}

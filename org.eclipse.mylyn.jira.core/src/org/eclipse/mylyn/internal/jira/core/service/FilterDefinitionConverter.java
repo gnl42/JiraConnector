@@ -187,6 +187,9 @@ public class FilterDefinitionConverter {
 			Set<Version> versions = new LinkedHashSet<Version>();
 
 			for (Project project : projects) {
+				if (!project.hasDetails()) {
+					continue;
+				}
 				for (String componentId : componentIds) {
 					Component[] projectComponents = project.getComponents();
 					for (Component component : projectComponents) {
@@ -209,7 +212,21 @@ public class FilterDefinitionConverter {
 		List<String> typeIds = getIds(params, TYPE_KEY);
 		List<IssueType> issueTypes = new ArrayList<IssueType>();
 		for (String typeId : typeIds) {
-			IssueType issueType = client.getCache().getIssueTypeById(typeId);
+			IssueType issueType = null;
+			if (projects.size() > 0) {
+				for (Project project : projects) {
+					issueType = project.getIssueTypeById(typeId);
+					if (issueType != null) {
+						break;
+					}
+				}
+			}
+
+			// fallback - if there are no projects or project issue types are not supported
+			if (issueType == null) {
+				issueType = client.getCache().getIssueTypeById(typeId);
+			}
+
 			if (issueType != null) {
 				issueTypes.add(issueType);
 			} else if (validate) {

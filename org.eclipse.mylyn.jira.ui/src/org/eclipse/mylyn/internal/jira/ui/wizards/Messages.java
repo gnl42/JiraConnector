@@ -194,4 +194,8 @@ public class Messages extends NLS {
 	public static String JiraRepositorySettingsPage_working_hours_per_day;
 
 	public static String JiraRepositorySettingsPage_Validate_server_settings;
+
+	public static String JiraProjectPage_This_project_has_details_missing;
+
+	public static String NewJiraTaskWizard_New_Jira_Task_Title;
 }

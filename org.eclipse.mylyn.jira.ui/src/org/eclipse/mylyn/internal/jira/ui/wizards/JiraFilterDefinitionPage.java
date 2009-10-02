@@ -9,11 +9,11 @@
  *     Brock Janiczak - initial API and implementation
  *     Eugene Kuleshov - improvements
  *     Tasktop Technologies - improvements
+ *     Atlassian - improvements
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.ui.wizards;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -22,12 +22,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -40,8 +41,8 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
+import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
@@ -70,7 +71,9 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraUiPlugin;
+import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.DatePicker;
+import org.eclipse.mylyn.internal.provisional.commons.ui.ICoreRunnable;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositoryQueryPage;
@@ -92,16 +95,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.IProgressService;
 
 /**
  * @author Brock Janiczak
- * @author Eugene Kuleshov (layout and other improvements)
- * @author Mik Kersten (generalized for search dialog)
+ * @author Eugene Kuleshov
+ * @author Mik Kersten
  * @author Steffen Pingel
- * @author Thomas Ehrnhoefer (multiple projects selection)
+ * @author Thomas Ehrnhoefer
+ * @author Pawel Niewiadomski
  */
 public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
+
+	private static final int DATE_CONTROL_WIDTH_HINT = 250;
 
 	final static class ComponentLabelProvider implements ILabelProvider {
 
@@ -188,6 +193,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	private static final String SEARCH_URL_ID = PAGE_NAME + ".SEARCHURL"; //$NON-NLS-1$
 
 	private static final Project[] NO_PROJECTS = new Project[0];
+
+	private static final int HEIGHT_HINT = 50;
+
+	private static final int WIDTH_HINT = 150;
 
 	final Placeholder ALL_PROJECTS = new Placeholder(Messages.JiraFilterDefinitionPage_All_Projects);
 
@@ -626,8 +635,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	private void createComponentsViewer(Composite c) {
 		components = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 50;
-		gridData.widthHint = 90;
+		gridData.heightHint = HEIGHT_HINT;
+		gridData.widthHint = WIDTH_HINT;
 		components.getControl().setLayoutData(gridData);
 
 		components.setContentProvider(new IStructuredContentProvider() {
@@ -642,14 +651,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				Project[] projects = (Project[]) newInput;
-				if (projects == null || projects.length == 0) {
+				if (projects == null || projects.length == 0 || projects.length > 1) {
 					currentElements = new Object[] { ANY_COMPONENT };
 				} else {
 					Set<Object> elements = new LinkedHashSet<Object>();
 					elements.add(ANY_COMPONENT);
 					elements.add(NO_COMPONENT);
 					for (Project project : projects) {
-						if (project != null) {
+						if (project != null && project.hasDetails()) {
 							elements.addAll(Arrays.asList(project.getComponents()));
 						}
 					}
@@ -740,12 +749,6 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		{
 			SashForm cc = new SashForm(sashForm, SWT.NONE);
 
-			ISelectionChangedListener selectionChangeListener = new ISelectionChangedListener() {
-				public void selectionChanged(SelectionChangedEvent event) {
-					// validatePage();
-				}
-			};
-
 			{
 				Composite comp = new Composite(cc, SWT.NONE);
 				GridLayout gridLayout = new GridLayout();
@@ -757,26 +760,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 				typeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 				typeLabel.setText(Messages.JiraFilterDefinitionPage_Type);
 
-				issueType = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-				gridData.heightHint = 50;
-				gridData.widthHint = 90;
-				issueType.getList().setLayoutData(gridData);
-
-				issueType.setLabelProvider(new LabelProvider() {
-
-					@Override
-					public String getText(Object element) {
-						if (element instanceof Placeholder) {
-							return ((Placeholder) element).getText();
-						}
-
-						return ((IssueType) element).getName();
-					}
-
-				});
-
-				issueType.addSelectionChangedListener(selectionChangeListener);
+				createIssueTypesViewer(comp);
 			}
 
 			{
@@ -792,8 +776,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 				status = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-				gridData.heightHint = 50;
-				gridData.widthHint = 90;
+				gridData.heightHint = HEIGHT_HINT;
+				gridData.widthHint = WIDTH_HINT;
 				status.getList().setLayoutData(gridData);
 
 				status.setLabelProvider(new LabelProvider() {
@@ -808,8 +792,6 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					}
 
 				});
-
-				status.addSelectionChangedListener(selectionChangeListener);
 			}
 
 			{
@@ -825,8 +807,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 				resolution = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-				gridData.heightHint = 50;
-				gridData.widthHint = 90;
+				gridData.heightHint = HEIGHT_HINT;
+				gridData.widthHint = WIDTH_HINT;
 				resolution.getList().setLayoutData(gridData);
 
 				resolution.setLabelProvider(new LabelProvider() {
@@ -841,8 +823,6 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					}
 
 				});
-
-				resolution.addSelectionChangedListener(selectionChangeListener);
 			}
 
 			{
@@ -858,8 +838,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 				priority = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-				gridData.heightHint = 50;
-				gridData.widthHint = 90;
+				gridData.heightHint = HEIGHT_HINT;
+				gridData.widthHint = WIDTH_HINT;
 				priority.getList().setLayoutData(gridData);
 
 				priority.setLabelProvider(new LabelProvider() {
@@ -874,7 +854,6 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					}
 
 				});
-				priority.addSelectionChangedListener(selectionChangeListener);
 			}
 
 			cc.setWeights(new int[] { 1, 1, 1, 1 });
@@ -1057,7 +1036,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			FillLayout fillLayout = new FillLayout();
 			fillLayout.spacing = 5;
 			composite.setLayout(fillLayout);
-			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+			GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+			layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
+			composite.setLayoutData(layoutData);
 
 			createdStartDatePicker = new DatePicker(composite, SWT.BORDER,
 					Messages.JiraFilterDefinitionPage__start_date_, true, 0);
@@ -1073,7 +1054,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			FillLayout fillLayout = new FillLayout();
 			fillLayout.spacing = 5;
 			composite.setLayout(fillLayout);
-			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+			GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+			layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
+			composite.setLayoutData(layoutData);
 
 			updatedStartDatePicker = new DatePicker(composite, SWT.BORDER,
 					Messages.JiraFilterDefinitionPage__start_date_, true, 0);
@@ -1089,7 +1072,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 			FillLayout fillLayout = new FillLayout();
 			fillLayout.spacing = 5;
 			composite.setLayout(fillLayout);
-			composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+			GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+			layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
+			composite.setLayoutData(layoutData);
 
 			dueStartDatePicker = new DatePicker(composite, SWT.BORDER, Messages.JiraFilterDefinitionPage__start_date_,
 					true, 0);
@@ -1118,6 +1103,58 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 		Dialog.applyDialogFont(parent);
 	}
 
+	private void createIssueTypesViewer(Composite comp) {
+		issueType = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.heightHint = HEIGHT_HINT;
+		gridData.widthHint = WIDTH_HINT;
+		issueType.getList().setLayoutData(gridData);
+
+		issueType.setContentProvider(new IStructuredContentProvider() {
+			private Object[] currentElements;
+
+			public Object[] getElements(Object inputElement) {
+				return currentElements;
+			}
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+				final Project[] projects = (Project[]) newInput;
+				IssueType[] types = null;
+
+				if (projects == null || projects.length == 0 || projects.length > 1) {
+					types = client.getCache().getIssueTypes();
+				} else if (projects[0].hasDetails()) {
+					types = projects[0].getIssueTypes();
+				}
+
+				if (types != null) {
+					Object[] elements = new Object[types.length + 1];
+					System.arraycopy(types, 0, elements, 1, types.length);
+					elements[0] = ANY_ISSUE_TYPE;
+					currentElements = elements;
+				}
+			}
+
+			public void dispose() {
+			}
+		});
+
+		issueType.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof Placeholder) {
+					return ((Placeholder) element).getText();
+				}
+
+				return ((IssueType) element).getName();
+			}
+
+		});
+
+		issueType.setInput(NO_PROJECTS);
+	}
+
 //	@Override
 //	public boolean isPageComplete() {
 //		// XXX workaround for bad implementation of AbstractRepositoryQueryPage.isPageComplete()
@@ -1142,8 +1179,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	private void createFixForViewer(Composite c) {
 		fixFor = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 50;
-		gridData.widthHint = 90;
+		gridData.heightHint = HEIGHT_HINT;
+		gridData.widthHint = WIDTH_HINT;
 		fixFor.getControl().setLayoutData(gridData);
 
 		fixFor.setContentProvider(new IStructuredContentProvider() {
@@ -1158,7 +1195,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				Project[] projects = (Project[]) newInput;
-				if (projects == null || projects.length == 0) {
+				if (projects == null || projects.length == 0 || projects.length > 1) {
 					currentElements = new Object[] { ANY_FIX_VERSION };
 				} else {
 					List<Object> elements = new ArrayList<Object>();
@@ -1169,7 +1206,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					Set<Version> unreleasedVersions = new LinkedHashSet<Version>();
 
 					for (Project project : projects) {
-						if (project != null) {
+						if (project != null && project.hasDetails()) {
 							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions()));
 							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions()));
 						}
@@ -1191,8 +1228,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	private void createProjectsViewer(Composite c) {
 		project = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 50;
-		gridData.widthHint = 90;
+		gridData.heightHint = HEIGHT_HINT;
+		gridData.widthHint = WIDTH_HINT;
 		project.getControl().setLayoutData(gridData);
 
 		project.setLabelProvider(new LabelProvider() {
@@ -1226,8 +1263,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 	private void createReportedInViewer(Composite c) {
 		reportedIn = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 50;
-		gridData.widthHint = 90;
+		gridData.heightHint = HEIGHT_HINT;
+		gridData.widthHint = WIDTH_HINT;
 		reportedIn.getControl().setLayoutData(gridData);
 
 		reportedIn.setContentProvider(new IStructuredContentProvider() {
@@ -1242,7 +1279,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				Project[] projects = (Project[]) newInput;
-				if (projects == null || projects.length == 0) {
+				if (projects == null || projects.length == 0 || projects.length > 1) {
 					currentElements = new Object[] { ANY_REPORTED_VERSION };
 				} else {
 					List<Object> elements = new ArrayList<Object>();
@@ -1253,7 +1290,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 					Set<Object> unreleasedVersions = new LinkedHashSet<Object>();
 
 					for (Project project : projects) {
-						if (project != null) {
+						if (project != null && project.hasDetails()) {
 							releasedVersions.addAll(Arrays.asList(project.getReleasedVersions()));
 							unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions()));
 						}
@@ -1329,26 +1366,6 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 		});
 		project.setInput(client);
-
-		issueType.setContentProvider(new IStructuredContentProvider() {
-
-			public void dispose() {
-			}
-
-			public Object[] getElements(Object inputElement) {
-				JiraClient server = (JiraClient) inputElement;
-				Object[] elements = new Object[server.getCache().getIssueTypes().length + 1];
-				elements[0] = ANY_ISSUE_TYPE;
-				System.arraycopy(server.getCache().getIssueTypes(), 0, elements, 1,
-						server.getCache().getIssueTypes().length);
-
-				return elements;
-			}
-
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			}
-		});
-		issueType.setInput(client);
 
 		status.setContentProvider(new IStructuredContentProvider() {
 
@@ -1650,57 +1667,75 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
 	private void updateAttributesFromRepository(final boolean force) {
 		if (!client.getCache().hasDetails() || force) {
-			try {
-				IRunnableWithProgress runnable = new IRunnableWithProgress() {
-					// FIXME review error handling
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						JiraClient client = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
-						try {
-							client.getCache().refreshDetails(monitor);
-						} catch (OperationCanceledException e) {
-							throw new InterruptedException();
-						} catch (JiraException e) {
-							showWarning(NLS.bind( //
-									Messages.JiraFilterDefinitionPage_Error_updating_attributes_X, e.getMessage()));
-						} catch (Exception e) {
-							String msg = NLS.bind( //
-									Messages.JiraFilterDefinitionPage_Error_updating_attributes_X, e.getMessage());
-							showWarning(msg);
-							StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.ERROR,
-									JiraUiPlugin.ID_PLUGIN, msg, e));
-						}
-					}
-
-					private void showWarning(final String msg) {
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								JiraFilterDefinitionPage.this.setErrorMessage(msg);
-							}
-						});
-					}
-				};
-
-				if (getContainer() != null) {
-					getContainer().run(true, true, runnable);
-				} else if (getSearchContainer() != null) {
-					getSearchContainer().getRunnableContext().run(true, true, runnable);
-				} else {
-					IProgressService service = PlatformUI.getWorkbench().getProgressService();
-					service.busyCursorWhile(runnable);
-				}
-			} catch (InvocationTargetException e) {
-				return;
-			} catch (InterruptedException e) {
-				return;
+			Project[] projects = new Project[0];
+			IStructuredSelection selection = (IStructuredSelection) project.getSelection();
+			if (selection.getFirstElement() instanceof Project) {
+				projects = new Project[] { (Project) selection.getFirstElement() };
 			}
+			internalUpdate(true, projects);
 		}
 
 		initializeContentProviders();
 	}
 
-	void updateCurrentProjects(Project[] projects) {
+	private void internalUpdate(final boolean updateProjectList, final Project[] projects) {
+		ICoreRunnable runnable = new ICoreRunnable() {
+			public void run(IProgressMonitor monitor) throws CoreException {
+				int size = projects.length;
+				if (updateProjectList) {
+					size++;
+				}
+				SubMonitor submonitor = SubMonitor.convert(monitor,
+						Messages.JiraFilterDefinitionPage_Update_Attributes_from_Repository, size);
+				try {
+					JiraClient client = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
+					if (updateProjectList) {
+						client.getCache().refreshDetails(submonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+					}
+					for (final Project project : projects) {
+						client.getCache().refreshProjectDetails(project.getId(),
+								submonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
+					}
+				} catch (JiraException e) {
+					throw new CoreException(JiraCorePlugin.toStatus(getTaskRepository(), e));
+				}
+			}
+		};
+
+		IRunnableContext context = getContainer();
+		if (context == null) {
+			context = getSearchContainer().getRunnableContext();
+		}
+		if (context == null) {
+			context = PlatformUI.getWorkbench().getProgressService();
+		}
+		try {
+			CommonUiUtil.run(context, runnable);
+		} catch (CoreException e) {
+			setErrorMessage(NLS.bind( //
+					Messages.JiraFilterDefinitionPage_Error_updating_attributes_X, e.getMessage()));
+		} catch (OperationCanceledException e) {
+			// ignore
+		}
+	}
+
+	void updateCurrentProjects(final Project[] projects) {
+		List<Project> staleProjects = null;
+		for (final Project project : projects) {
+			if (!project.hasDetails()) {
+				if (staleProjects == null) {
+					staleProjects = new ArrayList<Project>();
+				}
+				staleProjects.add(project);
+			}
+		}
+		if (staleProjects != null) {
+			internalUpdate(false, staleProjects.toArray(new Project[0]));
+		}
+
 		this.fixFor.setInput(projects);
 		this.components.setInput(projects);
 		this.reportedIn.setInput(projects);
+		this.issueType.setInput(projects);
 	}
 }

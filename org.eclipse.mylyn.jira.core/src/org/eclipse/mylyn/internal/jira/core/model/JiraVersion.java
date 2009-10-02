@@ -113,4 +113,8 @@ public class JiraVersion implements Comparable<JiraVersion> {
 		return sb.toString();
 	}
 
+	public boolean supportsPerProjectIssueTypes() {
+		return this.compareTo(JiraVersion.JIRA_3_12) >= 0;
+	}
+
 }

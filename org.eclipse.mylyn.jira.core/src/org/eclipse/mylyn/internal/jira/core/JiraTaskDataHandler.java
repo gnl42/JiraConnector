@@ -8,7 +8,7 @@
  * Contributors:
  *     Tasktop Technologies - initial API and implementation
  *     Eugene Kuleshov - improvements
- *     Pawel Niewiadomski - fixes for bug 288347
+ *     Pawel Niewiadomski - fixes for bug 288347, 
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.core;
@@ -170,13 +170,25 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			TaskData oldTaskData, boolean forceCache, IProgressMonitor monitor) throws JiraException {
 		TaskData data = new TaskData(getAttributeMapper(repository), JiraCorePlugin.CONNECTOR_KIND,
 				repository.getRepositoryUrl(), jiraIssue.getId());
-		initializeTaskData(data, client, jiraIssue.getProject());
+		initializeTaskData(repository, data, client, jiraIssue.getProject(), monitor);
 		updateTaskData(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 		addOperations(data, jiraIssue, client, oldTaskData, forceCache, monitor);
 		return data;
 	}
 
-	public void initializeTaskData(TaskData data, JiraClient client, Project project) {
+	private Project ensureProjectHasDetails(JiraClient client, TaskRepository repository, Project project,
+			IProgressMonitor monitor) throws JiraException {
+		if (!project.hasDetails()) {
+			client.getCache().refreshProjectDetails(project.getId(), monitor);
+			return client.getCache().getProjectById(project.getId());
+		}
+		return project;
+	}
+
+	public void initializeTaskData(TaskRepository repository, TaskData data, JiraClient client, Project project,
+			IProgressMonitor monitor) throws JiraException {
+		project = ensureProjectHasDetails(client, repository, project, monitor);
+
 		data.setVersion(TASK_DATA_VERSION_CURRENT.toString());
 
 		createAttribute(data, JiraAttribute.CREATION_DATE);
@@ -1134,7 +1146,23 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 		if (project == null) {
 			return false;
 		}
-		initializeTaskData(data, client, project);
+		if (!project.hasDetails()) {
+			try {
+				client.getCache().refreshProjectDetails(project.getId(), monitor);
+			} catch (JiraException e) {
+				final IStatus status = JiraCorePlugin.toStatus(repository, e);
+				trace(status);
+				throw new CoreException(status);
+			}
+		}
+
+		try {
+			initializeTaskData(repository, data, client, project, monitor);
+		} catch (JiraException e) {
+			final IStatus status = JiraCorePlugin.toStatus(repository, e);
+			trace(status);
+			throw new CoreException(status);
+		}
 		return true;
 	}
 
@@ -1166,7 +1194,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 			}
 
 			Project project = client.getCache().getProjectById(projectAttribute.getValue());
-			initializeTaskData(taskData, client, project);
+			initializeTaskData(repository, taskData, client, project, monitor);
 
 			new JiraTaskMapper(taskData).merge(new JiraTaskMapper(parentTaskData));
 			taskData.getRoot().getAttribute(JiraAttribute.PROJECT.id()).setValue(project.getId());
