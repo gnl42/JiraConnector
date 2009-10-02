@@ -997,22 +997,23 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 						}
 					}
 
-					String commentVisibility = taskData.getRoot()
-							.getMappedAttribute(JiraAttribute.PROJECT_ROLES.id())
-							.getValue();
-
 					// check if the visibility of the comment needs to be set 
 					Comment soapComment = null;
-					if (!IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL.equals(commentVisibility)) {
-						// not relevant for later processing
-						changeIds.remove(JiraAttribute.PROJECT_ROLES.id());
+					TaskAttribute commentVisibilityAttribute = taskData.getRoot().getMappedAttribute(
+							JiraAttribute.PROJECT_ROLES.id());
+					if (commentVisibilityAttribute != null) {
+						String commentVisibility = commentVisibilityAttribute.getValue();
+						if (!IJiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL.equals(commentVisibility)) {
+							// not relevant for later processing
+							changeIds.remove(JiraAttribute.PROJECT_ROLES.id());
 
-						if (newComment != null && newComment.length() > 0) {
-							soapComment = new Comment();
-							soapComment.setComment(newComment);
-							soapComment.setRoleLevel(commentVisibility);
+							if (newComment != null && newComment.length() > 0) {
+								soapComment = new Comment();
+								soapComment.setComment(newComment);
+								soapComment.setRoleLevel(commentVisibility);
 
-							newComment = null;
+								newComment = null;
+							}
 						}
 					}
 
