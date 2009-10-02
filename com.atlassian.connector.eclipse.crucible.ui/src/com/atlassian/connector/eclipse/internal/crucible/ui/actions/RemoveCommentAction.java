@@ -26,11 +26,11 @@ public class RemoveCommentAction extends AbstractBackgroundJobReviewAction {
 
 	public RemoveCommentAction(final Review review, final Comment comment, Shell shell) {
 		super("Remove Comment", review, comment, shell, "Removing a comment from review " + review.getPermId().getId(),
-				CrucibleImages.COMMENT_DELETE, new RemoteOperation() {
+				CrucibleImages.COMMENT_DELETE, new RemoteCrucibleOperation() {
 					public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg)
 							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 						server.removeComment(serverCfg, review.getPermId(), comment);
 					}
-				});
+				}, true);
 	}
 }

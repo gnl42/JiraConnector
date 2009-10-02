@@ -13,9 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
-import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRemoteOperation;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -24,18 +22,14 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -47,22 +41,28 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 
 	private final String jobMessage;
 
-	private final RemoteOperation remoteOperation;
+	private final RemoteCrucibleOperation remoteOperation;
 
-	protected interface RemoteOperation {
+	private final boolean reloadReview;
+
+	protected interface RemoteCrucibleOperation {
 		void run(CrucibleServerFacade2 crucibleServerFacade, ConnectionCfg crucibleServerCfg)
 				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException;
 	}
 
 	public AbstractBackgroundJobReviewAction(String text, Review review, Comment comment, Shell shell,
-			String jobMessage, ImageDescriptor imageDescriptor, RemoteOperation remoteOperation) {
+			String jobMessage, ImageDescriptor imageDescriptor, RemoteCrucibleOperation remoteOperation,
+			boolean reloadReview) {
 		super(text);
 		this.review = review;
 		this.comment = comment;
 		this.shell = shell;
 		this.jobMessage = jobMessage;
 		this.remoteOperation = remoteOperation;
-		setImageDescriptor(imageDescriptor);
+		this.reloadReview = reloadReview;
+		if (imageDescriptor != null) {
+			setImageDescriptor(imageDescriptor);
+		}
 	}
 
 	@Override
@@ -79,7 +79,8 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 			ErrorDialog.openError(shell, CrucibleUiPlugin.PRODUCT_NAME, message, status);
 			return;
 		}
-		RemoteOperationJob remoteOperationJob = new RemoteOperationJob(review, client, getTaskRepository());
+		RemoteOperationJob remoteOperationJob = new RemoteOperationJob(review, client, getTaskRepository(), jobMessage,
+				remoteOperation, shell, reloadReview);
 		remoteOperationJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -87,54 +88,10 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 					public void run() {
 						setEnabled(true);
 					}
-
 				});
 			}
 		});
 		setEnabled(false);
 		remoteOperationJob.schedule();
 	}
-
-	private class RemoteOperationJob extends Job {
-
-		private final CrucibleClient crucibleClient;
-
-		private final TaskRepository taskRepository;
-
-		public RemoteOperationJob(Review review, CrucibleClient crucibleClient, TaskRepository taskRepository) {
-			super(jobMessage);
-			setUser(true);
-			this.crucibleClient = crucibleClient;
-			this.taskRepository = taskRepository;
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			try {
-				crucibleClient.execute(new CrucibleRemoteOperation<Void>(monitor, getTaskRepository()) {
-					@Override
-					public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
-							throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-						remoteOperation.run(server, serverCfg);
-						return null;
-					}
-				});
-				crucibleClient.getReview(taskRepository, CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId()),
-						true, monitor);
-
-			} catch (final CoreException e) {
-				final String message = "Error while executing job: " + jobMessage + "\n" + e.getMessage();
-				final Status status = new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, message, e);
-				StatusHandler.log(status);
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						ErrorDialog.openError(shell, CrucibleUiPlugin.PRODUCT_NAME, message, status);
-					}
-
-				});
-			}
-			return Status.OK_STATUS;
-		}
-	}
-
 }

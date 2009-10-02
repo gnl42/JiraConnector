@@ -26,13 +26,13 @@ public class PostDraftCommentAction extends AbstractBackgroundJobReviewAction {
 
 	public PostDraftCommentAction(final Review review, final Comment comment, Shell shell) {
 		super("Publish Comment", review, comment, shell, "Publishing selected comment for review "
-				+ review.getPermId().getId(), CrucibleImages.COMMENT_POST, new RemoteOperation() {
+				+ review.getPermId().getId(), CrucibleImages.COMMENT_POST, new RemoteCrucibleOperation() {
 
 			public void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg) throws CrucibleLoginException,
 					RemoteApiException, ServerPasswordNotProvidedException {
 				server.publishComment(serverCfg, review.getPermId(), comment.getPermId());
 			}
-		});
+		}, true);
 	}
 
 }

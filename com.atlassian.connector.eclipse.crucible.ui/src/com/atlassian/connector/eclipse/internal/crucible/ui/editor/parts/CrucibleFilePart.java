@@ -16,7 +16,9 @@ import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDa
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareUploadedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenUploadedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
@@ -28,6 +30,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
@@ -109,6 +112,16 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 		VersionedVirtualFile oldFileDescriptor = crucibleFile.getOldFileDescriptor();
 		VersionedVirtualFile newFileDescriptor = crucibleFile.getFileDescriptor();
 
+		boolean oldFileHasRevision = oldFileDescriptor != null && oldFileDescriptor.getRevision() != null
+				&& oldFileDescriptor.getRevision().length() > 0;
+		boolean oldFileHasUrl = oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
+				&& oldFileDescriptor.getUrl().length() > 0;
+
+		boolean newFileHasRevision = newFileDescriptor != null && newFileDescriptor.getRevision() != null
+				&& newFileDescriptor.getRevision().length() > 0;
+		boolean newFileHasUrl = newFileDescriptor != null && newFileDescriptor.getUrl() != null
+				&& newFileDescriptor.getUrl().length() > 0;
+
 		FileType filetype = crucibleFile.getFileType();
 
 		//if repository type is uploaded or patch, display alternative for now since we cannot open the file yet
@@ -121,11 +134,44 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 					+ " Please see studio.atlassian.com for updates.");
 		} else if (crucibleFile.getRepositoryType() == RepositoryType.UPLOAD) {
 			textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
-			textHyperlink.setText("Uploaded File");
+			textHyperlink.setText("Pre-commit");
 			textHyperlink.setEnabled(false);
 			textHyperlink.setUnderlined(false);
 			textHyperlink.setToolTipText("Opening of uploaded files not supported."
 					+ " Please see studio.atlassian.com for updates.");
+
+			//TODO jj handle deleted and added files, directories etc.
+			if (crucibleFile.getCommitType() == CommitType.Deleted || filetype != FileType.File) {
+			} else {
+				if (oldFileHasUrl && oldFileHasRevision) {
+					OpenUploadedVirtualFileAction openOldAction = new OpenUploadedVirtualFileAction(oldFileDescriptor,
+							crucibleReview, toolbarComposite.getShell(), getCrucibleEditor().getSite()
+									.getWorkbenchWindow()
+									.getActivePage());
+					openOldAction.setText(oldFileDescriptor.getRevision());
+					openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
+					createActionHyperlink(toolbarComposite, toolkit, openOldAction);
+				}
+				if (oldFileHasRevision) {
+					if (newFileHasRevision) {
+						textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
+						textHyperlink.setText("-");
+						textHyperlink.setEnabled(false);
+						textHyperlink.setUnderlined(false);
+					}
+				}
+
+				if (newFileHasUrl && newFileHasRevision && crucibleFile.getCommitType() != CommitType.Deleted) {
+					OpenUploadedVirtualFileAction openNewAction = new OpenUploadedVirtualFileAction(newFileDescriptor,
+							crucibleReview, toolbarComposite.getShell(), getCrucibleEditor().getSite()
+									.getWorkbenchWindow()
+									.getActivePage());
+					openNewAction.setText(newFileDescriptor.getRevision());
+					openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
+					createActionHyperlink(toolbarComposite, toolkit, openNewAction);
+				}
+			}
+
 		} else {
 			//if file is deleted or not a file, do not include any revisions 
 			//   (we need a local resource to retrieve the old revision from SVN, which we do not have)
@@ -135,23 +181,15 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 				textHyperlink.setEnabled(false);
 				textHyperlink.setUnderlined(false);
 			} else {
-				if (oldFileDescriptor != null && oldFileDescriptor.getUrl() != null
-						&& oldFileDescriptor.getUrl().length() > 0 && oldFileDescriptor.getRevision() != null
-						&& oldFileDescriptor.getRevision().length() > 0) {
+				if (oldFileHasUrl && oldFileHasRevision) {
 					OpenVersionedVirtualFileAction openOldAction = new OpenVersionedVirtualFileAction(
 							getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true), crucibleReview);
 					openOldAction.setText("Rev: " + oldFileDescriptor.getRevision());
 					openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
 					createActionHyperlink(toolbarComposite, toolkit, openOldAction);
 				}
-
-				if (crucibleFile.getOldFileDescriptor() != null
-						&& crucibleFile.getOldFileDescriptor().getRevision() != null
-						&& crucibleFile.getOldFileDescriptor().getRevision().length() > 0) {
-
-					if (crucibleFile.getFileDescriptor() != null
-							&& crucibleFile.getFileDescriptor().getRevision() != null
-							&& crucibleFile.getFileDescriptor().getRevision().length() > 0) {
+				if (oldFileHasRevision) {
+					if (newFileHasRevision) {
 						textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
 						textHyperlink.setText("-");
 						textHyperlink.setEnabled(false);
@@ -159,10 +197,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 					}
 				}
 
-				if (newFileDescriptor != null && newFileDescriptor.getUrl() != null
-						&& newFileDescriptor.getUrl().length() > 0 && newFileDescriptor.getRevision() != null
-						&& newFileDescriptor.getRevision().length() > 0
-						&& crucibleFile.getCommitType() != CommitType.Deleted) {
+				if (newFileHasUrl && newFileHasRevision && crucibleFile.getCommitType() != CommitType.Deleted) {
 					OpenVersionedVirtualFileAction openNewAction = new OpenVersionedVirtualFileAction(
 							getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false), crucibleReview);
 					openNewAction.setText(newFileDescriptor.getRevision());
@@ -182,7 +217,9 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 			boolean showCompare = hasNewFile && hasOldFile;
 			boolean isSCM = crucibleFile.getRepositoryType() == RepositoryType.SCM;
-			if (isSCM && showCompare && crucibleFile.getCommitType() != CommitType.Deleted && filetype == FileType.File) {
+			boolean isUploaded = crucibleFile.getRepositoryType() == RepositoryType.UPLOAD;
+			if ((isSCM || isUploaded) && showCompare && crucibleFile.getCommitType() != CommitType.Deleted
+					&& filetype == FileType.File) {
 				textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
 				textHyperlink.setText(" ");
 				textHyperlink.setEnabled(false);
@@ -190,12 +227,20 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 				if (newFileDescriptor != null && oldFileDescriptor != null) {
 
-					compareAction = new CompareVersionedVirtualFileAction(crucibleFile, crucibleReview);
-					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
+					IAction compare = null;
+
+					if (isSCM) {
+						compareAction = new CompareVersionedVirtualFileAction(crucibleFile, crucibleReview);
+						compare = compareAction;
+					} else {
+						compare = new CompareUploadedVirtualFileAction(crucibleFile, crucibleReview,
+								toolbarComposite.getShell());
+					}
+					compare.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
 							+ oldFileDescriptor.getRevision());
-					compareAction.setText("Compare");
+					compare.setText("Compare");
 					// TODO set the image descriptor
-					createActionHyperlink(toolbarComposite, toolkit, compareAction);
+					createActionHyperlink(toolbarComposite, toolkit, compare);
 				}
 			} else if (filetype == FileType.Directory) {
 				toolkit.createLabel(toolbarComposite, " Directory");
