@@ -9,6 +9,7 @@
  *     Brock Janiczak - initial API and implementation
  *     Tasktop Technologies - improvements
  *     Eugene Kuleshov - improvements
+ *     Atlassian - improvements
  *******************************************************************************/
 
 package org.eclipse.mylyn.internal.jira.core.service.web.rss;
@@ -23,6 +24,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -40,6 +42,7 @@ import org.eclipse.mylyn.internal.jira.core.model.Subtask;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -98,6 +101,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Brock Janiczak
  * @author Steffen Pingel
  * @author Eugene Kuleshov
+ * @author Pawel Niewiadomski
  */
 public class JiraRssHandler extends DefaultHandler {
 
@@ -267,11 +271,11 @@ public class JiraRssHandler extends DefaultHandler {
 
 	private final ArrayList<Comment> currentComments = new ArrayList<Comment>();
 
-	private ArrayList<Version> currentFixVersions = null;
+	private final ArrayList<Version> currentFixVersions = new ArrayList<Version>();
 
-	private ArrayList<Version> currentReportedVersions = null;
+	private final ArrayList<Version> currentReportedVersions = new ArrayList<Version>();
 
-	private ArrayList<Component> currentComponents = null;
+	private final ArrayList<Component> currentComponents = new ArrayList<Component>();
 
 	private final ArrayList<Attachment> currentAttachments = new ArrayList<Attachment>();
 
@@ -384,7 +388,12 @@ public class JiraRssHandler extends DefaultHandler {
 				currentIssue.setParentId(attributes.getValue(ID_ATTR));
 			} else if (TYPE.equals(localName)) {
 				// FIXME bug 280834: handle case where cache is outdated
-				currentIssue.setType(client.getCache().getIssueTypeById(attributes.getValue(ID_ATTR)));
+				if (currentIssue.getProject() != null
+						&& currentIssue.getProject().getIssueTypeById(attributes.getValue(ID_ATTR)) != null) {
+					currentIssue.setType(currentIssue.getProject().getIssueTypeById(attributes.getValue(ID_ATTR)));
+				} else {
+					currentIssue.setType(client.getCache().getIssueTypeById(attributes.getValue(ID_ATTR)));
+				}
 			} else if (PRIORITY.equals(localName)) {
 				currentIssue.setPriority(client.getCache().getPriorityById(attributes.getValue(ID_ATTR)));
 			} else if (STATUS.equals(localName)) {
@@ -623,13 +632,13 @@ public class JiraRssHandler extends DefaultHandler {
 			if (CHANNEL.equals(localName)) {
 				state = LOOKING_FOR_CHANNEL;
 			} else if (ITEM.equals(localName)) {
-				if (currentReportedVersions != null) {
+				if (currentReportedVersions.size() > 0) {
 					currentIssue.setReportedVersions(currentReportedVersions.toArray(new Version[currentReportedVersions.size()]));
 				}
-				if (currentFixVersions != null) {
+				if (currentFixVersions.size() > 0) {
 					currentIssue.setFixVersions(currentFixVersions.toArray(new Version[currentFixVersions.size()]));
 				}
-				if (currentComponents != null) {
+				if (currentComponents.size() > 0) {
 					currentIssue.setComponents(currentComponents.toArray(new Component[currentComponents.size()]));
 				}
 				currentIssue.setComments(currentComments.toArray(new Comment[currentComments.size()]));
@@ -645,9 +654,9 @@ public class JiraRssHandler extends DefaultHandler {
 				currentCustomFields.clear();
 				currentAttachments.clear();
 				currentComments.clear();
-				currentFixVersions = null;
-				currentReportedVersions = null;
-				currentComponents = null;
+				currentFixVersions.clear();
+				currentReportedVersions.clear();
+				currentComponents.clear();
 				markupDetected = false;
 				state = LOOKING_FOR_ITEM;
 			} else if (TITLE.equals(localName)) {
@@ -674,6 +683,13 @@ public class JiraRssHandler extends DefaultHandler {
 					//throw new SAXException("No project with key '" + projectKey + "' found");
 					break;
 				}
+				if (!project.hasDetails()) {
+					try {
+						client.getCache().refreshProjectDetails(project.getId(), new NullProgressMonitor());
+					} catch (JiraException e) {
+						break;
+					}
+				}
 				currentIssue.setProject(project);
 			} else if (PARENT.equals(localName)) {
 				currentIssue.setParentKey(getCurrentElementText());
@@ -684,46 +700,20 @@ public class JiraRssHandler extends DefaultHandler {
 			} else if (UPDATED.equals(localName)) {
 				currentIssue.setUpdated(convertToDate(getCurrentElementText()));
 			} else if (VERSION.equals(localName)) {
-				if (currentIssue.getProject() == null) {
+				if (currentIssue.getProject() == null
+						|| !addVersionTo(currentReportedVersions, getCurrentElementText())) {
 					//throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 					break;
-				}
-				Version version = currentIssue.getProject().getVersion(getCurrentElementText());
-				// TODO add better handling of unknown versions
-				if (version != null) {
-					// throw new SAXException("No version with name '" + getCurrentElementText() + "' found");
-					if (currentReportedVersions == null) {
-						currentReportedVersions = new ArrayList<Version>();
-					}
-					currentReportedVersions.add(version);
 				}
 			} else if (FIX_VERSION.equals(localName)) {
-				if (currentIssue.getProject() == null) {
+				if (currentIssue.getProject() == null || !addVersionTo(currentFixVersions, getCurrentElementText())) {
 					//throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 					break;
-				}
-				Version version = currentIssue.getProject().getVersion(getCurrentElementText());
-				// TODO add better handling of unknown versions
-				if (version != null) {
-					// throw new SAXException("No version with name '" + getCurrentElementText() + "' found");
-					if (currentFixVersions == null) {
-						currentFixVersions = new ArrayList<Version>();
-					}
-					currentFixVersions.add(version);
 				}
 			} else if (COMPONENT.equals(localName)) {
-				if (currentIssue.getProject() == null) {
+				if (currentIssue.getProject() == null || !addComponentTo(currentComponents, getCurrentElementText())) {
 					//throw new SAXException("Issue " + currentIssue.getId() + " does not have a valid project");
 					break;
-				}
-				Component component = currentIssue.getProject().getComponent(getCurrentElementText());
-				// TODO add better handling of unknown components
-				if (component != null) {
-					// throw new SAXException("No component with name '" + getCurrentElementText() + "' found");
-					if (currentComponents == null) {
-						currentComponents = new ArrayList<Component>();
-					}
-					currentComponents.add(component);
 				}
 			} else if (DUE.equals(localName)) {
 				currentIssue.setDue(convertToSimpleDate(getCurrentElementText()));
@@ -776,6 +766,48 @@ public class JiraRssHandler extends DefaultHandler {
 			break;
 
 		}
+	}
+
+	private boolean addVersionTo(ArrayList<Version> versions, String currentElementText) {
+		Version version = currentIssue.getProject().getVersion(currentElementText);
+		if (version != null) {
+			versions.add(version);
+			return true;
+		} else {
+			try {
+				client.getCache().refreshProjectDetails(currentIssue.getProject().getId(), new NullProgressMonitor());
+			} catch (JiraException e) {
+				return false;
+			}
+			currentIssue.setProject(client.getCache().getProjectById(currentIssue.getProject().getId()));
+			version = currentIssue.getProject().getVersion(currentElementText);
+			if (version != null) {
+				versions.add(version);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean addComponentTo(ArrayList<Component> versions, String currentElementText) {
+		Component version = currentIssue.getProject().getComponent(currentElementText);
+		if (version != null) {
+			versions.add(version);
+			return true;
+		} else {
+			try {
+				client.getCache().refreshProjectDetails(currentIssue.getProject().getId(), new NullProgressMonitor());
+			} catch (JiraException e) {
+				return false;
+			}
+			currentIssue.setProject(client.getCache().getProjectById(currentIssue.getProject().getId()));
+			version = currentIssue.getProject().getComponent(currentElementText);
+			if (version != null) {
+				versions.add(version);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
