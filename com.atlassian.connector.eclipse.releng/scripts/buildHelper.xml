@@ -584,6 +584,12 @@
 	</target>
 		
 	<target name="install-tests-helper">
+		<delete>
+			<fileset dir="${install.dir}">
+	    		<include name="**/*.jar"/>
+			</fileset>
+		</delete>
+
 		<!-- copy build features to eclipse directory -->
 		<unzip dest="${install.dir}">
 			<fileset dir="${build.home}/${build.target}/${build.dist}">
