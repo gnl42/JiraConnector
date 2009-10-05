@@ -189,12 +189,12 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		init(JiraTestConstants.JIRA_LATEST_URL);
 
 		long currentTimeMillis = System.currentTimeMillis();
-		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
-		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
-		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
-		JiraTestUtil.createIssue(client, "search " + currentTimeMillis);
+		JiraTestUtil.createIssue(client, "search" + currentTimeMillis);
+		JiraTestUtil.createIssue(client, "search" + currentTimeMillis);
+		JiraTestUtil.createIssue(client, "search" + currentTimeMillis);
+		JiraTestUtil.createIssue(client, "search" + currentTimeMillis);
 		FilterDefinition filter = new FilterDefinition();
-		filter.setContentFilter(new ContentFilter("search " + currentTimeMillis, true, false, false, false));
+		filter.setContentFilter(new ContentFilter("search" + currentTimeMillis, true, false, false, false));
 		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
 
 		try {
@@ -320,11 +320,11 @@ public class JiraRepositoryConnectorTest extends TestCase {
 		issue.setResolution(client.getCache().getResolutionById(Resolution.FIXED_ID));
 		client.advanceIssueWorkflow(issue, resolveOperation, "comment", null);
 
-		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(addSecondsToDate(new Date(), -1)));
+		repository.setSynchronizationTimeStamp(JiraUtil.dateToString(issue.getCreated()));
 		SynchronizationSession session = createSession(task);
 		connector.preSynchronization(session, null);
 		assertTrue(session.needsPerformQueries());
-		assertTrue(task.isCompleted());
+		assertTrue("Expected preSynchronization() to update task", task.isCompleted());
 	}
 
 	public void testGetSynchronizationFilter() throws Exception {
