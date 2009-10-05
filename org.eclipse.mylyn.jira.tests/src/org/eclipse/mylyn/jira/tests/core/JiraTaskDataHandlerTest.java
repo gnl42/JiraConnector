@@ -23,6 +23,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.IJiraConstants;
 import org.eclipse.mylyn.internal.jira.core.JiraAttribute;
@@ -114,6 +115,11 @@ public class JiraTaskDataHandlerTest extends TestCase {
 
 		JiraIssue issue = JiraTestUtil.newIssue(client, "testUpdateTask");
 		issue.setEstimate(600);
+
+		// update project cache (otherwise there are no components and we get NPE)
+		client.getCache().refreshProjectDetails(issue.getProject().getId(), new NullProgressMonitor());
+		assertTrue(client.getCache().getProjectById(issue.getProject().getId()).hasDetails());
+
 		Component component = issue.getProject().getComponents()[0];
 		issue.setComponents(new Component[] { component });
 		issue = client.createIssue(issue, null);
@@ -131,9 +137,41 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertEquals(component.getId(), taskData.getRoot().getAttribute(JiraAttribute.COMPONENTS.id()).getValue());
 	}
 
+	public void testGetTaskDataWhenProjectIsMissingDetails() throws Exception {
+		init(JiraTestConstants.JIRA_LATEST_URL);
+
+		JiraIssue issue = JiraTestUtil.newIssue(client, "testUpdateTask");
+		issue.setEstimate(600);
+
+		// update project cache (otherwise there are no components and we get NPE)
+		client.getCache().refreshProjectDetails(issue.getProject().getId(), new NullProgressMonitor());
+		assertTrue(client.getCache().getProjectById(issue.getProject().getId()).hasDetails());
+
+		Component component = issue.getProject().getComponents()[0];
+		issue.setComponents(new Component[] { component });
+		issue = client.createIssue(issue, null);
+		assertEquals(600, issue.getInitialEstimate());
+
+		String commentText = "line1\nline2\n\nline4\n\n\n";
+		client.addCommentToIssue(issue, commentText, null);
+
+		// mark that project requires metadata refresh, getTaskData should update it automatically
+		client.getCache().getProjectById(issue.getProject().getId()).setDetails(false);
+
+		TaskData taskData = dataHandler.getTaskData(repository, issue.getId(), new NullProgressMonitor());
+		ITask task = JiraTestUtil.createTask(repository, taskData.getTaskId());
+		List<ITaskComment> comments = JiraTestUtil.getTaskComments(task);
+		assertEquals(1, comments.size());
+		assertEquals(commentText, comments.get(0).getText());
+		assertEquals("600", taskData.getRoot().getAttribute(JiraAttribute.ESTIMATE.id()).getValue());
+		assertEquals(component.getId(), taskData.getRoot().getAttribute(JiraAttribute.COMPONENTS.id()).getValue());
+		assertTrue(client.getCache().getProjectById(issue.getProject().getId()).hasDetails());
+	}
+
 	public void testCreateTaskData() throws JiraException {
 		JiraIssue issue = new JiraIssue();
-		issue.setProject(MockJiraClient.createProject());
+		final Project project = MockJiraClient.createProject();
+		issue.setProject(project);
 		issue.setAssignee("eu");
 		issue.setId("100");
 		issue.setKey("FOO-1");
@@ -159,14 +197,19 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		issue.setUrl("http://mylyn");
 
 		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "http://jira.codehaus.org/");
-		MockJiraClient client = new MockJiraClient(repository.getRepositoryUrl());
+		MockJiraClient client = new MockJiraClient(repository.getRepositoryUrl()) {
+			@Override
+			public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
+				return new Project[] { project };
+			};
+		};
 		JiraTaskDataHandler dataHandler = new JiraTaskDataHandler(new MockJiraClientFactory(client));
 		TaskData data = dataHandler.createTaskData(repository, client, issue, null, null);
 
 		assertValues(data, TaskAttribute.TASK_KEY, "FOO-1");
 		assertValues(data, TaskAttribute.STATUS, "open");
 		assertValues(data, TaskAttribute.PRIORITY, Priority.BLOCKER_ID);
-		assertValues(data, TaskAttribute.PRODUCT, "PRONE");
+		assertValues(data, TaskAttribute.PRODUCT, project.getName());
 		assertValues(data, IJiraConstants.ATTRIBUTE_TYPE, "3");
 		assertValues(data, TaskAttribute.DATE_CREATION, JiraUtil.dateToString(issue.getCreated()));
 		assertValues(data, IJiraConstants.ATTRIBUTE_COMPONENTS, "component2", "component3");

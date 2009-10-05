@@ -26,11 +26,14 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraAction;
 import org.eclipse.mylyn.internal.jira.core.model.JiraFilter;
 import org.eclipse.mylyn.internal.jira.core.model.JiraIssue;
 import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
+import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
 import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.model.NamedFilter;
 import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
+import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
 import org.eclipse.mylyn.internal.jira.core.model.Resolution;
+import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
 import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
@@ -201,7 +204,7 @@ public class MockJiraClient extends JiraClient {
 
 	@Override
 	public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
-		return null;
+		return new IssueType[0];
 	}
 
 	@Override
@@ -216,32 +219,40 @@ public class MockJiraClient extends JiraClient {
 
 	@Override
 	public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
-		return null;
+		return new Priority[0];
 	}
 
 	@Override
 	public Project[] getProjects(IProgressMonitor monitor) throws JiraException {
-		return null;
-	}
-
-	@Override
-	public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
-		return null;
+		return new Project[0];
 	}
 
 	@Override
 	public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
-		return null;
+		ServerInfo si = new ServerInfo();
+		si.setVersion(JiraVersion.JIRA_3_13.toString());
+		return si;
 	}
 
 	@Override
-	public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
-		return null;
+	public SecurityLevel[] getAvailableSecurityLevels(final String projectKey, IProgressMonitor monitor)
+			throws JiraException {
+		return new SecurityLevel[0];
+	}
+
+	@Override
+	public IssueType[] getSubTaskIssueTypes(final String projectId, IProgressMonitor monitor) throws JiraException {
+		return new IssueType[0];
+	}
+
+	@Override
+	public IssueType[] getIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
+		return new IssueType[0];
 	}
 
 	@Override
 	public IssueType[] getSubTaskIssueTypes(IProgressMonitor monitor) throws JiraException {
-		return null;
+		return new IssueType[0];
 	}
 
 	@Override
@@ -312,6 +323,21 @@ public class MockJiraClient extends JiraClient {
 	@Override
 	public JiraWorkLog[] getWorklogs(String issueKey, IProgressMonitor monitor) throws JiraException {
 		return new JiraWorkLog[0];
+	}
+
+	@Override
+	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
+		return new ProjectRole[0];
+	}
+
+	@Override
+	public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
+		return new Resolution[0];
+	}
+
+	@Override
+	public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
+		return new JiraStatus[0];
 	}
 
 }

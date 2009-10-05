@@ -16,14 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.IssueType;
-import org.eclipse.mylyn.internal.jira.core.model.JiraStatus;
-import org.eclipse.mylyn.internal.jira.core.model.JiraVersion;
-import org.eclipse.mylyn.internal.jira.core.model.Priority;
 import org.eclipse.mylyn.internal.jira.core.model.Project;
-import org.eclipse.mylyn.internal.jira.core.model.ProjectRole;
-import org.eclipse.mylyn.internal.jira.core.model.Resolution;
-import org.eclipse.mylyn.internal.jira.core.model.SecurityLevel;
-import org.eclipse.mylyn.internal.jira.core.model.ServerInfo;
 import org.eclipse.mylyn.internal.jira.core.model.Version;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -38,30 +31,6 @@ public class JiraClientCacheTest extends TestCase {
 	public void testRefreshProjectDetails() throws JiraException {
 		final int whatProject[] = { 1 };
 		JiraClient mockClient = new MockJiraClient("http://localhost") {
-
-			@Override
-			public ServerInfo getServerInfo(IProgressMonitor monitor) throws JiraException {
-				ServerInfo si = new ServerInfo();
-				si.setVersion(JiraVersion.JIRA_3_13.toString());
-				return si;
-			}
-
-			@Override
-			public SecurityLevel[] getAvailableSecurityLevels(final String projectKey, IProgressMonitor monitor)
-					throws JiraException {
-				return new SecurityLevel[0];
-			}
-
-			@Override
-			public IssueType[] getSubTaskIssueTypes(final String projectId, IProgressMonitor monitor)
-					throws JiraException {
-				return new IssueType[0];
-			}
-
-			@Override
-			public IssueType[] getIssueTypes(String projectId, IProgressMonitor monitor) throws JiraException {
-				return new IssueType[0];
-			}
 
 			@Override
 			public IssueType[] getIssueTypes(IProgressMonitor monitor) throws JiraException {
@@ -80,26 +49,6 @@ public class JiraClientCacheTest extends TestCase {
 					return new Project[] { MockJiraClient.createProject() };
 				}
 			};
-
-			@Override
-			public Priority[] getPriorities(IProgressMonitor monitor) throws JiraException {
-				return new Priority[0];
-			}
-
-			@Override
-			public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
-				return new ProjectRole[0];
-			}
-
-			@Override
-			public Resolution[] getResolutions(IProgressMonitor monitor) throws JiraException {
-				return new Resolution[0];
-			}
-
-			@Override
-			public JiraStatus[] getStatuses(IProgressMonitor monitor) throws JiraException {
-				return new JiraStatus[0];
-			}
 
 			@Override
 			public Version[] getVersions(String key, IProgressMonitor monitor) throws JiraException {
@@ -131,7 +80,6 @@ public class JiraClientCacheTest extends TestCase {
 		// check project
 		Project project = mockClient.getCache().getProjectById(JiraTestUtil.PROJECT1);
 		assertNotNull(project);
-		assertNull(project.getVersions());
 
 		whatProject[0] = 2;
 
