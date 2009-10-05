@@ -196,6 +196,11 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		issue.setPriority(MockJiraClient.createPriority(Priority.BLOCKER_ID, "blocker"));
 		issue.setUrl("http://mylyn");
 
+		project.setVersions(new Version[] { MockJiraClient.createVersion("3", "3.0"),
+				MockJiraClient.createVersion("1", "1.0"), MockJiraClient.createVersion("2", "2.0") });
+		project.setComponents(components);
+		project.setDetails(true);
+
 		TaskRepository repository = new TaskRepository(JiraCorePlugin.CONNECTOR_KIND, "http://jira.codehaus.org/");
 		MockJiraClient client = new MockJiraClient(repository.getRepositoryUrl()) {
 			@Override
@@ -209,7 +214,7 @@ public class JiraTaskDataHandlerTest extends TestCase {
 		assertValues(data, TaskAttribute.TASK_KEY, "FOO-1");
 		assertValues(data, TaskAttribute.STATUS, "open");
 		assertValues(data, TaskAttribute.PRIORITY, Priority.BLOCKER_ID);
-		assertValues(data, TaskAttribute.PRODUCT, project.getName());
+		assertValues(data, TaskAttribute.PRODUCT, "PRONE");
 		assertValues(data, IJiraConstants.ATTRIBUTE_TYPE, "3");
 		assertValues(data, TaskAttribute.DATE_CREATION, JiraUtil.dateToString(issue.getCreated()));
 		assertValues(data, IJiraConstants.ATTRIBUTE_COMPONENTS, "component2", "component3");

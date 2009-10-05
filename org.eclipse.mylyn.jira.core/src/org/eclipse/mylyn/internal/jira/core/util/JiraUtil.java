@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -32,6 +33,7 @@ import org.eclipse.mylyn.internal.jira.core.model.filter.FilterDefinition;
 import org.eclipse.mylyn.internal.jira.core.service.FilterDefinitionConverter;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraConfiguration;
+import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -129,6 +131,17 @@ public class JiraUtil {
 		return null;
 	}
 
+	public static FilterDefinition getFilterDefinition(TaskRepository taskRepository, JiraClient client,
+			IRepositoryQuery query, boolean validate, IProgressMonitor monitor) throws JiraException {
+		String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
+		if (customUrl != null && customUrl.length() > 0) {
+			FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+					JiraUtil.getConfiguration(taskRepository).getDateFormat());
+			return converter.toFilter(client, customUrl, validate, true, monitor);
+		}
+		return null;
+	}
+
 	private static int getInteger(TaskRepository repository, String key, int defaultValue) {
 		String value = repository.getProperty(key);
 		if (value != null) {
@@ -174,6 +187,16 @@ public class JiraUtil {
 	public static JiraFilter getQuery(TaskRepository taskRepository, JiraClient client, IRepositoryQuery query,
 			boolean validate) {
 		JiraFilter filter = getFilterDefinition(taskRepository, client, query, validate);
+		if (filter != null) {
+			return filter;
+		} else {
+			return getNamedFilter(query);
+		}
+	}
+
+	public static JiraFilter getQuery(TaskRepository taskRepository, JiraClient client, IRepositoryQuery query,
+			boolean validate, IProgressMonitor monitor) throws JiraException {
+		JiraFilter filter = getFilterDefinition(taskRepository, client, query, validate, monitor);
 		if (filter != null) {
 			return filter;
 		} else {

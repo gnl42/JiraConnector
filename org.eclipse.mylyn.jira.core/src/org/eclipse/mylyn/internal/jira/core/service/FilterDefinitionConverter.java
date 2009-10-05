@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.InvalidJiraQueryException;
 import org.eclipse.mylyn.internal.jira.core.JiraRepositoryConnector;
 import org.eclipse.mylyn.internal.jira.core.model.Component;
@@ -138,6 +139,16 @@ public class FilterDefinitionConverter {
 	}
 
 	public FilterDefinition toFilter(JiraClient client, String url, boolean validate) {
+		try {
+			return toFilter(client, url, validate, false, null);
+		} catch (JiraException e) {
+			// can never happen since update parameter is false
+			throw new RuntimeException(e);
+		}
+	}
+
+	public FilterDefinition toFilter(JiraClient client, String url, boolean validate, boolean update,
+			IProgressMonitor monitor) throws JiraException {
 		FilterDefinition filter = new FilterDefinition();
 
 		int n = url.indexOf('?');
@@ -168,6 +179,9 @@ public class FilterDefinitionConverter {
 		List<Project> projects = new ArrayList<Project>();
 		for (String projectId : projectIds) {
 			Project project = client.getCache().getProjectById(projectId);
+			if (update && (project == null || !project.hasDetails())) {
+				project = client.getCache().refreshProjectDetails(projectId, monitor);
+			}
 			if (project == null) {
 				if (validate) {
 					// safeguard

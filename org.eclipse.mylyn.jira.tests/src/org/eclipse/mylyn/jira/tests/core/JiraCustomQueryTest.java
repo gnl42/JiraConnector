@@ -81,10 +81,12 @@ public class JiraCustomQueryTest extends TestCase {
 		projects[0].setId("prj0");
 		projects[0].setComponents(comps);
 		projects[0].setVersions(vers);
+		projects[0].setDetails(true);
 		projects[1] = new Project();
 		projects[1].setId("prj1");
 		projects[1].setComponents(comps);
 		projects[1].setVersions(vers);
+		projects[1].setDetails(true);
 	}
 
 	public void testJiraCustomQuery() {

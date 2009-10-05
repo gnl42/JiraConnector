@@ -225,13 +225,20 @@ public class JiraClientCache {
 		return data;
 	}
 
-	public synchronized void refreshProjectDetails(String projectId, IProgressMonitor monitor) throws JiraException {
+	public synchronized Project refreshProjectDetails(String projectId, IProgressMonitor monitor) throws JiraException {
 		Project project = getProjectById(projectId);
 		if (project != null) {
 			initializeProject(project, monitor);
 		} else {
 			refreshDetails(monitor);
+			project = getProjectById(projectId);
+			if (project == null) {
+				throw new JiraException(NLS.bind(
+						"A project with id ''{0}'' does not exist on the repository", projectId)); //$NON-NLS-1$
+			}
+			initializeProject(project, monitor);
 		}
+		return project;
 	}
 
 	public synchronized void refreshDetails(IProgressMonitor monitor) throws JiraException {

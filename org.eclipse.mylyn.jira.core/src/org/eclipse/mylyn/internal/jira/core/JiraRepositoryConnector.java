@@ -116,17 +116,18 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		try {
 			monitor.beginTask(Messages.JiraRepositoryConnector_Query_Repository, IProgressMonitor.UNKNOWN);
 			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+			JiraFilter filter;
 			try {
 				if (!client.getCache().hasDetails()) {
 					client.getCache().refreshDetails(monitor);
 				}
+				filter = JiraUtil.getQuery(repository, client, repositoryQuery, true, monitor);
+				if (filter == null) {
+					return RepositoryStatus.createStatus(repository, IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
+							Messages.JiraRepositoryConnector_The_JIRA_query_is_invalid);
+				}
 			} catch (JiraException e) {
 				return JiraCorePlugin.toStatus(repository, e);
-			}
-			JiraFilter filter = JiraUtil.getQuery(repository, client, repositoryQuery, true);
-			if (filter == null) {
-				return RepositoryStatus.createStatus(repository, IStatus.ERROR, JiraCorePlugin.ID_PLUGIN,
-						Messages.JiraRepositoryConnector_The_JIRA_query_is_invalid);
 			}
 			try {
 				QueryHitCollector collector = new QueryHitCollector(repository, client, resultCollector, session,

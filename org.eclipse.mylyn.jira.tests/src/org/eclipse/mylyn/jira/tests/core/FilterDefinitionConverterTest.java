@@ -86,10 +86,12 @@ public class FilterDefinitionConverterTest extends TestCase {
 		projects[0].setId("prj0");
 		projects[0].setComponents(comps);
 		projects[0].setVersions(vers);
+		projects[0].setDetails(true);
 		projects[1] = new Project();
 		projects[1].setId("prj1");
 		projects[1].setComponents(comps);
 		projects[1].setVersions(vers);
+		projects[1].setDetails(true);
 
 		Component[] components = new Component[2];
 		components[0] = new Component();
@@ -218,7 +220,9 @@ public class FilterDefinitionConverterTest extends TestCase {
 						break;
 					}
 				}
-				assertTrue("URLs unequal - parameter not found in second url: " + paramOne, found);
+				if (!found) {
+					assertEquals("URLs not equal, parameter not found in second url: " + paramOne, urlOne, urlTwo);
+				}
 			}
 		}
 

@@ -17,7 +17,6 @@ import java.util.Locale;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.internal.jira.core.JiraClientFactory;
 import org.eclipse.mylyn.internal.jira.core.JiraCorePlugin;
@@ -131,6 +130,7 @@ public class JiraFilterTest extends TestCase {
 		filter.setContentFilter(new ContentFilter(summary, true, false, false, false));
 		filter.setComponentFilter(new ComponentFilter(issue2.getProject().getComponents()));
 
+		// run query query to verify component filter is used 
 		IRepositoryQuery query = JiraTestUtil.createQuery(repository, filter);
 		JiraTestResultCollector hitCollector = new JiraTestResultCollector();
 		connector.performQuery(repository, query, hitCollector, null, null);
@@ -138,12 +138,14 @@ public class JiraFilterTest extends TestCase {
 		ITaskMapping taskMapping = connector.getTaskMapping(hitCollector.results.iterator().next());
 		assertEquals(issue2.getSummary(), taskMapping.getSummary());
 
+		// re-run to verify that configuration is refreshed prior to running query
 		hitCollector = new JiraTestResultCollector();
 		JiraClientFactory.getDefault().clearClientsAndConfigurationData();
-		connector.performQuery(repository, query, hitCollector, null, new NullProgressMonitor());
+		connector.performQuery(repository, query, hitCollector, null, null);
 		assertEquals(1, hitCollector.results.size());
 		taskMapping = connector.getTaskMapping(hitCollector.results.iterator().next());
-		assertEquals(issue2.getSummary(), taskMapping.getSummary());
+		assertEquals("Expected issue2, if issue1 is returned the component filter was ignored", issue2.getSummary(),
+				taskMapping.getSummary());
 	}
 
 	public void testCustomQueryWrongLocale() throws Exception {
