@@ -230,7 +230,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 					if (isSCM) {
 						compareAction = new CompareVersionedVirtualFileAction(crucibleFile, crucibleReview);
 					} else {
-						compareAction = new CompareUploadedVirtualFileAction(crucibleFile, crucibleReview,
+						compareAction = new CompareUploadedVirtualFileAction(crucibleFile, null, crucibleReview,
 								toolbarComposite.getShell());
 					}
 					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "

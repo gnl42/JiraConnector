@@ -52,25 +52,28 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 
 	private CrucibleFileInfo crucibleFile;
 
-	public CompareUploadedVirtualFileAction(final CrucibleFileInfo crucibleFile, final Review crucibleReview,
-			Shell shell) {
+	private final VersionedComment versionedComment;
+
+	public CompareUploadedVirtualFileAction(final CrucibleFileInfo crucibleFile, VersionedComment versionedComment,
+			final Review crucibleReview, Shell shell) {
 		super("", crucibleReview, null, shell, "Fetching Files to Compare", null, null, false);
 
 		setRemoteOperation(new LocalRemoteCrucibleOperation());
 
+		this.versionedComment = versionedComment;
 		this.crucibleFile = crucibleFile;
 	}
 
 	private static void compare(Review crucibleReview, CrucibleFileInfo crucibleFile,
-			CrucibleServerFacade2 crucibleServerFacade, ConnectionCfg crucibleServerCfg) throws RemoteApiException,
-			ServerPasswordNotProvidedException {
+			VersionedComment versionedComment, CrucibleServerFacade2 crucibleServerFacade,
+			ConnectionCfg crucibleServerCfg) throws RemoteApiException, ServerPasswordNotProvidedException {
 
 		final VersionedVirtualFile oldVirtualFile = crucibleFile.getOldFileDescriptor();
 
 		final VersionedVirtualFile newVirtualFile = crucibleFile.getFileDescriptor();
 
 		final ICompareAnnotationModel annotationModel = new CrucibleCompareAnnotationModel(crucibleFile,
-				crucibleReview, null);
+				crucibleReview, versionedComment);
 
 		ReviewFileContent oldFile = getContent(oldVirtualFile.getContentUrl(), crucibleServerFacade, crucibleServerCfg);
 		ReviewFileContent newFile = getContent(newVirtualFile.getContentUrl(), crucibleServerFacade, crucibleServerCfg);
@@ -104,7 +107,7 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 
 		public void run(CrucibleServerFacade2 crucibleServerFacade, ConnectionCfg crucibleServerCfg)
 				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-			compare(getReview(), crucibleFile, crucibleServerFacade, crucibleServerCfg);
+			compare(getReview(), crucibleFile, versionedComment, crucibleServerFacade, crucibleServerCfg);
 		}
 	}
 

@@ -12,8 +12,10 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.commons.misc.IntRanges;
+import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareUploadedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
@@ -21,6 +23,7 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
+import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
@@ -51,7 +54,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 	private Composite composite;
 
-	private CompareVersionedVirtualFileAction compareAction;
+	private IReviewChangeListenerAction compareAction;
 
 	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo,
 			CrucibleReviewEditorPage editor) {
@@ -116,14 +119,20 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 			//if both revisions are availabe (--> commitType neither added nor deleted), use compareAction
 			if (crucibleFileInfo.getCommitType() != CommitType.Deleted
 					&& crucibleFileInfo.getCommitType() != CommitType.Added && canOpenCompare()) {
-				compareAction = new CompareVersionedVirtualFileAction(crucibleFileInfo, versionedComment,
-						crucibleReview);
+				if (crucibleFileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
+					compareAction = new CompareUploadedVirtualFileAction(crucibleFileInfo, versionedComment,
+							crucibleReview, toolbarComposite.getShell());
+				} else {
+					compareAction = new CompareVersionedVirtualFileAction(crucibleFileInfo, versionedComment,
+							crucibleReview);
+				}
 				compareAction.setToolTipText("Open the file to the comment in the compare editor");
 				compareAction.setText(getLineNumberText());
 				// TODO set the image descriptor
 				createActionHyperlink(toolbarComposite, toolkit, compareAction);
 			} else {
 				// if fromLineComment --> oldFile
+				// TODO jj when it is called
 				CrucibleFile crucibleFile = new CrucibleFile(crucibleFileInfo, versionedComment.isFromLineInfo());
 				OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
 						getCrucibleEditor().getTask(), crucibleFile, versionedComment, crucibleReview);
