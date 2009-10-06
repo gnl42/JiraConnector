@@ -13,8 +13,10 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.action.Action;
 
 public class ToggleAutoRefreshAction extends Action {
@@ -25,8 +27,10 @@ public class ToggleAutoRefreshAction extends Action {
 		setText("Refresh Automatically");
 		setId(ID);
 		setChecked(BambooCorePlugin.isAutoRefresh());
-		BambooCorePlugin.getDefault().getPluginPreferences().addPropertyChangeListener(new IPropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent event) {
+
+		IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+		preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
+			public void preferenceChange(PreferenceChangeEvent event) {
 				setChecked(BambooCorePlugin.isAutoRefresh());
 			}
 		});
