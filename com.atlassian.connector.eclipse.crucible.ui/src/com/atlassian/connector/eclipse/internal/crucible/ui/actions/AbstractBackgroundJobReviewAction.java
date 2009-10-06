@@ -41,7 +41,7 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 
 	private final String jobMessage;
 
-	private final RemoteCrucibleOperation remoteOperation;
+	private RemoteCrucibleOperation remoteOperation;
 
 	private final boolean reloadReview;
 
@@ -70,6 +70,10 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 		return review;
 	}
 
+	protected void updateReview(Review updatedReview) {
+		this.review = updatedReview;
+	}
+
 	public void run(IAction action) {
 		CrucibleClient client = CrucibleUiUtil.getClient(review);
 		if (client == null) {
@@ -93,5 +97,10 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 		});
 		setEnabled(false);
 		remoteOperationJob.schedule();
+	}
+
+	protected void setRemoteOperation(RemoteCrucibleOperation remoteCrucibleOperation) {
+		this.remoteOperation = remoteCrucibleOperation;
+
 	}
 }

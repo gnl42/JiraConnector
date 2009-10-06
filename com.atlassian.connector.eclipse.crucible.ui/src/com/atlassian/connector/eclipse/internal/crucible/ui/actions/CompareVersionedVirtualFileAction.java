@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
@@ -39,7 +40,7 @@ import java.lang.reflect.InvocationTargetException;
  * 
  * @author Shawn Minto
  */
-public class CompareVersionedVirtualFileAction extends Action implements IReviewAction {
+public class CompareVersionedVirtualFileAction extends Action implements IReviewAction, IReviewChangeListenerAction {
 
 	private CrucibleFileInfo crucibleFile;
 

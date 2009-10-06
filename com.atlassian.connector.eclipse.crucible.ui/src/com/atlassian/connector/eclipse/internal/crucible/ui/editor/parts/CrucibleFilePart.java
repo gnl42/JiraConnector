@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
+import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparator;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
@@ -30,7 +31,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
@@ -57,7 +57,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	private Composite composite;
 
-	private CompareVersionedVirtualFileAction compareAction;
+	private IReviewChangeListenerAction compareAction;
 
 	public CrucibleFilePart(CrucibleFileInfo file, Review review, CrucibleReviewEditorPage editor) {
 		super(editor, review);
@@ -227,20 +227,17 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 				if (newFileDescriptor != null && oldFileDescriptor != null) {
 
-					IAction compare = null;
-
 					if (isSCM) {
 						compareAction = new CompareVersionedVirtualFileAction(crucibleFile, crucibleReview);
-						compare = compareAction;
 					} else {
-						compare = new CompareUploadedVirtualFileAction(crucibleFile, crucibleReview,
+						compareAction = new CompareUploadedVirtualFileAction(crucibleFile, crucibleReview,
 								toolbarComposite.getShell());
 					}
-					compare.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
+					compareAction.setToolTipText("Open Compare " + newFileDescriptor.getRevision() + " - "
 							+ oldFileDescriptor.getRevision());
-					compare.setText("Compare");
+					compareAction.setText("Compare");
 					// TODO set the image descriptor
-					createActionHyperlink(toolbarComposite, toolkit, compare);
+					createActionHyperlink(toolbarComposite, toolkit, compareAction);
 				}
 			} else if (filetype == FileType.Directory) {
 				toolkit.createLabel(toolbarComposite, " Directory");

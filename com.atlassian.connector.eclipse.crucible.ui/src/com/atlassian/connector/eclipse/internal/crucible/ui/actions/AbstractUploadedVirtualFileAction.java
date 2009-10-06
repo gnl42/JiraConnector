@@ -14,6 +14,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.theplugin.commons.crucible.ReviewFileContent;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -23,6 +26,7 @@ import com.atlassian.theplugin.commons.util.UrlUtil;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.widgets.Shell;
@@ -30,12 +34,28 @@ import org.eclipse.swt.widgets.Shell;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-public abstract class AbstractUploadedVirtualFileAction extends AbstractBackgroundJobReviewAction {
+public abstract class AbstractUploadedVirtualFileAction extends AbstractBackgroundJobReviewAction implements
+		IReviewAction {
+
+	private IReviewActionListener actionListener;
 
 	public AbstractUploadedVirtualFileAction(String text, Review review, Comment comment, Shell shell,
 			String jobMessage, ImageDescriptor imageDescriptor, RemoteCrucibleOperation remoteOperation,
 			boolean reloadReview) {
 		super(text, review, comment, shell, jobMessage, imageDescriptor, remoteOperation, reloadReview);
+	}
+
+	@Override
+	public void run(IAction action) {
+		CrucibleUiUtil.checkAndRequestReviewActivation(getReview()); // executed in the UI thread
+		super.run(action);
+		if (actionListener != null) {
+			actionListener.actionRan(this);
+		}
+	}
+
+	public void setActionListener(IReviewActionListener listener) {
+		this.actionListener = listener;
 	}
 
 	protected static ReviewFileContent getContent(String contentUrl, CrucibleServerFacade2 crucibleServerFacade,
