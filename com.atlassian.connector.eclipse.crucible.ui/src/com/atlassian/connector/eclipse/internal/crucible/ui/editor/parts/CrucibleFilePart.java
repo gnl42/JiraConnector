@@ -140,8 +140,10 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 			textHyperlink.setToolTipText("Opening of uploaded files not supported."
 					+ " Please see studio.atlassian.com for updates.");
 
-			//TODO jj handle deleted and added files, directories etc.
+			//TODO jj handle directories etc.
 			if (crucibleFile.getCommitType() == CommitType.Deleted || filetype != FileType.File) {
+				// TODO jj handle deleted files, check for [--item deleted--] string defined in AbstractTeamConnector to detect if the file was deleted and do not display 'compare' but only when editor with annotations is ready
+				// it will be hard to do that here as we have no file content yet
 			} else {
 				if (oldFileHasUrl && oldFileHasRevision) {
 					OpenUploadedVirtualFileAction openOldAction = new OpenUploadedVirtualFileAction(oldFileDescriptor,

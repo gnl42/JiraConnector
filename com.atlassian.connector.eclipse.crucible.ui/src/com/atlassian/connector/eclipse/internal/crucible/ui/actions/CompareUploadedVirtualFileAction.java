@@ -52,7 +52,7 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 
 	private CrucibleFileInfo crucibleFile;
 
-	private final VersionedComment versionedComment;
+	private VersionedComment versionedComment;
 
 	public CompareUploadedVirtualFileAction(final CrucibleFileInfo crucibleFile, VersionedComment versionedComment,
 			final Review crucibleReview, Shell shell) {
@@ -78,15 +78,14 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 		ReviewFileContent oldFile = getContent(oldVirtualFile.getContentUrl(), crucibleServerFacade, crucibleServerCfg);
 		ReviewFileContent newFile = getContent(newVirtualFile.getContentUrl(), crucibleServerFacade, crucibleServerCfg);
 
-		String title = "Compare " + oldVirtualFile.getName() + " " + oldVirtualFile.getRevision() + " and "
-				+ newVirtualFile.getRevision();
+		String title = "Compare " + oldVirtualFile.getName() + " " + newVirtualFile.getRevision() + " and "
+				+ oldVirtualFile.getRevision();
 
 		CompareConfiguration cc = new CompareConfiguration();
-		// TODO jj check left-right vs new-old file
-		cc.setRightLabel(newVirtualFile.getName() + " " + newVirtualFile.getRevision());
-		cc.setLeftLabel(oldVirtualFile.getName() + " " + oldVirtualFile.getRevision());
+		cc.setLeftLabel(newVirtualFile.getName() + " " + newVirtualFile.getRevision());
+		cc.setRightLabel(oldVirtualFile.getName() + " " + oldVirtualFile.getRevision());
 
-		CompareEditorInput compareEditorInput = new LocalCompareEditorInput(oldFile.getContent(), newFile.getContent(),
+		CompareEditorInput compareEditorInput = new LocalCompareEditorInput(newFile.getContent(), oldFile.getContent(),
 				annotationModel, title, cc);
 		TeamUiUtils.openCompareEditorForInput(compareEditorInput);
 	}
@@ -97,7 +96,9 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 	}
 
 	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile, VersionedComment updatedComment) {
-		// TODO jj handle review comment update
+		updateReview(updatedReview);
+		this.crucibleFile = updatedFile;
+		this.versionedComment = updatedComment;
 	}
 
 	final class LocalRemoteCrucibleOperation implements RemoteCrucibleOperation {
@@ -185,8 +186,7 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 		}
 
 		public String getName() {
-			// TODO JJ inspect how to display file name
-			return "file";
+			return "";
 		}
 
 		public Image getImage() {

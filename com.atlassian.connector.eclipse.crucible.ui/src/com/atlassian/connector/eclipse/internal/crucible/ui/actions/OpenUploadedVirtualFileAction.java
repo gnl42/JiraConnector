@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ReviewFileContent;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
@@ -52,7 +51,6 @@ public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAc
 			CrucibleServerFacade2 crucibleServerFacade, final ConnectionCfg crucibleServerCfg,
 			final IWorkbenchPage iWorkbenchPage, Shell shell) throws RemoteApiException,
 			ServerPasswordNotProvidedException {
-		CrucibleUiUtil.checkAndRequestReviewActivation(crucibleReview);
 
 //		final ICompareAnnotationModel annotationModel = new CrucibleCompareAnnotationModel(virtualFile, crucibleReview,
 //				null);
