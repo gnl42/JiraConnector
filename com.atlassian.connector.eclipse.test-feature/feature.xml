@@ -44,13 +44,15 @@
          id="com.atlassian.connector.eclipse.crucible.tests"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="com.atlassian.connector.eclipse.tests"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.jetbrains.annotations"
