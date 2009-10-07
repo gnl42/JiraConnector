@@ -11,9 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiUtil;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveFullBuildInfoJob;
 import com.atlassian.theplugin.commons.BambooFileInfo;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
@@ -26,17 +25,13 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskMapping;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiImages;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 import java.util.Formatter;
 
@@ -44,8 +39,9 @@ import java.util.Formatter;
  * Create a task from failed build.
  * 
  * @author Pawel Niewiadomski
+ * @author Wojciech Seliga
  */
-public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
+public class NewTaskFromFailedBuildAction extends EclipseBambooBuildSelectionListenerAction {
 
 	public NewTaskFromFailedBuildAction() {
 		super(null);
@@ -59,32 +55,13 @@ public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
 	}
 
 	@Override
-	public void run() {
-		ISelection s = super.getStructuredSelection();
-		if (s instanceof IStructuredSelection) {
-			IStructuredSelection selection = (IStructuredSelection) s;
-			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuildAdapter) {
-				final BambooBuildAdapter build = (BambooBuildAdapter) selected;
-				if (build != null) {
-					downloadAndCreateNewTask(build.getBuild());
-				}
-			}
-		}
+	void onRun(EclipseBambooBuild eclipseBambooBuild) {
+		downloadAndCreateNewTask(eclipseBambooBuild);
 	}
 
 	@Override
-	protected boolean updateSelection(IStructuredSelection selection) {
-		if (selection.size() == 1) {
-			try {
-				BambooBuild build = ((BambooBuildAdapter) selection.getFirstElement()).getBuild();
-				build.getNumber(); // check if this is a valid build, it'll throw exc otherwise
-				return build.getStatus().equals(BuildStatus.FAILURE);
-			} catch (UnsupportedOperationException e) {
-				// ignore
-			}
-		}
-		return false;
+	boolean onUpdateSelection(EclipseBambooBuild eclipseBambooBuild) {
+		return eclipseBambooBuild.getBuild().getStatus().equals(BuildStatus.FAILURE);
 	}
 
 	private String createBuildDescription(BambooBuild build, String buildLog, BuildDetails buildDetails) {
@@ -149,9 +126,9 @@ public class NewTaskFromFailedBuildAction extends BaseSelectionListenerAction {
 		return sb.toString();
 	}
 
-	private void downloadAndCreateNewTask(final BambooBuild build) {
-		final RetrieveFullBuildInfoJob job = new RetrieveFullBuildInfoJob(build, TasksUi.getRepositoryManager()
-				.getRepository(BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+	private void downloadAndCreateNewTask(final EclipseBambooBuild eclipseBambooBuild) {
+		final BambooBuild build = eclipseBambooBuild.getBuild();
+		final RetrieveFullBuildInfoJob job = new RetrieveFullBuildInfoJob(build, eclipseBambooBuild.getTaskRepository());
 		job.setUser(true);
 		job.setPriority(Job.INTERACTIVE);
 		job.addJobChangeListener(new JobChangeAdapter() {

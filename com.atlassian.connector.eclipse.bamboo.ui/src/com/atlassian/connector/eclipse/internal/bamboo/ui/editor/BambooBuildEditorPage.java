@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooConstants;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.AbstractBambooEditorFormPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooBuildLogPart;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.editor.parts.BambooCodeChangesPart;
@@ -95,7 +95,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 
 	private Color selectionColor;
 
-	private final BambooBuildAdapter build;
+	private final EclipseBambooBuild build;
 
 	private final TaskRepository repository;
 

@@ -20,30 +20,15 @@ public class BuildLabelProvider implements ILabelProvider {
 
 	public Image getImage(Object element) {
 
-		if (element instanceof BambooBuildAdapter) {
-			return ((BambooBuildAdapter) element).getImage();
+		if (element instanceof EclipseBambooBuild) {
+			return BambooImageUtil.getImage(((EclipseBambooBuild) element).getBuild());
 		}
 		return CommonImages.getImage(BambooImages.STATUS_DISABLED);
-
-//		if (element instanceof BambooBuild) {
-//			if (((BambooBuild) element).getEnabled()) {
-//				if (((BambooBuild) element).getErrorMessage() != null) {
-//					return CommonImages.getImage(BambooImages.STATUS_DISABLED);
-//				}
-//				switch (((BambooBuild) element).getStatus()) {
-//				case FAILURE:
-//					return CommonImages.getImage(BambooImages.STATUS_FAILED);
-//				case SUCCESS:
-//					return CommonImages.getImage(BambooImages.STATUS_PASSED);
-//				}
-//			}
-//		}
-//		return CommonImages.getImage(BambooImages.STATUS_DISABLED);
 	}
 
 	public String getText(Object element) {
 		StringBuilder builder = new StringBuilder();
-		BambooBuildAdapter bambooBuild = (BambooBuildAdapter) element;
+		EclipseBambooBuild bambooBuild = (EclipseBambooBuild) element;
 		if (bambooBuild.getBuild().getPlanName() == null) {
 			builder.append("N/A");
 		} else {
@@ -68,19 +53,15 @@ public class BuildLabelProvider implements ILabelProvider {
 	}
 
 	public void addListener(ILabelProviderListener listener) {
-		// ignore
 	}
 
 	public void dispose() {
-		// ignore
 	}
 
 	public boolean isLabelProperty(Object element, String property) {
-		// ignore
 		return false;
 	}
 
 	public void removeListener(ILabelProviderListener listener) {
-		// ignore
 	}
 }

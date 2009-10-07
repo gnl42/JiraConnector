@@ -14,17 +14,17 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.LoggerImpl;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.jface.viewers.IBasicPropertyConstants;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 public class BuildTreeViewer extends TreeViewer {
 
@@ -64,7 +64,7 @@ public class BuildTreeViewer extends TreeViewer {
 					if (display != null) {
 						display.asyncExec(new Runnable() {
 							public void run() {
-								refresh();
+								update();
 							}
 						});
 						try {
@@ -94,7 +94,7 @@ public class BuildTreeViewer extends TreeViewer {
 					if (display != null) {
 						display.asyncExec(new Runnable() {
 							public void run() {
-								refresh();
+								update();
 							}
 						});
 						try {
@@ -110,6 +110,14 @@ public class BuildTreeViewer extends TreeViewer {
 			};
 		}.start();
 
+	}
+
+	private void update() {
+		// we need to check this here as synchronization mechanism used by threads does not guarantee that
+		// that SWT widget is not disposed at this moment (see PLE-690)
+		if (!getTree().isDisposed()) {
+			update(getInput(), new String[] { IBasicPropertyConstants.P_TEXT });
+		}
 	}
 
 	@Override
@@ -140,7 +148,7 @@ public class BuildTreeViewer extends TreeViewer {
 		restoreSelection(selection);
 	}
 
-	public void setBuilds(Map<TaskRepository, Collection<BambooBuild>> builds) {
+	public void setBuilds(Collection<EclipseBambooBuild> builds) {
 		Collection<BambooBuild> selectedBuilds = getSelectedBuilds();
 
 		super.setInput(builds);
@@ -150,16 +158,14 @@ public class BuildTreeViewer extends TreeViewer {
 		// pause animation thread
 		animationResumed = false;
 		// find if there is a build 'in progress'
-		for (Collection<BambooBuild> onlyBuilds : builds.values()) {
-			for (BambooBuild build : onlyBuilds) {
-				if (build.getStatus() == BuildStatus.BUILDING) {
-					// resume animation thread
-					animationResumed = true;
-					synchronized (animation) {
-						animation.notify();
-					}
-					break;
+		for (EclipseBambooBuild eclipseBambooBuild : builds) {
+			if (eclipseBambooBuild.getBuild().getStatus() == BuildStatus.BUILDING) {
+				// resume animation thread
+				animationResumed = true;
+				synchronized (animation) {
+					animation.notify();
 				}
+				break;
 			}
 		}
 	}
@@ -169,8 +175,8 @@ public class BuildTreeViewer extends TreeViewer {
 
 		TreeItem[] selection = getTree().getSelection();
 		for (TreeItem selectedItem : selection) {
-			if (selectedItem.getData() instanceof BambooBuildAdapter) {
-				selectedBuilds.add(((BambooBuildAdapter) selectedItem.getData()).getBuild());
+			if (selectedItem.getData() instanceof EclipseBambooBuild) {
+				selectedBuilds.add(((EclipseBambooBuild) selectedItem.getData()).getBuild());
 			}
 		}
 
@@ -181,11 +187,11 @@ public class BuildTreeViewer extends TreeViewer {
 		Collection<TreeItem> rewritenSelection = new ArrayList<TreeItem>();
 
 		for (TreeItem item : getTree().getItems()) {
-			if (item.getData() instanceof BambooBuildAdapter) {
-				BambooBuild build = ((BambooBuildAdapter) item.getData()).getBuild();
+			if (item.getData() instanceof EclipseBambooBuild) {
+				BambooBuild build = ((EclipseBambooBuild) item.getData()).getBuild();
 				for (BambooBuild selectedBuild : selectedBuilds) {
 					if (selectedBuild.getServer().equals(build.getServer())
-							&& selectedBuild.getProjectName().equals(build.getProjectName())
+							&& MiscUtil.isEqual(selectedBuild.getProjectName(), build.getProjectName())
 							&& selectedBuild.getPlanKey().equals(build.getPlanKey())) {
 						rewritenSelection.add(item);
 					}
@@ -205,4 +211,10 @@ public class BuildTreeViewer extends TreeViewer {
 		// stop inner threads
 		disposed = true;
 	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<EclipseBambooBuild> getInput() {
+		return (Collection<EclipseBambooBuild>) super.getInput();
+	}
+
 }

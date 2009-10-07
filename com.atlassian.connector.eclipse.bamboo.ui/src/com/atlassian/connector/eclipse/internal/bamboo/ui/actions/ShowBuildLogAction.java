@@ -11,10 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveBuildLogsJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
@@ -24,13 +23,9 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -47,8 +42,9 @@ import java.util.Map;
  * Action opening the build log
  * 
  * @author Thomas Ehrnhoefer
+ * @author Wojciech Seliga
  */
-public class ShowBuildLogAction extends BaseSelectionListenerAction {
+public class ShowBuildLogAction extends EclipseBambooBuildSelectionListenerAction {
 	private static boolean isConsoleAvailable = false;
 
 	static {
@@ -75,45 +71,22 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 	}
 
 	@Override
-	public void run() {
-		ISelection s = super.getStructuredSelection();
-		if (s instanceof IStructuredSelection) {
-			IStructuredSelection selection = (IStructuredSelection) s;
-			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuildAdapter) {
-				final BambooBuild build = ((BambooBuildAdapter) selected).getBuild();
-				if (build != null) {
-					new ShowBuildLogExecute().downloadAndShowBuildLog(build);
-
-				}
-			}
-		}
+	void onRun(EclipseBambooBuild eclipseBambooBuild) {
+		new ShowBuildLogExecute().downloadAndShowBuildLog(eclipseBambooBuild);
 	}
 
 	@Override
-	protected boolean updateSelection(IStructuredSelection selection) {
-		if (selection.size() == 1 && isConsoleAvailable) {
-			if (selection.getFirstElement() instanceof BambooBuildAdapter) {
-				try {
-					BambooBuild build = ((BambooBuildAdapter) selection.getFirstElement()).getBuild();
-					build.getNumber();
-					return true;
-				} catch (UnsupportedOperationException e) {
-					// ignore
-				}
-			}
-		}
-		return false;
+	boolean onUpdateSelection(EclipseBambooBuild eclipseBambooBuild) {
+		return isConsoleAvailable;
 	}
 
 	private class ShowBuildLogExecute {
 
-		public void downloadAndShowBuildLog(final BambooBuild build) {
-			final MessageConsole console = prepareConsole(build);
+		public void downloadAndShowBuildLog(final EclipseBambooBuild build) {
+			final MessageConsole console = prepareConsole(build.getBuild());
 			final MessageConsoleStream messageStream = console.newMessageStream();
 
-			RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build, TasksUi.getRepositoryManager().getRepository(
-					BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+			RetrieveBuildLogsJob job = new RetrieveBuildLogsJob(build.getBuild(), build.getTaskRepository());
 			job.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void done(IJobChangeEvent event) {
@@ -121,7 +94,7 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 						String buildLog = ((RetrieveBuildLogsJob) event.getJob()).getBuildLog();
 						if (buildLog == null) {
 							//retrieval failed, remove console
-							handledFailedLogRetrieval(console, messageStream, build);
+							handledFailedLogRetrieval(console, messageStream, build.getBuild());
 						} else {
 							try {
 								showConsole(console);
@@ -137,7 +110,7 @@ public class ShowBuildLogAction extends BaseSelectionListenerAction {
 						}
 					} else {
 						//retrieval failed, remove console
-						handledFailedLogRetrieval(console, messageStream, build);
+						handledFailedLogRetrieval(console, messageStream, build.getBuild());
 					}
 				}
 			});

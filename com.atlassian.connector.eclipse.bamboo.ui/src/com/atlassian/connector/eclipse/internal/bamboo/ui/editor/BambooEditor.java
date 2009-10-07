@@ -12,7 +12,7 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.AddCommentToBuildAction;
@@ -83,7 +83,7 @@ public class BambooEditor extends SharedHeaderFormEditor {
 
 	private BambooEditorInput editorInput;
 
-	private BambooBuildAdapter bambooBuild;
+	private EclipseBambooBuild bambooBuild;
 
 	private TaskRepository taskRepository;
 

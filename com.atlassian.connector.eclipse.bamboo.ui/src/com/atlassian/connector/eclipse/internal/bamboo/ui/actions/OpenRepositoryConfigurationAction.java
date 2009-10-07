@@ -11,19 +11,20 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
-import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
+/**
+ * 
+ * @author Wojciech Seliga
+ */
 public class OpenRepositoryConfigurationAction extends BaseSelectionListenerAction {
 
 	public OpenRepositoryConfigurationAction() {
@@ -43,11 +44,9 @@ public class OpenRepositoryConfigurationAction extends BaseSelectionListenerActi
 		if (s instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) s;
 			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuildAdapter) {
-				BambooBuild build = ((BambooBuildAdapter) selected).getBuild();
-				TaskRepository repository = TasksUi.getRepositoryManager().getRepository(
-						BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl());
-				openConfiguration(repository);
+			if (selected instanceof EclipseBambooBuild) {
+				final EclipseBambooBuild eclipseBambooBuild = (EclipseBambooBuild) selected;
+				openConfiguration(eclipseBambooBuild.getTaskRepository());
 			} else if (selected instanceof TaskRepository) {
 				TaskRepository repository = (TaskRepository) selected;
 				openConfiguration(repository);

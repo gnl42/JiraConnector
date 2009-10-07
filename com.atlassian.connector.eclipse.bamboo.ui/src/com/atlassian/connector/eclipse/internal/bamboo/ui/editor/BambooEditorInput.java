@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.editor;
 
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -26,16 +26,13 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class BambooEditorInput implements IEditorInput {
 
-	private final BambooBuildAdapter bambooBuild;
-
-	private final TaskRepository repository;
+	private final EclipseBambooBuild bambooBuild;
 
 	private static final int MAX_LABEL_LENGTH = 60;
 
-	public BambooEditorInput(TaskRepository repository, BambooBuildAdapter bambooBuild) {
-		Assert.isNotNull(repository);
+	public BambooEditorInput(EclipseBambooBuild bambooBuild) {
+		Assert.isNotNull(bambooBuild.getTaskRepository());
 		Assert.isNotNull(bambooBuild);
-		this.repository = repository;
 		this.bambooBuild = bambooBuild;
 	}
 
@@ -85,21 +82,21 @@ public class BambooEditorInput implements IEditorInput {
 		return null;
 	}
 
-	public BambooBuildAdapter getBambooBuild() {
+	public EclipseBambooBuild getBambooBuild() {
 		return bambooBuild;
 	}
 
 	public TaskRepository getRepository() {
-		return repository;
+		return bambooBuild.getTaskRepository();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((repository == null) ? 0 : repository.hashCode());
-		result = prime * result + ((bambooBuild == null) ? 0 : bambooBuild.getBuild().getPlanKey().hashCode());
-		result = prime * result + ((bambooBuild == null) ? 0 : bambooBuild.getBuild().getNumber());
+		result = prime * result + getRepository().hashCode();
+		result = prime * result + bambooBuild.getBuild().getPlanKey().hashCode();
+		result = prime * result + bambooBuild.getBuild().getNumber();
 		return result;
 	}
 
@@ -115,7 +112,7 @@ public class BambooEditorInput implements IEditorInput {
 			return false;
 		}
 		//if same repository, build plan and build number, input is equals
-		if (this.repository.equals(((BambooEditorInput) obj).getRepository())) {
+		if (getRepository().equals(((BambooEditorInput) obj).getRepository())) {
 			if (this.bambooBuild.getBuild().getPlanKey().equals(
 					((BambooEditorInput) obj).getBambooBuild().getBuild().getPlanKey())) {
 				return this.bambooBuild.getBuild().getNumber() == ((BambooEditorInput) obj).getBambooBuild()

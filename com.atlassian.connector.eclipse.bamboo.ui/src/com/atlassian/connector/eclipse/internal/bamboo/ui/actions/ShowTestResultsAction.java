@@ -11,10 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooBuildAdapter;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooImages;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
+import com.atlassian.connector.eclipse.internal.bamboo.ui.EclipseBambooBuild;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.operations.RetrieveTestResultsJob;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 
@@ -45,15 +44,11 @@ import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 import java.io.File;
 
@@ -61,9 +56,10 @@ import java.io.File;
  * Action to open the Test Results
  * 
  * @author Thomas Ehrnhoefer
+ * @author Wojciech Seliga
  */
 @SuppressWarnings("restriction")
-public class ShowTestResultsAction extends BaseSelectionListenerAction {
+public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAction {
 
 	private static boolean isJUnitAvailable = false;
 
@@ -89,23 +85,13 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 	}
 
 	@Override
-	public void run() {
-		ISelection s = super.getStructuredSelection();
-		if (s instanceof IStructuredSelection) {
-			IStructuredSelection selection = (IStructuredSelection) s;
-			Object selected = selection.iterator().next();
-			if (selected instanceof BambooBuildAdapter) {
-				final BambooBuild build = ((BambooBuildAdapter) selected).getBuild();
-				if (build != null) {
-					downloadAndShowTestResults(build);
-				}
-			}
-		}
+	void onRun(EclipseBambooBuild eclipseBambooBuild) {
+		downloadAndShowTestResults(eclipseBambooBuild);
 	}
 
-	private void downloadAndShowTestResults(final BambooBuild build) {
-		RetrieveTestResultsJob job = new RetrieveTestResultsJob(build, TasksUi.getRepositoryManager().getRepository(
-				BambooCorePlugin.CONNECTOR_KIND, build.getServerUrl()));
+	private void downloadAndShowTestResults(final EclipseBambooBuild eclipseBambooBuild) {
+		final BambooBuild build = eclipseBambooBuild.getBuild();
+		RetrieveTestResultsJob job = new RetrieveTestResultsJob(build, eclipseBambooBuild.getTaskRepository());
 		job.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -129,24 +115,12 @@ public class ShowTestResultsAction extends BaseSelectionListenerAction {
 	}
 
 	@Override
-	protected boolean updateSelection(IStructuredSelection selection) {
-		if (selection.size() != 1 || !isJUnitAvailable) {
+	boolean onUpdateSelection(EclipseBambooBuild eclipseBambooBuild) {
+		if (!isJUnitAvailable) {
 			return false;
 		}
-
-		BambooBuild build = null;
-
-		build = ((BambooBuildAdapter) selection.iterator().next()).getBuild();
-
-		if (build != null) {
-			try {
-				build.getNumber();
-				return (build.getTestsFailed() + build.getTestsPassed()) > 0;
-			} catch (UnsupportedOperationException e) {
-				return false;
-			}
-		}
-		return false;
+		final BambooBuild build = eclipseBambooBuild.getBuild();
+		return (build.getTestsFailed() + build.getTestsPassed()) > 0;
 	}
 
 	private void showJUnitView(final File testResults, final String buildKey) {
