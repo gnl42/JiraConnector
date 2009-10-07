@@ -31,7 +31,7 @@
       <import plugin="com.atlassian.connector.eclipse.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="com.atlassian.connector.eclipse.bamboo.core"/>
       <import plugin="com.atlassian.connector.eclipse.bamboo.ui"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="equivalent"/>
+      <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
       <import plugin="com.atlassian.connector.eclipse.fisheye.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="com.atlassian.connector.eclipse.fisheye.ui" version="1.0.0" match="greaterOrEqual"/>
       <!--
