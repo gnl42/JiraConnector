@@ -47,12 +47,13 @@
          version="0.0.0"
          unpack="false"/>
 
+	<!-- unpack=false because we refere to file from this plugin in build system -->
    <plugin
          id="com.atlassian.connector.eclipse.tests"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="true"/>
 
    <plugin
          id="org.jetbrains.annotations"
