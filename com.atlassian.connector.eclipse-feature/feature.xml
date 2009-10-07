@@ -57,6 +57,8 @@
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.jasper"/>
       <import plugin="javax.servlet.jsp"/>
+      <import plugin="org.apache.axis"/>
+      <import plugin="javax.xml.rpc"/>
       <import feature="org.eclipse.mylyn.jira_feature" version="3.2.0.I20090529" match="compatible"/>
       <import feature="org.eclipse.mylyn_feature" version="3.2.0.I20090529" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.0.0" match="compatible"/>
