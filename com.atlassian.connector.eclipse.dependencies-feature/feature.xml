@@ -62,7 +62,7 @@
          unpack="false"/>
 
 	<plugin
-         id="java.xml.rpc"
+         id="javax.xml.rpc"
          download-size="0"
          install-size="0"
          version="0.0.0"
