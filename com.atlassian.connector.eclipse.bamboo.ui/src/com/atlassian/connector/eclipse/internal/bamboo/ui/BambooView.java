@@ -279,9 +279,13 @@ public class BambooView extends ViewPart {
 			Map<TaskRepository, Collection<BambooBuild>> buildsPerTaskRepo) {
 		Collection<EclipseBambooBuild> res = MiscUtil.buildArrayList();
 		for (TaskRepository taskRepository : buildsPerTaskRepo.keySet()) {
-			Collection<BambooBuild> bambooBuilds = buildsPerTaskRepo.get(taskRepository);
-			for (BambooBuild bambooBuild : bambooBuilds) {
-				res.add(new EclipseBambooBuild(bambooBuild, taskRepository));
+			// we are checking offline mode here, as BuildPlanManager passes here also builds for disconnected repos
+			// BuildPlanManager is so complicated (unnecessarily) that I don't dare now to refactor it  
+			if (!taskRepository.isOffline()) {
+				Collection<BambooBuild> bambooBuilds = buildsPerTaskRepo.get(taskRepository);
+				for (BambooBuild bambooBuild : bambooBuilds) {
+					res.add(new EclipseBambooBuild(bambooBuild, taskRepository));
+				}
 			}
 		}
 		return res;

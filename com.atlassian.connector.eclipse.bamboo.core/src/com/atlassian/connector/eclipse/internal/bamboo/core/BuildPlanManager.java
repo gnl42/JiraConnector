@@ -50,12 +50,7 @@ public final class BuildPlanManager {
 
 		private final ArrayList<BambooBuild> builds;
 
-		private TaskRepository taskRepository;
-
-		public RefreshBuildsJob(String name) {
-			super(name);
-			this.builds = new ArrayList<BambooBuild>();
-		}
+		private final TaskRepository taskRepository;
 
 		public RefreshBuildsJob(String name, TaskRepository repository) {
 			super(name);
@@ -65,12 +60,14 @@ public final class BuildPlanManager {
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-			try {
-				this.builds.addAll(clientManager.getClient(taskRepository).getBuilds(monitor, taskRepository, true));
-			} catch (CoreException e) {
-				return new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
-						"Update of builds from {0} failed", taskRepository.getRepositoryLabel()), e);
+			if (!taskRepository.isOffline()) {
+				BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
+				try {
+					this.builds.addAll(clientManager.getClient(taskRepository).getBuilds(monitor, taskRepository, true));
+				} catch (CoreException e) {
+					return new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
+							"Update of builds from {0} failed", taskRepository.getRepositoryLabel()), e);
+				}
 			}
 			return new Status(IStatus.OK, BambooCorePlugin.PLUGIN_ID, "Successfully retrieved Builds.");
 		}
