@@ -12,104 +12,44 @@
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
-import com.atlassian.theplugin.commons.bamboo.BuildStatus;
-import com.atlassian.theplugin.commons.util.LoggerImpl;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IBasicPropertyConstants;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.progress.UIJob;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class BuildTreeViewer extends TreeViewer {
 
-	private volatile Thread animation;
-
-	private volatile boolean animationResumed = false;
-
 	private volatile boolean disposed = false;
 
 	public BuildTreeViewer(Composite parent, int i) {
 		super(parent, i);
+		Job lastBuildRefreshJob = new UIJob(parent.getDisplay(), "Bamboo View Last Build Refresh Job") {
 
-		// Start animation thread
-		animation = new Thread() {
-			private static final int ANIMATION_FRAME_BREAK = 100;
+			private static final long TREE_REFRESH_INTERVAL = 60 * 1000;
 
 			@Override
-			public void run() {
-				Display display = getTree().getDisplay();
-
-				while (!disposed) { // thread stop condition
-
-					synchronized (animation) {
-						while (!animationResumed) { // thread suspend/resume condition
-							try {
-								wait();
-							} catch (InterruptedException e) {
-								// we can do nothing here
-								LoggerImpl.getInstance().warn(
-										"Exception occured when calling wait() for the 'build in progress' animation",
-										e);
-//								StatusHandler.fail(new Status(severity, pluginId, message))
-							}
-						}
-					}
-
-					if (display != null) {
-						display.asyncExec(new Runnable() {
-							public void run() {
-								update();
-							}
-						});
-						try {
-							Thread.sleep(ANIMATION_FRAME_BREAK);
-						} catch (InterruptedException e) {
-							// we can do nothing here
-							LoggerImpl.getInstance().warn(
-									"Exception occured when calling sleep() for the 'build in progress' animation", e);
-						}
-					}
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				if (!disposed) {
+					update();
+					schedule(TREE_REFRESH_INTERVAL);
 				}
+				return Status.OK_STATUS;
 			}
 		};
-
-		animation.start();
-
-		// start general tree refresh ('XXX minutes ago' text is refreshed)
-		new Thread() {
-			private static final long TREE_REFRESH_INTERVAL = 60000;
-
-			@Override
-			public void run() {
-				Display display = getTree().getDisplay();
-
-				while (!disposed) { // thread stop condition
-
-					if (display != null) {
-						display.asyncExec(new Runnable() {
-							public void run() {
-								update();
-							}
-						});
-						try {
-							Thread.sleep(TREE_REFRESH_INTERVAL);
-						} catch (InterruptedException e) {
-							// we can do nothing here
-							LoggerImpl.getInstance().warn(
-									"Exception occured when calling sleep() for the build window refresh", e);
-						}
-					}
-				}
-
-			};
-		}.start();
-
+		lastBuildRefreshJob.setUser(false);
+		lastBuildRefreshJob.setSystem(true);
+		lastBuildRefreshJob.schedule();
 	}
 
 	private void update() {
@@ -150,24 +90,8 @@ public class BuildTreeViewer extends TreeViewer {
 
 	public void setBuilds(Collection<EclipseBambooBuild> builds) {
 		Collection<BambooBuild> selectedBuilds = getSelectedBuilds();
-
 		super.setInput(builds);
-
 		restoreSelectionByBuild(selectedBuilds);
-
-		// pause animation thread
-		animationResumed = false;
-		// find if there is a build 'in progress'
-		for (EclipseBambooBuild eclipseBambooBuild : builds) {
-			if (eclipseBambooBuild.getBuild().getStatus() == BuildStatus.BUILDING) {
-				// resume animation thread
-				animationResumed = true;
-				synchronized (animation) {
-					animation.notify();
-				}
-				break;
-			}
-		}
 	}
 
 	private Collection<BambooBuild> getSelectedBuilds() {

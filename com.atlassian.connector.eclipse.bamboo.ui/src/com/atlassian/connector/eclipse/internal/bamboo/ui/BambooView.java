@@ -62,6 +62,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -297,6 +298,13 @@ public class BambooView extends ViewPart {
 		buildViewer.dispose();
 	}
 
+	private static class BambooColumnProvider extends ColumnLabelProvider {
+		@Override
+		public Font getFont(Object element) {
+			return BambooUiUtil.getFontForBuildStatus(element);
+		}
+	}
+
 	private void createTreeViewer(Composite parent) {
 		buildViewer = new BuildTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		buildViewer.setContentProvider(new BuildContentProvider());
@@ -311,7 +319,7 @@ public class BambooView extends ViewPart {
 		TreeViewerColumn column = new TreeViewerColumn(buildViewer, SWT.NONE);
 		column.getColumn().setText("Status");
 		column.getColumn().setWidth(350);
-		column.setLabelProvider(new ColumnLabelProvider() {
+		column.setLabelProvider(new BambooColumnProvider() {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof EclipseBambooBuild) {
@@ -348,7 +356,7 @@ public class BambooView extends ViewPart {
 		column = new TreeViewerColumn(buildViewer, SWT.NONE);
 		column.getColumn().setText("Last Built");
 		column.getColumn().setWidth(200);
-		column.setLabelProvider(new ColumnLabelProvider() {
+		column.setLabelProvider(new BambooColumnProvider() {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof EclipseBambooBuild) {
@@ -362,21 +370,23 @@ public class BambooView extends ViewPart {
 				}
 				return super.getText(element);
 			}
+
 		});
 
 		column = new TreeViewerColumn(buildViewer, SWT.NONE);
 		column.getColumn().setText("State");
 		column.getColumn().setWidth(40);
-		column.setLabelProvider(new ColumnLabelProvider() {
+		column.setLabelProvider(new BambooColumnProvider() {
 			@Override
 			public String getText(Object element) {
-				return null;
-			}
-
-			@Override
-			public Image getImage(Object element) {
 				if (element instanceof EclipseBambooBuild) {
-					return BambooImageUtil.getBuildingImage(((EclipseBambooBuild) element).getBuild());
+					final BambooBuild build = ((EclipseBambooBuild) element).getBuild();
+					switch (build.getStatus()) {
+					case BUILDING:
+						return "Building";
+					case IN_QUEUE:
+						return "In queue";
+					}
 				}
 				return null;
 			}

@@ -11,12 +11,14 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
+import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
-public class BuildLabelProvider implements ILabelProvider {
+public class BuildLabelProvider implements ILabelProvider, IFontProvider {
 
 	public Image getImage(Object element) {
 
@@ -50,6 +52,10 @@ public class BuildLabelProvider implements ILabelProvider {
 			builder.append("]");
 		}
 		return builder.toString();
+	}
+
+	public Font getFont(Object element) {
+		return BambooUiUtil.getFontForBuildStatus(element);
 	}
 
 	public void addListener(ILabelProviderListener listener) {
