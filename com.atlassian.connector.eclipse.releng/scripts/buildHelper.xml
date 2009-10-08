@@ -241,7 +241,7 @@
 		
 	<target name="build-helper-init">
     	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
-  	    <condition property="install.dir" value="${eclipse.home}" else="${eclipse.home}/dropins/test"><equals arg1="${build.target}" arg2="3.3"/></condition>
+  	    <condition property="install.dir" value="${eclipse.home}" else="${eclipse.home}/dropins/eclipse"><equals arg1="${build.target}" arg2="3.3"/></condition>
 		
 		<copy todir="${build.home}/${build.target}/maps">
 			<fileset dir="${basedir}/maps">
