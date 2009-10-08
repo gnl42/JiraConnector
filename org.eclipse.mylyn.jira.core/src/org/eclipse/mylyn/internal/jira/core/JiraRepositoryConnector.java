@@ -455,7 +455,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public boolean isRepositoryConfigurationStale(TaskRepository repository, IProgressMonitor monitor)
 			throws CoreException {
-		return JiraUtil.getAutoRefreshConfiguration(repository);
+		return JiraUtil.getAutoRefreshConfiguration(repository)
+				&& super.isRepositoryConfigurationStale(repository, monitor);
 	}
 
 	@Override
