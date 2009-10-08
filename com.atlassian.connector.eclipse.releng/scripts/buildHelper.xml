@@ -615,7 +615,7 @@
           	</fileset>
     	</path> 
     	<property name="library" refid="library.id"/>
-		<condition property="script.test" value="${eclipse.home}/plugins/${build.testxml}" else="${eclipse.home}/dropins/test/plugins/${build.testxml}"><equals arg1="${build.target}" arg2="3.3"/></condition>
+		<condition property="script.test" value="${eclipse.home}/plugins/${build.testxml}" else="${eclipse.home}/dropins/eclipse/plugins/${build.testxml}"><equals arg1="${build.target}" arg2="3.3"/></condition>
     	<property name="log" value="${build.results}/test-${test.target}-${build.target}.log" />
 		<condition property="cloverBootClasspath" value="-Xbootclasspath/a:${basedir}/lib/clover.jar" else="">
 			<equals arg1="${buildWithClover}" arg2="true"/>
