@@ -155,7 +155,7 @@ public class RepositoryConfigurationAction extends Action implements IMenuCreato
 					public void run() {
 						try {
 							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-									ITasksUiConstants.ID_VIEW_TASKS);
+									ITasksUiConstants.ID_VIEW_REPOSITORIES);
 						} catch (PartInitException e) {
 							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
 									"Failed to show Repositories View"));
