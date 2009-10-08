@@ -12,8 +12,11 @@
 package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.compare.CompareConfiguration;
@@ -373,6 +376,7 @@ public final class TeamUiUtils {
 		if (activeReview == null) {
 			return null;
 		}
+
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
@@ -390,10 +394,44 @@ public final class TeamUiUtils {
 		}
 
 		try {
-			return defaultConnector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+			CrucibleFile file = defaultConnector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
+			if (file != null) {
+				return file;
+			}
 		} catch (UnsupportedTeamProviderException e) {
+			// ignore
+		}
+
+		try {
+			return getCorrespondingCruciblePreCommitFileFromEditorInput(editorInput, activeReview);
+		} catch (ValueNotYetInitialized e1) {
 			return null;
 		}
+
+	}
+
+	private static CrucibleFile getCorrespondingCruciblePreCommitFileFromEditorInput(IEditorInput editorInput,
+			Review activeReview) throws ValueNotYetInitialized {
+
+		if (editorInput instanceof CruciblePreCommitFileInput) {
+			CruciblePreCommitFileInput input = (CruciblePreCommitFileInput) editorInput;
+
+			return input.getCrucibleFile();
+
+//			for (CrucibleFileInfo file : activeReview.getFiles()) {
+//				VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
+//				VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
+//
+//				if (fileDescriptor.getContentUrl() != null && fileDescriptor.getContentUrl().equals(inputUrl)
+//						&& fileDescriptor.getRevision() != null && fileDescriptor.getRevision().equals(anObject)) {
+//					return new CrucibleFile(file, false);
+//				} else if (oldFileDescriptor.getContentUrl() != null
+//						&& oldFileDescriptor.getContentUrl().equals(inputUrl)) {
+//					return new CrucibleFile(file, true);
+//				}
+//			}
+		}
+		return null;
 	}
 
 	@Nullable
@@ -535,6 +573,27 @@ public final class TeamUiUtils {
 		} catch (Throwable t) {
 			// ignore as it may not exist in other versions
 		}
+	}
+
+	public static void selectAndRevealComment(ITextEditor textEditor, VersionedComment comment, CrucibleFile file) {
+
+		int startLine = comment.getToStartLine();
+		if (file.isOldFile()) {
+			startLine = comment.getFromStartLine();
+		}
+
+		int endLine = comment.getToEndLine();
+		if (file.isOldFile()) {
+			endLine = comment.getFromEndLine();
+		}
+		if (endLine == 0) {
+			endLine = startLine;
+		}
+		if (startLine != 0) {
+			startLine--;
+		}
+		selectAndReveal(textEditor, startLine, endLine);
+
 	}
 
 }

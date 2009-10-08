@@ -20,8 +20,10 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClientData;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenReviewEditorToCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModel;
+import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleAnnotationModelManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.CrucibleCommentAnnotation;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
@@ -33,10 +35,15 @@ import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -312,5 +319,36 @@ public final class CrucibleUiUtil {
 			allReviewers.add(new Reviewer(user.getUsername(), user.getDisplayName(), false));
 		}
 		return allReviewers;
+	}
+
+	public static void attachCrucibleAnnotation(IEditorPart editor, ITask task, Review review,
+			CrucibleFile crucibleFile, VersionedComment versionedComment) {
+		boolean annotationsAdded = false;
+		final ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
+	
+		if (editor instanceof ITextEditor) {
+			ITextEditor textEditor = ((ITextEditor) editor);
+			if (activeTask != null && activeTask.equals(task)) {
+				annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
+			}
+			if (versionedComment != null) {
+				TeamUiUtils.selectAndRevealComment(textEditor, versionedComment, crucibleFile);
+			}
+		}
+	
+		if (!annotationsAdded) {
+			final String msg;
+			if (activeTask == null || !activeTask.equals(task)) {
+				msg = "To annotate this file, review " + review.getPermId().getId() + " must be active.";
+			} else {
+				msg = "Editor for selected file doesn't support annotations.";
+			}
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null, msg,
+							MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
+				}
+			});
+		}
 	}
 }

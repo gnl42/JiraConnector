@@ -146,8 +146,9 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 				// it will be hard to do that here as we have no file content yet
 			} else {
 				if (oldFileHasUrl && oldFileHasRevision) {
-					OpenUploadedVirtualFileAction openOldAction = new OpenUploadedVirtualFileAction(oldFileDescriptor,
-							crucibleReview, toolbarComposite.getShell(), getCrucibleEditor().getSite()
+					OpenUploadedVirtualFileAction openOldAction = new OpenUploadedVirtualFileAction(
+							getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, true), oldFileDescriptor,
+							crucibleReview, null, toolbarComposite.getShell(), getCrucibleEditor().getSite()
 									.getWorkbenchWindow()
 									.getActivePage());
 					openOldAction.setText(oldFileDescriptor.getRevision());
@@ -164,8 +165,9 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 				}
 
 				if (newFileHasUrl && newFileHasRevision && crucibleFile.getCommitType() != CommitType.Deleted) {
-					OpenUploadedVirtualFileAction openNewAction = new OpenUploadedVirtualFileAction(newFileDescriptor,
-							crucibleReview, toolbarComposite.getShell(), getCrucibleEditor().getSite()
+					OpenUploadedVirtualFileAction openNewAction = new OpenUploadedVirtualFileAction(
+							getCrucibleEditor().getTask(), new CrucibleFile(crucibleFile, false), newFileDescriptor,
+							crucibleReview, null, toolbarComposite.getShell(), getCrucibleEditor().getSite()
 									.getWorkbenchWindow()
 									.getActivePage());
 					openNewAction.setText(newFileDescriptor.getRevision());

@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareUploadedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenUploadedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
@@ -27,6 +28,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -132,13 +134,21 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 				createActionHyperlink(toolbarComposite, toolkit, compareAction);
 			} else {
 				// if fromLineComment --> oldFile
-				// TODO jj when it is called
 				CrucibleFile crucibleFile = new CrucibleFile(crucibleFileInfo, versionedComment.isFromLineInfo());
-				OpenVersionedVirtualFileAction openVersionedVirtualFileAction = new OpenVersionedVirtualFileAction(
-						getCrucibleEditor().getTask(), crucibleFile, versionedComment, crucibleReview);
-				openVersionedVirtualFileAction.setText(getLineNumberText());
-				openVersionedVirtualFileAction.setToolTipText("Open the file to the comment");
-				createActionHyperlink(toolbarComposite, toolkit, openVersionedVirtualFileAction);
+				IAction openFileAction;
+				if (crucibleFileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
+					VersionedVirtualFile versionedFile = crucibleFileInfo.getCommitType() == CommitType.Added ? crucibleFileInfo.getFileDescriptor()
+							: crucibleFileInfo.getOldFileDescriptor();
+					openFileAction = new OpenUploadedVirtualFileAction(getCrucibleEditor().getTask(), crucibleFile,
+							versionedFile, crucibleReview, versionedComment, getSection().getShell(),
+							getCrucibleEditor().getSite().getWorkbenchWindow().getActivePage());
+				} else {
+					openFileAction = new OpenVersionedVirtualFileAction(getCrucibleEditor().getTask(), crucibleFile,
+							versionedComment, crucibleReview);
+				}
+				openFileAction.setText(getLineNumberText());
+				openFileAction.setToolTipText("Open the file to the comment");
+				createActionHyperlink(toolbarComposite, toolkit, openFileAction);
 			}
 		}
 

@@ -78,5 +78,4 @@ public abstract class AbstractUploadedVirtualFileAction extends AbstractBackgrou
 		byte[] content = crucibleServerFacade.getFileContent(crucibleServerCfg, contentUrl);
 		return new ReviewFileContent(content);
 	}
-
 }
