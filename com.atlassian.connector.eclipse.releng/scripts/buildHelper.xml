@@ -541,6 +541,9 @@
 	<target name="get-test-dependencies-helper" depends="get-build-dependencies-helper">
 		<property name="downloadsDir" value="${eclipse.base}"/> 
 
+		<!-- Clean-up SDK directory - 3.4.2 is fucked and drop-ins work only first time -->
+		<delete dir="${eclipse.base}/test-${eclipse.sdk.version}"/>
+
 		<!-- extract sdk for testing and install test framework -->
 		<mkdir dir="${eclipse.base}/test-${eclipse.sdk.version}" />
 		
