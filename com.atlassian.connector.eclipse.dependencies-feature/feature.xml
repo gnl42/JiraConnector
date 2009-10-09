@@ -49,6 +49,7 @@
       <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.0.0" match="compatible"/>
       <import plugin="javax.mail"/>
+      <import plugin="javax.activation"/>
    </requires>
 
    <plugin
@@ -67,6 +68,13 @@
 
    <plugin
          id="javax.mail"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+	<plugin
+         id="javax.activation"
          download-size="0"
          install-size="0"
          version="0.0.0"
