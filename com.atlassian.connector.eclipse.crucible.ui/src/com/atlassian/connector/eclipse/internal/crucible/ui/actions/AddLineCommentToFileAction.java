@@ -12,6 +12,7 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.ICrucibleCompareSourceViewer;
@@ -62,7 +63,7 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 			IEditorPart editorPart = getActiveEditor();
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
 			if (editorInput != null && editorPart != null) {
-				crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
+				crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
 						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 				if (crucibleCompareSourceViewer == null) {
 					getJavaEditorSelection(selection);
@@ -101,7 +102,7 @@ public class AddLineCommentToFileAction extends AbstractAddCommentAction {
 		if (editorInput != null && editorPart != null) {
 			selectedRange = TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
 			if (selectedRange != null) {
-				crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
+				crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
 						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 			}
 		}

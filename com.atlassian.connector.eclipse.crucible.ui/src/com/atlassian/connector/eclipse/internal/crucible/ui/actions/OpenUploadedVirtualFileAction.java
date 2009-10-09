@@ -13,10 +13,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileStorage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.ui.CruciblePreCommitFileInput;
-import com.atlassian.connector.eclipse.ui.CruciblePreCommitFileStorage;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ReviewFileContent;

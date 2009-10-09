@@ -11,10 +11,10 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -61,7 +61,7 @@ public final class CrucibleAnnotationModelManager {
 
 	public static boolean attach(ITextEditor editor) {
 		IEditorInput editorInput = editor.getEditorInput();
-		CrucibleFile crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
+		CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
 				CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 
 		return attach(editor, crucibleFile, CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());

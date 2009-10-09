@@ -9,7 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.ui;
+package com.atlassian.connector.eclipse.internal.crucible.ui;
 
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;

@@ -12,9 +12,7 @@
 package com.atlassian.connector.eclipse.ui.team;
 
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
-import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -78,7 +76,7 @@ public final class TeamUiUtils {
 
 	public static final String TEAM_PROV_ID_SVN_SUBVERSIVE = "org.eclipse.team.svn.core.svnnature";
 
-	private static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
+	public static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
 
 	private TeamUiUtils() {
 	}
@@ -366,50 +364,6 @@ public final class TeamUiUtils {
 					(IFile) resource, true);
 		} catch (PartInitException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, e.getMessage(), e));
-		}
-		return null;
-	}
-
-	@Nullable
-	public static CrucibleFile getCorrespondingCrucibleFileFromEditorInput(IEditorInput editorInput, Review activeReview) {
-		if (activeReview == null) {
-			return null;
-		}
-
-		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
-
-		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
-			if (connector.isEnabled() && connector.canHandleEditorInput(editorInput)) {
-				CrucibleFile fileInfo;
-				try {
-					fileInfo = connector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
-				} catch (UnsupportedTeamProviderException e) {
-					return null;
-				}
-				if (fileInfo != null) {
-					return fileInfo;
-				}
-			}
-		}
-
-		try {
-			CrucibleFile file = defaultConnector.getCorrespondingCrucibleFileFromEditorInput(editorInput, activeReview);
-			if (file != null) {
-				return file;
-			}
-		} catch (UnsupportedTeamProviderException e) {
-			// ignore
-		}
-
-		return getCruciblePreCommitFile(editorInput);
-
-	}
-
-	private static CrucibleFile getCruciblePreCommitFile(IEditorInput editorInput) {
-
-		if (editorInput instanceof CruciblePreCommitFileInput) {
-			CruciblePreCommitFileInput input = (CruciblePreCommitFileInput) editorInput;
-			return input.getCrucibleFile();
 		}
 		return null;
 	}

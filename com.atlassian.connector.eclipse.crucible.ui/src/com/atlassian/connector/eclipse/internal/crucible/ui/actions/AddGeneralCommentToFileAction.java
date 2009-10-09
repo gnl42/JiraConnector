@@ -12,12 +12,12 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.jface.action.IAction;
@@ -56,7 +56,7 @@ public class AddGeneralCommentToFileAction extends AbstractAddCommentAction impl
 			IEditorInput editorInput = getEditorInputFromSelection(selection);
 			if (editorInput != null && editorPart != null) {
 				if (crucibleFile == null) {
-					crucibleFile = TeamUiUtils.getCorrespondingCrucibleFileFromEditorInput(editorInput,
+					crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
 							CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
 				}
 				if (crucibleFile != null && CrucibleUtil.canAddCommentToReview(getReview())
