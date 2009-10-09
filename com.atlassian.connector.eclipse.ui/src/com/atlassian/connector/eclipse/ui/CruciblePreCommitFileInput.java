@@ -18,6 +18,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 
+/**
+ * 
+ * @author Jacek Jaroczynski
+ */
 public class CruciblePreCommitFileInput implements IStorageEditorInput {
 	private final CruciblePreCommitFileStorage storage;
 

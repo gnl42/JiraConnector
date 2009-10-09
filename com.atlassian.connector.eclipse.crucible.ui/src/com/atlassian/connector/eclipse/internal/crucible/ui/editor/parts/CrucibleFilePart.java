@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAc
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.VersionedCommentDateComparator;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddGeneralCommentToFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareUploadedVirtualFileAction;
@@ -31,8 +32,11 @@ import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFormUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -140,10 +144,10 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 			textHyperlink.setToolTipText("Opening of uploaded files not supported."
 					+ " Please see studio.atlassian.com for updates.");
 
-			//TODO jj handle directories etc.
-			if (crucibleFile.getCommitType() == CommitType.Deleted || filetype != FileType.File) {
-				// TODO jj handle deleted files, check for [--item deleted--] string defined in AbstractTeamConnector to detect if the file was deleted and do not display 'compare' but only when editor with annotations is ready
-				// it will be hard to do that here as we have no file content yet
+			if (crucibleFile.getCommitType() == CommitType.Deleted) {
+				// TODO we have no 'Deleted' type for pre-commit review yet 
+				StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+						"DELETED Commit Type for Pre-Commit review file received but it is not supported yet."));
 			} else {
 				if (oldFileHasUrl && oldFileHasRevision) {
 					OpenUploadedVirtualFileAction openOldAction = new OpenUploadedVirtualFileAction(

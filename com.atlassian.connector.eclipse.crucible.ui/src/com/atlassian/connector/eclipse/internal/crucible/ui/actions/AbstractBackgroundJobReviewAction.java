@@ -83,7 +83,7 @@ public abstract class AbstractBackgroundJobReviewAction extends AbstractListenab
 			ErrorDialog.openError(shell, CrucibleUiPlugin.PRODUCT_NAME, message, status);
 			return;
 		}
-		RemoteOperationJob remoteOperationJob = new RemoteOperationJob(review, client, getTaskRepository(), jobMessage,
+		RemoteCrucibleOperationJob remoteOperationJob = new RemoteCrucibleOperationJob(review, client, getTaskRepository(), jobMessage,
 				remoteOperation, shell, reloadReview);
 		remoteOperationJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override

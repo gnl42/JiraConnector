@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.ui.team;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
-import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -402,34 +401,15 @@ public final class TeamUiUtils {
 			// ignore
 		}
 
-		try {
-			return getCorrespondingCruciblePreCommitFileFromEditorInput(editorInput, activeReview);
-		} catch (ValueNotYetInitialized e1) {
-			return null;
-		}
+		return getCruciblePreCommitFile(editorInput);
 
 	}
 
-	private static CrucibleFile getCorrespondingCruciblePreCommitFileFromEditorInput(IEditorInput editorInput,
-			Review activeReview) throws ValueNotYetInitialized {
+	private static CrucibleFile getCruciblePreCommitFile(IEditorInput editorInput) {
 
 		if (editorInput instanceof CruciblePreCommitFileInput) {
 			CruciblePreCommitFileInput input = (CruciblePreCommitFileInput) editorInput;
-
 			return input.getCrucibleFile();
-
-//			for (CrucibleFileInfo file : activeReview.getFiles()) {
-//				VersionedVirtualFile fileDescriptor = file.getFileDescriptor();
-//				VersionedVirtualFile oldFileDescriptor = file.getOldFileDescriptor();
-//
-//				if (fileDescriptor.getContentUrl() != null && fileDescriptor.getContentUrl().equals(inputUrl)
-//						&& fileDescriptor.getRevision() != null && fileDescriptor.getRevision().equals(anObject)) {
-//					return new CrucibleFile(file, false);
-//				} else if (oldFileDescriptor.getContentUrl() != null
-//						&& oldFileDescriptor.getContentUrl().equals(inputUrl)) {
-//					return new CrucibleFile(file, true);
-//				}
-//			}
 		}
 		return null;
 	}

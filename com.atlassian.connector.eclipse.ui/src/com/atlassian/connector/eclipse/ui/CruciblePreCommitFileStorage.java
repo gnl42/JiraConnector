@@ -22,6 +22,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
+/**
+ * 
+ * @author Jacek Jaroczynski
+ */
 public class CruciblePreCommitFileStorage implements IStorage {
 	private final byte[] content;
 

@@ -34,7 +34,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-public class RemoteOperationJob extends Job {
+public class RemoteCrucibleOperationJob extends Job {
 
 	private final CrucibleClient crucibleClient;
 
@@ -50,7 +50,7 @@ public class RemoteOperationJob extends Job {
 
 	private final boolean reloadReview;
 
-	public RemoteOperationJob(Review review, CrucibleClient crucibleClient, TaskRepository taskRepository,
+	public RemoteCrucibleOperationJob(Review review, CrucibleClient crucibleClient, TaskRepository taskRepository,
 			String jobMessage, RemoteCrucibleOperation remoteOperation, Shell shell, boolean reloadReview) {
 		super(jobMessage);
 		this.review = review;

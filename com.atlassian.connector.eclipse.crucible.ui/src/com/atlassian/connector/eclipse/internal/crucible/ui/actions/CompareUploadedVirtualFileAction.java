@@ -27,6 +27,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.IStreamContentAccessor;
@@ -85,8 +86,8 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 		cc.setLeftLabel(newVirtualFile.getName() + " " + newVirtualFile.getRevision());
 		cc.setRightLabel(oldVirtualFile.getName() + " " + oldVirtualFile.getRevision());
 
-		CompareEditorInput compareEditorInput = new LocalCompareEditorInput(newFile.getContent(), oldFile.getContent(),
-				annotationModel, title, cc);
+		CompareEditorInput compareEditorInput = new LocalCompareEditorInput(newFile.getContent(),
+				newVirtualFile.getName(), oldFile.getContent(), oldVirtualFile.getName(), annotationModel, title, cc);
 		TeamUiUtils.openCompareEditorForInput(compareEditorInput);
 	}
 
@@ -120,11 +121,17 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 
 		private final ICompareAnnotationModel annotationModel;
 
-		public LocalCompareEditorInput(byte[] content1, byte[] content2, ICompareAnnotationModel annotationModel,
-				String title, CompareConfiguration compareConfiguration) {
+		private final String name1;
+
+		private final String name2;
+
+		public LocalCompareEditorInput(byte[] content1, String name1, byte[] content2, String name2,
+				ICompareAnnotationModel annotationModel, String title, CompareConfiguration compareConfiguration) {
 			super(compareConfiguration);
 			this.content1 = content1;
+			this.name1 = name1;
 			this.content2 = content2;
+			this.name2 = name2;
 			this.annotationModel = annotationModel;
 			setTitle(title);
 		}
@@ -132,7 +139,8 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 		@Override
 		protected Object prepareInput(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			Differencer d = new Differencer();
-			Object diff = d.findDifferences(false, monitor, null, null, new Input(content1), new Input(content2));
+			Object diff = d.findDifferences(false, monitor, null, null, new ByteArrayInput(content1, name1),
+					new ByteArrayInput(content2, name2));
 			return diff;
 		}
 
@@ -177,16 +185,19 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 		}
 	}
 
-	private static class Input implements ITypedElement, IStreamContentAccessor {
+	private static class ByteArrayInput implements ITypedElement, IStreamContentAccessor {
 
 		byte[] content;
 
-		public Input(byte[] content) {
+		private final String name;
+
+		public ByteArrayInput(byte[] content, String name) {
 			this.content = content;
+			this.name = name;
 		}
 
 		public String getName() {
-			return "";
+			return name;
 		}
 
 		public Image getImage() {
@@ -194,7 +205,8 @@ public class CompareUploadedVirtualFileAction extends AbstractUploadedVirtualFil
 		}
 
 		public String getType() {
-			return "java";
+			String extension = FilenameUtils.getExtension(name);
+			return extension.length() > 0 ? extension : ITypedElement.TEXT_TYPE;
 		}
 
 		public InputStream getContents() throws CoreException {
