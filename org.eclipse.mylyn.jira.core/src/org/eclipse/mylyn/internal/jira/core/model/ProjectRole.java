@@ -11,10 +11,14 @@
 
 package org.eclipse.mylyn.internal.jira.core.model;
 
+import java.io.Serializable;
+
 /**
  * @author Jacek Jaroczynski
  */
-public class ProjectRole {
+public class ProjectRole implements Serializable {
+
+	private static final long serialVersionUID = 3175313417545219235L;
 
 	private String description;
 
