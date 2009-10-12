@@ -224,9 +224,6 @@
 			<param name="genericTargets" value="${builder}/customTargets.xml" />
 			<param name="target" value="updateSiteExport" />
 		</antcall>
-
-		<zip destfile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip" basedir="${UpdateSiteLocation}" />
-		<copy tofile="${buildDirectory}/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}.zip" file="${buildDirectory}/${buildLabel}/com.atlassian.connector.eclipse-${com.atlassian.connector.eclipse}.zip" />
 	</target>
 
 	<!-- ===================================================================== -->

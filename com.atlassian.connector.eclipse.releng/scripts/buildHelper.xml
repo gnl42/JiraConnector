@@ -684,16 +684,16 @@
 	</target>
 
 	<target name="pack-helper">
-    	<property name="timeout" value="3600000" />
+    		<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.update.core.siteOptimizer" />
-    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.3.4}/eclipse" />
+    		<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.3.4}/eclipse" />
 		<property name="vmargs" value=" -Xms40m -Xmx512m"/>    	
-    	<property name="log" value="${build.results}/pack-${build.target}.log" />
+    		<property name="log" value="${build.results}/pack-${build.target}.log" />
 		
 		<echo message="Packing update site ${dir}" />
 		<echo message="Output is logged to ${log}" />
-    	<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
-    		classname="org.eclipse.core.launcher.Main" output="${log}">
+    		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
+    			classname="org.eclipse.core.launcher.Main" output="${log}">
 	        <classpath>
 	    		<fileset dir="${eclipse.home}/plugins">
 	            	<include name="org.eclipse.equinox.launcher_*.jar"/>
@@ -793,7 +793,8 @@
 
 		<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
-    	<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.3.3}/eclipse" />
+		<property name="eclipse.sdk.version" value="${eclipse.sdk.3.4}"/>
+    		<property name="eclipse.home" value="${eclipse.base}/sdk-${eclipse.sdk.version}/eclipse" />
 		<property name="vmargs" value=" -Xms40m -Xmx512m"/>    	
 		
 		<condition property="featureMessage" value="${featureId}" else="all features"><isset property="featureId"/></condition>

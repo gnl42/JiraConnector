@@ -78,9 +78,30 @@
 	</target>
 	
 	<target name="pack-sites" depends="init">
+		<property name="build.site" value="${build.home}/${build.target}/site"/>
+
 		<antcall target="pack-helper">
-			<param name="dir" value="${build.home}/${build.target}/site"/>
+			<param name="dir" value="${build.site}"/>
 		</antcall>
+
+		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
+
+		<antcall target="mirror-helper">
+			<param name="from" value="${eclipse.org}/tools/mylyn/update/e3.4"/>
+			<param name="to" value="${build.site}"/>
+		</antcall>
+		<antcall target="mirror-helper">
+			<param name="from" value="${eclipse.org}/tools/mylyn/update/extras"/>
+			<param name="featureId" value="org.eclipse.mylyn.jira_feature"/>
+			<param name="to" value="${build.site}"/>
+		</antcall>
+
+		<xslt style="mirror.xsl" in="${build.site}/site.xml" out="${build.site}/mirror.xml"/>
+		<move file="${build.site}/mirror.xml" tofile="${build.site}/site.xml"/>
+
+		<copy file="associates-e3.4.xml" todir="${build.site}"/>
+
+		<zip destfile="${build.site}/../e${build.target}-site-all.zip" basedir="${build.site}"/>
 	</target>
 
 	<target name="generate-metadata-common" depends="init">
@@ -125,24 +146,49 @@
 	</target>
 
 	<target name="publish" depends="init">
+		<antcall target="init-3.4"/>
+
 		<fail message="Required property build.publish.user is not set" unless="build.publish.user"/>
 		<fail message="Required property build.publish.password is not set" unless="build.publish.password"/>
-		<fail message="Required property build.publish.location is not set" unless="build.publish.location"/>
+		<fail message="Required property build.publish.host is not set" unless="build.publish.host"/>
+		<fail message="Required property build.publish.path is not set" unless="build.publish.path"/>
 		
-		<property file="${build.home}/3.4/finalFeaturesVersions.properties" />
+		<!--antcall target="for-each-target">
+			<param name="call" value="publish-helper"/>
+		</antcall--> 
 
+		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
+			trust="true" command="cp -fR &quot;${build.publish.path}/${build.publish.postfix}/${version}/&quot;* &quot;${build.publish.path}/${build.publish.postfix}&quot;" timeout="5000"
+			knownhosts="tools/known_hosts"/>
+	</target>
+
+	<target name="publish-helper">
 		<echo message="Uploading ${version}.${qualifier} to /${build.publish.postfix}" />
+		<property name="publish.name" value="e${build.target}"/>
+		<property name="publish.path" value="${build.publish.path}/${build.publish.postfix}/${version}"/>
 		
-		<!-- e3.4 -->
-		<scp todir="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.4" keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
-			<fileset dir="${build.home}/3.4/site"/>
+		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
+			trust="true" command="mkdir -p &quot;${publish.path}/${publish.name}.tmp&quot;" timeout="5000"
+			knownhosts="tools/known_hosts"/>
+
+		<scp todir="${build.publish.user}@${build.publish.host}:${publish.path}/${publish.name}.tmp" 
+			keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
+			<fileset dir="${build.home}/${build.target}/site"/>
 		</scp>
 		
 		<!-- copy zipped site also -->
-		<scp remoteTofile="${build.publish.user}@${build.publish.location}/${build.publish.postfix}/e3.4-site.zip"
-		   	localFile="${build.home}/3.4/atlassian-eclipse-connector-${com.atlassian.connector.eclipse}-site.zip"
-		   	keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
+		<scp remoteTofile="${build.publish.user}@${build.publish.host}:${publish.path}/${publish.name}-site-all.zip.tmp"
+		   	localFile="${build.home}/${build.target}/${publish.name}-site-all.zip" 
+			keyfile="${build.publish.keyfile}" passphrase="${build.publish.passphrase}" trust="true" verbose="true">
 		</scp>
+		
+		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
+			trust="true" command="rm -rf &quot;${publish.path}/${publish.name}&quot;; mv &quot;${publish.path}/${publish.name}.tmp&quot; &quot;${publish.path}/${publish.name}&quot;" timeout="5000"
+			knownhosts="tools/known_hosts"/>
+
+		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
+			trust="true" command="mv &quot;${publish.path}/${publish.name}-site-all.zip.tmp&quot; &quot;${publish.path}/${publish.name}-site-all.zip&quot;" timeout="5000"
+			knownhosts="tools/known_hosts"/>
 	</target>
 
 	<target name="init-3.3">
@@ -170,7 +216,6 @@
 	</target>
 
 	<target name="mirror">
-		<antcall target="init-3.3"/>
 		<antcall target="init-3.4"/>
 		
 		<property name="eclipse.org" value="http://eclipse.unixheads.org"/>
