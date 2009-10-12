@@ -180,7 +180,11 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 	public void createControl(Composite parent, final FormToolkit toolkit) {
 		initialize();
 
-		final Section section = createSection(parent, toolkit, hasIncoming);
+		int style = ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.TWISTIE;
+		if (hasIncoming) {
+			style |= ExpandableComposite.EXPANDED;
+		}
+		final Section section = createSection(parent, toolkit, style);
 		section.setText(getPartName() + " (" + logEntries.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (hasIncoming) {
 			expandSection(toolkit, section);

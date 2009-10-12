@@ -50,7 +50,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 				public AbstractTaskEditorPart createPart() {
 					return new WorkLogPart();
 				}
-			}.setPath(PATH_ATTRIBUTES));
+			}.setPath(ID_PART_ATTRIBUTES + "/" + PATH_PLANNING)); //$NON-NLS-1$
 		}
 		return parts;
 	}
