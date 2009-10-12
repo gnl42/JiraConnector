@@ -666,7 +666,6 @@
 			-Declipse.perf.assertAgainst=build=${build.assertAgainst}
 			${build.extraTestArgs}" />
 			<arg value="${test.target}"/>
-			<env key="DISPLAY" value=":99"/>
 		</java>
 		
 		<copy todir="${build.results}/test-${build.target}">
