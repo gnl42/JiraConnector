@@ -28,6 +28,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -251,14 +252,15 @@ public final class BuildPlanManager {
 		changedBuilds2.put(taskRepository, changedBuilds);
 	}
 
+	@Nullable
 	private BambooBuild createCachedBuild(BambooBuild oldBuild, BambooBuild newBuild) {
 		try {
 			return new BambooBuildInfo(oldBuild.getPlanKey(), oldBuild.getPlanName(), oldBuild.getServer(),
 					oldBuild.getPollingTime(), oldBuild.getProjectName(), oldBuild.getEnabled(), oldBuild.getNumber(),
-					oldBuild.getStatus(), oldBuild.getReason(), oldBuild.getStartDate(), null, null,
-					oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getCompletionDate(),
+					oldBuild.getStatus(), oldBuild.getPlanState(), oldBuild.getReason(), oldBuild.getStartDate(), null,
+					null, oldBuild.getTestsPassed(), oldBuild.getTestsFailed(), oldBuild.getCompletionDate(),
 					newBuild.getErrorMessage(), oldBuild.getException(), oldBuild.getRelativeBuildDate(),
-					oldBuild.getDurationDescription(), oldBuild.getCommiters(), oldBuild.getLastStatus());
+					oldBuild.getDurationDescription(), oldBuild.getCommiters());
 		} catch (UnsupportedOperationException e) {
 			return null;
 		}
