@@ -30,16 +30,6 @@ public class BambooImageUtil {
 				return CommonImages.getImage(BambooImages.STATUS_FAILED);
 			case SUCCESS:
 				return CommonImages.getImage(BambooImages.STATUS_PASSED);
-			case BUILDING:
-			case IN_QUEUE:
-				switch (build.getLastStatus()) {
-				case FAILURE:
-					return CommonImages.getImage(BambooImages.STATUS_FAILED);
-				case SUCCESS:
-					return CommonImages.getImage(BambooImages.STATUS_PASSED);
-				default:
-					return CommonImages.getImage(BambooImages.STATUS_DISABLED);
-				}
 			case UNKNOWN:
 			default:
 				return CommonImages.getImage(BambooImages.STATUS_DISABLED);
@@ -49,20 +39,17 @@ public class BambooImageUtil {
 		return CommonImages.getImage(BambooImages.STATUS_DISABLED);
 	}
 
-	public static Image getBuildingImage(BambooBuild build) {
-		switch (build.getStatus()) {
-		case BUILDING:
-			++iconBuildingIndex;
-			iconBuildingIndex %= BambooImages.STATUS_BUILDING.length;
-			return CommonImages.getImage(BambooImages.STATUS_BUILDING[iconBuildingIndex]);
-		case IN_QUEUE:
-			return CommonImages.getImage(BambooImages.STATUS_WAITING);
-		case FAILURE:
-		case SUCCESS:
-		case UNKNOWN:
-		default:
-			return null;
-		}
-	}
+//	public static Image getBuildingImage(BambooBuild build) {
+//		switch (build.getPlanState()) {
+//		case BUILDING:
+//			++iconBuildingIndex;
+//			iconBuildingIndex %= BambooImages.STATUS_BUILDING.length;
+//			return CommonImages.getImage(BambooImages.STATUS_BUILDING[iconBuildingIndex]);
+//		case IN_QUEUE:
+//			return CommonImages.getImage(BambooImages.STATUS_WAITING);
+//		default:
+//			return null;
+//		}
+//	}
 
 }

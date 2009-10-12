@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
 import com.atlassian.theplugin.commons.bamboo.BuildDetails;
-import com.atlassian.theplugin.commons.bamboo.BuildStatus;
+import com.atlassian.theplugin.commons.bamboo.PlanState;
 import com.atlassian.theplugin.commons.bamboo.TestDetails;
 
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonFonts;
@@ -76,7 +76,7 @@ final public class BambooUiUtil {
 	public static Font getFontForBuildStatus(Object element) {
 		if (element instanceof EclipseBambooBuild) {
 			BambooBuild build = ((EclipseBambooBuild) element).getBuild();
-			if (build.getStatus() == BuildStatus.BUILDING || build.getStatus() == BuildStatus.IN_QUEUE) {
+			if (build.getPlanState() == PlanState.BUILDING || build.getPlanState() == PlanState.IN_QUEUE) {
 				return CommonFonts.ITALIC;
 			}
 		}

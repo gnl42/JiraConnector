@@ -29,6 +29,7 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowBuildLogAc
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ShowTestResultsAction;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.actions.ToggleAutoRefreshAction;
 import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.theplugin.commons.bamboo.PlanState;
 import com.atlassian.theplugin.commons.util.DateUtil;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -385,11 +386,14 @@ public class BambooView extends ViewPart {
 			public String getText(Object element) {
 				if (element instanceof EclipseBambooBuild) {
 					final BambooBuild build = ((EclipseBambooBuild) element).getBuild();
-					switch (build.getStatus()) {
-					case BUILDING:
-						return "Building";
-					case IN_QUEUE:
-						return "In queue";
+					final PlanState planState = build.getPlanState();
+					if (planState != null) {
+						switch (planState) {
+						case BUILDING:
+							return "Building";
+						case IN_QUEUE:
+							return "In queue";
+						}
 					}
 				}
 				return null;
@@ -626,16 +630,6 @@ public class BambooView extends ViewPart {
 			return ViewStatus.FAILED;
 		case SUCCESS:
 			return ViewStatus.PASSED;
-		case BUILDING:
-		case IN_QUEUE:
-			switch (build.getLastStatus()) {
-			case FAILURE:
-				return ViewStatus.FAILED;
-			case SUCCESS:
-				return ViewStatus.PASSED;
-			default:
-				return ViewStatus.NONE;
-			}
 		}
 		return ViewStatus.NONE;
 	}

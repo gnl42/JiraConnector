@@ -177,7 +177,7 @@ public class BambooBuildEditorPage extends BambooFormPage {
 						setBusy(false);
 						IStatus status = job.getStatus();
 						if (editorComposite != null) {
-							if (!status.isOK()/* || buildDetails == null || buildLog == null*/) {
+							if (status != null && !status.isOK()/* || buildDetails == null || buildLog == null*/) {
 								getEditor().setMessage(status.getMessage(), IMessageProvider.WARNING,
 										new HyperlinkAdapter() {
 											@Override
