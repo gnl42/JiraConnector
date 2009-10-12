@@ -53,21 +53,6 @@
 		</antcall>
 	</target>
 	
-	<target name="pre-tests">
-		<delete failonerror="false" includeemptydirs="true">
-			<fileset dir="${eclipse.home}">
-				<include name="features/org.eclipse.mylyn*/**"/>
-				<include name="plugins/org.eclipse.mylyn*/**"/>
-				<include name="features/com.atlassian.connector*/**"/>
-				<include name="plugins/com.atlassian.connector*/**"/>
-			</fileset>
-		</delete>
-		
-		<exec executable="${xvfb.path}" spawn="true">
-			<arg value=":99"/>
-		</exec>
-	</target>
-
 	<target name="pack" depends="init">
 		<!-- make sure Eclipse 3.4 is available -->
 		<antcall target="init-3.4"/>
