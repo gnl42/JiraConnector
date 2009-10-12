@@ -87,8 +87,7 @@
 	</target>
 
 	<target name="install-bundle">
-		<!-- else="p2" -->
-  		<condition property="install.target" value="um" else="um"><equals arg1="${build.target}" arg2="3.3"/></condition>
+  		<condition property="install.target" value="um" else="p2"><equals arg1="${build.target}" arg2="3.3"/></condition>
 		<antcall target="install-bundle-helper-${install.target}"/>
 	</target>
 
@@ -143,6 +142,9 @@
 		
 		<exec executable="${xvfb.path}" spawn="true">
 			<arg value=":99"/>
+			<arg value="-screen"/>
+			<arg value="0"/>
+			<arg value="1600x1200x32"/>
 		</exec>
 	</target>
 
@@ -519,11 +521,12 @@
 	<target name="install-bundle-helper-install-um" unless="bundle.exists">
 		<property name="timeout" value="3600000" />
 		<property name="application" value="org.eclipse.update.core.standaloneUpdate" />
-		<property name="vmargs" value="-Xms40m -Xmx256m"/>		
+		<property name="vmargs" value="-Xms40m -Xmx256m"/>
+		<property name="log" value="${build.results}/install-bundle-helper-install-um-${build.target}.log" />
 
-		<echo message="Installing ${update.feature} ${update.version} into ${eclipse.home}"/>
+		<echo message="Installing ${update.feature} ${update.version} into ${eclipse.home}, log at ${log}"/>
 		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
-			classname="org.eclipse.core.launcher.Main">
+			classname="org.eclipse.core.launcher.Main" output="${log}">
 			<classpath>
 				<fileset dir="${eclipse.home}/plugins">
 					<include name="org.eclipse.equinox.launcher_*.jar"/>
