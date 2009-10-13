@@ -599,6 +599,8 @@
 	</target>
 		
 	<target name="install-tests-helper">
+		<mkdir dir="${install.dir}"/>
+
 		<delete>
 			<fileset dir="${install.dir}">
 				<include name="**/*.jar"/>
