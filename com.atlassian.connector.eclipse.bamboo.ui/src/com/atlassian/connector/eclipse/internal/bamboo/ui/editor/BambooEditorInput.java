@@ -18,6 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * EditorInput for Bamboo Build
@@ -26,6 +27,7 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class BambooEditorInput implements IEditorInput {
 
+	@NotNull
 	private final EclipseBambooBuild bambooBuild;
 
 	private static final int MAX_LABEL_LENGTH = 60;
@@ -37,7 +39,7 @@ public class BambooEditorInput implements IEditorInput {
 	}
 
 	public boolean exists() {
-		return bambooBuild != null;
+		return true;
 	}
 
 	public ImageDescriptor getImageDescriptor() {
@@ -45,16 +47,13 @@ public class BambooEditorInput implements IEditorInput {
 	}
 
 	public String getName() {
-		if (bambooBuild != null) {
-			String number = "";
-			try {
-				number = String.valueOf(bambooBuild.getBuild().getNumber());
-			} catch (UnsupportedOperationException e) {
-				//ignore
-			}
-			return truncate(bambooBuild.getBuild().getPlanName() + "-" + number);
+		String number = "";
+		try {
+			number = String.valueOf(bambooBuild.getBuild().getNumber());
+		} catch (UnsupportedOperationException e) {
+			//ignore
 		}
-		return truncate("Bamboo Build");
+		return truncate(bambooBuild.getBuild().getPlanName() + "-" + number);
 	}
 
 	public IPersistableElement getPersistable() {
@@ -62,16 +61,13 @@ public class BambooEditorInput implements IEditorInput {
 	}
 
 	public String getToolTipText() {
-		if (bambooBuild != null) {
-			String number = "";
-			try {
-				number = String.valueOf(bambooBuild.getBuild().getNumber());
-			} catch (UnsupportedOperationException e) {
-				//ignore
-			}
-			return truncate(bambooBuild.getBuild().getPlanKey() + "-" + number);
+		String number = "";
+		try {
+			number = String.valueOf(bambooBuild.getBuild().getNumber());
+		} catch (UnsupportedOperationException e) {
+			//ignore
 		}
-		return truncate("Bamboo Build");
+		return truncate(bambooBuild.getBuild().getPlanKey() + "-" + number);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -82,6 +78,7 @@ public class BambooEditorInput implements IEditorInput {
 		return null;
 	}
 
+	@NotNull
 	public EclipseBambooBuild getBambooBuild() {
 		return bambooBuild;
 	}
