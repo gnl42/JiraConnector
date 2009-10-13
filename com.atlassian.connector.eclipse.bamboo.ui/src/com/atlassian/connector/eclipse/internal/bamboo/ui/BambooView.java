@@ -380,7 +380,7 @@ public class BambooView extends ViewPart {
 
 		column = new TreeViewerColumn(buildViewer, SWT.NONE);
 		column.getColumn().setText("State");
-		column.getColumn().setWidth(40);
+		column.getColumn().setWidth(60);
 		column.setLabelProvider(new BambooColumnProvider() {
 			@Override
 			public String getText(Object element) {
