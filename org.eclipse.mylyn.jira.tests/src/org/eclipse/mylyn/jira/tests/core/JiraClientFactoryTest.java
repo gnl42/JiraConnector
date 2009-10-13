@@ -23,6 +23,9 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.service.JiraServiceUnavailableException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
+import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryChangeEvent;
+import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryDelta;
+import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryDelta.Type;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.jira.tests.util.JiraTestConstants;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -143,12 +146,14 @@ public class JiraClientFactoryTest extends TestCase {
 		assertEquals("ISO-8859-1", client.getCharacterEncoding());
 
 		repository.setCharacterEncoding("UTF-8");
-		clientFactory.repositorySettingsChanged(repository);
+		clientFactory.repositoryChanged(new TaskRepositoryChangeEvent(this, repository, new TaskRepositoryDelta(
+				Type.PROPERTY)));
 		client = clientFactory.getJiraClient(repository);
 		assertEquals("ISO-8859-1", client.getCharacterEncoding());
 
 		JiraUtil.setCharacterEncodingValidated(repository, true);
-		clientFactory.repositorySettingsChanged(repository);
+		clientFactory.repositoryChanged(new TaskRepositoryChangeEvent(this, repository, new TaskRepositoryDelta(
+				Type.PROPERTY)));
 		client = clientFactory.getJiraClient(repository);
 		assertEquals("UTF-8", client.getCharacterEncoding());
 	}
