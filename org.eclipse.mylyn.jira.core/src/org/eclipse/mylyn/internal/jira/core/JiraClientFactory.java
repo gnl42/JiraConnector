@@ -21,6 +21,9 @@ import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraConfiguration;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
+import org.eclipse.mylyn.internal.tasks.core.IRepositoryChangeListener;
+import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryChangeEvent;
+import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryDelta.Type;
 import org.eclipse.mylyn.tasks.core.IRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
@@ -34,7 +37,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
-public class JiraClientFactory implements IRepositoryListener, IJiraClientFactory {
+public class JiraClientFactory implements IRepositoryListener, IRepositoryChangeListener, IJiraClientFactory {
 
 	private static JiraClientFactory instance = null;
 
@@ -112,10 +115,22 @@ public class JiraClientFactory implements IRepositoryListener, IJiraClientFactor
 	}
 
 	public synchronized void repositorySettingsChanged(TaskRepository repository) {
+		// handled by repositoryChanged()
+	}
+
+	public synchronized void repositoryChanged(TaskRepositoryChangeEvent event) {
+		TaskRepository repository = event.getRepository();
 		if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
 			JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
 			if (client != null) {
-				updateClient(client, repository);
+				if (event.getDelta().getType() == Type.ALL) {
+					client.purgeSession();
+					updateClient(client, repository);
+				} else if (event.getDelta().getType() == Type.CREDENTIALS || event.getDelta().getType() == Type.PROYX) {
+					client.purgeSession();
+				} else {
+					updateClient(client, repository);
+				}
 			}
 		}
 	}

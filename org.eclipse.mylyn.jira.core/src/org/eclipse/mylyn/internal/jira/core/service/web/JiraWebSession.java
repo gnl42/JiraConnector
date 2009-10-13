@@ -83,6 +83,8 @@ public class JiraWebSession {
 
 	private final Lock authenticationLock;
 
+	private volatile boolean reauthenticate;
+
 	public JiraWebSession(JiraClient client, String baseUrl) {
 		this.client = client;
 		this.baseUrl = baseUrl;
@@ -97,7 +99,7 @@ public class JiraWebSession {
 
 	public void doInSession(JiraWebSessionCallback callback, IProgressMonitor monitor) throws JiraException {
 		monitor = Policy.monitorFor(monitor);
-		boolean doLogin = hostConfiguration == null;
+		boolean doLogin = hostConfiguration == null || reauthenticate;
 		int MAX_RETRIES = doLogin ? 1 : 2; //if login gets skipped, a second try might be needed
 		for (int i = 1; i <= MAX_RETRIES; i++) {
 			try {
@@ -107,6 +109,7 @@ public class JiraWebSession {
 					WebUtil.configureHttpClient(httpClient, "JiraConnector"); //$NON-NLS-1$
 				}
 				if (doLogin) {
+					reauthenticate = false;
 					hostConfiguration = login(httpClient, monitor);
 				}
 			} finally {
@@ -167,6 +170,7 @@ public class JiraWebSession {
 				return;
 			}
 			logout(httpClient, hostConfiguration, monitor);
+			hostConfiguration = null;
 		} finally {
 			unlock(monitor);
 		}
@@ -346,6 +350,10 @@ public class JiraWebSession {
 		} finally {
 			logout.releaseConnection();
 		}
+	}
+
+	public void purgeSession() {
+		this.reauthenticate = true;
 	}
 
 	private class RedirectTracker {

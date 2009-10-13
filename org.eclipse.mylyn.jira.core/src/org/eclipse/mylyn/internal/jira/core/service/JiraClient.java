@@ -113,6 +113,8 @@ public class JiraClient {
 
 	private JiraConfiguration configuration;
 
+	private final JiraWebSession webSession;
+
 	public JiraClient(AbstractWebLocation location, JiraConfiguration configuration) {
 		Assert.isNotNull(location);
 		Assert.isNotNull(configuration);
@@ -121,7 +123,7 @@ public class JiraClient {
 		this.configuration = configuration;
 
 		this.cache = new JiraClientCache(this);
-		JiraWebSession webSession = new JiraWebSession(this);
+		this.webSession = new JiraWebSession(this);
 		this.webClient = new JiraWebClient(this, webSession);
 		this.rssClient = new JiraRssClient(this, webSession);
 		this.soapClient = new JiraSoapClient(this);
@@ -541,7 +543,7 @@ public class JiraClient {
 	public JiraWorkLog addWorkLog(String issueKey, JiraWorkLog log, IProgressMonitor monitor) throws JiraException {
 		return soapClient.addWorkLog(issueKey, log, monitor);
 	}
-	
+
 	public ProjectRole[] getProjectRoles(IProgressMonitor monitor) throws JiraException {
 		return soapClient.getProjectRoles(monitor);
 	}
@@ -560,4 +562,8 @@ public class JiraClient {
 		return getConfiguration().isCompressionEnabled();
 	}
 
+	public synchronized void purgeSession() {
+		webSession.purgeSession();
+		soapClient.purgeSession();
+	}
 }

@@ -25,7 +25,6 @@ import javax.xml.rpc.Call;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.transport.http.HTTPConstants;
-import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.WebUtil;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.wsdl.soap.JiraSoapServiceServiceLocator;
@@ -38,14 +37,11 @@ import org.eclipse.mylyn.internal.provisional.commons.soap.SoapHttpSender;
 @SuppressWarnings("serial")
 public class JiraSoapServiceLocator extends JiraSoapServiceServiceLocator {
 
-	private final AbstractWebLocation location;
-
 	private final JiraClient client;
 
 	public JiraSoapServiceLocator(org.apache.axis.EngineConfiguration config, JiraClient client) {
 		super(config);
 		this.client = client;
-		this.location = client.getLocation();
 	}
 
 	@Override
@@ -59,7 +55,7 @@ public class JiraSoapServiceLocator extends JiraSoapServiceServiceLocator {
 			call.setProperty(SoapHttpSender.ALLOW_EMPTY_CONTENT_ENCODING, Boolean.TRUE);
 		}
 
-		call.setProperty(SoapHttpSender.LOCATION, location);
+		call.setProperty(SoapHttpSender.LOCATION, client.getLocation());
 
 		Hashtable<String, String> headers = new Hashtable<String, String>();
 		headers.put(HTTPConstants.HEADER_USER_AGENT, WebUtil.getUserAgent("JiraConnector Axis/1.4")); //$NON-NLS-1$
@@ -67,10 +63,6 @@ public class JiraSoapServiceLocator extends JiraSoapServiceServiceLocator {
 		headers.put(HTTPConstants.HEADER_TRANSFER_ENCODING_CHUNKED, Boolean.FALSE.toString());
 		call.setProperty(HTTPConstants.REQUEST_HEADERS, headers);
 		return call;
-	}
-
-	public AbstractWebLocation getLocation() {
-		return location;
 	}
 
 }

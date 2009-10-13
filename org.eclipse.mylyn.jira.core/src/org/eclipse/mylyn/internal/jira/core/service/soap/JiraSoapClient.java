@@ -107,6 +107,8 @@ public class JiraSoapClient extends AbstractSoapClient {
 
 	private final JiraClient jiraClient;
 
+	private boolean reauthenticate;
+
 	public JiraSoapClient(JiraClient jiraClient) {
 		this.jiraClient = jiraClient;
 		this.loginToken = new LoginToken(jiraClient.getLocation(), DEFAULT_SESSION_TIMEOUT);
@@ -428,6 +430,10 @@ public class JiraSoapClient extends AbstractSoapClient {
 		});
 	}
 
+	public void purgeSession() {
+		this.reauthenticate = true;
+	}
+
 	/**
 	 * Remote exceptions sometimes have a cause and sometimes don't. If the exception is some sort of connection failure
 	 * it will be an AxisFault with no message that wraps a ConnectionException. If the exception was triggered by a
@@ -560,9 +566,12 @@ public class JiraSoapClient extends AbstractSoapClient {
 				RemoteException, java.rmi.RemoteException {
 			AuthenticationCredentials newCredentials = location.getCredentials(AuthenticationType.REPOSITORY);
 			if (newCredentials == null) {
+				// anonymous login
 				expire();
 				return ""; //$NON-NLS-1$
-			} else if (!newCredentials.equals(credentials)) {
+			} else if (!newCredentials.equals(credentials) || reauthenticate) {
+				// credentials have changed since last request
+				reauthenticate = false;
 				expire();
 				credentials = newCredentials;
 			}
