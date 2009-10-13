@@ -37,8 +37,6 @@ public class Messages {
 
 	public static String JiraClientCache_getting_resolutions;
 
-	public static String JiraClientCache_getting_server_info;
-
 	public static String JiraClientCache_getting_statuses;
 
 	public static String JiraClientCache_project_details_for;

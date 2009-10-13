@@ -504,16 +504,11 @@ public class JiraClientTest extends TestCase {
 		assertEquals("UTF-8", client.getCharacterEncoding());
 	}
 
-//	public void testGetServerInfo3_9() throws Exception {
-//		getServerInfo(JiraTestConstants.JIRA_39_URL, "3.9", "233");
-//	}
-
 	public void testGetServerInfo() throws Exception {
 		ServerInfo serverInfo = client.getCache().getServerInfo(null);
-		// FIXME 3.3 uncomment
-		//assertEquals(JiraFixture.current().getVersion(), serverInfo.getVersion());
-		//assertEquals(JiraFixture.current().getBuildNumber(), serverInfo.getBuildNumber());
-		//assertEquals(JiraFixture.current().getRepositoryUrl(), serverInfo.getBaseUrl());
+		assertEquals(JiraFixture.current().getVersion(), serverInfo.getVersion());
+		assertEquals(JiraFixture.current().getBuildNumber(), serverInfo.getBuildNumber());
+		assertEquals(JiraFixture.current().getRepositoryUrl(), serverInfo.getBaseUrl());
 		assertEquals("ISO-8859-1", serverInfo.getCharacterEncoding());
 	}
 

@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.mylyn.commons.net.WebLocation;
 import org.eclipse.mylyn.commons.tests.support.TestProxy;
+import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.jira.tests.util.JiraTestUtil;
 
@@ -64,16 +65,15 @@ public class JiraClientOfflineTest extends TestCase {
 		assertNull(client.getWorklogs("KEY-1", null));
 	}
 
-	// TODO 3.3 re-enable test
-//	public void testGetWorklogs() throws Exception {
-//		server.addResponse(JiraTestUtil.getMessage("soap/login-success-response"));
-//		server.addResponse(JiraTestUtil.getMessage("soap/get-server-info-3-13-1-success-response"));
-//		server.addResponse(JiraTestUtil.getMessage("web/login-success-response"));
-//		server.addResponse(JiraTestUtil.getMessage("web/logout-success-response"));
-//		server.addResponse(JiraTestUtil.getMessage("soap/get-worklogs-two-entries-success-response"));
-//		JiraWorkLog[] worklogs = client.getWorklogs("KEY-1", null);
-//		assertNotNull(worklogs);
-//		assertEquals(2, worklogs.length);
-//	}
+	public void DISABLEDtestGetWorklogs() throws Exception {
+		server.addResponse(JiraTestUtil.getMessage("soap/login-success-response"));
+		server.addResponse(JiraTestUtil.getMessage("soap/get-server-info-3-13-1-success-response"));
+		server.addResponse(JiraTestUtil.getMessage("web/login-success-response"));
+		server.addResponse(JiraTestUtil.getMessage("web/logout-success-response"));
+		server.addResponse(JiraTestUtil.getMessage("soap/get-worklogs-two-entries-success-response"));
+		JiraWorkLog[] worklogs = client.getWorklogs("KEY-1", null);
+		assertNotNull(worklogs);
+		assertEquals(2, worklogs.length);
+	}
 
 }

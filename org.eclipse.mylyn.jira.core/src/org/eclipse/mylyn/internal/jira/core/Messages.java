@@ -95,8 +95,6 @@ public class Messages extends NLS {
 
 	public static String JiraRepositoryConnector_The_repository_returned_an_unknown_project;
 
-	public static String JiraRepositoryConnector_Retrieving_issue_X;
-
 	public static String JiraTaskAttachmentHandler_Getting_attachment;
 
 	public static String JiraTaskAttachmentHandler_Sending_attachment;
