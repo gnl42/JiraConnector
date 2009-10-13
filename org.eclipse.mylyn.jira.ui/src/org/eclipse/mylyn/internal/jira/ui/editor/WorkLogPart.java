@@ -36,6 +36,7 @@ import org.eclipse.mylyn.internal.jira.core.model.JiraWorkLog;
 import org.eclipse.mylyn.internal.jira.core.service.JiraTimeFormat;
 import org.eclipse.mylyn.internal.jira.core.util.JiraUtil;
 import org.eclipse.mylyn.internal.jira.ui.JiraConnectorUi;
+import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -55,6 +56,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -180,11 +182,13 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 	public void createControl(Composite parent, final FormToolkit toolkit) {
 		initialize();
 
-		int style = ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.TWISTIE;
+		int style = ExpandableComposite.TWISTIE;
 		if (hasIncoming) {
 			style |= ExpandableComposite.EXPANDED;
 		}
 		final Section section = createSection(parent, toolkit, style);
+		EditorUtil.setTitleBarForeground(section, toolkit.getColors().getColor(IFormColors.TITLE));
+		section.redraw();
 		section.setText(getPartName() + " (" + logEntries.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (hasIncoming) {
 			expandSection(toolkit, section);
