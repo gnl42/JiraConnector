@@ -137,9 +137,9 @@
 		<fail message="Required property build.publish.host is not set" unless="build.publish.host"/>
 		<fail message="Required property build.publish.path is not set" unless="build.publish.path"/>
 		
-		<!--antcall target="for-each-target">
+		<antcall target="for-each-target">
 			<param name="call" value="publish-helper"/>
-		</antcall--> 
+		</antcall> 
 
 		<sshexec host="${build.publish.host}" keyfile="${build.publish.keyfile}" username="${build.publish.user}" 
 			trust="true" command="cp -fR &quot;${build.publish.path}/${build.publish.postfix}/${version}/&quot;* &quot;${build.publish.path}/${build.publish.postfix}&quot;" timeout="5000"
