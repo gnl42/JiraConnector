@@ -17,17 +17,14 @@
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.tigris.subversion.clientadapter.feature"/>
 			<param name="update.site" value="${subclipse.site}"/>
-			<param name="update.version" value="${subclipse.clientadapter.version}"/>
 		</antcall>
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.tigris.subversion.subclipse"/>
 			<param name="update.site" value="${subclipse.site}"/>
-			<param name="update.version" value="${subclipse.version}"/>
 		</antcall>
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.team.svn"/>
 			<param name="update.site" value="${subversive.site}"/>
-			<param name="update.version" value="${subversive.version}"/>
 		</antcall>
 		
 		<!-- only keep mylyn map that corresponds to current target -->
@@ -45,11 +42,13 @@
 		<delete>
 			<fileset dir="${build.home}/${build.target}/maps" includes="mylyn*.map"/>
 		</delete>
-  	    <condition property="mylyn.version.postfix" value="-e33" else="-e3x"><equals arg1="${build.target}" arg2="3.3"/></condition>
 		<antcall target="install-bundle">
 			<param name="update.feature" value="org.eclipse.mylyn_feature"/>
 			<param name="update.site" value="${mylyn.site}/e${build.target}"/>
-			<param name="update.version" value="${mylyn.version}${mylyn.version.postfix}"/>
+		</antcall>
+		<antcall target="install-bundle">
+			<param name="update.feature" value="org.eclipse.mylyn.jira_feature"/>
+			<param name="update.site" value="${mylyn-extras.site}"/>
 		</antcall>
 	</target>
 	

@@ -2,6 +2,7 @@
 <project name="build-helper" default="all" basedir=".">
 	
 	<import file="getDependenciesHelper.xml"/>
+	<import file="functions.xml"/>
 
 	<!-- ===================================================================== -->
 	<!-- build targets -->
@@ -402,7 +403,7 @@
 	<!-- install helper targets -->
 	<!-- ===================================================================== -->
 
-	<target name="install-bundle-helper-p2">
+	<!--target name="install-bundle-helper-p2">
 		<fail message="Require property 'eclipse.home' is not set" unless="eclipse.home"/>
 		
 		<property name="timeout" value="3600000" />
@@ -429,48 +430,32 @@
 			<arg value="${update.site},${update.p2.sites}"/>
 			<arg value="-installIU"/>
 			<arg value="${update.feature}.feature.group"/>
+			<arg value="-version"/>
+			<arg value="${update.version}"/>
 		</java>
-	</target>
+	</target-->
 
-<!--
-	<target name="install-bundle-helper-p2" unless="update.version">
-		<property name="timeout" value="3600000" />
-		<property name="application" value="org.eclipse.equinox.p2.director.app.application" />
-		<property name="eclipse.home" value="${eclipse.home}" />
-		<property name="vmargs" value="-Xms40m -Xmx256m -Declipse.p2.data.area=${eclipse.home}/p2"/>		
-
+	<target name="install-bundle-helper-p2">
+		<fail message="Require property 'eclipse.home' is not set" unless="eclipse.home"/>
+		<property file="${eclipse.home}/configuration/config.ini" prefix="base.config"/>
+		
 		<echo message="Installing ${update.feature}"/>
-		<java fork="true" dir="." timeout="${timeout}" logError="true" failonerror="true" 
-			classname="org.eclipse.core.launcher.Main">
-			<classpath>
-				<fileset dir="${eclipse.home}/plugins">
-					<include name="org.eclipse.equinox.launcher_*.jar"/>
-			  	</fileset>
-			</classpath>
-			<jvmarg line="${vmargs}"/>
-			<arg value="-consolelog"/>
-			<arg value="-data"/>
-			<arg value="${build.home}/workspace"/>
-			<arg value="-clean"/>
-			<arg value="-application"/>
-			<arg value="${application}"/>
-			<arg value="-metadataRepository"/>
-			<arg value="${update.site},${update.p2.sites}"/>
-			<arg value="-artifactRepository"/>
-			<arg value="${update.site},${update.p2.sites}"/>
+		<exec-eclipse activity="install-bundle" application="org.eclipse.equinox.p2.director"
+			 extravmargs="-Declipse.p2.data.area=${eclipse.home}/p2 -Declipse.p2.MD5Check=false -Xms40m -Xmx256m">
+    		<arg value="-metadataRepository"/>
+    		<arg value="${update.site},${base.sites}"/>
+    		<arg value="-artifactRepository"/>
+    		<arg value="${update.site},${base.sites}"/>
 			<arg value="-installIU"/>
 			<arg value="${update.feature}.feature.group"/>
-			<arg value="-bundlepool"/>
-			<arg value="${eclipse.home}/dropins/dependencies/eclipse"/>
+			<!--arg value="-version"/>
+			<arg value="${update.version}"/-->
+			<arg value="-profile"/>
+			<arg value="${base.config.eclipse.p2.profile}"/>
 			<arg value="-destination"/>
 			<arg value="${eclipse.home}"/>
-			<arg value="-profile"/>
-			<arg value="dependencies.profile"/>
-			<arg value="-profileProperties"/>
-			<arg value="org.eclipse.update.install.features=true"/>
-		</java>
+		</exec-eclipse>
 	</target>
--->
 	
 	<target name="install-bundle-helper-um">
 		<fail message="Require property 'eclipse.home' is not set" unless="eclipse.home"/>
