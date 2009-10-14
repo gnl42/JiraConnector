@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="functions" default="all" basedir=".">
+
+<target name="provision-basebuilder" unless="base.builder.exists">
+		<!-- setup for download targets -->
+		<property name="downloadsDir" value="${tools.home}"/> 
+
+		<mkdir dir="${base.builder.home}" />
+		<echo message="Getting basebuilder from CVS"/>
+		<cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse"
+			package="org.eclipse.releng.basebuilder"
+			command="checkout -r R${basebuilder.version}"
+			dest="${base.builder.home}"
+			quiet="true" 
+			failonerror="true" />
+		<antcall target="get-build-dependencies-helper-svn"/>
+		<move file="${base.builder.home}/org.eclipse.releng.basebuilder" tofile="${base.builder.home}/eclipse"/>
+		<install-into-base url="${eclipse.url.derby}" exists="plugins/org.apache.derby.core_10.4.2" unpackDest="${base.builder.home}/eclipse"/>
+		<replaceregexp file="${base.builder.home}/eclipse/plugins/org.apache.derby.core_10.4.2/plugin.xml"
+			match="org.apache.derby.core" replace="org.apache.derby" byline="true"/>
+
+		<!-- replace performance test tools with patched version -->
+		<dirname property="functions.basedir" file="${ant.file.functions}"/>
+		<delete includeemptydirs="true">
+			<fileset dir="${base.builder.home}/eclipse">
+				<include name="plugins/org.eclipse.test.performance*/**"/>
+			</fileset>
+		</delete>
+		<copy todir="${base.builder.home}/eclipse/plugins">
+			<fileset dir="${functions.basedir}/tools">
+				<include name="org.eclipse.test.performance*/**"/>
+			</fileset>
+		</copy>
+
+		<touch file="${base.builder.home}/.provisioned"/>
+	</target>
+
+
+<macrodef name="install-into-base">
+		<attribute name="url"/>
+		<attribute name="exists"/>
+		<attribute name="unpackDest" default="${base.home}"/>
+		<sequential>
+			<!-- use unique name for property to avoid conflicts -->
+			<basename property="file.@{url}" file="@{url}"/>
+			<antcall target="getBundle">
+				<param name="file" value="${file.@{url}}" />
+				<param name="url" value="@{url}"/>
+			</antcall>
+			<antcall target="unpackBundle">
+				<param name="file" value="${file.@{url}}" />
+				<param name="unpackDest" value="@{unpackDest}"/>
+				<param name="isUnpackedFile" value="${base.home}/@{exists}"/>
+			</antcall>
+		</sequential>
+	</macrodef>
+
+<macrodef name="init-basebuilder">
+        <sequential>
+        	<property name="base.builder.home" value="${tools.home}/basebuilder-${basebuilder.version}"/>
+			<available file="${base.builder.home}/.provisioned" property="base.builder.exists"/>
+			<antcall target="provision-basebuilder"/>
+        </sequential>
+    </macrodef>
+
+	<macrodef name="exec-eclipse">
+		<attribute name="activity"/>
+		<attribute name="application" default="org.eclipse.ant.core.antRunner" />
+		<attribute name="extravmargs" default=""/>
+		<attribute name="vmargs" default=" -Xms40m -Xmx512m -XX:MaxPermSize=128m"/>    	
+		<attribute name="failonerror" default="true"/>
+		<attribute name="timeout" default="10000000" />
+		<attribute name="output" default="NOT SET" />
+		<attribute name="consolelog" default="${consolelog}" />
+		<element name="args" optional="true" implicit="true"/>
+		<sequential>
+			<init-basebuilder/>
+			
+			<mkdir dir="${build.results}" />
+			<condition property="log" value="@{output}"><not><equals arg1="@{output}" arg2="NOT SET"/></not></condition>
+			<condition property="log" value="${build.results}/@{activity}-${base.target}.log" else="${build.results}/@{activity}.log"><isset property="base.target"/></condition>
+			
+			<echo message="Executing @{activity} using basebuilder-${basebuilder.version}" />
+			<echo message="Output is logged to ${log}" />			
+			
+			<!-- find the Eclipse launcher -->
+			<pathconvert property="@{application}.launcher">
+				<first count="1">
+					<sort>
+						<fileset dir="${base.builder.home}/eclipse/plugins" includes="**/org.eclipse.equinox.launcher*.jar" />
+						<reverse xmlns="antlib:org.apache.tools.ant.types.resources.comparators">
+							<date />
+						</reverse>
+					</sort>
+				</first>
+			</pathconvert>
+
+			<!-- launch the eclipse application -->
+			<java fork="true" jar="${@{application}.launcher}" dir="." timeout="@{timeout}" failonerror="@{failonerror}"
+					output="${log}">
+				<!-- Uncomment to debug <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/> -->
+			    <jvmarg line="@{vmargs} @{extravmargs}"/>
+		   		<!-- <arg value="-clean"/> -->
+			    <arg value="-application"/>
+		   		<arg value="@{application}"/>
+				<arg value="-consolelog"/>
+		   		<arg value="-data"/>
+		   		<arg value="${build.home}/workspace"/>
+				<args />
+				<redirector alwayslog="@{consolelog}"/>
+			</java>
+		</sequential>
+	</macrodef>
+
+</project>
