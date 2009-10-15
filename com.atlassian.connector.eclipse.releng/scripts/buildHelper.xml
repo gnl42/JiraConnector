@@ -143,9 +143,6 @@
 		
 		<exec executable="${xvfb.path}" spawn="true">
 			<arg value=":99"/>
-			<arg value="-screen"/>
-			<arg value="0"/>
-			<arg value="1600x1200x32"/>
 		</exec>
 	</target>
 
