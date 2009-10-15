@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -221,7 +222,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 	private Set<Repository> cachedRepositories;
 
-	private final Map<RepositoryInfo, Repository> repositoryMappings;
+	private final Map<String, String> repositoryMappings;
 
 	private final Map<RepositoryInfo, ComboViewer> mappingCombos;
 
@@ -248,13 +249,13 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		setDescription("Select the changesets that should be included in the review.");
 		this.availableLogEntries = new HashMap<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>>();
 		this.selectedLogEntries = new HashMap<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>>();
-		this.repositoryMappings = new HashMap<RepositoryInfo, Repository>();
+		this.repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
 		this.mappingCombos = new HashMap<RepositoryInfo, ComboViewer>();
 		this.taskRepository = repository;
 
 		if (logEntries != null && logEntries.size() > 0) {
 			this.selectedLogEntries.put(logEntries.first().getRepository(), logEntries);
-			this.repositoryMappings.put(logEntries.first().getRepository(), null);
+			this.repositoryMappings.put(logEntries.first().getRepository().getScmPath(), null);
 		}
 
 		this.wizard = wizard;
@@ -306,7 +307,10 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		repositoriesMappingViewer = new TableViewer(table);
 		repositoriesMappingViewer.setContentProvider(new IStructuredContentProvider() {
 			public Object[] getElements(Object inputElement) {
-				return selectedLogEntries.keySet().toArray();
+				if (inputElement instanceof Map<?, ?>) {
+					return ((Map<?, ?>) inputElement).keySet().toArray();
+				}
+				return new Object[0];
 			}
 
 			public void dispose() {
@@ -315,6 +319,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			}
 		});
+		repositoriesMappingViewer.setInput(selectedLogEntries);
+
 		final TableViewerColumn column1 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
 		column1.getColumn().setText("Local Repository");
 		column1.getColumn().setWidth(500);
@@ -335,7 +341,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				return null;
 			}
 		});
-		repositoriesMappingViewer.setInput(selectedLogEntries);
 
 		final TableViewerColumn column2 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
 		column2.getColumn().setText("Crucible Repository");
@@ -344,8 +349,9 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof RepositoryInfo) {
-					if (repositoryMappings.containsKey(element) && repositoryMappings.get(element) != null) {
-						return repositoryMappings.get(element).getName();
+					String mapping = repositoryMappings.get(((RepositoryInfo) element).getScmPath());
+					if (mapping != null) {
+						return mapping;
 					}
 				}
 				return "";
@@ -389,17 +395,16 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	private void selectRepositoryMapping() {
 		ISelection selection = repositoriesMappingViewer.getSelection();
 		if (selection instanceof IStructuredSelection && ((IStructuredSelection) selection).size() == 1) {
-			RepositoryInfo repository = (RepositoryInfo) ((IStructuredSelection) selection).getFirstElement();
+			String scmPath = ((RepositoryInfo) ((IStructuredSelection) selection).getFirstElement()).getScmPath();
 			if (cachedRepositories == null) {
 				cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
 			}
 			ComboViewerSelectionDialog dialog = new ComboViewerSelectionDialog(repositoriesMappingViewer.getTable()
-					.getShell(), "Map Local to Crucible Repository", "Map \"" + repository.getScmPath() + "\" to: ",
-					cachedRepositories);
+					.getShell(), "Map Local to Crucible Repository", "Map \"" + scmPath + "\" to: ", cachedRepositories);
 			int returnCode = dialog.open();
 			if (returnCode == IDialogConstants.OK_ID) {
 				Repository crucibleRepository = dialog.getSelection();
-				repositoryMappings.put(repository, crucibleRepository);
+				repositoryMappings.put(scmPath, crucibleRepository.getName());
 				repositoriesMappingViewer.setInput(repositoryMappings);
 			}
 		}
@@ -414,8 +419,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 		//check if all custom repositories are mapped to crucible repositories
 		boolean allFine = true;
-		for (RepositoryInfo repository : repositoryMappings.keySet()) {
-			if (repositoryMappings.get(repository) == null) {
+		for (String scmPath : repositoryMappings.keySet()) {
+			if (repositoryMappings.get(scmPath) == null) {
 				setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
 				allFine = false;
 				break;
@@ -742,14 +747,14 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 					}
 					if (changesets.size() > 0) {
 						selectedLogEntries.put(repository, changesets);
-						if (!repositoryMappings.containsKey(repository)) {
-							repositoryMappings.put(repository, null);
+						if (!repositoryMappings.containsKey(repository.getScmPath())) {
+							repositoryMappings.put(repository.getScmPath(), null);
 						}
 					} else {
 						selectedLogEntries.remove(repository);
 						//if its the last of that repo, remove it from mapping
 						if (!selectedLogEntries.containsKey(repository)) {
-							repositoryMappings.remove(repository);
+							repositoryMappings.remove(repository.getScmPath());
 							ComboViewer viewer = mappingCombos.remove(repository);
 							if (viewer != null) {
 								viewer.getCombo().dispose();
@@ -802,7 +807,13 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		return selectedLogEntries;
 	}
 
-	public Map<RepositoryInfo, Repository> getRepositoryMappings() {
+	public Map<String, String> getRepositoryMappings() {
 		return repositoryMappings;
+	}
+
+	@Override
+	public void setPageComplete(boolean complete) {
+		TaskRepositoryUtil.setScmRepositoryMappings(taskRepository, repositoryMappings);
+		super.setPageComplete(complete);
 	}
 }

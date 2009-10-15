@@ -107,7 +107,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 						//add revisions to review
 						review = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(),
-								addChangeSetsPage.getRepositoryMappings().get(repository).getName(), revisions);
+								addChangeSetsPage.getRepositoryMappings().get(repository.getScmPath()), revisions);
 					}
 					return review;
 				}
