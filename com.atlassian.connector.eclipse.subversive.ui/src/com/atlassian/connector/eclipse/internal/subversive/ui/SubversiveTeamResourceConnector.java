@@ -648,25 +648,23 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 				continue;
 			}
 
-			ILocalResource localResource = SVNRemoteStorage.instance().asLocalResource(resource);
-			String revision = Long.toString(localResource.getRevision());
+			final ILocalResource localResource = SVNRemoteStorage.instance().asLocalResource(resource);
 			final String fileName = getResourcePathWithProjectName(resource);
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (IStateFilter.SF_UNVERSIONED.accept(localResource) || IStateFilter.SF_ADDED.accept(localResource)) {
 				byte[] newContent = getResourceContent(((IFile) resource).getContents());
-				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent,
-						revision));
+				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent));
 			} else if (IStateFilter.SF_DELETED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
-				items.add(new UploadItem(fileName, getResourceContent(getContent.getContent()), DELETED_ITEM, revision));
+				items.add(new UploadItem(fileName, getResourceContent(getContent.getContent()), DELETED_ITEM));
 			} else if (IStateFilter.SF_MODIFIED.accept(localResource)) {
 				GetLocalFileContentOperation getContent = new GetLocalFileContentOperation(resource, Kind.BASE);
 				getContent.run(monitor);
 				byte[] newContent = getResourceContent(((IFile) resource).getContents());
 				items.add(new UploadItem(fileName, getResourceContent(getContent.getContent()),
-						newContent.length == 0 ? EMPTY_ITEM : newContent, revision));
+						newContent.length == 0 ? EMPTY_ITEM : newContent));
 			}
 		}
 		return items;
