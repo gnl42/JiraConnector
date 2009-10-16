@@ -62,13 +62,14 @@ public class BuildTreeViewer extends TreeViewer {
 
 	@Override
 	public void refresh() {
-		TreeItem[] selection = getTree().getSelection();
-		super.refresh();
-		restoreSelection(selection);
+		refresh(getRoot());
 	}
 
 	@Override
 	public void refresh(Object element, boolean updateLabels) {
+		if (disposed || getTree().isDisposed()) {
+			return;
+		}
 		TreeItem[] selection = getTree().getSelection();
 		super.refresh(element, updateLabels);
 		restoreSelection(selection);
@@ -76,6 +77,9 @@ public class BuildTreeViewer extends TreeViewer {
 
 	@Override
 	public void refresh(Object element) {
+		if (disposed || getTree().isDisposed()) {
+			return;
+		}
 		TreeItem[] selection = getTree().getSelection();
 		super.refresh(element);
 		restoreSelection(selection);
@@ -83,6 +87,9 @@ public class BuildTreeViewer extends TreeViewer {
 
 	@Override
 	public void refresh(boolean updateLabels) {
+		if (disposed || getTree().isDisposed()) {
+			return;
+		}
 		TreeItem[] selection = getTree().getSelection();
 		super.refresh(updateLabels);
 		restoreSelection(selection);
