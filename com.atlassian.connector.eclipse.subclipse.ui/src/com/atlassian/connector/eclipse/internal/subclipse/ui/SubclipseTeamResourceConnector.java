@@ -558,23 +558,20 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 			final LocalResourceStatus status = svnResource.getStatus();
 
 			// for unversioned files SVNRevision.getRevision throws an exception
-			final SVNRevision svnRevision = (status.isUnversioned()) ? null : svnResource.getRevision();
 			final String fileName = getResourcePathWithProjectName(resource);
-			final String revision = svnRevision != null ? svnRevision.toString() : "";
 
 			// Crucible crashes if newContent is empty so ignore empty files (or mark them)
 			if (status.isUnversioned() || status.isAdded()) {
 				byte[] newContent = getResourceContent((IFile) resource);
-				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent,
-						revision));
+				items.add(new UploadItem(fileName, new byte[0], newContent.length == 0 ? EMPTY_ITEM : newContent));
 			} else if (status.isDeleted()) {
 				items.add(new UploadItem(fileName,
-						getResourceContent(svnResource.getBaseResource().getStorage(monitor)), DELETED_ITEM, revision));
+						getResourceContent(svnResource.getBaseResource().getStorage(monitor)), DELETED_ITEM));
 			} else if (status.isDirty()) {
 				byte[] newContent = getResourceContent((IFile) resource);
 				items.add(new UploadItem(fileName,
 						getResourceContent(svnResource.getBaseResource().getStorage(monitor)),
-						newContent.length == 0 ? EMPTY_ITEM : newContent, revision));
+						newContent.length == 0 ? EMPTY_ITEM : newContent));
 			}
 		}
 		return items;
