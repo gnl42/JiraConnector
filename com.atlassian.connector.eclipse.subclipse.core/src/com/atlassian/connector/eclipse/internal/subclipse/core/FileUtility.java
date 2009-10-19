@@ -15,7 +15,6 @@ package com.atlassian.connector.eclipse.internal.subclipse.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
