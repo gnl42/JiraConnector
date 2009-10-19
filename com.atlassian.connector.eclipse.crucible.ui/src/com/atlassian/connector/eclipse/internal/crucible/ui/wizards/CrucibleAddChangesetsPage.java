@@ -405,7 +405,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			if (returnCode == IDialogConstants.OK_ID) {
 				Repository crucibleRepository = dialog.getSelection();
 				repositoryMappings.put(scmPath, crucibleRepository.getName());
-				repositoriesMappingViewer.setInput(repositoryMappings);
+				repositoriesMappingViewer.setInput(selectedLogEntries);
 			}
 		}
 		validatePage();
