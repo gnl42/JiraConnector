@@ -46,6 +46,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
@@ -185,7 +186,9 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 	public SortedSet<ICustomChangesetLogEntry> getLatestChangesets(@NotNull String repositoryUrl, int limit,
 			IProgressMonitor monitor) throws CoreException {
 
-		ISVNRepositoryLocation location = getRepositoryLocation(repositoryUrl, monitor);
+		SubMonitor submonitor = SubMonitor.convert(monitor, "Retrieving changesets for " + repositoryUrl, 8);
+
+		ISVNRepositoryLocation location = getRepositoryLocation(repositoryUrl, submonitor.newChild(1));
 		if (location == null) {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
 					"Could not get repository location for {0}", repositoryUrl)));
@@ -195,13 +198,14 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 		ISVNRemoteFolder rootFolder = location.getRootFolder();
 
 		if (limit > 0) { //do not retrieve unlimited revisions
-			monitor.beginTask("Retrieving changesets for " + location.getLabel(), 101);
-
 			GetLogsCommand getLogsCommand = new GetLogsCommand(rootFolder, SVNRevision.HEAD, SVNRevision.HEAD,
 					new SVNRevision.Number(0), false, limit, null, true);
 			try {
-				getLogsCommand.run(monitor);
+				getLogsCommand.run(submonitor.newChild(5));
+
 				ILogEntry[] logEntries = getLogsCommand.getLogEntries();
+
+				submonitor.setWorkRemaining(logEntries.length);
 				for (ILogEntry logEntry : logEntries) {
 					LogEntryChangePath[] logEntryChangePaths = logEntry.getLogEntryChangePaths();
 					String[] changed = new String[logEntryChangePaths.length];
@@ -211,7 +215,7 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 					}
 					ICustomChangesetLogEntry customEntry = new CustomChangeSetLogEntry(logEntry.getComment(),
 							logEntry.getAuthor(), logEntry.getRevision().toString(), logEntry.getDate(), changed,
-							getRepository(repositoryUrl, monitor));
+							getRepository(repositoryUrl, submonitor.newChild(1)));
 					changesets.add(customEntry);
 				}
 			} catch (SVNException e) {
