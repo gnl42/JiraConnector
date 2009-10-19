@@ -15,7 +15,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.dialogs.ComboViewerSelectionDialog;
+import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
+import com.atlassian.connector.eclipse.ui.dialogs.ComboSelectionDialog;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
@@ -399,8 +400,22 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 			if (cachedRepositories == null) {
 				cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
 			}
-			ComboViewerSelectionDialog dialog = new ComboViewerSelectionDialog(repositoriesMappingViewer.getTable()
-					.getShell(), "Map Local to Crucible Repository", "Map \"" + scmPath + "\" to: ", cachedRepositories);
+
+			Repository preselectRepository = null;
+			String repositoryName = repositoryMappings.get(scmPath);
+			if (repositoryName != null) {
+				for (Repository repo : cachedRepositories) {
+					if (repositoryName.equals(repo.getName())) {
+						preselectRepository = repo;
+						break;
+					}
+				}
+			}
+
+			ComboSelectionDialog<Repository> dialog = new ComboSelectionDialog<Repository>(
+					repositoriesMappingViewer.getTable().getShell(), "Map Local to Crucible Repository", String.format(
+							"Map \"%s\" to: ", scmPath), new CrucibleRepositoriesLabelProvider(), cachedRepositories,
+					preselectRepository);
 			int returnCode = dialog.open();
 			if (returnCode == IDialogConstants.OK_ID) {
 				Repository crucibleRepository = dialog.getSelection();

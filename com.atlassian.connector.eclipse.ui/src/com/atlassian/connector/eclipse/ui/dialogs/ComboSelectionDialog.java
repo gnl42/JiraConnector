@@ -9,10 +9,7 @@
  *     Atlassian - initial API and implementation
  ******************************************************************************/
 
-package com.atlassian.connector.eclipse.internal.crucible.ui.dialogs;
-
-import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
-import com.atlassian.theplugin.commons.crucible.api.model.Repository;
+package com.atlassian.connector.eclipse.ui.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -20,38 +17,50 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Dialog with a ComboViewer instead of a Text
  * 
  * @author Thomas Ehrnhoefer
  */
-public class ComboViewerSelectionDialog extends Dialog {
+public class ComboSelectionDialog<T> extends Dialog {
 
-	private Repository selection;
+	private T selection;
 
 	private final String title;
 
 	private final String labelText;
 
-	private final Set<Repository> inputObjects;
+	private final Collection<T> inputObjects;
 
-	public ComboViewerSelectionDialog(Shell parentShell, String shellTitle, String labelText, Set<Repository> input) {
+	private final T preselect;
+
+	private final IBaseLabelProvider labelProvider;
+
+	public ComboSelectionDialog(@NotNull Shell parentShell, @NotNull String shellTitle, @NotNull String labelText,
+			@NotNull IBaseLabelProvider labelProvider, @NotNull Collection<T> input, @Nullable T preselect) {
 		super(parentShell);
 		this.title = shellTitle;
 		this.labelText = labelText;
 		this.inputObjects = input;
+		this.preselect = preselect;
+		this.labelProvider = labelProvider;
 	}
 
 	@Override
@@ -67,23 +76,33 @@ public class ComboViewerSelectionDialog extends Dialog {
 		final ComboViewer comboViewer = new ComboViewer(composite);
 		comboViewer.getCombo().setText("Select");
 		comboViewer.setContentProvider(new ArrayContentProvider());
-		comboViewer.setLabelProvider(new CrucibleRepositoriesLabelProvider());
+		comboViewer.setLabelProvider(labelProvider);
 		comboViewer.setSorter(new ViewerSorter());
 		comboViewer.setInput(inputObjects);
 		comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@SuppressWarnings("unchecked")
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (comboViewer.getSelection() instanceof IStructuredSelection) {
-					Object selected = ((IStructuredSelection) comboViewer.getSelection()).getFirstElement();
+					T selected = (T) ((IStructuredSelection) comboViewer.getSelection()).getFirstElement();
 					if (inputObjects.contains(selected)) {
-						selection = (Repository) selected;
+						selection = selected;
 					}
 				}
-				getButton(IDialogConstants.OK_ID).setEnabled(selection != null);
+				// we preselect comboViewer and button may equal to null
+				Button okButton = getButton(IDialogConstants.OK_ID);
+				if (okButton != null) {
+					okButton.setEnabled(selection != null);
+				}
 			}
 		});
 		GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).applyTo(comboViewer.getCombo());
 
 		applyDialogFont(composite);
+
+		if (preselect != null) {
+			comboViewer.setSelection(new StructuredSelection(preselect));
+		}
+
 		return composite;
 	}
 
@@ -95,7 +114,7 @@ public class ComboViewerSelectionDialog extends Dialog {
 		return control;
 	}
 
-	public Repository getSelection() {
+	public T getSelection() {
 		return selection;
 	}
 
