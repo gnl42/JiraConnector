@@ -147,23 +147,6 @@
                class="com.atlassian.connector.eclipse.bamboo.ui.preferences.PreferenceInitializer">
          </initializer>
       </extension>
-      <!--<extension point="org.eclipse.ui.decorators">
-      <decorator
-            class="com.atlassian.connector.eclipse.internal.bamboo.ui.BambooViewLabelDecorator"
-            id="com.atlassian.connector.eclipse.internal.bamboo.ui.decorators.builds"
-            label="Build Decorator"
-            lightweight="true"
-            state="true">
-         <description>
-			Overlays information such as failed build retrieval.
-		 </description>
-         <enablement>
-               <objectClass
-                     name="com.atlassian.theplugin.commons.bamboo.BambooBuild">
-               </objectClass>
-         </enablement>
-      </decorator>
-   </extension>-->
    <!--<extension
          point="org.eclipse.ui.editors">
       <editor
