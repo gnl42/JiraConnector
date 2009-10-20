@@ -20,4 +20,10 @@ public final class CrucibleUiConstants {
 
 	public static final String PREFERRED_TEAM_RESOURCE_CONNECTOR_NAME = "preferred_team_resource_connector_name";
 
+	public static final String PREVIOUS_PATCH_REVIEW_SELECTION = "previous_patch_review_selection";
+
+	public static final String PREVIOUS_WORKSPACE_PATCH_REVIEW_SELECTION = "previous_workspace_patch_review_selection";
+
+	public static final String PREVIOUS_CHANGESET_REVIEW_SELECTION = "previous_changeset_review_selection";
+
 }

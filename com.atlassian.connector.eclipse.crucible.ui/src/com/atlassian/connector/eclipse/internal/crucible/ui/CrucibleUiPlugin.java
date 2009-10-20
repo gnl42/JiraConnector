@@ -182,4 +182,29 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 	public String getPreferredTeamResourceConnectorName() {
 		return plugin.getPreferenceStore().getString(CrucibleUiConstants.PREFERRED_TEAM_RESOURCE_CONNECTOR_NAME);
 	}
+
+	public boolean getPreviousChangesetReviewSelection() {
+		return plugin.getPreferenceStore().getBoolean(CrucibleUiConstants.PREVIOUS_CHANGESET_REVIEW_SELECTION);
+	}
+
+	public boolean getPreviousPatchReviewSelection() {
+		return plugin.getPreferenceStore().getBoolean(CrucibleUiConstants.PREVIOUS_PATCH_REVIEW_SELECTION);
+	}
+
+	public boolean getPreviousWorkspacePatchReviewSelection() {
+		return plugin.getPreferenceStore().getBoolean(CrucibleUiConstants.PREVIOUS_WORKSPACE_PATCH_REVIEW_SELECTION);
+	}
+
+	public void setPreviousChangesetReviewSelection(boolean value) {
+		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREVIOUS_CHANGESET_REVIEW_SELECTION, value);
+	}
+
+	public void setPreviousPatchReviewSelection(boolean value) {
+		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREVIOUS_PATCH_REVIEW_SELECTION, value);
+	}
+
+	public void setPreviousWorkspacePatchReviewSelection(boolean value) {
+		plugin.getPreferenceStore().setValue(CrucibleUiConstants.PREVIOUS_WORKSPACE_PATCH_REVIEW_SELECTION, value);
+	}
+
 }

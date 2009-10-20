@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard.Type;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -20,6 +21,8 @@ import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.jface.wizard.WizardSelectionPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -43,11 +46,14 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 
 	private final TaskRepository taskRepository;
 
+	private final CrucibleUiPlugin plugin;
+
 	public ReviewTypeSelectionPage(TaskRepository taskRepository) {
 		super("crucibleSelection"); //$NON-NLS-1$
 		setTitle("Select type of review to create");
 		setDescription("Select which kind of review you want to create.");
 		this.taskRepository = taskRepository;
+		this.plugin = CrucibleUiPlugin.getDefault();
 	}
 
 	public void createControl(Composite parent) {
@@ -61,12 +67,33 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 
 		changesetReview = new Button(buttonComp, SWT.CHECK);
 		changesetReview.setText("From a Changeset");
+		changesetReview.setSelection(plugin.getPreviousChangesetReviewSelection());
+		changesetReview.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				plugin.setPreviousChangesetReviewSelection(changesetReview.getSelection());
+			}
+		});
 
 		patchReview = new Button(buttonComp, SWT.CHECK);
 		patchReview.setText("From a Patch");
+		patchReview.setSelection(plugin.getPreviousPatchReviewSelection());
+		patchReview.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				plugin.setPreviousPatchReviewSelection(patchReview.getSelection());
+			}
+		});
 
 		workspacePatchReview = new Button(buttonComp, SWT.CHECK);
 		workspacePatchReview.setText("From Workspace Changes");
+		workspacePatchReview.setSelection(plugin.getPreviousWorkspacePatchReviewSelection());
+		workspacePatchReview.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				plugin.setPreviousWorkspacePatchReviewSelection(workspacePatchReview.getSelection());
+			}
+		});
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonComp);
 		setControl(composite);
