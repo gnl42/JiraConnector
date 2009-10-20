@@ -141,8 +141,6 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 			textHyperlink.setText("Pre-commit");
 			textHyperlink.setEnabled(false);
 			textHyperlink.setUnderlined(false);
-			textHyperlink.setToolTipText("Opening of uploaded files not supported."
-					+ " Please see studio.atlassian.com for updates.");
 
 			if (crucibleFile.getCommitType() == CommitType.Deleted) {
 				// TODO we have no 'Deleted' type for pre-commit review yet 
@@ -155,8 +153,8 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 							crucibleReview, null, toolbarComposite.getShell(), getCrucibleEditor().getSite()
 									.getWorkbenchWindow()
 									.getActivePage());
-					openOldAction.setText(oldFileDescriptor.getRevision());
-					openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
+					openOldAction.setText("old");
+					openOldAction.setToolTipText("Open Base Version");
 					createActionHyperlink(toolbarComposite, toolkit, openOldAction);
 				}
 				if (oldFileHasRevision) {
@@ -174,8 +172,8 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 							crucibleReview, null, toolbarComposite.getShell(), getCrucibleEditor().getSite()
 									.getWorkbenchWindow()
 									.getActivePage());
-					openNewAction.setText(newFileDescriptor.getRevision());
-					openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
+					openNewAction.setText("new");
+					openNewAction.setToolTipText("Open New Version");
 					createActionHyperlink(toolbarComposite, toolkit, openNewAction);
 				}
 			}

@@ -245,7 +245,7 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 	}
 
 	public void updateCrucibleFile(CrucibleFile newCrucibleFile, Review newReview) {
-		// TODO we could just update the annotations appropriately instaed of remove and re-add
+		// TODO we could just update the annotations appropriately instead of remove and re-add
 		this.review = newReview;
 		this.crucibleFile = newCrucibleFile;
 		updateAnnotations(true);
