@@ -272,6 +272,7 @@ public class CrucibleAddCommentDialog extends ProgressDialog {
 
 		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, SWT.DEFAULT).applyTo(composite);
 
+		applyDialogFont(composite);
 		return composite;
 		//CHECKSTYLE:MAGIC:ON
 	}
