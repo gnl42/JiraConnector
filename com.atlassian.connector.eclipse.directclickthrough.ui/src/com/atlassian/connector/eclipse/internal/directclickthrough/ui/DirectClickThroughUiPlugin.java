@@ -14,6 +14,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
+import org.mortbay.log.Log;
 import org.osgi.framework.BundleContext;
 
 import com.atlassian.connector.eclipse.internal.directclickthrough.servlet.DirectClickThroughServlet;
@@ -32,9 +33,8 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 	private static DirectClickThroughUiPlugin plugin;
 	
 	public static class EarlyStartup implements IStartup {
-
 		public void earlyStartup() {
-			// force early loading
+			Log.setLog(new JettyLogger());
 		}
 	}
 	
