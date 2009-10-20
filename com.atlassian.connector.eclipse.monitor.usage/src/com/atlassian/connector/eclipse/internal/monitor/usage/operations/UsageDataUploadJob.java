@@ -31,12 +31,14 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.commons.core.ZipFileUtil;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Constants;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
@@ -99,6 +101,14 @@ public final class UsageDataUploadJob extends Job {
 	}
 
 	private void performUpload(IProgressMonitor monitor) {
+		InteractionEventLogger interactionLogger = UiUsageMonitorPlugin.getDefault().getInteractionLogger();
+
+		interactionLogger.interactionObserved(InteractionEvent.makePreference("os-arch", Platform.getOSArch()));
+		interactionLogger.interactionObserved(InteractionEvent.makePreference("os", Platform.getOS()));
+		interactionLogger.interactionObserved(InteractionEvent.makePreference(Platform.PI_RUNTIME, Platform.getBundle(
+				Platform.PI_RUNTIME).getHeaders().get(Constants.BUNDLE_VERSION).toString()));
+		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
+				UiUsageMonitorPlugin.getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION).toString()));
 
 		UiUsageMonitorPlugin.setPerformingUpload(true);
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
