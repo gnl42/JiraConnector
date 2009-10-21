@@ -75,7 +75,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		container.setLayout(layout);
 
 		Link description = new Link(container, SWT.WRAP);
-		GridDataFactory.defaultsFor(description).hint(500, 50).applyTo(description);
+		GridDataFactory.defaultsFor(description).hint(500, SWT.DEFAULT).applyTo(description);
 		description.setText(Messages.UsageDataPreferencePage_description);
 		description.setToolTipText("Show Usage Data Submission wizard");
 		description.addSelectionListener(new SelectionAdapter() {
