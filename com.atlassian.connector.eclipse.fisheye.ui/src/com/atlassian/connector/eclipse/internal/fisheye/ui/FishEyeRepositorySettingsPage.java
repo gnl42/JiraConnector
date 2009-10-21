@@ -1,17 +1,23 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
+import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.swt.widgets.Composite;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -33,14 +39,23 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 			FishEyeClient client = null;
 			try {
 				client = clientManager.createTempClient(repository, new FishEyeClientData());
-				client.validate(monitor, repository);
+				client.validate(Policy.backgroundMonitorFor(monitor), repository);
+			} catch (CoreException e) {
+				if (e.getCause() != null && e.getCause() instanceof RemoteApiException
+						&& e.getCause().getCause() != null && e.getCause().getCause() instanceof IOException
+						&& e.getCause().getCause().getMessage().contains("HTTP 404")) {
+					setStatus(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"HTTP 404 (Not Found) - Seems like the server you entered isn't FishEye", e));
+				} else {
+					setStatus(e.getStatus());
+				}
+				return;
 			} finally {
 				if (client != null) {
 					clientManager.deleteTempClient(client.getServerData());
 				}
 			}
 		}
-
 	}
 
 	public FishEyeRepositorySettingsPage(TaskRepository taskRepository) {
