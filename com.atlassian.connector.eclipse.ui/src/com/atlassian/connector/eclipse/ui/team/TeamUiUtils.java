@@ -332,13 +332,7 @@ public final class TeamUiUtils {
 				TextSelection textSelection = ((TextSelection) selection);
 				return new LineRange(textSelection.getStartLine() + 1, textSelection.getEndLine()
 						- textSelection.getStartLine());
-			} else {
-				StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
-						"Selection is not a text selection " + selection));
 			}
-		} else {
-			StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
-					"Editor is not an ITextEditor or editor inputs not equal " + editor));
 		}
 		return null;
 	}

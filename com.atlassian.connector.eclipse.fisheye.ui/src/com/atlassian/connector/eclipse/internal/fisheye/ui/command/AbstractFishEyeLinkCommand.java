@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.fisheye.ui.command;
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -60,6 +61,10 @@ public abstract class AbstractFishEyeLinkCommand extends AbstractHandler {
 				// does not work (i.e. it returns previously selected text region rather than selected now ?!?
 				lineRange = TeamUiUtils.getSelectedLineNumberRangeFromEditorInput(activeEditor,
 						activeEditor.getEditorInput());
+				if (lineRange == null) {
+					StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
+							"Editor is not an ITextEditor or there's no text selection available."));
+				}
 			}
 		}
 		if (resource != null) {
