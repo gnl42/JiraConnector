@@ -201,6 +201,11 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				Object input = planViewer.getInput();
+				// if there are no plans, let's call validate first
+				if (!(input instanceof Collection<?>)) {
+					validateSettings();
+				}
+				input = planViewer.getInput();
 				if (input instanceof Collection<?>) {
 					List<BambooPlan> favorites = new ArrayList<BambooPlan>();
 					for (BambooPlan plan : (Collection<BambooPlan>) input) {
@@ -219,6 +224,11 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				Object input = planViewer.getInput();
+				// if there are no plans, let's call validate first
+				if (!(input instanceof Collection<?>)) {
+					validateSettings();
+				}
+				input = planViewer.getInput();
 				if (input instanceof Collection<?>) {
 					planViewer.setCheckedElements(((Collection<?>) input).toArray());
 				}
