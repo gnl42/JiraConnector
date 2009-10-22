@@ -64,6 +64,7 @@ import org.eclipse.mylyn.internal.provisional.commons.ui.CommonThemes;
 import org.eclipse.mylyn.internal.provisional.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.internal.provisional.commons.ui.SelectionProviderAdapter;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.editors.TaskEditor;
@@ -109,6 +110,8 @@ import java.util.List;
  * @author Thomas Ehrnhoefer
  */
 public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRespectingPart {
+
+	private static final String REVIEW_UPDATE_FAILED = "Review Update Failed";
 
 	private static final String INITIALIZATION_FAILED_MESSAGE = "Unable to retrieve Review. {0} {1}";
 
@@ -933,11 +936,12 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 				if (status != null && status.getMessage().contains("HTTP 401")) {
 					message += " (HTTP 401 - Unauthorized)";
 				}
-				message += ". Click to try again.";
+				message += ". Click to see details.";
 				getEditor().setMessage(message, IMessageProvider.WARNING, new HyperlinkAdapter() {
+					@SuppressWarnings("restriction")
 					@Override
 					public void linkActivated(HyperlinkEvent e) {
-						downloadReviewAndRefresh(0, true);
+						TasksUiInternal.displayStatus(REVIEW_UPDATE_FAILED, status);
 					}
 				});
 
@@ -977,9 +981,10 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			} else {
 				// TODO improve the message?
 				getEditor().setMessage(status.getMessage(), IMessageProvider.ERROR, new HyperlinkAdapter() {
+					@SuppressWarnings("restriction")
 					@Override
 					public void linkActivated(HyperlinkEvent e) {
-						downloadReviewAndRefresh(0, true);
+						TasksUiInternal.displayStatus(REVIEW_UPDATE_FAILED, status);
 					}
 				});
 				if (force) {
