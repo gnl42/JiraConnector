@@ -208,7 +208,15 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 			if (CrucibleUiUtil.canModifyComment(crucibleReview, comment)) {
 				final Shell shell = getSection().getShell();
 				actions.add(new EditCommentAction(crucibleReview, comment, shell));
-				actions.add(new RemoveCommentAction(crucibleReview, comment, shell));
+
+				RemoveCommentAction removeAction = new RemoveCommentAction(crucibleReview, comment, shell);
+				actions.add(removeAction);
+
+				if (!comment.isReply() && comment.getReplies().size() > 0) {
+					removeAction.setEnabled(false);
+					removeAction.setToolTipText("Remove Replies First");
+				}
+
 				if (comment.isDraft()) {
 					actions.add(new PostDraftCommentAction(crucibleReview, comment, shell));
 				}
