@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
 import com.atlassian.connector.commons.api.ConnectionCfg;
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
+import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileInput;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileStorage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
@@ -21,6 +22,7 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ReviewFileContent;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
@@ -42,7 +44,8 @@ import org.eclipse.ui.PartInitException;
  * 
  * @author Jacek Jaroczynski
  */
-public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAction {
+public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAction implements
+		IReviewChangeListenerAction {
 
 	public OpenUploadedVirtualFileAction(final ITask task, final CrucibleFile crucibleFile,
 			final VersionedVirtualFile virtualFile, final Review crucibleReview,
@@ -71,8 +74,8 @@ public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAc
 				try {
 					String editorId = getEditorId(iWorkbenchPage.getWorkbenchWindow().getWorkbench(),
 							virtualFile.getName());
-					IEditorPart editor = iWorkbenchPage.openEditor(new CruciblePreCommitFileInput(new CruciblePreCommitFileStorage(
-							crucibleFile, file.getContent())), editorId);
+					IEditorPart editor = iWorkbenchPage.openEditor(new CruciblePreCommitFileInput(
+							new CruciblePreCommitFileStorage(crucibleFile, file.getContent())), editorId);
 
 					CrucibleUiUtil.attachCrucibleAnnotation(editor, task, crucibleReview, crucibleFile,
 							versionedComment);
@@ -88,5 +91,13 @@ public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAc
 		IEditorDescriptor descriptor = registry.getDefaultEditor(fileName);
 
 		return descriptor != null ? descriptor.getId() : "org.eclipse.ui.DefaultTextEditor";
+	}
+
+	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile) {
+		this.review = updatedReview;
+	}
+
+	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile, VersionedComment updatedComment) {
+		this.review = updatedReview;
 	}
 }

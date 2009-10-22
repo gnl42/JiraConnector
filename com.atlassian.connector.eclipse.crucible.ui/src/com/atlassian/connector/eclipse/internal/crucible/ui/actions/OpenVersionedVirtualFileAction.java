@@ -11,11 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
@@ -38,7 +40,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Shawn Minto
  */
-public class OpenVersionedVirtualFileAction extends Action {
+public class OpenVersionedVirtualFileAction extends Action implements IReviewChangeListenerAction {
 
 	private final class OpenVersionedVirtualFileRunnable implements ICoreRunnable {
 		public void run(IProgressMonitor monitor) throws CoreException {
@@ -68,7 +70,7 @@ public class OpenVersionedVirtualFileAction extends Action {
 
 	private final ITask task;
 
-	private final Review review;
+	private Review review;
 
 	public OpenVersionedVirtualFileAction(ITask task, CrucibleFile crucibleFile, VersionedComment versionedComment,
 			Review review) {
@@ -94,5 +96,13 @@ public class OpenVersionedVirtualFileAction extends Action {
 		} catch (OperationCanceledException e) {
 			// ignore since the user requested a cancel
 		}
+	}
+
+	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile) {
+		this.review = updatedReview;
+	}
+
+	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile, VersionedComment updatedComment) {
+		this.review = updatedReview;
 	}
 }

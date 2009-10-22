@@ -61,7 +61,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	private Composite composite;
 
-	private IReviewChangeListenerAction compareAction;
+	private final List<IReviewChangeListenerAction> reviewActions = new ArrayList<IReviewChangeListenerAction>();
 
 	public CrucibleFilePart(CrucibleFileInfo file, Review review, CrucibleReviewEditorPage editor) {
 		super(editor, review);
@@ -107,6 +107,8 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	@Override
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
+
+		reviewActions.clear();
 
 		ImageHyperlink textHyperlink = toolkit.createImageHyperlink(toolbarComposite, SWT.NONE);
 		textHyperlink.setText("[");
@@ -156,6 +158,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 					openOldAction.setText("old");
 					openOldAction.setToolTipText("Open Base Version");
 					createActionHyperlink(toolbarComposite, toolkit, openOldAction);
+					reviewActions.add(openOldAction);
 				}
 				if (oldFileHasRevision) {
 					if (newFileHasRevision) {
@@ -175,6 +178,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 					openNewAction.setText("new");
 					openNewAction.setToolTipText("Open New Version");
 					createActionHyperlink(toolbarComposite, toolkit, openNewAction);
+					reviewActions.add(openNewAction);
 				}
 			}
 
@@ -193,6 +197,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 					openOldAction.setText("Rev: " + oldFileDescriptor.getRevision());
 					openOldAction.setToolTipText("Open Revision " + oldFileDescriptor.getRevision());
 					createActionHyperlink(toolbarComposite, toolkit, openOldAction);
+					reviewActions.add(openOldAction);
 				}
 				if (oldFileHasRevision) {
 					if (newFileHasRevision) {
@@ -209,6 +214,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 					openNewAction.setText(newFileDescriptor.getRevision());
 					openNewAction.setToolTipText("Open Revision " + newFileDescriptor.getRevision());
 					createActionHyperlink(toolbarComposite, toolkit, openNewAction);
+					reviewActions.add(openNewAction);
 				}
 			}
 		}
@@ -233,6 +239,7 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 				if (newFileDescriptor != null && oldFileDescriptor != null) {
 
+					IReviewChangeListenerAction compareAction;
 					if (isSCM) {
 						compareAction = new CompareVersionedVirtualFileAction(crucibleFile, crucibleReview);
 					} else {
@@ -309,8 +316,10 @@ public class CrucibleFilePart extends ExpandablePart<VersionedComment, Versioned
 
 	public Control update(Composite parentComposite, FormToolkit toolkit, CrucibleFileInfo file, Review crucibleReview) {
 		this.crucibleReview = crucibleReview;
-		if (compareAction != null) {
-			this.compareAction.updateReview(crucibleReview, file);
+		if (reviewActions != null) {
+			for (IReviewChangeListenerAction reviewAction : reviewActions) {
+				reviewAction.updateReview(crucibleReview, file);
+			}
 		}
 		// TODO update the text 
 		if (!CrucibleUtil.areCrucibleFilesDeepEqual(file, crucibleFile)) {

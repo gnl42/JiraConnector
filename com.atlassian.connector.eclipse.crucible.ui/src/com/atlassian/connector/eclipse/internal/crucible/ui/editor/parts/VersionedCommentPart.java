@@ -28,7 +28,6 @@ import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -56,7 +55,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 	private Composite composite;
 
-	private IReviewChangeListenerAction compareAction;
+	private final List<IReviewChangeListenerAction> reviewActions = new ArrayList<IReviewChangeListenerAction>();
 
 	public VersionedCommentPart(VersionedComment comment, Review review, CrucibleFileInfo crucibleFileInfo,
 			CrucibleReviewEditorPage editor) {
@@ -116,11 +115,15 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 	@Override
 	protected void createCustomAnnotations(Composite toolbarComposite, FormToolkit toolkit) {
+
+		reviewActions.clear();
+
 		if (getCrucibleEditor() != null && !comment.isReply()) {
 
 			//if both revisions are availabe (--> commitType neither added nor deleted), use compareAction
 			if (crucibleFileInfo.getCommitType() != CommitType.Deleted
 					&& crucibleFileInfo.getCommitType() != CommitType.Added && canOpenCompare()) {
+				IReviewChangeListenerAction compareAction;
 				if (crucibleFileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
 					compareAction = new CompareUploadedVirtualFileAction(crucibleFileInfo, versionedComment,
 							crucibleReview, toolbarComposite.getShell());
@@ -132,10 +135,12 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 				compareAction.setText(getLineNumberText());
 				// TODO set the image descriptor
 				createActionHyperlink(toolbarComposite, toolkit, compareAction);
+
+				reviewActions.add(compareAction);
 			} else {
 				// if fromLineComment --> oldFile
 				CrucibleFile crucibleFile = new CrucibleFile(crucibleFileInfo, versionedComment.isFromLineInfo());
-				IAction openFileAction;
+				IReviewChangeListenerAction openFileAction;
 				if (crucibleFileInfo.getRepositoryType() == RepositoryType.UPLOAD) {
 					VersionedVirtualFile versionedFile = crucibleFileInfo.getCommitType() == CommitType.Added ? crucibleFileInfo.getFileDescriptor()
 							: crucibleFileInfo.getOldFileDescriptor();
@@ -149,6 +154,8 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 				openFileAction.setText(getLineNumberText());
 				openFileAction.setToolTipText("Open the file to the comment");
 				createActionHyperlink(toolbarComposite, toolkit, openFileAction);
+
+				reviewActions.add(openFileAction);
 			}
 		}
 
@@ -192,8 +199,10 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 	protected Control update(Composite parentComposite, FormToolkit toolkit, VersionedComment newComment,
 			Review newReview) {
 		this.crucibleReview = newReview;
-		if (compareAction != null) {
-			this.compareAction.updateReview(newReview, crucibleFileInfo, newComment);
+		if (reviewActions != null) {
+			for (IReviewChangeListenerAction reviewAction : reviewActions) {
+				reviewAction.updateReview(newReview, crucibleFileInfo, newComment);
+			}
 		}
 		// TODO update the text 
 		if (newComment instanceof VersionedComment
