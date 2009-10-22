@@ -52,11 +52,6 @@ public class CrucibleReviewersPart {
 		this.reviewers = reviewers;
 	}
 
-	// ??? unused?
-	public Composite createControl(FormToolkit toolkit, Composite parent) {
-		return createControl(toolkit, parent, "Reviewers:   ");
-	}
-
 	public Composite createControl(FormToolkit toolkit, Composite parent, final IAction contributedAction) {
 		return createControl(toolkit, parent, "Reviewers:   ", contributedAction);
 	}
@@ -71,17 +66,6 @@ public class CrucibleReviewersPart {
 
 		Composite reviewersPartComposite = createComposite(toolkit, parent);
 		reviewersPartComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).create());
-
-//		// use indent to make up for forms border gap
-//		GridDataFactory.fillDefaults().grab(true, false).hint(300, SWT.DEFAULT).applyTo(reviewersComposite);
-//		RowLayout layout = new RowLayout();
-//		layout.marginBottom = 0;
-//		layout.marginTop = 0;
-//		layout.marginRight = 0;
-//		layout.marginLeft = 0;
-//		layout.marginWidth = 0;
-//		layout.spacing = 0;
-//		reviewersComposite.setLayout(layout);
 
 		Label reviewersLabel = createLabelControl(toolkit, reviewersPartComposite, labelText);
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(reviewersLabel);
@@ -113,7 +97,6 @@ public class CrucibleReviewersPart {
 						false);
 				GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(text);
 				text.setBackground(parent.getBackground());
-//				text.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_CYAN));
 
 				if (reviewer.isCompleted()) {
 					Label imageLabel = createLabelControl(toolkit, singleReviewersComposite, "fsdfssdfds");
@@ -125,7 +108,6 @@ public class CrucibleReviewersPart {
 					Label label = createLabelControl(toolkit, singleReviewersComposite, ", ");
 					GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
 					label.setBackground(parent.getBackground());
-					//				label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_MAGENTA));
 				}
 			}
 			GridDataFactory.fillDefaults().hint(250, SWT.DEFAULT).grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(
@@ -176,6 +158,8 @@ public class CrucibleReviewersPart {
 		int style = SWT.FLAT | SWT.READ_ONLY;
 		if (isMultiline) {
 			style |= SWT.MULTI | SWT.WRAP;
+		} else {
+			style |= SWT.SINGLE;
 		}
 		Text text = new Text(composite, style | SWT.MULTI);
 		text.setFont(JFaceResources.getDefaultFont());
