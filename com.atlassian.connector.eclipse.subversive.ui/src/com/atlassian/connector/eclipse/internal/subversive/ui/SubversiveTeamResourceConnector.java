@@ -120,6 +120,9 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 		public void progress(int current, int total, ItemState state) {
 			ProgressMonitorUtility.progress(subMonitor, current, total);
 		}
+
+		public void reportError(String errorMessage) {
+		}
 	}
 
 	public boolean isEnabled() {
