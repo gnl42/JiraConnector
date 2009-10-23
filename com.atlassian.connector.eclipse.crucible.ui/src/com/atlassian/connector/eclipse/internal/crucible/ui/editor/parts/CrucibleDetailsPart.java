@@ -340,8 +340,12 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		reviewersSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE
 				| ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
+		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(reviewersSection);
 		reviewersSection.setText("Participants");
+
 		final Composite participantsComp = toolkit.createComposite(reviewersSection);
+		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(participantsComp);
+		participantsComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(2).create());
 
 		Control authorControl = createUserComboControl(toolkit, participantsComp, "Author: ",
 				crucibleReview.getAuthor(), !newReview, ReviewAttributeType.AUTHOR);
@@ -353,21 +357,27 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 
 		Composite reviewersPartComp = toolkit.createComposite(participantsComp);
 		reviewersPartComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
-		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).applyTo(reviewersPartComp);
+		GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(reviewersPartComp);
 
 		createReviewersPart(toolkit, reviewersPartComp, hasModifyFilesAction);
 
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersSection);
-		participantsComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(2).create());
-		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(participantsComp);
 		reviewersSection.setClient(participantsComp);
 
+		createStatementOfObjectivesSection(toolkit);
+		//CHECKSTYLE:MAGIC:ON
+
+		toolkit.paintBordersFor(parentComposite);
+	}
+
+	private void createStatementOfObjectivesSection(final FormToolkit toolkit) {
 		Section objectivesSection = toolkit.createSection(parentComposite, ExpandableComposite.TWISTIE
 				| ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
+		GridDataFactory.fillDefaults().grab(true, false).hint(250, SWT.DEFAULT).applyTo(objectivesSection);
 		objectivesSection.setText("Statement of Objectives");
-		Composite objectivesComp = toolkit.createComposite(objectivesSection);
-		Text descriptionText = createText(toolkit, objectivesComp, crucibleReview.getDescription(), null, true,
+
+		Text descriptionText = createText(toolkit, objectivesSection, crucibleReview.getDescription(), null, true,
 				!newReview);
+
 		descriptionText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				String modifiedName = ((Text) e.widget).getText();
@@ -379,20 +389,15 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 				crucibleEditor.attributesModified();
 			}
 		});
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(objectivesSection);
-		objectivesComp.setLayout(GridLayoutFactory.fillDefaults().margins(2, 2).numColumns(1).create());
-		GridDataFactory.fillDefaults().grab(true, true).hint(250, -1).applyTo(descriptionText);
-		objectivesSection.setClient(objectivesComp);
-		//CHECKSTYLE:MAGIC:ON
 
-		toolkit.paintBordersFor(parentComposite);
+		objectivesSection.setClient(descriptionText);
 	}
 
 	private void createReviewersPart(final FormToolkit toolkit, final Composite parent, boolean canEditReviewers) {
 		if (reviewersComp == null || reviewersComp.isDisposed()) {
 			reviewersComp = toolkit.createComposite(parent);
 			reviewersComp.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).spacing(15, 0).create());
-			GridDataFactory.fillDefaults().grab(true, true).applyTo(reviewersComp);
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(reviewersComp);
 		}
 
 		try {
@@ -406,7 +411,6 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 			CrucibleReviewersPart crucibleReviewersPart = new CrucibleReviewersPart(reviewers);
 			crucibleReviewersPart.setMenu(parent.getMenu());
 			reviewersPart = crucibleReviewersPart.createControl(toolkit, reviewersComp, setReviewersAction);
-
 		} catch (ValueNotYetInitialized e) {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
