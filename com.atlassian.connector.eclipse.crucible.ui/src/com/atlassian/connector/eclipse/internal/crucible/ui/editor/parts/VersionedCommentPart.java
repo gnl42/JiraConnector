@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.IReviewChangeListenerAction;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareUploadedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersionedVirtualFileAction;
@@ -22,12 +23,16 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersione
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
+import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CommitType;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -39,6 +44,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A UI part to represent a general comment in a review
@@ -49,7 +55,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 
 	private VersionedComment versionedComment;
 
-	private final CrucibleFileInfo crucibleFileInfo;
+	private CrucibleFileInfo crucibleFileInfo;
 
 	private final List<IReviewAction> customActions;
 
@@ -200,6 +206,24 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 			Review newReview) {
 		this.crucibleReview = newReview;
 		if (reviewActions != null) {
+
+			try {
+				Set<CrucibleFileInfo> files;
+				files = crucibleReview.getFiles();
+				// FIXME we need new file here with refreshed comments collection (we have to find it as we do not get as param)
+				// workaround for PLE-727 (expandable part generic is an obstacle to solve that in the right way)
+				for (CrucibleFileInfo file : files) {
+					if (file.equals(crucibleFileInfo)) {
+						this.crucibleFileInfo = file;
+						break;
+					}
+				}
+			} catch (ValueNotYetInitialized e) {
+				// we can do nothing here but there should be at least one file as we are inside VersionedCommentPart)
+				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+						"Missing files in the processed review"));
+			}
+
 			for (IReviewChangeListenerAction reviewAction : reviewActions) {
 				reviewAction.updateReview(newReview, crucibleFileInfo, newComment);
 			}

@@ -47,18 +47,29 @@ import org.eclipse.ui.PartInitException;
 public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAction implements
 		IReviewChangeListenerAction {
 
+	private final ITask task;
+
+	private CrucibleFile crucibleFile;
+
+	private final VersionedVirtualFile virtualFile;
+
+	private VersionedComment versionedComment;
+
+	private final IWorkbenchPage iWorkbenchPage;
+
 	public OpenUploadedVirtualFileAction(final ITask task, final CrucibleFile crucibleFile,
 			final VersionedVirtualFile virtualFile, final Review crucibleReview,
 			final VersionedComment versionedComment, final Shell shell, final IWorkbenchPage iWorkbenchPage) {
-		super("", crucibleReview, null, shell, "Fetching File", null, new RemoteCrucibleOperation() {
+		super("", crucibleReview, null, shell, "Fetching File", null, null, false);
 
-			public void run(CrucibleServerFacade2 crucibleServerFacade, ConnectionCfg crucibleServerCfg)
-					throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
-				open(task, crucibleReview, crucibleFile, virtualFile, versionedComment, crucibleServerFacade,
-						crucibleServerCfg, iWorkbenchPage, shell);
-			}
+		this.task = task;
+		this.crucibleFile = crucibleFile;
+		this.virtualFile = virtualFile;
+		this.versionedComment = versionedComment;
+		this.iWorkbenchPage = iWorkbenchPage;
 
-		}, false);
+		setRemoteOperation(new LocalRemoteCrucibleOperation());
+
 	}
 
 	private static void open(final ITask task, final Review crucibleReview, final CrucibleFile crucibleFile,
@@ -95,9 +106,22 @@ public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAc
 
 	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile) {
 		this.review = updatedReview;
+		this.crucibleFile = new CrucibleFile(updatedFile, crucibleFile.isOldFile());
 	}
 
 	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile, VersionedComment updatedComment) {
-		this.review = updatedReview;
+		versionedComment = updatedComment;
+		updateReview(updatedReview, updatedFile);
 	}
+
+	private final class LocalRemoteCrucibleOperation implements RemoteCrucibleOperation {
+
+		public void run(CrucibleServerFacade2 crucibleServerFacade, ConnectionCfg crucibleServerCfg)
+				throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
+			open(task, getReview(), crucibleFile, virtualFile, versionedComment, crucibleServerFacade,
+					crucibleServerCfg, iWorkbenchPage, shell);
+		}
+
+	}
+
 }

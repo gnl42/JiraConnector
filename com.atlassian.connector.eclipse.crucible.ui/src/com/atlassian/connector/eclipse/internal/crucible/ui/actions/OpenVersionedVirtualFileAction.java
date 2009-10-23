@@ -64,7 +64,7 @@ public class OpenVersionedVirtualFileAction extends Action implements IReviewCha
 
 	}
 
-	private final CrucibleFile crucibleFile;
+	private CrucibleFile crucibleFile;
 
 	private VersionedComment versionedComment;
 
@@ -100,9 +100,11 @@ public class OpenVersionedVirtualFileAction extends Action implements IReviewCha
 
 	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile) {
 		this.review = updatedReview;
+		this.crucibleFile = new CrucibleFile(updatedFile, crucibleFile.isOldFile());
 	}
 
 	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile, VersionedComment updatedComment) {
-		this.review = updatedReview;
+		this.versionedComment = updatedComment;
+		updateReview(updatedReview, updatedFile);
 	}
 }
