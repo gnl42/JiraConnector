@@ -253,8 +253,14 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 					}
 				}
 			} else {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-						"Could not retrieve changesetes for {0}.", location.getLabel())));
+				if (getLogMessagesOp.getStatus().toString().contains(
+						"Selected SVN connector library is not available or cannot be loaded.")) {
+					throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
+							"Subversive doesn't have a default client installed", getLogMessagesOp.getStatus()
+									.getException()));
+				} else {
+					throw new CoreException(getLogMessagesOp.getStatus());
+				}
 			}
 		} else {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID,
