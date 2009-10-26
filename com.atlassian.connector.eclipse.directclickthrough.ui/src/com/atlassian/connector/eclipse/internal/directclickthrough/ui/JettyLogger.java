@@ -28,7 +28,8 @@ public final class JettyLogger implements Logger {
 	}
 
 	public void info(String msg, Object arg0, Object arg1) {
-		StatusHandler.log(new Status(IStatus.INFO, DirectClickThroughUiPlugin.PLUGIN_ID, msg));
+		// don't care about info
+		// StatusHandler.log(new Status(IStatus.INFO, DirectClickThroughUiPlugin.PLUGIN_ID, msg));
 	}
 
 	public Logger getLogger(String name) {
@@ -36,16 +37,18 @@ public final class JettyLogger implements Logger {
 	}
 
 	public void debug(String msg, Object arg0, Object arg1) {
-		if (!debug) {
-			return;
-		}
-		StatusHandler.log(new Status(IStatus.INFO, DirectClickThroughUiPlugin.PLUGIN_ID, msg));
+//		don't care about debug
+//		if (!debug) {
+//			return;
+//		}
+//		StatusHandler.log(new Status(IStatus.INFO, DirectClickThroughUiPlugin.PLUGIN_ID, msg));
 	}
 
 	public void debug(String msg, Throwable th) {
-		if (!debug) {
-			return;
-		}
-		StatusHandler.log(new Status(IStatus.INFO, DirectClickThroughUiPlugin.PLUGIN_ID, msg, th));
+//		don't care about debug
+//		if (!debug) {
+//			return;
+//		}
+//		StatusHandler.log(new Status(IStatus.INFO, DirectClickThroughUiPlugin.PLUGIN_ID, msg, th));
 	}
 }

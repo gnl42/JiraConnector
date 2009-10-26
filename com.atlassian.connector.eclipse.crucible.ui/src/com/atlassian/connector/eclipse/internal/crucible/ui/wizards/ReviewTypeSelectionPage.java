@@ -13,12 +13,15 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard.Type;
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.jface.wizard.WizardSelectionPage;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,6 +30,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -94,6 +99,28 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 				plugin.setPreviousWorkspacePatchReviewSelection(workspacePatchReview.getSelection());
 			}
 		});
+
+		Set<ITeamResourceConnector> teamConnectors = AtlassianUiPlugin.getDefault()
+				.getTeamResourceManager()
+				.getTeamConnectors();
+
+		if (teamConnectors.size() == 0) {
+			changesetReview.setSelection(false);
+			changesetReview.setEnabled(false);
+			workspacePatchReview.setSelection(false);
+			workspacePatchReview.setEnabled(false);
+
+			Link missingTeamConnectors = new Link(buttonComp, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY);
+			GridDataFactory.fillDefaults().grab(true, true).hint(250, SWT.DEFAULT).applyTo(missingTeamConnectors);
+			missingTeamConnectors.setText("You don't have any SCM integration installed for Atlassian Connector for Eclipse. You need to install one of Subversion integrations to be able to create reviews. "
+					+ "<A href=\"http://confluence.atlassian.com/display/IDEPLUGIN/Installing+the+Eclipse+Connector\">Check installation guide for details</A>. "
+					+ "\n\nIf you need <A href=\"https://studio.atlassian.com/browse/PLE-523\">Perforce</A> or <A href=\"https://studio.atlassian.com/browse/PLE-728\">CVS</A> integration help us prioritize our backlog by voting for them.");
+			missingTeamConnectors.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
+				}
+			});
+		}
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonComp);
 		setControl(composite);
