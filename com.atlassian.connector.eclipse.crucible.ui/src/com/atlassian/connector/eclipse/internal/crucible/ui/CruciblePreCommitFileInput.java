@@ -14,7 +14,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 
@@ -22,7 +25,7 @@ import org.eclipse.ui.IStorageEditorInput;
  * 
  * @author Jacek Jaroczynski
  */
-public class CruciblePreCommitFileInput implements IStorageEditorInput {
+public class CruciblePreCommitFileInput implements IStorageEditorInput, IPathEditorInput {
 	private final CruciblePreCommitFileStorage storage;
 
 	public CruciblePreCommitFileInput(CruciblePreCommitFileStorage storage) {
@@ -59,6 +62,13 @@ public class CruciblePreCommitFileInput implements IStorageEditorInput {
 
 	public CrucibleFile getCrucibleFile() {
 		return storage.getCrucibleFile();
+	}
+
+	public IPath getPath() {
+		if (storage.getLocalFilePath() != null) {
+			return new Path(storage.getLocalFilePath());
+		}
+		return null;
 	}
 
 	@Override

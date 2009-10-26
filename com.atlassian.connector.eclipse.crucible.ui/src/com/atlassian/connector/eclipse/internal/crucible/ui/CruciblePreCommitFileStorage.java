@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
 
@@ -33,8 +34,11 @@ public class CruciblePreCommitFileStorage implements IStorage {
 
 	private final CrucibleFile crucibleFile;
 
-	public CruciblePreCommitFileStorage(CrucibleFile crucibleFile, byte[] content) {
+	private final File localCopy;
+
+	public CruciblePreCommitFileStorage(CrucibleFile crucibleFile, byte[] content, File localCopy) {
 		this.crucibleFile = crucibleFile;
+		this.localCopy = localCopy;
 		this.virtualFile = crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo().getOldFileDescriptor()
 				: crucibleFile.getCrucibleFileInfo().getFileDescriptor();
 		this.content = content;
@@ -96,6 +100,13 @@ public class CruciblePreCommitFileStorage implements IStorage {
 			return false;
 		}
 		return true;
+	}
+
+	public String getLocalFilePath() {
+		if (localCopy != null) {
+			return localCopy.getAbsolutePath();
+		}
+		return null;
 	}
 
 }

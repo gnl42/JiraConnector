@@ -28,6 +28,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -39,6 +40,10 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * 
@@ -79,6 +84,12 @@ public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAc
 			ServerPasswordNotProvidedException {
 
 		final ReviewFileContent file = getContent(virtualFile.getContentUrl(), crucibleServerFacade, crucibleServerCfg);
+		final File[] localCopy = new File[1];
+		try {
+			localCopy[0] = createTempFile(virtualFile.getName(), file.getContent());
+		} catch (IOException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage()));
+		}
 
 		shell.getDisplay().asyncExec(new Runnable() {
 			public void run() {
@@ -86,10 +97,12 @@ public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAc
 					String editorId = getEditorId(iWorkbenchPage.getWorkbenchWindow().getWorkbench(),
 							virtualFile.getName());
 					IEditorPart editor = iWorkbenchPage.openEditor(new CruciblePreCommitFileInput(
-							new CruciblePreCommitFileStorage(crucibleFile, file.getContent())), editorId);
+							new CruciblePreCommitFileStorage(crucibleFile, file.getContent(), localCopy[0])), editorId);
 
-					CrucibleUiUtil.attachCrucibleAnnotation(editor, task, crucibleReview, crucibleFile,
-							versionedComment);
+					if (editor != null) {
+						CrucibleUiUtil.attachCrucibleAnnotation(editor, task, crucibleReview, crucibleFile,
+								versionedComment);
+					}
 				} catch (PartInitException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
 				}
@@ -97,11 +110,46 @@ public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAc
 		});
 	}
 
+	private static File createTempFile(String fileName, byte[] content) throws IOException {
+		String baseName = FilenameUtils.getBaseName(fileName);
+		String extention = FilenameUtils.getExtension(fileName);
+		File retVal = File.createTempFile(baseName, "." + extention, CrucibleUiPlugin.getDefault()
+				.getStateLocation()
+				.toFile());
+		retVal.deleteOnExit();
+
+		FileOutputStream stream = new FileOutputStream(retVal);
+		try {
+			stream.write(content);
+		} catch (IOException e1) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e1.getMessage()));
+		} finally {
+			try {
+				stream.close();
+			} catch (Exception e2) {
+				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e2.getMessage()));
+			}
+		}
+
+		return retVal;
+	}
+
 	private static String getEditorId(IWorkbench workbench, String fileName) {
 		IEditorRegistry registry = workbench.getEditorRegistry();
 		IEditorDescriptor descriptor = registry.getDefaultEditor(fileName);
 
-		return descriptor != null ? descriptor.getId() : "org.eclipse.ui.DefaultTextEditor";
+		String id;
+		if (descriptor == null) {
+			descriptor = registry.findEditor(IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
+		}
+
+		if (descriptor == null) {
+			id = "org.eclipse.ui.DefaultTextEditor";
+		} else {
+			id = descriptor.getId();
+		}
+		return id;
+
 	}
 
 	public void updateReview(Review updatedReview, CrucibleFileInfo updatedFile) {
