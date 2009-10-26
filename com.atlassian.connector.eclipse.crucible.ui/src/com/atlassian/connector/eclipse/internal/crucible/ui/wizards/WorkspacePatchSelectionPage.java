@@ -289,8 +289,14 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 		// update selection after all wiring has been done
 		scmViewer.setInput(teamConnectors);
-		scmViewer.setSelection(new StructuredSelection(selectedTeamConnector != null ? selectedTeamConnector
-				: scmViewer.getElementAt(0)));
+		if (selectedTeamConnector != null) {
+			scmViewer.setSelection(new StructuredSelection(selectedTeamConnector));
+		} else {
+			Object firstTeamConnector = scmViewer.getElementAt(0);
+			if (firstTeamConnector != null) {
+				scmViewer.setSelection(new StructuredSelection(firstTeamConnector));
+			}
+		}
 	}
 
 	void setAllChecked(boolean state) {
