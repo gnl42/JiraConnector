@@ -66,6 +66,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	public UsageDataPreferencePage() {
 		super();
 		setPreferenceStore(UiUsageMonitorPlugin.getPrefs());
+		setDescription(Messages.UsageDataPreferencePage_description);
 	}
 
 	@Override
@@ -74,23 +75,33 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
 
-		Link description = new Link(container, SWT.WRAP);
-		GridDataFactory.defaultsFor(description).hint(500, SWT.DEFAULT).applyTo(description);
-		description.setText(Messages.UsageDataPreferencePage_description);
-		description.setToolTipText("Show Usage Data Submission wizard");
-		description.addSelectionListener(new SelectionAdapter() {
+		createLogFileSection(container);
+		createUsageSection(container);
+		createCollectorsSection(container);
+		updateEnablement();
+		return container;
+	}
+
+	@Override
+	protected void contributeButtons(Composite parent) {
+		super.contributeButtons(parent);
+
+		if (parent.getLayout() instanceof GridLayout) {
+			// fix number of columns for buttonBar
+			GridLayout gl = (GridLayout) parent.getLayout();
+			gl.numColumns += 1;
+		}
+
+		Button uploadNow = new Button(parent, SWT.PUSH);
+		uploadNow.setText("Upload Usage Data Submission");
+		uploadNow.setToolTipText("Show Usage Data Submission wizard");
+		uploadNow.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				WizardDialog wizard = new WizardDialog(getShell(), new UsageSubmissionWizard());
 				wizard.open();
 			}
 		});
-
-		createLogFileSection(container);
-		createUsageSection(container);
-		createCollectorsSection(container);
-		updateEnablement();
-		return container;
 	}
 
 	private void createCollectorsSection(Composite parent) {
@@ -112,13 +123,14 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 			final String detailsUrl = collector.getDetailsUrl();
 
 			Link details = new Link(uc, SWT.NULL);
-			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
-					.getHeaders()
-					.get(Constants.BUNDLE_NAME)));
+			details.setText(String.format(
+					"<A href=\"%s\">%s</A>", detailsUrl, Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
+							.getHeaders()
+							.get(Constants.BUNDLE_NAME)));
 			details.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					WorkbenchUtil.openUrl(detailsUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
+					WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
 				}
 			});
 		}
