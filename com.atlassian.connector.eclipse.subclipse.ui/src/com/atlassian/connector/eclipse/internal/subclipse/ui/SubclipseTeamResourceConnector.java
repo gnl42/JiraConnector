@@ -219,8 +219,13 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 					changesets.add(customEntry);
 				}
 			} catch (SVNException e) {
-				throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
-						"Could not retrieve changesets for {0}", repositoryUrl), e));
+				if (e.getMessage().contains("Unable to load default SVN Client")) {
+					throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+							"Subclipse doesn't have a default client installed", repositoryUrl), e));
+				} else {
+					throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+							"Subclipse client failed with an exception", repositoryUrl), e));
+				}
 			}
 		} else {
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,

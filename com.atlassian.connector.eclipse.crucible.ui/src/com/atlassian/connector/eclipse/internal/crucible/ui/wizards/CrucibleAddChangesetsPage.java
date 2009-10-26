@@ -676,8 +676,7 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 	}
 
 	private void updateChangesets(final RepositoryInfo repository, final int numberToRetrieve) {
-		final MultiStatus status = new MultiStatus(CrucibleUiPlugin.PLUGIN_ID, IStatus.WARNING,
-				"Error while retrieving changesets", null);
+		final IStatus[] status = { Status.OK_STATUS };
 
 		IRunnableWithProgress getChangesets = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -691,25 +690,26 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 						availableLogEntries.put(repository, retrieved);
 					}
 				} catch (CoreException e) {
-					status.add(e.getStatus());
+					status[0] = e.getStatus();
 				}
 			}
 		};
 
 		try {
 			setErrorMessage(null);
-			getContainer().run(true, true, getChangesets); // blocking operation
+			getContainer().run(false, true, getChangesets); // blocking operation
 		} catch (Exception e) {
-			status.add(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to retrieve revisions", e));
+			status[0] = new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID, "Failed to retrieve changesets", e);
 		}
 
 		if (availableLogEntries != null && availableLogEntries.get(repository) != null) {
 			availableTreeViewer.setInput(availableLogEntries);
 		}
 
-		if (status.getChildren().length > 0 && status.getSeverity() == IStatus.ERROR) { //only log errors, swallow warnings
-			setErrorMessage("Error while retrieving changesets. See error log for details.");
-			StatusHandler.log(status);
+		if (status[0].getSeverity() == IStatus.ERROR) { //only log errors, swallow warnings
+			setErrorMessage(String.format("Error while retrieving changesets (%s). See error log for details.",
+					status[0].getMessage()));
+			StatusHandler.log(status[0]);
 		}
 	}
 
