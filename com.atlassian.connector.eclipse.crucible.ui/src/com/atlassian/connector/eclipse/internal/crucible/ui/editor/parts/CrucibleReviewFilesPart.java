@@ -180,6 +180,21 @@ public class CrucibleReviewFilesPart extends AbstractCrucibleEditorFormPart {
 			addPatchAction.setImageDescriptor(CrucibleImages.ADD_PATCH);
 			barManager.add(addPatchAction);
 
+			Action addWorkspacePatchAction = new Action() {
+				@Override
+				public void run() {
+					ReviewWizard wizard = new ReviewWizard(crucibleReview, Type.ADD_WORKSPACE_PATCH);
+					wizard.setWindowTitle("Add Workspace Changes");
+					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), wizard);
+					wd.setBlockOnOpen(true);
+					wd.open();
+				}
+			};
+			addWorkspacePatchAction.setText("Add Workspace Changes...");
+			addWorkspacePatchAction.setToolTipText("Add a patch from workspace changes to the Review");
+			addWorkspacePatchAction.setImageDescriptor(CrucibleImages.ADD_PATCH);
+			barManager.add(addWorkspacePatchAction);
+
 			barManager.add(new Separator());
 		}
 
