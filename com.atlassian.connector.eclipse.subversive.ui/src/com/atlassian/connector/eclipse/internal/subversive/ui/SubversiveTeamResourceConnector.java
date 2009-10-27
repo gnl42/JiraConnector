@@ -394,9 +394,6 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 
 			return part[0];
 		}
-
-		throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-				"Could not open editor for {0}.", remoteFile.getName())));
 	}
 
 	public boolean canHandleEditorInput(IEditorInput editorInput) {
@@ -576,7 +573,7 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 		} catch (PartInitException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, e.getMessage(), e));
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-					"Could not open editor for {0}", remoteFile.getName)));
+					"Could not open editor for {0}", remoteFile.getName())));
 		}
 	}
 
