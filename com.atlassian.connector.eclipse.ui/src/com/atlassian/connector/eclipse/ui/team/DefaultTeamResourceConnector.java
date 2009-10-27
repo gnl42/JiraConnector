@@ -349,30 +349,31 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 
 				boolean inSync = isRemoteFileInSync(resource, rp);
 
-				IEditorPart editor = null;
-
 				if (inSync && localFileRevision.getContentIdentifier() != null
 						&& localFileRevision.getContentIdentifier().equals(revisionString)) {
-					editor = TeamUiUtils.openLocalResource(resource);
+					return TeamUiUtils.openLocalResource(resource);
 				} else {
 					if (Display.getCurrent() != null) {
-						editor = openRemoteResource(revisionString, resource, historyProvider, monitor);
+						return openRemoteResource(revisionString, resource, historyProvider, monitor);
 					} else {
 						final IEditorPart[] part = new IEditorPart[1];
+						final CoreException[] exception = new CoreException[1];
 						final IResource res = resource;
 						PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 							public void run() {
-								part[0] = openRemoteResource(revisionString, res, historyProvider, monitor);
+								try {
+									part[0] = openRemoteResource(revisionString, res, historyProvider, monitor);
+								} catch (CoreException e) {
+									exception[0] = e;
+								}
 							}
 						});
-						editor = part[0];
+						if (exception[0] != null) {
+							throw exception[0];
+						}
+
+						return part[0];
 					}
-				}
-				if (editor == null) {
-					throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
-							"Unable to open editor for resource {0}.", filePath)));
-				} else {
-					return editor;
 				}
 			}
 			throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
@@ -414,7 +415,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	private static IEditorPart openRemoteResource(String revisionString, IResource resource,
-			IFileHistoryProvider historyProvider, IProgressMonitor monitor) {
+			IFileHistoryProvider historyProvider, IProgressMonitor monitor) throws CoreException {
 		// we need a different revision than the one in the local workspace
 		IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE, monitor);
 
@@ -426,10 +427,16 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 							remoteFileRevision, monitor);
 				} catch (CoreException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, e.getMessage(), e));
+					throw e;
 				}
+			} else {
+				throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+						"Cannot open editor for {0}. Remote file revision is null.", resource.getName())));
 			}
+		} else {
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+					"Cannot open editor for {0}. File history is null.", resource.getName())));
 		}
-		return null;
 	}
 
 	private static boolean isRemoteFileInSync(IResource resource, RepositoryProvider rp) {

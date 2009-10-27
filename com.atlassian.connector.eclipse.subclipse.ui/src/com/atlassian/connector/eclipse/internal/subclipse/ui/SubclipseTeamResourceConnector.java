@@ -276,36 +276,35 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 
 				if (localFile.getStatus().getLastChangedRevision().equals(svnRevision) && !localFile.isDirty()) {
 					// the file is not dirty and we have the right local copy
-					IEditorPart editorPart = TeamUiUtils.openLocalResource(localResource);
-					if (editorPart == null) {
-						throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-								NLS.bind("Could not open editor for {0}.", localFile.getName())));
-					}
-					return editorPart;
-
+					return TeamUiUtils.openLocalResource(localResource);
 				} else {
 					final ISVNRemoteFile remoteFile = SubclipseUtil.getRemoteFile(localResource, filePath, svnRevision,
 							otherSvnRevision, localFileNotFound);
 					if (remoteFile != null) {
 						// we need to open the remote resource since the file is either dirty or the wrong revision
 
-						IEditorPart editorPart = null;
 						if (Display.getCurrent() != null) {
-							editorPart = openRemoteSvnFile(remoteFile, monitor);
+							return openRemoteSvnFile(remoteFile, monitor);
 						} else {
 							final IEditorPart[] part = new IEditorPart[1];
+							final CoreException[] exception = new CoreException[1];
 							PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 								public void run() {
-									part[0] = openRemoteSvnFile(remoteFile, monitor);
+									try {
+										part[0] = openRemoteSvnFile(remoteFile, monitor);
+									} catch (CoreException e) {
+										exception[0] = e;
+									}
 								}
 							});
-							editorPart = part[0];
+
+							if (exception[0] != null) {
+								throw exception[0];
+							}
+
+							return part[0];
 						}
-						if (editorPart == null) {
-							throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
-									NLS.bind("Could not open editor for {0}.", remoteFile.getName())));
-						}
-						return editorPart;
+
 					} else {
 						throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
 								NLS.bind("Could not get remote file for {0}.", filePath)));
@@ -433,7 +432,17 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 		return null;
 	}
 
-	private IEditorPart openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) {
+	/**
+	 * Opens editor for specified remote file
+	 * 
+	 * @param remoteFile
+	 *            file to open
+	 * @param monitor
+	 * @return editor reference or null if external editor was open
+	 * @throws CoreException
+	 *             thrown in case there was a problem when opening editor
+	 */
+	private IEditorPart openRemoteSvnFile(ISVNRemoteFile remoteFile, IProgressMonitor monitor) throws CoreException {
 		try {
 			IWorkbench workbench = AtlassianSubclipseUiPlugin.getDefault().getWorkbench();
 			IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
@@ -443,8 +452,9 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 			return page.openEditor(editorInput, editorId);
 		} catch (PartInitException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not open editor for file {0}.", remoteFile.getName())));
 		}
-		return null;
 	}
 
 	private ISVNLocalFile getLocalFile(IResource localResource) throws SVNException {

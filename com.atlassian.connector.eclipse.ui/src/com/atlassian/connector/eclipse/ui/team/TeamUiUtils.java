@@ -41,6 +41,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.Policy;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -98,11 +99,13 @@ public final class TeamUiUtils {
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleFile(repoUrl, filePath, monitor)) {
 				try {
-					IEditorPart part = connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
+					IEditorPart editor = connector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
 							otherRevisionString, monitor);
-					if (part != null) {
-						return part;
+					if (editor == null) {
+						StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
+								"Requested file opened in external editor"));
 					}
+					return editor;
 				} catch (CoreException e) {
 					StatusHandler.log(e.getStatus());
 					//ignore and try with default
@@ -112,8 +115,13 @@ public final class TeamUiUtils {
 
 		// try a backup solution
 		try {
-			return defaultConnector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
+			IEditorPart editor = defaultConnector.openFile(repoUrl, filePath, otherRevisionFilePath, revisionString,
 					otherRevisionString, monitor);
+			if (editor == null) {
+				StatusHandler.log(new Status(IStatus.INFO, AtlassianUiPlugin.PLUGIN_ID,
+						"Requested file opened in external editor"));
+			}
+			return editor;
 		} catch (UnsupportedTeamProviderException e) {
 			TeamMessageUtils.openUnsupportedTeamProviderErrorMessage(e);
 			return null;
@@ -337,29 +345,57 @@ public final class TeamUiUtils {
 		return null;
 	}
 
-	public static IEditorPart openLocalResource(final IResource resource) {
+	/**
+	 * Opens editor for specified resource
+	 * 
+	 * @param resource
+	 *            resource/file to open
+	 * @return editor reference or null if external editor was open
+	 * @throws CoreException
+	 *             thrown in case there was a problem when opening editor
+	 */
+	public static IEditorPart openLocalResource(final IResource resource) throws CoreException {
 		if (Display.getCurrent() != null) {
 			return openLocalResourceInternal(resource);
 		} else {
 			final IEditorPart[] part = new IEditorPart[1];
+			final CoreException[] exception = new CoreException[1];
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 				public void run() {
-					part[0] = openLocalResourceInternal(resource);
+					try {
+						part[0] = openLocalResourceInternal(resource);
+					} catch (CoreException e) {
+						exception[0] = e;
+					}
 				}
 			});
+
+			if (exception[0] != null) {
+				throw exception[0];
+			}
 			return part[0];
 		}
 	}
 
-	private static IEditorPart openLocalResourceInternal(IResource resource) {
+	/**
+	 * Opens editor for specified resource
+	 * 
+	 * @param resource
+	 *            resource/file to open
+	 * @return editor reference or null if external editor was open
+	 * @throws CoreException
+	 *             thrown in case there was a problem when opening editor
+	 */
+	private static IEditorPart openLocalResourceInternal(IResource resource) throws CoreException {
 		// the local revision matches the revision we care about and the file is in sync
 		try {
 			return IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
 					(IFile) resource, true);
 		} catch (PartInitException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not open editor for {0}.", resource.getName())));
 		}
-		return null;
 	}
 
 	@Nullable

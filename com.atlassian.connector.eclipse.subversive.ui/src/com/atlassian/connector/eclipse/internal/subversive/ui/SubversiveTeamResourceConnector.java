@@ -324,20 +324,14 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 		}
 
 		try {
-			IEditorPart editor = openFile(repoUrl, filePath, revisionString, monitor);
-			if (editor != null) {
-				return editor;
-			}
+			return openFile(repoUrl, filePath, revisionString, monitor);
 		} catch (CoreException e) {
 			StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
 					"Failed to open {0} at revision {1}", filePath, revisionString)));
 		}
 
 		if (otherRevisionFilePath != null && otherRevisionString != null && !"".equals(otherRevisionString)) {
-			IEditorPart editor = openFile(repoUrl, otherRevisionFilePath, otherRevisionString, monitor);
-			if (editor != null) {
-				return editor;
-			}
+			return openFile(repoUrl, otherRevisionFilePath, otherRevisionString, monitor);
 		}
 
 		throw new CoreException(new Status(IStatus.WARNING, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
@@ -368,13 +362,7 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 		if (SVNRevision.fromNumber(localFile.getBaseRevision()).equals(svnRevision)
 				&& localFile.getChangeMask() == ILocalResource.NO_MODIFICATION) {
 			// the file is not dirty and we have the right local copy
-			IEditorPart editor = TeamUiUtils.openLocalResource(localResource);
-			if (editor != null) {
-				return editor;
-			}
-
-			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
-					"Could not open editor for {0}.", localFile.getName())));
+			return TeamUiUtils.openLocalResource(localResource);
 		}
 
 		// fallback to remote
@@ -386,20 +374,25 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 
 		// we need to open the remote resource since the file is either dirty or the wrong revision
 		if (Display.getCurrent() != null) {
-			IEditorPart editor = openRemoteSvnFile(remoteFile, monitor);
-			if (editor != null) {
-				return editor;
-			}
+			return openRemoteSvnFile(remoteFile, monitor);
 		} else {
 			final IEditorPart[] part = new IEditorPart[1];
+			final CoreException[] exception = new CoreException[1];
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 				public void run() {
-					part[0] = openRemoteSvnFile(remoteFile, monitor);
+					try {
+						part[0] = openRemoteSvnFile(remoteFile, monitor);
+					} catch (CoreException e) {
+						exception[0] = e;
+					}
 				}
 			});
-			if (part[0] != null) {
-				return part[0];
+
+			if (exception[0] != null) {
+				throw exception[0];
 			}
+
+			return part[0];
 		}
 
 		throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
@@ -572,7 +565,7 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 		return null;
 	}
 
-	private IEditorPart openRemoteSvnFile(IRepositoryFile remoteFile, IProgressMonitor monitor) {
+	private IEditorPart openRemoteSvnFile(IRepositoryFile remoteFile, IProgressMonitor monitor) throws CoreException {
 		try {
 			IWorkbench workbench = AtlassianSubversiveUiPlugin.getDefault().getWorkbench();
 			IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
@@ -582,8 +575,9 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 			return page.openEditor(editorInput, editorId);
 		} catch (PartInitException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, e.getMessage(), e));
+			throw new CoreException(new Status(IStatus.ERROR, AtlassianSubversiveUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not open editor for {0}", remoteFile.getName)));
 		}
-		return null;
 	}
 
 	private String getEditorId(IWorkbench workbench, IRepositoryFile file) {

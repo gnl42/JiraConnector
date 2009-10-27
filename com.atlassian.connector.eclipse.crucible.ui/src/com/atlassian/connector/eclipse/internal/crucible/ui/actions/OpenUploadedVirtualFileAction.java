@@ -102,6 +102,9 @@ public class OpenUploadedVirtualFileAction extends AbstractUploadedVirtualFileAc
 					if (editor != null) {
 						CrucibleUiUtil.attachCrucibleAnnotation(editor, task, crucibleReview, crucibleFile,
 								versionedComment);
+					} else {
+						StatusHandler.log(new Status(IStatus.INFO, CrucibleUiPlugin.PLUGIN_ID,
+								"Requested file opened in external editor"));
 					}
 				} catch (PartInitException e) {
 					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, e.getMessage(), e));
