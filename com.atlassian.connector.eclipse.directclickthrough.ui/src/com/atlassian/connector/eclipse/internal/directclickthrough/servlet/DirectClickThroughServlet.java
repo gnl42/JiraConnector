@@ -274,18 +274,24 @@ public class DirectClickThroughServlet extends HttpServlet {
 	private void openFile(final IResource resource, final String line) {
 		Assert.isNotNull(resource);
 
-		final IEditorPart editor = TeamUiUtils.openLocalResource(resource);
+		final IEditorPart editor[] = new IEditorPart[1];
+		try {
+			editor[0] = TeamUiUtils.openLocalResource(resource);
+		} catch (CoreException e1) {
+			StatusHandler.log(e1.getStatus());
+			return;
+		}
 
-		if (line != null && line.length() > 0 && editor instanceof ITextEditor) {
+		if (line != null && line.length() > 0 && editor[0] instanceof ITextEditor) {
 			try {
 				final int l = Integer.parseInt(line);
 				if (Display.getCurrent() != null) {
-					gotoLine((ITextEditor) editor, l);
+					gotoLine((ITextEditor) editor[0], l);
 				} else {
 					PlatformUI.getWorkbench().getDisplay().asyncExec(
 							new Runnable() {
 								public void run() {
-									gotoLine((ITextEditor) editor, l);
+									gotoLine((ITextEditor) editor[0], l);
 								}
 							});
 				}
