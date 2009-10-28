@@ -13,8 +13,10 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.editor.parts;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleConstants;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewAction;
+import com.atlassian.connector.eclipse.internal.crucible.ui.IReviewActionListener;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.EditCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.PostDraftCommentAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.RemoveCommentAction;
@@ -26,6 +28,8 @@ import com.atlassian.theplugin.commons.crucible.api.model.Comment;
 import com.atlassian.theplugin.commons.crucible.api.model.CustomField;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -209,12 +213,10 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 				final Shell shell = getSection().getShell();
 				actions.add(new EditCommentAction(crucibleReview, comment, shell));
 
-				RemoveCommentAction removeAction = new RemoveCommentAction(crucibleReview, comment, shell);
-				actions.add(removeAction);
-
 				if (!comment.isReply() && comment.getReplies().size() > 0) {
-					removeAction.setEnabled(false);
-					removeAction.setToolTipText("Remove Replies First");
+					actions.add(new CannotRemoveCommentAction("Remove Comment", CrucibleImages.COMMENT_DELETE));
+				} else {
+					actions.add(new RemoveCommentAction(crucibleReview, comment, shell));
 				}
 
 				if (comment.isDraft()) {
@@ -223,5 +225,22 @@ public abstract class CommentPart<T, V extends ExpandablePart<T, V>> extends Exp
 			}
 		}
 		return actions;
+	}
+
+	private final class CannotRemoveCommentAction extends Action implements IReviewAction {
+		public CannotRemoveCommentAction(String text, ImageDescriptor icon) {
+			super(text);
+			setImageDescriptor(icon);
+		}
+
+		public void setActionListener(IReviewActionListener listner) {
+		}
+
+		@Override
+		public void run() {
+			MessageDialog.openInformation(getSection().getShell(), "Delete",
+					"Cannot delete comment with replies. You must delete replies first.");
+		}
+
 	}
 }
