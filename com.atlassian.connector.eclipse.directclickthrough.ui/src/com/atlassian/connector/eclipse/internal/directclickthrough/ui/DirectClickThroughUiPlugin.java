@@ -3,7 +3,8 @@ package com.atlassian.connector.eclipse.internal.directclickthrough.ui;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -17,6 +18,7 @@ import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.log.Log;
 import org.osgi.framework.BundleContext;
 
+import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.directclickthrough.servlet.DirectClickThroughServlet;
 
 /**
@@ -72,9 +74,9 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 			stopEmbeddedServer();
 		}
 		
-		Job serverJob = new Job("Start Embedded Web Server") {
+		final JobWithStatus serverJob = new JobWithStatus("Start Embedded Web Server") {
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {
+			protected void runImpl(IProgressMonitor monitor) {
 				try {
 					embeddedServer = new Server();
 					Connector connector = new SocketConnector();
@@ -86,13 +88,20 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
 					context.addServlet(new ServletHolder(new DirectClickThroughServlet()), "/*");
 					
 					embeddedServer.start();
-					return new Status(IStatus.OK, DirectClickThroughUiPlugin.PLUGIN_ID, "Started embedded Direct Click Through server");
 				} catch (Exception e) {
-					return new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
-							"Unable to run embedded web server, Direct Click Through will not be available", e);
+					setStatus(new Status(IStatus.ERROR, DirectClickThroughUiPlugin.PLUGIN_ID, 
+							"Unable to run embedded web server, Direct Click Through will not be available", e));
 				}
 			}
 		};
+		serverJob.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				if (!serverJob.getStatus().isOK()) {
+					StatusHandler.log(serverJob.getStatus());
+				}
+			}
+		});
 		serverJob.schedule();
 	}
 
