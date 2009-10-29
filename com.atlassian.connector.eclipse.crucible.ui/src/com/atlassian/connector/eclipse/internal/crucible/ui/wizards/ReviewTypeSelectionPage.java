@@ -15,12 +15,18 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard.Type;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardNode;
 import org.eclipse.jface.wizard.WizardSelectionPage;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
@@ -33,6 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -105,21 +112,40 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 				.getTeamConnectors();
 
 		if (teamConnectors.size() == 0) {
-			changesetReview.setSelection(false);
-			changesetReview.setEnabled(false);
-			workspacePatchReview.setSelection(false);
-			workspacePatchReview.setEnabled(false);
-
-			Link missingTeamConnectors = new Link(buttonComp, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY);
-			GridDataFactory.fillDefaults().grab(true, true).hint(250, SWT.DEFAULT).applyTo(missingTeamConnectors);
-			missingTeamConnectors.setText("You don't have any SCM integration installed for Atlassian Connector for Eclipse. You need to install one of Subversion integrations to be able to create reviews. "
-					+ "<A href=\"http://confluence.atlassian.com/display/IDEPLUGIN/Installing+the+Eclipse+Connector\">Check installation guide for details</A>. "
-					+ "\n\nIf you need <A href=\"https://studio.atlassian.com/browse/PLE-523\">Perforce</A> or <A href=\"https://studio.atlassian.com/browse/PLE-728\">CVS</A> integration help us prioritize our backlog by voting for them.");
-			missingTeamConnectors.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
+			disableScmRelatedReviewMethods(
+					buttonComp,
+					"You don't have any SCM integration installed for Atlassian Connector for Eclipse. "
+							+ "You need to install one of Subversion integrations to be able to create reviews. "
+							+ "<A href=\"http://confluence.atlassian.com/display/IDEPLUGIN/Installing+the+Eclipse+Connector\">"
+							+ "Check installation guide for details</A>. "
+							+ "\n\nIf you need <A href=\"https://studio.atlassian.com/browse/PLE-523\">Perforce</A> "
+							+ "or <A href=\"https://studio.atlassian.com/browse/PLE-728\">CVS</A>"
+							+ " integration help us prioritize our backlog by voting for them.");
+		} else {
+			final int[] repoCount = { 0 };
+			final IRunnableWithProgress getRepositories = new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					repoCount[0] = TeamUiUtils.getRepositories(monitor).size();
 				}
-			});
+			};
+			try {
+				getContainer().run(true, true, getRepositories);
+			} catch (InvocationTargetException e) {
+				StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+						"Failed to retrieve repositories", e));
+			} catch (InterruptedException e) {
+				StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+						"Failed to retrieve repositories", e));
+			}
+			if (repoCount[0] == 0) {
+				disableScmRelatedReviewMethods(
+						buttonComp,
+						"In order to create regular pre- or post-commit review you need to have at least one "
+								+ "supported SCM repository configured in your Eclipse workspace.\n"
+								+ "If you use SVN, make sure that your \"SVN Repositories\" View contain at least one entry.");
+
+			}
+
 		}
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(buttonComp);
@@ -150,6 +176,23 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 			}
 		});
 
+	}
+
+	private void disableScmRelatedReviewMethods(Composite parent, String infoMessage) {
+		changesetReview.setSelection(false);
+		changesetReview.setEnabled(false);
+		workspacePatchReview.setSelection(false);
+		workspacePatchReview.setEnabled(false);
+
+		Link missingTeamConnectors = new Link(parent, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY);
+		GridDataFactory.fillDefaults().grab(true, true).hint(250, SWT.DEFAULT).applyTo(missingTeamConnectors);
+		missingTeamConnectors.setText(infoMessage);
+		final SelectionAdapter openInBrowserListener = new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
+			}
+		};
+		missingTeamConnectors.addSelectionListener(openInBrowserListener);
 	}
 
 	public Set<Type> getTypes() {
