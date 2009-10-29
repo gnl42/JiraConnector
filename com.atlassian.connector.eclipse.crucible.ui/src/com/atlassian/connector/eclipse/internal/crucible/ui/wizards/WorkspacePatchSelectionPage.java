@@ -21,6 +21,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.AbstractTeamConnector;
@@ -88,9 +89,12 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 	private ComboViewer scmViewer;
 
+	private final TaskRepository taskRepository;
+
 	public WorkspacePatchSelectionPage(@NotNull TaskRepository taskRepository, @NotNull ReviewWizard wizard,
 			@NotNull List<IResource> roots) {
 		super("Add Workspace Changes to Review");
+		this.taskRepository = taskRepository;
 		setTitle("Add Workspace Changes to Review");
 		setDescription("Attach local, uncommited changes from the workspace to the review.");
 
@@ -138,6 +142,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 				return super.getText(element);
 			}
 		});
+
 		scmViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) scmViewer.getSelection();
@@ -150,7 +155,8 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 					return;
 				}
 
-				CrucibleUiPlugin.getDefault().setPreferredTeamResourceConnectorName(selectedTeamConnector.getName());
+				CrucibleRepositoryConnector.updateLastSelectedTeamResourceConnectorName(taskRepository,
+						selectedTeamConnector.getName());
 
 				final List<IResource> modifiedResources = MiscUtil.buildArrayList();
 
@@ -287,15 +293,25 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		menuMgr.setRemoveAllWhenShown(true);
 		changeViewer.getTree().setMenu(menu);
 
-		// update selection after all wiring has been done
 		scmViewer.setInput(teamConnectors);
-		if (selectedTeamConnector != null) {
-			scmViewer.setSelection(new StructuredSelection(selectedTeamConnector));
-		} else {
-			Object firstTeamConnector = scmViewer.getElementAt(0);
-			if (firstTeamConnector != null) {
-				scmViewer.setSelection(new StructuredSelection(firstTeamConnector));
+		// update selection after all wiring has been done
+		restoreScmSelection();
+	}
+
+	private void restoreScmSelection() {
+		String lastSelectedConnector = CrucibleRepositoryConnector.getLastSelectedTeamResourceConnectorName(taskRepository);
+		if (lastSelectedConnector != null) {
+			for (ITeamResourceConnector connector : teamConnectors) {
+				if (connector.getName().equals(lastSelectedConnector)) {
+					scmViewer.setSelection(new StructuredSelection(connector));
+					return;
+				}
 			}
+		}
+
+		Object firstTeamConnector = scmViewer.getElementAt(0);
+		if (firstTeamConnector != null) {
+			scmViewer.setSelection(new StructuredSelection(firstTeamConnector));
 		}
 	}
 

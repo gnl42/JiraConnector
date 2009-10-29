@@ -21,16 +21,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.preference.IPersistentPreferenceStore;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
-import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
-
-import java.io.IOException;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -164,23 +159,6 @@ public class CrucibleUiPlugin extends AbstractUIPlugin {
 				CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW));
 
 		return ret != null ? ret : ActivateReview.PROMPT;
-	}
-
-	public void setPreferredTeamResourceConnectorName(@Nullable String name) {
-		IPreferenceStore store = plugin.getPreferenceStore();
-		store.setValue(CrucibleUiConstants.PREFERRED_TEAM_RESOURCE_CONNECTOR_NAME, name);
-		if (store instanceof IPersistentPreferenceStore) {
-			try {
-				((IPersistentPreferenceStore) store).save();
-			} catch (IOException e) {
-				// ignore
-			}
-		}
-	}
-
-	@Nullable
-	public String getPreferredTeamResourceConnectorName() {
-		return plugin.getPreferenceStore().getString(CrucibleUiConstants.PREFERRED_TEAM_RESOURCE_CONNECTOR_NAME);
 	}
 
 	public boolean getPreviousChangesetReviewSelection() {

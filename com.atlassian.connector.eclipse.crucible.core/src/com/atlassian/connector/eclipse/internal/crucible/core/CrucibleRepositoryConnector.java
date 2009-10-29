@@ -53,6 +53,8 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
 	private static final String START_REVIEW = "startReview";
 
+	private static final String TEAM_RESOURCE_CONNECTOR = "preferred_team_resource_connector_name";
+
 	private CrucibleClientManager clientManager;
 
 	private File repositoryConfigurationCacheFile;
@@ -82,6 +84,14 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 
 	public static void updateStartReviewOption(TaskRepository taskRepository, boolean startReview) {
 		taskRepository.setProperty(START_REVIEW, String.valueOf(startReview));
+	}
+
+	public static String getLastSelectedTeamResourceConnectorName(TaskRepository repository) {
+		return repository.getProperty(TEAM_RESOURCE_CONNECTOR);
+	}
+
+	public static void updateLastSelectedTeamResourceConnectorName(TaskRepository repository, String connectorName) {
+		repository.setProperty(TEAM_RESOURCE_CONNECTOR, connectorName);
 	}
 
 	/**
@@ -286,5 +296,4 @@ public class CrucibleRepositoryConnector extends AbstractRepositoryConnector {
 			}
 		};
 	}
-
 }
