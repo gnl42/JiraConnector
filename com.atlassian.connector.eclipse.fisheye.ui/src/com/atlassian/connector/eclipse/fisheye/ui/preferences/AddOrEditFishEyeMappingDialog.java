@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -340,7 +341,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 					}
 				}
 				updateOkButtonState();
-				updateRefreshButtonState();
+				updateServerRelatedControls();
 			}
 		});
 
@@ -369,7 +370,13 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		});
 
 		getShell().addShellListener(new OnShowHandler());
-		updateRefreshButtonState();
+
+		if (taskRepositories == null || taskRepositories.size() == 0) {
+			fishEyeServerCombo.getControl().setEnabled(taskRepositories.size() > 0);
+			setMessage("Mapping cannot be defined. FishEye server must be defined first.", IMessageProvider.WARNING);
+		}
+
+		updateServerRelatedControls();
 		return parent;
 	}
 
@@ -387,8 +394,9 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		okButton.setEnabled(isEnabled);
 	}
 
-	private void updateRefreshButtonState() {
+	private void updateServerRelatedControls() {
 		updateServerDataButton.setEnabled(getSelectedServer() != null);
+		fishEyeRepoCombo.getControl().setEnabled(getSelectedServer() != null);
 	}
 
 	private void updateServerData(final TaskRepository taskRepository) {
