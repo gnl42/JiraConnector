@@ -163,9 +163,23 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 				IFileHistory fileHistory = historyProvider.getFileHistoryFor(resource, IFileHistoryProvider.NONE,
 						monitor);
 				if (fileHistory != null) {
-					return fileHistory.getFileRevision(revisionString);
+					IFileRevision fileRevision = fileHistory.getFileRevision(revisionString);
+					if (fileRevision == null) {
+						StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+								"Could not get revision {0}", revisionString)));
+					}
+					return fileRevision;
+				} else {
+					StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+							"Could not get file history for {0}", resource.getName())));
 				}
+			} else {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID,
+						"Could not get file history provider"));
 			}
+		} else {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianUiPlugin.PLUGIN_ID, NLS.bind(
+					"Could not get repository provider for project {0}", project.getName())));
 		}
 		return null;
 
