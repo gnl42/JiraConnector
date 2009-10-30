@@ -33,8 +33,14 @@ public final class SubclipseUtil {
 	
 	public static IResource getLocalResourceFromFilePath(String filePath) {
 		if (filePath == null || filePath.length() <= 0) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Requested file path is null or empty."));
 			return null;
 		}
+		
+		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length == 0) {
+			StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Could not find projects in the workspace."));
+		}
+		
 		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 
 			if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
@@ -55,13 +61,21 @@ public final class SubclipseUtil {
 
 						if (url != null && url.toString().endsWith(filePath)) {
 							return resource;
+						} else {
+							StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Could not match SVN resource URL with local file path"));
+							return null;
 						}
+					} else {
+						StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not get SVN resource for {0}", resource.getName())));
+						return null;
 					}
 				} catch (Exception e) {
 					StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, e.getMessage(), e));
+					return null;
 				}
 			}
 		}
+		StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not find resource for path {0}", filePath)));
 		return null;
 	}
 	
