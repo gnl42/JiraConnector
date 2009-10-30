@@ -11,17 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.operations;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.NoRouteToHostException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -40,11 +34,17 @@ import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Constants;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.NoRouteToHostException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 public final class UsageDataUploadJob extends Job {
 
@@ -100,15 +100,26 @@ public final class UsageDataUploadJob extends Job {
 		}
 	}
 
+	private static final String SYSTEM_INFO_PREFIX = "system info: ";
+
 	private void performUpload(IProgressMonitor monitor) {
 		InteractionEventLogger interactionLogger = UiUsageMonitorPlugin.getDefault().getInteractionLogger();
 
-		interactionLogger.interactionObserved(InteractionEvent.makePreference("os-arch", Platform.getOSArch()));
-		interactionLogger.interactionObserved(InteractionEvent.makePreference("os", Platform.getOS()));
-		interactionLogger.interactionObserved(InteractionEvent.makePreference(Platform.PI_RUNTIME, Platform.getBundle(
-				Platform.PI_RUNTIME).getHeaders().get(Constants.BUNDLE_VERSION).toString()));
 		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
-				UiUsageMonitorPlugin.getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION).toString()));
+				SYSTEM_INFO_PREFIX + "os-arch=" + Platform.getOSArch()));
+		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
+				SYSTEM_INFO_PREFIX + "os=" + Platform.getOS()));
+		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
+				SYSTEM_INFO_PREFIX + Platform.PI_RUNTIME + "="
+						+ Platform.getBundle(Platform.PI_RUNTIME).getHeaders().get(Constants.BUNDLE_VERSION).toString()));
+		interactionLogger.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
+				SYSTEM_INFO_PREFIX
+						+ "connector-version="
+						+ UiUsageMonitorPlugin.getDefault()
+								.getBundle()
+								.getHeaders()
+								.get(Constants.BUNDLE_VERSION)
+								.toString()));
 
 		UiUsageMonitorPlugin.setPerformingUpload(true);
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
