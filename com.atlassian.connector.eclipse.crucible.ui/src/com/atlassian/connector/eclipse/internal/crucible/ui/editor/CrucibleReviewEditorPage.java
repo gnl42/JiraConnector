@@ -149,11 +149,9 @@ public class CrucibleReviewEditorPage extends TaskFormPage implements IReflowRes
 			return new Status(IStatus.OK, CrucibleUiPlugin.PLUGIN_ID, resultMessage);
 		}
 
-		protected Review runAsCrucibleRemoteOperation(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
+		protected abstract Review runAsCrucibleRemoteOperation(CrucibleServerFacade2 server, ConnectionCfg serverCfg,
 				IProgressMonitor monitor) throws CrucibleLoginException, RemoteApiException,
-				ServerPasswordNotProvidedException {
-			return null;
-		}
+				ServerPasswordNotProvidedException;
 	};
 
 	/**
