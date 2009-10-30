@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.Team;
 import org.tigris.subversion.subclipse.core.ISVNLocalResource;
 import org.tigris.subversion.subclipse.core.ISVNRemoteFile;
@@ -95,6 +96,7 @@ public final class SubclipseUtil {
 	public static ISVNRemoteFile getSvnRemoteFile(String repoUrl, String filePath, String otherRevisionFilePath,
 			String revisionString, String otherRevisionString, final IProgressMonitor monitor) {
 		if (repoUrl == null) {
+			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Provided repository url is null"));
 			return null;
 		}
 		try {
@@ -108,13 +110,20 @@ public final class SubclipseUtil {
 			boolean localFileNotFound = localResource == null;
 
 			if (localFileNotFound) {
+				StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not get local resource from file path {0}", filePath)));
 				localResource = SubclipseUtil.getLocalResourceFromFilePath(otherRevisionFilePath);
 			}
 
 			if (localResource != null) {
 				SVNRevision svnRevision = SVNRevision.getRevision(revisionString);
 				SVNRevision otherSvnRevision = SVNRevision.getRevision(otherRevisionString);
-				return getRemoteFile(localResource, filePath, svnRevision, otherSvnRevision, localFileNotFound);
+				ISVNRemoteFile remoteFile = getRemoteFile(localResource, filePath, svnRevision, otherSvnRevision, localFileNotFound);
+				if (remoteFile == null) {
+					StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not get remote file for local resource {0}", localResource.getName())));
+				}
+				return remoteFile;
+			} else {
+				StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not get local resource from file path {0}", otherRevisionFilePath)));
 			}
 		} catch (SVNException e) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, e.getMessage(), e));
