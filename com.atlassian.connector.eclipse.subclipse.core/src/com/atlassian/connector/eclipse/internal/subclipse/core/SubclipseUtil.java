@@ -44,76 +44,42 @@ public final class SubclipseUtil {
 		}
 		
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		if (projects == null || projects.length == 0) {
-			StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Could not find projects in the workspace."));
-		}
 		
-		final List<IResource> resources = MiscUtil.buildArrayList();
-		final int[] matchLevel = new int[] { 0 };
+		for (IProject project : projects) {
+			if (!SVNWorkspaceRoot.isManagedBySubclipse(project)) {
+				continue;
+			}
+			
+			String[] repositorySegments = SVNWorkspaceRoot.getSVNFolderFor(project).getUrl().getPathSegments();
+			if (repositorySegments == null || repositorySegments.length == 0) {
+				continue;
+			}
+			
+			IPath resourcePath = new Path(path);
 
-		try {
-			ResourcesPlugin.getWorkspace().getRoot().accept(
-				new IResourceVisitor() {
-					private int matchingLastSegments(
-							IPath firstPath, IPath secondPath) {
-						int firstPathLen = firstPath.segmentCount();
-						int secondPathLen = secondPath
-								.segmentCount();
-						int max = Math.min(firstPathLen,
-								secondPathLen);
-						int count = 0;
-						for (int i = 1; i <= max; i++) {
-							if (!firstPath
-									.segment(firstPathLen - i)
-									.equals(
-											secondPath
-													.segment(secondPathLen
-															- i))) {
-								return count;
-							}
-							count++;
-						}
-						return count;
+			// Check if both paths have common segments, i.e.:
+			// svn PLE trunk com.atlassian
+			// trunk com.atlassian META-INF MANIFEST.MF
+			for (int i=0, s= Math.min(repositorySegments.length, resourcePath.segmentCount()); i<s; ++i) {
+				boolean match = true;
+				for (int j = 0; j < s - i; ++j) {
+					if (!repositorySegments[i + j].equals(resourcePath.segment(j))) {
+						match = false;
+						break;
 					}
-
-					public boolean visit(IResource resource)
-							throws CoreException {
-						if (resource.getType() == IResource.PROJECT && !SVNWorkspaceRoot.isManagedBySubclipse(resource.getProject())) {
-							return false;
-						}
-						
-						if (!(resource instanceof IFile)) {
-							return true; // skip it if it's not a
-											// file, but check its
-											// members
-						}
-
-						int matchCount = matchingLastSegments(
-								new Path(path), resource
-										.getLocation());
-						if (matchCount > 0) {
-							if (matchCount > matchLevel[0]) {
-								resources.clear();
-								matchLevel[0] = matchCount;
-							}
-							if (matchCount == matchLevel[0]) {
-								resources.add(resource);
-							}
-						}
-
-						return true; // visit also members of this
-										// resource
+				}
+				if (match) {
+					IPath projectPath = resourcePath.removeFirstSegments(i);
+					IResource resource = project.findMember(projectPath);
+					if (resource == null) {
+						StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Resource {0} doesn't exist in project {1}", projectPath, project)));
+						return null;
 					}
-				});
-		} catch(CoreException e) {
-			StatusHandler.log(e.getStatus());
-			return null;
+					return resource;
+				}
+			}
 		}
-		
-		if (resources.size() > 0) {
-			return resources.get(0);
-		}
-		
+
 		StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not find resource for {0}.", path)));
 		return null;
 	}
