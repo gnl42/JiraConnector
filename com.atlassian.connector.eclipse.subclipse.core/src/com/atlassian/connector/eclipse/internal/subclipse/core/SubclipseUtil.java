@@ -2,11 +2,15 @@ package com.atlassian.connector.eclipse.internal.subclipse.core;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,57 +29,92 @@ import org.tigris.subversion.subclipse.core.resources.SVNWorkspaceRoot;
 import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
+import com.atlassian.theplugin.commons.util.MiscUtil;
+
 public final class SubclipseUtil {
 
 	private SubclipseUtil() {
 		// ignore
 	}
 	
-	public static IResource getLocalResourceFromFilePath(String filePath) {
-		if (filePath == null || filePath.length() <= 0) {
+	public static IResource getLocalResourceFromFilePath(final String path) {
+		if (path == null || path.length() <= 0) {
 			StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Requested file path is null or empty."));
 			return null;
 		}
 		
-		if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length == 0) {
+		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		if (projects != null || projects.length == 0) {
 			StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Could not find projects in the workspace."));
 		}
 		
-		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+		final List<IResource> resources = MiscUtil.buildArrayList();
+		final int[] matchLevel = new int[] { 0 };
 
-			if (SVNWorkspaceRoot.isManagedBySubclipse(project)) {
-				try {
-					IPath fileIPath = new Path(filePath);
-					IResource resource = project.findMember(fileIPath);
-					while (!fileIPath.isEmpty() && resource == null) {
-						fileIPath = fileIPath.removeFirstSegments(1);
-						resource = project.findMember(fileIPath);
-					}
-					if (resource == null || fileIPath.isEmpty()) {
-						continue;
-					}
-
-					ISVNResource projectResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
-					if (projectResource != null) {
-						SVNUrl url = projectResource.getUrl();
-
-						if (url != null && url.toString().endsWith(filePath)) {
-							return resource;
-						} else {
-							StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Could not match SVN resource URL with local file path"));
-							return null;
+		try {
+			ResourcesPlugin.getWorkspace().getRoot().accept(
+				new IResourceVisitor() {
+					private int matchingLastSegments(
+							IPath firstPath, IPath secondPath) {
+						int firstPathLen = firstPath.segmentCount();
+						int secondPathLen = secondPath
+								.segmentCount();
+						int max = Math.min(firstPathLen,
+								secondPathLen);
+						int count = 0;
+						for (int i = 1; i <= max; i++) {
+							if (!firstPath
+									.segment(firstPathLen - i)
+									.equals(
+											secondPath
+													.segment(secondPathLen
+															- i))) {
+								return count;
+							}
+							count++;
 						}
-					} else {
-						StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not get SVN resource for {0}", resource.getName())));
-						return null;
+						return count;
 					}
-				} catch (Exception e) {
-					StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, e.getMessage(), e));
-					return null;
-				}
-			}
+
+					public boolean visit(IResource resource)
+							throws CoreException {
+						if (resource.getType() == IResource.PROJECT && !SVNWorkspaceRoot.isManagedBySubclipse(resource.getProject())) {
+							return false;
+						}
+						
+						if (!(resource instanceof IFile)) {
+							return true; // skip it if it's not a
+											// file, but check its
+											// members
+						}
+
+						int matchCount = matchingLastSegments(
+								new Path(path), resource
+										.getLocation());
+						if (matchCount > 0) {
+							if (matchCount > matchLevel[0]) {
+								resources.clear();
+								matchLevel[0] = matchCount;
+							}
+							if (matchCount == matchLevel[0]) {
+								resources.add(resource);
+							}
+						}
+
+						return true; // visit also members of this
+										// resource
+					}
+				});
+		} catch(CoreException e) {
+			StatusHandler.log(e.getStatus());
+			return null;
 		}
-		StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not find resource for path {0}", filePath)));
+		
+		if (resources.size() > 0) {
+			return resources.get(0);
+		}
+		
+		StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Could not find resource for {0}.", path)));
 		return null;
 	}
 	
