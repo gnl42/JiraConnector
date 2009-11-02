@@ -44,7 +44,7 @@ public final class SubclipseUtil {
 		}
 		
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		if (projects != null || projects.length == 0) {
+		if (projects == null || projects.length == 0) {
 			StatusHandler.log(new Status(IStatus.WARNING, AtlassianSubclipseCorePlugin.PLUGIN_ID, "Could not find projects in the workspace."));
 		}
 		
