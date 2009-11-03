@@ -1,14 +1,10 @@
 package com.atlassian.connector.eclipse.internal.subversive.core;
 
-import java.util.List;
-
 import org.apache.commons.httpclient.URI;
-import org.eclipse.core.resources.IFile;
+import org.apache.commons.httpclient.URIException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,8 +20,6 @@ import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.svnstorage.SVNRepositoryFile;
-
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 public final class SubversiveUtil {
 	
@@ -57,8 +51,26 @@ public final class SubversiveUtil {
 			if (RepositoryProvider.getProvider(project, SVNTeamPlugin.NATURE_ID) == null) {
 				continue;
 			}
-			
-			String[] repositorySegments = SVNRemoteStorage.instance().asRepositoryResource(project).getUrl().split("/"); 
+			final IRepositoryResource repositoryResource = SVNRemoteStorage.instance().asRepositoryResource(project);
+			if (repositoryResource == null) {
+				continue;
+			}
+			final String repositoryUrl = repositoryResource.getUrl();
+			if (repositoryUrl == null) {
+				continue;
+			}
+			String repositoryPath;
+			try {
+				repositoryPath = new URI(repositoryUrl, false).getPath();
+			} catch (URIException e) {
+				continue;
+			} catch (NullPointerException e) {
+				continue;
+			}
+			if (repositoryPath == null) {
+				continue;
+			}
+			final String[] repositorySegments = repositoryPath.split("/");
 			if (repositorySegments == null || repositorySegments.length == 0) {
 				continue;
 			}
@@ -77,7 +89,7 @@ public final class SubversiveUtil {
 					}
 				}
 				if (match) {
-					IPath projectPath = resourcePath.removeFirstSegments(i);
+					IPath projectPath = resourcePath.removeFirstSegments(s-i);
 					IResource resource = project.findMember(projectPath);
 					if (resource == null) {
 						StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubversiveCorePlugin.PLUGIN_ID, NLS.bind("Resource {0} doesn't exist in project {1}", projectPath, project)));
