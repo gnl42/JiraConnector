@@ -69,7 +69,7 @@ public final class SubclipseUtil {
 					}
 				}
 				if (match) {
-					IPath projectPath = resourcePath.removeFirstSegments(i);
+					IPath projectPath = resourcePath.removeFirstSegments(s-i);
 					IResource resource = project.findMember(projectPath);
 					if (resource == null) {
 						StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Resource {0} doesn't exist in project {1}", projectPath, project)));
