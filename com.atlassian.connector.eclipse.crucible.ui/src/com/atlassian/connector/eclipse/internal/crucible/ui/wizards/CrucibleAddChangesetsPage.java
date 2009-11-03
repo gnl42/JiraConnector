@@ -421,6 +421,15 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 				Repository crucibleRepository = dialog.getSelection();
 				repositoryMappings.put(scmPath, crucibleRepository.getName());
 				repositoriesMappingViewer.setInput(selectedLogEntries);
+
+				final Map<String, String> repositoryMappingsCopy = new HashMap<String, String>(
+						repositoryMappings.size());
+				for (Map.Entry<String, String> entry : repositoryMappings.entrySet()) {
+					if (entry.getValue() != null) {
+						repositoryMappingsCopy.put(entry.getKey(), entry.getValue());
+					}
+				}
+				TaskRepositoryUtil.setScmRepositoryMappings(taskRepository, repositoryMappingsCopy);
 			}
 		}
 		validatePage();
@@ -434,8 +443,8 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 
 		//check if all custom repositories are mapped to crucible repositories
 		boolean allFine = true;
-		for (String scmPath : repositoryMappings.keySet()) {
-			if (repositoryMappings.get(scmPath) == null) {
+		for (RepositoryInfo ri : selectedLogEntries.keySet()) {
+			if (repositoryMappings.get(ri.getScmPath()) == null) {
 				setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
 				allFine = false;
 				break;
@@ -769,7 +778,6 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 						selectedLogEntries.remove(repository);
 						//if its the last of that repo, remove it from mapping
 						if (!selectedLogEntries.containsKey(repository)) {
-							repositoryMappings.remove(repository.getScmPath());
 							ComboViewer viewer = mappingCombos.remove(repository);
 							if (viewer != null) {
 								viewer.getCombo().dispose();
@@ -826,9 +834,4 @@ public class CrucibleAddChangesetsPage extends WizardPage {
 		return repositoryMappings;
 	}
 
-	@Override
-	public void setPageComplete(boolean complete) {
-		TaskRepositoryUtil.setScmRepositoryMappings(taskRepository, repositoryMappings);
-		super.setPageComplete(complete);
-	}
 }
