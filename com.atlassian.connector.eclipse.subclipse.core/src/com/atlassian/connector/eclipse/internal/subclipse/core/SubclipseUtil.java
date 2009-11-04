@@ -39,7 +39,8 @@ public final class SubclipseUtil {
 		final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		
 		for (IProject project : projects) {
-			if (!SVNWorkspaceRoot.isManagedBySubclipse(project)) {
+			// skip projects that are closed or not versioned under Subversive
+			if (!project.isOpen() || !SVNWorkspaceRoot.isManagedBySubclipse(project)) {
 				continue;
 			}
 			
@@ -54,9 +55,10 @@ public final class SubclipseUtil {
 			// svn PLE trunk com.atlassian
 			// trunk com.atlassian META-INF MANIFEST.MF
 			for (int i=0, s= Math.min(repositorySegments.length, resourcePath.segmentCount()); i<s; ++i) {
+				int offset = repositorySegments.length > resourcePath.segmentCount() ? repositorySegments.length - resourcePath.segmentCount() : 0;
 				boolean match = true;
 				for (int j = 0; j < s - i; ++j) {
-					if (!repositorySegments[i + j].equals(resourcePath.segment(j))) {
+					if (offset + i + j >= repositorySegments.length || !repositorySegments[offset + i + j].equals(resourcePath.segment(j))) {
 						match = false;
 						break;
 					}
@@ -64,11 +66,9 @@ public final class SubclipseUtil {
 				if (match) {
 					IPath projectPath = resourcePath.removeFirstSegments(s-i);
 					IResource resource = project.findMember(projectPath);
-					if (resource == null) {
-						StatusHandler.log(new Status(IStatus.ERROR, AtlassianSubclipseCorePlugin.PLUGIN_ID, NLS.bind("Resource {0} doesn't exist in project {1}", projectPath, project)));
-						return null;
+					if (resource != null) {
+						return resource;
 					}
-					return resource;
 				}
 			}
 		}
