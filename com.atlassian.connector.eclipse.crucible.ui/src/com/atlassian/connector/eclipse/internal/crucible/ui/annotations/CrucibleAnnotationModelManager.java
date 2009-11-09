@@ -305,4 +305,22 @@ public final class CrucibleAnnotationModelManager {
 		return annotationModelExtension;
 	}
 
+	public static boolean hasCrucibleAnnotation(ITextEditor editor) {
+		IDocumentProvider documentProvider = editor.getDocumentProvider();
+		IEditorInput editorInput = editor.getEditorInput();
+		if (documentProvider == null) {
+			return false;
+		}
+
+		IAnnotationModel annotationModel = documentProvider.getAnnotationModel(editorInput);
+		if (!(annotationModel instanceof IAnnotationModelExtension)) {
+			return false;
+		}
+
+		IAnnotationModelExtension annotationModelExtension = (IAnnotationModelExtension) annotationModel;
+		IAnnotationModel crucibleAnnotationModel = annotationModelExtension.getAnnotationModel(CRUCIBLE_ANNOTATION_MODEL_KEY);
+
+		return crucibleAnnotationModel != null;
+	}
+
 }

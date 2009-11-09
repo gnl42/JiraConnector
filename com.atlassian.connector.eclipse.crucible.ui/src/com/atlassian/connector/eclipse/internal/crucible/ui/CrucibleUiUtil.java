@@ -324,19 +324,32 @@ public final class CrucibleUiUtil {
 	public static void attachCrucibleAnnotation(IEditorPart editor, ITask task, Review review,
 			CrucibleFile crucibleFile, VersionedComment versionedComment) {
 		boolean annotationsAdded = false;
+		boolean hasCrucibleAnnotation = false;
 		final ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
-	
+
 		if (editor instanceof ITextEditor) {
 			ITextEditor textEditor = ((ITextEditor) editor);
 			if (activeTask != null && activeTask.equals(task)) {
 				annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
+			} else if (activeTask != null) {
+				hasCrucibleAnnotation = CrucibleAnnotationModelManager.hasCrucibleAnnotation(textEditor);
+				if (hasCrucibleAnnotation) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null,
+									"This file has annotations associated with active review "
+											+ activeTask.getTaskKey(), MessageDialog.INFORMATION,
+									new String[] { IDialogConstants.OK_LABEL }, 0).open();
+						}
+					});
+				}
 			}
 			if (versionedComment != null) {
 				TeamUiUtils.selectAndRevealComment(textEditor, versionedComment, crucibleFile);
 			}
 		}
-	
-		if (!annotationsAdded) {
+
+		if (!annotationsAdded && !hasCrucibleAnnotation) {
 			final String msg;
 			if (activeTask == null || !activeTask.equals(task)) {
 				msg = "To annotate this file, review " + review.getPermId().getId() + " must be active.";
