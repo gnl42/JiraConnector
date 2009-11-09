@@ -32,25 +32,19 @@ import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
 
-public class AskForPermissionDialog extends Dialog {
+public class EnabledMonitoringNoticeDialog extends Dialog {
 
-	public AskForPermissionDialog(Shell parentShell) {
+	public EnabledMonitoringNoticeDialog(Shell parentShell) {
 		super(parentShell);
 	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		getShell().setText(Messages.AskForPermissionDialog_title);
+		getShell().setText(Messages.EnabledMonitoringNoticeDialog_title);
 
 		Composite composite = new Composite((Composite) super.createDialogArea(parent), SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
-
-		Label messageLabel = new Label(composite, SWT.WRAP);
-		messageLabel.setText(Messages.AskForPermissionDialog_please_consider_uploading);
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).hint(
-				convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH), SWT.DEFAULT).applyTo(
-				messageLabel);
 
 		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
 			Composite uc = new Composite(composite, SWT.NONE);
@@ -73,9 +67,13 @@ public class AskForPermissionDialog extends Dialog {
 			});
 		}
 
-		new Label(composite, SWT.WRAP).setText(Messages.AskForPermissionDialog_to_see_what_will_be_tracked);
+		Label messageLabel = new Label(composite, SWT.WRAP);
+		messageLabel.setText(Messages.EnabledMonitoringNoticeDialog_please_consider_uploading);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).hint(
+				convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH), SWT.DEFAULT).applyTo(
+				messageLabel);
 
-		new Label(composite, SWT.WRAP).setText(Messages.AskForPermissionDialog_allow_collecting_and_uploading);
+		new Label(composite, SWT.WRAP).setText(Messages.EnabledMonitoringNoticeDialog_to_disable);
 
 		applyDialogFont(composite);
 		return composite;
@@ -83,8 +81,7 @@ public class AskForPermissionDialog extends Dialog {
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
-		createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, false);
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 	}
 
 	@Override

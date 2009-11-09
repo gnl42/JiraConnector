@@ -30,9 +30,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
 				MonitorPreferenceConstants.PREF_MONITORING_INITIALLY_ENABLED);
 
-		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION,
-				MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED);
-
 		store.setDefault(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, true);
 
 		if (!store.contains(MonitorPreferenceConstants.PREF_MONITORING_USER_ID)

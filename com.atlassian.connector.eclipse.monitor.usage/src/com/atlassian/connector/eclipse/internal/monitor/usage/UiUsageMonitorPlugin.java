@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
@@ -32,7 +33,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -65,10 +65,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.update.internal.ui.security.Authentication;
 import org.osgi.framework.BundleContext;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.AskForPermissionDialog;
+import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
+import com.atlassian.connector.eclipse.internal.monitor.usage.operations.DisablingUsageDataMonitoringJob;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
 import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
@@ -252,10 +254,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
 						startMonitoring();
-					} else {
-						if (!suppressConfigurationWizards() && !CoreUtil.TEST_MODE) {
-							askUserForPermissionToMonitor();
-						}
+					}
+
+					if (isFirstTime() && !suppressConfigurationWizards() && !CoreUtil.TEST_MODE) {
+						informUserThatMonitoringIsEnabled();
 					}
 				} catch (Throwable t) {
 					StatusHandler.log(new Status(IStatus.ERROR, UiUsageMonitorPlugin.ID_PLUGIN,
@@ -476,40 +478,25 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * One time action (after this plugin was installed) to ask user if we can monitor him/her. User can decide later on
-	 * to disable or enable this.
+	 * One time action (after this plugin was installed) - after the plugin was installed inform user that monitoring is
+	 * enabled.
 	 */
-	private void askUserForPermissionToMonitor() {
-		if (getStudyParameters().getUsageCollectors().size() == 0) {
-			return;
-		}
-
-		// already configured so don't bother asking
-		if (!isFirstTime()) {
-			return;
-		}
-
+	private void informUserThatMonitoringIsEnabled() {
 		final IPreferenceStore store = getPreferenceStore();
 
-		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false"); // must not use boolean here, it will not be stored
+		UIJob informUserJob = new UIJob("Usage Data Monitoring Enabled") {
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				// must not use boolean here, it will not be stored
+				store.setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false");
 
-		boolean agreement = new AskForPermissionDialog(Display.getDefault().getActiveShell()).open() == IDialogConstants.YES_ID;
-
-		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION, Boolean.toString(agreement));
-		store.setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED, Boolean.toString(agreement));
-
-		// force saving, in case workbench crashes
-		if (store instanceof IPersistentPreferenceStore) {
-			try {
-				((IPersistentPreferenceStore) store).save();
-			} catch (IOException e) {
-				// ignore it here
+				new EnabledMonitoringNoticeDialog(Display.getDefault().getActiveShell()).open();
+				return Status.OK_STATUS;
 			}
-		}
+		};
 
-		if (agreement) {
-			startMonitoring();
-		}
+		informUserJob.setPriority(Job.INTERACTIVE);
+		informUserJob.schedule(TEN_MINUTES_IN_MS);
 	}
 
 	public Job startUploadStatisticsJob() {
@@ -595,10 +582,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				|| getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME);
 	}
 
-	public boolean isSubmissionEnabled() {
-		return getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION);
-	}
-
 	/**
 	 * @return null if it's not set, or Date
 	 */
@@ -638,4 +621,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 		return image;
 	}
 
+	public void monitoringDisabled() {
+		Job job = new DisablingUsageDataMonitoringJob();
+		job.schedule();
+	}
 }

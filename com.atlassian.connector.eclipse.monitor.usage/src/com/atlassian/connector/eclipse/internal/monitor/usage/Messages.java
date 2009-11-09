@@ -16,9 +16,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "com.atlassian.connector.eclipse.internal.monitor.usage.messages"; //$NON-NLS-1$
 
-	public static String AskForPermissionDialog_allow_collecting_and_uploading;
-
-	public static String AskForPermissionDialog_to_see_what_will_be_tracked;
+	public static String EnabledMonitoringNoticeDialog_to_disable;
 
 	public static String MonitorFileRolloverJob_title;
 
@@ -38,9 +36,9 @@ public class Messages extends NLS {
 
 	public static String UiUsageMonitorPlugin_cant_create_log_file;
 
-	public static String AskForPermissionDialog_title;
+	public static String EnabledMonitoringNoticeDialog_title;
 
-	public static String AskForPermissionDialog_please_consider_uploading;
+	public static String EnabledMonitoringNoticeDialog_please_consider_uploading;
 
 	public static String UiUsageMonitorPlugin_open_usage_report;
 
@@ -80,11 +78,11 @@ public class Messages extends NLS {
 
 	public static String UsageDataPreferencePage_events_since_upload;
 
-	public static String UsageDataPreferencePage_enable_submission_every;
+	public static String UsageDataPreferencePage_submission_every;
 
-	public static String UsageDataPreferencePage_16;
+	public static String UsageDataPreferencePage_days;
 
-	public static String UsageDataPreferencePage_monitoring;
+	public static String UsageDataPreferencePage_monitoring_and_submission;
 
 	public static String UsageDataPreferencePage_enable_logging_to;
 

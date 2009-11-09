@@ -27,7 +27,9 @@ Bundle-Vendor: %Bundle-Vendor
 Export-Package: 
  com.atlassian.connector.eclipse.internal.monitor.usage;x-internal:=true,
  com.atlassian.connector.eclipse.internal.monitor.usage.collectors;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.monitor.usage.dialogs;x-internal:=true,
  com.atlassian.connector.eclipse.internal.monitor.usage.editors;x-internal:=true,
+ com.atlassian.connector.eclipse.internal.monitor.usage.operations;x-internal:=true,
  com.atlassian.connector.eclipse.internal.monitor.usage.preferences;x-internal:=true,
  com.atlassian.connector.eclipse.internal.monitor.usage.wizards;x-internal:=true,
  com.atlassian.connector.eclipse.monitor.usage

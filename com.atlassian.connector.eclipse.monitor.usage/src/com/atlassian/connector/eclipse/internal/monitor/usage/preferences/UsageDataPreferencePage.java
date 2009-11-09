@@ -23,7 +23,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -57,8 +56,6 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 	private Button enableObfuscation;
 
-	private Button enableSubmission;
-
 	private Text logFileText;
 
 	private Text submissionTime;
@@ -75,8 +72,7 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
 
-		createLogFileSection(container);
-		createUsageSection(container);
+		createMonitoringAndFeedbackSection(container);
 		createCollectorsSection(container);
 		updateEnablement();
 		return container;
@@ -143,23 +139,16 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	private void updateEnablement() {
 		if (!enableMonitoring.getSelection()) {
 			logFileText.setEnabled(false);
-			enableSubmission.setEnabled(false);
 			submissionTime.setEnabled(false);
 		} else {
 			logFileText.setEnabled(true);
-			enableSubmission.setEnabled(true);
-			if (!enableSubmission.getSelection()) {
-				submissionTime.setEnabled(false);
-			} else {
-				submissionTime.setEnabled(true);
-			}
+			submissionTime.setEnabled(true);
 		}
-
 	}
 
-	private void createLogFileSection(Composite parent) {
+	private void createMonitoringAndFeedbackSection(Composite parent) {
 		final Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
-		group.setText(Messages.UsageDataPreferencePage_monitoring);
+		group.setText(Messages.UsageDataPreferencePage_monitoring_and_submission);
 		group.setLayout(new GridLayout(2, false));
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -167,14 +156,10 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		enableMonitoring.setText(Messages.UsageDataPreferencePage_enable_logging_to);
 		enableMonitoring.setSelection(getPreferenceStore().getBoolean(
 				MonitorPreferenceConstants.PREF_MONITORING_ENABLED));
-		enableMonitoring.addSelectionListener(new SelectionListener() {
-
+		enableMonitoring.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateEnablement();
-			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// ignore
 			}
 		});
 
@@ -183,47 +168,34 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		logFileText = new Text(group, SWT.BORDER);
 		logFileText.setText(logFilePath);
 		logFileText.setEditable(false);
-		logFileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(logFileText);
 
 		enableObfuscation = new Button(group, SWT.CHECK);
 		enableObfuscation.setText(Messages.UsageDataPreferencePage_obfuscate_elements);
 		enableObfuscation.setSelection(getPreferenceStore().getBoolean(
 				MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE));
+
 		Label obfuscationLablel = new Label(group, SWT.NULL);
 		obfuscationLablel.setText(InteractionEventObfuscator.ENCRYPTION_ALGORITHM
 				+ Messages.UsageDataPreferencePage_message_digest);
+
+		createFeedbackSection(group);
 	}
 
-	private void createUsageSection(Composite parent) {
-		Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
-		group.setText(Messages.UsageDataPreferencePage_usage_feedback);
-		group.setLayout(new GridLayout(2, false));
-		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+	private void createFeedbackSection(Composite group) {
 		Label events = new Label(group, SWT.NULL);
 		events.setText(Messages.UsageDataPreferencePage_events_since_upload);
 		Label logged = new Label(group, SWT.NULL);
 		logged.setText("" + getPreferenceStore().getInt(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS)); //$NON-NLS-1$
 
-		Composite enableSubmissionComposite = new Composite(group, SWT.NULL);
-		GridLayout submissionGridLayout = new GridLayout(4, false);
-		submissionGridLayout.marginWidth = 0;
-		submissionGridLayout.marginHeight = 0;
-		enableSubmissionComposite.setLayout(submissionGridLayout);
-		enableSubmission = new Button(enableSubmissionComposite, SWT.CHECK);
+		Label submission = new Label(group, SWT.NULL);
+		submission.setText(Messages.UsageDataPreferencePage_submission_every);
 
-		enableSubmission.setText(Messages.UsageDataPreferencePage_enable_submission_every);
-		enableSubmission.setSelection(getPreferenceStore().getBoolean(
-				MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION));
-		enableSubmission.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				updateEnablement();
-			}
+		Composite submissionTimeGroup = new Composite(group, SWT.NULL);
+		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(submissionTimeGroup);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(submissionTimeGroup);
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
-		submissionTime = new Text(enableSubmissionComposite, SWT.BORDER | SWT.RIGHT);
+		submissionTime = new Text(submissionTimeGroup, SWT.BORDER | SWT.RIGHT);
 		GridData gridData = new GridData();
 		gridData.widthHint = 30;
 		submissionTime.setLayoutData(gridData);
@@ -240,8 +212,8 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 
 			}
 		});
-		Label label2 = new Label(enableSubmissionComposite, SWT.NONE);
-		label2.setText(Messages.UsageDataPreferencePage_16);
+		Label label2 = new Label(submissionTimeGroup, SWT.NONE);
+		label2.setText(Messages.UsageDataPreferencePage_days);
 	}
 
 	@Override
@@ -257,11 +229,9 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		if (enableMonitoring.getSelection()) {
 			UiUsageMonitorPlugin.getDefault().startMonitoring();
 		} else {
+			UiUsageMonitorPlugin.getDefault().monitoringDisabled();
 			UiUsageMonitorPlugin.getDefault().stopMonitoring();
 		}
-
-		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLE_SUBMISSION,
-				enableSubmission.getSelection());
 
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_ENABLED,
 				enableMonitoring.getSelection());

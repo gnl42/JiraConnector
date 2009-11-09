@@ -11,11 +11,17 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.operations;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.NoRouteToHostException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -34,17 +40,11 @@ import org.eclipse.mylyn.monitor.core.InteractionEvent;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Constants;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.NoRouteToHostException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
 
 public final class UsageDataUploadJob extends Job {
 
@@ -90,7 +90,7 @@ public final class UsageDataUploadJob extends Job {
 		final Date currentTime = new Date();
 
 		if (currentTime.getTime() > lastTransmit.getTime() + plugin.getTransmitPromptPeriod()
-				&& plugin.isSubmissionEnabled() && !plugin.isFirstTime()) {
+				&& plugin.isMonitoringEnabled() && !plugin.isFirstTime()) {
 
 			// time must be stored right away into preferences, to prevent
 			// other threads

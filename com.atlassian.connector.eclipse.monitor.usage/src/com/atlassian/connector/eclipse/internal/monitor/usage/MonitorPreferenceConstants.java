@@ -16,9 +16,7 @@ package com.atlassian.connector.eclipse.internal.monitor.usage;
  */
 public class MonitorPreferenceConstants {
 
-	public static final boolean PREF_MONITORING_INITIALLY_ENABLED = false;
-
-	public static final boolean PREF_MONITORING_ENABLE_SUBMISSION_INITITALLY_ENABLED = false;
+	public static final boolean PREF_MONITORING_INITIALLY_ENABLED = true;
 
 	public static final String PREF_PREVIOUS_TRANSMIT_DATE = "com.atlassian.connector.eclipse.monitor.usage.upload.previousTransmit";
 
@@ -27,8 +25,6 @@ public class MonitorPreferenceConstants {
 	public static final String PREF_MONITORING_ENABLED = "com.atlassian.connector.eclipse.monitor.usage.enabled";
 
 	public static final String PREF_MONITORING_OBFUSCATE = "com.atlassian.connector.eclipse.monitor.usage.obfuscate";
-
-	public static final String PREF_MONITORING_ENABLE_SUBMISSION = "com.atlassian.connector.eclipse.monitor.usage.enable.submission";
 
 	public static final String PREF_MONITORING_SUBMIT_FREQUENCY = "com.atlassian.connector.eclipse.monitor.usage.submission.frequency";
 

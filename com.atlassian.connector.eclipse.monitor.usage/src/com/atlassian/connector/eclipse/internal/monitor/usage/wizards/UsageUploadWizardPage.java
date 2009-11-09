@@ -111,9 +111,8 @@ public class UsageUploadWizardPage extends WizardPage {
 		label = new Label(topContainer, SWT.NULL | SWT.BEGINNING);
 		label.setText(Messages.UsageUploadWizardPage_usage_file_location);
 
-		usageFileText = new Text(topContainer, SWT.BORDER | SWT.SINGLE);
-		usageFileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		usageFileText.setEditable(false);
+		usageFileText = new Text(topContainer, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
+		GridDataFactory.fillDefaults().grab(true, false).hint(500, SWT.DEFAULT).applyTo(usageFileText);
 
 		usageFileText.setText(wizard.getMonitorFileName());
 
