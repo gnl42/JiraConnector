@@ -27,6 +27,10 @@ import java.util.StringTokenizer;
  */
 public final class BambooUtil {
 
+	public interface BuildChangeAction {
+		void run(BambooBuild build, TaskRepository repository);
+	}
+
 	private static final String KEY_SUBSCRIBED_PLANS = "com.atlassian.connector.eclipse.bamboo.subscribedPlans";
 
 	private BambooUtil() {
@@ -88,5 +92,23 @@ public final class BambooUtil {
 		builder.append(build.getNumber());
 		// ignore
 		return builder.toString();
+	}
+
+	public static void runActionForChangedBuild(BuildsChangedEvent event, BambooUtil.BuildChangeAction buildChangeAction) {
+		if (event.getChangedBuilds().size() > 0) {
+			for (TaskRepository key : event.getChangedBuilds().keySet()) {
+				for (BambooBuild build : event.getChangedBuilds().get(key)) {
+					//for each build get equivalent old build
+					for (BambooBuild oldBuild : event.getOldBuilds().get(key)) {
+						if (isSameBuildPlan(build, oldBuild)) {
+							if (build.getStatus() != oldBuild.getStatus()) {
+								//build status changed
+								buildChangeAction.run(build, key);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }

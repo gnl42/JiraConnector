@@ -30,6 +30,12 @@ public final class BambooConstants {
 
 	public static final boolean DEFAULT_AUTO_REFRESH = true;
 
+	public static final String PREFERENCE_PLAY_SOUND = "prefs_play_sound_build_failed";
+
+	protected static final boolean DEFAULT_PLAY_SOUND = false;
+
+	public static final String PREFERENCE_BUILD_SOUND = "pref_sound_build_failed";
+
 	private BambooConstants() {
 	}
 }

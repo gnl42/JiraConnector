@@ -51,21 +51,11 @@ public class BambooNotificationProvider implements ITaskListNotificationProvider
 	}
 
 	public void buildsUpdated(BuildsChangedEvent event) {
-		if (event.getChangedBuilds().size() > 0) {
-			for (TaskRepository key : event.getChangedBuilds().keySet()) {
-				for (BambooBuild build : event.getChangedBuilds().get(key)) {
-					//for each build get equivalent old build
-					for (BambooBuild oldBuild : event.getOldBuilds().get(key)) {
-						if (BambooUtil.isSameBuildPlan(build, oldBuild)) {
-							if (build.getStatus() != oldBuild.getStatus()) {
-								//build status changed
-								notifications.add(new BambooNotification(build, key, BambooNotification.CHANGE.CHANGED));
-							}
-						}
-					}
-				}
+		BambooUtil.runActionForChangedBuild(event, new BambooUtil.BuildChangeAction() {
+			public void run(BambooBuild build, TaskRepository repository) {
+				notifications.add(new BambooNotification(build, repository, BambooNotification.CHANGE.CHANGED));
 			}
-		}
+		});
 	}
 
 }

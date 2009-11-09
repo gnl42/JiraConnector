@@ -11,21 +11,32 @@
 
 package com.atlassian.connector.eclipse.internal.bamboo.core;
 
+import com.atlassian.connector.eclipse.internal.bamboo.core.BambooUtil.BuildChangeAction;
 import com.atlassian.connector.eclipse.internal.core.AtlassianLogger;
+import com.atlassian.theplugin.commons.bamboo.BambooBuild;
+import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -64,6 +75,45 @@ public class BambooCorePlugin extends Plugin {
 		preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
 			public void preferenceChange(PreferenceChangeEvent event) {
 				buildPlanManager.reInitializeScheduler();
+			}
+		});
+
+		buildPlanManager.addBuildsChangedListener(new BuildsChangedListener() {
+
+			public void buildsUpdated(BuildsChangedEvent event) {
+
+				BambooUtil.runActionForChangedBuild(event, new BuildChangeAction() {
+
+					public void run(BambooBuild build, TaskRepository repository) {
+
+						if (build.getStatus() == BuildStatus.FAILURE) {
+
+							IEclipsePreferences preferences = new InstanceScope().getNode(BambooCorePlugin.PLUGIN_ID);
+							boolean isPlaySound = preferences.getBoolean(BambooConstants.PREFERENCE_PLAY_SOUND,
+									BambooConstants.DEFAULT_PLAY_SOUND);
+
+							if (isPlaySound) {
+								String sound = preferences.get(BambooConstants.PREFERENCE_BUILD_SOUND, "");
+
+								if (sound != null && sound.length() > 0) {
+									// play sound
+									InputStream in;
+									try {
+										in = new FileInputStream(sound);
+										sun.audio.AudioStream as = new sun.audio.AudioStream(in);
+										sun.audio.AudioPlayer.player.start(as);
+									} catch (FileNotFoundException e) {
+										StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
+												"Cannot find audio file to play", e));
+									} catch (IOException e) {
+										StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
+												"Cannot play audio file", e));
+									}
+								}
+							}
+						}
+					}
+				});
 			}
 		});
 
