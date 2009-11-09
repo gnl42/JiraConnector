@@ -48,6 +48,7 @@ import org.eclipse.mylyn.internal.monitor.ui.MenuCommandMonitor;
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.internal.monitor.ui.PerspectiveChangeMonitor;
 import org.eclipse.mylyn.internal.monitor.ui.WindowChangeMonitor;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.monitor.core.IInteractionEventListener;
 import org.eclipse.mylyn.monitor.ui.AbstractCommandMonitor;
 import org.eclipse.mylyn.monitor.ui.IActionExecutionListener;
@@ -56,7 +57,6 @@ import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbench;
@@ -90,6 +90,8 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	private static final long SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000;
 
 	private static final long TEN_MINUTES_IN_MS = 10 * 60 * 1000;
+
+	private static final long FIVE_MINUTES_IN_MS = 5 * 60 * 1000;
 
 	private InteractionEventLogger interactionLogger;
 
@@ -481,13 +483,13 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 				// must not use boolean here, it will not be stored
 				store.setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false");
 
-				new EnabledMonitoringNoticeDialog(Display.getDefault().getActiveShell()).open();
+				new EnabledMonitoringNoticeDialog(WorkbenchUtil.getShell()).open();
 				return Status.OK_STATUS;
 			}
 		};
 
 		informUserJob.setPriority(Job.INTERACTIVE);
-		informUserJob.schedule(TEN_MINUTES_IN_MS);
+		informUserJob.schedule(FIVE_MINUTES_IN_MS);
 	}
 
 	public Job startUploadStatisticsJob() {

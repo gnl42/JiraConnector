@@ -42,25 +42,12 @@ public class EnabledMonitoringNoticeDialog extends Dialog {
 		getShell().setText(Messages.EnabledMonitoringNoticeDialog_title);
 
 		Composite composite = new Composite((Composite) super.createDialogArea(parent), SWT.NONE);
-		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
+		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
 
-		Composite uc = new Composite(composite, SWT.NONE);
-		uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(uc);
-
-		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
+		new Label(composite, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
 		final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
-
-		Link details = new Link(uc, SWT.NULL);
-		details.setText(String.format("<A HREF=\"%s\">%s</A>", params.getDetailsUrl(), params.getName()));
-		details.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
-			}
-		});
 
 		Label messageLabel = new Label(composite, SWT.WRAP);
 		messageLabel.setText(Messages.EnabledMonitoringNoticeDialog_please_consider_uploading);
@@ -68,7 +55,22 @@ public class EnabledMonitoringNoticeDialog extends Dialog {
 				convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH), SWT.DEFAULT).applyTo(
 				messageLabel);
 
-		new Label(composite, SWT.WRAP).setText(Messages.EnabledMonitoringNoticeDialog_to_disable);
+		Link details = new Link(composite, SWT.NULL);
+		GridDataFactory.fillDefaults().span(2, 1).align(SWT.END, SWT.FILL).applyTo(details);
+
+		details.setText(String.format("<A HREF=\"%s\">Check what's collected by %s</A>", params.getDetailsUrl(),
+				params.getName()));
+		details.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
+			}
+		});
+
+		Label disable = new Label(composite, SWT.WRAP);
+		GridDataFactory.fillDefaults().span(2, 1).align(SWT.END, SWT.FILL).applyTo(disable);
+
+		disable.setText(Messages.EnabledMonitoringNoticeDialog_to_disable);
 
 		applyDialogFont(composite);
 		return composite;
