@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -57,7 +56,6 @@ import org.eclipse.mylyn.monitor.ui.MonitorUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWindowListener;
@@ -69,6 +67,7 @@ import org.eclipse.ui.progress.UIJob;
 import org.eclipse.update.internal.ui.security.Authentication;
 import org.osgi.framework.BundleContext;
 
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.DisablingUsageDataMonitoringJob;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
@@ -120,7 +119,10 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	private boolean backgroundEnabled = false;
 
-	private final StudyParameters studyParameters = new StudyParameters();
+	private final StudyParameters studyParameters = new StudyParameters(AtlassianCorePlugin.PRODUCT_NAME,
+			"http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload",
+			"http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector",
+			new String[] { "com.atlassian", "org.eclipse.mylyn" });
 
 	private final ListenerList lifecycleListeners = new ListenerList();
 
@@ -240,17 +242,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 					// browserMonitor = new BrowserMonitor();
 					// setAcceptedUrlMatchList(studyParameters.getAcceptedUrlList());
-
-					// ------- moved from synch start
-					MonitorUsageExtensionPointReader extensionReader = new MonitorUsageExtensionPointReader();
-
-					studyParameters.setUsageCollectors(extensionReader.getUsageCollectors());
-					// ------- moved from synch start
-
-					Collection<IMonitorActivator> monitors = extensionReader.getMonitors();
-					if (monitors != null) {
-						monitorActivators.addAll(monitors);
-					}
 
 					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
 						startMonitoring();
@@ -606,19 +597,6 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	public void setObservedEvents(int number) {
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_NUM_USER_EVENTS, number);
-	}
-
-	public Image getCollectorLogo(UsageCollector data) {
-		if (customLogosRegistry == null) {
-			customLogosRegistry = new ImageRegistry(getWorkbench().getDisplay());
-		}
-
-		Image image = customLogosRegistry.get(data.getUploadUrl());
-		if (image == null && data.getIcon() != null) {
-			customLogosRegistry.put(data.getUploadUrl(), data.getIcon());
-			image = customLogosRegistry.get(data.getUploadUrl());
-		}
-		return image;
 	}
 
 	public void monitoringDisabled() {

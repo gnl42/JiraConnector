@@ -12,7 +12,6 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.preferences;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
@@ -35,13 +34,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
-import org.osgi.framework.Constants;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventObfuscator;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorPreferenceConstants;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard;
 
 /**
@@ -109,27 +108,22 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 		Label info = new Label(group, SWT.NULL);
 		info.setText(Messages.UsageDataPreferencePage_sent_to_following_recipients);
 
-		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
-			Composite uc = new Composite(group, SWT.NONE);
-			uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(uc);
+		Composite uc = new Composite(group, SWT.NONE);
+		uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(uc);
 
-			new Label(uc, SWT.NONE).setImage(UiUsageMonitorPlugin.getDefault().getCollectorLogo(collector));
+		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
-			final String detailsUrl = collector.getDetailsUrl();
+		final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
 
-			Link details = new Link(uc, SWT.NULL);
-			details.setText(String.format(
-					"<A href=\"%s\">%s</A>", detailsUrl, Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
-							.getHeaders()
-							.get(Constants.BUNDLE_NAME)));
-			details.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
-				}
-			});
-		}
+		Link details = new Link(uc, SWT.NULL);
+		details.setText(String.format("<A href=\"%s\">%s</A>", params.getDetailsUrl(), params.getName()));
+		details.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
+			}
+		});
 	}
 
 	public void init(IWorkbench workbench) {

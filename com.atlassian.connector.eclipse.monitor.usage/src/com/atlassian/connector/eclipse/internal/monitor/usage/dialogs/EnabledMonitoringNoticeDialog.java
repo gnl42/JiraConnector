@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.dialogs;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -26,11 +25,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
-import org.osgi.framework.Constants;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 
 public class EnabledMonitoringNoticeDialog extends Dialog {
 
@@ -46,26 +45,22 @@ public class EnabledMonitoringNoticeDialog extends Dialog {
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
 
-		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
-			Composite uc = new Composite(composite, SWT.NONE);
-			uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(uc);
+		Composite uc = new Composite(composite, SWT.NONE);
+		uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(uc);
 
-			new Label(uc, SWT.NONE).setImage(UiUsageMonitorPlugin.getDefault().getCollectorLogo(collector));
+		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
-			final String detailsUrl = collector.getDetailsUrl();
+		final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
 
-			Link details = new Link(uc, SWT.NULL);
-			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
-					.getHeaders()
-					.get(Constants.BUNDLE_NAME)));
-			details.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					WorkbenchUtil.openUrl(detailsUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
-				}
-			});
-		}
+		Link details = new Link(uc, SWT.NULL);
+		details.setText(String.format("<A HREF=\"%s\">%s</A>", params.getDetailsUrl(), params.getName()));
+		details.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
+			}
+		});
 
 		Label messageLabel = new Label(composite, SWT.WRAP);
 		messageLabel.setText(Messages.EnabledMonitoringNoticeDialog_please_consider_uploading);

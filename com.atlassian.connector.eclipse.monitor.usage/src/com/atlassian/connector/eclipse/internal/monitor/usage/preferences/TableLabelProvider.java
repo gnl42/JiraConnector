@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 
 public final class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 	public Image getColumnImage(Object element, int columnIndex) {
@@ -23,7 +23,7 @@ public final class TableLabelProvider extends LabelProvider implements ITableLab
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
-		UsageCollector row = (UsageCollector) element;
+		StudyParameters row = (StudyParameters) element;
 		switch (columnIndex) {
 		case 0:
 			return row.getUploadUrl();

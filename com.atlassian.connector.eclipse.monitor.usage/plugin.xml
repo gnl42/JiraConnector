@@ -27,8 +27,17 @@
             label="%keyword.label"
             id="com.atlassian.connector.eclipse.monitor.usage.keywords"/>
    </extension>
- 
-	<!--extension point="org.eclipse.ui.newWizards">
+   
+   <extension point="org.eclipse.ui.newWizards">
+      <wizard
+            class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard"
+            icon="icons/eview16/wizard-feedback.gif"
+            id="com.atlassian.connector.eclipse.ui.UsageSubmissionWizard"
+            name="Usage Data Submission for Atlassian Connector for Eclipse">
+      </wizard>
+   </extension>
+   
+   <!--extension point="org.eclipse.ui.newWizards">
     	<wizard
             canFinishEarly="false" 
             category="org.eclipse.mylyn.ui.wizards.new"

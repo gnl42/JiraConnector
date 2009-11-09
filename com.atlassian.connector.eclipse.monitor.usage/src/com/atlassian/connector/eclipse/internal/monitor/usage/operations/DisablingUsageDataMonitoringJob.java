@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -34,8 +33,8 @@ import org.eclipse.mylyn.monitor.core.InteractionEvent;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
 
 public final class DisablingUsageDataMonitoringJob extends Job {
 
@@ -49,12 +48,6 @@ public final class DisablingUsageDataMonitoringJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		final SubMonitor submonitor = SubMonitor.convert(monitor);
-		final Collection<UsageCollector> usageCollectors = UiUsageMonitorPlugin.getDefault()
-				.getStudyParameters()
-				.getUsageCollectors();
-
-		submonitor.setWorkRemaining(usageCollectors.size());
-
 		final File monitoringDisabledLog;
 		try {
 			monitoringDisabledLog = createMonitoringDisabledLog(submonitor.newChild(1));
@@ -63,9 +56,7 @@ public final class DisablingUsageDataMonitoringJob extends Job {
 		}
 
 		try {
-			for (UsageCollector collector : usageCollectors) {
-				upload(collector, monitoringDisabledLog, monitor);
-			}
+			upload(UiUsageMonitorPlugin.getDefault().getStudyParameters(), monitoringDisabledLog, monitor);
 		} finally {
 			monitoringDisabledLog.delete();
 		}
@@ -98,11 +89,11 @@ public final class DisablingUsageDataMonitoringJob extends Job {
 	 *            The file to upload
 	 * @return true on success
 	 */
-	private boolean upload(UsageCollector collector, File log, IProgressMonitor monitor) {
+	private boolean upload(StudyParameters params, File log, IProgressMonitor monitor) {
 		int status = 0;
 
 		try {
-			final PostMethod filePost = new PostMethod(collector.getUploadUrl());
+			final PostMethod filePost = new PostMethod(params.getUploadUrl());
 			try {
 				Part[] parts = { new FilePart("temp.txt", log, "application/zip", FilePart.DEFAULT_CHARSET) }; //$NON-NLS-1$
 

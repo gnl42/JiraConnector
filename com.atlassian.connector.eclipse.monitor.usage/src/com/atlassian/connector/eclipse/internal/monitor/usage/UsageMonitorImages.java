@@ -29,6 +29,8 @@ public class UsageMonitorImages {
 
 	private static final String T_EVIEW = "eview16";
 
+	private static final String T_MISC = "misc";
+
 	private static final URL baseURL = UiUsageMonitorPlugin.getDefault().getBundle().getEntry("/icons/");
 
 	public static final ImageDescriptor REFRESH = create(T_ELCL, "refresh.gif");
@@ -40,6 +42,8 @@ public class UsageMonitorImages {
 	public static final ImageDescriptor MONITOR = create(T_EVIEW, "monitor.gif");
 
 	public static final ImageDescriptor ZIP_FILE = create(T_ELCL, "import-zip.gif");
+
+	public static final ImageDescriptor LOGO = create(T_MISC, "atlassian_icon-32.png");
 
 	private static ImageDescriptor create(String prefix, String name) {
 		try {

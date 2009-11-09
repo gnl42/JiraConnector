@@ -43,8 +43,8 @@ import org.osgi.framework.Constants;
 import com.atlassian.connector.eclipse.internal.monitor.usage.InteractionEventLogger;
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.MonitorFileRolloverJob;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
 
 public final class UsageDataUploadJob extends Job {
 
@@ -125,19 +125,19 @@ public final class UsageDataUploadJob extends Job {
 		UiUsageMonitorPlugin.getDefault().getInteractionLogger().stopMonitoring();
 		boolean failed = false;
 		try {
-			for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
-				File zipFile = zipFilesForUpload(collector, monitor);
-				if (zipFile == null) {
-					return;
-				}
+			final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
 
-				if (!upload(collector, zipFile, monitor)) {
-					failed = true;
-				}
+			File zipFile = zipFilesForUpload(params, monitor);
+			if (zipFile == null) {
+				return;
+			}
 
-				if (zipFile.exists()) {
-					zipFile.delete();
-				}
+			if (!upload(params, zipFile, monitor)) {
+				failed = true;
+			}
+
+			if (zipFile.exists()) {
+				zipFile.delete();
 			}
 		} finally {
 			if (!failed) {
@@ -155,7 +155,7 @@ public final class UsageDataUploadJob extends Job {
 		return;
 	}
 
-	private File zipFilesForUpload(UsageCollector collector, IProgressMonitor monitor) {
+	private File zipFilesForUpload(StudyParameters collector, IProgressMonitor monitor) {
 		List<File> files = new ArrayList<File>();
 		File monitorFile = UiUsageMonitorPlugin.getDefault().getMonitorLogFile();
 		File fileToUpload;
@@ -249,7 +249,7 @@ public final class UsageDataUploadJob extends Job {
 	 *            The file to upload
 	 * @return true on success
 	 */
-	private boolean upload(UsageCollector collector, File f, IProgressMonitor monitor) {
+	private boolean upload(StudyParameters collector, File f, IProgressMonitor monitor) {
 		int status = 0;
 
 		try {

@@ -76,29 +76,6 @@
       </mapping>
    </extension>
    
-   <!-- Usage Data -->
-	<extension
-         point="com.atlassian.connector.eclipse.monitor.usage.study">
-         <usageCollector
-         	icon="atlassian_icon-32.png"
-         	uploadUrl="http://update.atlassian.com/atlassian-eclipse-plugin/usage-collector/upload" eventFilters="com.atlassian,org.eclipse.mylyn"
-         	detailsUrl="http://confluence.atlassian.com/display/IDEPLUGIN/Collecting+Usage+Statistics+for+the+Eclipse+Connector"/>
-         <!--ui
-         	title="Mylyn User Study Example"
-         	daysBetweenUpload="6"
-         	questionnairePage="org.eclipse.mylyn.examples.monitor.study.QuestionnaireWizardPage"
-         	consentForm="doc/study-ethics.html"/-->
-   </extension>
-   
-   <extension point="org.eclipse.ui.newWizards">
-      <wizard
-            class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.UsageSubmissionWizard"
-            icon="icons/eview16/wizard-feedback.gif"
-            id="com.atlassian.connector.eclipse.ui.UsageSubmissionWizard"
-            name="Usage Data Submission for Atlassian Connector for Eclipse">
-      </wizard>
-   </extension>
-   
    <extension
          point="org.eclipse.ui.startup">
       <startup

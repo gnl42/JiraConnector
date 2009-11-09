@@ -10,3 +10,6 @@
 1257773965146	Rename field 'AskForPermissionDialog_to_see_what_will_be_tracked'
 1257774387161	Rename field 'AskForPermissionDialog_please_consider_uploading'
 1257776648620	Copy compilation unit
+1257789153809	Delete element
+1257790215483	Encapsulate field 'name'
+1257790365240	Delete element

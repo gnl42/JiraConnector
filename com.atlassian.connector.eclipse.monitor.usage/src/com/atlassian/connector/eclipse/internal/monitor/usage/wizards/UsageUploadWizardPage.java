@@ -14,7 +14,6 @@ package com.atlassian.connector.eclipse.internal.monitor.usage.wizards;
 import java.io.File;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -30,11 +29,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
-import org.osgi.framework.Constants;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageCollector;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
 
 /**
@@ -87,26 +86,22 @@ public class UsageUploadWizardPage extends WizardPage {
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
 		label.setText(Messages.UsageUploadWizardPage_recipients);
 
-		for (UsageCollector collector : UiUsageMonitorPlugin.getDefault().getStudyParameters().getUsageCollectors()) {
-			Composite uc = new Composite(topContainer, SWT.NONE);
-			uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-			GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(uc);
+		Composite uc = new Composite(topContainer, SWT.NONE);
+		uc.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(uc);
 
-			new Label(uc, SWT.NONE).setImage(UiUsageMonitorPlugin.getDefault().getCollectorLogo(collector));
+		new Label(uc, SWT.NONE).setImage(UsageMonitorImages.getImage(UsageMonitorImages.LOGO));
 
-			final String detailsUrl = collector.getDetailsUrl();
+		final StudyParameters params = UiUsageMonitorPlugin.getDefault().getStudyParameters();
 
-			Link details = new Link(uc, SWT.NULL);
-			details.setText(String.format("<A>%s</A>", (String) Platform.getBundle(collector.getBundle()) //$NON-NLS-1$
-					.getHeaders()
-					.get(Constants.BUNDLE_NAME)));
-			details.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					WorkbenchUtil.openUrl(detailsUrl, IWorkbenchBrowserSupport.AS_EXTERNAL);
-				}
-			});
-		}
+		Link details = new Link(uc, SWT.NULL);
+		details.setText(String.format("<A HREF=\"%s\">%s</A>", params.getDetailsUrl(), params.getName()));
+		details.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				WorkbenchUtil.openUrl(e.text, IWorkbenchBrowserSupport.AS_EXTERNAL);
+			}
+		});
 
 		label = new Label(topContainer, SWT.NULL | SWT.BEGINNING);
 		label.setText(Messages.UsageUploadWizardPage_usage_file_location);

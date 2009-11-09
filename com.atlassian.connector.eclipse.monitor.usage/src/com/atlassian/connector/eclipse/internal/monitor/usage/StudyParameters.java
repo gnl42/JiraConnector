@@ -12,6 +12,8 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -20,13 +22,37 @@ import java.util.Collection;
  */
 public class StudyParameters {
 
-	private Collection<UsageCollector> usageCollectors;
+	private final String name;
 
-	public void setUsageCollectors(Collection<UsageCollector> usageCollectors) {
-		this.usageCollectors = usageCollectors;
+	private final String uploadUrl;
+
+	private final Collection<String> eventFilters;
+
+	private final String detailsUrl;
+
+	public StudyParameters(final String name, final String uploadUrl, final String detailsUrl,
+			final String[] eventFilters) {
+		this.name = name;
+		this.uploadUrl = uploadUrl;
+		this.eventFilters = new ArrayList<String>();
+		this.eventFilters.addAll(Arrays.asList(eventFilters));
+		this.detailsUrl = detailsUrl;
 	}
 
-	public Collection<UsageCollector> getUsageCollectors() {
-		return usageCollectors;
+	public String getUploadUrl() {
+		return uploadUrl;
 	}
+
+	public Collection<String> getEventFilters() {
+		return eventFilters;
+	}
+
+	public String getDetailsUrl() {
+		return detailsUrl;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 }
