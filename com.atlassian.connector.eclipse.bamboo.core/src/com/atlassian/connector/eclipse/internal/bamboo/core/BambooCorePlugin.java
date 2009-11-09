@@ -18,25 +18,18 @@ import com.atlassian.theplugin.commons.bamboo.BuildStatus;
 import com.atlassian.theplugin.commons.util.LoggerImpl;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -97,18 +90,18 @@ public class BambooCorePlugin extends Plugin {
 
 								if (sound != null && sound.length() > 0) {
 									// play sound
-									InputStream in;
-									try {
-										in = new FileInputStream(sound);
-										sun.audio.AudioStream as = new sun.audio.AudioStream(in);
-										sun.audio.AudioPlayer.player.start(as);
-									} catch (FileNotFoundException e) {
-										StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
-												"Cannot find audio file to play", e));
-									} catch (IOException e) {
-										StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
-												"Cannot play audio file", e));
-									}
+//									InputStream in;
+//									try {
+//										in = new FileInputStream(sound);
+//										sun.audio.AudioStream as = new sun.audio.AudioStream(in);
+//										sun.audio.AudioPlayer.player.start(as);
+//									} catch (FileNotFoundException e) {
+//										StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
+//												"Cannot find audio file to play", e));
+//									} catch (IOException e) {
+//										StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
+//												"Cannot play audio file", e));
+//									}
 								}
 							}
 						}
