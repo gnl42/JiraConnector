@@ -13,3 +13,5 @@
 1257789153809	Delete element
 1257790215483	Encapsulate field 'name'
 1257790365240	Delete element
+1257856060289	Rename type 'DisablingUsageDataMonitoringJob'
+1257857449751	Rename local variable 'previous'

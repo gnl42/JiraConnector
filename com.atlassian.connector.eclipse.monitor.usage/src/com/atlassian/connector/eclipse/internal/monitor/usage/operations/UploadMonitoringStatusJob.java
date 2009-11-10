@@ -36,13 +36,16 @@ import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
 import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
 
-public final class DisablingUsageDataMonitoringJob extends Job {
+public final class UploadMonitoringStatusJob extends Job {
 
-	public DisablingUsageDataMonitoringJob() {
-		super("Disabling Usage Data Monitoring");
+	private final boolean enabled;
+
+	public UploadMonitoringStatusJob(boolean enabled) {
+		super("Reporting Usage Data Monitoring Status");
 		setPriority(Job.SHORT);
 		setUser(false);
 		setSystem(true);
+		this.enabled = enabled;
 	}
 
 	@Override
@@ -71,7 +74,7 @@ public final class DisablingUsageDataMonitoringJob extends Job {
 			InteractionEventLogger iel = new InteractionEventLogger(temp);
 			iel.startMonitoring();
 			iel.interactionObserved(InteractionEvent.makePreference(UiUsageMonitorPlugin.ID_PLUGIN,
-					"disabled usage data monitor")); //$NON-NLS-1$
+					enabled ? "enabled usage data monitor" : "disabled usage data monitor")); //$NON-NLS-1$ //$NON-NLS-2$
 			iel.stopMonitoring();
 
 			File zipFile = File.createTempFile(UiUsageMonitorPlugin.getDefault().getUserId() + ".", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$

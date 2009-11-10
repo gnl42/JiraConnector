@@ -69,7 +69,7 @@ import org.osgi.framework.BundleContext;
 
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
-import com.atlassian.connector.eclipse.internal.monitor.usage.operations.DisablingUsageDataMonitoringJob;
+import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UploadMonitoringStatusJob;
 import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
 import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
@@ -477,6 +477,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	private void informUserThatMonitoringIsEnabled() {
 		final IPreferenceStore store = getPreferenceStore();
 
+		// report to the server that monitoring is enabled
+		monitoringEnabled();
+
 		UIJob informUserJob = new UIJob("Usage Data Monitoring Enabled") {
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
@@ -602,7 +605,12 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 	}
 
 	public void monitoringDisabled() {
-		Job job = new DisablingUsageDataMonitoringJob();
+		Job job = new UploadMonitoringStatusJob(false);
+		job.schedule();
+	}
+
+	public void monitoringEnabled() {
+		Job job = new UploadMonitoringStatusJob(true);
 		job.schedule();
 	}
 }

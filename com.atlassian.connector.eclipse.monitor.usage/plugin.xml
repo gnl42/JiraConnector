@@ -37,17 +37,6 @@
       </wizard>
    </extension>
    
-   <!--extension point="org.eclipse.ui.newWizards">
-    	<wizard
-            canFinishEarly="false" 
-            category="org.eclipse.mylyn.ui.wizards.new"
-            class="com.atlassian.connector.eclipse.internal.monitor.usage.wizards.NewUsageSummaryEditorWizard"
-            hasPages="true"
-            icon="icons/eview16/editor-usage.gif"
-            id="com.atlassian.connector.eclipse.monitor.usage.wizard.usageSummary"
-            name="%wizard.name"/>
-   	</extension-->
-   
    	<extension point="org.eclipse.ui.editors">
         <editor
            icon="icons/eview16/editor-usage.gif"

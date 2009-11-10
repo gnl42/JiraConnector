@@ -220,10 +220,17 @@ public class UsageDataPreferencePage extends PreferencePage implements IWorkbenc
 	public boolean performOk() {
 		getPreferenceStore().setValue(MonitorPreferenceConstants.PREF_MONITORING_OBFUSCATE,
 				enableObfuscation.getSelection());
+
+		boolean wasEnabled = getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED);
 		if (enableMonitoring.getSelection()) {
+			if (!wasEnabled) {
+				UiUsageMonitorPlugin.getDefault().monitoringEnabled();
+			}
 			UiUsageMonitorPlugin.getDefault().startMonitoring();
 		} else {
-			UiUsageMonitorPlugin.getDefault().monitoringDisabled();
+			if (wasEnabled) {
+				UiUsageMonitorPlugin.getDefault().monitoringDisabled();
+			}
 			UiUsageMonitorPlugin.getDefault().stopMonitoring();
 		}
 
