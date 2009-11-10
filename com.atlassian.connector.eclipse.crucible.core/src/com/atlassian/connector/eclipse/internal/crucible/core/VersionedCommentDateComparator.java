@@ -40,7 +40,7 @@ public class VersionedCommentDateComparator implements Comparator<VersionedComme
 		}
 	}
 
-	int getStartLine(Map<String, IntRanges> lineRanges) {
+	public int getStartLine(Map<String, IntRanges> lineRanges) {
 		boolean firstTime = true;
 		int res = 0;
 		for (IntRanges lines : lineRanges.values()) {
