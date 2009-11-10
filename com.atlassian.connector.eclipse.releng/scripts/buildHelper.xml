@@ -185,20 +185,20 @@
 	</target>
 
 	<target name="init-timestamp" unless="qualifier">
-		<antcall target="init-timestamp-snapshot" unless="build.release">
+		<antcall target="init-timestamp-snapshot">
 		</antcall>
-		<antcall target="init-timestamp-release" if="build.release">
+		<antcall target="init-timestamp-release">
 		</antcall>
 	</target>
 
-	<target name="init-timestamp-snapshot">
+	<target name="init-timestamp-snapshot" unless="build.release">
 		<tstamp>
 			<format property="qualifier" pattern="'I'yyyyMMdd-HH00" locale="en,US" timezone="UTC" />
 		</tstamp>
 		<echo message="qualifier=${qualifier}" file="${build.timestamp}" />
 	</target>
 
-	<target name="init-timestamp-release">
+	<target name="init-timestamp-release" if="build.release">
 		<tstamp>
 			<format property="qualifier" pattern="'v'yyyyMMdd" locale="en,US" timezone="UTC" />
 		</tstamp>
