@@ -16,6 +16,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -58,7 +59,7 @@ public class EnabledMonitoringNoticeDialog extends Dialog {
 		Link details = new Link(composite, SWT.NULL);
 		GridDataFactory.fillDefaults().span(2, 1).align(SWT.END, SWT.FILL).applyTo(details);
 
-		details.setText(String.format("<A HREF=\"%s\">Check what's collected by %s</A>", params.getDetailsUrl(),
+		details.setText(NLS.bind(Messages.EnabledMonitoringNoticeDialog_learn_more, params.getDetailsUrl(),
 				params.getName()));
 		details.addSelectionListener(new SelectionAdapter() {
 			@Override

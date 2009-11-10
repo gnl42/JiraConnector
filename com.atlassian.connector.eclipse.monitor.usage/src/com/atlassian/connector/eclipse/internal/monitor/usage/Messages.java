@@ -16,6 +16,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "com.atlassian.connector.eclipse.internal.monitor.usage.messages"; //$NON-NLS-1$
 
+	public static String EnabledMonitoringNoticeDialog_learn_more;
+
 	public static String EnabledMonitoringNoticeDialog_to_disable;
 
 	public static String MonitorFileRolloverJob_title;
@@ -39,8 +41,6 @@ public class Messages extends NLS {
 	public static String EnabledMonitoringNoticeDialog_title;
 
 	public static String EnabledMonitoringNoticeDialog_please_consider_uploading;
-
-	public static String UiUsageMonitorPlugin_open_usage_report;
 
 	public static String UiUsageMonitorPlugin_remind_me;
 
