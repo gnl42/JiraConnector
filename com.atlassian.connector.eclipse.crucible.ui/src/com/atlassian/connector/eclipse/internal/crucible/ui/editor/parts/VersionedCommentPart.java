@@ -29,6 +29,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.RepositoryType;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -109,9 +110,9 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 	private String getLineInfo(IntRanges intRanges, @Nullable String revision) {
 		String revStr = (revision != null) ? ("Rev: " + revision + ", ") : "";
 		if (intRanges.getTotalMin() == intRanges.getTotalMax()) {
-			return "[" + revStr + "Line: " + intRanges.getTotalMin() + "]";
+			return revStr + "Line: " + intRanges.getTotalMin();
 		} else {
-			return "[" + revStr + "Lines: " + intRanges.toNiceString() + "]";
+			return revStr + "Lines: " + intRanges.toNiceString();
 		}
 	}
 
@@ -142,34 +143,36 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 			displayedRevisions.add(fromFile.getRevision());
 		}
 
-		// line
+		// new Crucible 2.1 API for iterative reviews - let's handle it at least partially
 		final Map<String, IntRanges> lineRanges = versionedComment.getLineRanges();
 		if (lineRanges != null && !lineRanges.isEmpty()) {
-			StringBuilder builder = new StringBuilder();
+			final boolean omitRevisions = displayedRevisions.containsAll(lineRanges.keySet());
+			if (omitRevisions) {
+				// if all line ranges are identical in each revision - just display one
+				final Set<IntRanges> uniqueSet = MiscUtil.buildHashSet(lineRanges.values());
+				if (uniqueSet.size() == 1) {
+					return "[" + getLineInfo(uniqueSet.iterator().next(), null) + "]";
+				}
+			}
+
+			final StringBuilder builder = new StringBuilder("[");
 			final Iterator<String> it = lineRanges.keySet().iterator();
 			while (it.hasNext()) {
 				final String revision = it.next();
 				final IntRanges intRanges = lineRanges.get(revision);
-				if (displayedRevisions.contains(revision)) {
-					builder.append(getLineInfo(intRanges, null));
-				} else {
-					builder.append(getLineInfo(intRanges, revision));
-				}
+				builder.append(getLineInfo(intRanges, omitRevisions ? null : revision));
 
 				if (it.hasNext()) {
-					builder.append(", ");
+					builder.append("; ");
 				}
 			}
+			builder.append("]");
 			return builder.toString();
-//			final IntRanges lastLineRange = getLastLineRange(lineRanges);
-//			if (lastLineRange != null) {
-//				return getLineInfo(lastLineRange);
-//			}
 		}
 		if (versionedComment.isToLineInfo()) {
-			return getLineInfo(versionedComment.getToLineRanges(), null);
+			return "[" + getLineInfo(versionedComment.getToLineRanges(), null) + "]";
 		} else if (versionedComment.isFromLineInfo()) {
-			return getLineInfo(versionedComment.getFromLineRanges(), null);
+			return "[" + getLineInfo(versionedComment.getFromLineRanges(), null) + "]";
 		} else {
 			return "[General File]";
 		}
