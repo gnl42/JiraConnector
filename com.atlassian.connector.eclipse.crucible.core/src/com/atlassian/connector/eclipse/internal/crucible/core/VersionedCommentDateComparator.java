@@ -11,10 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * A comparator for sorting versioned comments
@@ -23,7 +25,12 @@ import java.util.Date;
  */
 public class VersionedCommentDateComparator implements Comparator<VersionedComment> {
 
+	@SuppressWarnings("deprecation")
 	private int getStartLine(VersionedComment vc) {
+		final Map<String, IntRanges> lineRanges = vc.getLineRanges();
+		if (lineRanges != null) {
+			return getStartLine(lineRanges);
+		}
 		if (vc.isToLineInfo()) {
 			return vc.getToLineRanges().getTotalMin();
 		} else if (vc.isFromLineInfo()) {
@@ -33,10 +40,23 @@ public class VersionedCommentDateComparator implements Comparator<VersionedComme
 		}
 	}
 
+	int getStartLine(Map<String, IntRanges> lineRanges) {
+		boolean firstTime = true;
+		int res = 0;
+		for (IntRanges lines : lineRanges.values()) {
+			final int totalMin = lines.getTotalMin();
+			if (totalMin < res || firstTime) {
+				firstTime = false;
+				res = totalMin;
+			}
+		}
+		return res;
+	}
+
 	public int compare(VersionedComment o1, VersionedComment o2) {
 		if (o1 != null && o2 != null) {
-			Integer start1 = getStartLine(o1);
-			Integer start2 = getStartLine(o2);
+			final Integer start1 = getStartLine(o1);
+			final Integer start2 = getStartLine(o2);
 			final int difference = start1.compareTo(start2);
 			if (difference == 0) {
 				Date d1 = o1.getCreateDate();

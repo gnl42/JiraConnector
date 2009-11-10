@@ -39,11 +39,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -96,24 +101,75 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 		}
 
 		if (getCrucibleEditor() == null && !comment.isReply()) {
-			text += getLineNumberText();
+			text += getLineNumberText(crucibleFileInfo);
 		}
 		return text;
 	}
 
-	private String getLineInfo(IntRanges intRanges) {
+	private String getLineInfo(IntRanges intRanges, @Nullable String revision) {
+		String revStr = (revision != null) ? ("Rev: " + revision + ", ") : "";
 		if (intRanges.getTotalMin() == intRanges.getTotalMax()) {
-			return "[Line: " + intRanges.getTotalMin() + "]";
+			return "[" + revStr + "Line: " + intRanges.getTotalMin() + "]";
 		} else {
-			return "[Lines: " + intRanges.toNiceString() + "]";
+			return "[" + revStr + "Lines: " + intRanges.toNiceString() + "]";
 		}
 	}
 
-	private String getLineNumberText() {
+	/**
+	 * We base here on the fact that <code>lineRanges</code> is in fact {@link LinkedHashMap} and preserve ordering. We
+	 * cannot reasonably sort revisions, as they e.g. for CVS can be whatever.
+	 * 
+	 * @param lineRanges
+	 * @return
+	 */
+	private IntRanges getLastLineRange(Map<String, IntRanges> lineRanges) {
+		final Iterator<String> it = lineRanges.keySet().iterator();
+		String candidate = null;
+		while (it.hasNext()) {
+			candidate = it.next();
+		}
+		return lineRanges.get(candidate);
+	}
+
+	private String getLineNumberText(CrucibleFileInfo crucibleFileInfo) {
+		Set<String> displayedRevisions = new HashSet<String>();
+		final VersionedVirtualFile toFile = crucibleFileInfo.getFileDescriptor();
+		if (toFile != null && toFile.getRevision() != null) {
+			displayedRevisions.add(toFile.getRevision());
+		}
+		final VersionedVirtualFile fromFile = crucibleFileInfo.getOldFileDescriptor();
+		if (fromFile != null && fromFile.getRevision() != null) {
+			displayedRevisions.add(fromFile.getRevision());
+		}
+
+		// line
+		final Map<String, IntRanges> lineRanges = versionedComment.getLineRanges();
+		if (lineRanges != null && !lineRanges.isEmpty()) {
+			StringBuilder builder = new StringBuilder();
+			final Iterator<String> it = lineRanges.keySet().iterator();
+			while (it.hasNext()) {
+				final String revision = it.next();
+				final IntRanges intRanges = lineRanges.get(revision);
+				if (displayedRevisions.contains(revision)) {
+					builder.append(getLineInfo(intRanges, null));
+				} else {
+					builder.append(getLineInfo(intRanges, revision));
+				}
+
+				if (it.hasNext()) {
+					builder.append(", ");
+				}
+			}
+			return builder.toString();
+//			final IntRanges lastLineRange = getLastLineRange(lineRanges);
+//			if (lastLineRange != null) {
+//				return getLineInfo(lastLineRange);
+//			}
+		}
 		if (versionedComment.isToLineInfo()) {
-			return getLineInfo(versionedComment.getToLineRanges());
+			return getLineInfo(versionedComment.getToLineRanges(), null);
 		} else if (versionedComment.isFromLineInfo()) {
-			return getLineInfo(versionedComment.getFromLineRanges());
+			return getLineInfo(versionedComment.getFromLineRanges(), null);
 		} else {
 			return "[General File]";
 		}
@@ -138,7 +194,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 							crucibleReview);
 				}
 				compareAction.setToolTipText("Open the file to the comment in the compare editor");
-				compareAction.setText(getLineNumberText());
+				compareAction.setText(getLineNumberText(crucibleFileInfo));
 				// TODO set the image descriptor
 				createActionHyperlink(toolbarComposite, toolkit, compareAction);
 
@@ -157,7 +213,7 @@ public class VersionedCommentPart extends CommentPart<VersionedComment, Versione
 					openFileAction = new OpenVersionedVirtualFileAction(getCrucibleEditor().getTask(), crucibleFile,
 							versionedComment, crucibleReview);
 				}
-				openFileAction.setText(getLineNumberText());
+				openFileAction.setText(getLineNumberText(crucibleFileInfo));
 				openFileAction.setToolTipText("Open the file to the comment");
 				createActionHyperlink(toolbarComposite, toolkit, openFileAction);
 

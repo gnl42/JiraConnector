@@ -24,6 +24,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
@@ -328,6 +329,7 @@ public final class CrucibleUtil {
 		result += comment.getFromStartLine();
 		result += comment.getToEndLine();
 		result += comment.getToStartLine();
+		result += comment.getLineRanges() != null ? comment.getLineRanges().hashCode() : 0;
 		result += (comment.isDraft() ? TRUE_HASH_MAGIC : FALSE_HASH_MAGIC);
 		result += ((comment.getMessage() == null) ? 0 : comment.getMessage().hashCode());
 		result += ((comment.getAuthor() == null) ? 0 : comment.getAuthor().getUsername().hashCode());
@@ -382,6 +384,10 @@ public final class CrucibleUtil {
 		}
 
 		if (!areCommentsEqual(c1, c2)) {
+			return false;
+		}
+
+		if (!MiscUtil.isEqual(c1.getLineRanges(), c2.getLineRanges())) {
 			return false;
 		}
 

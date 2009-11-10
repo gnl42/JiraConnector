@@ -11,6 +11,8 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.core;
 
+import com.atlassian.connector.commons.misc.IntRange;
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfoImpl;
@@ -25,6 +27,7 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.State;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.mylyn.internal.tasks.core.RepositoryQuery;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
@@ -35,6 +38,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -641,6 +645,47 @@ public class CrucibleUtilTest extends TestCase {
 
 		c2.setMessage("test");
 		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+	}
+
+	public void testVersionedCommentWithLineRangesDeepEquals() {
+		VersionedCommentBean c1 = new VersionedCommentBean();
+		c1.setAuthor(new User("sminto"));
+		c1.setCreateDate(new Date(2L));
+		c1.setDraft(true);
+		c1.setMessage("testing message");
+
+		VersionedCommentBean c2 = new VersionedCommentBean();
+		c2.setAuthor(new User("sminto"));
+		c2.setCreateDate(new Date(2L));
+		c2.setDraft(true);
+		c2.setMessage("testing message");
+
+		assertTrue(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+		Map<String, IntRanges> lr1 = MiscUtil.buildHashMap();
+		Map<String, IntRanges> lr2 = MiscUtil.buildHashMap();
+
+		c1.setLineRanges(lr1);
+		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		c2.setLineRanges(lr2);
+		assertTrue(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		lr1.put("123", new IntRanges(new IntRange(10), new IntRange(20, 30)));
+		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		lr2.put("123", new IntRanges(new IntRange(10), new IntRange(20, 30)));
+		assertTrue(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		lr2.put("123", new IntRanges(new IntRange(10), new IntRange(21, 30)));
+		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		lr1.put("123", new IntRanges(new IntRange(10), new IntRange(21, 30)));
+		assertTrue(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
+		lr2.remove("123");
+		lr2.put("124", new IntRanges(new IntRange(10), new IntRange(21, 30)));
+		assertFalse(CrucibleUtil.areVersionedCommentsDeepEquals(c1, c2));
+
 	}
 
 	public void testGeneralCommentDeepEquals() {

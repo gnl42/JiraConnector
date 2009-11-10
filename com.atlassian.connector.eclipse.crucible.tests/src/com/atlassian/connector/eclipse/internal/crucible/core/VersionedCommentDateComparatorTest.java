@@ -14,8 +14,10 @@ package com.atlassian.connector.eclipse.internal.crucible.core;
 import com.atlassian.connector.commons.misc.IntRange;
 import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedCommentBean;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import java.util.Date;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -65,5 +67,51 @@ public class VersionedCommentDateComparatorTest extends TestCase {
 		c2.setToLineRanges(new IntRanges(new IntRange(10, 11)));
 
 		assertTrue(0 > comparator.compare(c1, c2));
+	}
+
+	public void testCompareWithLineRanges() {
+		VersionedCommentDateComparator comparator = new VersionedCommentDateComparator();
+
+		Date d1 = new Date();
+
+		// test comment equal
+		VersionedCommentBean c1 = new VersionedCommentBean();
+		c1.setCreateDate(d1);
+
+		final Map<String, IntRanges> lr1 = MiscUtil.buildHashMap();
+		lr1.put("10.45.3", new IntRanges(new IntRange(40), new IntRange(100, 120)));
+		lr1.put("10.45.4", new IntRanges(new IntRange(2), new IntRange(110, 120)));
+
+		c1.setLineRanges(lr1);
+
+		final Map<String, IntRanges> lr2 = MiscUtil.buildHashMap();
+		lr2.put("10.48.3", new IntRanges(new IntRange(6), new IntRange(100, 120)));
+		lr2.put("10.48.4", new IntRanges(new IntRange(2), new IntRange(110, 120)));
+		lr2.put("10.48.5", new IntRanges(new IntRange(8), new IntRange(10, 120)));
+
+		VersionedCommentBean c2 = new VersionedCommentBean();
+		c2.setCreateDate(d1);
+		c2.setLineRanges(lr2);
+
+		assertEquals(0, comparator.compare(c1, c1));
+		assertEquals(0, comparator.compare(c1, c2));
+
+		lr2.put("10.48.4", new IntRanges(new IntRange(1), new IntRange(110, 120)));
+		assertTrue(comparator.compare(c1, c2) > 0);
+
+		lr2.put("10.48.4", new IntRanges(new IntRange(3), new IntRange(110, 120)));
+		assertTrue(comparator.compare(c1, c2) < 0);
+
+	}
+
+	public void testGetStartLine() {
+		final Map<String, IntRanges> ranges = MiscUtil.buildHashMap();
+		ranges.put("10.48.3", new IntRanges(new IntRange(6), new IntRange(100, 120)));
+		ranges.put("10.48.4", new IntRanges(new IntRange(2), new IntRange(110, 120)));
+		ranges.put("10.48.5", new IntRanges(new IntRange(8), new IntRange(10, 120)));
+		VersionedCommentDateComparator comparator = new VersionedCommentDateComparator();
+		assertEquals(2, comparator.getStartLine(ranges));
+		ranges.put("10.48.4", new IntRanges(new IntRange(5, 9), new IntRange(10, 120)));
+		assertEquals(5, comparator.getStartLine(ranges));
 	}
 }

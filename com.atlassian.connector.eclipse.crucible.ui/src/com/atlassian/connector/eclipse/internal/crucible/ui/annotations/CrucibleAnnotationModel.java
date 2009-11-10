@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
+import com.atlassian.connector.commons.misc.IntRanges;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
@@ -35,6 +36,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -139,25 +141,45 @@ public class CrucibleAnnotationModel implements IAnnotationModel, ICrucibleAnnot
 
 	private void createCommentAnnotation(AnnotationModelEvent event, VersionedComment comment) {
 		try {
-			//if fromLineInfo and not toLineInfo and not oldFile -> old line comment but current model is new file
-			if (comment.isFromLineInfo() && !comment.isToLineInfo() && !crucibleFile.isOldFile()) {
-				return;
+
+			int startLine = 0;
+			int endLine = 0;
+
+			final Map<String, IntRanges> lineRanges = comment.getLineRanges();
+			if (lineRanges != null && !lineRanges.isEmpty()) {
+
+				final String displayedRev = !crucibleFile.isOldFile() ? crucibleFile.getCrucibleFileInfo()
+						.getFileDescriptor()
+						.getRevision() : crucibleFile.getCrucibleFileInfo().getOldFileDescriptor().getRevision();
+				final IntRanges intRanges = lineRanges.get(displayedRev);
+				if (intRanges != null) {
+					startLine = intRanges.getTotalMin();
+					endLine = intRanges.getTotalMax();
+				} else {
+					return;
+				}
+			} else {
+
+				//if fromLineInfo and not toLineInfo and not oldFile -> old line comment but current model is new file
+				if (comment.isFromLineInfo() && !comment.isToLineInfo() && !crucibleFile.isOldFile()) {
+					return;
+				}
+
+				//if toLineInfo and not fromLineInfo and  and oldfile -> new line comment but current model is old file
+				if (comment.isToLineInfo() && !comment.isFromLineInfo() && crucibleFile.isOldFile()) {
+					return;
+				}
+				startLine = comment.getToStartLine();
+				if (crucibleFile.isOldFile()) {
+					startLine = comment.getFromStartLine();
+				}
+
+				endLine = comment.getToEndLine();
+				if (crucibleFile.isOldFile()) {
+					endLine = comment.getFromEndLine();
+				}
 			}
 
-			//if toLineInfo and not fromLineInfo and  and oldfile -> new line comment but current model is old file
-			if (comment.isToLineInfo() && !comment.isFromLineInfo() && crucibleFile.isOldFile()) {
-				return;
-			}
-
-			int startLine = comment.getToStartLine();
-			if (crucibleFile.isOldFile()) {
-				startLine = comment.getFromStartLine();
-			}
-
-			int endLine = comment.getToEndLine();
-			if (crucibleFile.isOldFile()) {
-				endLine = comment.getFromEndLine();
-			}
 			int offset = 0;
 			int length = 0;
 			if (startLine != 0) {
