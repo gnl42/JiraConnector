@@ -11,14 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
+import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UploadMonitoringStatusJob;
+import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
+import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -67,11 +64,14 @@ import org.eclipse.ui.progress.UIJob;
 import org.eclipse.update.internal.ui.security.Authentication;
 import org.osgi.framework.BundleContext;
 
-import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.dialogs.EnabledMonitoringNoticeDialog;
-import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UploadMonitoringStatusJob;
-import com.atlassian.connector.eclipse.internal.monitor.usage.operations.UsageDataUploadJob;
-import com.atlassian.connector.eclipse.monitor.usage.IMonitorActivator;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * @author Mik Kersten
@@ -245,7 +245,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 					// browserMonitor = new BrowserMonitor();
 					// setAcceptedUrlMatchList(studyParameters.getAcceptedUrlList());
 
-					if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
+					if (isMonitoringEnabled()) {
 						startMonitoring();
 					}
 
@@ -382,7 +382,7 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if (getPreferenceStore().getBoolean(MonitorPreferenceConstants.PREF_MONITORING_ENABLED)) {
+		if (isMonitoringEnabled()) {
 			stopMonitoring();
 		}
 
@@ -485,8 +485,9 @@ public class UiUsageMonitorPlugin extends AbstractUIPlugin {
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				// must not use boolean here, it will not be stored
 				store.setValue(MonitorPreferenceConstants.PREF_MONITORING_FIRST_TIME, "false");
-
-				new EnabledMonitoringNoticeDialog(WorkbenchUtil.getShell()).open();
+				if (isMonitoringEnabled()) {
+					new EnabledMonitoringNoticeDialog(WorkbenchUtil.getShell()).open();
+				}
 				return Status.OK_STATUS;
 			}
 		};

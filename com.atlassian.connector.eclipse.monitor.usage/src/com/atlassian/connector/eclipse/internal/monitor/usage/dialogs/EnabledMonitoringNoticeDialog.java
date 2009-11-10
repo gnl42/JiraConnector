@@ -11,6 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.monitor.usage.dialogs;
 
+import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
+import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
+import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -27,11 +32,6 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
-import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
-import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UiUsageMonitorPlugin;
-import com.atlassian.connector.eclipse.internal.monitor.usage.UsageMonitorImages;
 
 public class EnabledMonitoringNoticeDialog extends Dialog {
 
@@ -76,6 +76,7 @@ public class EnabledMonitoringNoticeDialog extends Dialog {
 		disable.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				close();
 				PreferencesUtil.createPreferenceDialogOn(WorkbenchUtil.getShell(),
 						"com.atlassian.connector.eclipse.monitor.usage.preferences", null, null).open();
 			};
