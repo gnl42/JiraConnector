@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import com.atlassian.connector.eclipse.internal.monitor.usage.Messages;
 import com.atlassian.connector.eclipse.internal.monitor.usage.StudyParameters;
@@ -68,10 +69,17 @@ public class EnabledMonitoringNoticeDialog extends Dialog {
 			}
 		});
 
-		Label disable = new Label(composite, SWT.WRAP);
+		Link disable = new Link(composite, SWT.WRAP);
 		GridDataFactory.fillDefaults().span(2, 1).align(SWT.END, SWT.FILL).applyTo(disable);
 
 		disable.setText(Messages.EnabledMonitoringNoticeDialog_to_disable);
+		disable.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				PreferencesUtil.createPreferenceDialogOn(WorkbenchUtil.getShell(),
+						"com.atlassian.connector.eclipse.monitor.usage.preferences", null, null).open();
+			};
+		});
 
 		applyDialogFont(composite);
 		return composite;
