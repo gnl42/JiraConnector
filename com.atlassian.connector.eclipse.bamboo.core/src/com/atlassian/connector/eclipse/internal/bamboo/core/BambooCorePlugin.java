@@ -85,6 +85,7 @@ public class BambooCorePlugin extends Plugin {
 							boolean isPlaySound = preferences.getBoolean(BambooConstants.PREFERENCE_PLAY_SOUND,
 									BambooConstants.DEFAULT_PLAY_SOUND);
 
+							// @todo jjaroczynski - sound stuff should be in UI plugin, not in core!!!
 							if (isPlaySound) {
 								String sound = preferences.get(BambooConstants.PREFERENCE_BUILD_SOUND, "");
 
