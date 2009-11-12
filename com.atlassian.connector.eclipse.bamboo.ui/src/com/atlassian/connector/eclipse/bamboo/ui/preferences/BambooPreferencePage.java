@@ -7,7 +7,6 @@ import com.atlassian.connector.eclipse.ui.preferences.EclipsePreferencesAdapter;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.events.SelectionEvent;
@@ -43,25 +42,27 @@ public class BambooPreferencePage extends FieldEditorPreferencePage implements I
 		addField(refreshRate);
 		addField(new BooleanFieldEditor(BambooConstants.PREFERENCE_AUTO_REFRESH, "Refresh &Automatically",
 				getFieldEditorParent()));
-		final LocalBooleanFieldEditor playSoundCheckboxEditor = new LocalBooleanFieldEditor(
-				BambooConstants.PREFERENCE_PLAY_SOUND, "Play sound when build failed", getFieldEditorParent());
-		addField(playSoundCheckboxEditor);
-		final FileFieldEditor soundFileEditor = new FileFieldEditor(BambooConstants.PREFERENCE_BUILD_SOUND,
-				"Select sound to play: ", getFieldEditorParent());
-		soundFileEditor.setEnabled(false, getFieldEditorParent());
-		String[] ext = { "*.wav" };
-		soundFileEditor.setFileExtensions(ext);
-		addField(soundFileEditor);
 
-		playSoundCheckboxEditor.addChangeListener(new LocalSelectionListener() {
-			public void selectionChanged() {
-				if (!playSoundCheckboxEditor.getBooleanValue()) {
-					soundFileEditor.setEnabled(false, getFieldEditorParent());
-				} else {
-					soundFileEditor.setEnabled(true, getFieldEditorParent());
-				}
-			}
-		});
+// temporarily commented out until Jacek is ready with this story		
+//		final LocalBooleanFieldEditor playSoundCheckboxEditor = new LocalBooleanFieldEditor(
+//				BambooConstants.PREFERENCE_PLAY_SOUND, "Play sound when build failed", getFieldEditorParent());
+//		addField(playSoundCheckboxEditor);
+//		final FileFieldEditor soundFileEditor = new FileFieldEditor(BambooConstants.PREFERENCE_BUILD_SOUND,
+//				"Select sound to play: ", getFieldEditorParent());
+//		soundFileEditor.setEnabled(false, getFieldEditorParent());
+//		String[] ext = { "*.wav" };
+//		soundFileEditor.setFileExtensions(ext);
+//		addField(soundFileEditor);
+//
+//		playSoundCheckboxEditor.addChangeListener(new LocalSelectionListener() {
+//			public void selectionChanged() {
+//				if (!playSoundCheckboxEditor.getBooleanValue()) {
+//					soundFileEditor.setEnabled(false, getFieldEditorParent());
+//				} else {
+//					soundFileEditor.setEnabled(true, getFieldEditorParent());
+//				}
+//			}
+//		});
 	}
 
 	/* (non-Javadoc)
