@@ -324,7 +324,7 @@ public final class CrucibleUiUtil {
 	public static void attachCrucibleAnnotation(IEditorPart editor, ITask task, Review review,
 			CrucibleFile crucibleFile, VersionedComment versionedComment) {
 		boolean annotationsAdded = false;
-		boolean hasCrucibleAnnotation = false;
+		boolean hadCrucibleAnnotation = false;
 		final ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
 
 		if (editor instanceof ITextEditor) {
@@ -332,13 +332,32 @@ public final class CrucibleUiUtil {
 			if (activeTask != null && activeTask.equals(task)) {
 				annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
 			} else if (activeTask != null) {
-				hasCrucibleAnnotation = CrucibleAnnotationModelManager.hasCrucibleAnnotation(textEditor);
-				if (hasCrucibleAnnotation) {
+				hadCrucibleAnnotation = CrucibleAnnotationModelManager.hasCrucibleAnnotation(textEditor);
+
+				boolean hadAnnotations = false;
+
+				CrucibleAnnotationModel annotationModel = CrucibleAnnotationModelManager.getModelForEditor(textEditor);
+				if (annotationModel != null) {
+					hadAnnotations = annotationModel.getAnnotationIterator().hasNext();
+				}
+
+				boolean had = hadCrucibleAnnotation && hadAnnotations;
+
+				final String[] message = { "" };
+
+				if (had) {
+					message[0] = "This file has annotations associated with active review " + activeTask.getTaskKey()
+							+ ".";
+				} else /* !had */{
+					message[0] = "This file is associated with active review " + activeTask.getTaskKey()
+							+ " and does not contain annotations there.";
+				}
+
+				if (message[0].length() > 0) {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							new MessageDialog(WorkbenchUtil.getShell(), "Unable to show annotations", null,
-									"This file has annotations associated with active review "
-											+ activeTask.getTaskKey(), MessageDialog.INFORMATION,
+							new MessageDialog(WorkbenchUtil.getShell(), "File assotiated with "
+									+ activeTask.getTaskKey(), null, message[0], MessageDialog.INFORMATION,
 									new String[] { IDialogConstants.OK_LABEL }, 0).open();
 						}
 					});
@@ -349,7 +368,7 @@ public final class CrucibleUiUtil {
 			}
 		}
 
-		if (!annotationsAdded && !hasCrucibleAnnotation) {
+		if (!annotationsAdded && !hadCrucibleAnnotation) {
 			final String msg;
 			if (activeTask == null || !activeTask.equals(task)) {
 				msg = "To annotate this file, review " + review.getPermId().getId() + " must be active.";
