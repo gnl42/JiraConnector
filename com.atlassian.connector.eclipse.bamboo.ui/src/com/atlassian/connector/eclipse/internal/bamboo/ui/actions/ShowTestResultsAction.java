@@ -41,6 +41,7 @@ import org.eclipse.jdt.internal.junit.model.JUnitModel;
 import org.eclipse.jdt.internal.junit.model.TestRunSession;
 import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
 import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
+import org.eclipse.jdt.junit.JUnitCore;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -51,6 +52,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Action to open the Test Results
@@ -191,7 +194,20 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 			} catch (CoreException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
 			}
-			JUnitPlugin.getModel().addTestRunSession(trs);
+			try {
+				getJunitModel().addTestRunSession(trs);
+			} catch (Exception e) {
+				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
+			}
+		}
+
+		private JUnitModel getJunitModel() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
+				IllegalAccessException, InvocationTargetException {
+			Method getModelMethod = JUnitPlugin.class.getMethod("getModel");
+			if (getModelMethod == null) {
+				getModelMethod = JUnitCore.class.getMethod("getModel");
+			}
+			return (JUnitModel) getModelMethod.invoke(null);
 		}
 
 		/**
