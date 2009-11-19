@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Extract local variable &apos;lastIndexOf&apos; from expression &apos;key.lastIndexOf(&apos;-&apos;)&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Variable name: &apos;lastIndexOf&apos;&#x0A;- Destination method: &apos;org.eclipse.mylyn.internal.jira.core.service.web.rss.RssContentHandler.endElement()&apos;&#x0A;- Variable expression: &apos;key.lastIndexOf(&apos;-&apos;)&apos;&#x0A;- Replace occurrences of expression with variable" description="Extract local variable &apos;lastIndexOf&apos;" final="false" id="org.eclipse.jdt.ui.extract.temp" input="/src&lt;org.eclipse.mylyn.internal.jira.core.service.web.rss{RssContentHandler.java" name="lastIndexOf" replace="true" selection="23928 20" stamp="1202337664477" version="1.0"/>
-</session>

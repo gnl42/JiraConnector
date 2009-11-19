@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring comment="Rename method 'org.eclipse.mylyn.internal.jira.core.JiraClientManager.testConnection(...)' to 'validateConnection'&#10;- Original project: 'org.eclipse.mylyn.jira.core'&#10;- Original element: 'org.eclipse.mylyn.internal.jira.core.JiraClientManager.testConnection(...)'&#10;- Renamed element: 'org.eclipse.mylyn.internal.jira.core.JiraClientManager.validateConnection(...)'&#10;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method 'testConnection'" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;org.eclipse.mylyn.internal.jira.core{JiraClientManager.java[JiraClientManager~testConnection~QString;~QString;~QString;~QProxy;~QString;~QString;" name="validateConnection" references="true" stamp="1189904998629" version="1.0"/>
-</session>

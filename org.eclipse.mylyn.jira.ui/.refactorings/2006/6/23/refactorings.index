@@ -1,4 +1,0 @@
-1149725806897	Convert anonymous class to nested
-1149904158362	Extract constant 'TITLE_EDIT_QUERY'
-1149904114819	Convert member type 'JiraIssueCollector' to top level
-1149725869747	Convert member type 'JiraAttributeFactory' to top level

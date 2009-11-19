@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring comment="Rename field 'JIRA_381_URL' in 'org.eclipse.mylar.jira.tests.JiraTestConstants' to 'JIRA_39_URL'&#10;- Original project: 'org.eclipse.mylar.jira.tests'&#10;- Original element: 'org.eclipse.mylar.jira.tests.JiraTestConstants.JIRA_381_URL'&#10;- Renamed element: 'org.eclipse.mylar.jira.tests.JiraTestConstants.JIRA_39_URL'&#10;- Update references to refactored element&#10;- Update textual occurrences in comments and strings" delegate="false" deprecate="false" description="Rename field 'JIRA_381_URL'" flags="589830" getter="false" id="org.eclipse.jdt.ui.rename.field" input="/src&lt;org.eclipse.mylar.jira.tests{JiraTestConstants.java[JiraTestConstants^JIRA_381_URL" name="JIRA_39_URL" references="true" setter="false" stamp="1179374630335" textual="false" version="1.0"/>
-</session>

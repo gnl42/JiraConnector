@@ -1,9 +1,0 @@
-1139533226759	Rename package 'org.eclipse.mylar.internal.jira.wizards' to 'org.eclipse.mylar.internal.jira.ui.wizards'
-1139546422593	Move org.eclipse.mylar.internal.jira.IMylarJiraConstants.JIRA_REPOSITORY_KIND to {1}
-1139546430284	Move org.eclipse.mylar.internal.jira.IMylarJiraConstants.JIRA_CLIENT_LABEL to {1}
-1139546437464	Move org.eclipse.mylar.internal.jira.IMylarJiraConstants.TITLE_MESSAGE_DIALOG to {1}
-1139546443203	Move org.eclipse.mylar.internal.jira.IMylarJiraConstants.ISSUE_URL_PREFIX to {1}
-1139546448130	Move org.eclipse.mylar.internal.jira.IMylarJiraConstants.FILTER_URL_PREFIX to {1}
-1139546923343	Rename type 'org.eclipse.mylar.internal.jira.NoJiraRepositoryException' to 'NoRepositoryException'
-1139547139664	Rename method 'org.eclipse.mylar.internal.jira.JiraServerFacade.handleException(...)' to 'handleConnectionException'
-1139598444967	Rename method 'org.eclipse.mylar.internal.jira.JiraTask.PriorityLevel.fromString(...)' to 'fromPriority'

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring comment="Rename type 'org.eclipse.mylar.jira.tests.JiraServerFacadeTest' to 'JiraClientFacadeTest'&#10;- Original project: 'org.eclipse.mylar.jira.tests'&#10;- Original element: 'org.eclipse.mylar.jira.tests.JiraServerFacadeTest'&#10;- Renamed element: 'org.eclipse.mylar.jira.tests.JiraClientFacadeTest'&#10;- Update references to refactored element&#10;- Update textual occurrences in comments and strings" description="Rename type 'JiraServerFacadeTest'" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;org.eclipse.mylar.jira.tests{JiraServerFacadeTest.java[JiraServerFacadeTest" matchStrategy="1" name="JiraClientFacadeTest" qualified="false" references="true" similarDeclarations="false" stamp="1178668682045" textual="false" version="1.0"/>
-</session>

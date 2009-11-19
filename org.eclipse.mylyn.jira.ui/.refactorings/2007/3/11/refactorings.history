@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring accessors="true" comment="Delete 1 element(s) from project 'org.eclipse.mylar.jira.ui'&#13;&#10;- Original project: 'org.eclipse.mylar.jira.ui'&#13;&#10;- Original element: 'org.eclipse.mylar.internal.jira.ui.JiraTaskHyperlinkDetector.java'" description="Delete element" element1="/src&lt;org.eclipse.mylar.internal.jira.ui{JiraTaskHyperlinkDetector.java" elements="1" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1173749068812" subPackages="false" version="1.0"/>
-</session>

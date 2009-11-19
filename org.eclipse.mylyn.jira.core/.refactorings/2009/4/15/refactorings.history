@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Extract method &apos;private void initialize(File serverCache)&apos; from &apos;org.eclipse.mylyn.internal.jira.core.JiraCorePlugin.start()&apos; to &apos;org.eclipse.mylyn.internal.jira.core.JiraCorePlugin&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Method name: &apos;initialize&apos;&#x0A;- Destination type: &apos;org.eclipse.mylyn.internal.jira.core.JiraCorePlugin&apos;&#x0A;- Declared visibility: &apos;private&apos;" comments="false" description="Extract method &apos;initialize&apos;" destination="0" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;org.eclipse.mylyn.internal.jira.core{JiraCorePlugin.java" name="initialize" replace="false" selection="2313 294" stamp="1239395861370" version="1.0" visibility="2"/>
-</session>

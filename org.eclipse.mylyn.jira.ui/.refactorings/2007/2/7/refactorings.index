@@ -1,4 +1,0 @@
-1171342828640	Extract method 'getTaskUrl'
-1171343050812	Move members
-1171343226015	Inline local variable 'url'
-1171429550656	Extract method 'getAssignee'

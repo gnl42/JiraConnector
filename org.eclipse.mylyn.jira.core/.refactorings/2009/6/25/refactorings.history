@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy 1 elements(s) to &apos;org.eclipse.mylyn.trac.core&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Destination element: &apos;org.eclipse.mylyn.trac.core&apos;&#x0A;- Original element: &apos;.options&apos;" description="Copy file" destination="=org.eclipse.mylyn.trac.core" element1=".options" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1244937620097" units="0" version="1.0"/>
-</session>

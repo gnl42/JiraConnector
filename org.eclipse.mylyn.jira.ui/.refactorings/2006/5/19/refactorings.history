@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring comment="Extract constant 'org.eclipse.mylar.internal.jira.ui.wizards.JiraRepositorySettingsPage.CONNECT_FAILURE' from expression '&quot;Could not connect to the Jira server or the login was not accepted.&quot;'&#13;&#10;- Constant name: 'CONNECT_FAILURE'&#13;&#10;- Constant expression: '&quot;Could not connect to the Jira server or the login was not accepted.&quot;'&#13;&#10;- Declared visibility: 'private'&#13;&#10;- Replace occurrences of expression with constant" description="Extract constant 'CONNECT_FAILURE'" flags="786432" id="org.eclipse.jdt.ui.extract.constant" input="/src&lt;org.eclipse.mylar.internal.jira.ui.wizards{JiraRepositorySettingsPage.java" name="CONNECT_FAILURE" qualify="false" replace="true" selection="3363 69" stamp="1147374089671" version="1.0" visibility="2"/>
-</session>

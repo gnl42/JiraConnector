@@ -1,9 +1,0 @@
-1214198361484	Delete element
-1214198556180	Rename method 'getServerManager'
-1214199376215	Inline local variable 'client'
-1214346668033	Extract method 'getInteger'
-1214347511501	Extract constant '_6'
-1214349991668	Move members
-1214351127948	Extract local variable 'value'
-1214351421401	Extract method 'isTimeSpanAttribute'
-1214353054192	Rename method 'setWorkingHoursPerDay'

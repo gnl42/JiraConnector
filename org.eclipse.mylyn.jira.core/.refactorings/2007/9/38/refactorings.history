@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy 1 elements(s) to &apos;lib-axis&apos;&#x0D;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0D;&#x0A;- Destination element: &apos;lib-axis&apos;&#x0D;&#x0A;- Original element: &apos;axis-1.3-src.jar&apos;" description="Copy file" element1="lib-axis/axis-1.3-src.jar" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1190242199888" target="/org.eclipse.mylyn.xplanner.core/lib-axis" units="0" version="1.0"/>
-</session>

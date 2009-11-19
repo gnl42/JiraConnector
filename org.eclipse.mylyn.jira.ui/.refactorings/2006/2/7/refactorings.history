@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring comment="" description="Rename type 'org.eclipse.mylar.internal.jira.ui.TaskListImages' to 'JiraImages'" flags="65542" id="org.eclipse.jdt.ui.rename.type" input="=org.eclipse.mylar.jira/src&lt;org.eclipse.mylar.internal.jira.ui{TaskListImages.java[TaskListImages" matchStrategy="1" name="JiraImages" project="org.eclipse.mylar.jira" qualified="false" references="true" similarDeclarations="false" stamp="1139884629172" textual="false"/>
-<refactoring comment="" description="Rename enum constant 'NEW_FEATURE' of 'org.eclipse.mylar.internal.jira.JiraTask.Kind' to 'FEATURE'" flags="65542" id="org.eclipse.jdt.ui.rename.enum.constant" input="=org.eclipse.mylar.jira/src&lt;org.eclipse.mylar.internal.jira{JiraTask.java[JiraTask[Kind^NEW_FEATURE" name="FEATURE" project="org.eclipse.mylar.jira" references="true" stamp="1139952282853" textual="false"/>
-</session>

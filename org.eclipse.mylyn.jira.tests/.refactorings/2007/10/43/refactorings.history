@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Extract local variable &apos;dateToString&apos; from expression &apos;JiraUtils.dateToString(addSecondsToDate(now,20))&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.tests&apos;&#x0A;- Variable name: &apos;dateToString&apos;&#x0A;- Destination method: &apos;org.eclipse.mylyn.jira.tests.JiraRepositoryConnectorTest.testGetSynchronizationFilterTimeStampInTheFuture()&apos;&#x0A;- Variable expression: &apos;JiraUtils.dateToString(addSecondsToDate(now,20))&apos;&#x0A;- Replace occurrences of expression with variable" description="Extract local variable &apos;dateToString&apos;" final="false" id="org.eclipse.jdt.ui.extract.temp" input="/src&lt;org.eclipse.mylyn.jira.tests{JiraRepositoryConnectorTest.java" name="dateToString" replace="true" selection="11842 49" stamp="1193447055635" version="1.0"/>
-</session>

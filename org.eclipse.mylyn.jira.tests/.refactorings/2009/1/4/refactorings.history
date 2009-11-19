@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Extract method &apos;public static List&lt;ITaskComment&gt; getTaskComments(TaskData taskData)&apos; from &apos;org.eclipse.mylyn.jira.tests.util.JiraTestUtil.getTaskComments()&apos; to &apos;org.eclipse.mylyn.jira.tests.util.JiraTestUtil&apos;&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.tests&apos;&#x0A;- Method name: &apos;getTaskComments&apos;&#x0A;- Destination type: &apos;org.eclipse.mylyn.jira.tests.util.JiraTestUtil&apos;&#x0A;- Declared visibility: &apos;public&apos;" comments="false" description="Extract method &apos;getTaskComments&apos;" destination="0" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;org.eclipse.mylyn.jira.tests.util{JiraTestUtil.java" name="getTaskComments" replace="false" selection="6725 511" stamp="1232833294418" version="1.0" visibility="1"/>
-</session>

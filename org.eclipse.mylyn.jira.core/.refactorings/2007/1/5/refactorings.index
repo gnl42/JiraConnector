@@ -1,9 +1,0 @@
-1170218413000	Delete elements
-1170220388312	Rename package 'org.tigris.jira.core'
-1170220462093	Rename package 'org.tigris.jira.internal.core.service.lucene'
-1170220489000	Rename package 'org.tigris.jira.internal.core.service.soap'
-1170220508625	Rename package 'org.tigris.jira.internal.core.service.web'
-1170220550750	Rename package 'com.atlassian.jira.rpc.soap.beans'
-1170220624250	Rename package 'com.atlassian.jira.rpc.exception'
-1170220645234	Move compilation units
-1170220672125	Delete elements

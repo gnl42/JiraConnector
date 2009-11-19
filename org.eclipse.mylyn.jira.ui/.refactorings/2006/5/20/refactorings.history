@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring comment="Rename method 'org.eclipse.mylar.internal.jira.JiraRepositoryConnector.setTaskDetails(...)' to 'updateTaskDetails'&#13;&#10;- Original element: 'org.eclipse.mylar.internal.jira.JiraRepositoryConnector.setTaskDetails(...)'&#13;&#10;- Renamed element: 'org.eclipse.mylar.internal.jira.JiraRepositoryConnector.updateTaskDetails(...)'&#13;&#10;- Update references to refactored element" delegate="false" deprecate="true" description="Rename method 'setTaskDetails'" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;org.eclipse.mylar.internal.jira{JiraRepositoryConnector.java[JiraRepositoryConnector~setTaskDetails~QString;~QJiraTask;~QIssue;" name="updateTaskDetails" references="true" stamp="1148073562892" version="1.0"/>
-</session>

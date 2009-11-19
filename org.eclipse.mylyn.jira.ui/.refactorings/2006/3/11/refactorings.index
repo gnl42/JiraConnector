@@ -1,3 +1,0 @@
-1142217774779	Rename type 'org.eclipse.mylar.internal.jira.JiraFilter' to 'JiraRepositoryQuery'
-1142299266300	Rename type 'org.eclipse.mylar.internal.jira.JiraFilterHit' to 'JiraQueryHit'
-1142304694385	Rename field 'org.eclipse.mylar.internal.jira.MylarJiraPlugin.JIRA_REPOSITORY_KIND' to 'REPOSITORY_KIND'

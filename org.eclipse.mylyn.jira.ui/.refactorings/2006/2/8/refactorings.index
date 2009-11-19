@@ -1,7 +1,0 @@
-1140471028628	Rename method 'org.eclipse.mylar.internal.jira.JiraServerFacade.logOut()' to 'logOutFromAll'
-1140584661991	Convert anonymous class 'org.eclipse.mylar.internal.jira.JiraRepositoryClient.getAddExistingTaskWizard().new AbstractAddExistingTaskWizard() {...}' in 'org.eclipse.mylar.internal.jira.JiraRepositoryClient.getAddExistingTaskWizard()' to nested class
-1140584674589	Move type 'org.eclipse.mylar.internal.jira.JiraRepositoryClient.AddExistingJiraTaskWizard' in 'org.eclipse.mylar.internal.jira.JiraRepositoryClient' to new file
-1140584768384	Extract constant 'org.eclipse.mylar.internal.jira.JiraRepositoryClient.LABEL_JOB_SYNCHRONIZE' from expression '"Jira Synchronize"'
-1140626249477	Rename type 'org.eclipse.mylar.internal.jira.JiraRepositoryClient' to 'JiraRepositoryConnector'
-1140712732561	Extract method 'private void refreshSettings(JiraServer server)' from 'org.eclipse.mylar.internal.jira.JiraServerFacade.repositorySetUpdated()' to 'org.eclipse.mylar.internal.jira.JiraServerFacade'
-1140712900733	Rename method 'org.eclipse.mylar.internal.jira.JiraServerFacade.refreshSettings(...)' to 'removeServer'

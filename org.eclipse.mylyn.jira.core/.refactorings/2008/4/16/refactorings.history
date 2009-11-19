@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Convert member type &apos;org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory.JiraAttributeMapper&apos; in &apos;org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory&apos; to top level type&#x0A;- Original project: &apos;org.eclipse.mylyn.jira.core&apos;&#x0A;- Original element: &apos;org.eclipse.mylyn.internal.jira.core.JiraAttributeFactory.JiraAttributeMapper&apos;&#x0A;- Field name: &apos;jiraAttributeFactory&apos;&#x0A;- Declare field &apos;final&apos;" description="Convert member type &apos;JiraAttributeMapper&apos; to top level" field="false" fieldName="jiraAttributeFactory" final="true" flags="786438" id="org.eclipse.jdt.ui.move.inner" input="/src&lt;org.eclipse.mylyn.internal.jira.core{JiraAttributeFactory.java[JiraAttributeFactory[JiraAttributeMapper" mandatory="false" possible="false" stamp="1208672778329" version="1.0"/>
-</session>

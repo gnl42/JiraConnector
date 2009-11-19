@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring description="Extract constant 'org.eclipse.mylar.internal.jira.JiraRepositoryConnector.DELIM_URL' from expression '&quot;/browse&quot;'" id="org.eclipse.jdt.ui.extract.constant" input="unit://src/org/eclipse/mylar/internal/jira/JiraRepositoryConnector.java" name="DELIM_URL" qualify="false" replace="true" selection="6959 9" stamp="1143857071028" version="1.0" visibility="2"/>
-</session>

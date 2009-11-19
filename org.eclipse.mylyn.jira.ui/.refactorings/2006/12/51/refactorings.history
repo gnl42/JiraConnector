@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<session version="1.0">
-<refactoring comment="Extract method 'private void ensureServerConnectionValid(TaskRepository repository)' from 'org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector.updateAttributes()' to 'org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector'&#13;&#10;- Original project: 'org.eclipse.mylar.jira.ui'&#13;&#10;- Method name: 'ensureServerConnectionValid'&#13;&#10;- Destination type: 'org.eclipse.mylar.internal.jira.core.JiraRepositoryConnector'&#13;&#10;- Declared visibility: 'private'" comments="false" description="Extract method 'ensureServerConnectionValid'" destination="0" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;org.eclipse.mylar.internal.jira.core{JiraRepositoryConnector.java" name="ensureServerConnectionValid" replace="false" selection="11752 266" stamp="1166819154562" version="1.0" visibility="2"/>
-</session>

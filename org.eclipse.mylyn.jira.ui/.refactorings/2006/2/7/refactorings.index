@@ -1,2 +1,0 @@
-1139884629172	Rename type 'org.eclipse.mylar.internal.jira.ui.TaskListImages' to 'JiraImages'
-1139952282853	Rename enum constant 'NEW_FEATURE' of 'org.eclipse.mylar.internal.jira.JiraTask.Kind' to 'FEATURE'

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring comment="Move 'org.eclipse.mylar.internal.jira.core.service.JiraServer.NO_LIMIT' to 'org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector'&#10;- Original project: 'org.eclipse.mylar.jira.core'&#10;- Original element: 'org.eclipse.mylar.internal.jira.core.service.JiraServer.NO_LIMIT'&#10;- Destination type: 'org.eclipse.mylar.internal.jira.core.model.filter.IssueCollector'" delegate="false" deprecate="true" description="Move member 'NO_LIMIT'" element1="/src&lt;org.eclipse.mylar.internal.jira.core.service{JiraServer.java[JiraServer^NO_LIMIT" flags="589830" id="org.eclipse.jdt.ui.move.static" input="/src&lt;org.eclipse.mylar.internal.jira.core.model.filter{IssueCollector.java[IssueCollector" stamp="1171506067834" version="1.0"/>
-</session>

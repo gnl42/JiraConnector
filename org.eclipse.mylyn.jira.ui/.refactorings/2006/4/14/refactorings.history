@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<session version="1.0">
-<refactoring description="Convert anonymous class 'org.eclipse.mylar.internal.jira.JiraRepositoryConnector.performQuery().new IssueCollector() {...}' in 'org.eclipse.mylar.internal.jira.JiraRepositoryConnector.performQuery()' to nested class" final="true" flags="2" id="org.eclipse.jdt.ui.convert.anonymous" input="unit://src/org/eclipse/mylar/internal/jira/JiraRepositoryConnector.java" name="JiraIssueCollector" selection="4673 0" stamp="1144359787489" static="false" version="1.0" visibility="2"/>
-</session>
