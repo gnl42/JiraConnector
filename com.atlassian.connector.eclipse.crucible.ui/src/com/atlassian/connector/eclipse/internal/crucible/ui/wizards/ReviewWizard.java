@@ -24,6 +24,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
+import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
@@ -72,12 +73,13 @@ import java.util.SortedSet;
  * 
  * @author Thomas Ehrnhoefer
  * @author Pawel Niewiadomski
+ * @author Jacek Jaroczynski
  */
 @SuppressWarnings("restriction")
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
-		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH;
+		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_FILE;
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
@@ -105,7 +107,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 							revisions.add(logEntry.getRevision());
 						}
 
-						//add revisions to review
+						//add changeset to review
 						review = server.addRevisionsToReview(serverCfg, crucibleReview.getPermId(),
 								addChangeSetsPage.getRepositoryMappings().get(repository.getScmPath()), revisions);
 					}
@@ -114,6 +116,49 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			});
 
 			updateCrucibleReview(client, review, monitor);
+			return Status.OK_STATUS;
+		}
+	}
+
+	private class AddFileToReviewJob extends CrucibleReviewChangeJob {
+
+		public AddFileToReviewJob(String name, TaskRepository taskRepository) {
+			super(name, taskRepository);
+		}
+
+		@Override
+		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+			client.execute(new CrucibleRemoteOperation<Void>(monitor, getTaskRepository()) {
+
+				@Override
+				public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+						throws RemoteApiException, ServerPasswordNotProvidedException {
+
+					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+							"Adding file to review has not been implemented yet"));
+					return null;
+
+					// TODO jj implement adding file to review
+					// take crucible repo from mapping page and retrieve details from CRU (repo path)
+					// take file path and try to match to repo path (prepare file path related to repo)
+
+					// call crucible to add file to active review
+
+//					NewReviewItemBean newReviewItem = new NewReviewItemBean();
+//					String path = "/trunk/com.atlassian.connector.eclipse.crucible.ui/src/com/atlassian/connector/eclipse/internal/crucible/ui/wizards/ReviewWizard.java";
+//					newReviewItem.setFromPath(path);
+//					newReviewItem.setToPath(path);
+//					newReviewItem.setFromRevision("45820");
+//					newReviewItem.setToRevision("45820");
+//					newReviewItem.setRepositoryName(defineMappingPage.getRepositoryMappings().get(
+//							scmRepositoryInfo.getScmPath()));
+//
+//					server.addFileToReview(serverCfg, crucibleReview.getPermId(), newReviewItem);
+//
+//					return null;
+				}
+			});
+
 			return Status.OK_STATUS;
 		}
 	}
@@ -187,16 +232,24 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private String previousPatchRepository;
 
-	private final List<IResource> roots = new ArrayList<IResource>();
+	private final List<IResource> selectedWorkspaceResources = new ArrayList<IResource>();
 
 	private IResource[] previousWorkspaceSelection;
+
+	private RevisionInfo scmResourceRevisionInfo;
+
+	private CrucibleRepositoryMappingPageImpl defineMappingPage;
+
+	private RepositoryInfo scmRepositoryInfo;
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
 		setWindowTitle("New Crucible Review");
 		setNeedsProgressMonitor(true);
 		this.types = types;
-		this.roots.addAll(Arrays.asList((IResource[]) ResourcesPlugin.getWorkspace().getRoot().getProjects()));
+		this.selectedWorkspaceResources.addAll(Arrays.asList((IResource[]) ResourcesPlugin.getWorkspace()
+				.getRoot()
+				.getProjects()));
 	}
 
 	public ReviewWizard(Review review, Set<Type> types) {
@@ -232,8 +285,13 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		if (types.contains(Type.ADD_WORKSPACE_PATCH)) {
-			addWorkspacePatchPage = new WorkspacePatchSelectionPage(getTaskRepository(), this, roots);
+			addWorkspacePatchPage = new WorkspacePatchSelectionPage(getTaskRepository(), this,
+					selectedWorkspaceResources);
 			addPage(addWorkspacePatchPage);
+		}
+		if (types.contains(Type.ADD_SCM_FILE)) {
+			defineMappingPage = new CrucibleRepositoryMappingPageImpl(getTaskRepository(), this, scmRepositoryInfo);
+			addPage(defineMappingPage);
 		}
 
 		//only add details page if review is not already existing
@@ -343,6 +401,17 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			if (changesetsToAdd != null && changesetsToAdd.size() > 0) {
 				final CrucibleReviewChangeJob job = new AddChangesetsToReviewJob("Add changesets to review",
 						getTaskRepository(), changesetsToAdd);
+
+				IStatus result = runJobInContainer(job);
+				if (!result.isOK()) {
+					creationProcessStatus.add(result);
+				}
+			}
+		}
+
+		if (defineMappingPage != null) {
+			if (scmRepositoryInfo != null && scmResourceRevisionInfo != null) {
+				final CrucibleReviewChangeJob job = new AddFileToReviewJob("Add file to review", getTaskRepository());
 
 				IStatus result = runJobInContainer(job);
 				if (!result.isOK()) {
@@ -551,8 +620,8 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	}
 
 	public void setRoots(List<IResource> list) {
-		this.roots.clear();
-		this.roots.addAll(list);
+		this.selectedWorkspaceResources.clear();
+		this.selectedWorkspaceResources.addAll(list);
 	}
 
 	private void updateCrucibleReview(CrucibleClient client, Review updatedReview, IProgressMonitor monitor)
@@ -560,5 +629,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		// Update review after every change because otherwise some data will be missing (in this case we miss actions)
 		crucibleReview = client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromReview(updatedReview), true,
 				monitor);
+	}
+
+	public void setSelectedScmResource(RevisionInfo revisionInfo, RepositoryInfo repositoryInfo) {
+		this.scmResourceRevisionInfo = revisionInfo;
+		this.scmRepositoryInfo = repositoryInfo;
 	}
 }

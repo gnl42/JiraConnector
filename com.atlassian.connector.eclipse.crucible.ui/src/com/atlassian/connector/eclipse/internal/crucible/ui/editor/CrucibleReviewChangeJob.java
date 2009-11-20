@@ -75,5 +75,9 @@ public abstract class CrucibleReviewChangeJob extends JobWithStatus {
 		}
 	}
 
+	public TaskRepository getTaskRepository() {
+		return taskRepository;
+	}
+
 	protected abstract IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException;
 }

@@ -7,5 +7,6 @@
 			<accessrule kind="accessible" pattern="org/eclipse/mylyn/internal/provisional/**"/>
 		</accessrules>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.atlassian.connector.commons"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
