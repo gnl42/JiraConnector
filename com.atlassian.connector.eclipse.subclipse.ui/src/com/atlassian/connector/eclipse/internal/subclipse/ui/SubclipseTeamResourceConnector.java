@@ -476,6 +476,10 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 			final ISVNProperty mimeTypeProp = svnResource.getSvnProperty("svn:mime-type");
 			boolean isBinary = (mimeTypeProp != null && !mimeTypeProp.getValue().startsWith("text"));
 			try {
+				if (svnResource.getStatus().getLastChangedRevision() == null) {
+					// new file not committed yet
+					return null;
+				}
 				return new RevisionInfo(svnResource.getUrl().toString(), svnResource.getStatus()
 						.getLastChangedRevision()
 						.toString(), isBinary);
