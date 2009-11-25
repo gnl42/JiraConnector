@@ -204,11 +204,13 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 		// see PLE-712, Eclipse 3.6 has a different API for JUnit plugin than older versions. 
 		private JUnitModel getJunitModel() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
 				IllegalAccessException, InvocationTargetException {
-			Method getModelMethod = JUnitPlugin.class.getMethod("getModel");
-			if (getModelMethod == null) {
-				getModelMethod = JUnitCore.class.getMethod("getModel");
+			try {
+				Method getModelMethod = JUnitPlugin.class.getMethod("getModel");
+				return (JUnitModel) getModelMethod.invoke(null);
+			} catch (NoSuchMethodException e) {
+				Method getModelMethod = JUnitCore.class.getMethod("getModel");
+				return (JUnitModel) getModelMethod.invoke(null);
 			}
-			return (JUnitModel) getModelMethod.invoke(null);
 		}
 
 		/**
