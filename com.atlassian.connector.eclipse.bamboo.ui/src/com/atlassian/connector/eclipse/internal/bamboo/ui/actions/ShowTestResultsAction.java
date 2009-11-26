@@ -41,7 +41,6 @@ import org.eclipse.jdt.internal.junit.model.JUnitModel;
 import org.eclipse.jdt.internal.junit.model.TestRunSession;
 import org.eclipse.jdt.internal.junit.ui.JUnitPlugin;
 import org.eclipse.jdt.internal.junit.ui.TestRunnerViewPart;
-import org.eclipse.jdt.junit.JUnitCore;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -134,6 +133,19 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 		});
 	}
 
+	// see PLE-712, Eclipse 3.6 has a different API for JUnit plugin than older versions. 
+	public static JUnitModel getJunitModel() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+		Method getModelMethod;
+		try {
+			getModelMethod = JUnitPlugin.class.getMethod("getModel");
+		} catch (NoSuchMethodException e) {
+			// on e3.6 this stuff has been moved to a new class, which does not even exist on e3.5
+			getModelMethod = Class.forName("org.eclipse.jdt.internal.junit.JUnitCorePlugin").getMethod("getModel");
+		}
+		return (JUnitModel) getModelMethod.invoke(null);
+	}
+
 	/**
 	 * Execution of the ShowTestResultsAction. Seperate class since there are optional dependencies, which should get
 	 * loaded if and only if the dependencies are met.
@@ -198,18 +210,6 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 				getJunitModel().addTestRunSession(trs);
 			} catch (Exception e) {
 				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
-			}
-		}
-
-		// see PLE-712, Eclipse 3.6 has a different API for JUnit plugin than older versions. 
-		private JUnitModel getJunitModel() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
-				IllegalAccessException, InvocationTargetException {
-			try {
-				Method getModelMethod = JUnitPlugin.class.getMethod("getModel");
-				return (JUnitModel) getModelMethod.invoke(null);
-			} catch (NoSuchMethodException e) {
-				Method getModelMethod = JUnitCore.class.getMethod("getModel");
-				return (JUnitModel) getModelMethod.invoke(null);
 			}
 		}
 
