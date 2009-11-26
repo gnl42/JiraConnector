@@ -29,9 +29,12 @@ import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
+import com.atlassian.theplugin.commons.crucible.api.model.NewReviewItemBean;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
+import com.atlassian.theplugin.commons.crucible.api.model.SvnRepository;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.util.StringUtil;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -134,28 +137,52 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 						throws RemoteApiException, ServerPasswordNotProvidedException {
 
-					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
-							"Adding file to review has not been implemented yet"));
+					// monitor.beginTask should be called only once (it is already used client.execute implementation)
+//					monitor.beginTask("Adding file to review", 1);
+
+					String crucibleRepositoryName = defineMappingPage.getRepositoryMappings().get(
+							scmRepositoryInfo.getScmPath());
+
+					// TODO jj add support for repos other than SVN 
+					SvnRepository crucibleRepository = server.getRepository(serverCfg, crucibleRepositoryName);
+
+					if (crucibleRepository == null) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Adding file to review failed. Cannot get repository data for "
+										+ crucibleRepositoryName));
+						return null;
+					}
+
+					String filePath = scmResourceRevisionInfo.getScmPath();
+
+					if (filePath.startsWith(crucibleRepository.getUrl())) {
+						filePath = filePath.substring(crucibleRepository.getUrl().length());
+					} else {
+						StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+								"Cannot match selected resource with Crucible repository url."));
+					}
+
+					filePath = StringUtil.removePrefixSlashes(filePath);
+					String cruPath = StringUtil.removePrefixSlashes(crucibleRepository.getPath());
+					if (filePath.startsWith(cruPath)) {
+						filePath = filePath.substring(crucibleRepository.getPath().length());
+					} else {
+						StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+								"Cannot match selected resource with Crucible repository path."));
+					}
+
+					filePath = StringUtil.removePrefixSlashes(filePath);
+
+					NewReviewItemBean newReviewItem = new NewReviewItemBean();
+					newReviewItem.setFromPath(filePath);
+					newReviewItem.setToPath(filePath);
+					newReviewItem.setFromRevision(scmResourceRevisionInfo.getRevision());
+					newReviewItem.setToRevision(scmResourceRevisionInfo.getRevision());
+					newReviewItem.setRepositoryName(crucibleRepositoryName);
+
+					server.addFileToReview(serverCfg, crucibleReview.getPermId(), newReviewItem);
+
 					return null;
-
-					// TODO jj implement adding file to review
-					// take crucible repo from mapping page and retrieve details from CRU (repo path)
-					// take file path and try to match to repo path (prepare file path related to repo)
-
-					// call crucible to add file to active review
-
-//					NewReviewItemBean newReviewItem = new NewReviewItemBean();
-//					String path = "/trunk/com.atlassian.connector.eclipse.crucible.ui/src/com/atlassian/connector/eclipse/internal/crucible/ui/wizards/ReviewWizard.java";
-//					newReviewItem.setFromPath(path);
-//					newReviewItem.setToPath(path);
-//					newReviewItem.setFromRevision("45820");
-//					newReviewItem.setToRevision("45820");
-//					newReviewItem.setRepositoryName(defineMappingPage.getRepositoryMappings().get(
-//							scmRepositoryInfo.getScmPath()));
-//
-//					server.addFileToReview(serverCfg, crucibleReview.getPermId(), newReviewItem);
-//
-//					return null;
 				}
 			});
 

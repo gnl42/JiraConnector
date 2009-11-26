@@ -59,12 +59,20 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 
 	private final ReviewWizard wizard;
 
+	private final int size;
+
 	protected CrucibleRepositoryMappingPage(String pageName, TaskRepository repository, ReviewWizard wizard) {
+		this(pageName, repository, wizard, 1000);
+	}
+
+	protected CrucibleRepositoryMappingPage(String pageName, TaskRepository repository, ReviewWizard wizard, int size) {
 		super(pageName);
 
+		this.size = size;
 		this.repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
 		this.taskRepository = repository;
 		this.wizard = wizard;
+
 	}
 
 	public Composite createRepositoryMappingComposite(Composite composite) {
@@ -73,7 +81,7 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 		final Table table = new Table(mappingComposite, SWT.BORDER);
 		table.setHeaderVisible(true);
 
-		GridDataFactory.fillDefaults().hint(1000, 100).grab(true, true).applyTo(table);
+		GridDataFactory.fillDefaults().hint(size, 100).grab(true, true).applyTo(table);
 		repositoriesMappingViewer = new TableViewer(table);
 		repositoriesMappingViewer.setContentProvider(new IStructuredContentProvider() {
 			public Object[] getElements(Object inputElement) {

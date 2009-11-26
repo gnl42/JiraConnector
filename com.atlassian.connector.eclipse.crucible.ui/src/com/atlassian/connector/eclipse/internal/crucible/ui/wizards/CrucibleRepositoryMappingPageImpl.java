@@ -30,11 +30,13 @@ public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMapping
 
 	protected CrucibleRepositoryMappingPageImpl(TaskRepository repository, ReviewWizard wizard,
 			RepositoryInfo scmRepositoryInfo) {
-		super("crucibleRepoMapping", repository, wizard);
+		super("crucibleRepoMapping", repository, wizard, 700);
 		this.scmRepositoryInfo = scmRepositoryInfo;
 
 		setTitle("Define Repository Mapping");
 		setDescription("Define repository mapping used to create review.");
+
+//		CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository).getReview(repository, taskId, getWorkingCopy, monitor)
 	}
 
 	@Override
@@ -43,10 +45,22 @@ public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMapping
 	}
 
 	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		validatePage();
+	}
+
+	@Override
 	protected void validatePage() {
-		// TODO jj validate page
-		// check if the only mapping displayed is defined 
-		// isPageComplete
+		// just set page incomplete (do not shot error) 
+		if (scmRepositoryInfo != null && getRepositoryMappings().get(scmRepositoryInfo.getScmPath()) != null) {
+			setPageComplete(true);
+		} else {
+			setPageComplete(false);
+		}
+
+		// TODO jj message box for Crucible version below 2.1 
+//		CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(getTaskRepository()).getClientData().
 
 	}
 

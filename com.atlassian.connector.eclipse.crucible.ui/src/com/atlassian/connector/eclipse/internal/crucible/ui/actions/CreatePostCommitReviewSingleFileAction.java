@@ -36,8 +36,6 @@ import org.eclipse.team.internal.ui.actions.TeamAction;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-// TODO jj check if we need to extend TeamAction
-
 @SuppressWarnings("restriction")
 public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 
@@ -49,22 +47,30 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		IResource[] resources = getSelectedResources();
 
-		// handle only single resource
-		// TODO jj action should be enabled only for single selection (TeamAction overrides plugin.xml settings)
+		// TODO jj should be enabled for SVN only until CVS support is there
 
 		if (resources != null && resources.length > 0 && resources[0] != null) {
+
+			// TODO show info if the file is dirty
+
 			try {
 				RevisionInfo revisionInfo = TeamUiUtils.getLocalRevision(resources[0]);
 				RepositoryInfo repositoryInfo = TeamUiUtils.getApplicableRepository(resources[0]);
 
 				if (revisionInfo != null && repositoryInfo != null) {
 					openReviewWizard(revisionInfo, repositoryInfo);
+				} else {
+					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"Cannot get revision number for selected resource."));
 				}
 
 			} catch (CoreException e) {
 				StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 						"Cannot get local revision for selected resource", e));
 			}
+		} else {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Nothing selected. Cannot create review."));
 		}
 
 	}
@@ -95,24 +101,22 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 		wd.open();
 	}
 
-	// TODO jj improve enable/disable state
+	@Override
+	protected void setActionEnablement(IAction action) {
+		// TeamAction overrides plugin.xml settings so do it here
+		if (getSelectedResources().length == 1) {
+			action.setEnabled(enabledFor(getSelectedResources()[0]));
+		} else {
+			action.setEnabled(false);
+		}
+	}
 
-//	@Override
-//	protected void setActionEnablement(IAction action) {
-//		boolean enabled = false;
-//		for (IResource resource : getSelectedResources()) {
-//			if (enabledFor(resource)) {
-//				enabled = true;
-//			}
-//		}
-//		action.setEnabled(enabled);
-//	}
-//
-//	private boolean enabledFor(IResource selected) {
-//		ITeamResourceConnector connector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnector(
-//				selected);
-//
-//		return (connector != null);
-//	}
-
+	private boolean enabledFor(IResource selected) {
+		try {
+			return TeamUiUtils.getLocalRevision(selected) != null;
+		} catch (CoreException e) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Cannot enable action", e));
+			return false;
+		}
+	}
 }
