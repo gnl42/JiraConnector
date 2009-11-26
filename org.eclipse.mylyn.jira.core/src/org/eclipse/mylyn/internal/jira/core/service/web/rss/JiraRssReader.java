@@ -15,6 +15,7 @@ package org.eclipse.mylyn.internal.jira.core.service.web.rss;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.internal.jira.core.model.filter.IssueCollector;
 import org.eclipse.mylyn.internal.jira.core.service.JiraClient;
 import org.eclipse.mylyn.internal.jira.core.service.JiraException;
@@ -38,12 +39,13 @@ class JiraRssReader {
 		this.collector = collector;
 	}
 
-	public void readRssFeed(InputStream feed, String baseUrl) throws JiraException, IOException {
+	public void readRssFeed(InputStream feed, String baseUrl, IProgressMonitor monitor) throws JiraException,
+			IOException {
 		try {
 			XMLReader reader = XMLReaderFactory.createXMLReader();
 			reader.setContentHandler(new JiraRssHandler(client, collector, baseUrl));
 			InputSource inputSource = new InputSource(feed);
-			inputSource.setEncoding(client.getCharacterEncoding());
+			inputSource.setEncoding(client.getCharacterEncoding(monitor));
 			reader.parse(inputSource);
 			collector.done();
 		} catch (SAXException e) {

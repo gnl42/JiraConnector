@@ -89,7 +89,7 @@ public class JiraRssClient {
 					}
 				}
 				FilterDefinitionConverter filterConverter = new FilterDefinitionConverter(
-						client.getCharacterEncoding(), client.getConfiguration().getDateFormat());
+						client.getCharacterEncoding(monitor), client.getConfiguration().getDateFormat());
 				rssUrlBuffer.append(filterConverter.getQueryParams(filterDefinition));
 
 				return rssUrlBuffer.toString();

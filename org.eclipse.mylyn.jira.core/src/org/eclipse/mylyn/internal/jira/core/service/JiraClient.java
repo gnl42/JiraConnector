@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.commons.httpclient.methods.multipart.PartSource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
@@ -262,15 +261,14 @@ public class JiraClient {
 		return cache;
 	}
 
-	// FIXME add parameter for IProgressMonitor
-	public String getCharacterEncoding() throws JiraException {
+	public String getCharacterEncoding(IProgressMonitor monitor) throws JiraException {
 		if (configuration.getCharacterEncoding() == null) {
-			String serverEncoding = getCache().getServerInfo(null).getCharacterEncoding();
+			String serverEncoding = getCache().getServerInfo(monitor).getCharacterEncoding();
 			if (serverEncoding != null) {
 				return serverEncoding;
 			} else if (!attemptedToDetermineCharacterEncoding) {
-				getCache().refreshServerInfo(new NullProgressMonitor());
-				serverEncoding = getCache().getServerInfo(null).getCharacterEncoding();
+				getCache().refreshServerInfo(monitor);
+				serverEncoding = getCache().getServerInfo(monitor).getCharacterEncoding();
 				if (serverEncoding != null) {
 					return serverEncoding;
 				}

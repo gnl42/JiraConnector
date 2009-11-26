@@ -217,6 +217,17 @@ public class JiraWebSession {
 		this.logEnabled = logEnabled;
 	}
 
+	private String getContentType() {
+		String characterEncoding = getCharacterEncoding();
+		if (characterEncoding == null) {
+			characterEncoding = client.getConfiguration().getCharacterEncoding();
+		}
+		if (characterEncoding == null) {
+			characterEncoding = client.getConfiguration().getDefaultCharacterEncoding();
+		}
+		return "application/x-www-form-urlencoded; charset=" + characterEncoding; //$NON-NLS-1$
+	}
+
 	private HostConfiguration login(HttpClient httpClient, IProgressMonitor monitor) throws JiraException {
 		RedirectTracker tracker = new RedirectTracker();
 
@@ -231,6 +242,7 @@ public class JiraWebSession {
 			PostMethod login = new PostMethod(url);
 			login.setFollowRedirects(false);
 			login.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+			login.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
 			login.addParameter("os_username", credentials.getUserName()); //$NON-NLS-1$
 			login.addParameter("os_password", credentials.getPassword()); //$NON-NLS-1$
 			login.addParameter("os_destination", "/success"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -240,7 +252,7 @@ public class JiraWebSession {
 			try {
 				HostConfiguration hostConfiguration = WebUtil.createHostConfiguration(httpClient, location, monitor);
 				int statusCode = WebUtil.execute(httpClient, hostConfiguration, login, monitor);
-				if (needsReauthentication(httpClient, statusCode, monitor)) {
+				if (needsReauthentication(httpClient, login, monitor)) {
 					continue;
 				} else if (statusCode != HttpStatus.SC_MOVED_TEMPORARILY
 						&& statusCode != HttpStatus.SC_MOVED_PERMANENTLY) {
@@ -317,15 +329,22 @@ public class JiraWebSession {
 		return repositoryUrl.matches("https.*"); //$NON-NLS-1$
 	}
 
-	private boolean needsReauthentication(HttpClient httpClient, int code, IProgressMonitor monitor)
+	private boolean needsReauthentication(HttpClient httpClient, PostMethod method, IProgressMonitor monitor)
 			throws JiraAuthenticationException {
 		final AuthenticationType authenticationType;
+		int code = method.getStatusCode();
 		if (code == HttpStatus.SC_OK) {
 			authenticationType = AuthenticationType.REPOSITORY;
 		} else if (code == HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED) {
 			authenticationType = AuthenticationType.PROXY;
 		} else {
 			return false;
+		}
+
+		// the server specified a different character set than what was returned by the server, try to re-authenticate 
+		if (!getContentType().endsWith(method.getResponseCharSet())) {
+			this.characterEncoding = method.getResponseCharSet();
+			return true;
 		}
 
 		try {

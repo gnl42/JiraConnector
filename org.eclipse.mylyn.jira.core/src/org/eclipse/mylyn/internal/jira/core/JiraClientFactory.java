@@ -142,6 +142,10 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 		}
 	}
 
+	public ServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
+		return validateConnection(location, new JiraConfiguration(), monitor);
+	}
+
 	/**
 	 * Validate the server URL and user credentials
 	 * 
@@ -155,8 +159,9 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 	 * @return
 	 * @return String describing validation failure or null if the details are valid
 	 */
-	public ServerInfo validateConnection(AbstractWebLocation location, IProgressMonitor monitor) throws JiraException {
-		ServerInfo info = clientManager.validateConnection(location, new JiraConfiguration(), monitor);
+	public ServerInfo validateConnection(AbstractWebLocation location, JiraConfiguration configuration,
+			IProgressMonitor monitor) throws JiraException {
+		ServerInfo info = clientManager.validateConnection(location, configuration, monitor);
 		JiraVersion serverVersion = new JiraVersion(info.getVersion());
 		if (JiraVersion.MIN_VERSION.compareTo(serverVersion) > 0) {
 			throw new JiraException("JIRA connector requires server " + JiraVersion.MIN_VERSION + " or later"); //$NON-NLS-1$ //$NON-NLS-2$

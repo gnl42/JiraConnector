@@ -46,6 +46,8 @@ public class JiraConfiguration {
 
 	private int workHoursPerDay;
 
+	private String defaultCharacterEncoding;
+
 	public JiraConfiguration() {
 		setDatePattern(DEFAULT_DATE_PATTERN);
 		setDateTimePattern(DEFAULT_DATE_TIME_PATTERN);
@@ -53,6 +55,7 @@ public class JiraConfiguration {
 		setCompressionEnabled(false);
 		setWorkDaysPerWeek(DEFAULT_WORK_DAYS_PER_WEEK);
 		setWorkHoursPerDay(DEFAULT_WORK_HOURS_PER_DAY);
+		setDefaultCharacterEncoding(JiraClient.DEFAULT_CHARSET);
 	}
 
 	@Override
@@ -130,6 +133,10 @@ public class JiraConfiguration {
 		return dateTimePattern;
 	}
 
+	public synchronized String getDefaultCharacterEncoding() {
+		return defaultCharacterEncoding;
+	}
+
 	public synchronized boolean getFollowRedirects() {
 		return followRedirects;
 	}
@@ -179,6 +186,10 @@ public class JiraConfiguration {
 
 	public synchronized void setDateTimePattern(String dateTimeFormat) {
 		this.dateTimePattern = dateTimeFormat;
+	}
+
+	public synchronized void setDefaultCharacterEncoding(String defaultCharacterEncoding) {
+		this.defaultCharacterEncoding = defaultCharacterEncoding;
 	}
 
 	public synchronized void setFollowRedirects(boolean followRedirects) {

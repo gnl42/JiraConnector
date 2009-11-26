@@ -86,7 +86,7 @@ public class JiraWebClient {
 				rssUrlBuffer.append("/secure/AddComment.jspa"); //$NON-NLS-1$
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
+				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
 				post.addParameter("comment", comment); //$NON-NLS-1$
 				post.addParameter("commentLevel", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				post.addParameter("id", issue.getId()); //$NON-NLS-1$
@@ -104,8 +104,8 @@ public class JiraWebClient {
 		});
 	}
 
-	private String getContentType() throws JiraException {
-		return "application/x-www-form-urlencoded; charset=" + client.getCharacterEncoding(); //$NON-NLS-1$
+	private String getContentType(IProgressMonitor monitor) throws JiraException {
+		return "application/x-www-form-urlencoded; charset=" + client.getCharacterEncoding(monitor); //$NON-NLS-1$
 	}
 
 	// TODO refactor common parameter configuration with advanceIssueWorkflow() method
@@ -117,7 +117,7 @@ public class JiraWebClient {
 				rssUrlBuffer.append("/secure/EditIssue.jspa"); //$NON-NLS-1$
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
+				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
 				post.addParameter("summary", issue.getSummary()); //$NON-NLS-1$
 				post.addParameter("issuetype", issue.getType().getId()); //$NON-NLS-1$
 				if (issue.getPriority() != null) {
@@ -207,7 +207,7 @@ public class JiraWebClient {
 				rssUrlBuffer.append("/secure/AssignIssue.jspa"); //$NON-NLS-1$
 
 				PostMethod post = new PostMethod(rssUrlBuffer.toString());
-				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
+				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
 
 				post.addParameter("assignee", getAssigneeParam(server, issue, assigneeType, user)); //$NON-NLS-1$
 
@@ -236,7 +236,7 @@ public class JiraWebClient {
 			@Override
 			public void run(JiraClient server, String baseUrl, IProgressMonitor monitor) throws JiraException {
 				PostMethod post = new PostMethod(baseUrl + "/secure/CommentAssignIssue.jspa"); //$NON-NLS-1$
-				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
+				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
 
 				post.addParameter("id", issue.getId()); //$NON-NLS-1$
 				post.addParameter("action", actionKey); //$NON-NLS-1$
@@ -346,7 +346,7 @@ public class JiraWebClient {
 				rssUrlBuffer.append(attachment.getId());
 				rssUrlBuffer.append("/"); //$NON-NLS-1$
 				try {
-					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding()));
+					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding(monitor)));
 				} catch (UnsupportedEncodingException e) {
 					throw new JiraException(e);
 				}
@@ -385,7 +385,7 @@ public class JiraWebClient {
 				rssUrlBuffer.append(attachment.getId());
 				rssUrlBuffer.append("/"); //$NON-NLS-1$
 				try {
-					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding()));
+					rssUrlBuffer.append(URLEncoder.encode(attachment.getName(), server.getCharacterEncoding(monitor)));
 				} catch (UnsupportedEncodingException e) {
 					throw new JiraException(e);
 				}
@@ -426,7 +426,7 @@ public class JiraWebClient {
 				attachFileURLBuffer.append(url);
 
 				PostMethod post = new PostMethod(attachFileURLBuffer.toString());
-				post.setRequestHeader("Content-Type", getContentType()); //$NON-NLS-1$
+				post.setRequestHeader("Content-Type", getContentType(monitor)); //$NON-NLS-1$
 
 				post.addParameter("pid", issue.getProject().getId()); //$NON-NLS-1$
 				post.addParameter("issuetype", issue.getType().getId()); //$NON-NLS-1$

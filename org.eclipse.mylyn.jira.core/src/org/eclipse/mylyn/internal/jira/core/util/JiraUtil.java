@@ -339,6 +339,7 @@ public class JiraUtil {
 		}
 		configuration.setWorkHoursPerDay(getWorkHoursPerDay(repository));
 		configuration.setWorkDaysPerWeek(getWorkDaysPerWeek(repository));
+		configuration.setDefaultCharacterEncoding(repository.getCharacterEncoding());
 		return configuration;
 	}
 

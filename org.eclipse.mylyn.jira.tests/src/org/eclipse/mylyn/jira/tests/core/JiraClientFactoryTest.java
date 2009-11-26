@@ -13,6 +13,7 @@ package org.eclipse.mylyn.jira.tests.core;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.WebLocation;
@@ -143,19 +144,19 @@ public class JiraClientFactoryTest extends TestCase {
 		assertFalse(JiraUtil.getCharacterEncodingValidated(repository));
 
 		JiraClient client = clientFactory.getJiraClient(repository);
-		assertEquals("ISO-8859-1", client.getCharacterEncoding());
+		assertEquals("ISO-8859-1", client.getCharacterEncoding(new NullProgressMonitor()));
 
 		repository.setCharacterEncoding("UTF-8");
 		clientFactory.repositoryChanged(new TaskRepositoryChangeEvent(this, repository, new TaskRepositoryDelta(
 				Type.PROPERTY)));
 		client = clientFactory.getJiraClient(repository);
-		assertEquals("ISO-8859-1", client.getCharacterEncoding());
+		assertEquals("ISO-8859-1", client.getCharacterEncoding(new NullProgressMonitor()));
 
 		JiraUtil.setCharacterEncodingValidated(repository, true);
 		clientFactory.repositoryChanged(new TaskRepositoryChangeEvent(this, repository, new TaskRepositoryDelta(
 				Type.PROPERTY)));
 		client = clientFactory.getJiraClient(repository);
-		assertEquals("UTF-8", client.getCharacterEncoding());
+		assertEquals("UTF-8", client.getCharacterEncoding(new NullProgressMonitor()));
 	}
 
 }

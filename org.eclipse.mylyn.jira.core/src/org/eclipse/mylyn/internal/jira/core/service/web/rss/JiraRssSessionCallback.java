@@ -113,7 +113,7 @@ public abstract class JiraRssSessionCallback extends JiraWebSessionCallback {
 			if (isResponseGZipped(method)) {
 				in = new GZIPInputStream(in);
 			}
-			new JiraRssReader(client, collector).readRssFeed(in, baseUrl);
+			new JiraRssReader(client, collector).readRssFeed(in, baseUrl, monitor);
 		} finally {
 			try {
 				in.close();
