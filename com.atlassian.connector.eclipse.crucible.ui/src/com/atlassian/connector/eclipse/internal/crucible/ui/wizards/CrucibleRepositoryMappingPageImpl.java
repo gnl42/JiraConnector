@@ -35,8 +35,6 @@ public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMapping
 
 		setTitle("Define Repository Mapping");
 		setDescription("Define repository mapping used to create review.");
-
-//		CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(repository).getReview(repository, taskId, getWorkingCopy, monitor)
 	}
 
 	@Override
@@ -58,14 +56,10 @@ public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMapping
 		} else {
 			setPageComplete(false);
 		}
-
-		// TODO jj message box for Crucible version below 2.1 
-//		CrucibleCorePlugin.getRepositoryConnector().getClientManager().getClient(getTaskRepository()).getClientData().
-
 	}
 
 	public void createControl(Composite parent) {
-		// TODO jj why the control is so big?
+		// TODO maybe the control should be smaller
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).margins(5, 5).create());
 
@@ -80,7 +74,5 @@ public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMapping
 
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
-
 	}
-
 }

@@ -11,12 +11,16 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySelectionWizard;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
-import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
+import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucible21RepositoryPage;
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -29,12 +33,12 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
-import org.eclipse.mylyn.internal.tasks.ui.wizards.SelectRepositoryPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.team.internal.ui.actions.TeamAction;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 @SuppressWarnings("restriction")
 public class CreatePostCommitReviewSingleFileAction extends TeamAction {
@@ -47,9 +51,19 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		IResource[] resources = getSelectedResources();
 
-		// TODO jj should be enabled for SVN only until CVS support is there
-
 		if (resources != null && resources.length > 0 && resources[0] != null) {
+
+			ITeamResourceConnector connector = AtlassianUiPlugin.getDefault()
+					.getTeamResourceManager()
+					.getTeamConnector(resources[0]);
+
+			if (connector.getType() != TeamConnectorType.SVN) {
+				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
+				mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
+				mb.setMessage("Cannot create review from non subversion resource. Only subversion is supported.");
+				mb.open();
+				return;
+			}
 
 			// TODO show info if the file is dirty
 
@@ -76,8 +90,7 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 	}
 
 	private void openReviewWizard(final RevisionInfo revisionInfo, final RepositoryInfo repositoryInfo) {
-		SelectRepositoryPage selectRepositoryPage = new SelectRepositoryPage(
-				SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER) {
+		SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
 			@Override
 			protected IWizard createWizard(TaskRepository taskRepository) {
 				ReviewWizard wizard = new ReviewWizard(taskRepository,
@@ -87,16 +100,8 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 			}
 		};
 
-		List<TaskRepository> taskRepositories = selectRepositoryPage.getTaskRepositories();
-		WizardDialog wd = null;
-		if (taskRepositories.size() != 1) {
-			wd = new WizardDialog(WorkbenchUtil.getShell(), new RepositorySelectionWizard(selectRepositoryPage));
-		} else {
-			ReviewWizard reviewWizard = new ReviewWizard(taskRepositories.get(0),
-					MiscUtil.buildHashSet(ReviewWizard.Type.ADD_SCM_FILE));
-			reviewWizard.setSelectedScmResource(revisionInfo, repositoryInfo);
-			wd = new WizardDialog(WorkbenchUtil.getShell(), reviewWizard);
-		}
+		WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new CrucibleRepositorySelectionWizard(
+				selectRepositoryPage));
 		wd.setBlockOnOpen(true);
 		wd.open();
 	}

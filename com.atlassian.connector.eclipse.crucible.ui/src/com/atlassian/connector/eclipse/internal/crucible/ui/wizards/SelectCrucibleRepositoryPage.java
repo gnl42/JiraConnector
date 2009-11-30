@@ -12,17 +12,11 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
-import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.internal.tasks.core.ITaskRepositoryFilter;
 import org.eclipse.mylyn.internal.tasks.ui.wizards.SelectRepositoryPage;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.SortedSet;
 
 /**
  * Page for selecting a crucible repository
@@ -30,9 +24,7 @@ import java.util.SortedSet;
  * @author Thomas Ehrnhoefer
  */
 @SuppressWarnings("restriction")
-public class SelectCrucibleRepositoryPage extends SelectRepositoryPage {
-
-	private final SortedSet<ICustomChangesetLogEntry> logEntries;
+public abstract class SelectCrucibleRepositoryPage extends SelectRepositoryPage {
 
 	public static final ITaskRepositoryFilter ENABLED_CRUCIBLE_REPOSITORY_FILTER = new ITaskRepositoryFilter() {
 		public boolean accept(TaskRepository repository, AbstractRepositoryConnector connector) {
@@ -53,15 +45,7 @@ public class SelectCrucibleRepositoryPage extends SelectRepositoryPage {
 		}
 	};
 
-	public SelectCrucibleRepositoryPage(SortedSet<ICustomChangesetLogEntry> logEntries) {
-		super(CRUCIBLE_REPOSITORY_FILTER);
-		this.logEntries = logEntries;
-	}
-
-	protected IWizard createWizard(TaskRepository taskRepository) {
-		ReviewWizard wizard = new ReviewWizard(taskRepository, new HashSet<ReviewWizard.Type>(
-				Arrays.asList(ReviewWizard.Type.ADD_CHANGESET)));
-		wizard.setLogEntries(logEntries);
-		return wizard;
+	public SelectCrucibleRepositoryPage(ITaskRepositoryFilter filter) {
+		super(filter);
 	}
 }

@@ -23,6 +23,7 @@ import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -99,6 +100,8 @@ import java.util.TreeSet;
  * @author Shawn Minto
  */
 public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
+
+	private static final String NAME = "Subclipse";
 
 	public boolean isEnabled() {
 		return true;
@@ -525,7 +528,11 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 	}
 
 	public String getName() {
-		return "Subclipse";
+		return NAME;
+	}
+
+	public TeamConnectorType getType() {
+		return TeamConnectorType.SVN;
 	}
 
 	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {

@@ -17,6 +17,7 @@ import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -174,6 +175,10 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 
 	public String getName() {
 		return "CVS (FishEye only)";
+	}
+
+	public TeamConnectorType getType() {
+		return TeamConnectorType.CVS;
 	}
 
 	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {

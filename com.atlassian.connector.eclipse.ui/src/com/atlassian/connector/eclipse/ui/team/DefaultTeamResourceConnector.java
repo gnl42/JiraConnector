@@ -560,6 +560,10 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return "Team API (partial support)";
 	}
 
+	public TeamConnectorType getType() {
+		return TeamConnectorType.NONE;
+	}
+
 	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {
 		return false;
 	}

@@ -144,6 +144,12 @@ public interface ITeamResourceConnector {
 	String getName();
 
 	/**
+	 * 
+	 * @return type of the connector
+	 */
+	TeamConnectorType getType();
+
+	/**
 	 * Returns true if specified roots include recursively resources matching given filter
 	 * 
 	 * @param roots

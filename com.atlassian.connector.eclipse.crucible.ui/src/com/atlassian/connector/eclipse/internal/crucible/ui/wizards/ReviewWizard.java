@@ -137,7 +137,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 						throws RemoteApiException, ServerPasswordNotProvidedException {
 
-					// monitor.beginTask should be called only once (it is already used client.execute implementation)
+					// monitor.beginTask should be called only once (it is already called in client.execute implementation)
 //					monitor.beginTask("Adding file to review", 1);
 
 					String crucibleRepositoryName = defineMappingPage.getRepositoryMappings().get(
