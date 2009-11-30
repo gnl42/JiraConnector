@@ -67,7 +67,7 @@ public class CrucibleRepositorySelectionWizard extends RepositorySelectionWizard
 								String.valueOf(isVersion21orGreater));
 					} catch (CoreException e) {
 						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-								"Failed to retrieve repository version", e));
+								"Failed to retrieve repository version for " + repo.getRepositoryLabel(), e));
 					}
 				}
 			}

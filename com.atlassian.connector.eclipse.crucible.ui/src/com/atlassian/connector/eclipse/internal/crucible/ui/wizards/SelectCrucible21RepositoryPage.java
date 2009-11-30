@@ -14,11 +14,17 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.mylyn.internal.tasks.core.ITaskRepositoryFilter;
+import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryManager;
+import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.widgets.Display;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jacek Jaroczynski
@@ -31,9 +37,8 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 	private CrucibleRepositorySelectionWizard crucibleRepositoryWizard;
 
 	public SelectCrucible21RepositoryPage() {
-		super(SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER);
+		super(EMPTY_REPOSITORY_FILTER);
 		setDescription("Add new repositories using the Task Repositories view.\nOnly Crucible 2.1 or newer supports current operation.");
-		getMessage();
 	}
 
 	@Override
@@ -52,6 +57,7 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 		if (visible) {
 			// retrieve Crucible repos version and filter list of available repos in the wizard
 			final WizardPage page = this;
+
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					final Collection<TaskRepository> crucible21Repos = getCrucible21Repos(page);
@@ -68,13 +74,13 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 		final Collection<TaskRepository> crucible21Repos = new ArrayList<TaskRepository>();
 
 		if (crucibleRepositoryWizard != null) {
-			for (final TaskRepository repo : getRepositories()) {
+			for (final TaskRepository repo : getCrucibeTaskRepositories()) {
 				if (repo.getProperty(IS_VERSION_2_1) == null) {
 					crucibleRepositoryWizard.updateRepoVersion(page, repo);
 				}
 			}
 
-			for (final TaskRepository repo : getRepositories()) {
+			for (final TaskRepository repo : getCrucibeTaskRepositories()) {
 				if (Boolean.valueOf(repo.getProperty(IS_VERSION_2_1))) {
 					crucible21Repos.add(repo);
 				}
@@ -83,10 +89,34 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 		return crucible21Repos;
 	}
 
+	private List<TaskRepository> getCrucibeTaskRepositories() {
+		return getTaskRepositories(CRUCIBLE_REPOSITORY_FILTER);
+	}
+
+	private List<TaskRepository> getTaskRepositories(ITaskRepositoryFilter filter) {
+		List<TaskRepository> repositories = new ArrayList<TaskRepository>();
+		TaskRepositoryManager repositoryManager = TasksUiPlugin.getRepositoryManager();
+		for (AbstractRepositoryConnector connector : repositoryManager.getRepositoryConnectors()) {
+			Set<TaskRepository> connectorRepositories = repositoryManager.getRepositories(connector.getConnectorKind());
+			for (TaskRepository repository : connectorRepositories) {
+				if (filter.accept(repository, connector)) {
+					repositories.add(repository);
+				}
+			}
+		}
+		return repositories;
+	}
+
 	public void setWizard(CrucibleRepositorySelectionWizard wizard) {
 		this.crucibleRepositoryWizard = wizard;
 		super.setWizard(wizard);
 	}
+
+	private static final ITaskRepositoryFilter EMPTY_REPOSITORY_FILTER = new ITaskRepositoryFilter() {
+		public boolean accept(TaskRepository repository, AbstractRepositoryConnector connector) {
+			return false;
+		}
+	};
 
 	private final class LocalRepositoryProvider implements IStructuredContentProvider {
 		private Collection<TaskRepository> crucible21Repos;
