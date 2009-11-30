@@ -121,7 +121,7 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 		try {
 			localRevision = TeamUiUtils.getLocalRevision(selected);
 		} catch (CoreException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
 					"Cannot enable action (cannot determine local revision).", e));
 			return false;
 		}
@@ -132,7 +132,7 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 				try {
 					return Double.valueOf(stringRevision).doubleValue() > 0;
 				} catch (NumberFormatException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
 							"Cannot enable action. Unrecognized revison number [" + stringRevision + "]", e));
 					return false;
 				}
