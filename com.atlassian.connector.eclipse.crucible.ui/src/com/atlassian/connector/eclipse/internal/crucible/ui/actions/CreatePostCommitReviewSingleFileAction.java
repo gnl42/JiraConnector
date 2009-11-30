@@ -117,11 +117,28 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 	}
 
 	private boolean enabledFor(IResource selected) {
+		RevisionInfo localRevision = null;
 		try {
-			return TeamUiUtils.getLocalRevision(selected) != null;
+			localRevision = TeamUiUtils.getLocalRevision(selected);
 		} catch (CoreException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Cannot enable action", e));
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					"Cannot enable action (cannot determine local revision).", e));
 			return false;
 		}
+
+		if (localRevision != null) {
+			String stringRevision = localRevision.getRevision();
+			if (stringRevision != null) {
+				try {
+					return Double.valueOf(stringRevision).doubleValue() > 0;
+				} catch (NumberFormatException e) {
+					StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+							"Cannot enable action. Unrecognized revison number [" + stringRevision + "]", e));
+					return false;
+				}
+			}
+		}
+
+		return false;
 	}
 }
