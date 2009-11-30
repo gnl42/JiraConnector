@@ -32,6 +32,8 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 
 	public SelectCrucible21RepositoryPage() {
 		super(SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER);
+		setDescription("Add new repositories using the Task Repositories view.\nOnly Crucible 2.1 or newer supports current operation.");
+		getMessage();
 	}
 
 	@Override
