@@ -225,9 +225,12 @@ public final class CrucibleUiUtil {
 				activate = false;
 			} else {
 				// Ask the user whether to switch
+				String message = "Review comments will only be visible in editors if the corresponding review is active.";
+				if (activeReview != null) {
+					message += "\nIf you don't activate the review you can see comments related to other active review.";
+				}
 				final MessageDialogWithToggle m = MessageDialogWithToggle.openYesNoQuestion(null, "Activate Review",
-						"Review comments will only be visible in editors if the corresponding review is active."
-								+ "\n\nWould you like to activate this review?", "Remember my decision", false,
+						message + "\n\nWould you like to activate this review?", "Remember my decision", false,
 						CrucibleUiPlugin.getDefault().getPreferenceStore(),
 						CrucibleUiConstants.PREFERENCE_ACTIVATE_REVIEW);
 
@@ -323,52 +326,20 @@ public final class CrucibleUiUtil {
 
 	public static void attachCrucibleAnnotation(IEditorPart editor, ITask task, Review review,
 			CrucibleFile crucibleFile, VersionedComment versionedComment) {
-		boolean annotationsAdded = false;
-		boolean hadCrucibleAnnotation = false;
+		boolean annotationsAdded = false;		
 		final ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
-
+	
 		if (editor instanceof ITextEditor) {
 			ITextEditor textEditor = ((ITextEditor) editor);
 			if (activeTask != null && activeTask.equals(task)) {
 				annotationsAdded = CrucibleAnnotationModelManager.attach(textEditor, crucibleFile, review);
-			} else if (activeTask != null) {
-				hadCrucibleAnnotation = CrucibleAnnotationModelManager.hasCrucibleAnnotation(textEditor);
-
-				boolean hadAnnotations = false;
-
-				CrucibleAnnotationModel annotationModel = CrucibleAnnotationModelManager.getModelForEditor(textEditor);
-				if (annotationModel != null) {
-					hadAnnotations = annotationModel.getAnnotationIterator().hasNext();
-				}
-
-				boolean had = hadCrucibleAnnotation && hadAnnotations;
-
-				final String[] message = { "" };
-
-				if (had) {
-					message[0] = "This file has annotations associated with active review " + activeTask.getTaskKey()
-							+ ".";
-				} else /* !had */{
-					message[0] = "This file is associated with active review " + activeTask.getTaskKey()
-							+ " and does not contain annotations there.";
-				}
-
-				if (message[0].length() > 0) {
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							new MessageDialog(WorkbenchUtil.getShell(), "File assotiated with "
-									+ activeTask.getTaskKey(), null, message[0], MessageDialog.INFORMATION,
-									new String[] { IDialogConstants.OK_LABEL }, 0).open();
-						}
-					});
-				}
 			}
 			if (versionedComment != null) {
 				TeamUiUtils.selectAndRevealComment(textEditor, versionedComment, crucibleFile);
 			}
 		}
-
-		if (!annotationsAdded && !hadCrucibleAnnotation) {
+	
+		if (!annotationsAdded) {
 			final String msg;
 			if (activeTask == null || !activeTask.equals(task)) {
 				msg = "To annotate this file, review " + review.getPermId().getId() + " must be active.";
