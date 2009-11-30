@@ -20,6 +20,7 @@ import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
 import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
@@ -687,5 +688,9 @@ public class SubversiveTeamResourceConnector extends AbstractTeamConnector {
 			return true;
 		}
 		return false;
+	}
+
+	public TeamConnectorType getType() {
+		return TeamConnectorType.SVN;
 	}
 }
