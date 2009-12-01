@@ -91,19 +91,12 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 		this.commentLines = commentLines;
 	}
 
-	private String getTaskId() {
-		if (review == null) {
-			return null;
-		}
-		return CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId());
-	}
-
 	@Override
 	public Comment run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 			throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 
 		if (reviewItem != null) {
-			String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId());
+			String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId(review));
 			PermId riId = reviewItem.getCrucibleFileInfo().getPermId();
 			VersionedCommentBean newComment = createNewVersionedComment();
 			newComment.setDefectRaised(isDefect);
@@ -121,7 +114,7 @@ public final class AddCommentRemoteOperation extends CrucibleRemoteOperation<Com
 			newComment.setDefectRaised(isDefect);
 			newComment.setDraft(isDraft);
 			newComment.getCustomFields().putAll(customFields);
-			String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId());
+			String permId = CrucibleUtil.getPermIdFromTaskId(getTaskId(review));
 
 			if (parentComment != null && newComment.isReply()) {
 				return server.addGeneralCommentReply(serverCfg, new PermId(permId), parentComment.getPermId(),

@@ -11,20 +11,26 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.operations.AddResourcesToReviewJob;
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.team.internal.ui.actions.TeamAction;
+import org.eclipse.ui.PlatformUI;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Action to add a file to the active review
@@ -33,73 +39,49 @@ import org.eclipse.ui.IEditorPart;
  * @author Thomas Ehrnhoefer
  * @author Pawel Niewiadomski
  */
-public class AddResourceToActiveReviewAction extends AbstractReviewAction {
-
-	private IResource[] resources;
+public class AddResourceToActiveReviewAction extends TeamAction {
 
 	public AddResourceToActiveReviewAction() {
-		super("Add Resource to Active Review...");
 	}
 
 	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
+	protected void setActionEnablement(IAction action) {
+		IResource[] resources = getSelectedResources();
+		action.setEnabled(true);
 
-		//the following only applies if it is the action from the extension point
-		if (action.isEnabled() && isEnabled()) {
-			IEditorPart editorPart = getActiveEditor();
-			IEditorInput editorInput = getEditorInputFromSelection(selection);
-			if (editorInput != null && editorPart != null) {
-				CrucibleFile crucibleFile = CrucibleTeamUiUtil.getCorrespondingCrucibleFileFromEditorInput(editorInput,
-						CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview());
-				if (crucibleFile == null || !CrucibleUiUtil.isFilePartOfActiveReview(crucibleFile)) {
-					IResource resource = (IResource) editorInput.getAdapter(IResource.class);
-					if (resource != null && resource.getType() == IResource.FILE) {
-						action.setEnabled(true);
-						setEnabled(true);
-						setResources(new IResource[] { resource });
-					}
-					return;
+		if (resources == null || resources.length == 0 || getActiveReview() == null) {
+			action.setEnabled(false);
+			return;
+		}
+	}
+
+	protected Review getActiveReview() {
+		return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
+	}
+
+	@Override
+	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
+		final AddResourcesToReviewJob job = new AddResourcesToReviewJob(getActiveReview(), getSelectedResources());
+		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
+			public void done(IJobChangeEvent event) {
+				final IStatus status = job.getStatus();
+				if (!status.isOK()) {
+					StatusHandler.log(status);
+
+					PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
+							mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
+							mb.setMessage(NLS.bind(
+									"Failed to add selected resources to active review. Error message was: \n\n{0}",
+									status.getMessage()));
+							mb.open();
+						}
+					});
 				}
 			}
-
-			// TODO: support for IResource selection 
-		}
-
-		action.setEnabled(false);
-		setEnabled(false);
-
-	}
-
-	private void setResources(IResource[] iResources) {
-		this.resources = iResources;
-	}
-
-	@Override
-	protected boolean updateSelection(IStructuredSelection selection) {
-		if (!super.updateSelection(selection)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	protected Review getReview() {
-		if (review != null) {
-			return review;
-		} else {
-			return CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveReview();
-		}
-	}
-
-	@Override
-	public String getToolTipText() {
-		return "Add General File Comment...";
-	}
-
-	public void run(IAction action) {
-		AddResourcesToReviewJob job = new AddResourcesToReviewJob(getReview(), resources);
+		});
 		job.setPriority(Job.INTERACTIVE);
 		job.schedule();
 	}

@@ -13,14 +13,25 @@ package com.atlassian.connector.eclipse.internal.crucible.core.client;
 
 import com.atlassian.connector.commons.crucible.CrucibleServerFacade2;
 import com.atlassian.connector.eclipse.internal.core.client.RemoteOperation;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
+import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class CrucibleRemoteOperation<T> extends RemoteOperation<T, CrucibleServerFacade2> {
 
 	public CrucibleRemoteOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
 		super(monitor, taskRepository);
+	}
+
+	@Nullable
+	protected String getTaskId(@Nullable Review review) {
+		if (review == null) {
+			return null;
+		}
+		return CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId());
 	}
 
 }
