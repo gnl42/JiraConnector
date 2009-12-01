@@ -13,13 +13,11 @@ package com.atlassian.connector.eclipse.ui.team;
 
 import java.util.Date;
 
-public interface ICustomChangesetLogEntry extends Comparable<ICustomChangesetLogEntry> {
+public interface ICustomChangesetLogEntry extends Comparable<ICustomChangesetLogEntry>, IRevisionProvider {
 
 	String getComment();
 
 	String getAuthor();
-
-	String getRevision();
 
 	String[] getChangedFiles();
 

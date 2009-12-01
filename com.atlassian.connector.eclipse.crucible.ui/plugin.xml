@@ -66,6 +66,29 @@
 				label="Add General File Comment..." menubarPath="group.undo"
 				tooltip="Add Comment to Active Review">
 			</action>
+			<action
+				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction"
+				enablesFor="1"
+				id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview"
+				label="Add File to Active Review" menubarPath="group.undo"
+				tooltip="Add File to Active Review">
+			</action>
+			<visibility>
+				<systemProperty
+					name="com.atlassian.connector.eclipse.crucible.ui.review.active"
+					value="true">
+				</systemProperty>
+			</visibility>
+		</objectContribution>
+		<objectContribution
+			id="com.atlassian.connector.eclipse.crucible.ui.objectContribution2"
+			objectClass="org.eclipse.core.resources.IResource" adaptable="true">
+			<action
+				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.AddResourceToActiveReviewAction"
+				id="com.atlassian.connector.eclipse.crucible.ui.action.add.fileToReview"
+				label="Add Files to Active Review" menubarPath="team.main/group10"
+				tooltip="Add Files to Active Review">
+			</action>
 			<visibility>
 				<systemProperty
 					name="com.atlassian.connector.eclipse.crucible.ui.review.active"
