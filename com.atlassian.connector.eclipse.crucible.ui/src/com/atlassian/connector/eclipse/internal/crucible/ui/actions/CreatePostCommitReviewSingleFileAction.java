@@ -60,7 +60,7 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 			if (connector.getType() != TeamConnectorType.SVN) {
 				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
 				mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
-				mb.setMessage("Cannot create review from non subversion resource. Only subversion is supported.");
+				mb.setMessage("Cannot create review from non Subversion resource. Only Subversion is supported.");
 				mb.open();
 				return;
 			}
