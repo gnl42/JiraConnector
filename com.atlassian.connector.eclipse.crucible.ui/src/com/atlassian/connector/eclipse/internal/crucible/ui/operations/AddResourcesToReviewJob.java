@@ -15,6 +15,7 @@ import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
+import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -149,8 +150,8 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 			String crucibleProject = repositoryMappings.get(repositoryInfo.getScmPath());
 
-			RevisionData rd = new RevisionData(crucibleProject, revision.getScmPath(),
-					Arrays.asList(revision.getRevision()));
+			RevisionData rd = new RevisionData(crucibleProject, revision.getScmPath().replace(
+					repositoryInfo.getScmPath(), ""), Arrays.asList(revision.getRevision())); //$NON-NLS-1$
 
 			revisions.add(rd);
 		}
@@ -160,6 +161,15 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 		try {
 			client.execute(operation);
+		} catch (CoreException e) {
+			setStatus(e.getStatus());
+			return;
+		}
+
+		// hack to trigger task list synchronization
+		try {
+			client.getReview(getTaskRepository(), CrucibleUtil.getTaskIdFromPermId(review.getPermId().getId()), true,
+					monitor);
 		} catch (CoreException e) {
 			setStatus(e.getStatus());
 			return;

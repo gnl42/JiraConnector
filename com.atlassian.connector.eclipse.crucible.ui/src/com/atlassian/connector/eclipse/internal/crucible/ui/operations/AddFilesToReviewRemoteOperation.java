@@ -18,14 +18,19 @@ import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleSession;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.RevisionData;
+import com.atlassian.theplugin.commons.crucible.api.model.SvnRepository;
 import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedException;
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
+import com.atlassian.theplugin.commons.util.MiscUtil;
+import com.atlassian.theplugin.commons.util.StringUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Operation for adding files to a review
@@ -39,17 +44,65 @@ public final class AddFilesToReviewRemoteOperation extends CrucibleRemoteOperati
 
 	private final Collection<RevisionData> files;
 
+	private boolean fixPaths;
+
 	public AddFilesToReviewRemoteOperation(@NotNull TaskRepository repository, @NotNull Review review,
 			@NotNull Collection<RevisionData> files, @NotNull IProgressMonitor monitor) {
 		super(monitor, repository);
 		this.review = review;
+		this.fixPaths = true;
 		this.files = files;
+	}
+
+	public void setFixPaths(boolean v) {
+		fixPaths = v;
+	}
+
+	public boolean getFixPaths() {
+		return fixPaths;
 	}
 
 	@Override
 	public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 			throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 		CrucibleSession session = server.getSession(serverCfg);
+
+		if (fixPaths) {
+			Set<RevisionData> fixedRevision = MiscUtil.buildHashSet();
+			Map<String, SvnRepository> crucibleRepositories = MiscUtil.buildHashMap();
+
+			for (RevisionData revision : files) {
+				if (!crucibleRepositories.containsKey(revision.getSource())) {
+					SvnRepository crucibleRepository = server.getRepository(serverCfg, revision.getSource());
+					if (crucibleRepository == null) {
+						throw new RemoteApiException("Adding file to review failed. Cannot get repository data for "
+								+ revision.getSource());
+					}
+					crucibleRepositories.put(revision.getSource(), crucibleRepository);
+				}
+
+				SvnRepository crucibleRepository = crucibleRepositories.get(revision.getSource());
+
+				String filePath = revision.getPath();
+
+				if (filePath.startsWith(crucibleRepository.getUrl())) {
+					filePath = filePath.substring(crucibleRepository.getUrl().length());
+				}
+
+				filePath = StringUtil.removePrefixSlashes(filePath);
+				String cruPath = StringUtil.removePrefixSlashes(crucibleRepository.getPath());
+				if (filePath.startsWith(cruPath)) {
+					filePath = filePath.substring(crucibleRepository.getPath().length());
+				}
+
+				filePath = StringUtil.removePrefixSlashes(filePath);
+
+				fixedRevision.add(new RevisionData(revision.getSource(), filePath, revision.getRevisions()));
+			}
+
+			return session.addRevisionsToReviewItems(review.getPermId(), fixedRevision);
+		}
+
 		return session.addRevisionsToReviewItems(review.getPermId(), files);
 	}
 }

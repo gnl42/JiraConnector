@@ -79,6 +79,8 @@ public class AddResourceToActiveReviewAction extends TeamAction {
 							mb.open();
 						}
 					});
+				} else {
+
 				}
 			}
 		});
