@@ -14,14 +14,14 @@ package com.atlassian.connector.eclipse.ui.team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RepositoryInfo implements Comparable<RepositoryInfo> {
+public class ScmRepository implements Comparable<ScmRepository> {
 	private final String scmPath;
 
 	private final String name;
 
 	private final ITeamResourceConnector connector;
 
-	public RepositoryInfo(@NotNull String scmPath, @Nullable String name, @NotNull ITeamResourceConnector connector) {
+	public ScmRepository(@NotNull String scmPath, @Nullable String name, @NotNull ITeamResourceConnector connector) {
 		this.scmPath = scmPath;
 		this.name = name;
 		this.connector = connector;
@@ -47,7 +47,7 @@ public class RepositoryInfo implements Comparable<RepositoryInfo> {
 		return connector;
 	}
 
-	public int compareTo(RepositoryInfo other) {
+	public int compareTo(ScmRepository other) {
 		return this.scmPath.compareTo(other.getScmPath());
 	}
 
@@ -72,7 +72,7 @@ public class RepositoryInfo implements Comparable<RepositoryInfo> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		RepositoryInfo other = (RepositoryInfo) obj;
+		ScmRepository other = (ScmRepository) obj;
 		if (scmPath == null) {
 			if (other.scmPath != null) {
 				return false;

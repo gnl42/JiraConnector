@@ -21,8 +21,8 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
-import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.LocalStatus;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
@@ -153,20 +153,20 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 		}
 	}
 
-	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
+	public Collection<ScmRepository> getRepositories(IProgressMonitor monitor) {
 		ISVNRepositoryLocation[] repos = SVNUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations(
 				monitor);
-		List<RepositoryInfo> res = MiscUtil.buildArrayList(repos.length);
+		List<ScmRepository> res = MiscUtil.buildArrayList(repos.length);
 		for (ISVNRepositoryLocation repo : repos) {
-			res.add(new RepositoryInfo(repo.getUrl().toString(), repo.getLabel(), this));
+			res.add(new ScmRepository(repo.getUrl().toString(), repo.getLabel(), this));
 		}
 		return res;
 	}
 
-	protected RepositoryInfo getRepository(String url, IProgressMonitor monitor) {
+	protected ScmRepository getRepository(String url, IProgressMonitor monitor) {
 		ISVNRepositoryLocation location = getRepositoryLocation(url, monitor);
 		if (location != null) {
-			return new RepositoryInfo(location.getUrl().toString(), location.getLabel(), this);
+			return new ScmRepository(location.getUrl().toString(), location.getLabel(), this);
 		}
 		return null;
 	}
@@ -469,7 +469,7 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 		return null;
 	}
 
-	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
+	public LocalStatus getLocalRevision(IResource resource) throws CoreException {
 		final IProject project = resource.getProject();
 		if (project == null) {
 			return null;
@@ -483,9 +483,9 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 					// new file not committed yet
 					return null;
 				}
-				return new RevisionInfo(svnResource.getUrl().toString(), svnResource.getStatus()
+				return new LocalStatus(svnResource.getUrl().toString(), svnResource.getStatus()
 						.getLastChangedRevision()
-						.toString(), isBinary);
+						.toString(), svnResource.isAdded(), svnResource.isDirty(), isBinary);
 			} catch (SVNException e) {
 				throw new CoreException(new Status(IStatus.ERROR, AtlassianSubclipseUiPlugin.PLUGIN_ID,
 						"Cannot determine SVN information for resource [" + resource + "]", e));
@@ -511,7 +511,7 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 		return id;
 	}
 
-	public RepositoryInfo getApplicableRepository(IResource resource) {
+	public ScmRepository getApplicableRepository(IResource resource) {
 		final IProject project = resource.getProject();
 		if (project == null) {
 			return null;
@@ -520,7 +520,7 @@ public class SubclipseTeamResourceConnector extends AbstractTeamConnector {
 			final ISVNLocalResource svnResource = SVNWorkspaceRoot.getSVNResourceFor(resource);
 			final ISVNRepositoryLocation repository = svnResource.getRepository();
 			if (repository != null) {
-				return new RepositoryInfo(repository.getUrl().toString(), repository.getLabel(), this);
+				return new ScmRepository(repository.getUrl().toString(), repository.getLabel(), this);
 			}
 		}
 		// ignore

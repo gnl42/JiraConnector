@@ -15,7 +15,7 @@ import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -56,7 +56,7 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
 			for (ITeamResourceConnector connector : connectors) {
 				if (connector instanceof SubclipseTeamResourceConnector) {
 					SubclipseTeamResourceConnector strc = (SubclipseTeamResourceConnector) connector;
-					RepositoryInfo repository = strc.getRepository(logEntry.getResource()
+					ScmRepository repository = strc.getRepository(logEntry.getResource()
 							.getRepository()
 							.getUrl()
 							.toString(), new NullProgressMonitor());

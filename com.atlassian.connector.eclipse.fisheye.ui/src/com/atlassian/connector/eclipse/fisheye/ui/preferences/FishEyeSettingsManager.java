@@ -13,7 +13,7 @@ package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.LocalStatus;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -126,7 +126,7 @@ public class FishEyeSettingsManager {
 	}
 
 	@Nullable
-	public FishEyeMappingConfiguration getConfiguration(@NotNull RevisionInfo revisionInfo) throws CoreException {
+	public FishEyeMappingConfiguration getConfiguration(@NotNull LocalStatus revisionInfo) throws CoreException {
 		for (FishEyeMappingConfiguration cfgEntry : mappings) {
 			if (revisionInfo.getScmPath().startsWith(cfgEntry.getScmPath())) {
 				return cfgEntry;
@@ -138,7 +138,7 @@ public class FishEyeSettingsManager {
 	@NotNull
 	public String buildFishEyeUrl(@NotNull IResource resource, @Nullable LineRange lineRange) throws CoreException,
 			NoMatchingFishEyeConfigurationException {
-		final RevisionInfo revisionInfo = TeamUiUtils.getLocalRevision(resource);
+		final LocalStatus revisionInfo = TeamUiUtils.getLocalRevision(resource);
 		if (revisionInfo == null) {
 			throw new CoreException(new Status(IStatus.ERROR, FishEyeCorePlugin.PLUGIN_ID,
 					"Cannot determine locally checked-out revision for resource " + resource.getFullPath()));
@@ -164,7 +164,7 @@ public class FishEyeSettingsManager {
 		}
 		res.append("browse/");
 
-		final boolean isBinary = revisionInfo.isBinary() != null && revisionInfo.isBinary();
+		final boolean isBinary = revisionInfo.isBinary();
 
 		if (isBinary && revisionInfo.getRevision() != null) {
 			res.append("~r=");

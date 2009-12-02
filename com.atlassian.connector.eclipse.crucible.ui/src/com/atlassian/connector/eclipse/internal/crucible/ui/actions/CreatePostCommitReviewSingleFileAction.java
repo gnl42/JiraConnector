@@ -18,8 +18,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucible21RepositoryPage;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
-import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
+import com.atlassian.connector.eclipse.ui.team.LocalStatus;
 import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -68,8 +68,8 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 			// TODO show info if the file is dirty
 
 			try {
-				RevisionInfo revisionInfo = TeamUiUtils.getLocalRevision(resources[0]);
-				RepositoryInfo repositoryInfo = TeamUiUtils.getApplicableRepository(resources[0]);
+				LocalStatus revisionInfo = TeamUiUtils.getLocalRevision(resources[0]);
+				ScmRepository repositoryInfo = TeamUiUtils.getApplicableRepository(resources[0]);
 
 				if (revisionInfo != null && repositoryInfo != null) {
 					openReviewWizard(revisionInfo, repositoryInfo);
@@ -89,7 +89,7 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 
 	}
 
-	private void openReviewWizard(final RevisionInfo revisionInfo, final RepositoryInfo repositoryInfo) {
+	private void openReviewWizard(final LocalStatus revisionInfo, final ScmRepository repositoryInfo) {
 		SelectCrucible21RepositoryPage selectRepositoryPage = new SelectCrucible21RepositoryPage() {
 			@Override
 			protected IWizard createWizard(TaskRepository taskRepository) {
@@ -117,7 +117,7 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 	}
 
 	private boolean enabledFor(IResource selected) {
-		RevisionInfo localRevision = null;
+		LocalStatus localRevision = null;
 		try {
 			localRevision = TeamUiUtils.getLocalRevision(selected);
 		} catch (CoreException e) {

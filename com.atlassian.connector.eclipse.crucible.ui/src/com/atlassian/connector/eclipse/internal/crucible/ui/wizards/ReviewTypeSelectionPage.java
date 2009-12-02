@@ -69,12 +69,12 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 	}
 
 	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
+		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().margins(5, 5).create());
 
 		new Label(composite, SWT.NONE).setText("Select how you want to add files to the review:");
 
-		Composite buttonComp = new Composite(composite, SWT.NULL);
+		Composite buttonComp = new Composite(composite, SWT.NONE);
 		buttonComp.setLayout(GridLayoutFactory.fillDefaults().margins(10, 5).create());
 
 		changesetReview = new Button(buttonComp, SWT.CHECK);

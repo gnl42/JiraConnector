@@ -34,9 +34,17 @@ import com.atlassian.theplugin.commons.crucible.api.model.Reviewer;
 import com.atlassian.theplugin.commons.crucible.api.model.User;
 import com.atlassian.theplugin.commons.crucible.api.model.VersionedComment;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.wizard.IWizardContainer;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -46,6 +54,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -326,9 +335,9 @@ public final class CrucibleUiUtil {
 
 	public static void attachCrucibleAnnotation(IEditorPart editor, ITask task, Review review,
 			CrucibleFile crucibleFile, VersionedComment versionedComment) {
-		boolean annotationsAdded = false;		
+		boolean annotationsAdded = false;
 		final ITask activeTask = CrucibleUiPlugin.getDefault().getActiveReviewManager().getActiveTask();
-	
+
 		if (editor instanceof ITextEditor) {
 			ITextEditor textEditor = ((ITextEditor) editor);
 			if (activeTask != null && activeTask.equals(task)) {
@@ -338,7 +347,7 @@ public final class CrucibleUiUtil {
 				TeamUiUtils.selectAndRevealComment(textEditor, versionedComment, crucibleFile);
 			}
 		}
-	
+
 		if (!annotationsAdded) {
 			final String msg;
 			if (activeTask == null || !activeTask.equals(task)) {
@@ -354,4 +363,32 @@ public final class CrucibleUiUtil {
 			});
 		}
 	}
+
+	public static void updateTaskRepositoryCache(@NotNull final TaskRepository taskRepository,
+			@NotNull IWizardContainer container, @NotNull WizardPage currentPage) {
+		IRunnableWithProgress runnable = new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+				CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
+				CrucibleClient client = connector.getClientManager().getClient(taskRepository);
+				if (client != null) {
+					try {
+						client.updateRepositoryData(monitor, taskRepository);
+					} catch (CoreException e) {
+						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+								"Failed to update repository data", e));
+					}
+				}
+			}
+		};
+		try {
+			container.run(true, true, runnable);
+		} catch (Exception ex) {
+			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Failed to update repository data",
+					ex));
+		}
+		if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
+			currentPage.setErrorMessage("Could not retrieve available projects and users from server.");
+		}
+	}
+
 }

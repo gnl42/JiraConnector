@@ -19,7 +19,7 @@ import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClien
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
@@ -90,7 +90,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 				ld.setTitle("Select SCM Repository");
 				ld.setMessage("Select SCM repository in this workspace for this FishEye mapping.\n"
 						+ "You can adjust it afterwards to narrow it down to the more specific path.");
-				for (RepositoryInfo repositoryInfo : scmRepositories) {
+				for (ScmRepository repositoryInfo : scmRepositories) {
 					if (scmPathEdit.getText().equals(repositoryInfo.getScmPath())) {
 						ld.setInitialSelections(new Object[] { repositoryInfo });
 					}
@@ -98,8 +98,8 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 				if (ld.open() == Window.OK) {
 					final Object[] result = ld.getResult();
 					if (result != null && result.length > 0) {
-						if (result[0] instanceof RepositoryInfo) {
-							scmPathEdit.setText(((RepositoryInfo) result[0]).getScmPath());
+						if (result[0] instanceof ScmRepository) {
+							scmPathEdit.setText(((ScmRepository) result[0]).getScmPath());
 						}
 					}
 				}
@@ -164,7 +164,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	private final FishEyeClientManager fishEyeClientManager;
 
-	private Collection<RepositoryInfo> scmRepositories;
+	private Collection<ScmRepository> scmRepositories;
 
 	private Button updateServerDataButton;
 

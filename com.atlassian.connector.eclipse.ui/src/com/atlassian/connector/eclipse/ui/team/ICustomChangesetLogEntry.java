@@ -21,7 +21,7 @@ public interface ICustomChangesetLogEntry extends Comparable<ICustomChangesetLog
 
 	String[] getChangedFiles();
 
-	RepositoryInfo getRepository();
+	ScmRepository getRepository();
 
 	Date getDate();
 

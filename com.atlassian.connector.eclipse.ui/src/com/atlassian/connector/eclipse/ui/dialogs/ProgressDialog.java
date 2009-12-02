@@ -67,7 +67,7 @@ public abstract class ProgressDialog extends TitleAreaDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 		// Build the Page container
-		pageContainer = new Composite(composite, SWT.NULL);
+		pageContainer = new Composite(composite, SWT.NONE);
 		pageContainer.setLayout(new GridLayout());
 		GridData gd = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
 		pageContainer.setLayoutData(gd);

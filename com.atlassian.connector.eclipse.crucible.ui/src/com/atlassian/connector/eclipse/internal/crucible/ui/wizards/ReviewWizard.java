@@ -23,8 +23,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
-import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.LocalStatus;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
@@ -86,10 +86,10 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
-		private final Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
+		private final Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries;
 
 		public AddChangesetsToReviewJob(String name, TaskRepository taskRepository,
-				Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries) {
+				Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> selectedLogEntries) {
 			super(name, taskRepository);
 			this.selectedLogEntries = selectedLogEntries;
 		}
@@ -101,7 +101,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				public Review run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
 						throws CrucibleLoginException, RemoteApiException, ServerPasswordNotProvidedException {
 					Review review = null;
-					for (RepositoryInfo repository : selectedLogEntries.keySet()) {
+					for (ScmRepository repository : selectedLogEntries.keySet()) {
 						monitor.beginTask("Adding revisions to repository " + repository.getScmPath(),
 								selectedLogEntries.get(repository).size());
 						//collect revisions
@@ -263,11 +263,11 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	private IResource[] previousWorkspaceSelection;
 
-	private RevisionInfo scmResourceRevisionInfo;
+	private LocalStatus scmResourceRevisionInfo;
 
 	private CrucibleRepositoryMappingPageImpl defineMappingPage;
 
-	private RepositoryInfo scmRepositoryInfo;
+	private ScmRepository scmRepositoryInfo;
 
 	public ReviewWizard(TaskRepository taskRepository, Set<Type> types) {
 		super(taskRepository, null);
@@ -303,27 +303,27 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 	@Override
 	public void addPages() {
 		if (types.contains(Type.ADD_CHANGESET)) {
-			addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository(), preselectedLogEntries, this);
+			addChangeSetsPage = new CrucibleAddChangesetsPage(getTaskRepository(), preselectedLogEntries);
 			addPage(addChangeSetsPage);
 		}
 		if (types.contains(Type.ADD_PATCH)) {
-			addPatchPage = new CrucibleAddPatchPage(getTaskRepository(), this);
+			addPatchPage = new CrucibleAddPatchPage(getTaskRepository());
 			addPage(addPatchPage);
 		}
 
 		if (types.contains(Type.ADD_WORKSPACE_PATCH)) {
-			addWorkspacePatchPage = new WorkspacePatchSelectionPage(getTaskRepository(), this,
-					selectedWorkspaceResources);
+			addWorkspacePatchPage = new WorkspacePatchSelectionPage(getTaskRepository(), selectedWorkspaceResources);
 			addPage(addWorkspacePatchPage);
 		}
 		if (types.contains(Type.ADD_SCM_FILE)) {
-			defineMappingPage = new CrucibleRepositoryMappingPageImpl(getTaskRepository(), this, scmRepositoryInfo);
+			defineMappingPage = new CrucibleRepositoryMappingPageImpl(getTaskRepository(),
+					Arrays.asList(scmRepositoryInfo));
 			addPage(defineMappingPage);
 		}
 
 		//only add details page if review is not already existing
 		if (crucibleReview == null) {
-			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository(), this);
+			detailsPage = new CrucibleReviewDetailsPage(getTaskRepository());
 			addPage(detailsPage);
 		}
 	}
@@ -423,7 +423,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 
 		if (addChangeSetsPage != null) {
-			final Map<RepositoryInfo, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
+			final Map<ScmRepository, SortedSet<ICustomChangesetLogEntry>> changesetsToAdd = addChangeSetsPage.getSelectedChangesets();
 
 			if (changesetsToAdd != null && changesetsToAdd.size() > 0) {
 				final CrucibleReviewChangeJob job = new AddChangesetsToReviewJob("Add changesets to review",
@@ -616,32 +616,6 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 		}
 	}
 
-	public void updateCache(WizardPage currentPage) {
-		IRunnableWithProgress runnable = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
-				CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
-				if (client != null) {
-					try {
-						client.updateRepositoryData(monitor, getTaskRepository());
-					} catch (CoreException e) {
-						StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
-								"Failed to update repository data", e));
-					}
-				}
-			}
-		};
-		try {
-			getContainer().run(true, true, runnable);
-		} catch (Exception ex) {
-			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID, "Failed to update repository data",
-					ex));
-		}
-		if (!CrucibleUiUtil.hasCachedData(getTaskRepository())) {
-			currentPage.setErrorMessage("Could not retrieve available projects and users from server.");
-		}
-	}
-
 	public void setLogEntries(SortedSet<ICustomChangesetLogEntry> logEntries) {
 		this.preselectedLogEntries = logEntries;
 	}
@@ -658,7 +632,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 				monitor);
 	}
 
-	public void setSelectedScmResource(RevisionInfo revisionInfo, RepositoryInfo repositoryInfo) {
+	public void setSelectedScmResource(LocalStatus revisionInfo, ScmRepository repositoryInfo) {
 		this.scmResourceRevisionInfo = revisionInfo;
 		this.scmRepositoryInfo = repositoryInfo;
 	}

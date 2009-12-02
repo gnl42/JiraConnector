@@ -11,17 +11,23 @@
 
 package com.atlassian.connector.eclipse.ui.team;
 
-public class RevisionInfo {
+public class LocalStatus {
 	private final String scmPath;
 
 	private final String revision;
 
-	private final Boolean isBinary;
+	private final boolean dirty;
 
-	public RevisionInfo(String scmPath, String revision, Boolean isBinary) {
+	private final boolean binary;
+
+	private final boolean added;
+
+	public LocalStatus(String scmPath, String revision, boolean added, boolean dirty, boolean binary) {
 		this.scmPath = scmPath;
 		this.revision = revision;
-		this.isBinary = isBinary;
+		this.binary = binary;
+		this.dirty = dirty;
+		this.added = added;
 	}
 
 	public String getScmPath() {
@@ -32,8 +38,16 @@ public class RevisionInfo {
 		return revision;
 	}
 
-	public Boolean isBinary() {
-		return isBinary;
+	public boolean isBinary() {
+		return binary;
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	public boolean isAdded() {
+		return added;
 	}
 
 	@Override

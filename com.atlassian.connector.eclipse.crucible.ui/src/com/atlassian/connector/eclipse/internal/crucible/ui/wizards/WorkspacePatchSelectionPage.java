@@ -91,8 +91,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 	private final TaskRepository taskRepository;
 
-	public WorkspacePatchSelectionPage(@NotNull TaskRepository taskRepository, @NotNull ReviewWizard wizard,
-			@NotNull List<IResource> roots) {
+	public WorkspacePatchSelectionPage(@NotNull TaskRepository taskRepository, @NotNull List<IResource> roots) {
 		super("Add Workspace Changes to Review");
 		this.taskRepository = taskRepository;
 		setTitle("Add Workspace Changes to Review");
@@ -118,7 +117,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 	 * Allow the user to chose to save the patch to the workspace or outside of the workspace.
 	 */
 	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
+		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).margins(5, 5).create());
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
 

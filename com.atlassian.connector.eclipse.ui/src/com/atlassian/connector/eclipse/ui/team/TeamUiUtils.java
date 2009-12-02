@@ -77,9 +77,14 @@ public final class TeamUiUtils {
 
 	public static final String TEAM_PROV_ID_SVN_SUBVERSIVE = "org.eclipse.team.svn.core.svnnature";
 
-	public static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
+	private static DefaultTeamResourceConnector defaultConnector = new DefaultTeamResourceConnector();
 
 	private TeamUiUtils() {
+	}
+
+	@NotNull
+	public static ITeamResourceConnector getDefaultConnector() {
+		return defaultConnector;
 	}
 
 	@Nullable
@@ -193,9 +198,9 @@ public final class TeamUiUtils {
 	 * @return all supported repositories configured in current workspace
 	 */
 	@NotNull
-	public static Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
+	public static Collection<ScmRepository> getRepositories(IProgressMonitor monitor) {
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
-		Collection<RepositoryInfo> res = MiscUtil.buildArrayList();
+		Collection<ScmRepository> res = MiscUtil.buildArrayList();
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled()) {
@@ -399,13 +404,13 @@ public final class TeamUiUtils {
 	}
 
 	@Nullable
-	public static RepositoryInfo getApplicableRepository(@NotNull IResource resource) {
+	public static ScmRepository getApplicableRepository(@NotNull IResource resource) {
 		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 
 		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled()) {
 				try {
-					RepositoryInfo res = connector.getApplicableRepository(resource);
+					ScmRepository res = connector.getApplicableRepository(resource);
 					if (res != null) {
 						return res;
 					}
@@ -419,12 +424,12 @@ public final class TeamUiUtils {
 
 	}
 
-	public static RevisionInfo getLocalRevision(@NotNull IResource resource) throws CoreException {
+	public static LocalStatus getLocalRevision(@NotNull IResource resource) throws CoreException {
 		ITeamResourceConnector connector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnector(
 				resource);
 
 		if (connector != null && connector.isEnabled()) {
-			RevisionInfo res = connector.getLocalRevision(resource);
+			LocalStatus res = connector.getLocalRevision(resource);
 			if (res != null) {
 				return res;
 			}

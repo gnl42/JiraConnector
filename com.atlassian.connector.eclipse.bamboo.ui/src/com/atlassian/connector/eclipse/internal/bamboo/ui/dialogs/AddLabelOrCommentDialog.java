@@ -143,14 +143,14 @@ public class AddLabelOrCommentDialog extends ProgressDialog {
 		GridData textGridData;
 		switch (type) {
 		case COMMENT:
-			new Label(composite, SWT.NULL).setText("Comment:");
+			new Label(composite, SWT.NONE).setText("Comment:");
 			text = new Text(composite, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
 			textGridData = new GridData(GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_FILL
 					| GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
 			textGridData.heightHint = 50;
 			break;
 		default:
-			new Label(composite, SWT.NULL).setText("Label:");
+			new Label(composite, SWT.NONE).setText("Label:");
 			text = new Text(composite, SWT.SINGLE | SWT.BORDER);
 			textGridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
 		}

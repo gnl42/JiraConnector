@@ -58,20 +58,17 @@ public class CrucibleAddPatchPage extends WizardPage {
 
 	private boolean includePatch = false;
 
-	private final ReviewWizard wizard;
-
 	protected boolean patchPasted = false;
 
-	public CrucibleAddPatchPage(TaskRepository repository, ReviewWizard wizard) {
+	public CrucibleAddPatchPage(TaskRepository repository) {
 		super("cruciblePatch"); //$NON-NLS-1$
 		setTitle("Add Patch to Review");
 		setDescription("Attach a patch from the clipboard to the review.");
 		this.taskRepository = repository;
-		this.wizard = wizard;
 	}
 
 	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
+		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).margins(5, 5).create());
 
 		final Button includePatchButton = new Button(composite, SWT.CHECK);
@@ -120,7 +117,7 @@ public class CrucibleAddPatchPage extends WizardPage {
 		updateData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				wizard.updateCache(CrucibleAddPatchPage.this);
+				CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(), CrucibleAddPatchPage.this);
 			}
 		});
 
@@ -175,7 +172,8 @@ public class CrucibleAddPatchPage extends WizardPage {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					if (!CrucibleUiUtil.hasCachedData(taskRepository)) {
-						wizard.updateCache(CrucibleAddPatchPage.this);
+						CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(),
+								CrucibleAddPatchPage.this);
 					}
 					//copy content from clipboard, only if not already done
 					Clipboard clipboard = new Clipboard(Display.getDefault());

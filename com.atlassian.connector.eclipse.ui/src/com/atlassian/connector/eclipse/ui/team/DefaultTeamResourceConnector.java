@@ -476,7 +476,7 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return inSync;
 	}
 
-	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
+	public LocalStatus getLocalRevision(IResource resource) throws CoreException {
 		//resource
 		final IProject project = resource.getProject();
 		if (project == null) {
@@ -508,9 +508,9 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 					uriStr = uriStr.substring(0, index);
 				}
 
-				return new RevisionInfo(uriStr, localFileRevision.getContentIdentifier(), null);
+				return new LocalStatus(uriStr, localFileRevision.getContentIdentifier(), false, false, false);
 			}
-			return new RevisionInfo(localFileRevision.getContentIdentifier(), null, null);
+			return new LocalStatus(localFileRevision.getContentIdentifier(), null, false, false, false);
 //
 //			boolean inSync = isRemoteFileInSync(file, rp);
 //
@@ -546,12 +546,12 @@ public class DefaultTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
+	public Collection<ScmRepository> getRepositories(IProgressMonitor monitor) {
 		// @todo wseliga implement it
 		return Collections.emptyList();
 	}
 
-	public RepositoryInfo getApplicableRepository(IResource resource) {
+	public ScmRepository getApplicableRepository(IResource resource) {
 		// @todo wseliga
 		return null;
 	}

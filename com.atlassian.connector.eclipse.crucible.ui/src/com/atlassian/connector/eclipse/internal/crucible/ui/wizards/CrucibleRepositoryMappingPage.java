@@ -16,7 +16,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
 import com.atlassian.connector.eclipse.ui.dialogs.ComboSelectionDialog;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -57,31 +57,21 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 
 	private Set<Repository> cachedRepositories;
 
-	private final ReviewWizard wizard;
-
-	private final int size;
-
-	protected CrucibleRepositoryMappingPage(String pageName, TaskRepository repository, ReviewWizard wizard) {
-		this(pageName, repository, wizard, 1000);
-	}
-
-	protected CrucibleRepositoryMappingPage(String pageName, TaskRepository repository, ReviewWizard wizard, int size) {
+	protected CrucibleRepositoryMappingPage(String pageName, TaskRepository repository) {
 		super(pageName);
 
-		this.size = size;
 		this.repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
 		this.taskRepository = repository;
-		this.wizard = wizard;
 
 	}
 
-	public Composite createRepositoryMappingComposite(Composite composite) {
+	public Composite createRepositoryMappingComposite(Composite composite, int hSizeHint) {
 		final Composite mappingComposite = new Composite(composite, SWT.NONE);
 
 		final Table table = new Table(mappingComposite, SWT.BORDER);
 		table.setHeaderVisible(true);
 
-		GridDataFactory.fillDefaults().hint(size, 100).grab(true, true).applyTo(table);
+		GridDataFactory.fillDefaults().hint(hSizeHint, 100).grab(true, true).applyTo(table);
 		repositoriesMappingViewer = new TableViewer(table);
 		repositoriesMappingViewer.setContentProvider(new IStructuredContentProvider() {
 			public Object[] getElements(Object inputElement) {
@@ -104,15 +94,15 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 		column1.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof RepositoryInfo) {
-					return ((RepositoryInfo) element).getScmPath();
+				if (element instanceof ScmRepository) {
+					return ((ScmRepository) element).getScmPath();
 				}
 				return super.getText(element);
 			}
 
 			@Override
 			public Image getImage(Object element) {
-				if (element instanceof RepositoryInfo) {
+				if (element instanceof ScmRepository) {
 					return CommonImages.getImage(CrucibleImages.REPOSITORY);
 				}
 				return null;
@@ -125,8 +115,8 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 		column2.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof RepositoryInfo) {
-					String mapping = repositoryMappings.get(((RepositoryInfo) element).getScmPath());
+				if (element instanceof ScmRepository) {
+					String mapping = repositoryMappings.get(((ScmRepository) element).getScmPath());
 					if (mapping != null) {
 						return mapping;
 					}
@@ -174,7 +164,7 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 	private void editRepositoryMapping() {
 		ISelection selection = repositoriesMappingViewer.getSelection();
 		if (selection instanceof IStructuredSelection && ((IStructuredSelection) selection).size() == 1) {
-			String scmPath = ((RepositoryInfo) ((IStructuredSelection) selection).getFirstElement()).getScmPath();
+			String scmPath = ((ScmRepository) ((IStructuredSelection) selection).getFirstElement()).getScmPath();
 			if (cachedRepositories == null) {
 				cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
 			}
@@ -220,7 +210,7 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 		updateData.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				wizard.updateCache(mainPage);
+				CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(), mainPage);
 				clearCachedCrucibleRepositories();
 			}
 		});
@@ -235,9 +225,8 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 			final WizardPage page = this;
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-
 					if (!CrucibleUiUtil.hasCachedData(getTaskRepository())) {
-						wizard.updateCache(page);
+						CrucibleUiUtil.updateTaskRepositoryCache(taskRepository, getContainer(), page);
 					}
 				}
 			});
@@ -262,6 +251,6 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 
 	protected abstract void validatePage();
 
-	protected abstract Collection<RepositoryInfo> getMappingViewerInput();
+	protected abstract Collection<ScmRepository> getMappingViewerInput();
 
 }

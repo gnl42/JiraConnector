@@ -17,7 +17,7 @@ import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceP
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
 import org.eclipse.core.resources.IResource;
@@ -166,7 +166,7 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 					lineRange);
 			processUrl(url);
 		} catch (final NoMatchingFishEyeConfigurationException e) {
-			final RepositoryInfo repoInfo = TeamUiUtils.getApplicableRepository(resource);
+			final ScmRepository repoInfo = TeamUiUtils.getApplicableRepository(resource);
 			String scmPathToConfigure = (repoInfo != null) ? repoInfo.getScmPath() : null;
 			handleException(resource, shell, e.getMessage(), new FishEyePreferenceContextData(scmPathToConfigure));
 		} catch (CoreException e) {

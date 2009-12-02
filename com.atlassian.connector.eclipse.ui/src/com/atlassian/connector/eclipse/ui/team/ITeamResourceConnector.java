@@ -118,14 +118,14 @@ public interface ITeamResourceConnector {
 	 * @throws CoreException
 	 */
 	@Nullable
-	RevisionInfo getLocalRevision(@NotNull IResource resource) throws CoreException;
+	LocalStatus getLocalRevision(@NotNull IResource resource) throws CoreException;
 
 	/**
 	 * @param monitor
 	 * @return repositories applicable for the current workspace
 	 */
 	@NotNull
-	Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor);
+	Collection<ScmRepository> getRepositories(IProgressMonitor monitor);
 
 	/**
 	 * @param resource
@@ -134,7 +134,7 @@ public interface ITeamResourceConnector {
 	 * @throws CoreException
 	 */
 	@Nullable
-	RepositoryInfo getApplicableRepository(@NotNull IResource resource) throws CoreException;
+	ScmRepository getApplicableRepository(@NotNull IResource resource) throws CoreException;
 
 	/**
 	 * 

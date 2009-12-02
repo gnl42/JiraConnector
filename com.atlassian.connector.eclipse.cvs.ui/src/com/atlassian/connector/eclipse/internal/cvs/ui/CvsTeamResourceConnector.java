@@ -15,8 +15,8 @@ import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
-import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.LocalStatus;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
@@ -85,19 +85,19 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 				"Not implemented yet for CVS."));
 	}
 
-	public Collection<RepositoryInfo> getRepositories(IProgressMonitor monitor) {
+	public Collection<ScmRepository> getRepositories(IProgressMonitor monitor) {
 		ICVSRepositoryLocation[] repositories = CVSProviderPlugin.getPlugin().getKnownRepositories();
 		if (repositories == null) {
 			return MiscUtil.buildArrayList();
 		}
 
-		List<RepositoryInfo> res = MiscUtil.buildArrayList(repositories.length);
+		List<ScmRepository> res = MiscUtil.buildArrayList(repositories.length);
 		final RepositoryManager repositoryManager = CVSUIPlugin.getPlugin().getRepositoryManager();
 
 		for (ICVSRepositoryLocation repo : repositories) {
 			final RepositoryRoot root = repositoryManager.getRepositoryRootFor(repo);
 			final String name = (root != null && root.getName() != null) ? root.getName() : null;
-			res.add(new RepositoryInfo(repo.getLocation(true), name, this));
+			res.add(new ScmRepository(repo.getLocation(true), name, this));
 		}
 		return res;
 	}
@@ -138,7 +138,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		return null;
 	}
 
-	public RevisionInfo getLocalRevision(IResource resource) throws CoreException {
+	public LocalStatus getLocalRevision(IResource resource) throws CoreException {
 		final IProject project = resource.getProject();
 		if (project == null) {
 			return null;
@@ -148,19 +148,19 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 			final ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 			final ResourceSyncInfo syncInfo = cvsResource.getSyncInfo();
 			// syncInfo is null for projects (directly checked-out)
-			final Boolean isBinary = syncInfo != null && syncInfo.getKeywordMode().isBinary();
+			final boolean isBinary = syncInfo != null && syncInfo.getKeywordMode().isBinary();
 
 			final ICVSFolder folder = (ICVSFolder) CVSWorkspaceRoot.getCVSResourceFor(project);
 			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
 			final String revision = syncInfo != null ? "".equals(syncInfo.getRevision()) ? null
 					: syncInfo.getRevision() : null;
-			return new RevisionInfo(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(), revision,
-					isBinary);
+			return new LocalStatus(folderInfo.getRoot() + '/' + cvsResource.getRepositoryRelativePath(), revision,
+					syncInfo == null || syncInfo.isAdded(), false, isBinary);
 		}
 		return null;
 	}
 
-	public RepositoryInfo getApplicableRepository(IResource resource) throws CoreException {
+	public ScmRepository getApplicableRepository(IResource resource) throws CoreException {
 		final IProject project = resource.getProject();
 		if (project == null) {
 			return null;
@@ -168,7 +168,7 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 		if (CVSWorkspaceRoot.isSharedWithCVS(project)) {
 			final ICVSFolder folder = (ICVSFolder) CVSWorkspaceRoot.getCVSResourceFor(project);
 			final FolderSyncInfo folderInfo = folder.getFolderSyncInfo();
-			return folderInfo != null ? new RepositoryInfo(folderInfo.getRoot(), null, this) : null;
+			return folderInfo != null ? new ScmRepository(folderInfo.getRoot(), null, this) : null;
 		}
 		return null;
 	}

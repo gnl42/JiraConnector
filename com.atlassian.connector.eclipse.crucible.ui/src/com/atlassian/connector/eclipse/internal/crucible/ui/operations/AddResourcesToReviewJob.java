@@ -20,8 +20,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleCli
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.RepositoryInfo;
-import com.atlassian.connector.eclipse.ui.team.RevisionInfo;
+import com.atlassian.connector.eclipse.ui.team.LocalStatus;
+import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.connector.eclipse.ui.team.TeamResourceManager;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.RevisionData;
@@ -31,15 +31,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.internal.provisional.commons.ui.WorkbenchUtil;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AddResourcesToReviewJob extends JobWithStatus {
 
@@ -71,6 +75,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 		CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
 
 		List<RevisionData> revisions = MiscUtil.buildArrayList();
+		final Set<ScmRepository> repositoriesWithoutMapping = MiscUtil.buildHashSet();
 
 		TeamResourceManager teamManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
 		for (IResource resource : resources) {
@@ -80,7 +85,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				return;
 			}
 
-			RepositoryInfo repositoryInfo;
+			ScmRepository repositoryInfo;
 			try {
 				repositoryInfo = teamConnector.getApplicableRepository(resource);
 			} catch (CoreException e1) {
@@ -88,7 +93,48 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				return;
 			}
 
-			RevisionInfo revision;
+			if (!repositoryMappings.containsKey(repositoryInfo.getScmPath())) {
+				repositoriesWithoutMapping.add(repositoryInfo);
+			}
+		}
+
+		// if there are some repositories missing mapping ask user to define them
+		if (repositoriesWithoutMapping.size() > 0) {
+			final boolean[] abort = { false };
+
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				public void run() {
+					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new DefineRepositoryMappingsWizard(
+							getTaskRepository(), repositoriesWithoutMapping));
+					wd.setBlockOnOpen(true);
+					if (wd.open() == Window.CANCEL) {
+						abort[0] = true;
+					}
+				}
+			});
+
+			if (abort[0]) {
+				return;
+			}
+		}
+
+		// 
+		for (IResource resource : resources) {
+			ITeamResourceConnector teamConnector = teamManager.getTeamConnector(resource);
+			if (teamConnector == null) {
+				tellUserToCommitFirst();
+				return;
+			}
+
+			ScmRepository repositoryInfo;
+			try {
+				repositoryInfo = teamConnector.getApplicableRepository(resource);
+			} catch (CoreException e1) {
+				setStatus(e1.getStatus());
+				return;
+			}
+
+			LocalStatus revision;
 			try {
 				revision = teamConnector.getLocalRevision(resource);
 			} catch (CoreException e) {
@@ -96,9 +142,14 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				return;
 			}
 
+			if (revision.isDirty() || revision.isAdded()) {
+				tellUserToCommitFirst();
+				return;
+			}
+
 			String crucibleProject = repositoryMappings.get(repositoryInfo.getScmPath());
 
-			RevisionData rd = new RevisionData(crucibleProject, resource.getFullPath().toString(),
+			RevisionData rd = new RevisionData(crucibleProject, revision.getScmPath(),
 					Arrays.asList(revision.getRevision()));
 
 			revisions.add(rd);

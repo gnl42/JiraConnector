@@ -50,8 +50,8 @@ public class CrucibleTeamUiUtil {
 		}
 
 		try {
-			CrucibleFile file = TeamUiUtils.defaultConnector.getCorrespondingCrucibleFileFromEditorInput(editorInput,
-					activeReview);
+			CrucibleFile file = TeamUiUtils.getDefaultConnector().getCorrespondingCrucibleFileFromEditorInput(
+					editorInput, activeReview);
 			if (file != null) {
 				return file;
 			}
