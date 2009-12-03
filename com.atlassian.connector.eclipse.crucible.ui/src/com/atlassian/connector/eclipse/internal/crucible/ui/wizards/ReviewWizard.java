@@ -22,11 +22,15 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRem
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
+import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
 import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
 import com.atlassian.connector.eclipse.ui.team.LocalStatus;
 import com.atlassian.connector.eclipse.ui.team.ScmRepository;
+import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
+import com.atlassian.theplugin.commons.crucible.api.PathAndRevision;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleAction;
 import com.atlassian.theplugin.commons.crucible.api.model.NewReviewItemBean;
@@ -36,6 +40,7 @@ import com.atlassian.theplugin.commons.exception.ServerPasswordNotProvidedExcept
 import com.atlassian.theplugin.commons.remoteapi.RemoteApiException;
 import com.atlassian.theplugin.commons.util.StringUtil;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -65,6 +70,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +88,7 @@ import java.util.SortedSet;
 public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 	public enum Type {
-		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_FILE;
+		ADD_CHANGESET, ADD_PATCH, ADD_WORKSPACE_PATCH, ADD_SCM_FILE, ADD_SCM_RESOURCES;
 	}
 
 	private class AddChangesetsToReviewJob extends CrucibleReviewChangeJob {
@@ -143,7 +149,7 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 					String crucibleRepositoryName = defineMappingPage.getRepositoryMappings().get(
 							scmRepositoryInfo.getScmPath());
 
-					// TODO jj add support for repos other than SVN 
+					// TODO add support for repos other than SVN 
 					SvnRepository crucibleRepository = server.getRepository(serverCfg, crucibleRepositoryName);
 
 					if (crucibleRepository == null) {
@@ -182,6 +188,123 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 					server.addFileToReview(serverCfg, crucibleReview.getPermId(), newReviewItem);
 
+					return null;
+				}
+			});
+
+			return Status.OK_STATUS;
+		}
+	}
+
+	// TODO jj merge with add single file job
+	private class AddResourcesToReviewJob extends CrucibleReviewChangeJob {
+
+		private final List<IResource> resources;
+
+		public AddResourcesToReviewJob(String name, TaskRepository taskRepository, List<IResource> resources) {
+			super(name, taskRepository);
+			this.resources = resources;
+		}
+
+		@Override
+		protected IStatus execute(CrucibleClient client, IProgressMonitor monitor) throws CoreException {
+			client.execute(new CrucibleRemoteOperation<Void>(monitor, getTaskRepository()) {
+
+				@Override
+				public Void run(CrucibleServerFacade2 server, ConnectionCfg serverCfg, IProgressMonitor monitor)
+						throws RemoteApiException, ServerPasswordNotProvidedException {
+
+					// monitor.beginTask should be called only once (it is already called in client.execute implementation)
+//					monitor.beginTask("Adding file to review", 1);
+
+					Map<String, List<PathAndRevision>> reviewInput = new HashMap<String, List<PathAndRevision>>();
+
+					for (IResource root : resources) {
+
+						final ITeamResourceConnector teamConnector = AtlassianUiPlugin.getDefault()
+								.getTeamResourceManager()
+								.getTeamConnector(root);
+						if (teamConnector != null) {
+							List<IResource> validResources = teamConnector.getResourcesByFilterRecursive(
+									new IResource[] { root }, ITeamResourceConnector.State.SF_ALL);
+
+							if (validResources != null && validResources.size() > 0) {
+
+								// for all children of root SCM and Crucible repository is the same
+								ScmRepository repositoryInfo = TeamUiUtils.getApplicableRepository(validResources.get(0));
+
+								// TODO jj add repository name retrieval (multiple) when mapping page is fixed
+								String crucibleRepositoryName = "connector-eclipse";
+//								String crucibleRepositoryName = defineMappingPage.getRepositoryMappings().get(
+//									repositoryInfo.getScmPath());
+
+								// TODO add support for repos other than SVN 
+								SvnRepository crucibleRepository = server.getRepository(serverCfg,
+										crucibleRepositoryName);
+
+								if (crucibleRepository == null) {
+									StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+											"Adding resources to review failed. Cannot get repository data for "
+													+ crucibleRepositoryName));
+									return null;
+								}
+
+								List<PathAndRevision> pathAndRevisions = new ArrayList<PathAndRevision>();
+
+								for (IResource child : validResources) {
+
+									if (!(child instanceof IFile)) {
+										continue;
+									}
+
+									LocalStatus revisionInfo;
+									try {
+										revisionInfo = TeamUiUtils.getLocalRevision(child);
+									} catch (CoreException e) {
+										StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+												"Adding resources to review failed. Cannot get local revision for resource "
+														+ child.getName(), e));
+										return null;
+									}
+
+									String filePath = revisionInfo.getScmPath();
+
+									if (filePath.startsWith(crucibleRepository.getUrl())) {
+										filePath = filePath.substring(crucibleRepository.getUrl().length());
+									} else {
+										StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+												"Cannot match selected resource with Crucible repository url."));
+									}
+
+									filePath = StringUtil.removePrefixSlashes(filePath);
+									String cruPath = StringUtil.removePrefixSlashes(crucibleRepository.getPath());
+									if (filePath.startsWith(cruPath)) {
+										filePath = filePath.substring(crucibleRepository.getPath().length());
+									} else {
+										StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
+												"Cannot match selected resource with Crucible repository path."));
+									}
+
+									filePath = StringUtil.removePrefixSlashes(filePath);
+
+									pathAndRevisions.add(new PathAndRevision(filePath,
+											Arrays.asList(revisionInfo.getRevision())));
+								}
+
+								reviewInput.put(crucibleRepositoryName, pathAndRevisions);
+							}
+						} else {
+							StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+									"Cannot find team connector for resource " + root.getName()));
+							return null;
+						}
+					}
+
+					// call server
+					for (String cruRepoName : reviewInput.keySet()) {
+						server.addFileRevisionsToReview(serverCfg, crucibleReview.getPermId(), cruRepoName,
+								reviewInput.get(cruRepoName));
+					}
 					return null;
 				}
 			});
@@ -436,11 +559,27 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 			}
 		}
 
-		if (defineMappingPage != null) {
+		// TODO jj fix or remove if statement after implementing package/directory review creation
+		if (defineMappingPage != null && types.contains(Type.ADD_SCM_FILE) && !types.contains(Type.ADD_SCM_RESOURCES)) {
 			if (scmRepositoryInfo != null && scmResourceRevisionInfo != null) {
 				final CrucibleReviewChangeJob job = new AddFileToReviewJob("Add file to review", getTaskRepository());
 
 				IStatus result = runJobInContainer(job);
+				if (!result.isOK()) {
+					creationProcessStatus.add(result);
+				}
+			}
+		}
+
+		// TODO jj fix/merge with single file review creation
+		if (/*defineMappingPage != null &&*/types.contains(Type.ADD_SCM_RESOURCES)
+				&& !types.contains(Type.ADD_SCM_FILE)) {
+			if (selectedWorkspaceResources != null) {
+				final CrucibleReviewChangeJob job = new AddResourcesToReviewJob("Add resorces to review",
+						getTaskRepository(), selectedWorkspaceResources);
+
+				IStatus result = runJobInContainer(job);
+				// TODO jj multistatus if job failed
 				if (!result.isOK()) {
 					creationProcessStatus.add(result);
 				}

@@ -44,7 +44,6 @@ import java.lang.reflect.InvocationTargetException;
 public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 
 	public CreatePostCommitReviewSingleFileAction() {
-		// ignore
 	}
 
 	@Override
@@ -86,7 +85,6 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 			StatusHandler.log(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
 					"Nothing selected. Cannot create review."));
 		}
-
 	}
 
 	private void openReviewWizard(final LocalStatus revisionInfo, final ScmRepository repositoryInfo) {
