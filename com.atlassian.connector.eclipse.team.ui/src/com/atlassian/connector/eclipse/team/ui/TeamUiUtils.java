@@ -437,7 +437,7 @@ public final class TeamUiUtils {
 						WorkbenchUtil.getShell(),
 						"No Atlassian SCM Integration installed",
 						null,
-						"In order to access this functionality you need to install an Atlassian SCM Integration feature.\n"
+						"In order to access this functionality you need to install an Atlassian SCM Integration feature.\n\n"
 								+ "You may install them by opening: Help | Install New Software, selecting 'Atlassian Connector for Eclipse' Update Site "
 								+ "and chosing one or more integation features in 'Atlassian Integrations' category.",
 						MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0).open();
