@@ -1,0 +1,3 @@
+<plugin>
+   <extension-point id="teamUiConnector" name="teamUiConnector" schema="schema/teamUiConnector.exsd"/>
+</plugin>
