@@ -8,7 +8,7 @@
 		<factory adaptableType="org.tigris.subversion.subclipse.core.history.ILogEntry"
 			class="com.atlassian.connector.eclipse.internal.subclipse.ui.LogEntryAdapterFactory">
 			<adapter
-				type="com.atlassian.connector.eclipse.team.core.ICustomChangesetLogEntry" />
+				type="com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry" />
 		</factory>
 	</extension>
 
