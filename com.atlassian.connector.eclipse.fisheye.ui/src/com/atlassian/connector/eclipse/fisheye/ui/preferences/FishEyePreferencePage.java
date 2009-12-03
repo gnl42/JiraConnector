@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
-import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -34,8 +33,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -90,7 +87,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
-							new FishEyeMappingConfiguration(initialData.getScmPath(), null, null), getFishEyeServers(),
+							new FishEyeMappingConfiguration(initialData.getScmPath(), null, null),
 							FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager(), true);
 					if (dialog.open() == Window.OK) {
 						final FishEyeMappingConfiguration cfg = dialog.getCfg();
@@ -102,18 +99,6 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 				}
 			});
 		}
-	}
-
-	private List<TaskRepository> getFishEyeServers() {
-		List<TaskRepository> fishEyeLikeRepos = MiscUtil.buildArrayList();
-		final List<TaskRepository> allRepositories = TasksUi.getRepositoryManager().getAllRepositories();
-		for (TaskRepository taskRepository : allRepositories) {
-			if (taskRepository.getConnectorKind().equals(FishEyeCorePlugin.CONNECTOR_KIND)
-					|| CrucibleRepositoryConnector.isFishEye(taskRepository)) {
-				fishEyeLikeRepos.add(taskRepository);
-			}
-		}
-		return fishEyeLikeRepos;
 	}
 
 	@Override
@@ -202,7 +187,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 
 			public void widgetSelected(SelectionEvent e) {
 				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
-						getFishEyeServers(), FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
+						FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
 				if (dialog.open() == Window.OK) {
 					final FishEyeMappingConfiguration cfg = dialog.getCfg();
 					if (cfg != null) {
@@ -247,7 +232,7 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 			if (selection instanceof FishEyeMappingConfiguration) {
 				FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
 				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), mappingCfg,
-						getFishEyeServers(), FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
+						FishEyeCorePlugin.getDefault().getRepositoryConnector().getClientManager());
 				if (dialog.open() == Window.OK) {
 					final FishEyeMappingConfiguration cfg = dialog.getCfg();
 					if (cfg != null) {

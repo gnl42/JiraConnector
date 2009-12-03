@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
+import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
-import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
@@ -21,7 +21,6 @@ import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
 import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,8 +40,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
-import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -64,8 +61,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -176,30 +171,29 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 	 * Creates dialog in "edit" mode - with initial selections
 	 */
 	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeMappingConfiguration initialConfiguration,
-			Collection<TaskRepository> taskRepositories, FishEyeClientManager fishEyeClientManager) {
-		this(parentShell, initialConfiguration, taskRepositories, fishEyeClientManager, false);
+			FishEyeClientManager fishEyeClientManager) {
+		this(parentShell, initialConfiguration, fishEyeClientManager, false);
 	}
 
 	/**
 	 * Creates dialog in "add" mode
 	 */
-	public AddOrEditFishEyeMappingDialog(Shell parentShell, Collection<TaskRepository> taskRepositories,
-			FishEyeClientManager fishEyeClientManager) {
-		this(parentShell, null, taskRepositories, fishEyeClientManager, true);
+	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeClientManager fishEyeClientManager) {
+		this(parentShell, null, fishEyeClientManager, true);
 	}
 
 	/**
 	 * Creates dialog in "add" or "edit" mode with initial selection
 	 */
 	public AddOrEditFishEyeMappingDialog(Shell parentShell, FishEyeMappingConfiguration initialConfiguration,
-			Collection<TaskRepository> taskRepositories, FishEyeClientManager fishEyeClientManager, boolean isAddMode) {
+			FishEyeClientManager fishEyeClientManager, boolean isAddMode) {
 		super(parentShell);
 		setTitleImage(FishEyeImages.getImage(FishEyeImages.FISHEYE_WIZ_BAN_ICON));
 		this.fishEyeClientManager = fishEyeClientManager;
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		cfg = initialConfiguration;
-		this.taskRepositories = new HashSet<TaskRepository>(taskRepositories);
 		this.isAddMode = isAddMode;
+		this.taskRepositories = FishEyeUiUtil.getFishEyeServers();
 	}
 
 	public FishEyeMappingConfiguration getCfg() {
@@ -469,28 +463,6 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		updateOkButtonState();
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-	}
-
-	/**
-	 * for easy testing
-	 * 
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
-		Display display = new Display();
-		final Shell shell = new Shell(display);
-		final TaskRepository stac = new TaskRepository(FishEyeCorePlugin.CONNECTOR_KIND,
-				"https://studio.atlassian.com/source");
-		stac.setRepositoryLabel("StAC");
-		stac.setCredentials(AuthenticationType.HTTP, new AuthenticationCredentials("user", "pass"), false);
-
-		final TaskRepository localFe = new TaskRepository(FishEyeCorePlugin.CONNECTOR_KIND, "http://localhost:8060");
-		localFe.setRepositoryLabel("Local FishEye 1.6.4");
-		localFe.setCredentials(AuthenticationType.REPOSITORY, new AuthenticationCredentials("wseliga", "wseliga"),
-				false);
-		FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration("http://demo", localFe.getUrl(), "TST");
-		new AddOrEditFishEyeMappingDialog(shell, cfg, MiscUtil.buildArrayList(stac, localFe), new FishEyeClientManager(
-				File.createTempFile("elipseconnector", "tmp"))).open();
 	}
 
 }

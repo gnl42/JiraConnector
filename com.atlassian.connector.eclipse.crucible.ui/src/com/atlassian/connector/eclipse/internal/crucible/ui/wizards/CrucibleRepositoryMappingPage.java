@@ -89,7 +89,7 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 		});
 
 		final TableViewerColumn column1 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
-		column1.getColumn().setText("Local Repository");
+		column1.getColumn().setText("SCM Path");
 		column1.getColumn().setWidth(500);
 		column1.setLabelProvider(new ColumnLabelProvider() {
 			@Override
