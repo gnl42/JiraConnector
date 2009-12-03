@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Connector for Eclipse
 Bundle-SymbolicName: com.atlassian.connector.eclipse.team.ui;singleton:=true
 Bundle-Version: 1.4.0.qualifier
-Bundle-Activator: com.atlassian.connector.eclipse.ui.team.AtlassianTeamUiPlugin
+Bundle-Activator: com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin
 Bundle-Vendor: Atlassian
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -27,20 +27,21 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.mylyn.tasks.ui,
  org.jetbrains.annotations;resolution:=optional,
  com.atlassian.connector.eclipse.core,
- com.atlassian.connector.eclipse.team.core,
  com.atlassian.connector.eclipse.monitor.usage
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: com.atlassian.connector.eclipse.ui;
-  x-friends:="com.atlassian.connector.eclipse.crucible.ui,
-   com.atlassian.connector.eclipse.subclipse.ui,
-   com.atlassian.connector.eclipse.subversive.ui,
-   com.atlassian.connector.eclipse.fisheye.ui",
- com.atlassian.connector.eclipse.ui.team;
+Export-Package: 
+ com.atlassian.connector.eclipse.team.ui;
   x-friends:="com.atlassian.connector.eclipse.crucible.ui,
    com.atlassian.connector.eclipse.subclipse.ui,
    com.atlassian.connector.eclipse.cvs.ui,
    com.atlassian.connector.eclipse.subversive.ui,
    com.atlassian.connector.eclipse.crucible.tests,
    com.atlassian.connector.eclipse.fisheye.ui,
-   com.atlassian.connector.eclipse.directclickthrough.ui"
+   com.atlassian.connector.eclipse.directclickthrough.ui",
+ com.atlassian.connector.eclipse.team.ui.exceptions,
+ com.atlassian.connector.eclipse.ui;
+  x-friends:="com.atlassian.connector.eclipse.crucible.ui,
+   com.atlassian.connector.eclipse.subclipse.ui,
+   com.atlassian.connector.eclipse.subversive.ui,
+   com.atlassian.connector.eclipse.fisheye.ui"

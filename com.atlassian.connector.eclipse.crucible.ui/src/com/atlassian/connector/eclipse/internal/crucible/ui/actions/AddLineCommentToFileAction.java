@@ -16,9 +16,9 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.annotations.ICrucibleCompareSourceViewer;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.core.runtime.IStatus;

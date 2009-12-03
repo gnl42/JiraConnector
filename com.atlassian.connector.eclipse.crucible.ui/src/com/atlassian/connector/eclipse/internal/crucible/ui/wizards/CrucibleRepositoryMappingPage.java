@@ -15,8 +15,8 @@ import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.ui.dialogs.ComboSelectionDialog;
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
 import org.eclipse.jface.dialogs.IDialogConstants;

@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.fisheye.ui;
 
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;

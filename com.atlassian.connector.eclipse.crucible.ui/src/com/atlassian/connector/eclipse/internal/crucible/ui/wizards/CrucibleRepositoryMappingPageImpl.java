@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.dialogs.Dialog;

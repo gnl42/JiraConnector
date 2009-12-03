@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.ui;
 
-import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
+import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
 
 public interface IAnnotationCompareInput {
 	ICompareAnnotationModel getAnnotationModelToAttach();

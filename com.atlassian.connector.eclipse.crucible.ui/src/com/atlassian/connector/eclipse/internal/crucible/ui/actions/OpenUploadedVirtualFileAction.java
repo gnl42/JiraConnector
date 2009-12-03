@@ -18,7 +18,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFil
 import com.atlassian.connector.eclipse.internal.crucible.ui.CruciblePreCommitFileStorage;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ReviewFileContent;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;

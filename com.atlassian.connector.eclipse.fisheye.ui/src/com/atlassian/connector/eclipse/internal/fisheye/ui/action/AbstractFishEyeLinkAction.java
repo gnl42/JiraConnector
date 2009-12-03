@@ -17,8 +17,8 @@ import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferenceP
 import com.atlassian.connector.eclipse.fisheye.ui.preferences.NoMatchingFishEyeConfigurationException;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.dialogs.ErrorDialogWithHyperlink;
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -115,7 +115,7 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 			boolean isEnabled;
 			try {
 				isEnabled = selectionData.resource != null
-						&& TeamUiUtils.getLocalRevision(selectionData.resource) != null;
+						&& (TeamUiUtils.hasNoTeamConnectors() || TeamUiUtils.getLocalRevision(selectionData.resource) != null);
 			} catch (CoreException e) {
 				isEnabled = false;
 			}
@@ -161,6 +161,9 @@ public abstract class AbstractFishEyeLinkAction extends BaseSelectionListenerAct
 	protected abstract void processUrl(String url);
 
 	private void processResource(IResource resource, LineRange lineRange, final Shell shell) {
+		if (!TeamUiUtils.checkTeamConnectors()) {
+			return;
+		}
 		try {
 			final String url = FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().buildFishEyeUrl(resource,
 					lineRange);

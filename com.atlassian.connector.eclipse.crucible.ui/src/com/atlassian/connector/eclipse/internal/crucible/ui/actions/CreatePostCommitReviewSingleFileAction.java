@@ -16,12 +16,12 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucible21RepositoryPage;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
-import com.atlassian.connector.eclipse.ui.team.LocalStatus;
-import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
+import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -43,23 +44,28 @@ import java.lang.reflect.InvocationTargetException;
 @SuppressWarnings("restriction")
 public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 
-	public CreatePostCommitReviewSingleFileAction() {
-	}
-
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
+		if (!TeamUiUtils.checkTeamConnectors()) {
+			return;
+		}
 		IResource[] resources = getSelectedResources();
 
 		if (resources != null && resources.length > 0 && resources[0] != null) {
 
-			ITeamResourceConnector connector = AtlassianUiPlugin.getDefault()
+			ITeamUiResourceConnector connector = AtlassianTeamUiPlugin.getDefault()
 					.getTeamResourceManager()
 					.getTeamConnector(resources[0]);
+			if (connector == null) {
+				MessageDialog.openError(getShell(), "Error",
+						"Cannot find Atlassian SCM Integration for selected resource(s).");
+				return;
+			}
 
 			if (connector.getType() != TeamConnectorType.SVN) {
 				MessageBox mb = new MessageBox(WorkbenchUtil.getShell(), SWT.OK | SWT.ICON_INFORMATION);
 				mb.setText(AtlassianCorePlugin.PRODUCT_NAME);
-				mb.setMessage("Cannot create review from non Subversion resource. Only Subversion is supported.");
+				mb.setMessage("Cannot create review from non-Subversion resource. Only Subversion is supported.");
 				mb.open();
 				return;
 			}
@@ -115,6 +121,9 @@ public class CreatePostCommitReviewSingleFileAction extends TeamAction {
 	}
 
 	private boolean enabledFor(IResource selected) {
+		if (TeamUiUtils.hasNoTeamConnectors()) {
+			return true;
+		}
 		LocalStatus localRevision = null;
 		try {
 			localRevision = TeamUiUtils.getLocalRevision(selected);

@@ -22,12 +22,12 @@ import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleRem
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewChangeJob;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.LocalStatus;
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.CrucibleLoginException;
 import com.atlassian.theplugin.commons.crucible.api.PathAndRevision;
@@ -221,12 +221,12 @@ public class ReviewWizard extends NewTaskWizard implements INewWizard {
 
 					for (IResource root : resources) {
 
-						final ITeamResourceConnector teamConnector = AtlassianUiPlugin.getDefault()
+						final ITeamUiResourceConnector teamConnector = AtlassianTeamUiPlugin.getDefault()
 								.getTeamResourceManager()
 								.getTeamConnector(root);
 						if (teamConnector != null) {
 							List<IResource> validResources = teamConnector.getResourcesByFilterRecursive(
-									new IResource[] { root }, ITeamResourceConnector.State.SF_ALL);
+									new IResource[] { root }, ITeamUiResourceConnector.State.SF_ALL);
 
 							if (validResources != null && validResources.size() > 0) {
 

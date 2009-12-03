@@ -11,7 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IPath;

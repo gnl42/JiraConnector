@@ -21,7 +21,7 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.actions.CompareVersi
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenUploadedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.actions.OpenVersionedVirtualFileAction;
 import com.atlassian.connector.eclipse.internal.crucible.ui.editor.CrucibleReviewEditorPage;
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.theplugin.commons.VersionedVirtualFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CommitType;

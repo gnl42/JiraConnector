@@ -20,6 +20,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface,
  org.eclipse.compare,
  org.eclipse.mylyn.commons.net,
+ org.eclipse.mylyn.commons.ui,
  org.eclipse.mylyn.monitor.ui,
  org.eclipse.mylyn.monitor.core,
  org.eclipse.mylyn.tasks.core,
@@ -39,8 +40,7 @@ Export-Package: com.atlassian.connector.eclipse.ui;
  com.atlassian.connector.eclipse.ui.editor;x-friends:="com.atlassian.connector.eclipse.crucible.ui,com.atlassian.connector.eclipse.bamboo.ui",
  com.atlassian.connector.eclipse.ui.exceptions;x-friends:="com.atlassian.connector.eclipse.crucible.ui",
  com.atlassian.connector.eclipse.ui.forms;x-friends:="com.atlassian.connector.eclipse.crucible.ui",
- com.atlassian.connector.eclipse.ui.preferences;x-internal:=true,
- com.atlassian.connector.eclipse.ui.team;
+ com.atlassian.connector.eclipse.ui.preferences;
   x-friends:="com.atlassian.connector.eclipse.crucible.ui,
    com.atlassian.connector.eclipse.subclipse.ui,
    com.atlassian.connector.eclipse.cvs.ui,

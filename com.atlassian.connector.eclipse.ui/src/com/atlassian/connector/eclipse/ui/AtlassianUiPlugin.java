@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.ui;
 
 import com.atlassian.connector.eclipse.ui.internal.monitor.TaskEditorMonitor;
-import com.atlassian.connector.eclipse.ui.team.TeamResourceManager;
 
 import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.swt.widgets.Shell;
@@ -33,8 +32,6 @@ public class AtlassianUiPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static AtlassianUiPlugin plugin;
-
-	private TeamResourceManager teamResourceManager;
 
 	protected TaskEditorMonitor taskEditorMonitor;
 
@@ -73,13 +70,6 @@ public class AtlassianUiPlugin extends AbstractUIPlugin {
 	 */
 	public static AtlassianUiPlugin getDefault() {
 		return plugin;
-	}
-
-	public synchronized TeamResourceManager getTeamResourceManager() {
-		if (teamResourceManager == null) {
-			teamResourceManager = new TeamResourceManager();
-		}
-		return teamResourceManager;
 	}
 
 	public static IWorkbenchWindow getActiveWorkbenchWindow() {

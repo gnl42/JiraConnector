@@ -11,11 +11,11 @@
 
 package com.atlassian.connector.eclipse.internal.subclipse.ui;
 
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.CustomChangeSetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.CustomChangeSetLogEntry;
+import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -48,14 +48,14 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
 
 			}
 
-			Set<ITeamResourceConnector> connectors = AtlassianUiPlugin.getDefault()
+			Set<ITeamUiResourceConnector> connectors = AtlassianTeamUiPlugin.getDefault()
 					.getTeamResourceManager()
 					.getTeamConnectors();
 
 			// Only because I don't want to publish getRepository as a ITeamResourceConnector member
-			for (ITeamResourceConnector connector : connectors) {
-				if (connector instanceof SubclipseTeamResourceConnector) {
-					SubclipseTeamResourceConnector strc = (SubclipseTeamResourceConnector) connector;
+			for (ITeamUiResourceConnector connector : connectors) {
+				if (connector instanceof SubclipseTeamUiResourceConnector) {
+					SubclipseTeamUiResourceConnector strc = (SubclipseTeamUiResourceConnector) connector;
 					ScmRepository repository = strc.getRepository(logEntry.getResource()
 							.getRepository()
 							.getUrl()

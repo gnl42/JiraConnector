@@ -13,8 +13,8 @@ package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.LocalStatus;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
@@ -42,7 +42,7 @@ import java.util.List;
  * This class uses somewhat crazy approach for persisting preferences - XML is serialized to a string and then such
  * string is put into properties using standard {@link IPreferenceStore} interface. Such approach is also used by other
  * standard Eclipse plugins - e.g. JDT uses it for persisting JRE configuration.
- * 
+ *
  * @author Wojciech Seliga
  */
 public class FishEyeSettingsManager {
@@ -68,7 +68,7 @@ public class FishEyeSettingsManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return live copy of mappings
 	 */
 	public List<FishEyeMappingConfiguration> getMappings() {

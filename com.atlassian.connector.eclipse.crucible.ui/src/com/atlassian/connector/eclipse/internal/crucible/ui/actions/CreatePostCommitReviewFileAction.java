@@ -16,8 +16,8 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucible21RepositoryPage;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
@@ -100,13 +100,13 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 				// TODO jj empty directories should not proceed
 
 				for (IResource root : resources) {
-					final ITeamResourceConnector teamConnector = AtlassianUiPlugin.getDefault()
+					final ITeamUiResourceConnector teamConnector = AtlassianTeamUiPlugin.getDefault()
 							.getTeamResourceManager()
 							.getTeamConnector(resources[0]);
 					// TODO jj test it against different connectors (subersion and CVS at once)
 					if (teamConnector != null) {
 						if (teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
-								ITeamResourceConnector.State.SF_ANY_CHANGE).size() > 0) {
+								ITeamUiResourceConnector.State.SF_ANY_CHANGE).size() > 0) {
 							// uncommitted change detected, show message box and return
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {

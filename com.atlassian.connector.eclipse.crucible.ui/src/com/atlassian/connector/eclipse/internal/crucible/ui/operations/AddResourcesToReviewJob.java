@@ -19,11 +19,11 @@ import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.core.client.CrucibleClient;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.LocalStatus;
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
-import com.atlassian.connector.eclipse.ui.team.TeamResourceManager;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
+import com.atlassian.connector.eclipse.team.ui.TeamUiResourceManager;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.RevisionData;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -78,9 +78,9 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 		List<RevisionData> revisions = MiscUtil.buildArrayList();
 		final Set<ScmRepository> repositoriesWithoutMapping = MiscUtil.buildHashSet();
 
-		TeamResourceManager teamManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+		TeamUiResourceManager teamManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
 		for (IResource resource : resources) {
-			ITeamResourceConnector teamConnector = teamManager.getTeamConnector(resource);
+			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
 			if (teamConnector == null) {
 				tellUserToCommitFirst();
 				return;
@@ -121,7 +121,7 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 		// 
 		for (IResource resource : resources) {
-			ITeamResourceConnector teamConnector = teamManager.getTeamConnector(resource);
+			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
 			if (teamConnector == null) {
 				tellUserToCommitFirst();
 				return;

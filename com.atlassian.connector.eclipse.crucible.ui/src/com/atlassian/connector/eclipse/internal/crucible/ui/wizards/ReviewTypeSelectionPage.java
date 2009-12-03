@@ -13,9 +13,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard.Type;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -107,7 +107,7 @@ public class ReviewTypeSelectionPage extends WizardSelectionPage {
 			}
 		});
 
-		Set<ITeamResourceConnector> teamConnectors = AtlassianUiPlugin.getDefault()
+		Set<ITeamUiResourceConnector> teamConnectors = AtlassianTeamUiPlugin.getDefault()
 				.getTeamResourceManager()
 				.getTeamConnectors();
 

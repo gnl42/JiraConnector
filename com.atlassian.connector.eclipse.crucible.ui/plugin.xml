@@ -85,7 +85,7 @@
 		name="Crucible Review Actions" point="org.eclipse.ui.popupMenus">
 		<objectContribution adaptable="true"
 			id="com.atlassian.connector.eclipse.internal.crucible.ui.createReviewContribution"
-			objectClass="com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry">
+			objectClass="com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry">
 
 			<action
 				class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreateReviewAction"

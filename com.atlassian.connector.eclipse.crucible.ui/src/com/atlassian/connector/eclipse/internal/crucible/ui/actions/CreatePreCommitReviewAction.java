@@ -14,8 +14,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
@@ -38,12 +39,13 @@ import java.util.List;
  */
 @SuppressWarnings("restriction")
 public class CreatePreCommitReviewAction extends TeamAction {
-	public CreatePreCommitReviewAction() {
-		super();
-	}
 
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
+		if (!TeamUiUtils.checkTeamConnectors()) {
+			return;
+		}
+
 		SelectRepositoryPage selectRepositoryPage = new SelectRepositoryPage(
 				SelectCrucibleRepositoryPage.ENABLED_CRUCIBLE_REPOSITORY_FILTER) {
 			@Override
@@ -81,8 +83,12 @@ public class CreatePreCommitReviewAction extends TeamAction {
 	}
 
 	private boolean enabledFor(IResource selected) {
-		ITeamResourceConnector connector = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnector(
-				selected);
+		if (TeamUiUtils.hasNoTeamConnectors()) {
+			return true;
+		}
+		ITeamUiResourceConnector connector = AtlassianTeamUiPlugin.getDefault()
+				.getTeamResourceManager()
+				.getTeamConnector(selected);
 
 		return (connector != null);
 	}

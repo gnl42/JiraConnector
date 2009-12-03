@@ -11,13 +11,13 @@
 
 package com.atlassian.connector.eclipse.internal.cvs.ui;
 
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
-import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.LocalStatus;
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
-import com.atlassian.connector.eclipse.ui.team.TeamConnectorType;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
+import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.LocalStatus;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
+import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
 import com.atlassian.theplugin.commons.crucible.api.UploadItem;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.util.MiscUtil;
@@ -59,7 +59,7 @@ import java.util.SortedSet;
  * @author Wojciech Seliga
  */
 @SuppressWarnings("restriction")
-public class CvsTeamResourceConnector implements ITeamResourceConnector {
+public class CvsTeamResourceConnector implements ITeamUiResourceConnector {
 
 	public boolean isEnabled() {
 		return true;
@@ -182,7 +182,6 @@ public class CvsTeamResourceConnector implements ITeamResourceConnector {
 	}
 
 	public boolean haveMatchingResourcesRecursive(IResource[] roots, State filter) {
-		// ignore
 		return false;
 	}
 

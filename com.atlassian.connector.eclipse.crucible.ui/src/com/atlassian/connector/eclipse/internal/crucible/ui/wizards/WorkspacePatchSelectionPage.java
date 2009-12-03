@@ -23,9 +23,9 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleRepositoryConnector;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.AbstractTeamConnector;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.AbstractTeamUiConnector;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IResource;
@@ -83,9 +83,9 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 
 	private Object[] realSelection;
 
-	private final Set<ITeamResourceConnector> teamConnectors;
+	private final Set<ITeamUiResourceConnector> teamConnectors;
 
-	private ITeamResourceConnector selectedTeamConnector;
+	private ITeamUiResourceConnector selectedTeamConnector;
 
 	private ComboViewer scmViewer;
 
@@ -98,9 +98,9 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		setDescription("Attach local, uncommited changes from the workspace to the review.");
 
 		this.roots.addAll(roots);
-		this.teamConnectors = AtlassianUiPlugin.getDefault().getTeamResourceManager().getTeamConnectors();
+		this.teamConnectors = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager().getTeamConnectors();
 		if (this.selectedTeamConnector == null && roots.size() > 0) {
-			final ITeamResourceConnector teamConnector = AtlassianUiPlugin.getDefault()
+			final ITeamUiResourceConnector teamConnector = AtlassianTeamUiPlugin.getDefault()
 					.getTeamResourceManager()
 					.getTeamConnector(roots.get(0));
 			if (teamConnector != null) {
@@ -135,8 +135,8 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		scmViewer.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof ITeamResourceConnector) {
-					return ((ITeamResourceConnector) element).getName();
+				if (element instanceof ITeamUiResourceConnector) {
+					return ((ITeamUiResourceConnector) element).getName();
 				}
 				return super.getText(element);
 			}
@@ -149,7 +149,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 					return;
 				}
 
-				selectedTeamConnector = (ITeamResourceConnector) selection.getFirstElement();
+				selectedTeamConnector = (ITeamUiResourceConnector) selection.getFirstElement();
 				if (selectedTeamConnector == null) {
 					return;
 				}
@@ -165,7 +165,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 						try {
 							for (IResource root : roots) {
 								modifiedResources.addAll(selectedTeamConnector.getResourcesByFilterRecursive(
-										new IResource[] { root }, ITeamResourceConnector.State.SF_ANY_CHANGE));
+										new IResource[] { root }, ITeamUiResourceConnector.State.SF_ANY_CHANGE));
 								monitor.worked(1);
 							}
 						} finally {
@@ -230,7 +230,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 			@Override
 			protected String decorateText(String input, Object element) {
 				if (element instanceof IResource) {
-					return AbstractTeamConnector.getResourcePathWithProjectName((IResource) element);
+					return AbstractTeamUiConnector.getResourcePathWithProjectName((IResource) element);
 				}
 				return super.decorateText(input, element);
 			}
@@ -300,7 +300,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 	private void restoreScmSelection() {
 		String lastSelectedConnector = CrucibleRepositoryConnector.getLastSelectedTeamResourceConnectorName(taskRepository);
 		if (lastSelectedConnector != null) {
-			for (ITeamResourceConnector connector : teamConnectors) {
+			for (ITeamUiResourceConnector connector : teamConnectors) {
 				if (connector.getName().equals(lastSelectedConnector)) {
 					scmViewer.setSelection(new StructuredSelection(connector));
 					return;
@@ -358,7 +358,7 @@ public class WorkspacePatchSelectionPage extends WizardPage {
 		}
 	}
 
-	public ITeamResourceConnector getSelectedTeamResourceConnector() {
+	public ITeamUiResourceConnector getSelectedTeamResourceConnector() {
 		return selectedTeamConnector;
 	}
 

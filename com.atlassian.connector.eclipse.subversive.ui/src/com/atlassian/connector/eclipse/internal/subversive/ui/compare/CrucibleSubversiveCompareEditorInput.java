@@ -11,9 +11,9 @@
 
 package com.atlassian.connector.eclipse.internal.subversive.ui.compare;
 
+import com.atlassian.connector.eclipse.team.ui.ICompareAnnotationModel;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
-import com.atlassian.connector.eclipse.ui.team.ICompareAnnotationModel;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;

@@ -18,9 +18,9 @@ import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClien
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClientData;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.ScmRepository;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.dialogs.ProgressDialog;
-import com.atlassian.connector.eclipse.ui.team.ScmRepository;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -296,7 +296,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 					Set<String> cachedRepositories = fishEyeClientManager.getClient(repository)
 							.getClientData()
 							.getCachedRepositories();
-					// handling the case where the repository could have been deleted or hasn't been yet fetched by the client 
+					// handling the case where the repository could have been deleted or hasn't been yet fetched by the client
 					if (cfg != null && cfg.getFishEyeRepo() != null) {
 						if (!cachedRepositories.contains(cfg.getFishEyeRepo())) {
 							cachedRepositories = new HashSet<String>(cachedRepositories);

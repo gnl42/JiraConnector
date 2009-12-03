@@ -11,12 +11,12 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui;
 
-import com.atlassian.connector.eclipse.ui.AtlassianUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
+import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
+import com.atlassian.connector.eclipse.team.ui.TeamUiResourceManager;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.connector.eclipse.ui.exceptions.UnsupportedTeamProviderException;
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
-import com.atlassian.connector.eclipse.ui.team.ITeamResourceConnector;
-import com.atlassian.connector.eclipse.ui.team.TeamResourceManager;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 
 import org.eclipse.ui.IEditorInput;
@@ -33,9 +33,9 @@ public class CrucibleTeamUiUtil {
 			return null;
 		}
 
-		TeamResourceManager teamResourceManager = AtlassianUiPlugin.getDefault().getTeamResourceManager();
+		TeamUiResourceManager teamResourceManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
 
-		for (ITeamResourceConnector connector : teamResourceManager.getTeamConnectors()) {
+		for (ITeamUiResourceConnector connector : teamResourceManager.getTeamConnectors()) {
 			if (connector.isEnabled() && connector.canHandleEditorInput(editorInput)) {
 				CrucibleFile fileInfo;
 				try {

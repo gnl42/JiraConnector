@@ -58,7 +58,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughImages;
 import com.atlassian.connector.eclipse.internal.directclickthrough.ui.DirectClickThroughUiPlugin;
-import com.atlassian.connector.eclipse.ui.team.TeamUiUtils;
+import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 import com.atlassian.theplugin.commons.util.StringUtil;
 

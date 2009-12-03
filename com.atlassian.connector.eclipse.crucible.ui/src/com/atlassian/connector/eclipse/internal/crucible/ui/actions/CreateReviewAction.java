@@ -14,7 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.actions;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.RepositorySelectionWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.ReviewWizard;
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucibleRepositoryPage;
-import com.atlassian.connector.eclipse.ui.team.ICustomChangesetLogEntry;
+import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

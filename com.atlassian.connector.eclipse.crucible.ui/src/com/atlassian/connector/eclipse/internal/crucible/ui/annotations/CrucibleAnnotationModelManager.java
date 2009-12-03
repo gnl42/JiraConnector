@@ -13,8 +13,8 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.annotations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleTeamUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
+import com.atlassian.connector.eclipse.team.ui.CrucibleFile;
 import com.atlassian.connector.eclipse.ui.IAnnotationCompareInput;
-import com.atlassian.connector.eclipse.ui.team.CrucibleFile;
 import com.atlassian.theplugin.commons.crucible.ValueNotYetInitialized;
 import com.atlassian.theplugin.commons.crucible.api.model.CrucibleFileInfo;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
