@@ -65,6 +65,20 @@
             	enablesFor="1">
 			</action>
 		</objectContribution>
+		<objectContribution
+		    objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
+		    adaptable="true"
+		    id="com.atlassian.connector.eclipse.crucible.ui.ReviewResourceContributions">
+       	
+       		<action
+	             class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewFileAction"
+	             id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction"
+	             menubarPath="team.main/group10"
+	             icon="icons/obj16/crucible.png"
+	             label="Create Post-commit Review Multi" 
+	             tooltip="Create Post-commit Review in Crucible for Selected Resource">
+       		</action>
+       	</objectContribution>
 	</extension>
 	
 	<extension id="com.atlassian.connector.eclipse.crucible.ui.popup"
@@ -141,56 +155,6 @@
 		point="org.eclipse.core.resources.markers">
 	</extension>
 
-	<extension point="org.eclipse.ui.popupMenus">
-		<objectContribution
-			objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
-			adaptable="true"
-			id="com.atlassian.connector.eclipse.crucible.ui.ResourceContributions">
-			
-			<action
-		         class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePreCommitReviewAction"
-		         icon="icons/obj16/crucible.png"
-		         id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePreCommitReviewObjectAction"
-		         label="Create Pre-commit Review"
-		         menubarPath="team.main/group10"
-		         tooltip="Create Pre-commit Review in Crucible">
-			</action>
-		</objectContribution>
-		
-		<objectContribution
-		    adaptable="true"
-		    id="com.atlassian.connector.eclipse.crucible.ui.FileContribution"
-		    objectClass="org.eclipse.core.resources.IFile">
-       	
-       		<action
-	             class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewSingleFileAction"
-	             id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewFileAction"
-	             menubarPath="team.main/group10"
-	             icon="icons/obj16/crucible.png"
-	             label="Create Post-commit Review" 
-	             tooltip="Create Post-commit Review in Crucible for Selected Resource"
-	             enablesFor="1">
-       		</action>
-       	</objectContribution>
-       	
-       	<objectContribution
-		    adaptable="true"
-		    id="com.atlassian.connector.eclipse.crucible.ui.ReviewResourceContributions"
-		    objectClass="org.eclipse.core.resources.mapping.ResourceMapping">
-       	
-       		<action
-	             class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewFileAction"
-	             id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction"
-	             menubarPath="team.main/group10"
-	             icon="icons/obj16/crucible.png"
-	             label="Create Post-commit Review 2" 
-	             tooltip="Create Post-commit Review in Crucible for Selected Resource"
-	             enablesFor="1">
-       		</action>
-       	</objectContribution>
-		  
-		
-	</extension>
  <extension
        point="org.eclipse.ui.preferencePages">
     <page
