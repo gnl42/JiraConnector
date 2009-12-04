@@ -169,7 +169,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 
 	private TaskRepository taskRepository;
 
-	private boolean taskRepositoryEnabled;
+	private boolean taskRepositoryEnabled = true;
 
 	public boolean isTaskRepositoryEnabled() {
 		return taskRepositoryEnabled;

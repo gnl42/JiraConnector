@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class FishEyeSettingsManager {
 		return mappings;
 	}
 
-	public void setMappings(@NotNull List<FishEyeMappingConfiguration> newMappings) {
+	public void setMappings(@NotNull Collection<FishEyeMappingConfiguration> newMappings) {
 		if (newMappings == null) {
 			throw new IllegalArgumentException("List cannot be null");
 		}

@@ -13,7 +13,6 @@ package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeUiPlugin;
-import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,32 +20,16 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
@@ -59,11 +42,11 @@ import java.util.List;
 
 public class FishEyePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	private List<FishEyeMappingConfiguration> mapping;
-
 	public static final String ID = "com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyePreferencePage";
 
 	private TableViewer tableViewer;
+
+	private SourceRepostioryMappingEditor mappingEditor;
 
 	public FishEyePreferencePage() {
 		super("FishEye Preferences");
@@ -91,7 +74,8 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 						final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(
 								dialog.getTaskRepository(), dialog.getScmPath(), dialog.getSourceRepository());
 						if (cfg != null) {
-							mapping.add(cfg);
+
+							mappingEditor.addMapping(cfg);
 							tableViewer.refresh();
 						}
 					}
@@ -114,142 +98,16 @@ public class FishEyePreferencePage extends PreferencePage implements IWorkbenchP
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(parent);
 		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(parent);
 
-		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(tableViewer.getControl());
-		Composite panel = new Composite(parent, SWT.NONE);
-		RowLayout panelLayout = new RowLayout(SWT.VERTICAL);
-		panelLayout.fill = true;
-		panel.setLayout(panelLayout);
-
-		GridDataFactory.fillDefaults().grab(false, false).applyTo(panel);
-		final Button addButton = new Button(panel, SWT.PUSH);
-		addButton.setText("Add...");
-		final Button editButton = new Button(panel, SWT.PUSH);
-		editButton.setText("Edit...");
-		final Button removeButton = new Button(panel, SWT.PUSH);
-		removeButton.setText("Remove");
-
-		final List<FishEyeMappingConfiguration> mappingLive = FishEyeUiPlugin.getDefault()
-				.getFishEyeSettingsManager()
-				.getMappings();
-
-		mapping = MiscUtil.buildArrayList(mappingLive.size());
-		for (FishEyeMappingConfiguration cfg : mappingLive) {
-			mapping.add(cfg.getClone());
-		}
-
-		final String[] titles = { "SCM Path", "FishEye Server", "FishEye Repository" };
-		int[] bounds = { 100, 200, 100 };
-		for (int i = 0; i < titles.length; i++) {
-			TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
-			column.getColumn().setText(titles[i]);
-			column.getColumn().setWidth(bounds[i]);
-			column.getColumn().setResizable(true);
-			column.getColumn().setMoveable(true);
-		}
-
-		tableViewer.setContentProvider(new IStructuredContentProvider() {
-
-			public Object[] getElements(Object inputElement) {
-				return mapping.toArray();
-			}
-
-			public void dispose() {
-			}
-
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			}
-
-		});
-
-		tableViewer.setLabelProvider(new TableLabelProvider());
-
-		Table tableControl = tableViewer.getTable();
-		tableControl.setHeaderVisible(true);
-		tableControl.setLinesVisible(true);
-		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			public void selectionChanged(SelectionChangedEvent event) {
-				if (event.getSelection() instanceof IStructuredSelection) {
-					IStructuredSelection ssel = (IStructuredSelection) event.getSelection();
-					editButton.setEnabled(ssel.size() == 1);
-					removeButton.setEnabled(ssel.size() > 0);
-				}
-
-			}
-
-		});
-		tableViewer.setInput(mapping);
-		tableViewer.setSelection(null);
-		addButton.setFocus();
-		addButton.addSelectionListener(new SelectionAdapter() {
-
-			public void widgetSelected(SelectionEvent e) {
-				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(), null);
-				if (dialog.open() == Window.OK) {
-					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
-							dialog.getScmPath(), dialog.getSourceRepository());
-					if (cfg != null) {
-						mapping.add(cfg);
-						tableViewer.refresh();
-					}
-				}
-			}
-
-		});
-		editButton.addSelectionListener(new SelectionAdapter() {
-
-			public void widgetSelected(SelectionEvent e) {
-				handleEditMapping(tableViewer.getSelection());
-			}
-
-		});
-
-		removeButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				IStructuredSelection ssel = (IStructuredSelection) tableViewer.getSelection();
-				for (Iterator<?> it = ssel.iterator(); it.hasNext();) {
-					mapping.remove(it.next());
-				}
-				tableViewer.refresh();
-			}
-		});
-
-		tableViewer.getControl().setSize(tableViewer.getControl().computeSize(SWT.DEFAULT, 200));
-		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				handleEditMapping(event.getSelection());
-			}
-		});
+		mappingEditor = new SourceRepostioryMappingEditor(parent);
+		mappingEditor.setMapping(FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().getMappings());
 
 		return ancestor;
-	}
-
-	private void handleEditMapping(ISelection aSelection) {
-		if (aSelection instanceof IStructuredSelection) {
-			Object selection = ((IStructuredSelection) aSelection).getFirstElement();
-			if (selection instanceof FishEyeMappingConfiguration) {
-				FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
-				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getShell(),
-						mappingCfg.getTaskRepository(), mappingCfg.getScmPath(), mappingCfg.getFishEyeRepo());
-				if (dialog.open() == Window.OK) {
-					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
-							dialog.getScmPath(), dialog.getSourceRepository());
-					if (cfg != null) {
-						int index = mapping.indexOf(mappingCfg);
-						assert index >= 0;
-						mapping.set(index, cfg);
-						tableViewer.refresh();
-					}
-				}
-			}
-		}
 	}
 
 	@Override
 	public boolean performOk() {
 		try {
-			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().setMappings(mapping);
+			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().setMappings(mappingEditor.getMapping());
 			FishEyeUiPlugin.getDefault().getFishEyeSettingsManager().save();
 		} catch (IOException e) {
 			ErrorDialog.openError(getShell(), AtlassianCorePlugin.PRODUCT_NAME,

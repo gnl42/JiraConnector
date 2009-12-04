@@ -1,0 +1,189 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Atlassian and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Atlassian - initial API and implementation
+ ******************************************************************************/
+
+package com.atlassian.connector.eclipse.fisheye.ui.preferences;
+
+import com.atlassian.theplugin.commons.util.MiscUtil;
+
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Table;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+public class SourceRepostioryMappingEditor {
+
+	private final TableViewer tableViewer;
+	private final ArrayList<FishEyeMappingConfiguration> urlToRepositories = MiscUtil.buildArrayList();
+
+	public SourceRepostioryMappingEditor(Composite parent) {
+		this(parent, SWT.NONE);
+	}
+
+	public void setMapping(Collection<FishEyeMappingConfiguration> mapping) {
+		this.urlToRepositories.clear();
+		this.urlToRepositories.addAll(mapping);
+		tableViewer.setInput(this.urlToRepositories);
+	}
+
+	public SourceRepostioryMappingEditor(Composite parent, int style) {
+		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(tableViewer.getControl());
+		Composite panel = new Composite(parent, SWT.NONE);
+		RowLayout panelLayout = new RowLayout(SWT.VERTICAL);
+		panelLayout.fill = true;
+		panel.setLayout(panelLayout);
+
+		GridDataFactory.fillDefaults().grab(false, false).applyTo(panel);
+		final Button addButton = new Button(panel, SWT.PUSH);
+		addButton.setText("Add...");
+		final Button editButton = new Button(panel, SWT.PUSH);
+		editButton.setText("Edit...");
+		final Button removeButton = new Button(panel, SWT.PUSH);
+		removeButton.setText("Remove");
+
+		final String[] titles = { "SCM Path", "FishEye Server", "FishEye Repository" };
+		int[] bounds = { 100, 200, 100 };
+		for (int i = 0; i < titles.length; i++) {
+			TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
+			column.getColumn().setText(titles[i]);
+			column.getColumn().setWidth(bounds[i]);
+			column.getColumn().setResizable(true);
+			column.getColumn().setMoveable(true);
+		}
+
+		tableViewer.setContentProvider(new IStructuredContentProvider() {
+
+			public Object[] getElements(Object inputElement) {
+				return urlToRepositories.toArray();
+			}
+
+			public void dispose() {
+			}
+
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			}
+
+		});
+
+		tableViewer.setLabelProvider(new TableLabelProvider());
+
+		Table tableControl = tableViewer.getTable();
+		tableControl.setHeaderVisible(true);
+		tableControl.setLinesVisible(true);
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			public void selectionChanged(SelectionChangedEvent event) {
+				if (event.getSelection() instanceof IStructuredSelection) {
+					IStructuredSelection ssel = (IStructuredSelection) event.getSelection();
+					editButton.setEnabled(ssel.size() == 1);
+					removeButton.setEnabled(ssel.size() > 0);
+				}
+
+			}
+
+		});
+		tableViewer.setInput(urlToRepositories);
+		tableViewer.setSelection(null);
+		addButton.setFocus();
+		addButton.addSelectionListener(new SelectionAdapter() {
+
+			public void widgetSelected(SelectionEvent e) {
+				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getControl().getShell(), null);
+				if (dialog.open() == Window.OK) {
+					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
+							dialog.getScmPath(), dialog.getSourceRepository());
+					if (cfg != null) {
+						urlToRepositories.add(cfg);
+						tableViewer.refresh();
+					}
+				}
+			}
+
+		});
+		editButton.addSelectionListener(new SelectionAdapter() {
+
+			public void widgetSelected(SelectionEvent e) {
+				handleEditMapping(tableViewer.getSelection());
+			}
+
+		});
+
+		removeButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection ssel = (IStructuredSelection) tableViewer.getSelection();
+				for (Iterator<?> it = ssel.iterator(); it.hasNext();) {
+					urlToRepositories.remove(it.next());
+				}
+				tableViewer.refresh();
+			}
+		});
+
+		tableViewer.getControl().setSize(tableViewer.getControl().computeSize(SWT.DEFAULT, 200));
+		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				handleEditMapping(event.getSelection());
+			}
+		});
+	}
+
+	private void handleEditMapping(ISelection aSelection) {
+		if (aSelection instanceof IStructuredSelection) {
+			Object selection = ((IStructuredSelection) aSelection).getFirstElement();
+			if (selection instanceof FishEyeMappingConfiguration) {
+				FishEyeMappingConfiguration mappingCfg = (FishEyeMappingConfiguration) selection;
+				AddOrEditFishEyeMappingDialog dialog = new AddOrEditFishEyeMappingDialog(getControl().getShell(),
+						mappingCfg.getTaskRepository(), mappingCfg.getScmPath(), mappingCfg.getFishEyeRepo());
+				if (dialog.open() == Window.OK) {
+					final FishEyeMappingConfiguration cfg = new FishEyeMappingConfiguration(dialog.getTaskRepository(),
+							dialog.getScmPath(), dialog.getSourceRepository());
+					if (cfg != null) {
+						int index = urlToRepositories.indexOf(mappingCfg);
+						assert index >= 0;
+						urlToRepositories.set(index, cfg);
+						tableViewer.refresh();
+					}
+				}
+			}
+		}
+	}
+
+	public Control getControl() {
+		return tableViewer.getControl();
+	}
+
+	public Collection<FishEyeMappingConfiguration> getMapping() {
+		return urlToRepositories;
+	}
+
+	public void addMapping(FishEyeMappingConfiguration mapping) {
+		this.urlToRepositories.add(mapping);
+	}
+}
