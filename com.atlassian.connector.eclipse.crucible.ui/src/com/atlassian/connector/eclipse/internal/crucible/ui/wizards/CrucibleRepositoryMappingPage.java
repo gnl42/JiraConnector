@@ -15,17 +15,15 @@ import com.atlassian.connector.eclipse.fisheye.ui.preferences.AddOrEditFishEyeMa
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
-import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
@@ -71,39 +69,15 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 
 		GridDataFactory.fillDefaults().hint(hSizeHint, 100).grab(true, true).applyTo(table);
 		repositoriesMappingViewer = new TableViewer(table);
-		repositoriesMappingViewer.setContentProvider(new IStructuredContentProvider() {
-			public Object[] getElements(Object inputElement) {
-				if (inputElement instanceof Collection<?>) {
-					return ((Collection<?>) inputElement).toArray();
-				}
-				return new Object[0];
-			}
-
-			public void dispose() {
-			}
-
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			}
-		});
+		repositoriesMappingViewer.setContentProvider(new ArrayContentProvider());
 
 		final TableViewerColumn column1 = new TableViewerColumn(repositoriesMappingViewer, SWT.NONE);
 		column1.getColumn().setText("SCM Path");
 		column1.getColumn().setWidth(500);
 		column1.setLabelProvider(new ColumnLabelProvider() {
 			@Override
-			public String getText(Object element) {
-				if (element instanceof ScmRepository) {
-					return ((ScmRepository) element).getScmPath();
-				}
-				return super.getText(element);
-			}
-
-			@Override
 			public Image getImage(Object element) {
-				if (element instanceof ScmRepository) {
-					return FishEyeImages.getImage(FishEyeImages.REPOSITORY);
-				}
-				return null;
+				return FishEyeImages.getImage(FishEyeImages.REPOSITORY);
 			}
 		});
 
@@ -113,18 +87,11 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 		column2.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				if (element instanceof ScmRepository) {
-					String mapping = repositoryMappings.get(((ScmRepository) element).getScmPath());
-					if (mapping != null) {
-						return mapping;
-					}
+				String mapping = repositoryMappings.get(element);
+				if (mapping != null) {
+					return mapping;
 				}
 				return "";
-			}
-
-			@Override
-			public Image getImage(Object element) {
-				return null;
 			}
 		});
 
@@ -156,13 +123,14 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 
 		});
 
+		repositoriesMappingViewer.setInput(getMappingViewerInput());
 		return mappingComposite;
 	}
 
 	private void editRepositoryMapping() {
 		ISelection selection = repositoriesMappingViewer.getSelection();
 		if (selection instanceof IStructuredSelection && ((IStructuredSelection) selection).size() == 1) {
-			String scmPath = ((ScmRepository) ((IStructuredSelection) selection).getFirstElement()).getScmPath();
+			String scmPath = ((IStructuredSelection) selection).getFirstElement().toString();
 			if (cachedRepositories == null) {
 				cachedRepositories = CrucibleUiUtil.getCachedRepositories(taskRepository);
 			}
@@ -230,16 +198,16 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 		return repositoryMappings;
 	}
 
-	public TableViewer getRepositoriesMappingViewer() {
-		return repositoriesMappingViewer;
-	}
-
 	protected void clearCachedCrucibleRepositories() {
 		cachedRepositories = null;
 	}
 
 	protected abstract void validatePage();
 
-	protected abstract Collection<ScmRepository> getMappingViewerInput();
+	protected abstract Collection<String> getMappingViewerInput();
+
+	protected void refreshRepositoriesMappingViewer() {
+		repositoriesMappingViewer.setInput(getMappingViewerInput());
+	}
 
 }

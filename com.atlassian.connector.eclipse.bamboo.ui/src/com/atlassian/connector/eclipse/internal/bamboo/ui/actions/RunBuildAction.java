@@ -65,7 +65,7 @@ public class RunBuildAction extends EclipseBambooBuildSelectionListenerAction {
 					Display.getDefault().syncExec(new Runnable() {
 						public void run() {
 							MessageDialog.openError(null, getText(), "Running build " + build.getPlanKey()
-									+ " failed. See error log for details.");
+									+ " failed. See Error Log for details.");
 						}
 					});
 				}

@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyeSettingsManager;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
@@ -18,6 +19,7 @@ import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
+import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -205,8 +207,6 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 
 	private TreeViewer selectedTreeViewer;
 
-//	private final Map<RepositoryInfo, ComboViewer> mappingCombos;
-
 	private Button addButton;
 
 	private Button removeButton;
@@ -226,10 +226,9 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 		super("crucibleChangesets", repository); //$NON-NLS-1$
 		setTitle("Select Changesets");
 		setDescription("Select the changesets that should be included in the review.");
+
 		this.availableLogEntries = new HashMap<ScmRepository, SortedSet<ICustomChangesetLogEntry>>();
 		this.selectedLogEntries = new HashMap<ScmRepository, SortedSet<ICustomChangesetLogEntry>>();
-
-//		this.mappingCombos = new HashMap<RepositoryInfo, ComboViewer>();
 
 		if (logEntries != null && logEntries.size() > 0) {
 			this.selectedLogEntries.put(logEntries.first().getRepository(), logEntries);
@@ -257,7 +256,6 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 		GridDataFactory.fillDefaults().span(3, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
 				repositoryMappingViewer);
 		repositoryMappingViewer.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-		getRepositoriesMappingViewer().setInput(selectedLogEntries.keySet());
 
 		Control button = createUpdateRepositoryDataButton(composite);
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(button);
@@ -272,12 +270,28 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 	protected void validatePage() {
 		setErrorMessage(null);
 
-		//check if all custom repositories are mapped to crucible repositories
+		// Check if all custom repositories are mapped to Crucible source repositories
 		boolean allFine = true;
-		for (ScmRepository ri : selectedLogEntries.keySet()) {
-			if (getRepositoryMappings().get(ri.getScmPath()) == null) {
-				setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
-				allFine = false;
+		for (Set<ICustomChangesetLogEntry> entries : selectedLogEntries.values()) {
+			for (ICustomChangesetLogEntry entry : entries) {
+				String[] files = entry.getChangedFiles();
+				if (files == null || files.length == 0) {
+					continue;
+				}
+				for (String file : files) {
+					Map.Entry<String, String> sourceRepository = FishEyeSettingsManager.getMatchingSourceRepository(
+							getRepositoryMappings(), file);
+					if (sourceRepository == null) {
+						setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
+						allFine = false;
+						break;
+					}
+				}
+				if (!allFine) {
+					break;
+				}
+			}
+			if (!allFine) {
 				break;
 			}
 		}
@@ -510,7 +524,7 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 		}
 
 		if (status.getChildren().length > 0 && status.getSeverity() == IStatus.ERROR) { //only log errors, swallow warnings
-			setErrorMessage("Error while retrieving repositories. See error log for details.");
+			setErrorMessage("Error while retrieving repositories. See Error Log for details.");
 			StatusHandler.log(status);
 		}
 	}
@@ -547,7 +561,7 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 		}
 
 		if (status[0].getSeverity() == IStatus.ERROR) { //only log errors, swallow warnings
-			setErrorMessage(String.format("Error while retrieving changesets (%s). See error log for details.",
+			setErrorMessage(String.format("Error while retrieving changesets (%s). See Error Log for details.",
 					status[0].getMessage()));
 			StatusHandler.log(status[0]);
 		}
@@ -620,7 +634,7 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 				}
 			}
 			selectedTreeViewer.setInput(selectedLogEntries);
-			getRepositoriesMappingViewer().setInput(selectedLogEntries.keySet());
+			refreshRepositoriesMappingViewer();
 			selectedTreeViewer.setExpandedElements(expandedRepositories.toArray());
 		}
 		validatePage();
@@ -663,8 +677,13 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 	}
 
 	@Override
-	protected Collection<ScmRepository> getMappingViewerInput() {
-		return selectedLogEntries.keySet();
+	protected Collection<String> getMappingViewerInput() {
+		Set<ScmRepository> scmRepositories = selectedLogEntries.keySet();
+		Set<String> scmPaths = MiscUtil.buildHashSet();
+		for (ScmRepository scmRepository : scmRepositories) {
+			scmPaths.add(scmRepository.getScmPath());
+		}
+		return scmPaths;
 	}
 
 }

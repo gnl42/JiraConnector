@@ -11,7 +11,6 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
-import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -28,20 +27,20 @@ import java.util.Set;
 
 public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMappingPage {
 
-	private final Set<ScmRepository> scmRepositories;
+	private final Set<String> scmRepositories;
 
-	public CrucibleRepositoryMappingPageImpl(TaskRepository repository, Collection<ScmRepository> scmRepositoryInfo) {
+	public CrucibleRepositoryMappingPageImpl(TaskRepository repository, Collection<String> scmPaths) {
 		super("crucibleRepoMapping", repository);
 
 		this.scmRepositories = MiscUtil.buildHashSet();
-		this.scmRepositories.addAll(scmRepositoryInfo);
+		this.scmRepositories.addAll(scmPaths);
 
 		setTitle("Define Repository Mapping");
 		setDescription("Define repository mapping used to create review.");
 	}
 
 	@Override
-	protected Collection<ScmRepository> getMappingViewerInput() {
+	protected Collection<String> getMappingViewerInput() {
 		return Collections.unmodifiableCollection(this.scmRepositories);
 	}
 
@@ -55,10 +54,10 @@ public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMapping
 	protected void validatePage() {
 		setErrorMessage(null);
 
-		//check if all custom repositories are mapped to crucible repositories
+		//check if all custom repositories are mapped to Crucible repositories
 		boolean allFine = true;
-		for (ScmRepository ri : getScmRepositories()) {
-			if (getRepositoryMappings().get(ri.getScmPath()) == null) {
+		for (String ri : getScmRepositories()) {
+			if (getRepositoryMappings().get(ri) == null) {
 				setErrorMessage("One or more local repositories are not mapped to Crucible repositories.");
 				allFine = false;
 				break;
@@ -68,7 +67,7 @@ public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMapping
 		getContainer().updateButtons();
 	}
 
-	private Collection<ScmRepository> getScmRepositories() {
+	private Collection<String> getScmRepositories() {
 		return scmRepositories;
 	}
 
@@ -81,7 +80,6 @@ public class CrucibleRepositoryMappingPageImpl extends CrucibleRepositoryMapping
 		GridDataFactory.fillDefaults().span(3, 1).align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
 				repositoryMappingViewer);
 		repositoryMappingViewer.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-		getRepositoriesMappingViewer().setInput(Collections.unmodifiableSet(scmRepositories));
 
 		Control button = createUpdateRepositoryDataButton(composite);
 		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(button);

@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
 import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.CrucibleRepositoryMappingPageImpl;
-import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.jface.wizard.Wizard;
@@ -27,9 +26,9 @@ public class DefineRepositoryMappingsWizard extends Wizard {
 
 	private final TaskRepository taskRepository;
 
-	private final Set<ScmRepository> scmRepositories;
+	private final Set<String> scmRepositories;
 
-	public DefineRepositoryMappingsWizard(TaskRepository repository, Collection<ScmRepository> scmRepositories) {
+	public DefineRepositoryMappingsWizard(TaskRepository repository, Collection<String> scmRepositories) {
 		super();
 		this.taskRepository = repository;
 		this.scmRepositories = MiscUtil.buildHashSet();

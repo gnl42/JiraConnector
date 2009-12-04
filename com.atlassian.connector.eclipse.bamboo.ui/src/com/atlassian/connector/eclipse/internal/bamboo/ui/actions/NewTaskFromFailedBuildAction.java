@@ -174,7 +174,7 @@ public class NewTaskFromFailedBuildAction extends EclipseBambooBuildSelectionLis
 						public void run() {
 							MessageDialog.openError(null, getText(), "Retrieving build details for "
 									+ build.getPlanKey() + "-" + build.getNumber()
-									+ " failed. See error log for details.");
+									+ " failed. See Error Log for details.");
 						}
 					});
 				}

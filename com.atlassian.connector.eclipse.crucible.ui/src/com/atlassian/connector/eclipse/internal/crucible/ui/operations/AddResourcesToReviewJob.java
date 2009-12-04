@@ -11,6 +11,7 @@
 
 package com.atlassian.connector.eclipse.internal.crucible.ui.operations;
 
+import com.atlassian.connector.eclipse.fisheye.ui.preferences.FishEyeSettingsManager;
 import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 import com.atlassian.connector.eclipse.internal.core.jobs.JobWithStatus;
 import com.atlassian.connector.eclipse.internal.crucible.core.CrucibleCorePlugin;
@@ -22,7 +23,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.LocalStatus;
-import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiResourceManager;
 import com.atlassian.theplugin.commons.crucible.api.model.Review;
 import com.atlassian.theplugin.commons.crucible.api.model.RevisionData;
@@ -54,14 +54,11 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 
 	private final TaskRepository repository;
 
-	private final Map<String, String> repositoryMappings;
-
 	public AddResourcesToReviewJob(@NotNull Review review, @NotNull IResource[] resources) {
 		super("Add resources to Review");
 		this.resources = resources;
 		this.review = review;
 		this.repository = CrucibleUiUtil.getCrucibleTaskRepository(review);
-		this.repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
 	}
 
 	@Override
@@ -72,66 +69,19 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 			return;
 		}
 
+		Map<String, String> repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
+
 		CrucibleRepositoryConnector connector = CrucibleCorePlugin.getRepositoryConnector();
 		CrucibleClient client = connector.getClientManager().getClient(getTaskRepository());
 
 		List<RevisionData> revisions = MiscUtil.buildArrayList();
-		final Set<ScmRepository> repositoriesWithoutMapping = MiscUtil.buildHashSet();
+		final Set<String> pathsWithoutMapping = MiscUtil.buildHashSet();
 
 		TeamUiResourceManager teamManager = AtlassianTeamUiPlugin.getDefault().getTeamResourceManager();
 		for (IResource resource : resources) {
 			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
 			if (teamConnector == null) {
 				tellUserToCommitFirst();
-				return;
-			}
-
-			ScmRepository repositoryInfo;
-			try {
-				repositoryInfo = teamConnector.getApplicableRepository(resource);
-			} catch (CoreException e1) {
-				setStatus(e1.getStatus());
-				return;
-			}
-
-			if (!repositoryMappings.containsKey(repositoryInfo.getScmPath())) {
-				repositoriesWithoutMapping.add(repositoryInfo);
-			}
-		}
-
-		// if there are some repositories missing mapping ask user to define them
-		if (repositoriesWithoutMapping.size() > 0) {
-			final boolean[] abort = { false };
-
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-				public void run() {
-					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new DefineRepositoryMappingsWizard(
-							getTaskRepository(), repositoriesWithoutMapping));
-					wd.setBlockOnOpen(true);
-					if (wd.open() == Window.CANCEL) {
-						abort[0] = true;
-					}
-				}
-			});
-
-			if (abort[0]) {
-				return;
-			}
-		}
-
-		// 
-		for (IResource resource : resources) {
-			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(resource);
-			if (teamConnector == null) {
-				tellUserToCommitFirst();
-				return;
-			}
-
-			ScmRepository repositoryInfo;
-			try {
-				repositoryInfo = teamConnector.getApplicableRepository(resource);
-			} catch (CoreException e1) {
-				setStatus(e1.getStatus());
 				return;
 			}
 
@@ -148,12 +98,77 @@ public class AddResourcesToReviewJob extends JobWithStatus {
 				return;
 			}
 
-			String crucibleProject = repositoryMappings.get(repositoryInfo.getScmPath());
+			Map.Entry<String, String> matchingSourceRepository = FishEyeSettingsManager.getMatchingSourceRepository(
+					repositoryMappings, revision.getScmPath());
+			if (matchingSourceRepository == null) {
+				pathsWithoutMapping.add(revision.getScmPath());
+			}
+		}
 
-			RevisionData rd = new RevisionData(crucibleProject, revision.getScmPath().replace(
-					repositoryInfo.getScmPath(), ""), Arrays.asList(revision.getRevision())); //$NON-NLS-1$
+		// if there are some repositories missing mapping ask user to define them
+		if (pathsWithoutMapping.size() > 0) {
+			final boolean[] abort = { false };
 
-			revisions.add(rd);
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+				public void run() {
+					WizardDialog wd = new WizardDialog(WorkbenchUtil.getShell(), new DefineRepositoryMappingsWizard(
+							getTaskRepository(), pathsWithoutMapping));
+					wd.setBlockOnOpen(true);
+					if (wd.open() == Window.CANCEL) {
+						abort[0] = true;
+					}
+				}
+			});
+
+			if (abort[0]) {
+				return;
+			} else {
+				repositoryMappings = TaskRepositoryUtil.getScmRepositoryMappings(repository);
+			}
+		}
+
+		// 
+		for (IResource root : resources) {
+			ITeamUiResourceConnector teamConnector = teamManager.getTeamConnector(root);
+			if (teamConnector == null) {
+				tellUserToCommitFirst();
+				return;
+			}
+
+			List<IResource> recursiveResources = teamConnector.getResourcesByFilterRecursive(new IResource[] { root },
+					ITeamUiResourceConnector.State.SF_VERSIONED);
+
+			for (IResource resource : recursiveResources) {
+				if (resource.getType() != IResource.FILE) {
+					continue;
+				}
+
+				LocalStatus revision;
+				try {
+					revision = teamConnector.getLocalRevision(resource);
+				} catch (CoreException e) {
+					setStatus(e.getStatus());
+					return;
+				}
+
+				if (revision.isDirty() || revision.isAdded()) {
+					tellUserToCommitFirst();
+					return;
+				}
+
+				Map.Entry<String, String> sourceRepository = FishEyeSettingsManager.getMatchingSourceRepository(
+						repositoryMappings, revision.getScmPath());
+
+				if (sourceRepository == null) {
+					tellUserToCommitFirst(); // that's probably external data, we should have a mapping here already
+					return;
+				}
+
+				RevisionData rd = new RevisionData(sourceRepository.getValue(), revision.getScmPath().replace(
+						sourceRepository.getKey(), ""), Arrays.asList(revision.getRevision())); //$NON-NLS-1$
+
+				revisions.add(rd);
+			}
 		}
 
 		AddFilesToReviewRemoteOperation operation = new AddFilesToReviewRemoteOperation(getTaskRepository(), review,

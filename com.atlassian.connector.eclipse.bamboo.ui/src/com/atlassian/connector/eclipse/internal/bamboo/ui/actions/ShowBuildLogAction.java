@@ -164,7 +164,7 @@ public class ShowBuildLogAction extends EclipseBambooBuildSelectionListenerActio
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					MessageDialog.openError(null, getText(), "Retrieving build logs for " + build.getPlanKey() + "-"
-							+ build.getNumber() + " failed. See error log for details.");
+							+ build.getNumber() + " failed. See Error Log for details.");
 				}
 			});
 		}

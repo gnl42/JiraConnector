@@ -106,7 +106,7 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 							public void run() {
 								MessageDialog.openError(Display.getDefault().getActiveShell(), getText(),
 										"Retrieving test result for " + build.getPlanKey() + "-" + build.getNumber()
-												+ " failed. See error log for details.");
+												+ " failed. See Error Log for details.");
 							}
 						});
 					}

@@ -137,7 +137,7 @@ public class CrucibleDetailsPart extends AbstractCrucibleEditorFormPart {
 						if (status.getChildren().length > 0) {
 							StatusHandler.log(status);
 							crucibleEditor.getEditor()
-									.setMessage("Error while setting reviewers. See error log for details.",
+									.setMessage("Error while setting reviewers. See Error Log for details.",
 											IMessageProvider.ERROR);
 						}
 						return Status.OK_STATUS;
