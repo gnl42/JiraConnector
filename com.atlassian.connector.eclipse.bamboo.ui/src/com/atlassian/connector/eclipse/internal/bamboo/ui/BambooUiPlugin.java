@@ -17,11 +17,16 @@ import com.atlassian.connector.eclipse.internal.bamboo.ui.notifications.BambooNo
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.tasks.core.IRepositoryListener;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -42,6 +47,8 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	private static BambooUiPlugin plugin;
 
 	private BambooNotificationProvider bambooNotificationProvider;
+
+	private MyRepositoryListener repositoryListener;
 
 	/**
 	 * The constructor
@@ -78,6 +85,8 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 				return Status.OK_STATUS;
 			}
 		};
+		repositoryListener = new MyRepositoryListener();
+		repositoryManager.addListener(repositoryListener);
 		job.schedule();
 	}
 
@@ -91,6 +100,11 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 		if (bambooNotificationProvider != null) {
 			bambooNotificationProvider.dispose();
 		}
+		if (repositoryListener != null) {
+			IRepositoryManager repositoryManager = TasksUi.getRepositoryManager();
+			repositoryManager.removeListener(repositoryListener);
+			repositoryListener = null;
+		}
 		super.stop(context);
 	}
 
@@ -101,5 +115,51 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 	 */
 	public static BambooUiPlugin getDefault() {
 		return plugin;
+	}
+
+	private final class MyRepositoryListener implements IRepositoryListener {
+		public void repositoryUrlChanged(TaskRepository repository, String oldUrl) {
+		}
+
+		public void repositorySettingsChanged(TaskRepository repository) {
+		}
+
+		public void repositoryRemoved(TaskRepository repository) {
+		}
+
+		public void repositoryAdded(TaskRepository repository) {
+			if (repository.getConnectorKind().equals(BambooCorePlugin.CONNECTOR_KIND)) {
+				Display.getDefault().asyncExec(new Runnable() {
+
+					public void run() {
+						final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow();
+						if (activeWorkbenchWindow == null) {
+							return;
+						}
+						IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+						if (activePage == null) {
+							return;
+						}
+						for (IViewReference view : activePage.getViewReferences()) {
+							if (view.getId().equals(BambooView.ID)) {
+								return;
+							}
+						}
+						// there is no Bamboo view, so we can now try open one, if user wants
+						if (MessageDialog.openQuestion(activeWorkbenchWindow.getShell(), "Question",
+								"Would you like to open Bamboo View in this perspective?")) {
+							try {
+								activePage.showView(BambooView.ID, null, IWorkbenchPage.VIEW_CREATE);
+							} catch (PartInitException e) {
+								StatusHandler.log(new Status(IStatus.ERROR, PLUGIN_ID,
+										"Could not initialize Bamboo view."));
+							}
+						}
+					}
+				});
+
+			}
+		}
 	}
 }
