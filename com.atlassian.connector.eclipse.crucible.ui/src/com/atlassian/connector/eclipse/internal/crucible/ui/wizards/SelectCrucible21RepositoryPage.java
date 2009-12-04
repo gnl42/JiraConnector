@@ -90,7 +90,7 @@ public abstract class SelectCrucible21RepositoryPage extends SelectCrucibleRepos
 	}
 
 	private List<TaskRepository> getCrucibeTaskRepositories() {
-		return getTaskRepositories(CRUCIBLE_REPOSITORY_FILTER);
+		return getTaskRepositories(ENABLED_CRUCIBLE_REPOSITORY_FILTER);
 	}
 
 	private List<TaskRepository> getTaskRepositories(ITaskRepositoryFilter filter) {

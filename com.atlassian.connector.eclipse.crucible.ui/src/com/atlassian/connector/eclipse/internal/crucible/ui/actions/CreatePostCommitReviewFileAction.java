@@ -19,7 +19,6 @@ import com.atlassian.connector.eclipse.internal.crucible.ui.wizards.SelectCrucib
 import com.atlassian.connector.eclipse.team.ui.AtlassianTeamUiPlugin;
 import com.atlassian.connector.eclipse.team.ui.ITeamUiResourceConnector;
 import com.atlassian.connector.eclipse.team.ui.TeamConnectorType;
-import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
 import com.atlassian.theplugin.commons.util.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
@@ -106,43 +105,6 @@ public class CreatePostCommitReviewFileAction extends TeamAction {
 		wd.setBlockOnOpen(true);
 		wd.open();
 	}
-
-	@Override
-	protected void setActionEnablement(IAction action) {
-		if (TeamUiUtils.hasNoTeamConnectors()) {
-			action.setEnabled(true);
-			return;
-		}
-
-//		action.setEnabled(enabledFor(getSelectedResources()[0]));
-		action.setEnabled(true);
-	}
-
-//	private boolean enabledFor(IResource selected) {
-//		LocalStatus localRevision = null;
-//		try {
-//			localRevision = TeamUiUtils.getLocalRevision(selected);
-//		} catch (CoreException e) {
-//			StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
-//					"Cannot enable action (cannot determine local revision).", e));
-//			return false;
-//		}
-//
-//		if (localRevision != null) {
-//			String stringRevision = localRevision.getRevision();
-//			if (stringRevision != null) {
-//				try {
-//					return Double.valueOf(stringRevision).doubleValue() > 0;
-//				} catch (NumberFormatException e) {
-//					StatusHandler.log(new Status(IStatus.WARNING, CrucibleUiPlugin.PLUGIN_ID,
-//							"Cannot enable action. Unrecognized revison number [" + stringRevision + "]", e));
-//					return false;
-//				}
-//			}
-//		}
-//
-//		return false;
-//	}
 
 	public class LocalProceedWithReviewCreationJob extends Job {
 
