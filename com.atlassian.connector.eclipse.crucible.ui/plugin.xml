@@ -51,21 +51,6 @@
 			</action>
 		</objectContribution>
 		<objectContribution
-		    adaptable="true"
-		    id="com.atlassian.connector.eclipse.crucible.ui.FileContribution"
-		    objectClass="org.eclipse.core.resources.IFile">
-		    
-			<action
-            	class="com.atlassian.connector.eclipse.internal.crucible.ui.actions.CreatePostCommitReviewSingleFileAction"
-            	id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewFileAction"
-            	menubarPath="team.main/group10"
-            	icon="icons/obj16/crucible.png"
-            	label="Create Post-commit Review" 
-            	tooltip="Create Post-commit Review in Crucible for Selected Resource"
-            	enablesFor="1">
-			</action>
-		</objectContribution>
-		<objectContribution
 		    objectClass="org.eclipse.core.resources.mapping.ResourceMapping"
 		    adaptable="true"
 		    id="com.atlassian.connector.eclipse.crucible.ui.ReviewResourceContributions">
@@ -75,8 +60,8 @@
 	             id="com.atlassian.connector.eclipse.internal.crucible.ui.CreatePostCommitReviewAction"
 	             menubarPath="team.main/group10"
 	             icon="icons/obj16/crucible.png"
-	             label="Create Post-commit Review Multi" 
-	             tooltip="Create Post-commit Review in Crucible for Selected Resource">
+	             label="Create Post-commit Review" 
+	             tooltip="Create Post-commit Review in Crucible for Selected Resource(s)">
        		</action>
        	</objectContribution>
 	</extension>
