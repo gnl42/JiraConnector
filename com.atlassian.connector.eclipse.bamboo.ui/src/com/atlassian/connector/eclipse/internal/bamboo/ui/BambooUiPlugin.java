@@ -13,6 +13,7 @@ package com.atlassian.connector.eclipse.internal.bamboo.ui;
 
 import com.atlassian.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import com.atlassian.connector.eclipse.internal.bamboo.ui.notifications.BambooNotificationProvider;
+import com.atlassian.connector.eclipse.internal.core.AtlassianCorePlugin;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -147,7 +148,8 @@ public class BambooUiPlugin extends AbstractUIPlugin {
 							}
 						}
 						// there is no Bamboo view, so we can now try open one, if user wants
-						if (MessageDialog.openQuestion(activeWorkbenchWindow.getShell(), "Question",
+						if (MessageDialog.openQuestion(activeWorkbenchWindow.getShell(),
+								AtlassianCorePlugin.PRODUCT_NAME,
 								"Would you like to open Bamboo View in this perspective?")) {
 							try {
 								activePage.showView(BambooView.ID, null, IWorkbenchPage.VIEW_CREATE);
