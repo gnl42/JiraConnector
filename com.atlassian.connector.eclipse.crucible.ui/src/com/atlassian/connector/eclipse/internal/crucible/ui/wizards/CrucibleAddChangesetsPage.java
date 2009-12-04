@@ -14,6 +14,7 @@ package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.ICustomChangesetLogEntry;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.team.ui.TeamUiUtils;
@@ -85,7 +86,7 @@ public class CrucibleAddChangesetsPage extends CrucibleRepositoryMappingPage {
 				return null;
 			}
 			if (element instanceof ScmRepository) {
-				return CommonImages.getImage(CrucibleImages.REPOSITORY);
+				return FishEyeImages.getImage(FishEyeImages.REPOSITORY);
 			} else if (element instanceof ICustomChangesetLogEntry) {
 				return CommonImages.getImage(CrucibleImages.CHANGESET);
 			} else if (element == EMPTY_NODE) {

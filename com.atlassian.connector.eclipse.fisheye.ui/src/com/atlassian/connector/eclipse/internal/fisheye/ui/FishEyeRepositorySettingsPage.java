@@ -1,6 +1,5 @@
 package com.atlassian.connector.eclipse.internal.fisheye.ui;
 
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiPlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
@@ -44,7 +43,7 @@ public class FishEyeRepositorySettingsPage extends AbstractRepositorySettingsPag
 				if (e.getCause() != null && e.getCause() instanceof RemoteApiException
 						&& e.getCause().getCause() != null && e.getCause().getCause() instanceof IOException
 						&& e.getCause().getCause().getMessage().contains("HTTP 404")) {
-					setStatus(new Status(IStatus.ERROR, CrucibleUiPlugin.PLUGIN_ID,
+					setStatus(new Status(IStatus.ERROR, FishEyeUiPlugin.PLUGIN_ID,
 							"HTTP 404 (Not Found) - Seems like the server you entered isn't FishEye", e));
 				} else {
 					setStatus(e.getStatus());

@@ -33,6 +33,8 @@ public final class FishEyeImages {
 
 	public static final ImageDescriptor FISHEYE_ICON = create(T_OBJ, "fisheye-16.png"); //$NON-NLS-1$
 
+	public static final ImageDescriptor REPOSITORY = create(T_OBJ, "repository_rep.gif"); //$NON-NLS-1$
+
 	public static final ImageDescriptor FISHEYE_WIZ_BAN_ICON = create(T_WIZBAN, "fisheye-logo.png"); //$NON-NLS-1$
 
 	private FishEyeImages() {

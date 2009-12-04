@@ -12,9 +12,9 @@
 package com.atlassian.connector.eclipse.internal.crucible.ui.wizards;
 
 import com.atlassian.connector.eclipse.internal.crucible.core.TaskRepositoryUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleUiUtil;
 import com.atlassian.connector.eclipse.internal.crucible.ui.commons.CrucibleRepositoriesLabelProvider;
+import com.atlassian.connector.eclipse.internal.fisheye.ui.FishEyeImages;
 import com.atlassian.connector.eclipse.team.ui.ScmRepository;
 import com.atlassian.connector.eclipse.ui.dialogs.ComboSelectionDialog;
 import com.atlassian.theplugin.commons.crucible.api.model.Repository;
@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -103,7 +102,7 @@ public abstract class CrucibleRepositoryMappingPage extends WizardPage {
 			@Override
 			public Image getImage(Object element) {
 				if (element instanceof ScmRepository) {
-					return CommonImages.getImage(CrucibleImages.REPOSITORY);
+					return FishEyeImages.getImage(FishEyeImages.REPOSITORY);
 				}
 				return null;
 			}

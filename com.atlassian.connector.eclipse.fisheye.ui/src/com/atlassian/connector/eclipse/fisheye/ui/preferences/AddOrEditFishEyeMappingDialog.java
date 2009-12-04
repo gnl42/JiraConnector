@@ -12,7 +12,6 @@
 package com.atlassian.connector.eclipse.fisheye.ui.preferences;
 
 import com.atlassian.connector.eclipse.fisheye.ui.FishEyeUiUtil;
-import com.atlassian.connector.eclipse.internal.crucible.ui.CrucibleImages;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeClientManager;
 import com.atlassian.connector.eclipse.internal.fisheye.core.FishEyeCorePlugin;
 import com.atlassian.connector.eclipse.internal.fisheye.core.client.FishEyeClient;
@@ -78,7 +77,7 @@ public class AddOrEditFishEyeMappingDialog extends ProgressDialog {
 			ld.setLabelProvider(new LabelProvider() {
 				@Override
 				public Image getImage(Object element) {
-					return CrucibleImages.getImage(CrucibleImages.REPOSITORY);
+					return FishEyeImages.getImage(FishEyeImages.REPOSITORY);
 				}
 			});
 			if (scmRepositories != null) {
